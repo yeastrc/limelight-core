@@ -18,7 +18,7 @@ export class ModViewPage_DataLoader {
     /**
      * Called by getModData_SingleProjectSearchId to create a request
      */
-    __createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId, projectSearchId: number ) {
+    private __createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId, projectSearchId: number ) {
 
         let requestObject = {
             projectSearchId : projectSearchId,
@@ -28,7 +28,7 @@ export class ModViewPage_DataLoader {
         return requestObject;
     }
 
-    __createRequestForSingleProjectSearchIdProteinIds(
+    private __createRequestForSingleProjectSearchIdProteinIds(
         {
             projectSearchId,
             proteinSequenceVersionIds
@@ -458,7 +458,7 @@ export class ModViewPage_DataLoader {
         });
     }
 
-    __createRequestForPSMDataForProjectSearchIdModMasses(
+    private __createRequestForPSMDataForProjectSearchIdModMasses(
         {
             searchDataLookupParams,
             projectSearchId,

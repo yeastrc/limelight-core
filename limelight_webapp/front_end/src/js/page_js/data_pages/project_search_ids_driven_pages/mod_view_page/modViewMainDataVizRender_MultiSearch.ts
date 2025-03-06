@@ -300,7 +300,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         })
     }
 
-    static addDataDownloadLinks(
+    private static addDataDownloadLinks(
         {
             sortedModMasses,
             vizOptionsData,
@@ -449,7 +449,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     /**
      * Remove existing and add new data viz container to page. Assumes jquery is loaded.
      */
-    static addDataVizContainerToPage() {
+    private static addDataVizContainerToPage() {
 
         // blow existing viz away
         const $vizDiv = $("div#data-viz-container");
@@ -461,7 +461,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         $vizDiv.empty();
     }
 
-    static addEmptyDataVizContainerToPage() {
+    private static addEmptyDataVizContainerToPage() {
 
         // blow existing viz away
         const $vizDiv = $("div#data-viz-container");
@@ -475,7 +475,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         $vizDiv.html('<span style=\"font-size:12pt;\">No modification data found for filters.</span>')
     }
 
-    static addColorScaleLegend(
+    private static addColorScaleLegend(
         {
             svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData
         } : {
@@ -579,7 +579,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    static addDragHandlerToRects(
+    private static addDragHandlerToRects(
         {
             svg,
             xScale,
@@ -840,7 +840,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
 
-    static updateShownRectOpacities({ svg, selectedStateObject } : {
+    private static updateShownRectOpacities({ svg, selectedStateObject } : {
 
         svg,
         selectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject
@@ -861,7 +861,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    static updateSelectedRectIndicators(
+    private static updateSelectedRectIndicators(
         {
             // event_Param__CtrlKey, event_Param__MetaKey,
             svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject
@@ -901,7 +901,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    static rectangleContainsModMass({ modMass, xScale, rectParams }) {
+    private static rectangleContainsModMass({ modMass, xScale, rectParams }) {
 
         const modMassMinPosition = xScale(modMass);
         const modMassMaxPosition = modMassMinPosition + xScale.bandwidth();
@@ -916,7 +916,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return false;
     }
 
-    static rectangleContainsProjectSearchId({ projectSearchId, yScale, rectParams }) {
+    private static rectangleContainsProjectSearchId({ projectSearchId, yScale, rectParams }) {
 
         const psidMinPosition = yScale(projectSearchId);
         const psidMaxPosition = psidMinPosition + yScale.bandwidth();
@@ -933,7 +933,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
 
 
-    static getInterval({xScale, labelFontSize}) {
+    private static getInterval({xScale, labelFontSize}) {
 
         const spaceNeeded = labelFontSize + 6;      // 6 assumes a margin of 3 px on either side of the label (move this to viz defs?)
         const bandwidth = xScale.bandwidth();
@@ -941,7 +941,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return Math.ceil( spaceNeeded / bandwidth );
     }
 
-    static addModLabelsHeader({ svg, width, labelFontSize }) {
+    private static addModLabelsHeader({ svg, width, labelFontSize }) {
 
         const dx = Math.round( width / 2 );
         const dy = -1 * labelFontSize - 30;
@@ -955,7 +955,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    static addModLabels({ svg, sortedModMasses, xScale, labelFontSize }) {
+    private static addModLabels({ svg, sortedModMasses, xScale, labelFontSize }) {
 
         const interval = ModViewDataVizRenderer_MultiSearch.getInterval({labelFontSize, xScale});
 
@@ -971,7 +971,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .text((d,i) => ( i % interval == 0 ? sortedModMasses[i] : '' ));
     }
 
-    static addSearchLabels(
+    private static addSearchLabels(
         {
             svg,
             yScale,
@@ -1199,7 +1199,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
 
 
-    static getTruncatedSearchNameForProjectSearchId(
+    private static getTruncatedSearchNameForProjectSearchId(
         {
             projectSearchId,
             maxSearchLabelLength,
@@ -1280,7 +1280,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return searchId;
     }
 
-    static getWidth({sortedModMasses, widthDefs, minLegendWidth}) {
+    private static getWidth({sortedModMasses, widthDefs, minLegendWidth}) {
 
         let width = widthDefs.default;
 
@@ -1302,7 +1302,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return width;
     }
 
-    static getHeight({projectSearchIds, heightDefs}) {
+    private static getHeight({projectSearchIds, heightDefs}) {
 
         let height = heightDefs.default;
 
@@ -1316,7 +1316,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return height;
     }
 
-    static addColoredRectangles(
+    private static addColoredRectangles(
         {
             svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip, vizOptionsData, dataPageStateManager_DataFrom_Server
         } : {
@@ -1383,7 +1383,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    static showToolTip(
+    private static showToolTip(
         {
             onSearchLabel_OnLeft, projectSearchId, modMass, psmCount, tooltip, vizOptionsData, dataPageStateManager_DataFrom_Server
         } : {
@@ -1537,12 +1537,12 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    static hideToolTip({ tooltip }) {
+    private static hideToolTip({ tooltip }) {
         tooltip
             .style("visibility", "hidden")
     }
 
-    static addSeparatorLines({ svg, projectSearchIds, yScale, width, height }) {
+    private static addSeparatorLines({ svg, projectSearchIds, yScale, width, height }) {
 
         svg.select('#rect-group').selectAll('.separator-line')
             .data(projectSearchIds)
@@ -1932,7 +1932,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return modMap;
     }
 
-    static convertModMapToDataTransformation(modMap, vizOptionsData: ModView_VizOptionsData) {
+    private static convertModMapToDataTransformation(modMap, vizOptionsData: ModView_VizOptionsData) {
 
         if(vizOptionsData.data.dataTransformation === undefined) {
             return;
@@ -1990,7 +1990,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    static convertModMapToPerModScaledMeanDelta(modMap) {
+    private static convertModMapToPerModScaledMeanDelta(modMap) {
         for(const [modMass, searchCountMap] of modMap) {
             const mean = ModViewDataVizRenderer_MultiSearch.getMeanForModMass({modMap, modMass});
 

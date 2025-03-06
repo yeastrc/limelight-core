@@ -72,10 +72,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 		const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = ModViewDataTableRenderer_MultiSearch.getDataTableColumns({
 			vizSelectedStateObject,
 			dataPageStateManager_DataFrom_Server,
-			sortedModMasses,
-			modMap,
 			projectSearchIds,
-			modViewDataManager,
 			vizOptionsData,
 		});
 
@@ -120,7 +117,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 	}//end renderDataTable
 
-	static getDataTableRows(
+	private static getDataTableRows(
 		{
 			vizSelectedStateObject,
 			dataPageStateManager_DataFrom_Server,
@@ -254,22 +251,16 @@ export class ModViewDataTableRenderer_MultiSearch {
 		return dataTableRows;
 	}
 
-	static getDataTableColumns(
+	private static getDataTableColumns(
 		{
 			vizSelectedStateObject,
 			dataPageStateManager_DataFrom_Server,
-			sortedModMasses,
-			modMap,
 			projectSearchIds,
-			modViewDataManager,
 			vizOptionsData,
 		} : {
 			vizSelectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject,
 			dataPageStateManager_DataFrom_Server: DataPageStateManager
-			sortedModMasses,
-			modMap,
 			projectSearchIds: Array<number>,
-			modViewDataManager : ModViewDataManager
 			vizOptionsData: ModView_VizOptionsData,
 		}) : DataTable_RootTableDataObject_Both_ColumnArrays {
 
@@ -329,7 +320,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 		return dataTable_RootTableDataObject_Both_ColumnArrays;
 	}
 
-	static getDisplayNameForModMassColumn(
+	private static getDisplayNameForModMassColumn(
 		{ projectSearchId, vizOptionsData, dataPageStateManager_DataFrom_Server } :
 		{
 			projectSearchId:number,
@@ -354,7 +345,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 		return displayString;
 	}
 
-	static getSortedModsToDisplay({ sortedModMasses, vizSelectedStateObject } : {
+	private static getSortedModsToDisplay({ sortedModMasses, vizSelectedStateObject } : {
 
 		sortedModMasses,
 		vizSelectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject
@@ -382,7 +373,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 		return sortedModsToDisplay;
 	}
 
-	static getProjectSearchIdsToDisplay({ projectSearchIds, vizSelectedStateObject } : {
+	private static getProjectSearchIdsToDisplay({ projectSearchIds, vizSelectedStateObject } : {
 		projectSearchIds: Array<number>,
 		vizSelectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject
 	}) : Array<number> {

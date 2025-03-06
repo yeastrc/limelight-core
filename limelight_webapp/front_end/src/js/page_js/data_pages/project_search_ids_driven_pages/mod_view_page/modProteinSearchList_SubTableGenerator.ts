@@ -74,7 +74,7 @@ export class ModProteinSearchList_SubTableGenerator {
         return dataTable_RootTableObject;
     }
 
-    static async getDataTableColumns() : Promise<DataTable_RootTableDataObject_Both_ColumnArrays> {
+    private static async getDataTableColumns() : Promise<DataTable_RootTableDataObject_Both_ColumnArrays> {
 
         const dataTableColumns : Array<DataTable_Column> = [];
         const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
@@ -144,7 +144,7 @@ export class ModProteinSearchList_SubTableGenerator {
         return dataTable_RootTableDataObject_Both_ColumnArrays;
     }
 
-    static async getDataTableRows(
+    private static async getDataTableRows(
         {
             modViewDataManager,
             vizOptionsData,
@@ -310,7 +310,7 @@ export class ModProteinSearchList_SubTableGenerator {
     }
 
 
-    static async getSearchProteinDataForModMass(
+    private static async getSearchProteinDataForModMass(
         {
             modViewDataManager,
             vizOptionsData,
@@ -365,7 +365,7 @@ export class ModProteinSearchList_SubTableGenerator {
         return proteinDataForModMass;
     }
 
-    static async rollupProteinData(
+    private static async rollupProteinData(
         {
             proteinPositionMapByProjectSearchId,
             proteinResidueMapByProjectSearchId,
@@ -458,7 +458,7 @@ export class ModProteinSearchList_SubTableGenerator {
 
     }
 
-    static rollupProteinDataForProjectSearchIdAndProtein(
+    private static rollupProteinDataForProjectSearchIdAndProtein(
         {
             proteinPositionMapByProjectSearchId,
             proteinResidueMapByProjectSearchId,

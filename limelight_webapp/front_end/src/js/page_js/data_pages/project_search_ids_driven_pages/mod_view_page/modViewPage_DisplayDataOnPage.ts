@@ -280,7 +280,7 @@ export class ModViewPage_DisplayDataOnPage {
 	/**
 	 * Called when the user updates the filter cutoffs and the page needs to be re-rendered
 	 */
-	_filterValuesChanged_Callback( params: SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) {
+	private _filterValuesChanged_Callback( params: SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) {
 
 		console.warn("filterValuesChanged_Callback called: params: ", params )
 

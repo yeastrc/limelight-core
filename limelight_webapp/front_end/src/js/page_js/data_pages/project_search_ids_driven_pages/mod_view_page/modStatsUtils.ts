@@ -576,11 +576,11 @@ export class ModStatsUtils {
         StringDownloadUtils.downloadStringAsFile( { stringToDownload : output, filename: 'mod_pvalue_report.txt' } );
     }
 
-    static getPValueForTwoRatios({ x1, n1, x2, n2 }) {
+    private static getPValueForTwoRatios({ x1, n1, x2, n2 }) {
         return jStat.ztest( ModStatsUtils.getZScoreForTwoRatios({ x1, n1, x2, n2 }), 2);
     }
 
-    static getZScoreForTwoRatios({ x1, n1, x2, n2 }) {
+    private static getZScoreForTwoRatios({ x1, n1, x2, n2 }) {
 
         //console.log('getZScoreForTwoRatios', x1, n1, x2, n2);
 

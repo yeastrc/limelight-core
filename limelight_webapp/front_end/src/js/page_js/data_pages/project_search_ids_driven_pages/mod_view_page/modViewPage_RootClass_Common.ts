@@ -53,14 +53,10 @@ import {
 import {
 	CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
-import {
-	ModView_VizOptionsData
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
-import {
-	ProteinRange
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
 
 //  From data_pages_common
+
+
 
 /**
  * 

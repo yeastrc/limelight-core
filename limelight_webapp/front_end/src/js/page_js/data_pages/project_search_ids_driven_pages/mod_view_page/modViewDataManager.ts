@@ -141,19 +141,21 @@ export class ModViewDataManager {
         return this._scanInfoForPsms.get(projectSearchId);
     }
 
-    async getScanInfoForPsm({ psmId, projectSearchId } : { psmId:number, projectSearchId:number}):Promise<PsmScanInfo> {
+    //  UNUSED
 
-        //console.log('called getScanInfoForPsm', psmId, projectSearchId);
-
-        if(!(this._scanInfoForPsms.has(projectSearchId))) {
-            this._scanInfoForPsms.set(projectSearchId, await this._dataLoader.getScanDataForSingleProjectSearchId({
-                searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
-                projectSearchId
-            }));
-        }
-
-        return this._scanInfoForPsms.get(projectSearchId).get(psmId);
-    }
+    // async getScanInfoForPsm({ psmId, projectSearchId } : { psmId:number, projectSearchId:number}):Promise<PsmScanInfo> {
+    //
+    //     //console.log('called getScanInfoForPsm', psmId, projectSearchId);
+    //
+    //     if(!(this._scanInfoForPsms.has(projectSearchId))) {
+    //         this._scanInfoForPsms.set(projectSearchId, await this._dataLoader.getScanDataForSingleProjectSearchId({
+    //             searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
+    //             projectSearchId
+    //         }));
+    //     }
+    //
+    //     return this._scanInfoForPsms.get(projectSearchId).get(psmId);
+    // }
 
     async getPsmsForModMass({ modMass, projectSearchId } : { modMass:number, projectSearchId:number }):Promise<Array<any>> {
         console.log('called getPsmsForModMass()', modMass, projectSearchId);
@@ -261,32 +263,34 @@ export class ModViewDataManager {
         }
     }
 
-    /**
-     * Get all the names for the given protein in the given array of searches
-     *
-     * @param projectSearchIds
-     * @param proteinId
-     */
-    async getAllNamesForProteinInSearches(
-        {
-            projectSearchIds,
-            proteinId
-        } : {
-            projectSearchIds:Array<number>,
-            proteinId:number
-        }) : Promise<Set<string>> {
+    //   UNUSED
 
-        const names = new Set<string>();
-
-        for(const projectSearchId of projectSearchIds) {
-            const searchNames = await this.getNamesForProtein({projectSearchId, proteinId});
-            for(const name of searchNames) {
-                names.add(name);
-            }
-        }
-
-        return names;
-    }
+    // /**
+    //  * Get all the names for the given protein in the given array of searches
+    //  *
+    //  * @param projectSearchIds
+    //  * @param proteinId
+    //  */
+    // async getAllNamesForProteinInSearches(
+    //     {
+    //         projectSearchIds,
+    //         proteinId
+    //     } : {
+    //         projectSearchIds:Array<number>,
+    //         proteinId:number
+    //     }) : Promise<Set<string>> {
+    //
+    //     const names = new Set<string>();
+    //
+    //     for(const projectSearchId of projectSearchIds) {
+    //         const searchNames = await this.getNamesForProtein({projectSearchId, proteinId});
+    //         for(const name of searchNames) {
+    //             names.add(name);
+    //         }
+    //     }
+    //
+    //     return names;
+    // }
 
     /**
      * Get all names for the given protein in the given search
@@ -396,7 +400,7 @@ export class ModViewDataManager {
      * @param proteinId
      * @param projectSearchId
      */
-    async getDataForProtein({
+    private async getDataForProtein({
                                 proteinId,
                                 projectSearchId
                             } : {
@@ -417,7 +421,7 @@ export class ModViewDataManager {
      * @param proteinId
      * @param projectSearchIds
      */
-    async getDataForProteinMultipleSearches({
+    private async getDataForProteinMultipleSearches({
                                 proteinId,
                                 projectSearchIds
                             } : {

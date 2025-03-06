@@ -16,7 +16,6 @@ import {
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {ModProteinList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableProperties";
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
-import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch";
 import {ReportedPeptide} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
 import {ModProteinSearchList_SubTableGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchList_SubTableGenerator";
 import {ModProteinSearchList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchList_SubTableProperties";
@@ -82,7 +81,7 @@ export class ModProteinList_SubTableGenerator {
         return dataTable_RootTableObject;
     }
 
-    static async getDataTableColumns(
+    private static async getDataTableColumns(
         {
             vizOptionsData,
             modMass,
@@ -177,7 +176,7 @@ export class ModProteinList_SubTableGenerator {
         return dataTable_RootTableDataObject_Both_ColumnArrays;
     }
 
-    static async getDataTableRows(
+    private static async getDataTableRows(
         {
             modViewDataManager,
             vizOptionsData,
@@ -439,7 +438,7 @@ export class ModProteinList_SubTableGenerator {
      *
      * Return:
      */
-    static async getProteinDataForModMass(
+    private static async getProteinDataForModMass(
         {
             modViewDataManager,
             vizOptionsData,
@@ -497,7 +496,7 @@ export class ModProteinList_SubTableGenerator {
         return proteinDataForModMass;
     }
 
-    static async rollupProteinDataForAllProjectSearchIds(
+    private static async rollupProteinDataForAllProjectSearchIds(
         {
             proteinPositionMap,
             proteinResidueMap,
@@ -603,7 +602,7 @@ export class ModProteinList_SubTableGenerator {
 
     }
 
-    static async rollupProteinDataForProjectSearchId(
+    private static async rollupProteinDataForProjectSearchId(
         {
             proteinPositionMap,
             proteinResidueMap,
