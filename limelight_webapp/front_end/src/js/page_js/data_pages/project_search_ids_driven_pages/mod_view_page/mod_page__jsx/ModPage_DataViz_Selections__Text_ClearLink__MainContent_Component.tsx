@@ -75,24 +75,19 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
         const projectSearchIds_ThatHave_ALL_ModMasses_Selected: Set<number> = new Set()
 
         if ( ( ! this.props.propsValue.selectedStateObject )
-            || ( ! this.props.propsValue.selectedStateObject.data )
-            || ( Object.keys( this.props.propsValue.selectedStateObject.data ).length === 0 ) ) {
+            || ( ! this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId )
+            || ( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size === 0 ) ) {
 
             //  NOTHING Selected
 
             return projectSearchIds_ThatHave_ALL_ModMasses_Selected
         }
 
-        const projectSearchId_Selected_Array: Array<number> = []
-
-        for ( const projectSearchId_Selected of  Object.keys( this.props.propsValue.selectedStateObject.data ) ) {
-            projectSearchId_Selected_Array.push( Number.parseInt( projectSearchId_Selected ) )
-        }
-
+        const projectSearchId_Selected_Array: Array<number> = Array.from( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.keys() )
 
         for ( const projectSearchId_Selected of projectSearchId_Selected_Array ) {
 
-            const modMasses_Selected_Array = this.props.propsValue.selectedStateObject.data[ projectSearchId_Selected ] as Array<number>
+            const modMasses_Selected_Array = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_Selected )
             if ( ! modMasses_Selected_Array ) {
                 const msg = "this.props.propsValue.selectedStateObject.data[ projectSearchId_Selected ] returned NOTHING for projectSearchId_Selected: " + projectSearchId_Selected
                 console.warn(msg)
@@ -212,8 +207,8 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
     render() {
 
         if ( ( ! this.props.propsValue.selectedStateObject )
-            || ( ! this.props.propsValue.selectedStateObject.data )
-            || ( Object.keys( this.props.propsValue.selectedStateObject.data ).length === 0 ) ) {
+            || ( ! this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId )
+            || ( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size === 0 ) ) {
 
             //  NOTHING to Render
 
@@ -265,9 +260,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
             let allSearchesSelected_Have_All_ModMasses_Selected = true
 
-            const projectSearchIds_Selection = Object.keys( this.props.propsValue.selectedStateObject.data )
-            for ( const projectSearchId_Selection_String of projectSearchIds_Selection ) {
-                const projectSearchId_Selection_Number = Number.parseInt( projectSearchId_Selection_String )
+            for ( const projectSearchId_Selection_Number of this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.keys() ) {
                 if ( ! projectSearchIds_ThatHave_ALL_ModMasses_Selected.has( projectSearchId_Selection_Number ) ) {
                     allSearchesSelected_Have_All_ModMasses_Selected = false
                     break
@@ -282,7 +275,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
                 for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
 
-                    const selectionModificationsArray = this.props.propsValue.selectedStateObject.data[ projectSearchId ]
+                    const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId )
                     if ( selectionModificationsArray ) {
 
                         const searchData = this.props.propsValue.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
@@ -312,16 +305,18 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
             let allSearchesSelected_Have_Same_ModMass_Selections = true
 
             {
-                const projectSearchIds_Selection = Object.keys( this.props.propsValue.selectedStateObject.data )
 
-                if ( projectSearchIds_Selection.length > 1 ) {
+                if ( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size > 1 ) {
+
+                    const projectSearchIds_Selection = Array.from( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.keys() )
 
                     let modMassSelections_First_Search: Set<number>
                     {
                         const projectSearchId_First = projectSearchIds_Selection[ 0 ]
-                        const selectionModificationsArray = this.props.propsValue.selectedStateObject.data[ projectSearchId_First ] as Array<number>
+
+                        const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_First )
                         if ( ! selectionModificationsArray ) {
-                            throw Error( "this.props.propsValue.selectedStateObject.data[ projectSearchId ] returned NOTHING for projectSearchId_First ( from projectSearchIds_Selection ): " + projectSearchId_First )
+                            throw Error( "this.props.propsValue.selectedStateObject.data__New__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_First ) returned NOTHING for projectSearchId_First ( from projectSearchIds_Selection ): " + projectSearchId_First )
                         }
                         modMassSelections_First_Search = new Set( selectionModificationsArray )
                     }
@@ -330,9 +325,10 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
                     for ( let index__projectSearchIds_Selection = 1; index__projectSearchIds_Selection < projectSearchIds_Selection.length; index__projectSearchIds_Selection++ ) {
                         const projectSearchId_Selection = projectSearchIds_Selection[ index__projectSearchIds_Selection ]
-                        const selectionModificationsArray = this.props.propsValue.selectedStateObject.data[ projectSearchId_Selection ] as Array<number>
+
+                        const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_Selection )
                         if ( ! selectionModificationsArray ) {
-                            throw Error( "this.props.propsValue.selectedStateObject.data[ projectSearchId ] returned NOTHING for projectSearchId ( from projectSearchIds_Selection ): " + projectSearchId_Selection )
+                            throw Error( "this.props.propsValue.selectedStateObject.data__New__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_First ) returned NOTHING for projectSearchId ( from projectSearchIds_Selection ): " + projectSearchId_Selection )
                         }
                         const selectionModifications_Set = new Set( selectionModificationsArray )
                         if ( selectionModifications_Set.size !== modMassSelections_First_Search.size ) {
@@ -365,7 +361,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
                 for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
 
-                    const selectionModificationsArray = this.props.propsValue.selectedStateObject.data[ projectSearchId ]
+                    const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId )
                     if ( selectionModificationsArray ) {
 
 
@@ -503,9 +499,9 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
                 //  SAME Mod mass selections for ALL Searches
 
-                const projectSearchIds_Selection = Object.keys( this.props.propsValue.selectedStateObject.data )
+                const projectSearchIds_Selection = Array.from( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.keys() )
                 const projectSearchId_First = projectSearchIds_Selection[ 0 ]
-                const selectionModificationsArray = this.props.propsValue.selectedStateObject.data[ projectSearchId_First ] as Array<number>
+                const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_First )
                 if ( ! selectionModificationsArray ) {
                     throw Error( "this.props.propsValue.selectedStateObject.data[ projectSearchId ] returned NOTHING for projectSearchId_First ( from projectSearchIds_Selection ): " + projectSearchId_First )
                 }
@@ -527,7 +523,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
                     for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
 
-                        const selectionModificationsArray = this.props.propsValue.selectedStateObject.data[ projectSearchId ]
+                        const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId )
                         if ( selectionModificationsArray ) {
 
                             const searchData = this.props.propsValue.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )

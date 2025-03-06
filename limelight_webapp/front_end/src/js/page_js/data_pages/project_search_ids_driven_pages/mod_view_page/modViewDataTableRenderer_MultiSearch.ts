@@ -364,15 +364,15 @@ export class ModViewDataTableRenderer_MultiSearch {
 		console.log('sortedModMasses', sortedModMasses);
 		console.log('vizSelectedStateObject', vizSelectedStateObject);
 
-		if(ModViewDataTableRenderer_MultiSearch.isObjectEmpty( vizSelectedStateObject.data )) {
+		if( ( ! vizSelectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId ) || vizSelectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size === 0 ) {
 			return sortedModMasses;
 		}
 
 		let sortedModsToDisplay : Array<number> = [ ];
 		for( const modMass of sortedModMasses ) {
-			//  projectSearchId is a string in this 'for' loop
-			for( const projectSearchId of Object.keys(vizSelectedStateObject.data) ) {
-				if(vizSelectedStateObject.data[projectSearchId].includes(modMass)) {
+
+			for( const projectSearchId of vizSelectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.keys() ) {
+				if(vizSelectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get(projectSearchId).includes(modMass)) {
 					sortedModsToDisplay.push(modMass);
 					break;
 				}
@@ -387,28 +387,20 @@ export class ModViewDataTableRenderer_MultiSearch {
 		vizSelectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject
 	}) : Array<number> {
 
-		if(ModViewDataTableRenderer_MultiSearch.isObjectEmpty( vizSelectedStateObject.data )) {
+		if( ( ! vizSelectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId ) || vizSelectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size === 0 ) {
 			return projectSearchIds;
 		}
 
 		let projectSearchIdsToDisplay : Array<number> = [ ];
 
 		for( const projectSearchId of projectSearchIds ) {
-			if(vizSelectedStateObject.data[projectSearchId] !== undefined && vizSelectedStateObject.data[projectSearchId].length > 0) {
+
+			if(vizSelectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get(projectSearchId) !== undefined && vizSelectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get(projectSearchId).length > 0) {
 				projectSearchIdsToDisplay.push( projectSearchId );
 			}
 		}
 
 		return projectSearchIdsToDisplay;
 	}
-
-	static isObjectEmpty(obj) {
-		if( Object.keys(obj).length === 0 && obj.constructor === Object ) {
-			return true;
-		}
-
-		return false;
-	}
-
 
 }

@@ -89,7 +89,8 @@ export class ModViewPage_DisplayDataOnPage {
 		this._modViewDataManager = new ModViewDataManager(searchDataLookupParamsRoot);
 
 		this._vizOptionsData = { data: { } };
-		this._vizOptionsData.data.selectedStateObject = { data: { } };
+
+		this._vizOptionsData.data.selectedStateObject = { data__ModMass_Array_Map_Key_ProjectSearchId: new Map() };
 		const stateManagementObject = new ModMultiSearch_DataVizPageStateManager( { centralPageStateManager : this._centralPageStateManager, vizOptionsData: this._vizOptionsData } );
 		this._vizOptionsData.stateManagementObject = stateManagementObject;
 
@@ -216,8 +217,9 @@ export class ModViewPage_DisplayDataOnPage {
 				if ( projectSearchIds.includes( vizOptionsData_projectSearchId ) ) {
 					new_vizOptionsData_projectSearchIds_Entries.push( vizOptionsData_projectSearchId );
 				} else {
-					if ( this._vizOptionsData.data.selectedStateObject ) {
-						delete this._vizOptionsData.data.selectedStateObject.data[ vizOptionsData_projectSearchId ];
+					if ( this._vizOptionsData.data.selectedStateObject && this._vizOptionsData.data.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId ) {
+
+						this._vizOptionsData.data.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.delete( vizOptionsData_projectSearchId );
 					}
 				}
 			}

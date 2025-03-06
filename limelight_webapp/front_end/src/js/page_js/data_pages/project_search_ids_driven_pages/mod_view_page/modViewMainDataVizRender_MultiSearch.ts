@@ -613,7 +613,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 // reset selected state object
                 svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
-                selectedStateObject.data = {};
+                selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId = new Map();
 
                 const p = d3.pointer( event_Param );
 
@@ -791,7 +791,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     ) {
 
-        selectedStateObject.data = {};
+        selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId = new Map();
 
         // update hash in URL to reflect user customization state
         vizOptionsData.stateManagementObject.updateState();
@@ -846,14 +846,14 @@ export class ModViewDataVizRenderer_MultiSearch {
         selectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject
     }) {
 
-        if( !selectedStateObject.data || Object.keys(selectedStateObject.data).length < 1) {
+        if( ( ! selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId ) || selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size < 1) {
             svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
         } else {
 
             svg.select('#rect-group').selectAll('rect').style('opacity', '0.35');
 
-            for (const projectSearchId of Object.keys(selectedStateObject.data)) {
-                for (const modMass of selectedStateObject.data[projectSearchId]) {
+            for (const projectSearchId of selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.keys()) {
+                for (const modMass of selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get(projectSearchId)) {
                     const selector = 'rect.mod-mass-' + modMass + '.project-search-id-' + projectSearchId;
                     svg.select('#rect-group').select(selector).style('opacity', '1.0');
                 }
@@ -888,12 +888,12 @@ export class ModViewDataVizRenderer_MultiSearch {
                         const selector = 'rect.mod-mass-' + modMass + '.project-search-id-' + projectSearchId;
                         svg.select('#rect-group').select(selector).style('opacity', '1.0');
 
-                        if(!(projectSearchId in selectedStateObject.data)) {
-                            selectedStateObject.data[projectSearchId] = [ ];
+                        if(!(selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.has(projectSearchId))) {
+                            selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.set(projectSearchId, []);
                         }
 
-                        if(!(selectedStateObject.data[projectSearchId].includes(modMass))) {
-                            selectedStateObject.data[projectSearchId].push(modMass);
+                        if(!(selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get(projectSearchId).includes(modMass))) {
+                            selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get(projectSearchId).push(modMass);
                         }
                     }
                 }
@@ -1027,11 +1027,13 @@ export class ModViewDataVizRenderer_MultiSearch {
             })
             .on("click", function( event_Param, dataElement_Param ) {
 
+                const projectSearchId = Number.parseInt( dataElement_Param )
+
                 //  Reset reset selected state object and then select
                 svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
-                selectedStateObject.data = {};
+                selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId = new Map();
 
-                selectedStateObject.data[ dataElement_Param ] = [...sortedModMasses];
+                selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.set( projectSearchId, [...sortedModMasses] );
 
                 // update hash in URL to reflect user customization state
                 vizOptionsData.stateManagementObject.updateState();
@@ -1372,7 +1374,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         {
             const selectedStateObject = vizOptionsData.data.selectedStateObject;
 
-            if (selectedStateObject.data !== undefined || Object.keys(selectedStateObject.data).length > 0) {
+            if (selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId !== undefined || selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size > 0) {
                 ModViewDataVizRenderer_MultiSearch.updateShownRectOpacities({
                     svg,
                     selectedStateObject

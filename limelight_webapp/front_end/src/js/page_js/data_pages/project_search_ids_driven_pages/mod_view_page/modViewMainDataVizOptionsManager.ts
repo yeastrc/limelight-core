@@ -356,9 +356,16 @@ export class ModViewDataVizRendererOptionsHandler {
         vizOptionsData: ModView_VizOptionsData
     }) {
 
+        //  param 'defaults' AND 'vizOptionsData.data' MUST both be same class which is currently 'ModView_VizOptionsData_SubPart_data'
+
+        const vizOptionsData_Data: ModView_VizOptionsData_SubPart_data = vizOptionsData.data
+
+        const vizOptionsData_data_ObjectKeys = Object.keys(vizOptionsData.data)
+
         for(const optionName of Object.keys(defaults)) {
-            if( !Object.keys(vizOptionsData.data).includes(optionName)) {
-                vizOptionsData.data[optionName] = defaults[optionName];
+            if( ! vizOptionsData_data_ObjectKeys.includes(optionName) ) {
+
+                vizOptionsData_Data[optionName] = defaults[optionName];
             }
         }
     }

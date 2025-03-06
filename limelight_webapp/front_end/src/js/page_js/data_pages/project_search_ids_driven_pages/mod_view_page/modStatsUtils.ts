@@ -2,7 +2,10 @@ import jStat from 'jstat'
 import {StringDownloadUtils} from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 import {ModViewDataVizRenderer_MultiSearch} from "./modViewMainDataVizRender_MultiSearch";
 import {ModViewDataManager} from "./modViewDataManager";
-import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
+import {
+    ModView_VizOptionsData,
+    ModView_VizOptionsData_SubPart_selectedStateObject__ModMass_Array_Map_Key_ProjectSearchId_Type
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     ModPage_View_Replicate_ZScore_Report_Overlay_Params_TableRow, open_ModPage_View_Replicate_ZScore_Report_Overlay
@@ -172,11 +175,6 @@ export class ModStatsUtils {
             filteredPsmCount1 += n;
         }
 
-        let selectedData = undefined;
-        if( vizOptionsData.data.selectedStateObject !== undefined && vizOptionsData.data.selectedStateObject.data !== undefined && Object.keys(vizOptionsData.data.selectedStateObject.data).length > 0) {
-            selectedData = vizOptionsData.data.selectedStateObject.data
-        }
-
         for (const modMass of sortedModMasses) {
 
             let x1:number = combinedModMap.get(modMass).get(0); // modMap[modMass][projectSearchId1];
@@ -325,9 +323,9 @@ export class ModStatsUtils {
             modViewDataManager
         })
 
-        let selectedData = undefined;
-        if( vizOptionsData.data.selectedStateObject !== undefined && vizOptionsData.data.selectedStateObject.data !== undefined && Object.keys(vizOptionsData.data.selectedStateObject.data).length > 0) {
-            selectedData = vizOptionsData.data.selectedStateObject.data
+        let selectedData: ModView_VizOptionsData_SubPart_selectedStateObject__ModMass_Array_Map_Key_ProjectSearchId_Type = undefined;
+        if( vizOptionsData.data.selectedStateObject !== undefined && vizOptionsData.data.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId !== undefined && vizOptionsData.data.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size > 0) {
+            selectedData = vizOptionsData.data.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId
         }
 
         for( let i = 0; i < projectSearchIds.length; i++ ) {
@@ -335,7 +333,7 @@ export class ModStatsUtils {
             const projectSearchId1 = projectSearchIds[ i ];
 
             // skip this search if we have selected data and none of it includes this project search id
-            if( selectedData !== undefined && !(projectSearchId1 in selectedData)) {
+            if( selectedData !== undefined && !( selectedData.has(projectSearchId1) ) ) {
                 continue;
             }
 
@@ -349,7 +347,7 @@ export class ModStatsUtils {
                     const projectSearchId2 = projectSearchIds[ k ];
 
                     // skip this search if we have selected data and none of it includes this project search id
-                    if(selectedData !== undefined && !(projectSearchId2 in selectedData)) {
+                    if(selectedData !== undefined && !( selectedData.has(projectSearchId2 )) ) {
                         continue;
                     }
 
@@ -359,7 +357,7 @@ export class ModStatsUtils {
                     for (const modMass of sortedModMasses) {
 
                         // if we have selected data and it doesn't include this combination of mod mass for both project search ids, skip it
-                        if (selectedData !== undefined && (!selectedData[projectSearchId1].includes(modMass) || !selectedData[projectSearchId2].includes(modMass))) {
+                        if (selectedData !== undefined && (!selectedData.get(projectSearchId1).includes(modMass) || !selectedData.get(projectSearchId2).includes(modMass))) {
                             continue;
                         }
 
@@ -501,9 +499,9 @@ export class ModStatsUtils {
         console.log('modMap', modMap);
         console.log('sortedModMasses', sortedModMasses);
 
-        let selectedData = undefined;
-        if( vizOptionsData.data.selectedStateObject !== undefined && vizOptionsData.data.selectedStateObject.data !== undefined && Object.keys(vizOptionsData.data.selectedStateObject.data).length > 0) {
-            selectedData = vizOptionsData.data.selectedStateObject.data
+        let selectedData: ModView_VizOptionsData_SubPart_selectedStateObject__ModMass_Array_Map_Key_ProjectSearchId_Type = undefined;
+        if( vizOptionsData.data.selectedStateObject !== undefined && vizOptionsData.data.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId !== undefined && vizOptionsData.data.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size > 0) {
+            selectedData = vizOptionsData.data.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId
         }
 
         for( let i = 0; i < projectSearchIds.length; i++ ) {
@@ -511,7 +509,7 @@ export class ModStatsUtils {
             const projectSearchId1 = projectSearchIds[ i ];
 
             // skip this search if we have selected data and none of it includes this project search id
-            if( selectedData !== undefined && !(projectSearchId1 in selectedData)) {
+            if( selectedData !== undefined && !( selectedData.has( projectSearchId1 ) )) {
                 continue;
             }
 
@@ -524,7 +522,7 @@ export class ModStatsUtils {
                     const projectSearchId2 = projectSearchIds[ k ];
 
                     // skip this search if we have selected data and none of it includes this project search id
-                    if(selectedData !== undefined && !(projectSearchId2 in selectedData)) {
+                    if(selectedData !== undefined && !( selectedData.has( projectSearchId2 ) )) {
                         continue;
                     }
 
@@ -533,7 +531,7 @@ export class ModStatsUtils {
                     for (const modMass of sortedModMasses) {
 
                         // if we have selected data and it doesn't include this combination of mod mass for both project search ids, skip it
-                        if (selectedData !== undefined && (!selectedData[projectSearchId1].includes(modMass) || !selectedData[projectSearchId2].includes(modMass))) {
+                        if (selectedData !== undefined && (!selectedData.get(projectSearchId1).includes(modMass) || !selectedData.get(projectSearchId2).includes(modMass))) {
                             continue;
                         }
 

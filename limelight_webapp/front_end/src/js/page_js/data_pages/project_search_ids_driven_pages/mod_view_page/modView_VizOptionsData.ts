@@ -13,9 +13,13 @@ import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_searc
  */
 export class ModView_VizOptionsData_SubPart_selectedStateObject {
 
-    data : any //  TODO  looks like this property 'data' is used as a Object map with keys of projectSearchId
+    data__ModMass_Array_Map_Key_ProjectSearchId : ModView_VizOptionsData_SubPart_selectedStateObject__ModMass_Array_Map_Key_ProjectSearchId_Type //  was 'data' type 'any'  //  TODO  looks like this property 'data' is used as a Object map with keys of projectSearchId
 }
 
+/**
+ *
+ */
+export type ModView_VizOptionsData_SubPart_selectedStateObject__ModMass_Array_Map_Key_ProjectSearchId_Type = Map<number, Array<number>>
 
 /**
  *  Central Viz Options Object on Mod Page
