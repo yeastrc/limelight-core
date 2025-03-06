@@ -646,7 +646,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
                 { modificationInfo_Single.modMassRanges ? (
                     modificationInfo_Single.modMassRanges.map( (modMassRange, index_modMassRange) => {
                         return (
-                            <span>
+                            <span key={ index_modMassRange }>
                                 { index_modMassRange !== 0 ? (
                                     <span>, </span>
                                 ) : null }
