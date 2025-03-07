@@ -1,4 +1,7 @@
-import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
+import {
+    ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry,
+    ModViewDataManager
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
@@ -31,7 +34,7 @@ export class ModViewDataUtilities {
             reportedPeptideId:number,
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager,
-            psm:any
+            psm:  ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry
         }
     ):Promise<boolean> {
 
@@ -75,7 +78,7 @@ export class ModViewDataUtilities {
             modMass:number,
             reportedPeptideId:number,
             modViewDataManager:ModViewDataManager,
-            psm:any
+            psm: ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry
         }
     ):Promise<boolean> {
 
@@ -278,12 +281,12 @@ export class ModViewDataUtilities {
 
         const psmItem = await modViewDataManager.getOpenModPsmForModMassReportedPeptideIdPsmId({projectSearchId, reportedPeptideId, modMass, psmId});
 
-        if( psmItem === null) {
+        if( psmItem === null || psmItem === undefined ) {
             console.log('Did not find PSM for psm', psmId);
             return false;
         }
 
-        if( psmItem.open === undefined) {
+        if( psmItem.open === undefined || psmItem.open === null ) {
             throw new Error("open mod psm has no open mod data.");
         }
 

@@ -5,7 +5,13 @@ import * as Drag from 'd3-drag';
 import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch';
 import {ModStatsUtils} from "./modStatsUtils";
 import jStat from 'jstat'
-import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
+import {
+    is_ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId,
+    is_ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId,
+    ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId,
+    ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId,
+    ModViewDataManager
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {QValueCalculator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/QValueCalculator";
 import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
@@ -1600,15 +1606,27 @@ export class ModViewDataVizRenderer_MultiSearch {
 
             denominatorMap.set(projectSearchId, new Set());
 
-            let countData = psmQuantType ? await modViewDataManager.getPSMModData(projectSearchId) : await modViewDataManager.getScanModData(projectSearchId);
+            const countData = psmQuantType ? await modViewDataManager.getPSMModData(projectSearchId) : await modViewDataManager.getScanModData(projectSearchId);
 
-            for (const reportedPeptideId of Object.keys(countData)) {
+            for (const reportedPeptideId of countData.data_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId.keys() ) {
+
+                const data_Array_For_Single_ReportedPeptideId = countData.data_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId.get( reportedPeptideId )
 
                 // will be a psm or a scan
-                for (const item of countData[reportedPeptideId]) {
+                for (const item of data_Array_For_Single_ReportedPeptideId) {
+
+                    let itemPsm: ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId = undefined
+                    let itemScan: ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId = undefined
+
+                    if ( is_ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId(item) ) {
+                        itemPsm = item
+                    }
+                    if ( is_ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId(item) ) {
+                        itemScan = item
+                    }
 
                     // add in the variable mods
-                    for (const modMass of item['variable']) {
+                    for (const modMass of item.variable) {
 
                         // enforce requested mod mass cutoffs
                         if (vizOptionsData.data.modMassCutoffMin !== undefined && modMass < vizOptionsData.data.modMassCutoffMin) {
@@ -1623,7 +1641,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                         if(vizOptionsData.data.proteinPositionFilter !== undefined && !(await ModViewDataUtilities.variableModPositionInProteinPositionFilter({
                             projectSearchId,
                             modMass,
-                            reportedPeptideId:parseInt(reportedPeptideId),
+                            reportedPeptideId,
                             vizOptionsData,
                             modViewDataManager
                         }))) {
@@ -1631,7 +1649,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                         }
 
                         // get a unique id for this item
-                        const uniqueId = psmQuantType ? item.psmId : (item.scnm + '-' + item.sfid);
+                        const uniqueId = psmQuantType ? itemPsm.psmId.toString() : (itemScan.scnm + '-' + itemScan.sfid);
 
                         denominatorMap.get(projectSearchId).add(uniqueId);
                     }
@@ -1657,10 +1675,10 @@ export class ModViewDataVizRenderer_MultiSearch {
                                 {
                                     projectSearchId,
                                     modMass,
-                                    reportedPeptideId:parseInt(reportedPeptideId),
+                                    reportedPeptideId,
                                     vizOptionsData,
                                     modViewDataManager,
-                                    psmId:item.psmId
+                                    psmId:itemPsm.psmId
                                 }
                             ))) {
                                 continue;
@@ -1673,10 +1691,10 @@ export class ModViewDataVizRenderer_MultiSearch {
                                 {
                                     projectSearchId,
                                     modMass,
-                                    reportedPeptideId:parseInt(reportedPeptideId),
+                                    reportedPeptideId,
                                     vizOptionsData,
                                     modViewDataManager,
-                                    psmIds:item.psmIds
+                                    psmIds:itemScan.psmIds
                                 }
                             ))) {
                                 continue;
@@ -1685,7 +1703,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                         }
 
                         // get a unique id for this item
-                        const uniqueId = psmQuantType ? item.psmId : (item.scnm + '-' + item.sfid);
+                        const uniqueId = psmQuantType ? itemPsm.psmId.toString() : (itemScan.scnm + '-' + itemScan.sfid);
 
                         denominatorMap.get(projectSearchId).add(uniqueId);
                     }
@@ -1695,7 +1713,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
 
         const denominatorCountMap:Map<number, number> = new Map();
-        for(const [projectSearchId, idSet] of denominatorMap) {
+        for(const [projectSearchId, idSet] of denominatorMap.entries()) {
             denominatorCountMap.set(projectSearchId, idSet.size);
         }
 
@@ -1743,15 +1761,27 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         for(const projectSearchId of projectSearchIds) {
 
-            let countData = psmQuantType ? await modViewDataManager.getPSMModData(projectSearchId) : await modViewDataManager.getScanModData(projectSearchId);
+            const countData = psmQuantType ? await modViewDataManager.getPSMModData(projectSearchId) : await modViewDataManager.getScanModData(projectSearchId);
 
-            for (const reportedPeptideId of Object.keys(countData)) {
+            for (const reportedPeptideId of countData.data_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId.keys() ) {
+
+                const data_Array_For_Single_ReportedPeptideId = countData.data_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId.get( reportedPeptideId )
 
                 // will be a psm or a scan
-                for (const item of countData[reportedPeptideId]) {
+                for (const item of data_Array_For_Single_ReportedPeptideId) {
+
+                    let itemPsm: ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId = undefined
+                    let itemScan: ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId = undefined
+
+                    if ( is_ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId(item) ) {
+                        itemPsm = item
+                    }
+                    if ( is_ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId(item) ) {
+                        itemScan = item
+                    }
 
                     // add in the variable mods
-                    for (const modMass of item['variable']) {
+                    for (const modMass of item.variable) {
 
                         // enforce requested mod mass cutoffs
                         if (vizOptionsData.data.modMassCutoffMin !== undefined && modMass < vizOptionsData.data.modMassCutoffMin) {
@@ -1766,7 +1796,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                         if(vizOptionsData.data.proteinPositionFilter !== undefined && !(await ModViewDataUtilities.variableModPositionInProteinPositionFilter({
                             projectSearchId,
                             modMass,
-                            reportedPeptideId:parseInt(reportedPeptideId),
+                            reportedPeptideId,
                             vizOptionsData,
                             modViewDataManager
                         }))) {
@@ -1783,7 +1813,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                         }
 
                         // get a unique id for this item
-                        const uniqueId = psmQuantType ? item.psmId : (item.scnm + '-' + item.sfid);
+                        const uniqueId = psmQuantType ? itemPsm.psmId : (itemScan.scnm + '-' + itemScan.sfid);
 
                         modMap.get(modMass).get(projectSearchId).add(uniqueId);
                     }
@@ -1809,9 +1839,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                                     {
                                         projectSearchId,
                                         modMass,
-                                        reportedPeptideId: parseInt(reportedPeptideId),
+                                        reportedPeptideId,
                                         modViewDataManager,
-                                        psmId: item.psmId
+                                        psmId: itemPsm.psmId
                                     }
                                 )) {
                                     continue;
@@ -1824,9 +1854,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                                     {
                                         projectSearchId,
                                         modMass,
-                                        reportedPeptideId: parseInt(reportedPeptideId),
+                                        reportedPeptideId,
                                         modViewDataManager,
-                                        psmIds: item.psmIds
+                                        psmIds: itemScan.psmIds
                                     }
                                 )) {
                                     continue;
@@ -1844,10 +1874,10 @@ export class ModViewDataVizRenderer_MultiSearch {
                                 {
                                     projectSearchId,
                                     modMass,
-                                    reportedPeptideId:parseInt(reportedPeptideId),
+                                    reportedPeptideId,
                                     vizOptionsData,
                                     modViewDataManager,
-                                    psmId:item.psmId
+                                    psmId:itemPsm.psmId
                                 }
                             ))) {
                                continue;
@@ -1860,10 +1890,10 @@ export class ModViewDataVizRenderer_MultiSearch {
                                 {
                                     projectSearchId,
                                     modMass,
-                                    reportedPeptideId:parseInt(reportedPeptideId),
+                                    reportedPeptideId,
                                     vizOptionsData,
                                     modViewDataManager,
-                                    psmIds:item.psmIds
+                                    psmIds:itemScan.psmIds
                                 }
                             ))) {
                                 continue;
@@ -1880,7 +1910,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                         }
 
                         // get a unique id for this item
-                        const uniqueId = psmQuantType ? item.psmId : (item.scnm + '-' + item.sfid);
+                        const uniqueId = psmQuantType ? itemPsm.psmId : (itemScan.scnm + '-' + itemScan.sfid);
 
                         // use sets to ensure we're not double counting psms or scans for a mod mass
                         modMap.get(modMass).get(projectSearchId).add(uniqueId);
@@ -2305,18 +2335,18 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
 
-    static getPsmCountForReportedPeptide({ reportedPeptideId, projectSearchId, aminoAcidModStats }) {
-
-        if(!(projectSearchId in aminoAcidModStats)) {
-            return 0;
-        }
-
-        if(!(reportedPeptideId in aminoAcidModStats[projectSearchId])) {
-            return 0;
-        }
-
-        return aminoAcidModStats[projectSearchId][reportedPeptideId]['psmCount'];
-    }
+    // static getPsmCountForReportedPeptide({ reportedPeptideId, projectSearchId, aminoAcidModStats }) {
+    //
+    //     if(!(projectSearchId in aminoAcidModStats)) {
+    //         return 0;
+    //     }
+    //
+    //     if(!(reportedPeptideId in aminoAcidModStats[projectSearchId])) {
+    //         return 0;
+    //     }
+    //
+    //     return aminoAcidModStats[projectSearchId][reportedPeptideId]['psmCount'];
+    // }
 
     static numberWithCommas(x) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 

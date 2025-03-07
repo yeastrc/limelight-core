@@ -12,7 +12,10 @@ import {
     DataTable_RootTableObject,
     DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
-import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
+import {
+    ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry,
+    ModViewDataManager
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch";
 import {ReportedPeptide} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
 import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
@@ -391,10 +394,10 @@ export class ModProteinSearchList_SubTableGenerator {
 
         for(const projectSearchId of projectSearchIds) {
 
-            const psmsForProjectSearchIdAndModMass:Array<any> = await modViewDataManager.getPsmsForModMass({ modMass, projectSearchId })
+            const psmsForProjectSearchIdAndModMass = await modViewDataManager.getPsmsForModMass({ modMass, projectSearchId })
 
             // get a map of reported peptide id => psms
-            const reportedPeptidePSMMap:Map<number, Set<any>> = new Map();
+            const reportedPeptidePSMMap:Map<number, Set<ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry>> = new Map();
             for(const psm of psmsForProjectSearchIdAndModMass) {
                 const reportedPeptideId:number = psm.reportedPeptideId;
 

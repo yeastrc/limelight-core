@@ -16,20 +16,22 @@ import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToS
 
 export class ModViewDataManager {
 
+    //  Cached Data : Map<projectSearchId, data>
+
     private readonly _psmCountData: Map<number, number>;
     private readonly _scanCountData: Map<number, number>;
-    private readonly _psmModData : Map<number, object>;
-    private readonly _scanModData : Map<number, object>;
+    private readonly _psmModData : Map<number, ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId>;
+    private readonly _scanModData : Map<number, ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId>;
 
     private readonly _proteinData : Map<number, Map<number, Protein>>;  // keyed on search id then protein version id
     private readonly _proteinSequences : Map<number, string>;   // cached sequences for protein sequence version ids
 
-    private readonly _psmsForModMasses : Map<number, Map<number, Array<any>>>;
+    private readonly _psmsForModMasses : Map<number, Map<number, Array<ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry>>>;
 
     private readonly _scanInfoForPsms : Map<number, Map<number, PsmScanInfo>>;
 
     // keyed on: search id, then mod mass, then reported peptide id, then psm id
-    private readonly _openModPsmsForModMassReportedPeptideId : Map<number, Map<number, Map<number, Map<number, any>>>>;
+    private readonly _openModPsmsForModMassReportedPeptideId : Map<number, Map<number, Map<number, Map<number, ModPage_ModViewDataManager_OpenMo_Psm_For_ModMassReportedPeptideIdPsmId_Entry>>>>;
 
     private readonly _reportedPeptides : Map<number, Map<number, ReportedPeptide>>;
 
@@ -104,6 +106,7 @@ export class ModViewDataManager {
     }
 
     async loadPsmsForModMasses({ modMasses, projectSearchId } : { modMasses:Array<number>, projectSearchId:number }):Promise<void> {
+
         console.log('called loadPsmsForModMasses()', modMasses, projectSearchId);
 
         if(!(this._psmsForModMasses.has(projectSearchId))) {
@@ -116,14 +119,19 @@ export class ModViewDataManager {
             modMasses
         });
 
-        for(const psmItem of response) {
-            const modMass:number = psmItem.modMass;
+        for (const psmItem_FromArray of response) {
 
-            if(!(this._psmsForModMasses.get(projectSearchId).has(modMass))) {
-                this._psmsForModMasses.get(projectSearchId).set(modMass, new Array<any>());
+            const psmItem = psmItem_FromArray as ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry
+
+            const modMass = psmItem.modMass;
+
+            if (!(this._psmsForModMasses.get(projectSearchId).has(modMass))) {
+                this._psmsForModMasses.get(projectSearchId).set(modMass, []);
             }
 
-            this._psmsForModMasses.get(projectSearchId).get(modMass).push(psmItem);
+            const psmItem_Out = psmItem
+
+            this._psmsForModMasses.get(projectSearchId).get(modMass).push(psmItem_Out);
         }
 
         console.log('done');
@@ -157,7 +165,8 @@ export class ModViewDataManager {
     //     return this._scanInfoForPsms.get(projectSearchId).get(psmId);
     // }
 
-    async getPsmsForModMass({ modMass, projectSearchId } : { modMass:number, projectSearchId:number }):Promise<Array<any>> {
+    async getPsmsForModMass({ modMass, projectSearchId } : { modMass:number, projectSearchId:number }):Promise<Array<ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry>> {
+
         console.log('called getPsmsForModMass()', modMass, projectSearchId);
 
         // have to go get the data
@@ -173,10 +182,13 @@ export class ModViewDataManager {
                 modMass
             });
 
-            this._psmsForModMasses.get(projectSearchId).set(modMass, response);
+            const psmItemArray_Out: Array<ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry> = response
+
+            this._psmsForModMasses.get(projectSearchId).set(modMass, psmItemArray_Out);
         }
 
         console.log('got', this._psmsForModMasses.get(projectSearchId).get(modMass));
+
         return this._psmsForModMasses.get(projectSearchId).get(modMass);
     }
 
@@ -201,7 +213,7 @@ export class ModViewDataManager {
             projectSearchId:number,
             reportedPeptideId:number,
             psmId:number
-        }) : Promise<any> {
+        }) : Promise<ModPage_ModViewDataManager_OpenMo_Psm_For_ModMassReportedPeptideIdPsmId_Entry> {
 
         if(!(this._openModPsmsForModMassReportedPeptideId.has(projectSearchId))) {
             const response = await this._dataLoader.getOpenModPSMDataForProjectSearchId({
@@ -487,35 +499,240 @@ export class ModViewDataManager {
         return this._scanCountData.get(projectSearchId);
     }
 
-    async getPSMModData(projectSearchId:number): Promise<object> {
+    async getPSMModData(projectSearchId:number): Promise<ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId> {
+
         console.log('called getPSMModData()');
 
         if(!(this._psmModData.has(projectSearchId))) {
 
-            const response:any = await this._dataLoader.getPSMModDataForProjectSearchId({
+            const webserviceResponse:any = await this._dataLoader.getPSMModDataForProjectSearchId({
                 searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
                 projectSearchId
             });
 
-            this._psmModData.set(projectSearchId, response);
+            //  Convert Webservice response to Map
+
+            //  Webservice Response:
+            // public static class WebserviceResult {
+            //
+            //     /**
+            //      *  Map< Reported Peptide Id, ...>
+            //      */
+            //     Map<Integer, List<WebserviceResultItem>> resultRoot;
+
+            // /**
+            //  *
+            //  *
+            //  */
+            // public static class WebserviceResultItem {
+            //
+            //     Set<Integer> variable = new HashSet<>();
+            //     Set<Integer> open = new HashSet<>();
+            //     long psmId;
+
+
+            const data_For_PsmId_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId: Map<number, Array<ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId>> = new Map()
+
+            for (const reportedPeptideId_String of Object.keys(webserviceResponse)) {
+
+                const reportedPeptideId_Num = Number.parseInt( reportedPeptideId_String )
+
+                const psmIdEntryArray: Array<ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId> = []
+
+                for ( const psmId_Entry_For_reportedPeptideId_INPUT of webserviceResponse[ reportedPeptideId_String ] ) {
+
+                    const psmId_Entry_Output: ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId = {
+                        variable: psmId_Entry_For_reportedPeptideId_INPUT.variable,
+                        open: psmId_Entry_For_reportedPeptideId_INPUT.open,
+                        psmId: psmId_Entry_For_reportedPeptideId_INPUT.psmId
+                    }
+
+                    psmIdEntryArray.push( psmId_Entry_Output )
+                }
+
+                data_For_PsmId_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId.set( reportedPeptideId_Num, psmIdEntryArray )
+            }
+
+            const data_For_Single_ProjectSearchId : ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId = {
+                data_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId: data_For_PsmId_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId
+            }
+
+            this._psmModData.set(projectSearchId, data_For_Single_ProjectSearchId);
         }
 
         return this._psmModData.get(projectSearchId);
     }
 
-    async getScanModData(projectSearchId:number): Promise<object> {
+    async getScanModData(projectSearchId:number): Promise<ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId> {
+
         console.log('called getScanModData()');
 
         if(!(this._scanModData.has(projectSearchId))) {
 
-            const response:any = await this._dataLoader.getScanModDataForProjectSearchId({
+            const webserviceResponse:any = await this._dataLoader.getScanModDataForProjectSearchId({
                 searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
                 projectSearchId
             });
 
-            this._scanModData.set(projectSearchId, response);
+            //  Convert Webservice response to Map
+
+            // public static class WebserviceResult {
+            //
+            //     /**
+            //      *  Map< Reported Peptide Id, ...>
+            //      */
+            //     Map<Integer, List<WebserviceResultItem>> resultRoot;
+
+            // public static class WebserviceResultItem {
+            //
+            //     Set<Integer> variable = new HashSet<>();
+            //     Set<Integer> open = new HashSet<>();
+            //     Set<Long> psmIds = new HashSet<>();
+            //     int scnm; // scan number
+            //     Integer sfid; // search scan filename id
+
+
+            //     class ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId {
+            //
+            //     readonly data_For_ScanNumber_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId: ReadonlyMap<number, Array<ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId>>
+            // }
+            //
+            // class ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId {
+            //
+            //     readonly variable: ReadonlyArray<number>
+            //     readonly open: ReadonlyArray<number>
+            //     readonly psmIds: Array<number>
+            //     scnm: number        // scan number
+            //     sfid: number        // search scan filename id
+            //
+            // }
+
+            const data_For_ScanNumber_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId: Map<number, Array<ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId>> = new Map()
+
+            for (const reportedPeptideId_String of Object.keys(webserviceResponse)) {
+
+                const reportedPeptideId_Num = Number.parseInt( reportedPeptideId_String )
+
+                const scanNumberEntryArray: Array<ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId> = []
+
+                for ( const scanNumber_Entry_For_reportedPeptideId_INPUT of webserviceResponse[ reportedPeptideId_String ] ) {
+
+                    const scanNumber_Entry_Output: ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId = {
+                        variable: scanNumber_Entry_For_reportedPeptideId_INPUT.variable,
+                        open: scanNumber_Entry_For_reportedPeptideId_INPUT.open,
+                        psmIds: scanNumber_Entry_For_reportedPeptideId_INPUT.psmIds,
+                        scnm: scanNumber_Entry_For_reportedPeptideId_INPUT.scnm,
+                        sfid: scanNumber_Entry_For_reportedPeptideId_INPUT.sfid
+                    }
+
+                    scanNumberEntryArray.push( scanNumber_Entry_Output )
+                }
+
+                data_For_ScanNumber_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId.set( reportedPeptideId_Num, scanNumberEntryArray )
+            }
+
+            const data_For_Single_ProjectSearchId : ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId = {
+                data_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId: data_For_ScanNumber_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId
+            }
+
+
+            this._scanModData.set(projectSearchId, data_For_Single_ProjectSearchId);
         }
 
         return this._scanModData.get(projectSearchId);
     }
+}
+
+
+////////////////////
+
+//   Data Classes
+
+
+export class ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry {
+
+    variable: ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry_VariableModDataEntry
+    open: ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry_OpenModDataEntry
+    psmId: number
+    modMass: number
+    reportedPeptideId: number
+}
+
+export class ModPage_ModViewDataManager_OpenMo_Psm_For_ModMassReportedPeptideIdPsmId_Entry {
+
+    open: ModPage_ModViewDataManager_OpenMo_Psm_For_ModMassReportedPeptideIdPsmId_Entry_OpenModData_Entry
+    readonly psmId: number
+    readonly reportedPeptideId: number
+}
+
+export class ModPage_ModViewDataManager_OpenMo_Psm_For_ModMassReportedPeptideIdPsmId_Entry_OpenModData_Entry {
+
+    loc: Array<number>
+    nterm: boolean
+    cterm: boolean
+    unloc: boolean
+}
+
+export class ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry_VariableModDataEntry {
+
+    loc: Array<number>
+    nterm: boolean
+    cterm: boolean
+}
+
+export class ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry_OpenModDataEntry {
+
+    loc: Array<number>
+    nterm: boolean
+    cterm: boolean
+    unloc: boolean
+}
+
+
+
+export class ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId {
+
+    readonly data_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId: ReadonlyMap<number, Array<ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId>>
+}
+
+export class ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId {
+
+    readonly variable: ReadonlyArray<number>
+    readonly open: ReadonlyArray<number>
+
+    readonly psmId: number
+}
+
+export function is_ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId(item: ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId | ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId):
+    item is ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId {
+
+    return (item as ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId).psmId !== undefined;
+}
+
+export class ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId {
+
+    readonly data_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId: ReadonlyMap<number, Array<ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId>>
+}
+
+export class ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId {
+
+    readonly variable: ReadonlyArray<number>
+    readonly open: ReadonlyArray<number>
+
+    readonly psmIds: Array<number>
+    /**
+     * scan number
+     */
+    scnm: number        // scan number
+    /**
+     * search scan filename id
+     */
+    sfid: number        // search scan filename id
+
+}
+
+export function is_ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId(item: ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId | ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId):
+    item is ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId {
+
+    return (item as ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId).psmIds !== undefined;
 }

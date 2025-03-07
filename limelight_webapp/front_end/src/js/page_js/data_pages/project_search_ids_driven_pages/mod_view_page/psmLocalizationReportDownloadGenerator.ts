@@ -66,8 +66,8 @@ export class PSMLocalizationReportDownloadGenerator {
 
                 for(const psmItem of psms) {
 
-                    const reportedPeptideId: number = psmItem.reportedPeptideId;
-                    const psmId:number = psmItem.psmId;
+                    const reportedPeptideId = psmItem.reportedPeptideId;
+                    const psmId = psmItem.psmId;
                     const scanInfo:PsmScanInfo = psmScanInfo.get(psmId);
                     const scanNumber = scanInfo.scanNumber;
                     const scanFilename = scanInfo.scanFilename ? scanInfo.scanFilename : 'not found';
