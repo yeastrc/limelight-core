@@ -58,7 +58,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 			vizSelectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
 			dataPageStateManager_DataFrom_Server : DataPageStateManager
 			sortedModMasses,
-			modMap,
+			modMap: Map<number, Map<number, number>>
 			projectSearchIds: Array<number>,
 			modViewDataManager : ModViewDataManager
 			vizOptionsData: ModView_VizOptionsData,
@@ -131,7 +131,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 			vizSelectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject,
 			dataPageStateManager_DataFrom_Server : DataPageStateManager
 			sortedModMasses,
-			modMap,
+			modMap: Map<number, Map<number, number>>
 			projectSearchIds: Array<number>,
 			modViewDataManager : ModViewDataManager
 			vizOptionsData: ModView_VizOptionsData,

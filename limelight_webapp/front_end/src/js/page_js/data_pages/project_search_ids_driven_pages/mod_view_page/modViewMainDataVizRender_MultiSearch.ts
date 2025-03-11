@@ -1,7 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
-import * as Drag from 'd3-drag';
+// import * as Drag from 'd3-drag';
 import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch';
 import {ModStatsUtils} from "./modStatsUtils";
 import jStat from 'jstat'
@@ -28,6 +28,26 @@ import {
     render_ModPage_DataViz_Selections__Text_ClearLink__Root_Component
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_DataViz_Selections__Text_ClearLink__Root_Component";
 
+
+// some defaults for the viz
+
+const _VISUALIZATION_MAIN_CONSTANTS = {
+
+    margin: { top: 60, right: 30, bottom: 78, left: 300 },
+    widthDefs: { default: 1000, min: 3, max: 40 },
+    heightDefs: { default: 500, min: 40, max: 40 },
+
+    // legend defs
+    legendHeight: 40,
+    minLegendWidth: 400,
+
+    // label defs
+    labelFontSize: 14,               // font size (in pixels) of labels
+    maxSearchLabelLength: 44        // max # of characters in a search label before truncation
+} as const
+
+
+
 export class ModViewDataVizRenderer_MultiSearch {
 
     /**
@@ -51,7 +71,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         console.log('called renderDataViz()');
 
         // add a div for this viz to the page
-        ModViewDataVizRenderer_MultiSearch.addDataVizContainerToPage();
+        ModViewDataVizRenderer_MultiSearch._addDataVizContainerToPage();
         $('div#data-viz-container').show();
 
         $('div#data-viz-container').empty();
@@ -61,7 +81,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         $('div#data-table-container-container').hide();
 
-        const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
+        const modMap: Map<number, Map<number, number>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             projectSearchIds:vizOptionsData.data.projectSearchIds,
             vizOptionsData,
             countsOverride : undefined,
@@ -73,19 +93,19 @@ export class ModViewDataVizRenderer_MultiSearch {
         console.log('got modmap:', modMap);
 
         if(modMap.size < 1) {
-            ModViewDataVizRenderer_MultiSearch.addEmptyDataVizContainerToPage();
+            ModViewDataVizRenderer_MultiSearch._addEmptyDataVizContainerToPage();
             return;
         }
 
-        const modMatrix = ModViewDataVizRenderer_MultiSearch.getModMatrix({modMap, projectSearchIds: vizOptionsData.data.projectSearchIds});
+        const modMatrix: INTERNAL__ModMatrix = ModViewDataVizRenderer_MultiSearch._getModMatrix({modMap, projectSearchIds: vizOptionsData.data.projectSearchIds});
         const sortedModMasses = Array.from( modMap.keys() ).sort( (a:number,b:number) => (a - b));
 
         let minCount = 0;
         if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
-            minCount = ModViewDataVizRenderer_MultiSearch.getMinPSMCount(modMatrix, vizOptionsData);
+            minCount = ModViewDataVizRenderer_MultiSearch._getMinPSMCount(modMatrix, vizOptionsData);
         }
 
-        let maxCount = ModViewDataVizRenderer_MultiSearch.getMaxPSMCount(modMatrix, vizOptionsData);
+        let maxCount = ModViewDataVizRenderer_MultiSearch._getMaxPSMCount(modMatrix, vizOptionsData);
 
         // make min and max count symmetrical if zscore is enabled
         if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
@@ -106,21 +126,8 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         $('div#data-table-container-container').show();
 
-        // some defaults for the viz
-        const margin = {top: 60, right: 30, bottom: 78, left: 300};
-        const widthDefs = {default:1000, min: 3, max: 40};
-        const heightDefs = {default:500, min:40, max:40};
-
-        // legend defs
-        const legendHeight = 40;
-        const minLegendWidth = 400;
-
-        // label defs
-        const labelFontSize = 14;               // font size (in pixels) of labels
-        const maxSearchLabelLength = 44;        // max # of characters in a search label before truncation
-
-        const width = ModViewDataVizRenderer_MultiSearch.getWidth({sortedModMasses, widthDefs, minLegendWidth});
-        const height = ModViewDataVizRenderer_MultiSearch.getHeight({projectSearchIds:vizOptionsData.data.projectSearchIds, heightDefs});
+        const width = ModViewDataVizRenderer_MultiSearch._getWidth({sortedModMasses});
+        const height = ModViewDataVizRenderer_MultiSearch._getHeight({projectSearchIds:vizOptionsData.data.projectSearchIds});
 
         // set up our scales
         let xScale = d3.scaleBand()
@@ -169,10 +176,10 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         // start drawing the actual viz
         let svg = d3.select("div#data-viz-container").append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
+            .attr("width", width + _VISUALIZATION_MAIN_CONSTANTS.margin.left + _VISUALIZATION_MAIN_CONSTANTS.margin.right)
+            .attr("height", height + _VISUALIZATION_MAIN_CONSTANTS.margin.top + _VISUALIZATION_MAIN_CONSTANTS.margin.bottom)
             .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + _VISUALIZATION_MAIN_CONSTANTS.margin.left + "," + _VISUALIZATION_MAIN_CONSTANTS.margin.top + ")");
 
         // set up div to use for tooltips
         d3.select('#mod-viz-tooltip').remove();
@@ -195,7 +202,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         // keep track of what the user has selected to see
         let selectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject = vizOptionsData.data.selectedStateObject;
 
-        ModViewDataVizRenderer_MultiSearch.addColoredRectangles({
+        ModViewDataVizRenderer_MultiSearch._addColoredRectangles({
             svg,
             modMatrix,
             xScale,
@@ -210,13 +217,11 @@ export class ModViewDataVizRenderer_MultiSearch {
             dataPageStateManager_DataFrom_Server
         });
 
-        ModViewDataVizRenderer_MultiSearch.addSeparatorLines({ svg, projectSearchIds:vizOptionsData.data.projectSearchIds, yScale, width, height });
+        ModViewDataVizRenderer_MultiSearch._addSeparatorLines({ svg, projectSearchIds:vizOptionsData.data.projectSearchIds, yScale, width, height });
 
-        ModViewDataVizRenderer_MultiSearch.addSearchLabels({
+        ModViewDataVizRenderer_MultiSearch._addSearchLabels({
             svg,
             yScale,
-            maxSearchLabelLength,
-            labelFontSize,
             tooltip,
             sortedModMasses,
             selectedStateObject,
@@ -228,22 +233,19 @@ export class ModViewDataVizRenderer_MultiSearch {
             colorScale,
         });
 
-        ModViewDataVizRenderer_MultiSearch.addModLabels({ svg, sortedModMasses, xScale, labelFontSize });
-        ModViewDataVizRenderer_MultiSearch.addModLabelsHeader({ svg, width, labelFontSize });
-        ModViewDataVizRenderer_MultiSearch.addColorScaleLegend({
+        ModViewDataVizRenderer_MultiSearch._addModLabels({ svg, sortedModMasses, xScale });
+        ModViewDataVizRenderer_MultiSearch._addModLabelsHeader({ svg, width });
+        ModViewDataVizRenderer_MultiSearch._addColorScaleLegend({
             svg,
             rectAreaHeight: height,
             colorScale,
             maxPsmCount: maxCount,
             minPsmCount: minCount,
-            minLegendWidth,
-            legendHeight,
             yScale,
-            labelFontSize,
             vizOptionsData
         });
 
-        ModViewDataVizRenderer_MultiSearch.addDragHandlerToRects({
+        ModViewDataVizRenderer_MultiSearch._addDragHandlerToRects({
             svg,
             xScale,
             yScale,
@@ -258,7 +260,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             colorScale
         });
 
-        ModViewDataVizRenderer_MultiSearch.addDataDownloadLinks({
+        ModViewDataVizRenderer_MultiSearch._addDataDownloadLinks({
             sortedModMasses,
             vizOptionsData,
             modViewDataManager,
@@ -306,7 +308,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         })
     }
 
-    private static addDataDownloadLinks(
+    private static _addDataDownloadLinks(
         {
             sortedModMasses,
             vizOptionsData,
@@ -455,7 +457,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     /**
      * Remove existing and add new data viz container to page. Assumes jquery is loaded.
      */
-    private static addDataVizContainerToPage() {
+    private static _addDataVizContainerToPage() {
 
         // blow existing viz away
         const $vizDiv = $("div#data-viz-container");
@@ -467,7 +469,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         $vizDiv.empty();
     }
 
-    private static addEmptyDataVizContainerToPage() {
+    private static _addEmptyDataVizContainerToPage() {
 
         // blow existing viz away
         const $vizDiv = $("div#data-viz-container");
@@ -481,11 +483,11 @@ export class ModViewDataVizRenderer_MultiSearch {
         $vizDiv.html('<span style=\"font-size:12pt;\">No modification data found for filters.</span>')
     }
 
-    private static addColorScaleLegend(
+    private static _addColorScaleLegend(
         {
-            svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize, vizOptionsData
+            svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, yScale, vizOptionsData
         } : {
-            svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, minLegendWidth, legendHeight, yScale, labelFontSize,
+            svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, yScale,
             vizOptionsData: ModView_VizOptionsData
         }) {
 
@@ -514,14 +516,14 @@ export class ModViewDataVizRenderer_MultiSearch {
         legendGroup.append('text')
             .attr('class', 'project-label')
             .attr('x', -10)
-            .attr('y', () => ( (yScale.bandwidth() / 2) + (labelFontSize / 2) ))
+            .attr('y', () => ( (yScale.bandwidth() / 2) + (_VISUALIZATION_MAIN_CONSTANTS.labelFontSize / 2) ))
             .attr("text-anchor", "end")
-            .attr('font-size', labelFontSize + 'px')
+            .attr('font-size', _VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 'px')
             .attr('font-family', 'sans-serif')
             .text(() => (labelText));
 
         // width of color scale bar
-        const width = minLegendWidth;
+        const width = _VISUALIZATION_MAIN_CONSTANTS.minLegendWidth;
 
         // add color scale group
         let colorScaleGroup = legendGroup.append('g');
@@ -538,14 +540,14 @@ export class ModViewDataVizRenderer_MultiSearch {
                 .attr('y', () => (0))
                 .attr('x', () => (i))
                 .attr('width', 1)
-                .attr('height', legendHeight)
+                .attr('height', _VISUALIZATION_MAIN_CONSTANTS.legendHeight)
                 .attr('stroke', 'none')
                 .attr('fill', () => (colorScale(psmCountForI)));
         }
 
         // add labels to scale bar
         let scaleBarLegendGroup = legendGroup.append('g')
-            .attr("transform", () => 'translate(0, ' + legendHeight + ')');
+            .attr("transform", () => 'translate(0, ' + _VISUALIZATION_MAIN_CONSTANTS.legendHeight + ')');
 
 
         const numTicks = 5;
@@ -573,9 +575,9 @@ export class ModViewDataVizRenderer_MultiSearch {
 
             tickGroup.append('text')
                 .attr('x', 0)
-                .attr('y', () => (7 + labelFontSize))
+                .attr('y', () => (7 + _VISUALIZATION_MAIN_CONSTANTS.labelFontSize))
                 .attr("text-anchor", "middle")
-                .attr('font-size', labelFontSize + 'px')
+                .attr('font-size', _VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 'px')
                 .attr('font-family', 'sans-serif')
                 .text((d,i) => (
                     showInts ? psmCountForX : psmCountForX.toExponential(2)
@@ -585,7 +587,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    private static addDragHandlerToRects(
+    private static _addDragHandlerToRects(
         {
             svg,
             xScale,
@@ -688,7 +690,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                     // const event_Param__MetaKey = event_Param.metaKey
 
                     // update final opacity for viz
-                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({
+                    ModViewDataVizRenderer_MultiSearch._updateSelectedRectIndicators({
                         // event_Param__CtrlKey,
                         // event_Param__MetaKey,
                         svg,
@@ -789,7 +791,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             projectSearchIds : Array<number>
             selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
             dataPageStateManager_DataFrom_Server : DataPageStateManager
-            modMap,
+            modMap: Map<number, Map<number, number>>
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager : ModViewDataManager
             dataTableContainer_DOM_Element,
@@ -802,7 +804,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         // update hash in URL to reflect user customization state
         vizOptionsData.stateManagementObject.updateState();
 
-        ModViewDataVizRenderer_MultiSearch.updateShownRectOpacities({ svg, selectedStateObject });
+        ModViewDataVizRenderer_MultiSearch._updateShownRectOpacities({ svg, selectedStateObject });
 
         // redraw the data table
         ModViewDataTableRenderer_MultiSearch.renderDataTable( {
@@ -846,7 +848,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
 
-    private static updateShownRectOpacities({ svg, selectedStateObject } : {
+    private static _updateShownRectOpacities({ svg, selectedStateObject } : {
 
         svg,
         selectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject
@@ -867,7 +869,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    private static updateSelectedRectIndicators(
+    private static _updateSelectedRectIndicators(
         {
             // event_Param__CtrlKey, event_Param__MetaKey,
             svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject
@@ -886,11 +888,11 @@ export class ModViewDataVizRenderer_MultiSearch {
         // add opacity adjustment for selected items
         for( const modMass of sortedModMasses ) {
 
-            if(ModViewDataVizRenderer_MultiSearch.rectangleContainsModMass({ modMass, xScale, rectParams })) {
+            if(ModViewDataVizRenderer_MultiSearch._rectangleContainsModMass({ modMass, xScale, rectParams })) {
 
                 for (const projectSearchId of projectSearchIds) {
 
-                    if (ModViewDataVizRenderer_MultiSearch.rectangleContainsProjectSearchId({ projectSearchId, yScale, rectParams })) {
+                    if (ModViewDataVizRenderer_MultiSearch._rectangleContainsProjectSearchId({ projectSearchId, yScale, rectParams })) {
                         const selector = 'rect.mod-mass-' + modMass + '.project-search-id-' + projectSearchId;
                         svg.select('#rect-group').select(selector).style('opacity', '1.0');
 
@@ -907,7 +909,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    private static rectangleContainsModMass({ modMass, xScale, rectParams }) {
+    private static _rectangleContainsModMass({ modMass, xScale, rectParams }) {
 
         const modMassMinPosition = xScale(modMass);
         const modMassMaxPosition = modMassMinPosition + xScale.bandwidth();
@@ -922,7 +924,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return false;
     }
 
-    private static rectangleContainsProjectSearchId({ projectSearchId, yScale, rectParams }) {
+    private static _rectangleContainsProjectSearchId({ projectSearchId, yScale, rectParams }) {
 
         const psidMinPosition = yScale(projectSearchId);
         const psidMaxPosition = psidMinPosition + yScale.bandwidth();
@@ -939,31 +941,31 @@ export class ModViewDataVizRenderer_MultiSearch {
 
 
 
-    private static getInterval({xScale, labelFontSize}) {
+    private static _getInterval({xScale}) {
 
-        const spaceNeeded = labelFontSize + 6;      // 6 assumes a margin of 3 px on either side of the label (move this to viz defs?)
+        const spaceNeeded = _VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 6;      // 6 assumes a margin of 3 px on either side of the label (move this to viz defs?)
         const bandwidth = xScale.bandwidth();
 
         return Math.ceil( spaceNeeded / bandwidth );
     }
 
-    private static addModLabelsHeader({ svg, width, labelFontSize }) {
+    private static _addModLabelsHeader({ svg, width }) {
 
         const dx = Math.round( width / 2 );
-        const dy = -1 * labelFontSize - 30;
+        const dy = -1 * _VISUALIZATION_MAIN_CONSTANTS.labelFontSize - 30;
 
         svg.append('text')
             .attr("text-anchor", "middle")
-            .attr('font-size', labelFontSize + 'px')
+            .attr('font-size', _VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 'px')
             .attr('font-family', 'sans-serif')
             .attr("transform", (d,i) => 'translate(' + dx + ', ' + dy + ')')
             .text('Modification Mass');
 
     }
 
-    private static addModLabels({ svg, sortedModMasses, xScale, labelFontSize }) {
+    private static _addModLabels({ svg, sortedModMasses, xScale }) {
 
-        const interval = ModViewDataVizRenderer_MultiSearch.getInterval({labelFontSize, xScale});
+        const interval = ModViewDataVizRenderer_MultiSearch._getInterval({xScale});
 
         svg.selectAll('.mod-label')
             .data(sortedModMasses)
@@ -971,18 +973,16 @@ export class ModViewDataVizRenderer_MultiSearch {
             .append('text')
             .attr('class', 'mod-label')
             .attr("text-anchor", "start")
-            .attr('font-size', labelFontSize + 'px')
+            .attr('font-size', _VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 'px')
             .attr('font-family', 'sans-serif')
-            .attr("transform", (d,i) => 'translate(' + (xScale(sortedModMasses[i]) + (xScale.bandwidth() / 2) + (labelFontSize / 2)) + ', -10) rotate(-90)')
+            .attr("transform", (d,i) => 'translate(' + (xScale(sortedModMasses[i]) + (xScale.bandwidth() / 2) + (_VISUALIZATION_MAIN_CONSTANTS.labelFontSize / 2)) + ', -10) rotate(-90)')
             .text((d,i) => ( i % interval == 0 ? sortedModMasses[i] : '' ));
     }
 
-    private static addSearchLabels(
+    private static _addSearchLabels(
         {
             svg,
             yScale,
-            maxSearchLabelLength,
-            labelFontSize,
             tooltip,
             sortedModMasses,
             selectedStateObject,
@@ -995,13 +995,11 @@ export class ModViewDataVizRenderer_MultiSearch {
         } : {
             svg,
             yScale,
-            maxSearchLabelLength,
-            labelFontSize,
             tooltip,
             sortedModMasses,
             selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
             dataPageStateManager_DataFrom_Server : DataPageStateManager
-            modMap,
+            modMap: Map<number, Map<number, number>>
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager : ModViewDataManager
             dataTableContainer_DOM_Element,
@@ -1016,20 +1014,20 @@ export class ModViewDataVizRenderer_MultiSearch {
             .append('text')
             .attr('class', 'search-label')
             .attr('x', -10)
-            .attr('y', (d, i) => (yScale(projectSearchIds[i]) + (yScale.bandwidth() / 2) + (labelFontSize / 2)))
+            .attr('y', (d, i) => (yScale(projectSearchIds[i]) + (yScale.bandwidth() / 2) + (_VISUALIZATION_MAIN_CONSTANTS.labelFontSize / 2)))
             .attr("text-anchor", "end")
-            .attr('font-size', labelFontSize + 'px')
+            .attr('font-size', _VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 'px')
             .attr('font-family', 'sans-serif')
-            .text((d,i) => (ModViewDataVizRenderer_MultiSearch.getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds[i], dataPageStateManager_DataFrom_Server, maxSearchLabelLength})))
+            .text((d,i) => (ModViewDataVizRenderer_MultiSearch._getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds[i], dataPageStateManager_DataFrom_Server})))
             .on("mousemove", function ( event_Param, dataElement_Param ) {
                 const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param );
-                ModViewDataVizRenderer_MultiSearch.showToolTip({
+                ModViewDataVizRenderer_MultiSearch._showToolTip({
                     onSearchLabel_OnLeft: true, projectSearchId, tooltip, vizOptionsData, modMass : undefined, psmCount : undefined, dataPageStateManager_DataFrom_Server
                 })
             })
             .on("mouseout", function ( event_Param, dataElement_Param ) {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
-                ModViewDataVizRenderer_MultiSearch.hideToolTip({tooltip});
+                ModViewDataVizRenderer_MultiSearch._hideToolTip({tooltip});
             })
             .on("click", function( event_Param, dataElement_Param ) {
 
@@ -1045,7 +1043,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                 vizOptionsData.stateManagementObject.updateState();
 
                 // update final opacity for viz
-                ModViewDataVizRenderer_MultiSearch.updateShownRectOpacities({ svg, selectedStateObject })
+                ModViewDataVizRenderer_MultiSearch._updateShownRectOpacities({ svg, selectedStateObject })
 
                 // redraw the data table
                 ModViewDataTableRenderer_MultiSearch.renderDataTable({
@@ -1205,18 +1203,16 @@ export class ModViewDataVizRenderer_MultiSearch {
 
 
 
-    private static getTruncatedSearchNameForProjectSearchId(
+    private static _getTruncatedSearchNameForProjectSearchId(
         {
             projectSearchId,
-            maxSearchLabelLength,
             dataPageStateManager_DataFrom_Server
         } : {
             projectSearchId : number
-            maxSearchLabelLength,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }) {
 
-        let searchName;
+        let searchName: string
         const searchShortName = ModDataUtils.getSearchShortNameForProjectSearchId({
             projectSearchId:projectSearchId,
             dataPageStateManager_DataFrom_Server
@@ -1228,8 +1224,8 @@ export class ModViewDataVizRenderer_MultiSearch {
             searchName = ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server });
         }
 
-        if(searchName.length > maxSearchLabelLength) {
-            searchName = searchName.substring(0, maxSearchLabelLength - 4) + '...';
+        if(searchName.length > _VISUALIZATION_MAIN_CONSTANTS.maxSearchLabelLength) {
+            searchName = searchName.substring(0, _VISUALIZATION_MAIN_CONSTANTS.maxSearchLabelLength - 4) + '...';
         }
 
         return searchName;
@@ -1286,19 +1282,19 @@ export class ModViewDataVizRenderer_MultiSearch {
         return searchId;
     }
 
-    private static getWidth({sortedModMasses, widthDefs, minLegendWidth}) {
+    private static _getWidth({sortedModMasses}) {
 
-        let width = widthDefs.default;
+        let width = _VISUALIZATION_MAIN_CONSTANTS.widthDefs.default + 0;
 
         // adjust width as necessary
-        if(width < sortedModMasses.length * widthDefs.min) {
-            width = sortedModMasses.length * widthDefs.min;
-        } else if(width > sortedModMasses.length * widthDefs.max) {
-            width = sortedModMasses.length * widthDefs.max;
+        if(width < sortedModMasses.length * _VISUALIZATION_MAIN_CONSTANTS.widthDefs.min) {
+            width = sortedModMasses.length * _VISUALIZATION_MAIN_CONSTANTS.widthDefs.min;
+        } else if(width > sortedModMasses.length * _VISUALIZATION_MAIN_CONSTANTS.widthDefs.max) {
+            width = sortedModMasses.length * _VISUALIZATION_MAIN_CONSTANTS.widthDefs.max;
         }
 
-        if( width < minLegendWidth ) {
-            width = minLegendWidth;
+        if( width < _VISUALIZATION_MAIN_CONSTANTS.minLegendWidth ) {
+            width = _VISUALIZATION_MAIN_CONSTANTS.minLegendWidth;
         }
 
         // adjust to be an integer multiple of the number of mod masses
@@ -1308,25 +1304,28 @@ export class ModViewDataVizRenderer_MultiSearch {
         return width;
     }
 
-    private static getHeight({projectSearchIds, heightDefs}) {
+    private static _getHeight({projectSearchIds}) {
 
-        let height = heightDefs.default;
+        let height = _VISUALIZATION_MAIN_CONSTANTS.heightDefs.default;
 
         // adjust width as necessary
-        if(height < projectSearchIds.length * heightDefs.min) {
-            height = projectSearchIds.length * heightDefs.min;
-        } else if(height > projectSearchIds.length * heightDefs.max) {
-            height = projectSearchIds.length * heightDefs.max;
+        if(height < projectSearchIds.length * _VISUALIZATION_MAIN_CONSTANTS.heightDefs.min) {
+            height = projectSearchIds.length * _VISUALIZATION_MAIN_CONSTANTS.heightDefs.min;
+        } else if(height > projectSearchIds.length * _VISUALIZATION_MAIN_CONSTANTS.heightDefs.max) {
+            height = projectSearchIds.length * _VISUALIZATION_MAIN_CONSTANTS.heightDefs.max;
         }
 
         return height;
     }
 
-    private static addColoredRectangles(
+    private static _addColoredRectangles(
         {
             svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip, vizOptionsData, dataPageStateManager_DataFrom_Server
         } : {
-            svg, modMatrix, xScale, yScale, colorScale, sortedModMasses,
+            svg,
+            modMatrix: INTERNAL__ModMatrix
+            xScale, yScale, colorScale,
+            sortedModMasses: number[]
             projectSearchIds : Array<number>,
             width, height, tooltip,
             vizOptionsData: ModView_VizOptionsData,
@@ -1360,7 +1359,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param.projectSearchId );
 
-                ModViewDataVizRenderer_MultiSearch.showToolTip({
+                ModViewDataVizRenderer_MultiSearch._showToolTip({
                     onSearchLabel_OnLeft: false,
                     projectSearchId,
                     modMass: dataElement_Param.modMass,
@@ -1372,7 +1371,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             })
             .on("mouseleave", function ( event_Param, dataElement_Param ) {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
-                ModViewDataVizRenderer_MultiSearch.hideToolTip({tooltip});
+                ModViewDataVizRenderer_MultiSearch._hideToolTip({tooltip});
             });
 
         // update opacity as necessary
@@ -1381,7 +1380,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             const selectedStateObject = vizOptionsData.data.selectedStateObject;
 
             if (selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId !== undefined || selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size > 0) {
-                ModViewDataVizRenderer_MultiSearch.updateShownRectOpacities({
+                ModViewDataVizRenderer_MultiSearch._updateShownRectOpacities({
                     svg,
                     selectedStateObject
                 })
@@ -1389,7 +1388,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    private static showToolTip(
+    private static _showToolTip(
         {
             onSearchLabel_OnLeft, projectSearchId, modMass, psmCount, tooltip, vizOptionsData, dataPageStateManager_DataFrom_Server
         } : {
@@ -1485,7 +1484,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                 if(psmCount !== undefined) {
                     if( (vizOptionsData.data.dataTransformation === undefined || vizOptionsData.data.dataTransformation === 'none') && !showRatiosBoolean ) {
 
-                        txt += labelText + " " + ModViewDataVizRenderer_MultiSearch.numberWithCommas(psmCount) + "</p>";
+                        txt += labelText + " " + ModViewDataVizRenderer_MultiSearch._numberWithCommas(psmCount) + "</p>";
                     } else {
                         txt += labelText + " " + psmCount.toExponential(2) + "</p>";
                     }
@@ -1543,12 +1542,12 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    private static hideToolTip({ tooltip }) {
+    private static _hideToolTip({ tooltip }) {
         tooltip
             .style("visibility", "hidden")
     }
 
-    private static addSeparatorLines({ svg, projectSearchIds, yScale, width, height }) {
+    private static _addSeparatorLines({ svg, projectSearchIds, yScale, width, height }) {
 
         svg.select('#rect-group').selectAll('.separator-line')
             .data(projectSearchIds)
@@ -1748,9 +1747,9 @@ export class ModViewDataVizRenderer_MultiSearch {
             vizOptionsData: ModView_VizOptionsData,
             countsOverride,
             modViewDataManager:ModViewDataManager,
-        }) : Promise<Map<number,Map<number,any>>> {
+        }) : Promise<Map<number,Map<number,number>>> {
 
-        const modMap:Map<number,Map<number,any>> = new Map();
+        const modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass: Map<number,Map<number,Set<string>>> = new Map();
 
         console.log('called buildModMap');
 
@@ -1804,18 +1803,18 @@ export class ModViewDataVizRenderer_MultiSearch {
                         }
 
 
-                        if(!modMap.has(modMass)) {
-                            modMap.set(modMass, new Map());
+                        if(!modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass.has(modMass)) {
+                            modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass.set(modMass, new Map());
                         }
 
-                        if(!modMap.get(modMass).has(projectSearchId)) {
-                            modMap.get(modMass).set(projectSearchId, new Set());
+                        if(!modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass.get(modMass).has(projectSearchId)) {
+                            modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass.get(modMass).set(projectSearchId, new Set());
                         }
 
                         // get a unique id for this item
-                        const uniqueId = psmQuantType ? itemPsm.psmId : (itemScan.scnm + '-' + itemScan.sfid);
+                        const uniqueId = psmQuantType ? itemPsm.psmId.toString() : (itemScan.scnm + '-' + itemScan.sfid);
 
-                        modMap.get(modMass).get(projectSearchId).add(uniqueId);
+                        modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass.get(modMass).get(projectSearchId).add(uniqueId);
                     }
 
                     // add in the open mods
@@ -1901,30 +1900,38 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                         }
 
-                        if(!modMap.has(modMass)) {
-                            modMap.set(modMass, new Map());
+                        if(!modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass.has(modMass)) {
+                            modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass.set(modMass, new Map());
                         }
 
-                        if(!modMap.get(modMass).has(projectSearchId)) {
-                            modMap.get(modMass).set(projectSearchId, new Set());
+                        if(!modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass.get(modMass).has(projectSearchId)) {
+                            modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass.get(modMass).set(projectSearchId, new Set());
                         }
 
                         // get a unique id for this item
-                        const uniqueId = psmQuantType ? itemPsm.psmId : (itemScan.scnm + '-' + itemScan.sfid);
+                        const uniqueId = psmQuantType ? itemPsm.psmId.toString() : (itemScan.scnm + '-' + itemScan.sfid);
 
                         // use sets to ensure we're not double counting psms or scans for a mod mass
-                        modMap.get(modMass).get(projectSearchId).add(uniqueId);
+                        modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass.get(modMass).get(projectSearchId).add(uniqueId);
                     }
 
                 }
             }
         }
 
+        const modMap_Final__Value_Map_Key_ProjectSearchId_Map_Key_ModMass: Map<number,Map<number,number>> = new Map();
+
         // convert to a map of counts/ratios
         const denominatorMap:Map<number, number> = new Map();
 
-        for(const [modMass, searchCountMap] of modMap) {
-            for(const [projectSearchId, idSet] of searchCountMap) {
+        for(const [modMass, searchCountMap] of modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass.entries()) {
+
+            modMap_Final__Value_Map_Key_ProjectSearchId_Map_Key_ModMass.set(modMass, new Map())
+
+            const modMap_Final__Value_Map_Key_ProjectSearchId = modMap_Final__Value_Map_Key_ProjectSearchId_Map_Key_ModMass.get(modMass)
+
+            for(const [projectSearchId, idSet] of searchCountMap.entries()) {
+
                 let count = idSet.size;
 
                 if( vizOptionsData.data.psmQuant === 'ratios' && !countsOverride ) {
@@ -1937,17 +1944,17 @@ export class ModViewDataVizRenderer_MultiSearch {
                     count = count / ratioDenominator;
                 }
 
-                modMap.get(modMass).set(projectSearchId, count);    // replace the set w/ the count
+                modMap_Final__Value_Map_Key_ProjectSearchId.set(projectSearchId, count);    // replace the set w/ the count
             }
         }
 
         // add in zero for missing values
         // assumes if a mod mass isn't present in a search then the count is 0 for that mod mass in that search
         // this is needed for subsequent z-score and p-value calculations
-        for(const [modMass, searchCountMap] of modMap) {
+        for(const [modMass, searchCountMap] of modMap_Final__Value_Map_Key_ProjectSearchId_Map_Key_ModMass.entries()) {
             for(const projectSearchId of projectSearchIds) {
-                if (!(modMap.get(modMass).has(projectSearchId))) {
-                    modMap.get(modMass).set(projectSearchId, 0);
+                if (!(modMap_Final__Value_Map_Key_ProjectSearchId_Map_Key_ModMass.get(modMass).has(projectSearchId))) {
+                    modMap_Final__Value_Map_Key_ProjectSearchId_Map_Key_ModMass.get(modMass).set(projectSearchId, 0);
                 }
             }
         }
@@ -1955,14 +1962,14 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
             // convert the data into zscores
-            ModViewDataVizRenderer_MultiSearch.convertModMapToDataTransformation(modMap, vizOptionsData);
+            ModViewDataVizRenderer_MultiSearch._convertModMapToDataTransformation(modMap_Final__Value_Map_Key_ProjectSearchId_Map_Key_ModMass, vizOptionsData);
         }
 
-        console.log('Done with buildModMap()', modMap)
-        return modMap;
+        console.log('Done with buildModMap()', modMap_Final__Value_Map_Key_ProjectSearchId_Map_Key_ModMass)
+        return modMap_Final__Value_Map_Key_ProjectSearchId_Map_Key_ModMass;
     }
 
-    private static convertModMapToDataTransformation(modMap, vizOptionsData: ModView_VizOptionsData) {
+    private static _convertModMapToDataTransformation(modMap: Map<number,Map<number,number>>, vizOptionsData: ModView_VizOptionsData) {
 
         if(vizOptionsData.data.dataTransformation === undefined) {
             return;
@@ -1982,7 +1989,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                 break;
 
             case 'scaled-mean-diff':
-                ModViewDataVizRenderer_MultiSearch.convertModMapToPerModScaledMeanDelta(modMap);
+                ModViewDataVizRenderer_MultiSearch._convertModMapToPerModScaledMeanDelta(modMap);
                 break;
 
             case 'global-qvalue-bh':
@@ -2020,7 +2027,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    private static convertModMapToPerModScaledMeanDelta(modMap) {
+    private static _convertModMapToPerModScaledMeanDelta(modMap) {
         for(const [modMass, searchCountMap] of modMap) {
             const mean = ModViewDataVizRenderer_MultiSearch.getMeanForModMass({modMap, modMass});
 
@@ -2187,40 +2194,40 @@ export class ModViewDataVizRenderer_MultiSearch {
         return sum / searchCountMap.size;
     }
 
-    static getMinForModMass({modMap, modMass}) {
-        let min = 100000000;
+    // static getMinForModMass({modMap, modMass}) {
+    //     let min = 100000000;
+    //
+    //     if(!(modMap.has(modMass))) {
+    //         return 0;
+    //     }
+    //
+    //     const searchCountMap = modMap.get(modMass);
+    //     for(const [projectSearchId, count] of searchCountMap) {
+    //         if(count < min) {
+    //             min = count;
+    //         }
+    //     }
+    //
+    //     return min;
+    // }
+    // static getMaxForModMass({modMap, modMass}) {
+    //     let max = 0;
+    //
+    //     if(!(modMap.has(modMass))) {
+    //         return 0;
+    //     }
+    //
+    //     const searchCountMap = modMap.get(modMass);
+    //     for(const [projectSearchId, count] of searchCountMap) {
+    //         if(count > max) {
+    //             max = count;
+    //         }
+    //     }
+    //
+    //     return max;
+    // }
 
-        if(!(modMap.has(modMass))) {
-            return 0;
-        }
-
-        const searchCountMap = modMap.get(modMass);
-        for(const [projectSearchId, count] of searchCountMap) {
-            if(count < min) {
-                min = count;
-            }
-        }
-
-        return min;
-    }
-    static getMaxForModMass({modMap, modMass}) {
-        let max = 0;
-
-        if(!(modMap.has(modMass))) {
-            return 0;
-        }
-
-        const searchCountMap = modMap.get(modMass);
-        for(const [projectSearchId, count] of searchCountMap) {
-            if(count > max) {
-                max = count;
-            }
-        }
-
-        return max;
-    }
-
-    static getMinPSMCount(modMatrix, vizOptionsData: ModView_VizOptionsData) {
+    private static _getMinPSMCount(modMatrix: INTERNAL__ModMatrix, vizOptionsData: ModView_VizOptionsData) {
 
         let min = 0;
 
@@ -2235,7 +2242,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return min;
     }
 
-    static getMaxPSMCount(modMatrix, vizOptionsData: ModView_VizOptionsData) {
+    private static _getMaxPSMCount(modMatrix: INTERNAL__ModMatrix, vizOptionsData: ModView_VizOptionsData) {
 
         if(!vizOptionsData.data.showZScore) {
             if (vizOptionsData.data.psmQuant === 'ratios' && vizOptionsData.data.colorCutoffRatio !== undefined) {
@@ -2260,13 +2267,15 @@ export class ModViewDataVizRenderer_MultiSearch {
         return max;
     }
 
-    static getModMatrix({modMap, projectSearchIds}) {
-        let modMatrix = Array( modMap.size );
+    private static _getModMatrix({modMap, projectSearchIds}: { modMap: Map<number, Map<number, number>>, projectSearchIds: Array<number>}) : INTERNAL__ModMatrix {
+
+        const modMatrix: INTERNAL__ModMatrix /* Array<Array<INTERNAL__ModMatrix_Entry>> */ = Array( modMap.size );
 
         const sortedModMasses = Array.from( modMap.keys() ).sort( (a:number,b:number) => (a - b));
 
         let i = 0;
         for(const modMass of sortedModMasses) {
+
             modMatrix[i] = Array(projectSearchIds.length);
 
             let k = 0;
@@ -2299,40 +2308,39 @@ export class ModViewDataVizRenderer_MultiSearch {
         return modMatrix;
     }
 
-
-    static shouldReportedPeptideBeIncludedForModMass({ projectSearchId, proteinPositionFilterStateManager, reportedPeptideModData, modMass, reportedPeptideId }) {
-
-        if( modMass in reportedPeptideModData[projectSearchId][reportedPeptideId]) {
-
-            if( ( ! proteinPositionFilterStateManager ) || proteinPositionFilterStateManager.getNoProteinsSelected()) {
-
-                return true;
-
-            } else {
-
-                for(const proteinId of Object.keys(reportedPeptideModData[projectSearchId][reportedPeptideId][modMass]['proteins'])) {
-
-                    if(proteinPositionFilterStateManager.getIsAllSelected({proteinId})) {
-
-                        return true;
-
-                    } else if(proteinPositionFilterStateManager.getIsProteinSelected({proteinId})) {
-
-                        for(const position of reportedPeptideModData[projectSearchId][reportedPeptideId][modMass]['proteins'][proteinId]) {
-
-                            if(proteinPositionFilterStateManager.getIsProteinPositionSelected({ proteinId, position })) {
-
-                                return true;
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
+    // static shouldReportedPeptideBeIncludedForModMass({ projectSearchId, proteinPositionFilterStateManager, reportedPeptideModData, modMass, reportedPeptideId }) {
+    //
+    //     if( modMass in reportedPeptideModData[projectSearchId][reportedPeptideId]) {
+    //
+    //         if( ( ! proteinPositionFilterStateManager ) || proteinPositionFilterStateManager.getNoProteinsSelected()) {
+    //
+    //             return true;
+    //
+    //         } else {
+    //
+    //             for(const proteinId of Object.keys(reportedPeptideModData[projectSearchId][reportedPeptideId][modMass]['proteins'])) {
+    //
+    //                 if(proteinPositionFilterStateManager.getIsAllSelected({proteinId})) {
+    //
+    //                     return true;
+    //
+    //                 } else if(proteinPositionFilterStateManager.getIsProteinSelected({proteinId})) {
+    //
+    //                     for(const position of reportedPeptideModData[projectSearchId][reportedPeptideId][modMass]['proteins'][proteinId]) {
+    //
+    //                         if(proteinPositionFilterStateManager.getIsProteinPositionSelected({ proteinId, position })) {
+    //
+    //                             return true;
+    //
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //
+    //     return false;
+    // }
 
 
     // static getPsmCountForReportedPeptide({ reportedPeptideId, projectSearchId, aminoAcidModStats }) {
@@ -2348,7 +2356,23 @@ export class ModViewDataVizRenderer_MultiSearch {
     //     return aminoAcidModStats[projectSearchId][reportedPeptideId]['psmCount'];
     // }
 
-    static numberWithCommas(x) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+    private static _numberWithCommas(x) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 
 
 }
+
+
+
+class INTERNAL__ModMatrix_Entry {
+    psmCount: number
+    projectSearchId: number
+    modMass: number
+    searchIndex: number
+    modMassIndex: number
+}
+
+type INTERNAL__ModMatrix = Array<Array<INTERNAL__ModMatrix_Entry>>
+
+
+
+

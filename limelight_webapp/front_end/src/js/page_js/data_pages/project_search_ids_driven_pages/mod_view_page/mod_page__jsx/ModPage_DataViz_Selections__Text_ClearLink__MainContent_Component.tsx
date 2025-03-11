@@ -26,7 +26,7 @@ import {
 export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component_Props_Prop {
 
     selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject
-    modMap:Map<number,Map<number,any>> //  Map<modMass, Map<projectSearchId, ? >>
+    modMap: Map<number, Map<number, number>>
     projectSearchIds : Array<number>
     dataPageStateManager_DataFrom_Server: DataPageStateManager
 
