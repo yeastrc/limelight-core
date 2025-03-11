@@ -3,7 +3,7 @@
 
 //  Also have page_js/common_all_pages/limelight__variable_is_type_number_Check.ts
 
-function limelight__IsVariableAString( variable : any ) : boolean {
+function limelight__IsVariableAString( variable : any ) : variable is string {
 
     if (typeof variable === 'string' || variable instanceof String) {
         return true;

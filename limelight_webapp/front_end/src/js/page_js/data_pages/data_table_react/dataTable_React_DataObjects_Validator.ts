@@ -249,7 +249,7 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
                 }
 
                 {
-                    const graphMaxValue = dataTable_ColumnEntry.graphMaxValue as string | number
+                    const graphMaxValue = dataTable_ColumnEntry.graphMaxValue
                     if ( dataTable_DataRow_ColumnEntry.valueSort > graphMaxValue ) {
                         const msg = (
                             "Validator: column.showHorizontalGraph is true and dataObject_columnEntry.valueSort is  > dataTable_ColumnEntry.graphMaxValue.  Graph will be max width.  dataTable_DataRow_ColumnEntry.valueSort: "

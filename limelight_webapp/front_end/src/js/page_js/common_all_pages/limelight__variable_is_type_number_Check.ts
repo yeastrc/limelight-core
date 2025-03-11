@@ -7,7 +7,7 @@
  */
 
 
-const limelight__variable_is_type_number_Check = function( variable : any ) : boolean {
+const limelight__variable_is_type_number_Check = function( variable : any ) : variable is number {
 
     const typeOf_OfVariable = typeof variable;
 
