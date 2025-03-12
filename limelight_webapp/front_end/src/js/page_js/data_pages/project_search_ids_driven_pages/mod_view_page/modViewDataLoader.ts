@@ -501,7 +501,7 @@ export class ModViewPage_DataLoader {
             try {
                 let requestObject = objectThis.__createRequestForPSMDataForProjectSearchIdModMasses( { searchDataLookupParams, projectSearchId, modMasses } );
 
-                const url = "d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id-version-0002";
+                const url = "d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id-version-0003";
 
                 const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
@@ -541,7 +541,7 @@ export class ModViewPage_DataLoader {
             try {
                 let requestObject = objectThis.__createRequestForPSMDataForProjectSearchIdModMasses( { searchDataLookupParams, projectSearchId, modMasses:[modMass] } );
 
-                const url = "d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id-version-0002";
+                const url = "d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id-version-0003";
 
                 const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;

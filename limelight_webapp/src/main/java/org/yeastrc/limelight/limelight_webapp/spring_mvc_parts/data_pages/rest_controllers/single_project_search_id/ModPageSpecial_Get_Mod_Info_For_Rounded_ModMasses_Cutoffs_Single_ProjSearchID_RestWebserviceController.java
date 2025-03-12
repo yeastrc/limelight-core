@@ -108,7 +108,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	 * 
 	 * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Response  !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.MOD_PAGE_SPECIAL__GET_MOD_INFO_FOR_Rounded_MOD_MASSES_CUTOFFS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0002;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.MOD_PAGE_SPECIAL__GET_MOD_INFO_FOR_Rounded_MOD_MASSES_CUTOFFS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0003;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -342,6 +342,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		
     		for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry peptideMinimalObject : peptideMinimalObjectsList ) {
     			
+    			if ( 99070 == peptideMinimalObject.getReportedPeptideId() ) {
+    				int z = 0;
+    			}
+    			
     			reportedPeptideIds_InitialSelection_List.add( peptideMinimalObject.getReportedPeptideId() );
 
         		if ( ( ! searchFlags_anyPsmHas_VariableDynamicModifications ) && ( peptideMinimalObject.isReportedPeptideHas_DynamicModifications() ) ) {
@@ -369,6 +373,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	    		for ( Map.Entry<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> entry : dynamicMods_results_Key_ReportedPeptideId.entrySet() ) {
 	    			
 	    			Integer reportedPeptideId = entry.getKey();
+
+	    			if ( 99070 == reportedPeptideId.intValue() ) {
+	    				int z = 0;
+	    			}
 	    			
 	    			for ( DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item listEntry : entry.getValue() ) {
 		    			long variableModMassRounded_Long = Math.round( listEntry.getMass() );
@@ -392,7 +400,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		    				variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId.put( reportedPeptideId, variableModData_AtReportedPeptideLevel_Key_ModMassRounded );
 		    			}
 
-		    			Variable_ModItem_ReportedPeptideLevel variable_ModItem_ReportedPeptideLevel = variableModData_AtReportedPeptideLevel_Key_ModMassRounded.get( reportedPeptideId );
+		    			Variable_ModItem_ReportedPeptideLevel variable_ModItem_ReportedPeptideLevel = variableModData_AtReportedPeptideLevel_Key_ModMassRounded.get( variableModMassRounded );
 		    			if ( variable_ModItem_ReportedPeptideLevel == null ) {
 		    				variable_ModItem_ReportedPeptideLevel = new Variable_ModItem_ReportedPeptideLevel();
 		    				variableModData_AtReportedPeptideLevel_Key_ModMassRounded.put( variableModMassRounded, variable_ModItem_ReportedPeptideLevel );
@@ -576,6 +584,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 				Long psmId = psmDynamicModificationDTO.getPsmId();
 				
+				if ( psmId.longValue() == 1018490 ) {
+					int z = 0;
+				}
+				
 				long variableModMassRounded_Long = Math.round( psmDynamicModificationDTO.getMass() );
     			if ( variableModMassRounded_Long > Integer.MAX_VALUE ) {
     				String msg = "Math.round( PsmDynamicModificationDTO.mass ) > Integer.MAX_VALUE, is: " + variableModMassRounded_Long;
@@ -640,6 +652,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 					
 					for ( Long psmId : psmIdList ) {
 
+						if ( psmId.longValue() == 1018490 ) {
+							int z = 0;
+						}
+						
 	    				Map<Integer, WebserviceResultItem> modMassesPerScan_Key_ModMassRounded = modMassesPerScan_Key_ModMassRounded_Key_PsmId.get( psmId ); 
 	    				if ( modMassesPerScan_Key_ModMassRounded == null ) {
 	    					modMassesPerScan_Key_ModMassRounded = new HashMap<>();
