@@ -500,8 +500,6 @@ export class ModProteinSearchList_SubTableGenerator {
             unlocalizedRangesByProjectSearchId.set(projectSearchId, new Map<string, UnlocalizedStartEnd>());
         }
 
-        let psmCount_Total = 0
-
         // add the # of psms for the found for each reported peptide to the psm count for this protein for this mod
         for(const reportedPeptide of reportedPeptidesForProtein) {
 
@@ -514,8 +512,6 @@ export class ModProteinSearchList_SubTableGenerator {
             psmCountMapByProjectSearchId.set(projectSearchId, psmCount + currentCount);
 
             for(const psm of reportedPeptidePSMMap.get(reportedPeptide.reportedPeptideId)) {
-
-                psmCount_Total++
 
                 if(psm.variable !== null && psm.variable !== undefined) {
 
@@ -608,12 +604,8 @@ export class ModProteinSearchList_SubTableGenerator {
                         }
                     }
                 }
-
             }
-
         }
-
-        var z = psmCount_Total
     }
 }
 

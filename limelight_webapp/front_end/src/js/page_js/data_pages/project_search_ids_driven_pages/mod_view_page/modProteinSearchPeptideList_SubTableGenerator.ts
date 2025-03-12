@@ -611,9 +611,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         }
     ) : void {
 
-
-        let psmCount_Total = 0
-
         // add the # of psms for the found for each reported peptide to the psm count for this protein for this mod
         for(const reportedPeptide of reportedPeptidesForProtein) {
 
@@ -621,8 +618,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             const reportedPeptidePositionsInProtein = reportedPeptide.proteinMatches.get(proteinId);
 
             for(const psm of reportedPeptidePSMMap.get(reportedPeptide.reportedPeptideId)) {
-
-                psmCount_Total++
 
                 // get generated reported peptide string for psm
                 const generatedReportedPeptides:Set<string> = ModProteinSearchPeptideList_SubTableGenerator.getReportedPeptideStringsForPsm({
@@ -655,6 +650,11 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                     }
 
                     reportedPeptideIdsByPeptideString.get(generatedReportedPeptide).add(reportedPeptide.reportedPeptideId);
+                }
+
+
+                if ( generatedReportedPeptides.has( "SDGMIAYSNADSDYWNVGEADGVK[42]ISK[42]LR" ) ) {
+                    var z = 0
                 }
 
 
@@ -793,8 +793,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 }
             }
         }
-
-        var z = psmCount_Total
     }
 
     /**
