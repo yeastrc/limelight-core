@@ -624,7 +624,7 @@ export class ModProteinList_SubTableGenerator {
             unlocalizedRangesByProteinId:Map<number, Map<string, UnlocalizedStartEnd>>,
             proteinIdReportedPeptideMap:Map<number, Set<ReportedPeptide>>,
             projectSearchId:number,
-            reportedPeptidePSMMap:Map<number, Set<any>>,
+            reportedPeptidePSMMap:Map<number, Set<ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry>>,
             namesForProtein:Map<number, Set<string>>,
             descriptionsForProtein:Map<number, Set<string>>,
             modViewDataManager:ModViewDataManager,
@@ -707,7 +707,7 @@ export class ModProteinList_SubTableGenerator {
                             }
                         }
 
-                        if (psm.variable.loc.nterm) {
+                        if (psm.variable.nterm) {
                             const peptidePosition = 1;
 
                             const residueLetterCode = reportedPeptide.sequence.substring(peptidePosition - 1, peptidePosition);
@@ -719,7 +719,7 @@ export class ModProteinList_SubTableGenerator {
                             }
                         }
 
-                        if (psm.variable.loc.cterm) {
+                        if (psm.variable.cterm) {
                             const peptidePosition = reportedPeptide.sequence.length;
 
                             const residueLetterCode = reportedPeptide.sequence.substring(peptidePosition - 1, peptidePosition);
@@ -747,7 +747,7 @@ export class ModProteinList_SubTableGenerator {
                             }
                         }
 
-                        if (psm.open.loc.nterm) {
+                        if (psm.open.nterm) {
                             const peptidePosition = 1;
 
                             const residueLetterCode = reportedPeptide.sequence.substring(peptidePosition - 1, peptidePosition);
@@ -759,7 +759,7 @@ export class ModProteinList_SubTableGenerator {
                             }
                         }
 
-                        if (psm.open.loc.cterm) {
+                        if (psm.open.cterm) {
                             const peptidePosition = reportedPeptide.sequence.length;
 
                             const residueLetterCode = reportedPeptide.sequence.substring(peptidePosition - 1, peptidePosition);

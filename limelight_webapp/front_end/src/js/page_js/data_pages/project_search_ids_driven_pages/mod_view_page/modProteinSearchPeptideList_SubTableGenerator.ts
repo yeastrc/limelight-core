@@ -599,7 +599,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         }:{
             proteinPositionMapByPeptideString:Map<string, Set<number>>,
             proteinResidueMapByPeptideString:Map<string, Set<string>>,
-            reportedPeptidePSMMap:Map<number, Set<any>>,
+            reportedPeptidePSMMap:Map<number, Set<ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry>>,
             proteinId:number,
             psmIdsByPeptideString:Map<string, Set<number>>,
             unlocalizedLocsByPeptideString:Map<string, Array<UnlocalizedStartEnd>>,
@@ -612,6 +612,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
     ) : void {
 
 
+        let psmCount_Total = 0
+
         // add the # of psms for the found for each reported peptide to the psm count for this protein for this mod
         for(const reportedPeptide of reportedPeptidesForProtein) {
 
@@ -619,6 +621,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             const reportedPeptidePositionsInProtein = reportedPeptide.proteinMatches.get(proteinId);
 
             for(const psm of reportedPeptidePSMMap.get(reportedPeptide.reportedPeptideId)) {
+
+                psmCount_Total++
 
                 // get generated reported peptide string for psm
                 const generatedReportedPeptides:Set<string> = ModProteinSearchPeptideList_SubTableGenerator.getReportedPeptideStringsForPsm({
@@ -674,7 +678,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                         }
                     }
 
-                    if (psm.variable.loc.nterm) {
+                    if (psm.variable.nterm) {
                         const peptidePosition = 1;
 
                         const residueLetterCode = reportedPeptide.sequence.substring(peptidePosition - 1, peptidePosition);
@@ -692,7 +696,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                         }
                     }
 
-                    if (psm.variable.loc.cterm) {
+                    if (psm.variable.cterm) {
                         const peptidePosition = reportedPeptide.sequence.length;
 
                         const residueLetterCode = reportedPeptide.sequence.substring(peptidePosition - 1, peptidePosition);
@@ -732,7 +736,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                         }
                     }
 
-                    if (psm.open.loc.nterm) {
+                    if (psm.open.nterm) {
                         const peptidePosition = 1;
 
                         const residueLetterCode = reportedPeptide.sequence.substring(peptidePosition - 1, peptidePosition);
@@ -750,7 +754,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                         }
                     }
 
-                    if (psm.open.loc.cterm) {
+                    if (psm.open.cterm) {
                         const peptidePosition = reportedPeptide.sequence.length;
 
                         const residueLetterCode = reportedPeptide.sequence.substring(peptidePosition - 1, peptidePosition);
@@ -789,6 +793,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 }
             }
         }
+
+        var z = psmCount_Total
     }
 
     /**
