@@ -38,11 +38,12 @@ import {
     modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents_Click_Callback_Params
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableGenerator_Cell_Components";
 import {get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_SingleProtein_Embed_in_ModPage_Root";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 export class ModProteinList_SubTableGenerator {
 
-    static async getProteinListSubTable(params:ModProteinList_SubTableProperties):Promise<DataTable_RootTableObject> {
+    static async getProteinListSubTable(params:ModProteinList_SubTableProperties):Promise<DataTable_RootTableObject> { try {
 
         const dataTableId_ThisTable = "Mod View Protein List Sub Table";
 
@@ -82,7 +83,8 @@ export class ModProteinList_SubTableGenerator {
         });
 
         return dataTable_RootTableObject;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     private static async getDataTableColumns(
         {
@@ -94,7 +96,7 @@ export class ModProteinList_SubTableGenerator {
             modMass:number,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }
-    ) : Promise<DataTable_RootTableDataObject_Both_ColumnArrays> {
+    ) : Promise<DataTable_RootTableDataObject_Both_ColumnArrays> { try {
 
         const dataTableColumns : Array<DataTable_Column> = [];
         const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
@@ -177,7 +179,8 @@ export class ModProteinList_SubTableGenerator {
         const dataTable_RootTableDataObject_Both_ColumnArrays = new DataTable_RootTableDataObject_Both_ColumnArrays({ columns : dataTableColumns, columns_tableDownload : dataTable_Column_DownloadTable_Entries});
 
         return dataTable_RootTableDataObject_Both_ColumnArrays;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     private static async getDataTableRows(
         {
@@ -191,7 +194,7 @@ export class ModProteinList_SubTableGenerator {
             modMass:number
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }
-    ) : Promise<Array<DataTable_DataRowEntry>> {
+    ) : Promise<Array<DataTable_DataRowEntry>> { try {
 
         const dataTableRows : Array<DataTable_DataRowEntry> = [];
 
@@ -209,7 +212,7 @@ export class ModProteinList_SubTableGenerator {
             // add the name
             {
                 const clickCallback =
-                    (params: modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents_Click_Callback_Params) : void => {
+                    (params: modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents_Click_Callback_Params) : void => { try {
 
                         if ( params.ctrlKey_From_ClickEvent || params.metaKey_From_ClickEvent ) {
 
@@ -223,10 +226,10 @@ export class ModProteinList_SubTableGenerator {
                                 proteinSequenceVersionId: params.proteinId, modMass_Rounded_From_ModPage_ForInitialSelection: modMass
                             });
                         }
-                    }
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
                 const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                    ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+                    ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => { try {
 
                         return modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents({
                             proteinName: proteinData.proteinName,
@@ -236,7 +239,7 @@ export class ModProteinList_SubTableGenerator {
                             modViewDataManager,
                             clickCallback
                         });
-                    }
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
                 const valueDisplay = proteinData.proteinName;
@@ -428,7 +431,8 @@ export class ModProteinList_SubTableGenerator {
 
 
         return dataTableRows;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * Get protein data for a mod mass in a group of project search ids
@@ -451,7 +455,7 @@ export class ModProteinList_SubTableGenerator {
             vizOptionsData : ModView_VizOptionsData
             modMass:number
         }
-    ) : Promise<Array<ProteinDataForModMass>> {
+    ) : Promise<Array<ProteinDataForModMass>> { try {
 
         const proteinDataForModMass:Array<ProteinDataForModMass> = new Array();
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
@@ -497,7 +501,8 @@ export class ModProteinList_SubTableGenerator {
         }
 
         return proteinDataForModMass;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     private static async rollupProteinDataForAllProjectSearchIds(
         {
@@ -523,7 +528,7 @@ export class ModProteinList_SubTableGenerator {
             descriptionsForProtein:Map<number, Set<string>>,
             vizOptionsData : ModView_VizOptionsData
         }
-    ) : Promise<void> {
+    ) : Promise<void> { try {
 
         const proteinPositionFilter:ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
 
@@ -603,7 +608,7 @@ export class ModProteinList_SubTableGenerator {
 
         }
 
-    }
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     private static async rollupProteinDataForProjectSearchId(
         {
@@ -629,7 +634,7 @@ export class ModProteinList_SubTableGenerator {
             descriptionsForProtein:Map<number, Set<string>>,
             modViewDataManager:ModViewDataManager,
         }
-    ) : Promise<void> {
+    ) : Promise<void> { try {
 
         // iterate over each distinct protein and roll up the data we need
         for( const proteinId of proteinIdReportedPeptideMap.keys() ) {
@@ -791,7 +796,7 @@ export class ModProteinList_SubTableGenerator {
 
         }
 
-    }
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 }
 
 

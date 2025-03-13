@@ -123,8 +123,8 @@ export class ModViewPage_RootClass_Common {
 	/**
 	 * 
 	 */
-	initialize() {
-		
+	initialize() { try {
+
 		let objectThis = this;
 		
 		limelight__catchAndReportGlobalOnError.init();
@@ -203,7 +203,7 @@ export class ModViewPage_RootClass_Common {
 		}, function(reason) { // onRejected
 			
 		})
-	}
+	} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
 	/**

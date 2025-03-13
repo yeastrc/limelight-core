@@ -7,6 +7,7 @@ import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_da
 import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM";
 import {PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/PsmScanInfo";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 export class PSMLocalizationReportDownloadGenerator {
 
@@ -43,7 +44,7 @@ export class PSMLocalizationReportDownloadGenerator {
             modViewDataManager:ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }
-    ) : Promise<string> {
+    ) : Promise<string> { try {
 
         const reportLines:Array<string> = [];
         reportLines.push(['mod mass', 'mod type', 'scan number', 'scan filename', 'psm id', 'view psm link', 'search id', 'search name', 'peptide sequence', 'peptide mod position', 'residue', 'protein name', 'protein mod position'].join("\t"));
@@ -305,6 +306,7 @@ export class PSMLocalizationReportDownloadGenerator {
         }
 
         return reportLines.join("\n") + "\n";
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 }

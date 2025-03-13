@@ -137,7 +137,7 @@ export class ModViewPage_DataLoader {
 
         let objectThis = this;
 
-        return new Promise( function( resolve, reject ) {
+        return new Promise<any>( function( resolve, reject ) {
             try {
                 let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
@@ -182,7 +182,7 @@ export class ModViewPage_DataLoader {
 
         let objectThis = this;
 
-        return new Promise( function( resolve, reject ) {
+        return new Promise<Map<number, ReportedPeptide>>( function( resolve, reject ) {
             try {
                 let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
@@ -267,7 +267,7 @@ export class ModViewPage_DataLoader {
 
         let objectThis = this;
 
-        return new Promise( function( resolve, reject ) {
+        return new Promise<any>( function( resolve, reject ) {
             try {
                 let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
@@ -311,7 +311,7 @@ export class ModViewPage_DataLoader {
 
         let objectThis = this;
 
-        return new Promise( function( resolve, reject ) {
+        return new Promise<any>( function( resolve, reject ) {
             try {
                 let createRequestData_For_getProteinInfoList_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
                 let requestObject = createRequestData_For_getProteinInfoList_Result;
@@ -351,7 +351,7 @@ export class ModViewPage_DataLoader {
 
         let objectThis = this;
 
-        return new Promise( function( resolve, reject ) {
+        return new Promise<any>( function( resolve, reject ) {
             try {
                 let requestObject = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
@@ -360,7 +360,9 @@ export class ModViewPage_DataLoader {
                 const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                promise_webserviceCallStandardPost.catch( (reason) => {
+                    reject(reason)
+                }  );
 
                 promise_webserviceCallStandardPost.then( ({ responseData }) => {
                     try {
@@ -389,7 +391,7 @@ export class ModViewPage_DataLoader {
 
         let objectThis = this;
 
-        return new Promise( function( resolve, reject ) {
+        return new Promise<any>( function( resolve, reject ) {
             try {
                 let requestObject = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
@@ -435,7 +437,7 @@ export class ModViewPage_DataLoader {
 
         let objectThis = this;
 
-        return new Promise( function( resolve, reject ) {
+        return new Promise<any>( function( resolve, reject ) {
             try {
                 let requestObject = objectThis.__createRequestForSingleProjectSearchIdProteinIds({ projectSearchId, proteinSequenceVersionIds });
 
@@ -497,7 +499,7 @@ export class ModViewPage_DataLoader {
 
         let objectThis = this;
 
-        return new Promise( function( resolve, reject ) {
+        return new Promise<any>( function( resolve, reject ) {
             try {
                 let requestObject = objectThis.__createRequestForPSMDataForProjectSearchIdModMasses( { searchDataLookupParams, projectSearchId, modMasses } );
 
@@ -537,7 +539,7 @@ export class ModViewPage_DataLoader {
 
         let objectThis = this;
 
-        return new Promise( function( resolve, reject ) {
+        return new Promise<any>( function( resolve, reject ) {
             try {
                 let requestObject = objectThis.__createRequestForPSMDataForProjectSearchIdModMasses( { searchDataLookupParams, projectSearchId, modMasses:[modMass] } );
 

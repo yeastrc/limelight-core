@@ -27,6 +27,7 @@ import {
     removeFrom_DOM__ModPage_DataViz_Selections__Text_ClearLink__Root_Component,
     render_ModPage_DataViz_Selections__Text_ClearLink__Root_Component
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_DataViz_Selections__Text_ClearLink__Root_Component";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 // some defaults for the viz
@@ -66,7 +67,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             dataPageStateManager_DataFrom_Server :  DataPageStateManager
             vizOptionsData: ModView_VizOptionsData
             modViewDataManager : ModViewDataManager
-        }) {
+        }) { try {
 
         console.log('called renderDataViz()');
 
@@ -306,7 +307,8 @@ export class ModViewDataVizRenderer_MultiSearch {
                 clear_Clicked_Callback
             }
         })
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     private static _addDataDownloadLinks(
         {
@@ -319,8 +321,8 @@ export class ModViewDataVizRenderer_MultiSearch {
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager : ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
-        }) {
-    	
+        }) { try {
+
     	//  Container
     	const $data_viz_container = $("div#data-viz-container");
     	
@@ -430,7 +432,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     		const html = "<span class=\"clickable\">[Download PSM Localization Report]</span>"
 			const $html = $(html)
 
-			$html.click(async function() {
+			$html.click(async function() { try {
 
 				// calculate and show stats
 				const textToDownload = await PSMLocalizationReportDownloadGenerator.getPsmLocalizationReportText({
@@ -442,7 +444,8 @@ export class ModViewDataVizRenderer_MultiSearch {
 				});
 
 				StringDownloadUtils.downloadStringAsFile( { stringToDownload : textToDownload, filename: 'psm_modification_localization_report.txt' } );
-			});
+
+			} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }});
 
     		const divContainerHTML = "<div></div>";
     		const $divContainer = $(divContainerHTML);
@@ -452,7 +455,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     		$data_viz_container.append($divContainer);
     	}
 
-    }
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * Remove existing and add new data viz container to page. Assumes jquery is loaded.
@@ -1592,7 +1595,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             projectSearchIds : Array<number>,
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager,
-        }) : Promise<Map<number,number>> {
+        }) : Promise<Map<number,number>> { try {
 
         console.log('called getFilteredDenominators');
 
@@ -1717,8 +1720,10 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
 
         console.log('Done with getFilteredDenominators()', denominatorCountMap)
+
         return denominatorCountMap;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
     /**
@@ -1747,7 +1752,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             vizOptionsData: ModView_VizOptionsData,
             countsOverride,
             modViewDataManager:ModViewDataManager,
-        }) : Promise<Map<number,Map<number,number>>> {
+        }) : Promise<Map<number,Map<number,number>>> { try {
 
         const modMap_Intermediate__UniqueId_Set_Map_Key_ProjectSearchId_Map_Key_ModMass: Map<number,Map<number,Set<string>>> = new Map();
 
@@ -1966,8 +1971,10 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
 
         console.log('Done with buildModMap()', modMap_Final__Value_Map_Key_ProjectSearchId_Map_Key_ModMass)
+
         return modMap_Final__Value_Map_Key_ProjectSearchId_Map_Key_ModMass;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     private static _convertModMapToDataTransformation(modMap: Map<number,Map<number,number>>, vizOptionsData: ModView_VizOptionsData) {
 

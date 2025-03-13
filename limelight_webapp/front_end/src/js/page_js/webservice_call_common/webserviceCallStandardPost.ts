@@ -53,7 +53,7 @@ const MAX_CONCURRENT_REQUESTS = 10;
  * @param url - without trailing '/' or getWebserviceSyncTrackingCode() 
  * @param doNotHandleErrorResponse - optional Do not process non-200 response code or AJAX Parse failures, Caller is responsible.
  * 
- * @return { promise, api }. On promise, call resolve({ responseData }) or reject({ rejectReasonObject }).  On api, call abort()
+ * @return { promise, api }. On promise, call resolve({ responseData }) or reject( rejectReasonObject ).  On api, call abort()
  * 
  * content type of post is assumed _AJAX_POST_JSON_CONTENT_TYPE
  * 
@@ -315,7 +315,7 @@ const __for_Next_WebserviceCallStandardPost = function(
 
             //  Need to set properties on object rejectReasonObject
 
-            request_Holder.rejectPromise({ rejectReasonObject });
+            request_Holder.rejectPromise( rejectReasonObject );
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
@@ -368,7 +368,7 @@ const __for_Next_WebserviceCallStandardPost = function(
 
                 //  Need to set properties on object rejectReasonObject
 
-                request_Holder.rejectPromise({ rejectReasonObject });
+                request_Holder.rejectPromise( rejectReasonObject );
 
                 return; // EARLY RETURN
             }
@@ -389,7 +389,7 @@ const __for_Next_WebserviceCallStandardPost = function(
 
                 //  Need to set properties on object rejectReasonObject
 
-                request_Holder.rejectPromise({ rejectReasonObject });
+                request_Holder.rejectPromise( rejectReasonObject );
 
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
@@ -407,7 +407,8 @@ const __for_Next_WebserviceCallStandardPost = function(
 
                         //  Need to set properties on object rejectReasonObject
 
-                        request_Holder.rejectPromise({ rejectReasonObject });
+                        request_Holder.rejectPromise( rejectReasonObject );
+
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
                 }
 

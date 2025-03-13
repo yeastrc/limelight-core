@@ -28,10 +28,11 @@ import {ModProteinSearchPeptideList_SubTableProperties} from "page_js/data_pages
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 export class ModProteinSearchList_SubTableGenerator {
 
-    static async getSearchListSubTable(params:ModProteinSearchList_SubTableProperties):Promise<DataTable_RootTableObject> {
+    static async getSearchListSubTable(params:ModProteinSearchList_SubTableProperties):Promise<DataTable_RootTableObject> { try {
 
         const dataTableId_ThisTable = "Mod View Protein List By Search Sub Table";
 
@@ -42,10 +43,10 @@ export class ModProteinSearchList_SubTableGenerator {
         const dataPageStateManager_DataFrom_Server = params.dataPageStateManager_DataFrom_Server;
 
         // create the columns for the table
-        const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = await ModProteinSearchList_SubTableGenerator.getDataTableColumns();
+        const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = await ModProteinSearchList_SubTableGenerator._getDataTableColumns();
 
         // create the rows for the table
-        const dataTableRows : Array<DataTable_DataRowEntry> = await ModProteinSearchList_SubTableGenerator.getDataTableRows({
+        const dataTableRows : Array<DataTable_DataRowEntry> = await ModProteinSearchList_SubTableGenerator._getDataTableRows({
             modViewDataManager,
             vizOptionsData,
             modMass,
@@ -75,9 +76,10 @@ export class ModProteinSearchList_SubTableGenerator {
         };
 
         return dataTable_RootTableObject;
-    }
 
-    private static async getDataTableColumns() : Promise<DataTable_RootTableDataObject_Both_ColumnArrays> {
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    private static async _getDataTableColumns() : Promise<DataTable_RootTableDataObject_Both_ColumnArrays> { try {
 
         const dataTableColumns : Array<DataTable_Column> = [];
         const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
@@ -145,9 +147,10 @@ export class ModProteinSearchList_SubTableGenerator {
         const dataTable_RootTableDataObject_Both_ColumnArrays = new DataTable_RootTableDataObject_Both_ColumnArrays({ columns: dataTableColumns, columns_tableDownload: dataTable_Column_DownloadTable_Entries });
 
         return dataTable_RootTableDataObject_Both_ColumnArrays;
-    }
 
-    private static async getDataTableRows(
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    private static async _getDataTableRows(
         {
             modViewDataManager,
             vizOptionsData,
@@ -161,11 +164,11 @@ export class ModProteinSearchList_SubTableGenerator {
             proteinId:number,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }
-    ) : Promise<Array<DataTable_DataRowEntry>> {
+    ) : Promise<Array<DataTable_DataRowEntry>> { try {
 
         const dataTableRows : Array<DataTable_DataRowEntry> = [];
 
-        const allProteinDataForModMass:Array<SearchProteinDataForModMass> = await ModProteinSearchList_SubTableGenerator.getSearchProteinDataForModMass({
+        const allProteinDataForModMass:Array<SearchProteinDataForModMass> = await ModProteinSearchList_SubTableGenerator._getSearchProteinDataForModMass({
             modMass,
             vizOptionsData,
             modViewDataManager,
@@ -310,10 +313,11 @@ export class ModProteinSearchList_SubTableGenerator {
         }
 
         return dataTableRows;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
-    private static async getSearchProteinDataForModMass(
+    private static async _getSearchProteinDataForModMass(
         {
             modViewDataManager,
             vizOptionsData,
@@ -325,7 +329,7 @@ export class ModProteinSearchList_SubTableGenerator {
             modMass:number,
             proteinId:number
         }
-    ) : Promise<Array<SearchProteinDataForModMass>> {
+    ) : Promise<Array<SearchProteinDataForModMass>> { try {
 
         const proteinDataForModMass:Array<SearchProteinDataForModMass> = new Array();
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
@@ -337,7 +341,7 @@ export class ModProteinSearchList_SubTableGenerator {
         const unlocalizedRangesByProjectSearchId:Map<number, Map<string, UnlocalizedStartEnd>> = new Map();
 
         // populate the data structures above
-        await ModProteinSearchList_SubTableGenerator.rollupProteinData({
+        await ModProteinSearchList_SubTableGenerator._rollupProteinData({
             proteinPositionMapByProjectSearchId,
             proteinResidueMapByProjectSearchId,
             psmCountMapByProjectSearchId,
@@ -366,9 +370,10 @@ export class ModProteinSearchList_SubTableGenerator {
         }
 
         return proteinDataForModMass;
-    }
 
-    private static async rollupProteinData(
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    private static async _rollupProteinData(
         {
             proteinPositionMapByProjectSearchId,
             proteinResidueMapByProjectSearchId,
@@ -390,7 +395,7 @@ export class ModProteinSearchList_SubTableGenerator {
             proteinId:number,
             vizOptionsData: ModView_VizOptionsData
         }
-    ) : Promise<void> {
+    ) : Promise<void> { try {
 
         for(const projectSearchId of projectSearchIds) {
 
@@ -446,7 +451,7 @@ export class ModProteinSearchList_SubTableGenerator {
             }
 
             // get our data
-            this.rollupProteinDataForProjectSearchIdAndProtein({
+            this._rollupProteinDataForProjectSearchIdAndProtein({
                 proteinPositionMapByProjectSearchId,
                 proteinResidueMapByProjectSearchId,
                 projectSearchId,
@@ -459,9 +464,9 @@ export class ModProteinSearchList_SubTableGenerator {
 
         }
 
-    }
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
-    private static rollupProteinDataForProjectSearchIdAndProtein(
+    private static _rollupProteinDataForProjectSearchIdAndProtein(
         {
             proteinPositionMapByProjectSearchId,
             proteinResidueMapByProjectSearchId,
@@ -481,8 +486,7 @@ export class ModProteinSearchList_SubTableGenerator {
             unlocalizedRangesByProjectSearchId:Map<number, Map<string, UnlocalizedStartEnd>>,
             reportedPeptidesForProtein:Set<ReportedPeptide>
         }
-    ) : void {
-
+    ) : void { try {
 
         if(!(psmCountMapByProjectSearchId.has(projectSearchId))) {
             psmCountMapByProjectSearchId.set(projectSearchId, 0);
@@ -606,7 +610,7 @@ export class ModProteinSearchList_SubTableGenerator {
                 }
             }
         }
-    }
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 }
 
 

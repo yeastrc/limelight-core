@@ -18,6 +18,9 @@
 
 import {errorDisplay_WhenHave_Javascript_Typescript_Error} from "page_js/common_all_pages/errorDisplay_WhenHave_Javascript_Typescript_Error";
 import { _AJAX_POST_JSON_CONTENT_TYPE } from "page_js/common_all_pages/EveryPageCommon";
+import {
+	WebserviceCallStandardPost_RejectObject_Class
+} from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
 
 let _pageHide_Event_Triggered = false; //  true when 'pagehide' event called on page unload
 
@@ -52,6 +55,14 @@ var reportWebErrorToServer = {
 			const errorException = params.errorException;
 			const webserviceURL = params.webserviceURL
 			const skipDisplayErrorOverlay_SkipCall__errorDisplay_WhenHave_Javascript_Typescript_Error = params.skipDisplayErrorOverlay_SkipCall__errorDisplay_WhenHave_Javascript_Typescript_Error
+
+
+			if ( errorException instanceof WebserviceCallStandardPost_RejectObject_Class ) {
+
+				console.warn( "reportErrorObjectToServer: errorException instanceof WebserviceCallStandardPost_RejectObject_Class SO NOT report exception to server" )
+
+				return //   EARLY RETURN
+			}
 
 			if ( _pageHide_Event_Triggered ) {
 

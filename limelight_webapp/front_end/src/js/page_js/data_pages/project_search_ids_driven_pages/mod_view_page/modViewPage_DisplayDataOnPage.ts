@@ -80,7 +80,7 @@ export class ModViewPage_DisplayDataOnPage {
 	 *
 	 *  !!!!   DO NOT update (make changes that will be saved to the URL) Page State Variables in this method.  Do that in the method "initialUpdatesToPageState
 	 */
-	async initialize() : Promise<void> {
+	async initialize() : Promise<void> { try {
 
 		const searchDataLookupParamsRoot : SearchDataLookupParameters_Root =
 			this._searchDetailsBlockDataMgmtProcessing.
@@ -97,12 +97,13 @@ export class ModViewPage_DisplayDataOnPage {
 		stateManagementObject.initialize();	// load in values from the URL
 
 		await this._purge_FiltersOptions_InURL_Example_ProteinPositionEntries_AsNeeded()
-	}
+
+	} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 	/**
 	 *
 	 */
-	private _purge_FiltersOptions_InURL_Example_ProteinPositionEntries_AsNeeded(): Promise<void> {
+	private _purge_FiltersOptions_InURL_Example_ProteinPositionEntries_AsNeeded(): Promise<void> { try {
 
 		if ( ( ( ! this._vizOptionsData.data )
 			|| ( ! this._vizOptionsData.data.proteinPositionFilter )
@@ -174,7 +175,8 @@ export class ModViewPage_DisplayDataOnPage {
 				resolve()
 			} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 		} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-	}
+
+	} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 	/**
 	 *
@@ -306,7 +308,7 @@ export class ModViewPage_DisplayDataOnPage {
 	 * Render the page.
 	 *
 	 */
-	private async renderModDataPage() {
+	private async renderModDataPage() { try {
 
 		//  !!!  DO NOT  initialize any Page State variables here or later in the code.
 
@@ -336,6 +338,6 @@ export class ModViewPage_DisplayDataOnPage {
 			modViewDataManager: this._modViewDataManager
 		});
 
-	}
+	} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 }

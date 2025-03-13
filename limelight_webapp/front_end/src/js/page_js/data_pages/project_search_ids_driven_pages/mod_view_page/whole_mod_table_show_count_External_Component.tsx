@@ -1,5 +1,6 @@
 
 import React from 'react'
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 export const get_WholeModTable_ShowCount_ExternalReactComponent = function (
@@ -16,7 +17,7 @@ export const get_WholeModTable_ShowCount_ExternalReactComponent = function (
         numericValue : number,
         displayedValue : any,
 
-    }) : JSX.Element {
+    }) : JSX.Element { try {
 
     return (
         <WholeModTable_ShowCount_ExternalReactComponent
@@ -27,7 +28,7 @@ export const get_WholeModTable_ShowCount_ExternalReactComponent = function (
             displayedValue={ displayedValue }
         />
     )
-}
+} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 /**
  *
@@ -55,7 +56,7 @@ class WholeModTable_ShowCount_ExternalReactComponent extends React.Component< Wh
         this.state = {};
     }
 
-    render() {
+    render() { try {
 
         const fillColor = (this.props.d3ColorScaler(this.props.numericValue));
 
@@ -68,6 +69,6 @@ class WholeModTable_ShowCount_ExternalReactComponent extends React.Component< Wh
                 <span>{this.props.displayedValue}</span>
             </div>
         );
-    }
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 }
 

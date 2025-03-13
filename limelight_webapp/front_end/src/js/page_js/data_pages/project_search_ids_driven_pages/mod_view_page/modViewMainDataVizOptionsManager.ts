@@ -41,7 +41,7 @@ export class ModViewDataVizRendererOptionsHandler {
             modViewDataManager : ModViewDataManager
             allProjectSearchIds : Array<number>
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-    }) {
+    }) { try {
 
         // defaults for the viz
         const defaults : ModView_VizOptionsData_SubPart_data = {
@@ -49,32 +49,32 @@ export class ModViewDataVizRendererOptionsHandler {
         };
 
         // clear the div
-        ModViewDataVizRendererOptionsHandler.clearDiv_OuterContainer();
+        ModViewDataVizRendererOptionsHandler._clearDiv_OuterContainer();
 
         // add section to page - wait for React render
-        await ModViewDataVizRendererOptionsHandler.addFormToPage({
+        await ModViewDataVizRendererOptionsHandler._addFormToPage({
             vizOptionsData,
             projectSearchIds: allProjectSearchIds,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         });
 
         // add in any defaults that aren't explicitly set
-        ModViewDataVizRendererOptionsHandler.populateDefaultOptions({ defaults, vizOptionsData });
+        ModViewDataVizRendererOptionsHandler._populateDefaultOptions({ defaults, vizOptionsData });
 
         // update fields to reflect what's in vizOptionsData
-        ModViewDataVizRendererOptionsHandler.updateFormSelectionsToReflectState({ vizOptionsData });
+        ModViewDataVizRendererOptionsHandler._updateFormSelectionsToReflectState({ vizOptionsData });
 
         // add handlers to fields
-        ModViewDataVizRendererOptionsHandler.addChangeHandlerToFormElements({
+        ModViewDataVizRendererOptionsHandler._addChangeHandlerToFormElements({
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
             modViewDataManager,
             allProjectSearchIds
         });
-    }
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
-    private static addChangeHandlerToFormElements(
+    private static _addChangeHandlerToFormElements(
         {
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
@@ -195,7 +195,7 @@ export class ModViewDataVizRendererOptionsHandler {
 
     }
 
-    private static updateFormSelectionsToReflectState({ vizOptionsData } : {
+    private static _updateFormSelectionsToReflectState({ vizOptionsData } : {
 
         vizOptionsData: ModView_VizOptionsData
     }) {
@@ -284,7 +284,7 @@ export class ModViewDataVizRendererOptionsHandler {
 
     }
 
-    private static addFormToPage(
+    private static _addFormToPage(
         {
             vizOptionsData, projectSearchIds, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         } : {
@@ -334,7 +334,7 @@ export class ModViewDataVizRendererOptionsHandler {
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
     }
 
-    private static clearDiv_OuterContainer() {
+    private static _clearDiv_OuterContainer() {
 
         const data_viz_options__outer_container_DOM = document.getElementById( "data_viz_options__outer_container" )
 
@@ -350,7 +350,7 @@ export class ModViewDataVizRendererOptionsHandler {
      * @param defaults
      * @param vizOptionsData
      */
-    private static populateDefaultOptions({ defaults, vizOptionsData } : {
+    private static _populateDefaultOptions({ defaults, vizOptionsData } : {
 
         defaults: ModView_VizOptionsData_SubPart_data
         vizOptionsData: ModView_VizOptionsData

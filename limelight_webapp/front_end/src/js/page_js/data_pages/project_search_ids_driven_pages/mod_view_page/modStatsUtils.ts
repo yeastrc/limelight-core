@@ -13,6 +13,7 @@ import {
 import {
     ModPage_View_ZScore_Report_Overlay_Params_TableRow, open_ModPage_View_ZScore_Report_Overlay
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_View_ZScore_Report_Overlay";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 export class ModStatsUtils {
 
@@ -29,7 +30,7 @@ export class ModStatsUtils {
             projectSearchIds: Array<number>,
             modViewDataManager : ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
-        }) {
+        }) { try {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
@@ -79,7 +80,8 @@ export class ModStatsUtils {
         }
 
         StringDownloadUtils.downloadStringAsFile( { stringToDownload : output, filename: 'mod_summary_stats_report.txt' } );
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
     /**
@@ -104,7 +106,7 @@ export class ModStatsUtils {
             projectSearchIds: Array<number>,
             modViewDataManager:ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
-        }) {
+        }) { try {
 
         // do nothing if it's not an even number of searches
         if( projectSearchIds.length % 2 != 0 ) {
@@ -187,17 +189,17 @@ export class ModStatsUtils {
                 x2 = 0;
             }
 
-            let zscore = ModStatsUtils.getZScoreForTwoRatios({x1, n1:psmCount0, x2, n2:psmCount1});
+            let zscore = ModStatsUtils._getZScoreForTwoRatios({x1, n1:psmCount0, x2, n2:psmCount1});
 
-            let pvalue = ModStatsUtils.getPValueForTwoRatios({x1, n1:psmCount0, x2, n2:psmCount1});
+            let pvalue = ModStatsUtils._getPValueForTwoRatios({x1, n1:psmCount0, x2, n2:psmCount1});
             pvalue = pvalue * sortedModMasses.length;
             if (pvalue > 1) {
                 pvalue = 1;
             }
 
-            let filteredZscore = ModStatsUtils.getZScoreForTwoRatios({x1, n1:filteredPsmCount0, x2, n2:filteredPsmCount1});
+            let filteredZscore = ModStatsUtils._getZScoreForTwoRatios({x1, n1:filteredPsmCount0, x2, n2:filteredPsmCount1});
 
-            let filteredPvalue = ModStatsUtils.getPValueForTwoRatios({x1, n1:filteredPsmCount0, x2, n2:filteredPsmCount1});
+            let filteredPvalue = ModStatsUtils._getPValueForTwoRatios({x1, n1:filteredPsmCount0, x2, n2:filteredPsmCount1});
             filteredPvalue = filteredPvalue * sortedModMasses.length;
             if (filteredPvalue > 1) {
                 filteredPvalue = 1;
@@ -273,7 +275,8 @@ export class ModStatsUtils {
 
             open_ModPage_View_Replicate_ZScore_Report_Overlay({ tableRows, quantTypeString })
         }
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
     static async viewSignificantMods(
@@ -289,7 +292,7 @@ export class ModStatsUtils {
             projectSearchIds: Array<number>,
             modViewDataManager:ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
-        }) {
+        }) { try {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
@@ -371,17 +374,17 @@ export class ModStatsUtils {
                             x2 = 0;
                         }
 
-                        let zscore = ModStatsUtils.getZScoreForTwoRatios({x1, n1, x2, n2});
+                        let zscore = ModStatsUtils._getZScoreForTwoRatios({x1, n1, x2, n2});
 
-                        let pvalue = ModStatsUtils.getPValueForTwoRatios({x1, n1, x2, n2});
+                        let pvalue = ModStatsUtils._getPValueForTwoRatios({x1, n1, x2, n2});
                         pvalue = pvalue * sortedModMasses.length;
                         if (pvalue > 1) {
                             pvalue = 1;
                         }
 
-                        let filteredZscore = ModStatsUtils.getZScoreForTwoRatios({x1, n1:filteredn1, x2, n2:filteredn2});
+                        let filteredZscore = ModStatsUtils._getZScoreForTwoRatios({x1, n1:filteredn1, x2, n2:filteredn2});
 
-                        let filteredPvalue = ModStatsUtils.getPValueForTwoRatios({x1, n1:filteredn1, x2, n2:filteredn2});
+                        let filteredPvalue = ModStatsUtils._getPValueForTwoRatios({x1, n1:filteredn1, x2, n2:filteredn2});
                         filteredPvalue = filteredPvalue * sortedModMasses.length;
                         if (filteredPvalue > 1) {
                             filteredPvalue = 1;
@@ -466,7 +469,8 @@ export class ModStatsUtils {
 
             open_ModPage_View_ZScore_Report_Overlay({ tableRows, quantTypeString })
         }
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
     static async downloadSignificantMods(
@@ -482,7 +486,7 @@ export class ModStatsUtils {
             projectSearchIds: Array<number>,
             modViewDataManager:ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
-        }) {
+        }) { try {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
@@ -546,9 +550,9 @@ export class ModStatsUtils {
                             x2 = 0;
                         }
 
-                        let zscore = ModStatsUtils.getZScoreForTwoRatios({x1, n1, x2, n2});
+                        let zscore = ModStatsUtils._getZScoreForTwoRatios({x1, n1, x2, n2});
 
-                        let pvalue = ModStatsUtils.getPValueForTwoRatios({x1, n1, x2, n2});
+                        let pvalue = ModStatsUtils._getPValueForTwoRatios({x1, n1, x2, n2});
                         pvalue = pvalue * sortedModMasses.length;
                         if (pvalue > 1) {
                             pvalue = 1;
@@ -574,13 +578,14 @@ export class ModStatsUtils {
         }
 
         StringDownloadUtils.downloadStringAsFile( { stringToDownload : output, filename: 'mod_pvalue_report.txt' } );
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    private static _getPValueForTwoRatios({ x1, n1, x2, n2 }) {
+        return jStat.ztest( ModStatsUtils._getZScoreForTwoRatios({ x1, n1, x2, n2 }), 2);
     }
 
-    private static getPValueForTwoRatios({ x1, n1, x2, n2 }) {
-        return jStat.ztest( ModStatsUtils.getZScoreForTwoRatios({ x1, n1, x2, n2 }), 2);
-    }
-
-    private static getZScoreForTwoRatios({ x1, n1, x2, n2 }) {
+    private static _getZScoreForTwoRatios({ x1, n1, x2, n2 }) {
 
         //console.log('getZScoreForTwoRatios', x1, n1, x2, n2);
 

@@ -25,6 +25,7 @@ import {
     SetDefaultView_Component_React_Params
 } from "page_js/data_pages/setDefaultView_React/setDefaultView_Create_Component_React_FunctionTemplate";
 import { SharePage_Component } from "page_js/data_pages/sharePage_React/sharePage_Component_React";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 /**
@@ -77,7 +78,7 @@ class ModPage_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer_Co
 
     }
 
-    render(): React.ReactNode {
+    render(): React.ReactNode { try {
 
         let setDefaultView_Component : JSX.Element = undefined;
 
@@ -149,5 +150,5 @@ class ModPage_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer_Co
                 </div>
             </div>
         )
-    }
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 }

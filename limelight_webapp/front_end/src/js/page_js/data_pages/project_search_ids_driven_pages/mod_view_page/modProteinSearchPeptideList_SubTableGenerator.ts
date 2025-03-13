@@ -35,7 +35,7 @@ import { get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root } fr
 
 export class ModProteinSearchPeptideList_SubTableGenerator {
 
-    static async getSearchListSubTable(params:ModProteinSearchPeptideList_SubTableProperties):Promise<DataTable_RootTableObject> {
+    static async getSearchListSubTable(params:ModProteinSearchPeptideList_SubTableProperties):Promise<DataTable_RootTableObject> { try {
 
         const dataTableId_ThisTable = "Mod View Protein List By Search Sub Table";
 
@@ -47,10 +47,10 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         const vizOptionsData = params.vizOptionsData;
 
         // create the columns for the table
-        const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = await ModProteinSearchPeptideList_SubTableGenerator.getDataTableColumns();
+        const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = await ModProteinSearchPeptideList_SubTableGenerator._getDataTableColumns();
 
         // create the rows for the table
-        const dataTableRows : Array<DataTable_DataRowEntry> = await ModProteinSearchPeptideList_SubTableGenerator.getDataTableRows({
+        const dataTableRows : Array<DataTable_DataRowEntry> = await ModProteinSearchPeptideList_SubTableGenerator._getDataTableRows({
             projectSearchId,
             modViewDataManager,
             modMass,
@@ -81,9 +81,10 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         };
 
         return dataTable_RootTableObject;
-    }
 
-    private static async getDataTableColumns() : Promise<DataTable_RootTableDataObject_Both_ColumnArrays> {
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    private static async _getDataTableColumns() : Promise<DataTable_RootTableDataObject_Both_ColumnArrays> { try {
 
         const dataTableColumns : Array<DataTable_Column> = [];
         const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
@@ -201,9 +202,10 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         const dataTable_RootTableDataObject_Both_ColumnArrays = new DataTable_RootTableDataObject_Both_ColumnArrays({ columns: dataTableColumns, columns_tableDownload: dataTable_Column_DownloadTable_Entries });
 
         return dataTable_RootTableDataObject_Both_ColumnArrays;
-    }
 
-    private static async getDataTableRows(
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    private static async _getDataTableRows(
         {
             modViewDataManager,
             modMass,
@@ -219,11 +221,11 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             dataPageStateManager_DataFrom_Server : DataPageStateManager,
             vizOptionsData
         }
-    ) : Promise<Array<DataTable_DataRowEntry>> {
+    ) : Promise<Array<DataTable_DataRowEntry>> { try {
 
         const dataTableRows : Array<DataTable_DataRowEntry> = [];
 
-        const allProteinDataForModMass:Array<PeptideDataForModProteinSearch> = await ModProteinSearchPeptideList_SubTableGenerator.getPeptideDataForModProteinSearch({
+        const allProteinDataForModMass:Array<PeptideDataForModProteinSearch> = await ModProteinSearchPeptideList_SubTableGenerator._getPeptideDataForModProteinSearch({
             modMass,
             modViewDataManager,
             proteinId,
@@ -419,10 +421,11 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         }
 
         return dataTableRows;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
-    private static async getPeptideDataForModProteinSearch(
+    private static async _getPeptideDataForModProteinSearch(
         {
             modViewDataManager,
             modMass,
@@ -436,7 +439,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             projectSearchId:number,
             vizOptionsData
         }
-    ) : Promise<Array<PeptideDataForModProteinSearch>> {
+    ) : Promise<Array<PeptideDataForModProteinSearch>> { try {
 
         const searchPeptideDataForModMassProtein:Array<PeptideDataForModProteinSearch> = new Array();
 
@@ -451,7 +454,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         const openModPositionOverrideByPeptideString:Map<string, OpenModPosition_DataType> = new Map();
 
         // populate the data structures above
-        await ModProteinSearchPeptideList_SubTableGenerator.rollupProteinData({
+        await ModProteinSearchPeptideList_SubTableGenerator._rollupProteinData({
             proteinPositionMapByPeptideString,
             proteinResidueMapByPeptideString,
             psmIdsByPeptideString,
@@ -483,9 +486,10 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         }
 
         return searchPeptideDataForModMassProtein;
-    }
 
-    private static async rollupProteinData(
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    private static async _rollupProteinData(
         {
             proteinPositionMapByPeptideString,
             proteinResidueMapByPeptideString,
@@ -511,8 +515,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             proteinId:number,
             vizOptionsData:any
         }
-    ) : Promise<void> {
-
+    ) : Promise<void> { try {
 
         const psmsForProjectSearchIdAndModMass = await modViewDataManager.getPsmsForModMass({ modMass, projectSearchId })
 
@@ -566,7 +569,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         }
 
         // get our data
-        this.rollupProteinDataForProjectSearchIdAndProtein({
+        this._rollupProteinDataForProjectSearchIdAndProtein({
             proteinPositionMapByPeptideString,
             proteinResidueMapByPeptideString,
             psmIdsByPeptideString,
@@ -581,9 +584,9 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         });
 
 
-    }
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
-    private static rollupProteinDataForProjectSearchIdAndProtein(
+    private static _rollupProteinDataForProjectSearchIdAndProtein(
         {
             proteinPositionMapByPeptideString,
             proteinResidueMapByPeptideString,
@@ -620,7 +623,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             for(const psm of reportedPeptidePSMMap.get(reportedPeptide.reportedPeptideId)) {
 
                 // get generated reported peptide string for psm
-                const generatedReportedPeptides:Set<string> = ModProteinSearchPeptideList_SubTableGenerator.getReportedPeptideStringsForPsm({
+                const generatedReportedPeptides:Set<string> = ModProteinSearchPeptideList_SubTableGenerator._getReportedPeptideStringsForPsm({
                     modMass: modMass,
                     psm: psm,
                     reportedPeptides: reportedPeptides,
@@ -651,12 +654,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
 
                     reportedPeptideIdsByPeptideString.get(generatedReportedPeptide).add(reportedPeptide.reportedPeptideId);
                 }
-
-
-                if ( generatedReportedPeptides.has( "SDGMIAYSNADSDYWNVGEADGVK[42]ISK[42]LR" ) ) {
-                    var z = 0
-                }
-
 
                 if(psm.variable !== null && psm.variable !== undefined) {
 
@@ -806,14 +803,14 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
      * @param psm
      * @param reportedPeptides
      */
-    private static getReportedPeptideStringsForPsm(
+    private static _getReportedPeptideStringsForPsm(
         {
             psm,
             reportedPeptides,
             modMass,
             openModPositionOverrideByPeptideString
         }:{
-            psm:any,
+            psm: ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry
             reportedPeptides:Map<number, ReportedPeptide>,
             modMass:number,
             openModPositionOverrideByPeptideString:Map<string, OpenModPosition_DataType>
@@ -833,14 +830,14 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
 
 
         // get variable mod info
-        const variableModsByPosition:Map<number, Set<number>> = ModProteinSearchPeptideList_SubTableGenerator.getVariableModsIndexedByPosition({reportedPeptide});
-        const nTerminalMods:Set<number> = ModProteinSearchPeptideList_SubTableGenerator.getNTerminalVariableMods({reportedPeptide});
-        const cTerminalMods:Set<number> = ModProteinSearchPeptideList_SubTableGenerator.getCTerminalVariableMods({reportedPeptide});
+        const variableModsByPosition:Map<number, Set<number>> = ModProteinSearchPeptideList_SubTableGenerator._getVariableModsIndexedByPosition({reportedPeptide});
+        const nTerminalMods:Set<number> = ModProteinSearchPeptideList_SubTableGenerator._getNTerminalVariableMods({reportedPeptide});
+        const cTerminalMods:Set<number> = ModProteinSearchPeptideList_SubTableGenerator._getCTerminalVariableMods({reportedPeptide});
 
-        if(ModProteinSearchPeptideList_SubTableGenerator.hasAnyOpenMod({psm})) {
+        if(ModProteinSearchPeptideList_SubTableGenerator._hasAnyOpenMod({psm})) {
 
             if( ModProteinSearchPeptideList_SubTableGenerator.getIsUnlocalizedOpenMod({psm})) {
-                const generatedString = ModProteinSearchPeptideList_SubTableGenerator.addModsToPeptideSequence({
+                const generatedString = ModProteinSearchPeptideList_SubTableGenerator._addModsToPeptideSequence({
                     peptideSequence:reportedPeptide.sequence,
                     variableModsByPosition,
                     nTermMods:nTerminalMods,
@@ -855,8 +852,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 reportedPeptideStrings.add(generatedString);
             } else {
 
-                if(ModProteinSearchPeptideList_SubTableGenerator.getIsNTerminalOpenMod({psm})) {
-                    const generatedString = ModProteinSearchPeptideList_SubTableGenerator.addModsToPeptideSequence({
+                if(ModProteinSearchPeptideList_SubTableGenerator._getIsNTerminalOpenMod({psm})) {
+                    const generatedString = ModProteinSearchPeptideList_SubTableGenerator._addModsToPeptideSequence({
                         peptideSequence:reportedPeptide.sequence,
                         variableModsByPosition,
                         nTermMods:nTerminalMods,
@@ -873,8 +870,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                     openModPositionOverrideByPeptideString.set(generatedString, 'n');
                 }
 
-                if(ModProteinSearchPeptideList_SubTableGenerator.getIsCTerminalOpenMod({psm})) {
-                    const generatedString = ModProteinSearchPeptideList_SubTableGenerator.addModsToPeptideSequence({
+                if(ModProteinSearchPeptideList_SubTableGenerator._getIsCTerminalOpenMod({psm})) {
+                    const generatedString = ModProteinSearchPeptideList_SubTableGenerator._addModsToPeptideSequence({
                         peptideSequence:reportedPeptide.sequence,
                         variableModsByPosition,
                         nTermMods:nTerminalMods,
@@ -892,8 +889,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 }
 
                 // iterate over each possible open modded position and create a new peptide sequence
-                for(const openModPosition of ModProteinSearchPeptideList_SubTableGenerator.getOpenModPositions({psm})) {
-                    const generatedString = ModProteinSearchPeptideList_SubTableGenerator.addModsToPeptideSequence({
+                for(const openModPosition of ModProteinSearchPeptideList_SubTableGenerator._getOpenModPositions({psm})) {
+                    const generatedString = ModProteinSearchPeptideList_SubTableGenerator._addModsToPeptideSequence({
                         peptideSequence:reportedPeptide.sequence,
                         variableModsByPosition,
                         nTermMods:nTerminalMods,
@@ -913,7 +910,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
 
 
         } else {
-            const generatedString = ModProteinSearchPeptideList_SubTableGenerator.addModsToPeptideSequence({
+            const generatedString = ModProteinSearchPeptideList_SubTableGenerator._addModsToPeptideSequence({
                 peptideSequence:reportedPeptide.sequence,
                 variableModsByPosition,
                 nTermMods:nTerminalMods,
@@ -933,7 +930,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         return reportedPeptideStrings;
     }
 
-    private static addModsToPeptideSequence(
+    private static _addModsToPeptideSequence(
         {
             peptideSequence,
             variableModsByPosition,
@@ -1017,8 +1014,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
      * Returns true if this psm has any open mod, otherwise false
      * @param psm
      */
-    static hasAnyOpenMod({psm}:{psm}) : boolean {
-        if(ModProteinSearchPeptideList_SubTableGenerator.getOpenModPositions({psm}).size > 0) {
+    private static _hasAnyOpenMod({psm}:{psm: ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry}) : boolean {
+        if(ModProteinSearchPeptideList_SubTableGenerator._getOpenModPositions({psm}).size > 0) {
             return true;
         }
 
@@ -1026,11 +1023,11 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             return true;
         }
 
-        if(ModProteinSearchPeptideList_SubTableGenerator.getIsNTerminalOpenMod({psm})) {
+        if(ModProteinSearchPeptideList_SubTableGenerator._getIsNTerminalOpenMod({psm})) {
             return true;
         }
 
-        if(ModProteinSearchPeptideList_SubTableGenerator.getIsCTerminalOpenMod({psm})) {
+        if(ModProteinSearchPeptideList_SubTableGenerator._getIsCTerminalOpenMod({psm})) {
             return true;
         }
 
@@ -1044,7 +1041,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
      *
      * @param psm
      */
-    private static getOpenModPositions({psm}:{psm}) : Set<number> {
+    private static _getOpenModPositions({psm}:{psm: ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry}) : Set<number> {
         const positions:Set<number> = new Set();
 
         if(psm.open !== null && psm.open !== undefined) {
@@ -1058,7 +1055,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         return positions;
     }
 
-    static getIsUnlocalizedOpenMod({psm}:{psm}) : boolean {
+    static getIsUnlocalizedOpenMod({psm}:{psm: ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry}) : boolean {
         if(psm.open !== null && psm.open !== undefined) {
             return psm.open.unloc;
         }
@@ -1066,7 +1063,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         return false;
     }
 
-    private static getIsCTerminalOpenMod({psm}:{psm}) : boolean {
+    private static _getIsCTerminalOpenMod({psm}:{psm: ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry}) : boolean {
 
         if(psm.open !== null && psm.open !== undefined) {
             return psm.open.cterm;
@@ -1075,7 +1072,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
         return false;
     }
 
-    private static getIsNTerminalOpenMod({psm}:{psm}) : boolean {
+    private static _getIsNTerminalOpenMod({psm}:{psm: ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry}) : boolean {
 
         if(psm.open !== null && psm.open !== undefined) {
             return psm.open.nterm;
@@ -1093,7 +1090,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
      * Does not return n- or c-terminal peptides
      * @param reportedPeptide
      */
-    private static getVariableModsIndexedByPosition({reportedPeptide}:{reportedPeptide:ReportedPeptide}) : Map<number, Set<number>> {
+    private static _getVariableModsIndexedByPosition({reportedPeptide}:{reportedPeptide:ReportedPeptide}) : Map<number, Set<number>> {
         const variableMods:Map<number, Set<number>> = new Map();
 
         if(reportedPeptide.variableMods !== null && reportedPeptide.variableMods !== undefined) {
@@ -1117,7 +1114,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
      * Get the rounded (to int) mod masses found at the n-term of this peptide. Returns empty set if none found
      * @param reportedPeptide
      */
-    private static getNTerminalVariableMods({reportedPeptide} : {reportedPeptide:ReportedPeptide}) : Set<number> {
+    private static _getNTerminalVariableMods({reportedPeptide} : {reportedPeptide:ReportedPeptide}) : Set<number> {
 
         const mods:Set<number> = new Set();
 
@@ -1136,7 +1133,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
      * Get the rounded (to int) mod mass found at the c-term of this peptide. Returns empty set if none found
      * @param reportedPeptide
      */
-    private static getCTerminalVariableMods({reportedPeptide} : {reportedPeptide:ReportedPeptide}) : Set<number> {
+    private static _getCTerminalVariableMods({reportedPeptide} : {reportedPeptide:ReportedPeptide}) : Set<number> {
 
         const mods:Set<number> = new Set();
 

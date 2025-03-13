@@ -13,6 +13,7 @@ import {
     tooltip_Limelight_Create_Tooltip,
     Tooltip_Limelight_Created_Tooltip
 } from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 export class modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents_Click_Callback_Params {
 
@@ -45,7 +46,7 @@ export const modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_C
         modViewDataManager:ModViewDataManager
         clickCallback:modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents_Click_Callback
 
-    }) : JSX.Element {
+    }) : JSX.Element { try {
 
     return (
         <Cell_Protein_Name_Contents_Component
@@ -57,7 +58,7 @@ export const modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_C
             clickCallback={clickCallback}
         />
     )
-}
+} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
 interface Cell_Protein_Name_Contents_Component_Props {
@@ -96,13 +97,15 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
      *
      *
      */
-    constructor(props: Cell_Protein_Name_Contents_Component_Props) {
+    constructor(props: Cell_Protein_Name_Contents_Component_Props) { try {
+
         super(props);
 
         this._proteinNameSpan_Ref = React.createRef<HTMLSpanElement>();
-    }
 
-    componentWillUnmount() {
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    componentWillUnmount() { try {
 
         this._unmounted = true;
 
@@ -110,12 +113,13 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
             this._tooltip_Limelight_Created_Tooltip.removeTooltip();
         }
         this._tooltip_Limelight_Created_Tooltip = null;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      *
      */
-    private _onClick(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
+    private _onClick(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) { try {
 
         event.stopPropagation();
 
@@ -126,12 +130,12 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
             ctrlKey_From_ClickEvent: event.ctrlKey,
             metaKey_From_ClickEvent: event.metaKey
         });
-    }
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      *
      */
-    private _onMouseEnter( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+    private _onMouseEnter( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
 
         // event.stopPropagation();
 
@@ -146,7 +150,7 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
 
         const promise = this.props.modViewDataManager.getProteinNamesAndDescriptions({ proteinId: this.props.proteinId, projectSearchIds: this.props.projectSearchIds });
 
-        promise.then( result => {
+        promise.then( result => { try {
 
             if ( this._tooltip_Limelight_Created_Tooltip ) {
                 this._tooltip_Limelight_Created_Tooltip.removeTooltip();
@@ -167,14 +171,15 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
 
             const tooltipContents = _getTooltipText( result );
             this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element: this._proteinNameSpan_Ref.current, tooltipContents });
-        })
 
-    }
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      *
      */
-    private _onMouseLeave( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+    private _onMouseLeave( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
 
         // event.stopPropagation();
 
@@ -184,13 +189,14 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
             this._tooltip_Limelight_Created_Tooltip.removeTooltip();
         }
         this._tooltip_Limelight_Created_Tooltip = null;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
     /**
      *
      */
-    render() {
+    render() { try {
 
         return (
             <span
@@ -203,11 +209,11 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
                 {this.props.proteinName}
             </span>
         );
-    }
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 }
 
 
-const _getTooltipText = function( data: Array<{ name: string, description: string }> ) : JSX.Element {
+const _getTooltipText = function( data: Array<{ name: string, description: string }> ) : JSX.Element { try {
 
     return (
         <div style={ { marginBottom: 10 } } className="isTooltip">
@@ -245,4 +251,4 @@ const _getTooltipText = function( data: Array<{ name: string, description: strin
         </div>
 
     );
-}
+} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}

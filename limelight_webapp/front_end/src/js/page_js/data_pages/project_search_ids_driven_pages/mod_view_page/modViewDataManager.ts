@@ -67,11 +67,11 @@ export class ModViewDataManager {
         return this._searchDataLookupParameters_Root;
     }
 
-    async getProteinSequence({projectSearchId, proteinSequenceVersionId}:{projectSearchId:number, proteinSequenceVersionId:number}) {
+    async getProteinSequence({projectSearchId, proteinSequenceVersionId}:{projectSearchId:number, proteinSequenceVersionId:number}) { try {
 
         // have to go get the data
         if(!(this._proteinSequences.has(proteinSequenceVersionId))) {
-            const response: any = await this._dataLoader.getProteinSequencesForProjectSearchId({
+            const response = await this._dataLoader.getProteinSequencesForProjectSearchId({
                 proteinSequenceVersionIds: [proteinSequenceVersionId],
                 projectSearchId
             });
@@ -88,9 +88,10 @@ export class ModViewDataManager {
         }
 
         return this._proteinSequences.get(proteinSequenceVersionId);
-    }
 
-    async getReportedPeptides({projectSearchId}:{projectSearchId:number}): Promise<Map<number, ReportedPeptide>> {
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    async getReportedPeptides({projectSearchId}:{projectSearchId:number}): Promise<Map<number, ReportedPeptide>> { try {
 
         // have to go get the data
         if(!(this._reportedPeptides.has(projectSearchId))) {
@@ -103,9 +104,10 @@ export class ModViewDataManager {
         }
 
         return this._reportedPeptides.get(projectSearchId);
-    }
 
-    async loadPsmsForModMasses({ modMasses, projectSearchId } : { modMasses:Array<number>, projectSearchId:number }):Promise<void> {
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    async loadPsmsForModMasses({ modMasses, projectSearchId } : { modMasses:Array<number>, projectSearchId:number }):Promise<void> { try {
 
         console.log('called loadPsmsForModMasses()', modMasses, projectSearchId);
 
@@ -113,7 +115,7 @@ export class ModViewDataManager {
             this._psmsForModMasses.set(projectSearchId, new Map());
         }
 
-        const response:any = await this._dataLoader.getPSMDataForProjectSearchIdModMasses({
+        const response = await this._dataLoader.getPSMDataForProjectSearchIdModMasses({
             searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
             projectSearchId,
             modMasses
@@ -135,9 +137,10 @@ export class ModViewDataManager {
         }
 
         console.log('done');
-    }
 
-    async getScanInfoForAllPsms({ projectSearchId } : { projectSearchId:number}):Promise<Map<number, PsmScanInfo>> {
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    async getScanInfoForAllPsms({ projectSearchId } : { projectSearchId:number}):Promise<Map<number, PsmScanInfo>> { try {
 
         if(!(this._scanInfoForPsms.has(projectSearchId))) {
             this._scanInfoForPsms.set(projectSearchId, await this._dataLoader.getScanDataForSingleProjectSearchId({
@@ -147,7 +150,8 @@ export class ModViewDataManager {
         }
 
         return this._scanInfoForPsms.get(projectSearchId);
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     //  UNUSED
 
@@ -165,7 +169,7 @@ export class ModViewDataManager {
     //     return this._scanInfoForPsms.get(projectSearchId).get(psmId);
     // }
 
-    async getPsmsForModMass({ modMass, projectSearchId } : { modMass:number, projectSearchId:number }):Promise<Array<ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry>> {
+    async getPsmsForModMass({ modMass, projectSearchId } : { modMass:number, projectSearchId:number }):Promise<Array<ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry>> { try {
 
         console.log('called getPsmsForModMass()', modMass, projectSearchId);
 
@@ -176,7 +180,7 @@ export class ModViewDataManager {
 
         if(!(this._psmsForModMasses.get(projectSearchId).has(modMass))) {
 
-            const response:any = await this._dataLoader.getPSMDataForProjectSearchIdModMass({
+            const response = await this._dataLoader.getPSMDataForProjectSearchIdModMass({
                 searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
                 projectSearchId,
                 modMass
@@ -190,7 +194,8 @@ export class ModViewDataManager {
         console.log('got', this._psmsForModMasses.get(projectSearchId).get(modMass));
 
         return this._psmsForModMasses.get(projectSearchId).get(modMass);
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * Get the open mod psms for the given mod mass in the given search for the given reported peptide id
@@ -213,7 +218,7 @@ export class ModViewDataManager {
             projectSearchId:number,
             reportedPeptideId:number,
             psmId:number
-        }) : Promise<ModPage_ModViewDataManager_OpenMo_Psm_For_ModMassReportedPeptideIdPsmId_Entry> {
+        }) : Promise<ModPage_ModViewDataManager_OpenMo_Psm_For_ModMassReportedPeptideIdPsmId_Entry> { try {
 
         if(!(this._openModPsmsForModMassReportedPeptideId.has(projectSearchId))) {
             const response = await this._dataLoader.getOpenModPSMDataForProjectSearchId({
@@ -233,8 +238,10 @@ export class ModViewDataManager {
         }
 
         console.log('did not find a psm, could be weird.');
+
         return null;
-    }
+
+    }  catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * Load and save all protein data (currently names and length) for all proteins in the given project search id
@@ -246,11 +253,11 @@ export class ModViewDataManager {
             projectSearchId
         } : {
             projectSearchId:number
-        }) : Promise<void> {
+        }) : Promise<void> { try {
 
         this._proteinData.set(projectSearchId, new Map());
 
-        const response:any = await this._dataLoader.getProteinAnnotationDataForSingleProjectSearchId({
+        const response = await this._dataLoader.getProteinAnnotationDataForSingleProjectSearchId({
             searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
             projectSearchId
         });
@@ -273,7 +280,8 @@ export class ModViewDataManager {
             const protein = new Protein({id:parseInt(proteinId), annotations, length});
             this._proteinData.get(projectSearchId).set(parseInt(proteinId), protein);
         }
-    }
+
+    }  catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     //   UNUSED
 
@@ -316,7 +324,7 @@ export class ModViewDataManager {
                              } : {
         proteinId:number,
         projectSearchId:number
-    }): Promise<Set<string>> {
+    }): Promise<Set<string>> { try {
 
         // have to go get the data
         if(!(this._proteinData.has(projectSearchId))) {
@@ -330,7 +338,8 @@ export class ModViewDataManager {
         }
 
         return names;
-    }
+
+    }  catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * Get all descriptions for the given protein in the given search
@@ -347,7 +356,7 @@ export class ModViewDataManager {
         } : {
             proteinId:number,
             projectSearchId:number
-        }): Promise<Set<string>> {
+        }): Promise<Set<string>> { try {
 
         // have to go get the data
         if(!(this._proteinData.has(projectSearchId))) {
@@ -366,7 +375,8 @@ export class ModViewDataManager {
         }
 
         return descriptions_Result;
-    }
+
+    }  catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     async getProteinNamesAndDescriptions(
         {
@@ -376,7 +386,7 @@ export class ModViewDataManager {
             proteinId:number,
             projectSearchIds:Array<number>
         }
-        ) : Promise<Array<{ name: string, description: string }>> {
+        ) : Promise<Array<{ name: string, description: string }>> { try {
 
         const proteinNamesAndDescriptions = new Array<{ name: string, description: string }>();
 
@@ -403,7 +413,8 @@ export class ModViewDataManager {
         }
 
         return proteinNamesAndDescriptions;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * Get all data we have for a protein in a given search. Returns a Protein object with
@@ -418,7 +429,7 @@ export class ModViewDataManager {
                             } : {
         proteinId:number,
         projectSearchId:number
-    }): Promise<Protein> {
+    }): Promise<Protein> { try {
 
         // have to go get the data
         if(!(this._proteinData.has(projectSearchId))) {
@@ -426,7 +437,8 @@ export class ModViewDataManager {
         }
 
         return this._proteinData.get(projectSearchId).get(proteinId);
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * Get all data for this protein from all the supplied projectSearchIds
@@ -439,7 +451,7 @@ export class ModViewDataManager {
                             } : {
         proteinId:number,
         projectSearchIds:Array<number>
-    }): Promise<Protein> {
+    }): Promise<Protein> { try {
 
         const annotations = new Map<string, Set<string>>();
         let length;
@@ -464,15 +476,17 @@ export class ModViewDataManager {
         }
 
         return new Protein({id:proteinId, annotations, length});
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
-    async getTotalPSMCount(projectSearchId:number): Promise<number> {
+    async getTotalPSMCount(projectSearchId:number): Promise<number> { try {
+
         console.log('called getTotalPSMCount()');
 
         if(!(this._psmCountData.has(projectSearchId))) {
 
-            const response:any = await this._dataLoader.getTotalPSMCountForSingleProjectSearchId({
+            const response = await this._dataLoader.getTotalPSMCountForSingleProjectSearchId({
                 searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
                 projectSearchId
             });
@@ -481,14 +495,16 @@ export class ModViewDataManager {
         }
 
         return this._psmCountData.get(projectSearchId);
-    }
 
-    async getTotalScanCount(projectSearchId:number): Promise<number> {
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    async getTotalScanCount(projectSearchId:number): Promise<number> { try {
+
         console.log('called getTotalScanCount()');
 
         if(!(this._scanCountData.has(projectSearchId))) {
 
-            const response:any = await this._dataLoader.getTotalScanCountForSingleProjectSearchId({
+            const response = await this._dataLoader.getTotalScanCountForSingleProjectSearchId({
                 searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
                 projectSearchId
             });
@@ -497,39 +513,19 @@ export class ModViewDataManager {
         }
 
         return this._scanCountData.get(projectSearchId);
-    }
 
-    async getPSMModData(projectSearchId:number): Promise<ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId> {
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    async getPSMModData(projectSearchId:number): Promise<ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId> { try {
 
         console.log('called getPSMModData()');
 
         if(!(this._psmModData.has(projectSearchId))) {
 
-            const webserviceResponse:any = await this._dataLoader.getPSMModDataForProjectSearchId({
+            const webserviceResponse = await this._dataLoader.getPSMModDataForProjectSearchId({
                 searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
                 projectSearchId
             });
-
-            //  Convert Webservice response to Map
-
-            //  Webservice Response:
-            // public static class WebserviceResult {
-            //
-            //     /**
-            //      *  Map< Reported Peptide Id, ...>
-            //      */
-            //     Map<Integer, List<WebserviceResultItem>> resultRoot;
-
-            // /**
-            //  *
-            //  *
-            //  */
-            // public static class WebserviceResultItem {
-            //
-            //     Set<Integer> variable = new HashSet<>();
-            //     Set<Integer> open = new HashSet<>();
-            //     long psmId;
-
 
             const data_For_PsmId_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId: Map<number, Array<ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId>> = new Map()
 
@@ -561,51 +557,19 @@ export class ModViewDataManager {
         }
 
         return this._psmModData.get(projectSearchId);
-    }
 
-    async getScanModData(projectSearchId:number): Promise<ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId> {
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    async getScanModData(projectSearchId:number): Promise<ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId> { try {
 
         console.log('called getScanModData()');
 
         if(!(this._scanModData.has(projectSearchId))) {
 
-            const webserviceResponse:any = await this._dataLoader.getScanModDataForProjectSearchId({
+            const webserviceResponse = await this._dataLoader.getScanModDataForProjectSearchId({
                 searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
                 projectSearchId
             });
-
-            //  Convert Webservice response to Map
-
-            // public static class WebserviceResult {
-            //
-            //     /**
-            //      *  Map< Reported Peptide Id, ...>
-            //      */
-            //     Map<Integer, List<WebserviceResultItem>> resultRoot;
-
-            // public static class WebserviceResultItem {
-            //
-            //     Set<Integer> variable = new HashSet<>();
-            //     Set<Integer> open = new HashSet<>();
-            //     Set<Long> psmIds = new HashSet<>();
-            //     int scnm; // scan number
-            //     Integer sfid; // search scan filename id
-
-
-            //     class ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId {
-            //
-            //     readonly data_For_ScanNumber_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId: ReadonlyMap<number, Array<ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId>>
-            // }
-            //
-            // class ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId {
-            //
-            //     readonly variable: ReadonlyArray<number>
-            //     readonly open: ReadonlyArray<number>
-            //     readonly psmIds: Array<number>
-            //     scnm: number        // scan number
-            //     sfid: number        // search scan filename id
-            //
-            // }
 
             const data_For_ScanNumber_Array_For_Single_ReportedPeptideId_Map_Key_ReportedPeptideId: Map<number, Array<ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId>> = new Map()
 
@@ -640,7 +604,8 @@ export class ModViewDataManager {
         }
 
         return this._scanModData.get(projectSearchId);
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 }
 
 

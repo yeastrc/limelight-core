@@ -36,7 +36,7 @@ export class ModViewDataUtilities {
             modViewDataManager:ModViewDataManager,
             psm:  ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry
         }
-    ):Promise<boolean> {
+    ):Promise<boolean> { try {
 
         if(psm.variable !== null && psm.variable !== undefined) {
             if(await ModViewDataUtilities.variableModPositionInProteinPositionFilter({
@@ -64,7 +64,8 @@ export class ModViewDataUtilities {
         }
 
         return false;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     static async psmIsUnlocalized(
         {
@@ -80,7 +81,7 @@ export class ModViewDataUtilities {
             modViewDataManager:ModViewDataManager,
             psm: ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry
         }
-    ):Promise<boolean> {
+    ):Promise<boolean> { try {
 
         if(psm.open !== null && psm.open !== undefined) {
             if(await ModViewDataUtilities.openModPSMIsUnlocalized({
@@ -95,7 +96,8 @@ export class ModViewDataUtilities {
         }
 
         return false;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
 
@@ -113,7 +115,7 @@ export class ModViewDataUtilities {
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager:ModViewDataManager
         }
-    ):Promise<boolean> {
+    ):Promise<boolean> { try {
 
         const proteinPositionFilter:ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
         if(proteinPositionFilter === undefined) {
@@ -155,7 +157,8 @@ export class ModViewDataUtilities {
         }
 
         return false;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * Return true if the given open mod PSM is unlocalized (open mod mass not assigned to any position)
@@ -180,7 +183,7 @@ export class ModViewDataUtilities {
             modViewDataManager:ModViewDataManager,
             psmId:number
         }
-    ):Promise<boolean> {
+    ):Promise<boolean> { try {
 
         const psmItem = await modViewDataManager.getOpenModPsmForModMassReportedPeptideIdPsmId({projectSearchId, reportedPeptideId, modMass, psmId});
 
@@ -192,10 +195,11 @@ export class ModViewDataUtilities {
             throw new Error("open mod psm has no open mod data.");
         }
 
-
         const openModData = psmItem.open;
+
         return openModData.unloc;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * Return true if all the supplied open mod PSMs are unlocalized, false otherwise
@@ -220,7 +224,7 @@ export class ModViewDataUtilities {
             modViewDataManager:ModViewDataManager,
             psmIds:Array<number>
         }
-    ):Promise<boolean> {
+    ):Promise<boolean> { try {
 
         for(const psmId of psmIds) {
             if(!(await ModViewDataUtilities.openModPSMIsUnlocalized({
@@ -235,7 +239,8 @@ export class ModViewDataUtilities {
         }
 
         return true;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
     /**
@@ -267,7 +272,7 @@ export class ModViewDataUtilities {
             modViewDataManager:ModViewDataManager,
             psmId:number
         }
-    ):Promise<boolean> {
+    ):Promise<boolean> { try {
 
         //console.log("calling openModPositionInProteinPositionFilter()");
 
@@ -340,7 +345,8 @@ export class ModViewDataUtilities {
         }
 
         return false;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     static async anyOpenModPSMInProteinPositionFilter(
         {
@@ -358,7 +364,7 @@ export class ModViewDataUtilities {
             modViewDataManager:ModViewDataManager,
             psmIds:Array<number>
         }
-    ):Promise<boolean> {
+    ):Promise<boolean> { try {
 
         //console.log("calling openModPositionInProteinPositionFilter()");
 
@@ -376,7 +382,8 @@ export class ModViewDataUtilities {
         }
 
         return false;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * Get the n-terminal residue(s) (single letter amino acid code) in the sequence for this protein for this reported peptide id.
@@ -401,7 +408,7 @@ export class ModViewDataUtilities {
             reportedPeptideIds:Array<number>,
             modViewDataManager:ModViewDataManager
         }
-    ):Promise<Array<string>> {
+    ):Promise<Array<string>> { try {
 
         const proteinSequence = await modViewDataManager.getProteinSequence({projectSearchId, proteinSequenceVersionId});
         const reportedPeptides = await modViewDataManager.getReportedPeptides({projectSearchId});
@@ -446,7 +453,8 @@ export class ModViewDataUtilities {
         }
 
         return residues;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
     /**
@@ -472,7 +480,7 @@ export class ModViewDataUtilities {
             reportedPeptideIds:Array<number>,
             modViewDataManager:ModViewDataManager
         }
-    ):Promise<Array<string>> {
+    ):Promise<Array<string>> { try {
 
         const proteinSequence = await modViewDataManager.getProteinSequence({projectSearchId, proteinSequenceVersionId});
         const reportedPeptides = await modViewDataManager.getReportedPeptides({projectSearchId});
@@ -519,6 +527,7 @@ export class ModViewDataUtilities {
         }
 
         return residues;
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 }
