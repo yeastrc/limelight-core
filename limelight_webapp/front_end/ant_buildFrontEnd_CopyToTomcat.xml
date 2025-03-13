@@ -4,7 +4,7 @@
 	<!--  Build the 'front end' and copy to a Tomcat Deploy  -->
 
 	<!--  
-			Targets to build Javascript Only for a Single Page.  The Handlebars templates are NOT rebuilt.  The JSP are NOT copied.
+			Targets to build Javascript Only for a Single Page.  The JSP are NOT copied.
 	
 	 		Search for:  <target name="js_only_build_copy
 	 		
@@ -118,31 +118,11 @@
 
 	<target name="js_only_build_copy_Project_Page_ProjectOwnerOnly" description="">
 
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
+		<echo>Executing ANT target name="js_only_build_copy_Project_Page_ProjectOwnerOnly" </echo>
 
-		<exec executable="${webpack_executable}" dir="." failonerror="true"
-			  resolveexecutable="true" >
-			<!--
-            resolveexecutable:
-            When this attribute is true, the name of the executable is resolved firstly against the project basedir
-            and if that does not exist, against the execution directory if specified.
-            On Unix systems, if you only want to allow execution of
-            commands in the user's path, set this to false. since Ant 1.6
-            -->
-
-			<!-- Webpack directive  -->
-			<arg value="${webpack_param_mode_value}" />
-
-			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
-			<arg value="--env" />
-			<arg value="build_entry=data_pages/projectViewPage_ProjectOwner_W_User" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-			<fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>
-
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="data_pages/projectViewPage_ProjectOwner_W_User"/>
+		  </antcall>
 	</target>
 
 
@@ -151,31 +131,11 @@
 
 	<target name="js_only_build_copy_Admin_Manage_Imports_Pipeline_Execution_Page" description="">
 
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
+		<echo>Executing ANT target name="js_only_build_copy_Admin_Manage_Imports_Pipeline_Execution_Page" </echo>
 
-		<exec executable="${webpack_executable}" dir="." failonerror="true"
-			  resolveexecutable="true" >
-			<!--
-            resolveexecutable:
-            When this attribute is true, the name of the executable is resolved firstly against the project basedir
-            and if that does not exist, against the execution directory if specified.
-            On Unix systems, if you only want to allow execution of
-            commands in the user's path, set this to false. since Ant 1.6
-            -->
-
-			<!-- Webpack directive  -->
-			<arg value="${webpack_param_mode_value}" />
-
-			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
-			<arg value="--env" />
-			<arg value="build_entry=webapp_admin/manage_ImporterPipelineExecution_Page_Root" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-			<fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>
-
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="webapp_admin/manage_ImporterPipelineExecution_Page_Root"/>
+		  </antcall>
 	</target>
 
 
@@ -184,31 +144,11 @@
 
 	<target name="js_only_build_copy_Project_OrganizeSearches_Page" description="">
 
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
+		<echo>Executing ANT target name="js_only_build_copy_Project_OrganizeSearches_Page" </echo>
 
-		<exec executable="${webpack_executable}" dir="." failonerror="true"
-			  resolveexecutable="true" >
-			<!--
-            resolveexecutable:
-            When this attribute is true, the name of the executable is resolved firstly against the project basedir
-            and if that does not exist, against the execution directory if specified.
-            On Unix systems, if you only want to allow execution of
-            commands in the user's path, set this to false. since Ant 1.6
-            -->
-
-			<!-- Webpack directive  -->
-			<arg value="${webpack_param_mode_value}" />
-
-			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
-			<arg value="--env" />
-			<arg value="build_entry=data_pages/project_OrganizeSearches_Page" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-			<fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>
-
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="data_pages/project_OrganizeSearches_Page"/>
+		  </antcall>
 	</target>
 
 
@@ -216,155 +156,55 @@
 	
 	<target name="js_only_build_copy_QC_Page" description="">
 
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
-		
-		<exec executable="${webpack_executable}" dir="." failonerror="true" 
-		    resolveexecutable="true" >
-		    <!--
-		    resolveexecutable:
-		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
-		    and if that does not exist, against the execution directory if specified. 
-		    On Unix systems, if you only want to allow execution of 
-		    commands in the user's path, set this to false. since Ant 1.6
-		    -->
+		<echo>Executing ANT target name="js_only_build_copy_QC_Page" </echo>
 
-			<!-- Webpack directive  -->
-			<arg value="${webpack_param_mode_value}" />
-
-			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
-			<arg value="--env" />
-			<arg value="build_entry=data_pages/qcViewPage_RootLaunch_LoggedInUsers data_pages/qcViewPage_RootLaunch_PublicUser" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-		
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>			 
-				
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="data_pages/qcViewPage_RootLaunch_LoggedInUsers data_pages/qcViewPage_RootLaunch_PublicUser"/>
+		  </antcall>
 	</target>
 
 	<!--     ScanFileToSearches Page Javascript Only Build Target  -->
 	
 	<target name="js_only_build_copy_ScanFileToSearches_Page" description="">
 
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
-		
-		<exec executable="${webpack_executable}" dir="." failonerror="true" 
-		    resolveexecutable="true" >
-		    <!--
-		    resolveexecutable:
-		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
-		    and if that does not exist, against the execution directory if specified. 
-		    On Unix systems, if you only want to allow execution of 
-		    commands in the user's path, set this to false. since Ant 1.6
-		    -->
+		<echo>Executing ANT target name="js_only_build_copy_ScanFileToSearches_Page" </echo>
 
-			<!-- Webpack directive  -->
-			<arg value="${webpack_param_mode_value}" />
-
-			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
-			<arg value="--env" />
-			<arg value="build_entry=data_pages/scanFileToSearchesViewPage_RootLaunch_LoggedInUsers data_pages/scanFileToSearchesViewPage_RootLaunch_PublicUser" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-		
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>			 
-				
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="data_pages/scanFileToSearchesViewPage_RootLaunch_LoggedInUsers data_pages/scanFileToSearchesViewPage_RootLaunch_PublicUser"/>
+		  </antcall>
 	</target>
 
 	<!--     Peptide Page (NOT Experiment Page) Javascript Only Build Target  -->
 	
 	<target name="js_only_build_copy_Peptide_Page" description="">
 
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
-		
-		<exec executable="${webpack_executable}" dir="." failonerror="true" 
-		    resolveexecutable="true" >
-		    <!--
-		    resolveexecutable:
-		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
-		    and if that does not exist, against the execution directory if specified. 
-		    On Unix systems, if you only want to allow execution of 
-		    commands in the user's path, set this to false. since Ant 1.6
-		    -->
+		<echo>Executing ANT target name="js_only_build_copy_Peptide_Page" </echo>
 
-			<!-- Webpack directive  -->
-			<arg value="${webpack_param_mode_value}" />
-
-			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
-			<arg value="--env" />
-			<arg value="build_entry=data_pages/peptideViewPage_RootLaunch_LoggedInUsers data_pages/peptideViewPage_RootLaunch_PublicUser" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-		
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>			 
-				
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="data_pages/peptideViewPage_RootLaunch_LoggedInUsers data_pages/peptideViewPage_RootLaunch_PublicUser"/>
+		  </antcall>
 	</target>
 
 	<!--     Protein Page (NOT Experiment Page) Javascript Only Build Target  -->
 	
 	<target name="js_only_build_copy_Protein_Page" description="">
 
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
-		
-		<exec executable="${webpack_executable}" dir="." failonerror="true" 
-		    resolveexecutable="true" >
-		    <!--
-		    resolveexecutable:
-		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
-		    and if that does not exist, against the execution directory if specified. 
-		    On Unix systems, if you only want to allow execution of 
-		    commands in the user's path, set this to false. since Ant 1.6
-		    -->
+		<echo>Executing ANT target name="js_only_build_copy_Protein_Page" </echo>
 
-			<!-- Webpack directive  -->
-			<arg value="${webpack_param_mode_value}" />
-
-			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
-			<arg value="--env" />
-			<arg value="build_entry=data_pages/proteinViewPage_RootLaunch_LoggedInUsers data_pages/proteinViewPage_RootLaunch_PublicUser" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-		
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>			 
-				
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="data_pages/proteinViewPage_RootLaunch_LoggedInUsers data_pages/proteinViewPage_RootLaunch_PublicUser"/>
+		  </antcall>
 	</target>
 
 	<!--     Mod Page Javascript Only Build Target  -->
 	
 	<target name="js_only_build_copy_Mod_Page" description="">
 
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
-		
-		<exec executable="${webpack_executable}" dir="." failonerror="true" 
-		    resolveexecutable="true" >
-		    <!--
-		    resolveexecutable:
-		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
-		    and if that does not exist, against the execution directory if specified. 
-		    On Unix systems, if you only want to allow execution of 
-		    commands in the user's path, set this to false. since Ant 1.6
-		    -->
+		<echo>Executing ANT target name="js_only_build_copy_Mod_Page" </echo>
 
-			<!-- Webpack directive  -->
-			<arg value="${webpack_param_mode_value}" />
-
-			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
-			<arg value="--env" />
-			<arg value="build_entry=data_pages/modViewPage_RootLaunch_LoggedInUsers data_pages/modViewPage_RootLaunch_PublicUser" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-		
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>			 
-				
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="data_pages/modViewPage_RootLaunch_LoggedInUsers data_pages/modViewPage_RootLaunch_PublicUser"/>
+		  </antcall>
 	</target>
 	
 	
@@ -375,66 +215,22 @@
 	
 	<target name="js_only_build_copy_Peptide_Experiment_Page" description="">
 
-		<echo>Executing target name="js_only_build_copy_Peptide_Experiment_Page" </echo>
-		
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
-		
-		<exec executable="${webpack_executable}" dir="." failonerror="true" 
-		    resolveexecutable="true" >
-		    <!--
-		    resolveexecutable:
-		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
-		    and if that does not exist, against the execution directory if specified. 
-		    On Unix systems, if you only want to allow execution of 
-		    commands in the user's path, set this to false. since Ant 1.6
-		    -->
+		<echo>Executing ANT target name="js_only_build_copy_Peptide_Experiment_Page" </echo>
 
-			<!-- Webpack directive  -->
-			<arg value="${webpack_param_mode_value}" />
-
-			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
-			<arg value="--env" />
-			<arg value="build_entry=data_pages/peptideExperimentPage_RootLaunch_LoggedInUsers data_pages/peptideExperimentPage_RootLaunch_PublicUser" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-
-		<echo>Copying to Tomcat todir="${tomcat.static}${file.separator}js_generated_bundles"</echo>
-		
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>			 
-				
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="data_pages/peptideExperimentPage_RootLaunch_LoggedInUsers data_pages/peptideExperimentPage_RootLaunch_PublicUser"/>
+		  </antcall>
 	</target>
 
 	<!--     Protein Page (NOT Experiment Page) Javascript Only Build Target  -->
 	
 	<target name="js_only_build_copy_Protein_Experiment_Page" description="">
 
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
-		
-		<exec executable="${webpack_executable}" dir="." failonerror="true" 
-		    resolveexecutable="true" >
-		    <!--
-		    resolveexecutable:
-		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
-		    and if that does not exist, against the execution directory if specified. 
-		    On Unix systems, if you only want to allow execution of 
-		    commands in the user's path, set this to false. since Ant 1.6
-		    -->
+		<echo>Executing ANT target name="js_only_build_copy_Protein_Experiment_Page" </echo>
 
-			<!-- Webpack directive  -->
-			<arg value="${webpack_param_mode_value}" />
-
-			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
-			<arg value="--env" />
-			<arg value="build_entry=data_pages/proteinExperimentPage_RootLaunch_LoggedInUsers data_pages/proteinExperimentPage_RootLaunch_PublicUser" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-		
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>			 
-				
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="data_pages/proteinExperimentPage_RootLaunch_LoggedInUsers data_pages/proteinExperimentPage_RootLaunch_PublicUser"/>
+		  </antcall>
 	</target>
 
 	
@@ -447,62 +243,58 @@
 
 	<target name="js_only_build_copy_FeatureDetectionView_Page" description="">
 
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
+		<echo>Executing ANT target name="js_only_build_copy_FeatureDetectionView_Page" </echo>
 
-		<exec executable="${webpack_executable}" dir="." failonerror="true"
-			  resolveexecutable="true" >
-			<!--
-            resolveexecutable:
-            When this attribute is true, the name of the executable is resolved firstly against the project basedir
-            and if that does not exist, against the execution directory if specified.
-            On Unix systems, if you only want to allow execution of
-            commands in the user's path, set this to false. since Ant 1.6
-            -->
-
-			<!-- Webpack directive  -->
-			<arg value="${webpack_param_mode_value}" />
-
-			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
-			<arg value="--env" />
-			<arg value="build_entry=data_pages/featureDetection_ViewPage_RootLaunch_LoggedInUsers data_pages/featureDetection_ViewPage_RootLaunch_PublicUser" />
-			<!--   <arg value="XXXX" /> -->
-		</exec>
-
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-			<fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>
-
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="data_pages/featureDetection_ViewPage_RootLaunch_LoggedInUsers data_pages/featureDetection_ViewPage_RootLaunch_PublicUser"/>
+		  </antcall>
 	</target>
 
 	<!--     Scan File Browser Page Javascript Only Build Target  -->
 
 	<target name="js_only_build_copy_ScanFileBrowser_Page" description="">
 
-		<echo>Executing webpack using executable: ${webpack_executable}</echo>
+		<echo>Executing ANT target name="js_only_build_copy_ScanFileBrowser_Page" </echo>
 
-		<exec executable="${webpack_executable}" dir="." failonerror="true"
-			  resolveexecutable="true" >
-			<!--
-            resolveexecutable:
-            When this attribute is true, the name of the executable is resolved firstly against the project basedir
-            and if that does not exist, against the execution directory if specified.
-            On Unix systems, if you only want to allow execution of
-            commands in the user's path, set this to false. since Ant 1.6
-            -->
+		 <antcall target="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat">
+		    <param name="build_entry" value="data_pages/scanFileBrowserViewPage_RootLaunch_LoggedInUsers data_pages/scanFileBrowserViewPage_RootLaunch_PublicUser"/>
+		  </antcall>
+	</target>
+
+
+	<!--     General Only Build Target then Copy to Tomcat  -->
+	
+	<target name="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat" description="">
+
+		<echo>Executing ANT target name="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat" </echo>
+
+		<echo>Executing webpack using executable: ${webpack_executable}</echo>
+		
+		<exec executable="${webpack_executable}" dir="." failonerror="true" 
+		    resolveexecutable="true" >
+		    <!--
+		    resolveexecutable:
+		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
+		    and if that does not exist, against the execution directory if specified. 
+		    On Unix systems, if you only want to allow execution of 
+		    commands in the user's path, set this to false. since Ant 1.6
+		    -->
 
 			<!-- Webpack directive  -->
 			<arg value="${webpack_param_mode_value}" />
 
 			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
 			<arg value="--env" />
-			<arg value="build_entry=data_pages/scanFileBrowserViewPage_RootLaunch_LoggedInUsers data_pages/scanFileBrowserViewPage_RootLaunch_PublicUser" />
+			<arg value="build_entry=${build_entry}" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 
+	      <delete dir="${tomcat.static}${file.separator}js_generated_bundles"/>
+	      <mkdir  dir="${tomcat.static}${file.separator}js_generated_bundles"/>
+		
 		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
-			<fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
+		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
 		</copy>
-
+		
 	</target>
-
 </project>
