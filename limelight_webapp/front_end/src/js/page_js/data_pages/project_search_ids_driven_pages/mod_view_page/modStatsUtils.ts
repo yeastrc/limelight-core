@@ -117,7 +117,17 @@ export class ModStatsUtils {
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
 
-        const resultsArray = new Array<any>();
+        const resultsArray = new Array<{
+            group0: string
+            group1: string
+            modMass: number
+            count1: number
+            count2: number
+            zscore: number
+            pvalue: any   //  No Typescript for result of jStat.ztest
+            filteredZscore: number
+            filteredPvalue: any   //  No Typescript for result of jStat.ztest
+        }>();
 
         const modMap_PreCombine = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             projectSearchIds,
@@ -230,6 +240,8 @@ export class ModStatsUtils {
                 filteredPvalue:filteredPvalue
             };
 
+
+
             resultsArray.push(ob);
         }
 
@@ -254,7 +266,7 @@ export class ModStatsUtils {
         {
             // assemble the table rows
             let rank = 1;
-            for(const ob of resultsArray) { // resultsArray is type 'Array<any>'
+            for(const ob of resultsArray) {
                 const tableRow: ModPage_View_Replicate_ZScore_Report_Overlay_Params_TableRow = {
                     group0: ob.group0,
                     group1: ob.group1,
@@ -297,7 +309,19 @@ export class ModStatsUtils {
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
 
-        const resultsArray = new Array<any>();
+        const resultsArray = new Array<{
+            name1: string
+            name2: string
+            search1: number
+            search2: number
+            modMass: number
+            count1: number
+            count2: number
+            zscore: number
+            pvalue: any   //  No Typescript for result of jStat.ztest
+            filteredZscore: number
+            filteredPvalue: any   //  No Typescript for result of jStat.ztest
+        }>();
 
         let output = "<div><table><tr>";
         output += "<th style='text-align: left;'>search1</th>";
@@ -313,14 +337,14 @@ export class ModStatsUtils {
         output += "</tr>";
 
 
-        const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
+        const modMap = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             projectSearchIds,
             vizOptionsData,
             countsOverride: true,
             modViewDataManager
         });
 
-        const filteredCountMap:Map<number,number> = await ModViewDataVizRenderer_MultiSearch.getFilteredTotalCountForEachSearch({
+        const filteredCountMap = await ModViewDataVizRenderer_MultiSearch.getFilteredTotalCountForEachSearch({
             projectSearchIds,
             vizOptionsData,
             modViewDataManager
@@ -448,7 +472,7 @@ export class ModStatsUtils {
         {
             // assemble the table rows
             let rank = 1;
-            for(const ob of resultsArray) { // resultsArray is type 'Array<any>'
+            for(const ob of resultsArray) {
                 const tableRow: ModPage_View_ZScore_Report_Overlay_Params_TableRow = {
                     search1: ob.search1,
                     search2: ob.search2,
@@ -493,7 +517,7 @@ export class ModStatsUtils {
 
         let output = "search1\tsearch2\tmod mass\t" + quantTypeString + " count 1\t" + quantTypeString + " count 2\tz-score\tp-value\n";
 
-        const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
+        const modMap = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             projectSearchIds,
             vizOptionsData,
             countsOverride: true,
@@ -582,7 +606,12 @@ export class ModStatsUtils {
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     private static _getPValueForTwoRatios({ x1, n1, x2, n2 }: { x1: number, n1: number, x2: number, n2: number }) {
-        return jStat.ztest( ModStatsUtils._getZScoreForTwoRatios({ x1, n1, x2, n2 }), 2);
+
+        const result = jStat.ztest( ModStatsUtils._getZScoreForTwoRatios({ x1, n1, x2, n2 }), 2);
+
+        //  TODO  Consider adding a test of 'result' is a number so then can specify return type number
+
+        return result
     }
 
     private static _getZScoreForTwoRatios({ x1, n1, x2, n2 }: { x1: number, n1: number, x2: number, n2: number }) {

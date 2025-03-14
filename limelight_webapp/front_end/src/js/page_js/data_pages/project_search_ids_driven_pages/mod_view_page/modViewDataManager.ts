@@ -95,7 +95,7 @@ export class ModViewDataManager {
 
         // have to go get the data
         if(!(this._reportedPeptides.has(projectSearchId))) {
-            const response:any = await this._dataLoader.getReportedPeptidesForProjectSearchId({
+            const response = await this._dataLoader.getReportedPeptidesForProjectSearchId({
                 searchDataLookupParams:this._searchDetailsProjectMap.get(projectSearchId),
                 projectSearchId
             });

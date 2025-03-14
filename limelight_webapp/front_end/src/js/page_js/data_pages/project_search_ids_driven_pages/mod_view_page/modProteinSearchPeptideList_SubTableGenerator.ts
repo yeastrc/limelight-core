@@ -516,7 +516,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             projectSearchId:number,
             modMass:number,
             proteinId:number,
-            vizOptionsData:any
+            vizOptionsData: ModView_VizOptionsData
         }
     ) : Promise<void> { try {
 

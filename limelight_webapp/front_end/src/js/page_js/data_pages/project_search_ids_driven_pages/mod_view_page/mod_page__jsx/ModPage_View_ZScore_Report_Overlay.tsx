@@ -40,15 +40,15 @@ export type ModPage_View_ZScore_Report_Overlay_Params = {
  */
 export type ModPage_View_ZScore_Report_Overlay_Params_TableRow = {
 
-    search1: string
-    search2: string
+    search1: number
+    search2: number
     modMass: number
     count1: number
     count2: number
     zscore: number
-    pvalue: number
+    pvalue: any // number    //  No Typescript for result of jStat.ztest
     filteredZscore: number
-    filteredPvalue: number
+    filteredPvalue: any // number    //  No Typescript for result of jStat.ztest
     rank: number
 }
 

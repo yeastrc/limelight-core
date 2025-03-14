@@ -13,9 +13,9 @@ export const get_WholeModTable_ShowCount_ExternalReactComponent = function (
     } : {
         modMass : number,
         projectSearchId : number,
-        d3ColorScaler : any,
+        d3ColorScaler : any   // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
         numericValue : number,
-        displayedValue : any,
+        displayedValue : string | number,
 
     }) : JSX.Element { try {
 
@@ -37,9 +37,9 @@ interface WholeModTable_ShowCount_ExternalReactComponent_Props {
 
     modMass : number
     projectSearchId : number
-    d3ColorScaler : any
+    d3ColorScaler : any   // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
     numericValue : number
-    displayedValue : any
+    displayedValue : string | number
 }
 
 /**
