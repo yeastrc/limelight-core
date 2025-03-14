@@ -534,7 +534,7 @@ export class ModViewPage_DataLoader {
         } : {
             searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId,
             projectSearchId: number,
-            modMass
+            modMass:number
         } ) {
 
         let objectThis = this;

@@ -57,19 +57,19 @@ export class ModViewDataTableRenderer_MultiSearch {
 		} : {
 			vizSelectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
 			dataPageStateManager_DataFrom_Server : DataPageStateManager
-			sortedModMasses,
+			sortedModMasses: Array<number>
 			modMap: Map<number, Map<number, number>>
 			projectSearchIds: Array<number>,
 			modViewDataManager : ModViewDataManager
 			vizOptionsData: ModView_VizOptionsData,
-			dataTableContainer_DOM_Element,
-			colorScale
+			dataTableContainer_DOM_Element: HTMLElement
+			colorScale: any   // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
 		}) {
 
 		const dataTableId_ThisTable = "Mod View Show Mods Table";
 
 		// create the columns for the table
-		const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = ModViewDataTableRenderer_MultiSearch.getDataTableColumns({
+		const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = ModViewDataTableRenderer_MultiSearch._getDataTableColumns({
 			vizSelectedStateObject,
 			dataPageStateManager_DataFrom_Server,
 			projectSearchIds,
@@ -77,7 +77,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 		});
 
 		// create the rows for the table
-		const dataTableRows : Array<DataTable_DataRowEntry> = ModViewDataTableRenderer_MultiSearch.getDataTableRows({
+		const dataTableRows : Array<DataTable_DataRowEntry> = ModViewDataTableRenderer_MultiSearch._getDataTableRows({
 			vizSelectedStateObject,
 			dataPageStateManager_DataFrom_Server,
 			sortedModMasses,
@@ -117,7 +117,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 	}//end renderDataTable
 
-	private static getDataTableRows(
+	private static _getDataTableRows(
 		{
 			vizSelectedStateObject,
 			dataPageStateManager_DataFrom_Server,
@@ -130,16 +130,16 @@ export class ModViewDataTableRenderer_MultiSearch {
 		} : {
 			vizSelectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject,
 			dataPageStateManager_DataFrom_Server : DataPageStateManager
-			sortedModMasses,
+			sortedModMasses: Array<number>
 			modMap: Map<number, Map<number, number>>
 			projectSearchIds: Array<number>,
 			modViewDataManager : ModViewDataManager
 			vizOptionsData: ModView_VizOptionsData,
-			colorScale
+			colorScale: any   // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
 		}) : Array<DataTable_DataRowEntry> {
 
-		const sortedModsToDisplay = ModViewDataTableRenderer_MultiSearch.getSortedModsToDisplay({sortedModMasses, vizSelectedStateObject});
-		const projectSearchIdsToDisplay = ModViewDataTableRenderer_MultiSearch.getProjectSearchIdsToDisplay({projectSearchIds, vizSelectedStateObject});
+		const sortedModsToDisplay = ModViewDataTableRenderer_MultiSearch._getSortedModsToDisplay({sortedModMasses, vizSelectedStateObject});
+		const projectSearchIdsToDisplay = ModViewDataTableRenderer_MultiSearch._getProjectSearchIdsToDisplay({projectSearchIds, vizSelectedStateObject});
 
 		const dataTableRows : Array<DataTable_DataRowEntry> = [];
 
@@ -251,7 +251,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 		return dataTableRows;
 	}
 
-	private static getDataTableColumns(
+	private static _getDataTableColumns(
 		{
 			vizSelectedStateObject,
 			dataPageStateManager_DataFrom_Server,
@@ -264,7 +264,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 			vizOptionsData: ModView_VizOptionsData,
 		}) : DataTable_RootTableDataObject_Both_ColumnArrays {
 
-		const projectSearchIdsToDisplay = ModViewDataTableRenderer_MultiSearch.getProjectSearchIdsToDisplay({projectSearchIds, vizSelectedStateObject});
+		const projectSearchIdsToDisplay = ModViewDataTableRenderer_MultiSearch._getProjectSearchIdsToDisplay({projectSearchIds, vizSelectedStateObject});
 
 		const dataTableColumns : Array<DataTable_Column> = [];
 		const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
@@ -301,7 +301,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 		// add a column for each project search id
 		for( const projectSearchId of projectSearchIdsToDisplay ) {
 
-			const displayName = ModViewDataTableRenderer_MultiSearch.getDisplayNameForModMassColumn({projectSearchId, dataPageStateManager_DataFrom_Server, vizOptionsData });
+			const displayName = ModViewDataTableRenderer_MultiSearch._getDisplayNameForModMassColumn({projectSearchId, dataPageStateManager_DataFrom_Server, vizOptionsData });
 
 			const dataTableColumn = new DataTable_Column({
 				id : projectSearchId + "_val", // Used for tracking sort order. Keep short
@@ -320,7 +320,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 		return dataTable_RootTableDataObject_Both_ColumnArrays;
 	}
 
-	private static getDisplayNameForModMassColumn(
+	private static _getDisplayNameForModMassColumn(
 		{ projectSearchId, vizOptionsData, dataPageStateManager_DataFrom_Server } :
 		{
 			projectSearchId:number,
@@ -345,9 +345,9 @@ export class ModViewDataTableRenderer_MultiSearch {
 		return displayString;
 	}
 
-	private static getSortedModsToDisplay({ sortedModMasses, vizSelectedStateObject } : {
+	private static _getSortedModsToDisplay({ sortedModMasses, vizSelectedStateObject } : {
 
-		sortedModMasses,
+		sortedModMasses: Array<number>
 		vizSelectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject
 	}) : Array<number> {
 
@@ -373,7 +373,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 		return sortedModsToDisplay;
 	}
 
-	private static getProjectSearchIdsToDisplay({ projectSearchIds, vizSelectedStateObject } : {
+	private static _getProjectSearchIdsToDisplay({ projectSearchIds, vizSelectedStateObject } : {
 		projectSearchIds: Array<number>,
 		vizSelectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject
 	}) : Array<number> {

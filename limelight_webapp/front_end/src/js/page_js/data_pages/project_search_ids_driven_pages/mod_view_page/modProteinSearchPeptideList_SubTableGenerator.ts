@@ -31,6 +31,9 @@ import {
 import { psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComponent } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__root_component_and_code/psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComponent";
 import { PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component";
 import { get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_SingleProtein_Embed_in_ModPage_Root";
+import {
+    ModView_VizOptionsData
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 
 
 export class ModProteinSearchPeptideList_SubTableGenerator {
@@ -215,11 +218,11 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             vizOptionsData
         } : {
             modViewDataManager : ModViewDataManager
-            modMass,
-            proteinId,
+            modMass: number
+            proteinId: number
             projectSearchId: number,
             dataPageStateManager_DataFrom_Server : DataPageStateManager,
-            vizOptionsData
+            vizOptionsData: ModView_VizOptionsData
         }
     ) : Promise<Array<DataTable_DataRowEntry>> { try {
 
@@ -437,7 +440,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
             modMass:number,
             proteinId:number,
             projectSearchId:number,
-            vizOptionsData
+            vizOptionsData: ModView_VizOptionsData
         }
     ) : Promise<Array<PeptideDataForModProteinSearch>> { try {
 

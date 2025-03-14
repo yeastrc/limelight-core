@@ -72,7 +72,7 @@ interface Cell_Protein_Name_Contents_Component_Props {
 }
 
 interface Cell_Protein_Name_Contents_Component_State {
-    _placeholder
+    _placeholder: unknown
 }
 
 /**

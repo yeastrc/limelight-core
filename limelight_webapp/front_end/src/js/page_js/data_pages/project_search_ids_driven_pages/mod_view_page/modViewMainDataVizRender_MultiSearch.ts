@@ -82,7 +82,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         $('div#data-table-container-container').hide();
 
-        const modMap: Map<number, Map<number, number>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
+        const modMap = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             projectSearchIds:vizOptionsData.data.projectSearchIds,
             vizOptionsData,
             countsOverride : undefined,
@@ -141,7 +141,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             .domain(vizOptionsData.data.projectSearchIds)
             .range([0, height]);
 
-        let colorScale;
+        let colorScale: any  // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
 
         if(vizOptionsData.data.dataTransformation !== undefined && vizOptionsData.data.dataTransformation !== 'none') {
 
@@ -317,7 +317,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             modViewDataManager,
             dataPageStateManager_DataFrom_Server
         } : {
-            sortedModMasses,
+            sortedModMasses: Array<number>
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager : ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
@@ -490,13 +490,19 @@ export class ModViewDataVizRenderer_MultiSearch {
         {
             svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, yScale, vizOptionsData
         } : {
-            svg, rectAreaHeight, colorScale, minPsmCount, maxPsmCount, yScale,
+            svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
+            rectAreaHeight: number
+            colorScale: any   // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
+            minPsmCount: number
+            maxPsmCount: number
+            yScale: any   // d3 range() output
             vizOptionsData: ModView_VizOptionsData
         }) {
 
         const psmQuantType = vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms';
         const quantType = psmQuantType ? 'PSM' : 'Scan';
-        let showInts;
+
+        let showInts = false
 
         if((vizOptionsData.data.dataTransformation === undefined || vizOptionsData.data.dataTransformation === 'none') && vizOptionsData.data.psmQuant === 'counts') {
             showInts = true;
@@ -605,18 +611,18 @@ export class ModViewDataVizRenderer_MultiSearch {
             dataTableContainer_DOM_Element,
             colorScale
         } : {
-            svg,
-            xScale,
-            yScale,
-            sortedModMasses,
+            svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
+            xScale: any  //  d3 .range() result
+            yScale: any  //  d3 .range() result
+            sortedModMasses: Array<number>
             projectSearchIds : Array<number>
             selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
             dataPageStateManager_DataFrom_Server : DataPageStateManager
-            modMap,
+            modMap: Map<number, Map<number, number>>
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager : ModViewDataManager
-            dataTableContainer_DOM_Element,
-            colorScale
+            dataTableContainer_DOM_Element: HTMLElement
+            colorScale: any   // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
         }) {
 
         svg.select('#rect-group')
@@ -644,7 +650,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                     const p = d3.pointer( event_Param );
 
-                    let rectParams = {
+                    let rectParams: INTERNAL__RrectParams_Class = {
                             x       : s.attr( "x"),
                             y       : s.attr( "y"),
                             width   : s.attr( "width"),
@@ -682,7 +688,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 if( !s.empty()) {
 
-                    let rectParams = {
+                    let rectParams: INTERNAL__RrectParams_Class = {
                         x       : s.attr( "x"),
                         y       : s.attr( "y"),
                         width   : s.attr( "width"),
@@ -776,7 +782,6 @@ export class ModViewDataVizRenderer_MultiSearch {
 
 
     private static _clear_Selection_Update_Graphic_AND_DataTable(
-
         {
             svg,
             sortedModMasses,
@@ -789,16 +794,16 @@ export class ModViewDataVizRenderer_MultiSearch {
             dataTableContainer_DOM_Element,
             colorScale
         } : {
-            svg,
-            sortedModMasses,
+            svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
+            sortedModMasses: Array<number>
             projectSearchIds : Array<number>
             selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
             dataPageStateManager_DataFrom_Server : DataPageStateManager
             modMap: Map<number, Map<number, number>>
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager : ModViewDataManager
-            dataTableContainer_DOM_Element,
-            colorScale
+            dataTableContainer_DOM_Element: HTMLElement
+            colorScale: any   // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
         }
     ) {
 
@@ -853,7 +858,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     private static _updateShownRectOpacities({ svg, selectedStateObject } : {
 
-        svg,
+        svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
         selectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject
     }) {
 
@@ -879,9 +884,12 @@ export class ModViewDataVizRenderer_MultiSearch {
         } : {
             // event_Param__CtrlKey: any
             // event_Param__MetaKey: any
-            svg, sortedModMasses,
+            svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
+            sortedModMasses: Array<number>
             projectSearchIds : Array<number>,
-            xScale, yScale, rectParams,
+            xScale: any  //  d3 .range() result
+            yScale: any  //  d3 .range() result
+            rectParams: INTERNAL__RrectParams_Class
             selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject
         }) {
 
@@ -912,7 +920,14 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    private static _rectangleContainsModMass({ modMass, xScale, rectParams }) {
+    private static _rectangleContainsModMass(
+        {
+            modMass, xScale, rectParams
+        }: {
+            modMass: number
+            xScale: any  //  d3 .range() result
+            rectParams: INTERNAL__RrectParams_Class
+        }) {
 
         const modMassMinPosition = xScale(modMass);
         const modMassMaxPosition = modMassMinPosition + xScale.bandwidth();
@@ -927,7 +942,14 @@ export class ModViewDataVizRenderer_MultiSearch {
         return false;
     }
 
-    private static _rectangleContainsProjectSearchId({ projectSearchId, yScale, rectParams }) {
+    private static _rectangleContainsProjectSearchId(
+        {
+            projectSearchId, yScale, rectParams
+        }: {
+            projectSearchId: number
+            yScale: any  //  d3 .range() result
+            rectParams: INTERNAL__RrectParams_Class
+        }) {
 
         const psidMinPosition = yScale(projectSearchId);
         const psidMaxPosition = psidMinPosition + yScale.bandwidth();
@@ -944,7 +966,12 @@ export class ModViewDataVizRenderer_MultiSearch {
 
 
 
-    private static _getInterval({xScale}) {
+    private static _getInterval(
+        {
+            xScale
+        } : {
+            xScale: any  //  d3 .range() result
+        }) {
 
         const spaceNeeded = _VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 6;      // 6 assumes a margin of 3 px on either side of the label (move this to viz defs?)
         const bandwidth = xScale.bandwidth();
@@ -952,7 +979,13 @@ export class ModViewDataVizRenderer_MultiSearch {
         return Math.ceil( spaceNeeded / bandwidth );
     }
 
-    private static _addModLabelsHeader({ svg, width }) {
+    private static _addModLabelsHeader(
+        {
+            svg, width
+        }: {
+            svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
+            width: number
+        }) {
 
         const dx = Math.round( width / 2 );
         const dy = -1 * _VISUALIZATION_MAIN_CONSTANTS.labelFontSize - 30;
@@ -966,7 +999,14 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    private static _addModLabels({ svg, sortedModMasses, xScale }) {
+    private static _addModLabels(
+        {
+            svg, sortedModMasses, xScale
+        }: {
+            svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
+            sortedModMasses: Array<number>
+            xScale: any  //  d3 .range() result
+        }) {
 
         const interval = ModViewDataVizRenderer_MultiSearch._getInterval({xScale});
 
@@ -996,17 +1036,17 @@ export class ModViewDataVizRenderer_MultiSearch {
             dataTableContainer_DOM_Element,
             colorScale
         } : {
-            svg,
-            yScale,
-            tooltip,
-            sortedModMasses,
+            svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
+            yScale: any  //  d3 .range() result
+            tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>
+            sortedModMasses: Array<number>
             selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
             dataPageStateManager_DataFrom_Server : DataPageStateManager
             modMap: Map<number, Map<number, number>>
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager : ModViewDataManager
-            dataTableContainer_DOM_Element,
-            colorScale
+            dataTableContainer_DOM_Element: HTMLElement
+            colorScale: any   // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
         }) {
 
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
@@ -1034,6 +1074,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             })
             .on("click", function( event_Param, dataElement_Param ) {
 
+                // @ts-ignore  -- Make absolutely sure dataElement_Param is a number
                 const projectSearchId = Number.parseInt( dataElement_Param )
 
                 //  Reset reset selected state object and then select
@@ -1114,7 +1155,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     //         modViewDataManager
     //     } : {
     //         event_Y_Value: any
-    //         yScale,
+    //         yScale: any  //  d3 .range() result
     //         dataPageStateManager_DataFrom_Server : DataPageStateManager
     //         labelFontSize,
     //         vizOptionsData: ModView_VizOptionsData,
@@ -1285,7 +1326,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return searchId;
     }
 
-    private static _getWidth({sortedModMasses}) {
+    private static _getWidth({sortedModMasses}: { sortedModMasses: Array<number>}) {
 
         let width = _VISUALIZATION_MAIN_CONSTANTS.widthDefs.default + 0;
 
@@ -1307,7 +1348,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return width;
     }
 
-    private static _getHeight({projectSearchIds}) {
+    private static _getHeight({projectSearchIds}: { projectSearchIds: Array<number> }) {
 
         let height = _VISUALIZATION_MAIN_CONSTANTS.heightDefs.default;
 
@@ -1325,12 +1366,16 @@ export class ModViewDataVizRenderer_MultiSearch {
         {
             svg, modMatrix, xScale, yScale, colorScale, sortedModMasses, projectSearchIds, width, height, tooltip, vizOptionsData, dataPageStateManager_DataFrom_Server
         } : {
-            svg,
+            svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
             modMatrix: INTERNAL__ModMatrix
-            xScale, yScale, colorScale,
-            sortedModMasses: number[]
+            xScale: any  //  d3 .range() result
+            yScale: any  //  d3 .range() result
+            colorScale: any   // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
+            sortedModMasses: Array<number>
             projectSearchIds : Array<number>,
-            width, height, tooltip,
+            width: number
+            height: number
+            tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>
             vizOptionsData: ModView_VizOptionsData,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }) {
@@ -1397,9 +1442,9 @@ export class ModViewDataVizRenderer_MultiSearch {
         } : {
             onSearchLabel_OnLeft: boolean
             projectSearchId : number,
-            modMass,
-            psmCount,
-            tooltip,
+            modMass: number
+            psmCount: number
+            tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>
             vizOptionsData: ModView_VizOptionsData,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }) {
@@ -1408,7 +1453,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
         const showRatiosBoolean = (vizOptionsData.data.psmQuant === 'ratios');
 
-        let labelText;
+        let labelText: string
 
         if( vizOptionsData.data.dataTransformation === undefined || vizOptionsData.data.dataTransformation === 'none') {
             labelText = showRatiosBoolean ? "<p>" + quantTypeString + " Ratio:" : "<p>" + quantTypeString + " Count:";
@@ -1440,7 +1485,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         const tooltip_Left = mousePointer_pageX + tooltip_horizontal_Offset;
         const tooltip_Top = mousePointer_pageY + 20;
 
-        const searchDisplayString_NOT_SET = undefined
+        const searchDisplayString_NOT_SET: string = undefined
 
         let searchDisplayString = searchDisplayString_NOT_SET
 
@@ -1545,12 +1590,21 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    private static _hideToolTip({ tooltip }) {
+    private static _hideToolTip({ tooltip } : { tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any> }) {
         tooltip
             .style("visibility", "hidden")
     }
 
-    private static _addSeparatorLines({ svg, projectSearchIds, yScale, width, height }) {
+    private static _addSeparatorLines(
+        {
+            svg, projectSearchIds, yScale, width, height
+        }: {
+            svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
+            projectSearchIds: Array<number>
+            yScale: any  //  d3 .range() result
+            width: number
+            height: number
+        }) {
 
         svg.select('#rect-group').selectAll('.separator-line')
             .data(projectSearchIds)
@@ -1750,7 +1804,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         } : {
             projectSearchIds : Array<number>,
             vizOptionsData: ModView_VizOptionsData,
-            countsOverride,
+            countsOverride: boolean
             modViewDataManager:ModViewDataManager,
         }) : Promise<Map<number,Map<number,number>>> { try {
 
@@ -1984,15 +2038,15 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         switch(vizOptionsData.data.dataTransformation) {
             case 'per-mod-zscore':
-                ModViewDataVizRenderer_MultiSearch.convertModMapToPerModZScore(modMap);
+                ModViewDataVizRenderer_MultiSearch._convertModMapToPerModZScore(modMap);
                 break;
 
             case 'global-zscore':
-                ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalZScore(modMap);
+                ModViewDataVizRenderer_MultiSearch._convertModMapToGlobalZScore(modMap);
                 break;
 
             case 'global-pvalue-bonf':
-                ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalPValue(modMap);
+                ModViewDataVizRenderer_MultiSearch._convertModMapToGlobalPValue(modMap);
                 break;
 
             case 'scaled-mean-diff':
@@ -2000,7 +2054,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                 break;
 
             case 'global-qvalue-bh':
-                ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalQValue(modMap);
+                ModViewDataVizRenderer_MultiSearch._convertModMapToGlobalQValue(modMap);
                 break;
         }
 
@@ -2034,35 +2088,35 @@ export class ModViewDataVizRenderer_MultiSearch {
         }
     }
 
-    private static _convertModMapToPerModScaledMeanDelta(modMap) {
+    private static _convertModMapToPerModScaledMeanDelta(modMap: Map<number,Map<number,number>>) {
         for(const [modMass, searchCountMap] of modMap) {
-            const mean = ModViewDataVizRenderer_MultiSearch.getMeanForModMass({modMap, modMass});
+            const mean = ModViewDataVizRenderer_MultiSearch._getMeanForModMass({modMap, modMass});
 
             for (const [projectSearchId, count] of searchCountMap) {
-                modMap.get(modMass).set(projectSearchId, ModViewDataVizRenderer_MultiSearch.getScaledMeanDelta({ modMap, modMass, mean, projectSearchId }));
+                modMap.get(modMass).set(projectSearchId, ModViewDataVizRenderer_MultiSearch._getScaledMeanDelta({ modMap, modMass, mean, projectSearchId }));
             }
         }
     }
 
-    static convertModMapToPerModZScore(modMap) {
+    private static _convertModMapToPerModZScore(modMap: Map<number,Map<number,number>>) {
         for(const [modMass, searchCountMap] of modMap) {
-            const mean = ModViewDataVizRenderer_MultiSearch.getMeanForModMass({modMap, modMass});
-            const standardDeviation = ModViewDataVizRenderer_MultiSearch.getStandardDeviationForModMass({ modMap, modMass, mean });
+            const mean = ModViewDataVizRenderer_MultiSearch._getMeanForModMass({modMap, modMass});
+            const standardDeviation = ModViewDataVizRenderer_MultiSearch._getStandardDeviationForModMass({ modMap, modMass, mean });
 
             for (const [projectSearchId, count] of searchCountMap) {
-                modMap.get(modMass).set(projectSearchId, ModViewDataVizRenderer_MultiSearch.getZScoreForModMassProjectSearchId({ modMap, modMass, mean, standardDeviation, projectSearchId }));
+                modMap.get(modMass).set(projectSearchId, ModViewDataVizRenderer_MultiSearch._getZScoreForModMassProjectSearchId({ modMap, modMass, mean, standardDeviation, projectSearchId }));
             }
         }
     }
 
-    static convertModMapToGlobalZScore(modMap) {
+    private static _convertModMapToGlobalZScore(modMap: Map<number,Map<number,number>>) {
 
-        const globalMean = ModViewDataVizRenderer_MultiSearch.getGlobalMean(modMap);
-        const globalStandardDeviation = ModViewDataVizRenderer_MultiSearch.getGlobalStandardDeviation(modMap, globalMean);
+        const globalMean = ModViewDataVizRenderer_MultiSearch._getGlobalMean(modMap);
+        const globalStandardDeviation = ModViewDataVizRenderer_MultiSearch._getGlobalStandardDeviation(modMap, globalMean);
 
         for(const [modMass, searchCountMap] of modMap) {
             for (const [projectSearchId, count] of searchCountMap) {
-                modMap.get(modMass).set(projectSearchId, ModViewDataVizRenderer_MultiSearch.getZScoreForModMassProjectSearchId({ modMap, modMass, mean:globalMean, standardDeviation:globalStandardDeviation, projectSearchId }));
+                modMap.get(modMass).set(projectSearchId, ModViewDataVizRenderer_MultiSearch._getZScoreForModMassProjectSearchId({ modMap, modMass, mean:globalMean, standardDeviation:globalStandardDeviation, projectSearchId }));
             }
         }
     }
@@ -2071,8 +2125,8 @@ export class ModViewDataVizRenderer_MultiSearch {
      * Get Bonferroni corrected p-values from global zscores
      * @param modMap
      */
-    static convertModMapToGlobalPValue(modMap) {
-        ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalZScore(modMap);
+    private static _convertModMapToGlobalPValue(modMap: Map<number,Map<number,number>>) {
+        ModViewDataVizRenderer_MultiSearch._convertModMapToGlobalZScore(modMap);
         let numTests = 0;
 
         for(const [modMass, searchCountMap] of modMap) {
@@ -2094,8 +2148,8 @@ export class ModViewDataVizRenderer_MultiSearch {
      * Get Benjamini-Hochberg q-values from global zscores
      * @param modMap
      */
-    static convertModMapToGlobalQValue(modMap) {
-        ModViewDataVizRenderer_MultiSearch.convertModMapToGlobalZScore(modMap);
+    private static _convertModMapToGlobalQValue(modMap: Map<number,Map<number,number>>) {
+        ModViewDataVizRenderer_MultiSearch._convertModMapToGlobalZScore(modMap);
         const pValueArray = new Array<number>();
 
         for(const [modMass, searchCountMap] of modMap) {
@@ -2117,7 +2171,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    static getGlobalMean(modMap) {
+    private static _getGlobalMean(modMap: Map<number,Map<number,number>>) {
         let n = 0;
         let sum = 0;
 
@@ -2131,7 +2185,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return (n > 0 ? sum / n : 0);
     }
 
-    static getGlobalStandardDeviation(modMap, mean) {
+    private static _getGlobalStandardDeviation(modMap: Map<number,Map<number,number>>, mean: number) {
 
         let n = 0;
         let sum = 0;
@@ -2152,7 +2206,13 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     }
 
-    static getZScoreForModMassProjectSearchId({modMap, modMass, mean, standardDeviation, projectSearchId}) {
+    private static _getZScoreForModMassProjectSearchId(
+        {
+            modMap, modMass, mean, standardDeviation, projectSearchId
+        }: {
+            modMap: Map<number,Map<number,number>>, modMass: number, mean: number, standardDeviation: number, projectSearchId: number
+        }) {
+
         if(!(modMap.has(modMass))) {
             return 0;
         }
@@ -2161,7 +2221,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return (count - mean) / standardDeviation;
     }
 
-    static getScaledMeanDelta({modMap, modMass, mean, projectSearchId}) {
+    private static _getScaledMeanDelta({modMap, modMass, mean, projectSearchId}: { modMap: Map<number,Map<number,number>>, modMass: number, mean: number, projectSearchId: number}) {
         if(!(modMap.has(modMass))) {
             return 0;
         }
@@ -2170,7 +2230,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return (count - mean) / mean;
     }
 
-    static getStandardDeviationForModMass({modMap, modMass, mean}) {
+    private static _getStandardDeviationForModMass({modMap, modMass, mean}: { modMap: Map<number,Map<number,number>>, modMass: number, mean: number}) {
         let sum = 0;
 
         if(!(modMap.has(modMass))) {
@@ -2186,7 +2246,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         return Math.sqrt(sum);
     }
 
-    static getMeanForModMass({modMap, modMass}) {
+    private static _getMeanForModMass({modMap, modMass}: { modMap: Map<number,Map<number,number>>, modMass: number}) {
         let sum = 0;
 
         if(!(modMap.has(modMass))) {
@@ -2363,7 +2423,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     //     return aminoAcidModStats[projectSearchId][reportedPeptideId]['psmCount'];
     // }
 
-    private static _numberWithCommas(x) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+    private static _numberWithCommas(x: number) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
 
 
 }
@@ -2383,3 +2443,9 @@ type INTERNAL__ModMatrix = Array<Array<INTERNAL__ModMatrix_Entry>>
 
 
 
+class INTERNAL__RrectParams_Class {
+    x : any // number | string
+    y : any // number | string
+    width : any // number | string
+    height : any // number | string
+};

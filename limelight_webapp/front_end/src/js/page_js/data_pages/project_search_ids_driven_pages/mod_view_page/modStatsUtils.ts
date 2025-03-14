@@ -26,7 +26,7 @@ export class ModStatsUtils {
             dataPageStateManager_DataFrom_Server
         } : {
             vizOptionsData: ModView_VizOptionsData
-            sortedModMasses,
+            sortedModMasses: Array<number>
             projectSearchIds: Array<number>,
             modViewDataManager : ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
@@ -55,7 +55,7 @@ export class ModStatsUtils {
 
         output += "\n";
 
-        const modMap:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
+        const modMap = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             projectSearchIds,
             vizOptionsData,
             countsOverride: false,
@@ -102,7 +102,7 @@ export class ModStatsUtils {
             dataPageStateManager_DataFrom_Server
         } : {
             vizOptionsData: ModView_VizOptionsData
-            sortedModMasses,
+            sortedModMasses: Array<number>
             projectSearchIds: Array<number>,
             modViewDataManager:ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
@@ -119,14 +119,14 @@ export class ModStatsUtils {
 
         const resultsArray = new Array<any>();
 
-        const modMap_PreCombine:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
+        const modMap_PreCombine = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             projectSearchIds,
             vizOptionsData,
             countsOverride: true,
             modViewDataManager
         });
 
-        const filteredCountMap:Map<number,number> = await ModViewDataVizRenderer_MultiSearch.getFilteredTotalCountForEachSearch({
+        const filteredCountMap = await ModViewDataVizRenderer_MultiSearch.getFilteredTotalCountForEachSearch({
             projectSearchIds,
             vizOptionsData,
             modViewDataManager
@@ -288,7 +288,7 @@ export class ModStatsUtils {
             dataPageStateManager_DataFrom_Server
         } : {
             vizOptionsData: ModView_VizOptionsData
-            sortedModMasses,
+            sortedModMasses: Array<number>
             projectSearchIds: Array<number>,
             modViewDataManager:ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
@@ -482,7 +482,7 @@ export class ModStatsUtils {
             dataPageStateManager_DataFrom_Server
         } : {
             vizOptionsData: ModView_VizOptionsData
-            sortedModMasses,
+            sortedModMasses: Array<number>
             projectSearchIds: Array<number>,
             modViewDataManager:ModViewDataManager,
             dataPageStateManager_DataFrom_Server:DataPageStateManager
@@ -581,18 +581,20 @@ export class ModStatsUtils {
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
-    private static _getPValueForTwoRatios({ x1, n1, x2, n2 }) {
+    private static _getPValueForTwoRatios({ x1, n1, x2, n2 }: { x1: number, n1: number, x2: number, n2: number }) {
         return jStat.ztest( ModStatsUtils._getZScoreForTwoRatios({ x1, n1, x2, n2 }), 2);
     }
 
-    private static _getZScoreForTwoRatios({ x1, n1, x2, n2 }) {
+    private static _getZScoreForTwoRatios({ x1, n1, x2, n2 }: { x1: number, n1: number, x2: number, n2: number }) {
 
         //console.log('getZScoreForTwoRatios', x1, n1, x2, n2);
 
-        x1 = parseInt(x1);
-        n1 = parseInt(n1);
-        x2 = parseInt(x2);
-        n2 = parseInt(n2);
+        //  parseInt NOT needed since all are already number
+
+        // x1 = parseInt(x1);
+        // n1 = parseInt(n1);
+        // x2 = parseInt(x2);
+        // n2 = parseInt(n2);
 
 
         const p = (x1 + x2) / (n1 + n2);

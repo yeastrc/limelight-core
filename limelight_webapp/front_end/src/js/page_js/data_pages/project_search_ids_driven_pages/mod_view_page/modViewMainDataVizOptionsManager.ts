@@ -364,7 +364,7 @@ export class ModViewDataVizRendererOptionsHandler {
 
         for(const optionName of Object.keys(defaults)) {
             if( ! vizOptionsData_data_ObjectKeys.includes(optionName) ) {
-
+                // @ts-ignore
                 vizOptionsData_Data[optionName] = defaults[optionName];
             }
         }

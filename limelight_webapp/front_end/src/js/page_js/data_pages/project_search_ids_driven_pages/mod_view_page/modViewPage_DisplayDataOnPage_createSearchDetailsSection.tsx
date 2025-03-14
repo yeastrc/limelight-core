@@ -62,7 +62,7 @@ interface ModPage_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContaine
  */
 interface ModPage_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer_Component_State {
 
-    _placeHolder
+    _placeHolder: unknown
 }
 
 /**
