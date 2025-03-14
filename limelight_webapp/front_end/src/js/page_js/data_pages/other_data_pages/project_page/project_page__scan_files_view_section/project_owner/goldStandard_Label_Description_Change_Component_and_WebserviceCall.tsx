@@ -219,7 +219,7 @@ class GoldStandard_Label_Description_Change_Component extends React.Component< G
     /**
      *
      */
-    private _label_Description_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _label_Description_Input_Changed( event: React.ChangeEvent<HTMLInputElement> ) : void {
 
         const  {
             labelValue,

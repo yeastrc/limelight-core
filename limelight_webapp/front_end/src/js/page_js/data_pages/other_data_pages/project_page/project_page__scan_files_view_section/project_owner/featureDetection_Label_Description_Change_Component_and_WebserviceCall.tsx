@@ -220,7 +220,7 @@ class FeatureDetection_Label_Description_Change_Component extends React.Componen
     /**
      *
      */
-    private _label_Description_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _label_Description_Input_Changed( event: React.ChangeEvent<HTMLInputElement> ) : void {
 
         const  {
             labelValue,

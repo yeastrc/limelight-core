@@ -236,7 +236,7 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
     /**
      *
      */
-    private _searchName_Description_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _searchName_Description_Input_Changed(event: React.ChangeEvent<HTMLInputElement>) : void {
 
         const  {
             searchNameValue,

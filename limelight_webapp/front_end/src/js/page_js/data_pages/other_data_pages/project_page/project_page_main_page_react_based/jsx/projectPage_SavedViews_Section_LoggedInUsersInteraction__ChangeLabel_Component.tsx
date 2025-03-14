@@ -208,7 +208,7 @@ class ProjectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Compo
     /**
      *
      */
-    private _label_Description_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _label_Description_Input_Changed( event: React.ChangeEvent<HTMLInputElement> ) : void {
 
         const  {
             labelValue,

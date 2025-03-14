@@ -197,7 +197,7 @@ export class Scan_RetentionTime_MZ_UserSelections_Component extends React.Compon
     /**
      *
      */
-    _scanRetentionTime__From__Filter_InputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _scanRetentionTime__From__Filter_InputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) {
         try {
             const compute_numberString_From_InputField_Result = this._compute_numberString_From_InputField( this._scanRetentionTime__From__Filter_Entry_Ref.current.value)
 
@@ -219,7 +219,7 @@ export class Scan_RetentionTime_MZ_UserSelections_Component extends React.Compon
     /**
      *
      */
-    _scanRetentionTime__To__Filter_InputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _scanRetentionTime__To__Filter_InputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) {
         try {
             const compute_numberString_From_InputField_Result = this._compute_numberString_From_InputField( this._scanRetentionTime__To__Filter_Entry_Ref.current.value)
 
@@ -241,7 +241,7 @@ export class Scan_RetentionTime_MZ_UserSelections_Component extends React.Compon
     /**
      *
      */
-    _scanMZ__From__Filter_InputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _scanMZ__From__Filter_InputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) {
         try {
             const compute_numberString_From_InputField_Result = this._compute_numberString_From_InputField( this._scanMZ__From__Filter_Entry_Ref.current.value)
 
@@ -263,7 +263,7 @@ export class Scan_RetentionTime_MZ_UserSelections_Component extends React.Compon
     /**
      *
      */
-    _scanMZ__To__Filter_InputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _scanMZ__To__Filter_InputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) {
         try {
             const compute_numberString_From_InputField_Result = this._compute_numberString_From_InputField( this._scanMZ__To__Filter_Entry_Ref.current.value)
 

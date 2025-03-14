@@ -109,7 +109,7 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
 
     //  Click Handlers for the Radio Buttons
 
-    private _proteinGroupNone_RadioButton_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
+    private _proteinGroupNone_RadioButton_OnChange_Handler(event: React.ChangeEvent<HTMLInputElement>) {
         try {
             this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_No_Grouping();  // Update state in URL
 
@@ -122,7 +122,7 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
             throw e;
         }
     }
-    private _proteinGroup_GroupProteins_RadioButton_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
+    private _proteinGroup_GroupProteins_RadioButton_OnChange_Handler(event: React.ChangeEvent<HTMLInputElement>) {
         try {
             this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_All_Groups();  // Update state in URL
 
@@ -135,7 +135,7 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
             throw e;
         }
     }
-    private _proteinGroup_GroupProteins_NonSubset_RadioButton_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
+    private _proteinGroup_GroupProteins_NonSubset_RadioButton_OnChange_Handler(event: React.ChangeEvent<HTMLInputElement>) {
         try {
             this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_NonSubset_Groups();  // Update state in URL
 
@@ -148,7 +148,7 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
             throw e;
         }
     }
-    private _proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
+    private _proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler(event: React.ChangeEvent<HTMLInputElement>) {
         try {
                 this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.setGroupProteins_Parsimonious_Groups();  // Update state in URL
 
@@ -164,7 +164,7 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
 
     //  Click Handlers for the Check Boxes
 
-    private _showHiddenProteins_CheckBox_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
+    private _showHiddenProteins_CheckBox_OnChange_Handler(event: React.ChangeEvent<HTMLInputElement>) {
         try {
             if ( ! this._showHiddenProteins_Checkbox_Ref.current ) {
                 console.warn( "this._showHiddenProteins_Checkbox_Ref.current NOT POPULATED.  Exit before Update.  In _showHiddenProteins_CheckBox_OnChange_Handler" );

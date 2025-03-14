@@ -192,7 +192,7 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
     /**
      *
      */
-    private _password_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _password_Input_Changed(event: React.ChangeEvent<HTMLInputElement>) : void {
 
         this._get_Password_InputField_AndValidate();
     }

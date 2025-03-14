@@ -192,7 +192,7 @@ class UserAccountManagementPage_Change_LastName_Component extends React.Componen
     /**
      *
      */
-    private _lastName_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _lastName_Input_Changed(event: React.ChangeEvent<HTMLInputElement>) : void {
 
         const  {
             lastNameValue,

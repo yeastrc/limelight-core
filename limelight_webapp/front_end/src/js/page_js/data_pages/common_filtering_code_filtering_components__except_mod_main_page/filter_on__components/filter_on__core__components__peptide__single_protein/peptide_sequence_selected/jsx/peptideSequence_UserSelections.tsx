@@ -185,7 +185,7 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
     /**
      * 
      */    
-    _inputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _inputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) {
         try {
             const target_htmlElement = event.target as HTMLInputElement;
             const value_htmlElement = target_htmlElement.value;  //  New Value

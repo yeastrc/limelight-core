@@ -128,7 +128,7 @@ class ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection__Use
     /**
      *
      */
-    private _add_Button_Clicked( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    private _add_Button_Clicked( event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
         try {
             event.stopPropagation();
 
@@ -225,7 +225,7 @@ class ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection__Use
         }
     }
 
-    private _allSearches_Checkbox_Clicked( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    private _allSearches_Checkbox_Clicked( event: unknown ) {
         try {
             //  Invert Selection
             this._scanFiles_Selections_Root.allSearches_Selected = ! this._scanFiles_Selections_Root.allSearches_Selected
@@ -471,7 +471,7 @@ class INTERNAL__SingleSearch_Component extends React.Component< INTERNAL__Single
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
-    private _search_Checkbox_Clicked( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    private _search_Checkbox_Clicked( event: unknown ) {
         try {
             this.props.singleSearch_CurrentSelections.wholeSearch_Selected = ! this.props.singleSearch_CurrentSelections.wholeSearch_Selected
 
@@ -646,7 +646,7 @@ class INTERNAL__SingleScanFile_UnderSearch_Component extends React.Component< IN
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
-    private _scanFile_Checkbox_Clicked( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    private _scanFile_Checkbox_Clicked( event: unknown ) {
         try {
             const fileIsSelected = ! this.props.fileIsSelected
 

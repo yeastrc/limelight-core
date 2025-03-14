@@ -192,7 +192,7 @@ class UserAccountManagementPage_Change_FirstName_Component extends React.Compone
     /**
      *
      */
-    private _firstName_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _firstName_Input_Changed(event: React.ChangeEvent<HTMLInputElement>) : void {
 
         const  {
             firstNameValue,

@@ -192,7 +192,7 @@ class UserAccountManagementPage_Change_Username_Component extends React.Componen
     /**
      *
      */
-    private _username_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _username_Input_Changed(event: React.ChangeEvent<HTMLInputElement>) : void {
 
         const  {
             usernameValue,

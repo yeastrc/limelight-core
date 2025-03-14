@@ -156,7 +156,7 @@ export class PeptideSequence_MissedCleavageCount_UserSelections_Component extend
     /**
      *
      */
-    _missedCleavageCount__From__Filter_InputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _missedCleavageCount__From__Filter_InputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) {
         try {
             const compute_numberString_From_InputField_Result = this._compute_numberString_From_InputField( this._missedCleavageCount__From__Filter_Entry_Ref.current.value)
 
@@ -178,7 +178,7 @@ export class PeptideSequence_MissedCleavageCount_UserSelections_Component extend
     /**
      *
      */
-    _missedCleavageCount__To__Filter_InputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _missedCleavageCount__To__Filter_InputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) {
         try {
             const compute_numberString_From_InputField_Result = this._compute_numberString_From_InputField( this._missedCleavageCount__To__Filter_Entry_Ref.current.value)
 

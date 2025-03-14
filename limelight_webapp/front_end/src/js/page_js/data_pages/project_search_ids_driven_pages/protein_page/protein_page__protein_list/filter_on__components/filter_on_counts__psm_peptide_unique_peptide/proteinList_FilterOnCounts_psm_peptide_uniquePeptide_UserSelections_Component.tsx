@@ -140,7 +140,7 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
     /**
      *
      */
-    _psmCount_InputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _psmCount_InputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) {
         try {
             let newValue : number = undefined;
 
@@ -173,7 +173,7 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
     /**
      *
      */
-    _peptideCount_InputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _peptideCount_InputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) {
         try {
             let newValue : number = undefined;
 
@@ -206,7 +206,7 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
     /**
      *
      */
-    _uniquePeptideCount_InputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _uniquePeptideCount_InputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) {
         try {
             let newValue : number = undefined;
 

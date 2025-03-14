@@ -385,9 +385,9 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
         return conditionGroupType;
     }
 
-    _conditionGroupType_Changed( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _conditionGroupType_Changed( event: React.ChangeEvent<HTMLSelectElement> ) {
 
-        const target_htmlElement = event.target as HTMLInputElement;
+        const target_htmlElement = event.target
         const conditionGroupType = target_htmlElement.value;
 
         // console.log("conditionGroupType: " + conditionGroupType + ", this.state.conditionGroupType: " + this.state.conditionGroupType );
@@ -414,9 +414,9 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
     }
 
 
-    _conditionNumber_Changed( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _conditionNumber_Changed( event: React.ChangeEvent<HTMLSelectElement> ) {
 
-        const target_htmlElement = event.target as HTMLInputElement;
+        const target_htmlElement = event.target
         const conditionNumber = target_htmlElement.value;
         // console.log("conditionNumber: " + conditionNumber + ", this.state.conditionNumber: " + this.state.conditionNumber );
 
@@ -505,7 +505,7 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
     }
 
 
-    _conditionGroupLabelChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _conditionGroupLabelChanged( event: React.ChangeEvent<HTMLInputElement> ) {
 
         const target_htmlElement = event.target as HTMLInputElement;
         const value = target_htmlElement.value
@@ -1138,7 +1138,7 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
         });
     }
 
-    _labelEdit_LabelInputBlur( event: React.MouseEvent<HTMLElement, MouseEvent> ) { 
+    _labelEdit_LabelInputBlur( event: React.FocusEvent<HTMLInputElement> ) {
         //  End Label Edit
 
         // console.warn("FAKE Exit _labelEdit_LabelInputBlur Immediately.")
@@ -1168,7 +1168,7 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
 
     //  Rendered input value is this.props.condition.label so _labelChanged is not correct.
 
-    _labelChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _labelChanged( event: React.ChangeEvent<HTMLInputElement> ) {
 
         // const target_htmlElement = event.target as HTMLInputElement;
         // const label = target_htmlElement.value;

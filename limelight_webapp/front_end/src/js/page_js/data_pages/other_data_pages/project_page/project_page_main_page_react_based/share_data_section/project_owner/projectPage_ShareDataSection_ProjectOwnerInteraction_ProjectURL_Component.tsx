@@ -376,7 +376,7 @@ class CustomizeProjectURL_Overlay_Component extends React.Component< CustomizePr
     /**
      *
      */
-    private _customLabel_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _customLabel_Input_Changed( event: React.ChangeEvent<HTMLInputElement> ) : void {
 
         this.setState({ duplicateLabelEncountered: false });
 

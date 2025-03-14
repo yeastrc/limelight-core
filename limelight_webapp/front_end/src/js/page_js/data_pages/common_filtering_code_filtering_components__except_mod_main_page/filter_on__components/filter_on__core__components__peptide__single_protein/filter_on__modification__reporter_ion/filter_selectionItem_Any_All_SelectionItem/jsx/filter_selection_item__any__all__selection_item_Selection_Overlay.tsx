@@ -213,7 +213,7 @@ class Filter_selectionItem_Any_All_SelectionItem_Selection_Overlay extends React
     /**
      *
      */
-    private _close_SelectionOverlay_Clicked( event : React.MouseEvent<HTMLElement, MouseEvent> ) {
+    private _close_SelectionOverlay_Clicked(  ) {
         try {
             this._close_SelectionOverlay()
 

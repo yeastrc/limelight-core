@@ -110,7 +110,7 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
     /**
      *
      */
-    private _save_Button_Clicked( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    private _save_Button_Clicked( event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
         try {
             event.stopPropagation();
 
@@ -653,7 +653,7 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
     /**
      *
      */
-    private _add_Entry_Button_Clicked( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    private _add_Entry_Button_Clicked( event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
         try {
             event.stopPropagation();
 

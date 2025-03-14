@@ -185,7 +185,7 @@ class Project_OrganizeSearches_Folder_AddRename_Component extends React.Componen
     /**
      *
      */
-    private _folderName_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _folderName_Input_Changed( event: React.ChangeEvent<HTMLInputElement> ) : void {
 
         const  {
             folderNameValue,

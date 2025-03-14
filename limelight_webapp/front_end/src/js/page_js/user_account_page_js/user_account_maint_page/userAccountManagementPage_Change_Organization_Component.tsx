@@ -194,7 +194,7 @@ class UserAccountManagementPage_Change_Organization_Component extends React.Comp
     /**
      *
      */
-    private _organization_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _organization_Input_Changed(event: React.ChangeEvent<HTMLInputElement>) : void {
 
         const  {
             organizationValue,

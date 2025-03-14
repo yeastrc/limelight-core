@@ -245,7 +245,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
     /**
      * User Clicked Save button or hit enter in a field to submit the <form> using fake hidden type="submit" button at top of form
      */
-    _save( event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _save( event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
         try {
             // console.warn("_save(...) called in searchDetailsAndFilterBlock_UserInput_OverlayContents.tsx")
 

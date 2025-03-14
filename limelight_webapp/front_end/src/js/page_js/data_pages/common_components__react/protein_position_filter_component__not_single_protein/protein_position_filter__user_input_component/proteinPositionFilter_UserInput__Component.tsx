@@ -1103,7 +1103,7 @@ class ProteinPositionFilter_UserInputOverlay__AddRange_Component extends React.C
     /**
      *
      */
-    _add_Button_Clicked( event: React.MouseEvent<HTMLSelectElement, MouseEvent> ) {
+    _add_Button_Clicked( event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
         try {
             if ( this._proteinRange_From_inputField_Value_ErrorMessage
                 || this._proteinRange_To_inputField_Value_ErrorMessage
@@ -1128,7 +1128,7 @@ class ProteinPositionFilter_UserInputOverlay__AddRange_Component extends React.C
     /**
      *
      */
-    _close_Button_Clicked( event: React.MouseEvent<HTMLSelectElement, MouseEvent> ) {
+    _close_Button_Clicked( event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
         try {
             this.props.close_Add_ProteinRange_Clicked();
 
@@ -1547,7 +1547,7 @@ class SingleRange_Entry_From_or_To_InputField extends React.Component< SingleRan
      *
      * @param event
      */
-    _inputField_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
+    _inputField_Changed(event: React.ChangeEvent<HTMLInputElement>) {
         try {
             const current_inputField_Value_String = this._inputField_Ref.current.value;  //  New Value
 

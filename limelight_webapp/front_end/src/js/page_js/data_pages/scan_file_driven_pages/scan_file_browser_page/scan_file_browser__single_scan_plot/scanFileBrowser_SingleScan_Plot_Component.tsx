@@ -895,7 +895,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
     /**
      *
      */
-    private _window_MouseUp_Event(event: React.MouseEvent<SVGRectElement, MouseEvent>) {
+    private _window_MouseUp_Event( event: MouseEvent ) {
 
         console.warn("window Mouse Up. event: ", event)
 
@@ -935,7 +935,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
     /**
      *
      */
-    private _general_mouseUp_Event(event: React.MouseEvent<SVGRectElement, MouseEvent>) {
+    private _general_mouseUp_Event(event: MouseEvent) {
 
         console.warn("_general_mouseUp_Event called")
 
@@ -1220,7 +1220,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
     /**
      * Only added to <body> on Mouse Down and Removed on Mouse Up
      */
-    private _documentBody_MouseMove_Event__UpdateMainChartSelection(event: React.MouseEvent<SVGRectElement, MouseEvent>) {
+    private _documentBody_MouseMove_Event__UpdateMainChartSelection(event: MouseEvent) {
 
         console.warn("Internal__ScanFileBrowser_SingleScan_Plot_Component: _window_MouseMove_Event__UpdateMainChartSelection: window Mouse Move. event: ", event)
 

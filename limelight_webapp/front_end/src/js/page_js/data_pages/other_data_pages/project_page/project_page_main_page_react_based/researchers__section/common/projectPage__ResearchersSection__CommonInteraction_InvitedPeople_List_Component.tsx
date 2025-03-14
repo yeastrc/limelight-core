@@ -379,7 +379,7 @@ class INTERNAL__InvitedPeople_Entry_Component extends React.Component< INTERNAL_
     /**
      *
      */
-    private _resend_Email_Clicked( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    private _resend_Email_Clicked( event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
         try {
             let requestObj = {
                 inviteId : this.props.invitedPerson_ViaEmail_Entry.inviteId

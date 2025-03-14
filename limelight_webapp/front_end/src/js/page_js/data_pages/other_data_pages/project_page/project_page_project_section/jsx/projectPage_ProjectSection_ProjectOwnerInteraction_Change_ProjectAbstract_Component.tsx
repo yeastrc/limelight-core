@@ -207,7 +207,7 @@ class ProjectPage_ProjectSection_ProjectOwnerInteraction_Change_ProjectAbstract_
     /**
      *
      */
-    private _projectAbstract_Description_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _projectAbstract_Description_Input_Changed( event: React.ChangeEvent<HTMLTextAreaElement> ) : void {
 
         const  {
             projectAbstractValue,

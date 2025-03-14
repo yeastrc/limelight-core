@@ -540,7 +540,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
     /**
      *
      */
-    private _checkboxChanged( event: React.MouseEvent<HTMLDivElement> ): void {
+    private _checkboxChanged( event: React.ChangeEvent<HTMLInputElement> ): void {
 
         this.props.callbackOn_Search_Entry_Clicked( this.props.searchDisplayListItem.projectSearchId );
     }

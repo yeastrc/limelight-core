@@ -544,7 +544,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      *
      */
-    _experimentNameChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent>  ) {
+    _experimentNameChanged( event: React.ChangeEvent<HTMLInputElement> ) {
 
         const target_htmlElement = event.target as HTMLInputElement;
         if ( target_htmlElement.value === undefined ) {
@@ -569,9 +569,9 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      *
      */
-    _numberBiologicalReplicates_Changed( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _numberBiologicalReplicates_Changed( event: React.ChangeEvent<HTMLSelectElement> ) {
 
-        const target_htmlElement = event.target as HTMLInputElement;
+        const target_htmlElement = event.target
         if ( target_htmlElement.value === undefined ) {
             throw Error( "_numberBiologicalReplicates_Changed: target_htmlElement.value === undefined");
         }
@@ -825,9 +825,9 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
     /**
      *
      */
-    _numberTechnicalReplicates_Changed( event: React.MouseEvent<HTMLInputElement, MouseEvent>  ) : void {
+    _numberTechnicalReplicates_Changed( event: React.ChangeEvent<HTMLSelectElement> ) : void {
 
-        const target_htmlElement = event.target as HTMLInputElement
+        const target_htmlElement = event.target
         if ( target_htmlElement.value === undefined ) {
             throw Error( "_numberTechnicalReplicates_Changed: target_htmlElement.value === undefined");
         }
@@ -2442,7 +2442,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                     style={ { marginBottom: 10 } }>
                     <span >Experiment Name: </span> 
                     <input type="text" style={ { width : 500 } }
-                        onChange={ this._experimentNameChanged_BindThis } value={ this.state.experimentName } autoFocus 
+                        onChange={ this._experimentNameChanged_BindThis } value={ this.state.experimentName } autoFocus
                     />
                 </div>
 

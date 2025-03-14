@@ -228,7 +228,7 @@ class ProjectPage_ProjectSection_LoggedInUser_Interaction_Add_Change_NoteText_Co
     /**
      *
      */
-    private _noteText_Description_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _noteText_Description_Input_Changed(event: React.ChangeEvent<HTMLTextAreaElement>) : void {
 
         this._noteText_InProgress = this._noteText_Input_Ref.current.value
 

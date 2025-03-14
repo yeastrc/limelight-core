@@ -207,7 +207,7 @@ class ProjectPage_ProjectSection_ProjectOwnerInteraction_Change_ProjectTitle_Com
     /**
      *
      */
-    private _projectTitle_Description_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _projectTitle_Description_Input_Changed( event: React.ChangeEvent<HTMLInputElement> ) : void {
 
         const  {
             projectTitleValue,

@@ -192,7 +192,7 @@ class UserAccountManagementPage_Change_Email_Component extends React.Component< 
     /**
      *
      */
-    private _email_Input_Changed(event: React.MouseEvent<HTMLInputElement, MouseEvent>) : void {
+    private _email_Input_Changed(event: React.ChangeEvent<HTMLInputElement>) : void {
 
         const  {
             emailValue,

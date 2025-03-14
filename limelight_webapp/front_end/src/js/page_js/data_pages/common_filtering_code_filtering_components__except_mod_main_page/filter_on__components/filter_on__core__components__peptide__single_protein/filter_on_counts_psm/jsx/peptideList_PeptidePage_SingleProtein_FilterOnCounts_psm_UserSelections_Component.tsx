@@ -121,7 +121,7 @@ export class PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelect
     /**
      *
      */
-    _psmCount_InputFieldChanged( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    _psmCount_InputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) {
         try {
             let newValue : number = undefined;
 

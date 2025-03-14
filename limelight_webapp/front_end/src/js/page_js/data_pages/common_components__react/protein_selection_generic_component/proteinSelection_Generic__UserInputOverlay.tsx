@@ -236,7 +236,7 @@ class ProteinSelection_Generic__UserInputOverlay_Component extends React.Compone
     /**
      *
      */
-    private _save_Button_Clicked( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    private _save_Button_Clicked( event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
         try {
             event.stopPropagation();
 

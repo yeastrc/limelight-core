@@ -87,7 +87,7 @@ export class DataTable_TableRoot__ShowItemsPerPage_Select_Component extends Reac
      * @param event
      * @private
      */
-    private _selectChanged( event: React.ChangeEvent<HTMLInputElement> ) {
+    private _selectChanged( event: React.ChangeEvent<HTMLSelectElement> ) {
         try {
             const showItemsPerPage_SelectValue_String = this._select_Ref.current.value;
             if ( showItemsPerPage_SelectValue_String === undefined || showItemsPerPage_SelectValue_String === null ) {
