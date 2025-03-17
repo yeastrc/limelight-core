@@ -1,13 +1,13 @@
 
-export class QValueCalculator {
+export class ModPage_QValueCalculator {
 
     private readonly _qvalueMap : Map<number,number>;
 
     constructor({pValueArray}:{pValueArray:Array<number>}) {
-        this._qvalueMap = this.createQValueMap(pValueArray);
+        this._qvalueMap = this._createQValueMap(pValueArray);
     }
 
-    createQValueMap(pvalueArray:Array<number>) : Map<number,number> {
+    private _createQValueMap(pvalueArray:Array<number>) : Map<number,number> {
 
         //console.log('called createQValueMap', pvalueArray);
 

@@ -7,10 +7,10 @@ import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorT
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import {
-    ReportedPeptide,
+    ModPage_ReportedPeptide,
     ReportedPeptideVariableMod
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
-import {PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/PsmScanInfo";
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_ReportedPeptide";
+import {ModPage_PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_PsmScanInfo";
 import {SearchDataLookupParams_For_Single_ProjectSearchId} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {
     ModPage_ModViewDataManager_OpenMo_Psm_For_ModMassReportedPeptideIdPsmId_Entry
@@ -64,7 +64,7 @@ export class ModViewPage_DataLoader {
         } : {
             searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId
             projectSearchId: number
-        } ) : Promise<Map<number, PsmScanInfo>> {
+        } ) : Promise<Map<number, ModPage_PsmScanInfo>> {
 
         let objectThis = this;
 
@@ -94,7 +94,7 @@ export class ModViewPage_DataLoader {
                             }
                         }
 
-                        const psmScanInfoMap:Map<number, PsmScanInfo> = new Map();
+                        const psmScanInfoMap:Map<number, ModPage_PsmScanInfo> = new Map();
 
                         for(const dataObject of responseData.reportedPeptideId_psmIdList_List) {
                             for(const psmItem of dataObject.psms) {
@@ -103,7 +103,7 @@ export class ModViewPage_DataLoader {
                                 const scanFilenameId = psmItem.scanFilenameId;
                                 const scanFilename = (scanFilenameId && scanFileIdNameMap.has(scanFilenameId)) ? scanFileIdNameMap.get(scanFilenameId) : null;
 
-                                psmScanInfoMap.set(psmId, new PsmScanInfo({psmId, scanNumber, scanFilenameId, scanFilename}));
+                                psmScanInfoMap.set(psmId, new ModPage_PsmScanInfo({psmId, scanNumber, scanFilenameId, scanFilename}));
                             }
                         }
 
@@ -178,11 +178,11 @@ export class ModViewPage_DataLoader {
         } : {
             searchDataLookupParams : SearchDataLookupParams_For_Single_ProjectSearchId
             projectSearchId: number
-        } ) : Promise<Map<number, ReportedPeptide>> {
+        } ) : Promise<Map<number, ModPage_ReportedPeptide>> {
 
         let objectThis = this;
 
-        return new Promise<Map<number, ReportedPeptide>>( function( resolve, reject ) {
+        return new Promise<Map<number, ModPage_ReportedPeptide>>( function( resolve, reject ) {
             try {
                 let createRequestData_SingleProjectSearchId_For_getModData_Result = objectThis.__createRequestForSingleProjectSearchIdCutoffs( searchDataLookupParams, projectSearchId );
 
@@ -201,7 +201,7 @@ export class ModViewPage_DataLoader {
 
                         console.log('responseData', responseData);
 
-                        const responseMap = new Map<number, ReportedPeptide>();
+                        const responseMap = new Map<number, ModPage_ReportedPeptide>();
                         for( const reportedPeptideId of Object.keys(responseData.resultRoot_Key_ReportedPeptideId) ) {
                             const dataOb = responseData.resultRoot_Key_ReportedPeptideId[reportedPeptideId];
 
@@ -227,7 +227,7 @@ export class ModViewPage_DataLoader {
                                 }
                             }
 
-                            const reportedPeptide = new ReportedPeptide({
+                            const reportedPeptide = new ModPage_ReportedPeptide({
                                 reportedPeptideId:parseInt(reportedPeptideId),
                                 reportedPeptideString:reportedPeptideString,
                                 sequence:sequence,

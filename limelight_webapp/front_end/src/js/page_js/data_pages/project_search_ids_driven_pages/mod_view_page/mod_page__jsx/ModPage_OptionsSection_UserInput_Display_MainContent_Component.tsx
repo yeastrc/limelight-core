@@ -48,8 +48,8 @@ import {
     ModView_VizOptionsData
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {
-    ProteinPositionFilterDataManager
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
+    ModPage_ProteinPositionFilterDataManager
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_ProteinPositionFilterDataManager";
 import {
     ProteinPositionFilter_UserInput__Component__UserSelectionData_Root,
     ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein,
@@ -786,10 +786,10 @@ export class INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_
         // data checks out if we got here, add it to the page
 
         //  Reset filter in vizOptionsData
-        vizOptionsData.data.proteinPositionFilter = new ProteinPositionFilterDataManager();
+        vizOptionsData.data.proteinPositionFilter = new ModPage_ProteinPositionFilterDataManager();
 
 
-        const proteinPositionFilter: ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
+        const proteinPositionFilter: ModPage_ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
 
 
         for ( const protein_FromChild of params.userSelections.proteins ) {

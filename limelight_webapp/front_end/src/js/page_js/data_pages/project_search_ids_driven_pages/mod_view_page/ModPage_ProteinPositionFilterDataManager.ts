@@ -1,5 +1,5 @@
 
-export class ProteinPositionFilterDataManager {
+export class ModPage_ProteinPositionFilterDataManager {
 
     // key1: proteinId, key2: start position value: end position
     private readonly _proteinPositionFilterData = new Map<number, Map<number, number>>();

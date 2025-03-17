@@ -19,7 +19,7 @@ import {
     ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry,
     ModViewDataManager
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
-import {ReportedPeptide} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
+import {ModPage_ReportedPeptide} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_ReportedPeptide";
 import {ModProteinSearchList_SubTableGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchList_SubTableGenerator";
 import {ModProteinSearchList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchList_SubTableProperties";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
@@ -29,7 +29,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableGenerator";
 import {ModProteinSearchPeptideList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableProperties";
 import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
-import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
+import {ModPage_ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_ProteinPositionFilterDataManager";
 import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
@@ -530,7 +530,7 @@ export class ModProteinList_SubTableGenerator {
         }
     ) : Promise<void> { try {
 
-        const proteinPositionFilter:ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
+        const proteinPositionFilter:ModPage_ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
 
         for(const projectSearchId of projectSearchIds) {
 
@@ -571,10 +571,10 @@ export class ModProteinList_SubTableGenerator {
             }
 
             // get all proteinIds to which these peptides were mapped
-            const reportedPeptides:Map<number, ReportedPeptide> = await modViewDataManager.getReportedPeptides({projectSearchId});
+            const reportedPeptides:Map<number, ModPage_ReportedPeptide> = await modViewDataManager.getReportedPeptides({projectSearchId});
 
             // get a map of protein ids => reported peptides, only for the reported peptides for which we have psms here
-            const proteinIdReportedPeptideMap:Map<number, Set<ReportedPeptide>> = new Map();
+            const proteinIdReportedPeptideMap:Map<number, Set<ModPage_ReportedPeptide>> = new Map();
             for(const reportedPeptideId of reportedPeptidePSMMap.keys()) {
                 const reportedPeptide = reportedPeptides.get(reportedPeptideId);
 
@@ -627,7 +627,7 @@ export class ModProteinList_SubTableGenerator {
             proteinResidueMap:Map<number, Set<string>>,
             proteinPSMCountsByProjectSearchId:Map<number, Map<number, number>>,
             unlocalizedRangesByProteinId:Map<number, Map<string, UnlocalizedStartEnd>>,
-            proteinIdReportedPeptideMap:Map<number, Set<ReportedPeptide>>,
+            proteinIdReportedPeptideMap:Map<number, Set<ModPage_ReportedPeptide>>,
             projectSearchId:number,
             reportedPeptidePSMMap:Map<number, Set<ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry>>,
             namesForProtein:Map<number, Set<string>>,

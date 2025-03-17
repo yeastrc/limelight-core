@@ -1,5 +1,5 @@
 
-export class Protein {
+export class ModPage_Protein {
 
     private readonly _id:number;
     private readonly _annotations:Map<string, Set<string>>;   //key == names, values = set of descriptions for that name

@@ -4,10 +4,10 @@
 
 import {ModViewPage_DataLoader} from './modViewDataLoader';
 import {
-    ReportedPeptide,
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
-import {Protein} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/Protein";
-import {PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/PsmScanInfo";
+    ModPage_ReportedPeptide,
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_ReportedPeptide";
+import {ModPage_Protein} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_Protein";
+import {ModPage_PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_PsmScanInfo";
 import {
     SearchDataLookupParameters_Root,
     SearchDataLookupParams_For_Single_ProjectSearchId
@@ -23,17 +23,17 @@ export class ModViewDataManager {
     private readonly _psmModData : Map<number, ModPage_ModViewDataManager_PSMModData_Entry_Single_ProjectSearchId>;
     private readonly _scanModData : Map<number, ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId>;
 
-    private readonly _proteinData : Map<number, Map<number, Protein>>;  // keyed on search id then protein version id
+    private readonly _proteinData : Map<number, Map<number, ModPage_Protein>>;  // keyed on search id then protein version id
     private readonly _proteinSequences : Map<number, string>;   // cached sequences for protein sequence version ids
 
     private readonly _psmsForModMasses : Map<number, Map<number, Array<ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry>>>;
 
-    private readonly _scanInfoForPsms : Map<number, Map<number, PsmScanInfo>>;
+    private readonly _scanInfoForPsms : Map<number, Map<number, ModPage_PsmScanInfo>>;
 
     // keyed on: search id, then mod mass, then reported peptide id, then psm id
     private readonly _openModPsmsForModMassReportedPeptideId : Map<number, Map<number, Map<number, Map<number, ModPage_ModViewDataManager_OpenMo_Psm_For_ModMassReportedPeptideIdPsmId_Entry>>>>;
 
-    private readonly _reportedPeptides : Map<number, Map<number, ReportedPeptide>>;
+    private readonly _reportedPeptides : Map<number, Map<number, ModPage_ReportedPeptide>>;
 
     private readonly _dataLoader: ModViewPage_DataLoader;
 
@@ -91,7 +91,7 @@ export class ModViewDataManager {
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
-    async getReportedPeptides({projectSearchId}:{projectSearchId:number}): Promise<Map<number, ReportedPeptide>> { try {
+    async getReportedPeptides({projectSearchId}:{projectSearchId:number}): Promise<Map<number, ModPage_ReportedPeptide>> { try {
 
         // have to go get the data
         if(!(this._reportedPeptides.has(projectSearchId))) {
@@ -140,7 +140,7 @@ export class ModViewDataManager {
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
-    async getScanInfoForAllPsms({ projectSearchId } : { projectSearchId:number}):Promise<Map<number, PsmScanInfo>> { try {
+    async getScanInfoForAllPsms({ projectSearchId } : { projectSearchId:number}):Promise<Map<number, ModPage_PsmScanInfo>> { try {
 
         if(!(this._scanInfoForPsms.has(projectSearchId))) {
             this._scanInfoForPsms.set(projectSearchId, await this._dataLoader.getScanDataForSingleProjectSearchId({
@@ -277,7 +277,7 @@ export class ModViewDataManager {
                 }
             }
 
-            const protein = new Protein({id:parseInt(proteinId), annotations, length});
+            const protein = new ModPage_Protein({id:parseInt(proteinId), annotations, length});
             this._proteinData.get(projectSearchId).set(parseInt(proteinId), protein);
         }
 
@@ -390,7 +390,7 @@ export class ModViewDataManager {
 
         const proteinNamesAndDescriptions = new Array<{ name: string, description: string }>();
 
-        const protein:Protein = await this.getDataForProteinMultipleSearches({proteinId, projectSearchIds});
+        const protein:ModPage_Protein = await this.getDataForProteinMultipleSearches({proteinId, projectSearchIds});
         for(const [name, descriptions] of protein.annotations) {
 
             if(descriptions === undefined || descriptions === null || descriptions.size < 1) {
@@ -429,7 +429,7 @@ export class ModViewDataManager {
                             } : {
         proteinId:number,
         projectSearchId:number
-    }): Promise<Protein> { try {
+    }): Promise<ModPage_Protein> { try {
 
         // have to go get the data
         if(!(this._proteinData.has(projectSearchId))) {
@@ -451,7 +451,7 @@ export class ModViewDataManager {
                             } : {
         proteinId:number,
         projectSearchIds:Array<number>
-    }): Promise<Protein> { try {
+    }): Promise<ModPage_Protein> { try {
 
         const annotations = new Map<string, Set<string>>();
         let length;
@@ -475,7 +475,7 @@ export class ModViewDataManager {
             }
         }
 
-        return new Protein({id:proteinId, annotations, length});
+        return new ModPage_Protein({id:proteinId, annotations, length});
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 

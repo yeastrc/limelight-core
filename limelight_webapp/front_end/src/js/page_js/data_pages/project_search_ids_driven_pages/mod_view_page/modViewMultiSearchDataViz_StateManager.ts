@@ -5,7 +5,7 @@
  */
 
 import {MOD_VIEW_MULTI_SEARCH_DATA_VIZ__CENTRAL_STATE_MANAGER_KEY} from 'page_js/data_pages/central_page_state_manager/centralPageStateManager_Keys';
-import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
+import {ModPage_ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_ProteinPositionFilterDataManager";
 import {
     ModView_VizOptionsData, ModView_VizOptionsData_SubPart_selectedStateObject,
     ModView_VizOptionsData_SubPart_selectedStateObject__ModMass_Array_Map_Key_ProjectSearchId_Type
@@ -152,9 +152,9 @@ export class ModMultiSearch_DataVizPageStateManager {
         }
     }
 
-    getDecodedProteinPositionFilter(encodedProteinRanges:Array<number>):ProteinPositionFilterDataManager {
+    getDecodedProteinPositionFilter(encodedProteinRanges:Array<number>):ModPage_ProteinPositionFilterDataManager {
 
-        const proteinPositionFilter = new ProteinPositionFilterDataManager();
+        const proteinPositionFilter = new ModPage_ProteinPositionFilterDataManager();
 
         for(let i = 0; i < encodedProteinRanges.length; i+=3) {
             const proteinId = encodedProteinRanges[i];
@@ -167,7 +167,7 @@ export class ModMultiSearch_DataVizPageStateManager {
         return proteinPositionFilter;
     }
 
-    getEncodedProteinPositionFilter(proteinPositionFilter:ProteinPositionFilterDataManager):Array<number> {
+    getEncodedProteinPositionFilter(proteinPositionFilter:ModPage_ProteinPositionFilterDataManager):Array<number> {
 
         const encodedArray = new Array<number>();
 

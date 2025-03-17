@@ -1,4 +1,4 @@
-export class ReportedPeptide {
+export class ModPage_ReportedPeptide {
 
     private readonly _reportedPeptideId:number;
     private readonly _reportedPeptideString:string;

@@ -12,7 +12,7 @@ import {
     ModPage_ModViewDataManager_ScanModData_Entry_Single_ProjectSearchId_Single_ReportedPeptideId,
     ModViewDataManager
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
-import {QValueCalculator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/QValueCalculator";
+import {ModPage_QValueCalculator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_QValueCalculator";
 import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
@@ -20,7 +20,7 @@ import {
     ModView_VizOptionsData_SubPart_selectedStateObject
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {limelight__Input_NumberOrString_ReturnNumber} from "page_js/common_all_pages/limelight__Input_NumberOrString_ReturnNumber";
-import {PSMLocalizationReportDownloadGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/psmLocalizationReportDownloadGenerator";
+import {ModPage_PSMLocalizationReportDownloadGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modPage_PSMLocalizationReportDownloadGenerator";
 import {StringDownloadUtils} from "page_js/data_pages/data_pages_common/downloadStringAsFile";
 import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
 import {
@@ -435,7 +435,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 			$html.click(async function() { try {
 
 				// calculate and show stats
-				const textToDownload = await PSMLocalizationReportDownloadGenerator.getPsmLocalizationReportText({
+				const textToDownload = await ModPage_PSMLocalizationReportDownloadGenerator.getPsmLocalizationReportText({
 					vizOptionsData,
 					sortedModMasses,
 					projectSearchIds: vizOptionsData.data.projectSearchIds,
@@ -2160,7 +2160,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             }
         }
 
-        const qvalueCalculator = new QValueCalculator({pValueArray});
+        const qvalueCalculator = new ModPage_QValueCalculator({pValueArray});
 
         for(const [modMass, searchCountMap] of modMap) {
             for (const [projectSearchId, count] of searchCountMap) {

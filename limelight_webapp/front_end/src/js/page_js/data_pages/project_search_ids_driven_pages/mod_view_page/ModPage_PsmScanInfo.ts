@@ -1,4 +1,4 @@
-export class PsmScanInfo {
+export class ModPage_PsmScanInfo {
 
     private readonly _psmId:number;
     private readonly _scanNumber:number;

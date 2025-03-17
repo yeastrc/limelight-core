@@ -3,7 +3,7 @@
  */
 
 import {ModMultiSearch_DataVizPageStateManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMultiSearchDataViz_StateManager";
-import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
+import {ModPage_ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_ProteinPositionFilterDataManager";
 
 
 /**
@@ -30,7 +30,7 @@ export class ModView_VizOptionsData_SubPart_data {
 
     selectedStateObject? : ModView_VizOptionsData_SubPart_selectedStateObject
     projectSearchIds? : Array<number>
-    proteinPositionFilter? :ProteinPositionFilterDataManager
+    proteinPositionFilter? :ModPage_ProteinPositionFilterDataManager
     quantType? : string
     psmQuant? : string
     dataTransformation? : string

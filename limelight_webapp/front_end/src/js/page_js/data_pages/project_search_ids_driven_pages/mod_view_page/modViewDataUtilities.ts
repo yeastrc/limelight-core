@@ -2,7 +2,7 @@ import {
     ModPage_ModViewDataManager_PSM_Data_ForModMasses_SinglePsmEntry,
     ModViewDataManager
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
-import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
+import {ModPage_ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_ProteinPositionFilterDataManager";
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
@@ -117,7 +117,7 @@ export class ModViewDataUtilities {
         }
     ):Promise<boolean> { try {
 
-        const proteinPositionFilter:ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
+        const proteinPositionFilter:ModPage_ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
         if(proteinPositionFilter === undefined) {
             return true;
         }
@@ -276,7 +276,7 @@ export class ModViewDataUtilities {
 
         //console.log("calling openModPositionInProteinPositionFilter()");
 
-        const proteinPositionFilter:ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
+        const proteinPositionFilter:ModPage_ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
         if(proteinPositionFilter === undefined) {
             return true;
         }

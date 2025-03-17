@@ -17,7 +17,7 @@ import {
     ModViewDataManager
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch";
-import {ReportedPeptide} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
+import {ModPage_ReportedPeptide} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_ReportedPeptide";
 import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
 import {ModProteinSearchList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchList_SubTableProperties";
 import {
@@ -436,10 +436,10 @@ export class ModProteinSearchList_SubTableGenerator {
             }
 
             // get all reported peptides in this search
-            const reportedPeptides:Map<number, ReportedPeptide> = await modViewDataManager.getReportedPeptides({projectSearchId});
+            const reportedPeptides:Map<number, ModPage_ReportedPeptide> = await modViewDataManager.getReportedPeptides({projectSearchId});
 
             // get all reported peptides that matched to this protein
-            const reportedPeptidesForProtein:Set<ReportedPeptide> = new Set();
+            const reportedPeptidesForProtein:Set<ModPage_ReportedPeptide> = new Set();
             for(const reportedPeptideId of reportedPeptidePSMMap.keys()) {
                 const reportedPeptide = reportedPeptides.get(reportedPeptideId);
 
@@ -484,7 +484,7 @@ export class ModProteinSearchList_SubTableGenerator {
             proteinId:number,
             psmCountMapByProjectSearchId:Map<number, number>,
             unlocalizedRangesByProjectSearchId:Map<number, Map<string, UnlocalizedStartEnd>>,
-            reportedPeptidesForProtein:Set<ReportedPeptide>
+            reportedPeptidesForProtein:Set<ModPage_ReportedPeptide>
         }
     ) : void { try {
 

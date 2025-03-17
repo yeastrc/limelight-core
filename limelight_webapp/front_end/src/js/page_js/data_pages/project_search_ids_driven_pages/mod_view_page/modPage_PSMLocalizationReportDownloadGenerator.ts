@@ -1,15 +1,15 @@
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
-import {ReportedPeptide} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
+import {ModPage_ReportedPeptide} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_ReportedPeptide";
 import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch";
 import {lorikeetSpectrumViewer_CreateURL} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL_ParseURL";
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM";
-import {PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/PsmScanInfo";
+import {ModPage_PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_PsmScanInfo";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
-export class PSMLocalizationReportDownloadGenerator {
+export class ModPage_PSMLocalizationReportDownloadGenerator {
 
     static getViewScanLink(
         {
@@ -53,7 +53,7 @@ export class PSMLocalizationReportDownloadGenerator {
 
             const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server });
             const searchName = ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server });
-            const psmScanInfo:Map<number, PsmScanInfo> = await modViewDataManager.getScanInfoForAllPsms({projectSearchId});
+            const psmScanInfo:Map<number, ModPage_PsmScanInfo> = await modViewDataManager.getScanInfoForAllPsms({projectSearchId});
 
             // preemptively load all psm mod data for this search for these mod masses
             await modViewDataManager.loadPsmsForModMasses({projectSearchId, modMasses:sortedModMasses});
@@ -69,7 +69,7 @@ export class PSMLocalizationReportDownloadGenerator {
 
                     const reportedPeptideId = psmItem.reportedPeptideId;
                     const psmId = psmItem.psmId;
-                    const scanInfo:PsmScanInfo = psmScanInfo.get(psmId);
+                    const scanInfo:ModPage_PsmScanInfo = psmScanInfo.get(psmId);
                     const scanNumber = scanInfo.scanNumber;
                     const scanFilename = scanInfo.scanFilename ? scanInfo.scanFilename : 'not found';
 
@@ -77,13 +77,13 @@ export class PSMLocalizationReportDownloadGenerator {
                         throw new Error("Error. Reported peptide map does not contain reported peptide for psm.");
                     }
 
-                    const reportedPeptide: ReportedPeptide = reportedPeptideMap.get(reportedPeptideId);
+                    const reportedPeptide: ModPage_ReportedPeptide = reportedPeptideMap.get(reportedPeptideId);
                     const peptideSequence = reportedPeptide.sequence;
 
                     // do each variable mod
                     if (psmItem.variable && psmItem.variable.loc) {
 
-                        const psmLink = PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId});
+                        const psmLink = ModPage_PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId});
 
                         for (const modPositionInPeptide of psmItem.variable.loc) {
 
@@ -118,7 +118,7 @@ export class PSMLocalizationReportDownloadGenerator {
                     if(psmItem.variable && psmItem.variable.nterm) {
                         const modPositionInPeptide = 1;
                         const residue = peptideSequence.substring(modPositionInPeptide - 1, modPositionInPeptide);
-                        const psmLink = PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId});
+                        const psmLink = ModPage_PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId});
 
                         for (const [proteinId, peptidePositionsInProtein] of reportedPeptide.proteinMatches) {
                             for (const peptidePositionInProtein of peptidePositionsInProtein) {
@@ -149,7 +149,7 @@ export class PSMLocalizationReportDownloadGenerator {
                     if(psmItem.variable && psmItem.variable.cterm) {
                         const modPositionInPeptide = peptideSequence.length;
                         const residue = peptideSequence.substring(modPositionInPeptide - 1, modPositionInPeptide);
-                        const psmLink = PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId});
+                        const psmLink = ModPage_PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId});
 
                         for (const [proteinId, peptidePositionsInProtein] of reportedPeptide.proteinMatches) {
                             for (const peptidePositionInProtein of peptidePositionsInProtein) {
@@ -180,7 +180,7 @@ export class PSMLocalizationReportDownloadGenerator {
                         for (const modPositionInPeptide of psmItem.open.loc) {
 
                             const residue = peptideSequence.substring(modPositionInPeptide - 1, modPositionInPeptide);
-                            const psmLink = PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId, localization:modPositionInPeptide});
+                            const psmLink = ModPage_PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId, localization:modPositionInPeptide});
 
                             for (const [proteinId, peptidePositionsInProtein] of reportedPeptide.proteinMatches) {
                                 for (const peptidePositionInProtein of peptidePositionsInProtein) {
@@ -211,7 +211,7 @@ export class PSMLocalizationReportDownloadGenerator {
                     if(psmItem.open && psmItem.open.nterm) {
                         const modPositionInPeptide = 1;
                         const residue = peptideSequence.substring(modPositionInPeptide - 1, modPositionInPeptide);
-                        const psmLink = PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId, localization:'n'});
+                        const psmLink = ModPage_PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId, localization:'n'});
 
                         for (const [proteinId, peptidePositionsInProtein] of reportedPeptide.proteinMatches) {
                             for (const peptidePositionInProtein of peptidePositionsInProtein) {
@@ -242,7 +242,7 @@ export class PSMLocalizationReportDownloadGenerator {
                     if(psmItem.open && psmItem.open.cterm) {
                         const modPositionInPeptide = peptideSequence.length;
                         const residue = peptideSequence.substring(modPositionInPeptide - 1, modPositionInPeptide);
-                        const psmLink = PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId, localization:'c'});
+                        const psmLink = ModPage_PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId, localization:'c'});
 
                         for (const [proteinId, peptidePositionsInProtein] of reportedPeptide.proteinMatches) {
                             for (const peptidePositionInProtein of peptidePositionsInProtein) {
@@ -273,7 +273,7 @@ export class PSMLocalizationReportDownloadGenerator {
 
                         const modStartPositionInPeptide = 1;
                         const modEndPositionInPeptide = peptideSequence.length;
-                        const psmLink = PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId});
+                        const psmLink = ModPage_PSMLocalizationReportDownloadGenerator.getViewScanLink({projectSearchId, psmId});
 
                         for (const [proteinId, peptidePositionsInProtein] of reportedPeptide.proteinMatches) {
                             for (const peptidePositionInProtein of peptidePositionsInProtein) {

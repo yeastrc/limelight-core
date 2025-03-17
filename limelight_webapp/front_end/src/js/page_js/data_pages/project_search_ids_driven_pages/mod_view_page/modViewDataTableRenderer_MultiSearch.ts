@@ -26,8 +26,8 @@ import {
 import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch";
 import {create_dataTable_Root_React} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM";
 import {
-	get_WholeModTable_ShowCount_ExternalReactComponent
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/whole_mod_table_show_count_External_Component";
+	modPage_Get_WholeModTable_ShowCount_ExternalReactComponent
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modPage_Whole_mod_table_show_count_External_Component";
 import {ModProteinList_SubTableGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableGenerator";
 import {ModProteinList_SubTableProperties} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinList_SubTableProperties";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
@@ -194,7 +194,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 				const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
 					( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
 
-						return get_WholeModTable_ShowCount_ExternalReactComponent({
+						return modPage_Get_WholeModTable_ShowCount_ExternalReactComponent({
 							modMass: modMass,
 							projectSearchId: projectSearchId,
 							d3ColorScaler: colorScale,
