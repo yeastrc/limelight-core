@@ -64,6 +64,15 @@ var reportWebErrorToServer = {
 				return //   EARLY RETURN
 			}
 
+			if ( errorException.stack && errorException.stack.includes( "chrome-extension://" ) ) {
+
+				//  Skip exceptions caused by Chrome Extensions.  The React Chrome Extension sometimes triggers an exception
+
+				console.warn( "reportErrorObjectToServer: ( errorException.stack && errorException.stack.includes( \"chrome-extension://\" ) ) SO NOT report exception to server. errorException.stack: " + errorException.stack )
+
+				return //   EARLY RETURN
+			}
+
 			if ( _pageHide_Event_Triggered ) {
 
 				// 'pagehide' event called on page unload
