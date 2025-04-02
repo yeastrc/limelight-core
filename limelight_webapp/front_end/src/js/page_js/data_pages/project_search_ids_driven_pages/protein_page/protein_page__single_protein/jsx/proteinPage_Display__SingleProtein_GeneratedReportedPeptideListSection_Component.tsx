@@ -27,6 +27,10 @@ import {AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Co
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {Blib_SpectralLibrary_File_Download__MainPage_Link_Component} from "page_js/data_pages/blib_spectral_library_file__download/Blib_SpectralLibrary_File_Download__MainPage_Link_Component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 export type ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback = () => void;
@@ -402,7 +406,18 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                     <div style={ { marginTop: 10 } }>
                         <span style={ { fontWeight: "bold" } }>Total Found: </span>
                         <span >{ numberOfPeptidesShown }</span>
-                        <span > peptides ({ numberOfUniquePeptides } unique) </span>
+                        <span > peptides </span>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    A unique peptide maps to a single protein
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <span>({ numberOfUniquePeptides } unique)</span>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        <span> </span>
                         <span >{ numberOfPSMsForReportedPeptidesShown } PSMs</span>
 
                         { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && ( this.props.downloadPeptides_Shown_ClickHandler || this.props.downloadPsms_Shown_ClickHandler ) ) ? (

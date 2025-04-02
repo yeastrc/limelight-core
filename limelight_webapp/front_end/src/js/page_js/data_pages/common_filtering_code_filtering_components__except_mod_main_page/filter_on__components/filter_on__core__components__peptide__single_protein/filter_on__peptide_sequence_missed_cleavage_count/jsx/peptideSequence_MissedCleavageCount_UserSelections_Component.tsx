@@ -294,7 +294,7 @@ export class PeptideSequence_MissedCleavageCount_UserSelections_Component extend
                     <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                         title={
                             <span>
-                                Only Peptides with a missed cleavage count in the supplied range will be used.
+                                Only Peptides with a missed cleavage count in the supplied range will be used. Missed cleavage count does not count modified residues as missed cleavages.
                             </span>
                         }
                     />
