@@ -796,18 +796,21 @@ const _computeFor_Match_TotalModificationMass = function(
 
                             const modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId = variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder.get_psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId(psmTblData.reportedPeptideId)
                             if ( modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId ) {
-                                const modificationMass_ForPSM = modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId.psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap.get( psmTblData.psmId );
-                                if ( modificationMass_ForPSM ) {
-                                    psm_Total_ModificationMass += modificationMass_ForPSM.modificationMass
+                                const modificationMass_Entries_ForPSM = modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId.psm_Variable_Dynamic_ModificationMass_Entry_Array_Map_Key_PsmId.get( psmTblData.psmId );
+                                if ( modificationMass_Entries_ForPSM ) {
 
-                                    if ( modificationMass_ForPSM.isNTerminal ) {
-                                        is_N_Terminal_FoundIn_PsmLevel = true
+                                    for ( const modificationMass_ForPSM of modificationMass_Entries_ForPSM.modificationsArray ) {
+                                        psm_Total_ModificationMass += modificationMass_ForPSM.modificationMass
 
-                                    } else if ( modificationMass_ForPSM.isCTerminal ) {
-                                        is_C_Terminal_FoundIn_PsmLevel = true
+                                        if ( modificationMass_ForPSM.isNTerminal ) {
+                                            is_N_Terminal_FoundIn_PsmLevel = true
 
-                                    } else {
-                                        variableModifications_Positions_FoundIn_PsmLevel.add( modificationMass_ForPSM.position )
+                                        } else if ( modificationMass_ForPSM.isCTerminal ) {
+                                            is_C_Terminal_FoundIn_PsmLevel = true
+
+                                        } else {
+                                            variableModifications_Positions_FoundIn_PsmLevel.add( modificationMass_ForPSM.position )
+                                        }
                                     }
                                 }
                             }
@@ -1334,26 +1337,29 @@ const _create__singlePSM__PSM_Variable_AND_Open_Modifications_And_Positions_Arra
 
                         const modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId = variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder.get_psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId( psmTblData.reportedPeptideId )
                         if ( modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId ) {
-                            const modificationMass_ForPSM = modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId.psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap.get( psmTblData.psmId );
-                            if ( modificationMass_ForPSM ) {
+                            const modificationMass_Entries_ForPSM = modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId.psm_Variable_Dynamic_ModificationMass_Entry_Array_Map_Key_PsmId.get( psmTblData.psmId );
+                            if ( modificationMass_Entries_ForPSM ) {
 
-                                //  Make ONLY true/false for simpler comparison below.  Unsure if value could be undefined or null
-                                let is_N_Terminal_variableModification = false;
-                                let is_C_Terminal_variableModification = false;
-                                if ( modificationMass_ForPSM.isNTerminal ) {
-                                    is_N_Terminal_variableModification = true
-                                }
-                                if ( modificationMass_ForPSM.isCTerminal ) {
-                                    is_C_Terminal_variableModification = true
-                                }
+                                for ( const modificationMass_ForPSM of modificationMass_Entries_ForPSM.modificationsArray ) {
 
-                                variableModification_From_Psm_Or_ReportedPeptide_Array.push( {
-                                    reportedPeptideId: psmTblData.reportedPeptideId,
-                                    mass: modificationMass_ForPSM.modificationMass,
-                                    position: modificationMass_ForPSM.position,
-                                    is_N_Terminal: is_N_Terminal_variableModification ? true : false,
-                                    is_C_Terminal: is_C_Terminal_variableModification ? true : false
-                                } )
+                                    //  Make ONLY true/false for simpler comparison below.  Unsure if value could be undefined or null
+                                    let is_N_Terminal_variableModification = false;
+                                    let is_C_Terminal_variableModification = false;
+                                    if ( modificationMass_ForPSM.isNTerminal ) {
+                                        is_N_Terminal_variableModification = true
+                                    }
+                                    if ( modificationMass_ForPSM.isCTerminal ) {
+                                        is_C_Terminal_variableModification = true
+                                    }
+
+                                    variableModification_From_Psm_Or_ReportedPeptide_Array.push( {
+                                        reportedPeptideId: psmTblData.reportedPeptideId,
+                                        mass: modificationMass_ForPSM.modificationMass,
+                                        position: modificationMass_ForPSM.position,
+                                        is_N_Terminal: is_N_Terminal_variableModification ? true : false,
+                                        is_C_Terminal: is_C_Terminal_variableModification ? true : false
+                                    } )
+                                }
                             }
                         }
                     }

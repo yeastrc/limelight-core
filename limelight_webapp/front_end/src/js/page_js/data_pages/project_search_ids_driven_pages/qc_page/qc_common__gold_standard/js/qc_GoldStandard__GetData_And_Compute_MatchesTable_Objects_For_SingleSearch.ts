@@ -1,6 +1,6 @@
 /**
  * qc_GoldStandard__GetData_And_Compute_MatchesTable_Objects_For_SingleSearch.ts
- * 
+ *
  * For Single Project Search  -  Gold Standard
  *
  * Get Data and then Compute Objects for the "Matches" <table> for a Single Project Search Id
@@ -603,32 +603,35 @@ const _call__After_GetGoldStandardData = function (
 
                     const modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId = variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder.get_psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId(psmTblData_Entry_ForPsmId.reportedPeptideId)
                     if ( modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId ) {
-                        const modificationMass_ForPSM = modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId.psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap.get( psmTblData_Entry_ForPsmId.psmId );
-                        if ( modificationMass_ForPSM ) {
+                        const modificationMass_Entries_ForPSM = modificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId.psm_Variable_Dynamic_ModificationMass_Entry_Array_Map_Key_PsmId.get( psmTblData_Entry_ForPsmId.psmId );
+                        if ( modificationMass_Entries_ForPSM ) {
 
-                            let position = modificationMass_ForPSM.position;
+                            for ( const modificationMass_ForPSM of modificationMass_Entries_ForPSM.modificationsArray ) {
 
-                            if ( modificationMass_ForPSM.isNTerminal ) {
+                                let position = modificationMass_ForPSM.position;
 
-                                position = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_N_TERMINUS_POSITION_INDEX
-                                is_N_Terminal_FoundIn_PsmLevel = true
+                                if ( modificationMass_ForPSM.isNTerminal ) {
 
-                            } else if ( modificationMass_ForPSM.isCTerminal ) {
+                                    position = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_N_TERMINUS_POSITION_INDEX
+                                    is_N_Terminal_FoundIn_PsmLevel = true
 
-                                position = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_C_TERMINUS_POSITION_INDEX
-                                is_C_Terminal_FoundIn_PsmLevel = true
-                            } else {
+                                } else if ( modificationMass_ForPSM.isCTerminal ) {
 
-                                variableModifications_Positions_FoundIn_PsmLevel.add( modificationMass_ForPSM.position )
+                                    position = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_C_TERMINUS_POSITION_INDEX
+                                    is_C_Terminal_FoundIn_PsmLevel = true
+                                } else {
+
+                                    variableModifications_Positions_FoundIn_PsmLevel.add( modificationMass_ForPSM.position )
+                                }
+
+                                let modification_Number_Array = variable_Modification_Number_Array_Map_KeyPosition.get( position )
+                                if ( ! modification_Number_Array ) {
+                                    modification_Number_Array = []
+                                    variable_Modification_Number_Array_Map_KeyPosition.set( position, modification_Number_Array )
+                                }
+
+                                modification_Number_Array.push( modificationMass_ForPSM.modificationMass )
                             }
-
-                            let modification_Number_Array = variable_Modification_Number_Array_Map_KeyPosition.get( position )
-                            if ( ! modification_Number_Array ) {
-                                modification_Number_Array = []
-                                variable_Modification_Number_Array_Map_KeyPosition.set( position, modification_Number_Array )
-                            }
-
-                            modification_Number_Array.push( modificationMass_ForPSM.modificationMass )
                         }
                     }
                 }

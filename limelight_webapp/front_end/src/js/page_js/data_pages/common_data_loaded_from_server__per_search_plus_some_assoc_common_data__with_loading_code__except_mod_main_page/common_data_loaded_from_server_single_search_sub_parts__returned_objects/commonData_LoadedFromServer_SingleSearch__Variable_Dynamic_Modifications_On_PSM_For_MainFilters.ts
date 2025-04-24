@@ -18,22 +18,34 @@ import {SearchDataLookupParams_For_Single_ProjectSearchId} from "page_js/data_pa
 /**
  *
  */
+export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_PsmId_SingleEntry {
+    readonly psmId : number
+    readonly modificationMass : number
+
+    /**
+     * Rounded to whole number
+     */
+    readonly modificationMass_Rounded : number
+
+    readonly position : number
+    readonly isNTerminal : boolean
+    readonly isCTerminal : boolean
+}
+
+/**
+ *
+ */
 export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_PsmId {
-    psmId : number
-    modificationMass : number
-    modificationMass_Rounded : number
-    position : number
-    isNTerminal : boolean
-    isCTerminal : boolean
+    readonly modificationsArray: ReadonlyArray<CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_PsmId_SingleEntry>
 }
 
 /**
  *
  */
 export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId {
-    reportedPeptideId: number
-    psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap:
-        Map<number, CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_PsmId>
+    readonly reportedPeptideId: number
+    readonly psm_Variable_Dynamic_ModificationMass_Entry_Array_Map_Key_PsmId:
+        ReadonlyMap<number, CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_PsmId>
 }
 
 /**
@@ -369,17 +381,11 @@ export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifica
             const reportedPeptideId = reportedPeptideId_psmVariable_Dynamic_ModificationMassesList_Entry.reportedPeptideId;
             const psmId_ModMass_EntriesList = reportedPeptideId_psmVariable_Dynamic_ModificationMassesList_Entry.psmId_ModMass_EntriesList;
 
-            let variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId = psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
-            if ( ! variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId ) {
-                variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId = new CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId();
-                variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId.reportedPeptideId = reportedPeptideId
-                variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId.psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap = new Map()
-                psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.set( reportedPeptideId, variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId );
-            }
+            const psm_Variable_Dynamic_ModificationMass_Entry_Array_Map_Key_PsmId__Local : Map<number, Array<CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_PsmId_SingleEntry>> = new Map()
 
             for ( const psmId_ModMass_Entry of psmId_ModMass_EntriesList ) {
 
-                const resultEntry_ForPsmId: CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_PsmId = {
+                const resultEntry_ForSingleModification: CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_PsmId_SingleEntry = {
                     psmId: psmId_ModMass_Entry.psmId,
                     modificationMass: psmId_ModMass_Entry.modificationMass,
                     modificationMass_Rounded: Math.round( psmId_ModMass_Entry.modificationMass ),
@@ -388,8 +394,36 @@ export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifica
                     isCTerminal: psmId_ModMass_Entry.is_C_Terminal
                 }
 
-                variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId.psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap.set( resultEntry_ForPsmId.psmId, resultEntry_ForPsmId )
+                let modificationsArray = psm_Variable_Dynamic_ModificationMass_Entry_Array_Map_Key_PsmId__Local.get( resultEntry_ForSingleModification.psmId )
+                if ( ! modificationsArray ) {
+                    modificationsArray = []
+                    psm_Variable_Dynamic_ModificationMass_Entry_Array_Map_Key_PsmId__Local.set( resultEntry_ForSingleModification.psmId, modificationsArray )
+                }
+
+                modificationsArray.push( resultEntry_ForSingleModification )
             }
+
+            const  psm_Variable_Dynamic_ModificationMass_Entry_Array_Map_Key_PsmId: Map<number, CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_PsmId> = new Map()
+
+            for ( const mapEntry of psm_Variable_Dynamic_ModificationMass_Entry_Array_Map_Key_PsmId__Local.entries() ) {
+                const mapKey = mapEntry[ 0 ]
+                const mapValue = mapEntry[ 1 ]
+
+                psm_Variable_Dynamic_ModificationMass_Entry_Array_Map_Key_PsmId.set( mapKey, { modificationsArray: mapValue } )
+            }
+
+            const variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId: CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId = {
+                reportedPeptideId,
+                psm_Variable_Dynamic_ModificationMass_Entry_Array_Map_Key_PsmId
+            }
+
+            if ( psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.has( reportedPeptideId ) ) {
+                const msg = "ERROR: psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs ALREADY HAS entry for reportedPeptideId: " + reportedPeptideId
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            psmVariable_Dynamic_ModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.set( reportedPeptideId, variable_Dynamic_Modifications_On_PSM_For_ReportedPeptideId )
         }
 
         const variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder = new CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder({
