@@ -74,8 +74,7 @@ public class PsmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searc
 
 		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
 			// Exclude  records where is_decoy = 'true'
-			sqlSB.append( " AND psm_psm_lookup_tbl.is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			sqlSB.append( " AND psm_primary_tbl.is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			sqlSB.append( " AND is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
 		}
 		
 		final String sql = sqlSB.toString();
