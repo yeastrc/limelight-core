@@ -33,6 +33,9 @@ import {
 import {
     ModalOverlay_Limelight_Component_v001_B_FlexBox
 } from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
+import {
+    WebserviceCallStandardPost_RejectObject_Class
+} from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
 
 
 
@@ -410,7 +413,17 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
             }
         }, function( reason ) { // // onRejected: reject called
             try {
+                if ( reason instanceof WebserviceCallStandardPost_RejectObject_Class ) {
+
+                    console.warn( "updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise reject reason is instanceof WebserviceCallStandardPost_RejectObject_Class so throw it" )
+
+                    throw reason  //  Throw reason
+                }
+
+                console.warn( "updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise Fail: Reason: " + reason )
+
                 throw Error("updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise Fail: Reason: " + reason );
+
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                 throw e;
