@@ -619,6 +619,8 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
                     }
                 }
 
+                resolve()
+
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
