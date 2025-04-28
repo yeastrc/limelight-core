@@ -97,11 +97,11 @@
 	      <delete dir="${tomcat.jsp}"/>
 	      <mkdir  dir="${tomcat.jsp}"/>
 		
-		<copy todir="${tomcat.static}" >
+		<copy todir="${tomcat.static}" overwrite="true" >
   		    <fileset dir="..${file.separator}src${file.separator}main${file.separator}webapp${file.separator}static" />
 		</copy>			 
 				
-		<copy todir="${tomcat.jsp}" >
+		<copy todir="${tomcat.jsp}" overwrite="true" >
   		    <fileset dir="..${file.separator}src${file.separator}main${file.separator}webapp${file.separator}WEB-INF${file.separator}jsp" />
 		</copy>			 
 
@@ -292,7 +292,7 @@
 	      <delete dir="${tomcat.static}${file.separator}js_generated_bundles"/>
 	      <mkdir  dir="${tomcat.static}${file.separator}js_generated_bundles"/>
 		
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
+		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" overwrite="true" >
 		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
 		</copy>
 		

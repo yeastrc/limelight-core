@@ -18,7 +18,6 @@ import {limelight__catchAndReportGlobalOnError} from 'page_js/common_all_pages/l
 
 import {reportWebErrorToServer} from 'page_js/common_all_pages/reportWebErrorToServer';
 
-//   From data_pages_common
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 import {_REFERRER_PATH_STRING} from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
@@ -32,27 +31,83 @@ import {navigation_dataPages_Maint_Instance} from 'page_js/data_pages/data_pages
 
 import {CentralPageStateManager} from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
-//  From main_pages
-
-//  Import for typing only
 import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
 
 import {MainPagesPopulateHeader} from 'page_js/main_pages/mainPagesPopulateHeader';
-//  From local dir
-import {ModViewPage_DisplayDataOnPage} from './modViewPage_DisplayDataOnPage';
-import {get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_SingleProtein_Embed_in_ModPage_Root";
 import {page_Update_From_search_data_lookup_parameters_lookup_code__computed} from "page_js/data_pages/data_pages_common/page_Update_From_search_data_lookup_parameters_lookup_code__computed";
 import {Navigation_dataPages_Maint__NavigationType_Enum} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint_Component";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 import {
-	CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT
-} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId___ROOT";
+	ModificationMass_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
 import {
-	CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
-} from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT";
+	ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {
-	CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
+	ReporterIonMass_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/reporter_ions_user_selections/js/reporterIonMass_UserSelections_StateObject";
+import {
+	PeptideUnique_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
+import {
+	PeptideSequence_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_StateObject";
+import {
+	PeptideSequence_MissedCleavageCount_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/js/peptideSequence_MissedCleavageCount_UserSelections_StateObject";
+import {
+	PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
+import {
+	ProteinPositionFilter_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
+import {
+	GeneratedPeptideContents_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
+import {
+	PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/js/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject";
+import {
+	ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
+import {
+	Scan_RetentionTime_MZ_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
+import {
+	Psm_Charge_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
+import {
+	Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_exclude_independent_decoy_psms/psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject";
+import {
+	ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
+import {
+	ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
+import {
+	SingleProtein_CentralStateManagerObjectClass
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass";
+import {
+	SearchSubGroup_CentralStateManagerObjectClass
+} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
+import React from "react";
+import ReactDOM from "react-dom";
+import {
+	ModViewPage_Display_Root_Component, ModViewPage_Display_Root_Component_Props
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_Display_Root_Component";
+import {
+	ModViewPage_Display_MainContent_Component_Props_Prop
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_Display_MainContent_Component";
+import {
+	ModViewPage_DataVizOptions_VizSelections_PageStateManager
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
+import {
+	ModPageRoot_CentralStateManagerObjectClass
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modPageRoot_CentralStateManagerObjectClass";
+import {
+	ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
 
 //  From data_pages_common
 
@@ -63,28 +118,77 @@ import {
  */
 export class ModViewPage_RootClass_Common {
 	
-	_dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
+	private _dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
 
-	_page_UserDefault_processing : Page_UserDefault_processing;
-	_centralPageStateManager : CentralPageStateManager;
+	private _page_UserDefault_processing : Page_UserDefault_processing;
+	private _centralPageStateManager : CentralPageStateManager;
 
-	_dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
-	_dataPageStateManager_DataFrom_Server : DataPageStateManager;
+	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
+	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 
-	_searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
+	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 
-	_modViewPage_DisplayDataOnPage : ModViewPage_DisplayDataOnPage;
+	private _getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
 
-	private _called__populateModDataBlock: boolean = false;
 
-	_getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
+	// _modViewPage_DisplayDataOnPage : ModViewPage_DisplayDataOnPage;
+	//
+	// private _called__populateModDataBlock: boolean = false;
+	//
+	// _getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
+	//
+	// _loadCoreData_ProjectSearchIds_Based : LoadCoreData_ProjectSearchIds_Based;
+	//
+	// //  Main Data Loader object
+	// private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+	// private _commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+	// private _commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
 
-	_loadCoreData_ProjectSearchIds_Based : LoadCoreData_ProjectSearchIds_Based;
+	/**
+	 * EncodedDat for this._modPageRoot_CentralStateManagerObjectClass in CentralStateManager at Page Load
+	 */
+	private _modPageRoot_CentralStateManagerObjectClass__EncodedDatSetIn_CentralStateManager__OnPageLoad: boolean
 
-	//  Main Data Loader object
-	private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-	private _commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT
-	private _commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
+	private _modPageRoot_CentralStateManagerObjectClass : ModPageRoot_CentralStateManagerObjectClass;
+
+	private _modificationMass_UserSelections_StateObject = new ModificationMass_UserSelections_StateObject();
+
+	private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
+
+	private _reporterIonMass_UserSelections_StateObject = new ReporterIonMass_UserSelections_StateObject();
+
+	private _peptideUnique_UserSelection_StateObject = new PeptideUnique_UserSelection_StateObject();
+
+	private _peptideSequence_UserSelections_StateObject = new PeptideSequence_UserSelections_StateObject();
+	private _peptideSequence_MissedCleavageCount_UserSelections_StateObject : PeptideSequence_MissedCleavageCount_UserSelections_StateObject
+	private _peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
+	private _proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
+
+	private _proteinPosition_Of_Modification_Filter_UserSelections_StateObject: ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
+
+	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
+
+	private _peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
+
+	private _scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+	private _scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
+
+	private _psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
+	private _psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject
+
+	private _scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+	private _scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+
+	//  Specific to pass in to Single Protein Overlay
+	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
+
+	private _searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass;
+
+
+	private _modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+
+
+	private _loadCoreData_ProjectSearchIds_Based : LoadCoreData_ProjectSearchIds_Based;
 
 
 	/**
@@ -98,6 +202,33 @@ export class ModViewPage_RootClass_Common {
 
 		this._centralPageStateManager = new CentralPageStateManager();
 
+		this._singleProtein_CentralStateManagerObject = new SingleProtein_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager, initialProteinSequenceVersionId : undefined } );
+
+		this._modPageRoot_CentralStateManagerObjectClass = new ModPageRoot_CentralStateManagerObjectClass({ centralPageStateManager : this._centralPageStateManager });
+
+		{
+			// const generatedPeptideContents_UserSelections_StateObject_valueChangedCallback = (): void => {
+			//
+			// 	const encodedStateData = this._generatedPeptideContents_UserSelections_StateObject.getEncodedStateData();
+			// 	this._modPageRoot_CentralStateManagerObjectClass.setGeneratedPeptideContentsSelectedEncodedStateData({generatedPeptideContentsSelectedEncodedStateData: encodedStateData});
+			// }
+
+			//   !!!!!  WARNING:   Code below also commented to get value for this state object from Root State object on Page Load
+
+			//  Change to NOT have callback since no longer have the Component where the user can change so always use the defaults.
+			const generatedPeptideContents_UserSelections_StateObject_valueChangedCallback = undefined
+
+			this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({valueChangedCallback: generatedPeptideContents_UserSelections_StateObject_valueChangedCallback});
+		}
+
+		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass =
+			ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getNewInstance_MainPage({ centralPageStateManager : this._centralPageStateManager });
+
+		this._searchSubGroup_CentralStateManagerObjectClass = SearchSubGroup_CentralStateManagerObjectClass.getNewInstance_MainPage({ centralPageStateManager : this._centralPageStateManager });
+
+
+		this._modViewPage_DataVizOptions_VizSelections_PageStateManager = new ModViewPage_DataVizOptions_VizSelections_PageStateManager({ centralPageStateManager : this._centralPageStateManager });
+
 
 		//  Instances of class DataPageStateManager
 
@@ -110,7 +241,7 @@ export class ModViewPage_RootClass_Common {
 		 * Store data from server
 		 */
 		this._dataPageStateManager_DataFrom_Server = new DataPageStateManager();
-		
+
 
 		this._searchDetailsBlockDataMgmtProcessing = new SearchDetailsBlockDataMgmtProcessing({
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay
@@ -125,8 +256,6 @@ export class ModViewPage_RootClass_Common {
 	 */
 	initialize() { try {
 
-		let objectThis = this;
-		
 		limelight__catchAndReportGlobalOnError.init();
 
 		window.onpopstate = function(event) {
@@ -140,181 +269,409 @@ export class ModViewPage_RootClass_Common {
 
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
 
-		let referrerFromURL_Set = false;
+		let referrerFromURL = initialStateFromURL.referrer;
 
-		{
-			let referrerFromURL = initialStateFromURL.referrer;
+		if ( referrerFromURL === _REFERRER_PATH_STRING ) {
 
-			if (referrerFromURL === _REFERRER_PATH_STRING) {
+			//  TODO  do any needed processing of the URL since it is a referrer from another page
 
-				//  TODO  do any needed processing of the URL since it is a referrer from another page
-
-				referrerFromURL_Set = true;
-
-				//  Could do default URL processing here.
-				//		IE: Replace the current URL with the default URL and then call again:
-				//			let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
-			}
+			//  Could do default URL processing here.
+			//		IE: Replace the current URL with the default URL and then call again:
+			//			let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
 		}
+
+
+		//  Set after this._centralPageStateManager is initialized
+		this._modPageRoot_CentralStateManagerObjectClass__EncodedDatSetIn_CentralStateManager__OnPageLoad = ModPageRoot_CentralStateManagerObjectClass.isSetIn_CentralPageStateManager({ centralPageStateManager: this._centralPageStateManager })
+
 
 		//  Clear the referrer flag from URL, if it exists
 		this._centralPageStateManager.clearReferrerFlagFromURL();
-		
-		
-		////Instance of class
+
+
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		mainPagesPopulateHeader.initialize();
-		
-		const searchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage_Result = 
+
+		//  From JSON placed on the page by the Server side Page Controller
+		const searchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage_Result =
 			this._getSearchDataLookupParametersFromPage.getSearchDataLookupParametersFromPage();
-		
+
+		const projectSearchIds : Array<number> = searchDataLookupParametersFromPage.projectSearchIds;
+
+		this._singleProtein_CentralStateManagerObject.initialize();
+		this._searchSubGroup_CentralStateManagerObjectClass.initialize_MainPageInstance({ current_ProjectSearchIds : projectSearchIds });
+		this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.initialize_MainPageInstance();
+
 		this._searchDetailsBlockDataMgmtProcessing.storeSearchDetails_Filters_AnnTypeDisplay_Root( {
 			searchDetails_Filters_AnnTypeDisplay_Root : searchDataLookupParametersFromPage.search_data_lookup_parameters_at_page_load,
 			dataPageStateManager : undefined
-		} ); 
-		
-		const projectSearchIds : Array<number> = searchDataLookupParametersFromPage.projectSearchIds;
+		} );
 
-		this._dataPageStateManager_DataFrom_Server.set_projectSearchIds( projectSearchIds );
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.set_projectSearchIds( projectSearchIds );
+
+
+		this._modPageRoot_CentralStateManagerObjectClass.initialize();
+		{
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.getModsSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._modificationMass_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+		{
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.getReporterIonMassesSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._reporterIonMass_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+		{
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.getPeptideUniqueFilterSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideUnique_UserSelection_StateObject.set_encodedStateData({ encodedStateData });
+			}
+		}
+		{
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.getPeptideSequenceFilterSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideSequence_UserSelections_StateObject.set_encodedStateData({ encodedStateData });
+			}
+		}
+		{  // this._proteinPositionFilter_UserSelections_StateObject
+
+			const valueChangedCallback = () => {
+
+				const proteinPositionFilter_UserSelections_EncodedStateData = this._proteinPositionFilter_UserSelections_StateObject.getEncodedStateData();
+				this._modPageRoot_CentralStateManagerObjectClass.set_proteinPositionFilter_UserSelections_EncodedStateData( { proteinPositionFilter_UserSelections_EncodedStateData } );
+			}
+			this._proteinPositionFilter_UserSelections_StateObject = new ProteinPositionFilter_UserSelections_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.get_proteinPositionFilter_UserSelections_EncodedStateData();
+			if ( encodedStateData ) {
+				this._proteinPositionFilter_UserSelections_StateObject.set_encodedStateData({ encodedStateData });
+			}
+		}
+
+		{  // this._proteinPosition_Of_Modification_Filter_UserSelections_StateObject
+
+			const valueChangedCallback = () => {
+
+				const proteinPosition_Of_Modification_Filter_UserSelections_EncodedStateData = this._proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getEncodedStateData();
+				this._modPageRoot_CentralStateManagerObjectClass.set_proteinPosition_Of_Modification_Filter_UserSelections_EncodedStateData( { proteinPosition_Of_Modification_Filter_UserSelections_EncodedStateData } );
+			}
+			this._proteinPosition_Of_Modification_Filter_UserSelections_StateObject = new ProteinPosition_Of_Modification_Filter_UserSelections_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.get_proteinPosition_Of_Modification_Filter_UserSelections_EncodedStateData();
+			if ( encodedStateData ) {
+				this._proteinPosition_Of_Modification_Filter_UserSelections_StateObject.set_encodedStateData({ encodedStateData });
+			}
+		}
+		{
+			//   !!!!!  WARNING:   Code above also commented to update value in Root State object when this state object changes
+
+			//  Change to NOT have callback since no longer have the Component where the user can change so always use the defaults.
+
+			// const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.getGeneratedPeptideContentsSelectedEncodedStateData();
+			// if ( encodedStateData ) {
+			// 	this._generatedPeptideContents_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			// }
+		}
+
+		{ // this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
+
+			const valueChangedCallback = () => {
+
+				const peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData = this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.getEncodedStateData();
+				this._modPageRoot_CentralStateManagerObjectClass.set_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData( { peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData } );
+			}
+			this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject = new PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.get_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+
+		{ // this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject
+
+			const valueChangedCallback = () => {
+
+				const scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData = this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject.getEncodedStateData();
+				this._modPageRoot_CentralStateManagerObjectClass.set_scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData( { scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData } );
+			}
+			this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject = new ScanFilenameId_On_PSM_Filter_UserSelection_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.get_scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData();
+			if ( encodedStateData ) {
+				this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+
+		{ //  this._peptideSequence_MissedCleavageCount_UserSelections_StateObject : PeptideSequence_MissedCleavageCount_UserSelections_StateObject
+
+			const valueChangedCallback = () => {
+
+				const peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData = this._peptideSequence_MissedCleavageCount_UserSelections_StateObject.getEncodedStateData();
+				this._modPageRoot_CentralStateManagerObjectClass.set_peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData( { peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData } );
+			}
+			this._peptideSequence_MissedCleavageCount_UserSelections_StateObject = new PeptideSequence_MissedCleavageCount_UserSelections_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.get_peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideSequence_MissedCleavageCount_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+
+		{ //  this._peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
+
+			const valueChangedCallback = () => {
+
+				const peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_EncodedStateData = this._peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject.getEncodedStateData();
+				this._modPageRoot_CentralStateManagerObjectClass.set_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_EncodedStateData( { peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_EncodedStateData } );
+			}
+			this._peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject = new PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.get_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_EncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+
+		{ // this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject
+
+			const valueChangedCallback = () => {
+
+				const scan_RetentionTime_MZ_UserSelections_EncodedStateData = this._scan_RetentionTime_MZ_UserSelection_StateObject.getEncodedStateData();
+				this._modPageRoot_CentralStateManagerObjectClass.set_scan_RetentionTime_MZ_UserSelections_EncodedStateData( { scan_RetentionTime_MZ_UserSelections_EncodedStateData } );
+			}
+			this._scan_RetentionTime_MZ_UserSelection_StateObject = new Scan_RetentionTime_MZ_UserSelections_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.get_scan_RetentionTime_MZ_UserSelections_EncodedStateData();
+			if ( encodedStateData ) {
+				this._scan_RetentionTime_MZ_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+		{ // this._psm_Charge_Filter_UserSelection_StateObject
+
+			const valueChangedCallback = () => {
+
+				const psm_Charge_Filter_UserSelection_EncodedStateData = this._psm_Charge_Filter_UserSelection_StateObject.getEncodedStateData();
+				this._modPageRoot_CentralStateManagerObjectClass.set_psm_Charge_Filter_UserSelection_EncodedStateData({ psm_Charge_Filter_UserSelection_EncodedStateData });
+			}
+			this._psm_Charge_Filter_UserSelection_StateObject = new Psm_Charge_Filter_UserSelection_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.get_psm_Charge_Filter_UserSelection_EncodedStateData();
+			if ( encodedStateData ) {
+				this._psm_Charge_Filter_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+		{  //  this._psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject
+
+			const valueChangedCallback = () => {
+
+				const psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData = this._psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject.getEncodedStateData();
+				this._modPageRoot_CentralStateManagerObjectClass.set_psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData({ psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData });
+			}
+			this._psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject = new Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.get_psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData();
+			if ( encodedStateData ) {
+				this._psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+		{  //  this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+
+			const valueChangedCallback = () => {
+
+				const scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData = this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.getEncodedStateData();
+				this._modPageRoot_CentralStateManagerObjectClass.set_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData({ scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData });
+			}
+			this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject = new ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.get_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData();
+			if ( encodedStateData ) {
+				this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+		{  //  this._scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+
+			const valueChangedCallback = () => {
+
+				const scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData = this._scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.getEncodedStateData();
+				this._modPageRoot_CentralStateManagerObjectClass.set_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData({ scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData });
+			}
+			this._scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject = new ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._modPageRoot_CentralStateManagerObjectClass.get_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData();
+			if ( encodedStateData ) {
+				this._scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+
+
+		/////
+
+		///   WARNING:  This MUST be the LAST State object taken from the URL.  The URL will be updated for changes to this._proteinPositionFilter_UserSelections_StateObject
+
+		//   Pass in this._proteinPosition_Of_Modification_Filter_UserSelections_StateObject to support moving Protein Position filters to that state object
+
+		this._modViewPage_DataVizOptions_VizSelections_PageStateManager.initialize({
+			proteinPosition_Of_Modification_Filter_UserSelections_StateObject: this._proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
+			projectSearchIds_MainPage: projectSearchIds
+		})
+
+		if ( ! this._modPageRoot_CentralStateManagerObjectClass__EncodedDatSetIn_CentralStateManager__OnPageLoad ) {
+
+			//  Hard code to Set to Default when load page that had OLD URL before  _modPageRoot_CentralStateManagerObjectClass : ModPageRoot_CentralStateManagerObjectClass is set
+
+			//  Previously on Mod page " this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass" for main page was hard coded to false
+
+			//  This will also work when navigate from other pages to set to default
+
+			this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.setTreatOpenModMassZeroAsUnmodified_Selection__TO_DEFAULT()
+		}
+
+
+		//////////////////
 
 		let navigationType = Navigation_dataPages_Maint__NavigationType_Enum.SINGLE_SEARCH
 		if ( projectSearchIds.length > 1 ) {
 			navigationType = Navigation_dataPages_Maint__NavigationType_Enum.MULTIPLE_SEARCHES
 		}
+
 		navigation_dataPages_Maint_Instance.initializePageOnLoad({ navigationType }); // Initialize
 
-		this._loadCoreData_ProjectSearchIds_Based = new LoadCoreData_ProjectSearchIds_Based( {
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
-		});
-		
-		let _loadCoreData_ProjectSearchIds_Based_Promise = this._loadCoreData_ProjectSearchIds_Based.loadCoreDataFor_ProjectSearchIds();
+		//  Save centralPageStateManager to URL '/q/...' on page load
+		this._centralPageStateManager._updateURL();
 
-		_loadCoreData_ProjectSearchIds_Based_Promise.then(  // onFulfilled
-				function( value ) {
-					try {
-						//  Continue processing
-						objectThis._createFilterData_In_dataPageStateManager_ForInitialLoad ({ referrerFromURL_Set });
-					} catch( e ) {
-						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-						throw e;
-					}
-		}, function(reason) { // onRejected
-			
+		this._loadCoreData_ProjectSearchIds_Based =
+			new LoadCoreData_ProjectSearchIds_Based( {
+				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+				dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
+			});
+
+		let loadCoreData_ProjectSearchIds_Based_Promise =
+			this._loadCoreData_ProjectSearchIds_Based.loadCoreDataFor_ProjectSearchIds();
+
+		loadCoreData_ProjectSearchIds_Based_Promise.catch( (reason) => {
+			console.warn( "loadCoreData_ProjectSearchIds_Based_Promise.catch: reason: ", reason )
+			throw Error("loadCoreData_ProjectSearchIds_Based_Promise.catch")
 		})
+		loadCoreData_ProjectSearchIds_Based_Promise.then( ( value ) => {
+			try {
+				//  Continue processing
+				this._createFilterData_In_dataPageStateManager_ForInitialLoad ({ projectSearchIds });
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		});
 	} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
 	/**
 	 * If the filtering data does not exist in dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-	 *   create it and put in dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay 
+	 *   create it and put in dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay
 	 *   and parts in dataPageStateManager_For_UserFilterSelectionsBefore_Update_Clicked as required
-	 *   
+	 *
 	 * This is handling when the page is initially loaded and the data needs to be loaded from the URL
 	 */
-	private async _createFilterData_In_dataPageStateManager_ForInitialLoad({ referrerFromURL_Set } : { referrerFromURL_Set: boolean }) : Promise<void> { // Returned Promise is ignored
-		try {
-			//  pageState excludes project search id (or other similar things) filters and ann type display
+	private _createFilterData_In_dataPageStateManager_ForInitialLoad(
+		{
+			projectSearchIds
+		} : {
+			projectSearchIds : Array<number>
+		}) : void {
 
-// 			let pageStateIdentifier = params.pageStateIdentifier;
-// 			let pageState = params.pageState;
-//
-// 			if ( pageState ) {
-//
-// 				// TODO Not handling yet;
-// 				//  Before using filters, first check for default URL and use if present
-// 				//  Process URL linking from another page separately, and replace URL on browser after map to URL for current page
-// //			alert("Not handling _filterDataFromURL_OnPageLoad.filters has value yet");
-// //			throw Error( "Not handling _filterDataFromURL_OnPageLoad.filters has value yet" );
-//
-// 			} else {
-//
-// 				//  No Filters so initialize page using defaults (Check for user defaults for page)
-//
-// //			this.initializeFilterCriteriaDataDisplayFromDefaults();
-// 			}
-//
-// 			if ( pageState ) {
-// 				this._userSelection_q_OnURL_Update.replaceUserSelectionFromURL( pageState );
-// 			}
+		//  Have all data in page variables to render the page
 
-			const projectSearchIds = this._dataPageStateManager_DataFrom_Server.get_projectSearchIds()
+		const propsValue : ModViewPage_Display_MainContent_Component_Props_Prop = {
 
-			//  Main Data Loader object
+			projectSearchIds,
+			dataPageStateManager: this._dataPageStateManager_DataFrom_Server,
+			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+			searchDetailsBlockDataMgmtProcessing: this._searchDetailsBlockDataMgmtProcessing,
 
-			this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT = CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT.getNewInstance()
+			centralPageStateManager: this._centralPageStateManager,
+			searchSubGroup_CentralStateManagerObjectClass: this._searchSubGroup_CentralStateManagerObjectClass,
+			modPageRoot_CentralStateManagerObjectClass: this._modPageRoot_CentralStateManagerObjectClass,
+			modificationMass_UserSelections_StateObject: this._modificationMass_UserSelections_StateObject,
+			modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+			reporterIonMass_UserSelections_StateObject: this._reporterIonMass_UserSelections_StateObject,
+			peptideUnique_UserSelection_StateObject: this._peptideUnique_UserSelection_StateObject,
+			peptideSequence_UserSelections_StateObject: this._peptideSequence_UserSelections_StateObject,
+			peptideSequence_MissedCleavageCount_UserSelections_StateObject: this._peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+			peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this._peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
+			proteinPositionFilter_UserSelections_StateObject : this._proteinPositionFilter_UserSelections_StateObject,
+			proteinPosition_Of_Modification_Filter_UserSelections_StateObject: this._proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
+			peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
+			scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+			scan_RetentionTime_MZ_UserSelection_StateObject : this._scan_RetentionTime_MZ_UserSelection_StateObject,
+			psm_Charge_Filter_UserSelection_StateObject: this._psm_Charge_Filter_UserSelection_StateObject,
+			psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: this._psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
+			scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+			scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this._scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
 
-			this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT = CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT.getNewInstance()
+			generatedPeptideContents_UserSelections_StateObject: this._generatedPeptideContents_UserSelections_StateObject,
 
-			this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.getNewInstance({
-				projectSearchIds,
-				searchDataLookupParameters_Root: this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined}),
-				dataPageStateManager: this._dataPageStateManager_DataFrom_Server,
-				commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT,
-				commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
-			});
+			modViewPage_DataVizOptions_VizSelections_PageStateManager: this._modViewPage_DataVizOptions_VizSelections_PageStateManager,
 
+			singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,
 
+			dataPages_LoggedInUser_CommonObjectsFactory: this._dataPages_LoggedInUser_CommonObjectsFactory
+		}
 
-			this._modViewPage_DisplayDataOnPage = new ModViewPage_DisplayDataOnPage( {
+		const props : ModViewPage_Display_Root_Component_Props = {
+			propsValue
+		}
 
-				dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
-				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-				dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-				searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
-				centralPageStateManager : this._centralPageStateManager,
-				commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-			});
+		const projectPage_ExperimentsSectionRoot_Component = (
+			React.createElement(
+				ModViewPage_Display_Root_Component,
+				props,
+				null
+			)
+		);
 
-			await this._modViewPage_DisplayDataOnPage.initialize();
+		//  Render to page:
 
-			//  Have all data in page variables to render the page
+		const containerDOMElement = document.getElementById("main_mod_view_outer_block_react_root_container");
 
-			const singleProteinCloseCallback = () : void =>  {
+		if ( ! containerDOMElement ) {
+			throw Error("No DOM element with id 'main_mod_view_outer_block_react_root_container'");
+		}
 
-				if ( ! this._called__populateModDataBlock ) {
+		//  Called on render complete
+		const renderCompleteCallbackFcn = () => {
 
-					this._modViewPage_DisplayDataOnPage.populateModDataBlock();
+		};
 
-					this._called__populateModDataBlock = true;
-				}
-			}
+		const renderedReactComponent = ReactDOM.render(
+			projectPage_ExperimentsSectionRoot_Component,
+			containerDOMElement,
+			renderCompleteCallbackFcn
+		);
 
-			const singleProtein_InitializeResult =
-				get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root().initialize({
-
-					referrerFromURL_Set,
-
-					singleProteinCloseCallback,
-
-					dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
-					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-					dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-					searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
-					centralPageStateManager : this._centralPageStateManager,
-
-					projectSearchIds: this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds(),
-					searchDataLookupParamsRoot : this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined}),
-
-					commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-					commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT,
-					commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
-				});
-
-
-
-			this._modViewPage_DisplayDataOnPage.initialUpdates_To_PageStateVariables();
-
-			this._modViewPage_DisplayDataOnPage.populateSearchDetailsAndOtherFilters_And_Save_Set_Buttons_Underneath_Block();
-
-			if ( ! singleProtein_InitializeResult.directlyShowing_SingleProteinOverlay ) {
-
-				this._called__populateModDataBlock = true;
-
-				this._modViewPage_DisplayDataOnPage.populateModDataBlock();
-			}
-		} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
 	}
 }
 

@@ -81,6 +81,8 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
     private _psmTblData_Array_Map_Key_ScanNumber: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>
     private _psms_DO_NOT_Have_ScanNumbers: boolean = false
 
+    private _scanNumber_SearchScanFileId_Pair_Unique_Count_CachedResult: number = undefined
+
     constructor(
         {
             psmTblData_Map_Key_ReportedPeptideId, psmTblData_Map_Key_PsmId
@@ -127,8 +129,52 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
         return this._psmTblData_Array_Map_Key_ScanNumber.get(scanNumer);
     }
 
+    get_ScanNumber_SearchScanFileId_Pair_Unique_Count() {
+
+        if ( this._scanNumber_SearchScanFileId_Pair_Unique_Count_CachedResult !== undefined && this._scanNumber_SearchScanFileId_Pair_Unique_Count_CachedResult !== null ) {
+
+            return this._scanNumber_SearchScanFileId_Pair_Unique_Count_CachedResult // EARLY RETURN
+        }
+
+        //   Compute this._scanNumber_SearchScanFileId_Pair_Unique_Count_CachedResult
 
 
+        const SEARCH_SCAN_FILE_ID_NOT_POPULATED__VALUE_FOR_MAP_KEY = -999999999999;
+
+        const scanNumber_Set_Map_Key_SearchScanFileId: Map<number, Set<number>> = new Map()
+
+        for ( const psmTblData of this.get_PsmTblData_Entries_IterableIterator() ) {
+
+            const scanNumber = psmTblData.scanNumber
+            let searchScanFileId = psmTblData.searchScanFileId
+            if ( searchScanFileId === undefined || searchScanFileId === null ) {
+                searchScanFileId = SEARCH_SCAN_FILE_ID_NOT_POPULATED__VALUE_FOR_MAP_KEY
+            }
+
+            let scanNumber_Set = scanNumber_Set_Map_Key_SearchScanFileId.get( searchScanFileId )
+            if ( ! scanNumber_Set ) {
+                scanNumber_Set = new Set()
+                scanNumber_Set_Map_Key_SearchScanFileId.set( searchScanFileId, scanNumber_Set )
+            }
+            scanNumber_Set.add( scanNumber )
+        }
+
+        let scanNumber_Count_Total = 0
+
+        for ( const scanNumber_Set of scanNumber_Set_Map_Key_SearchScanFileId.values() ) {
+
+            scanNumber_Count_Total += scanNumber_Set.size
+        }
+
+        this._scanNumber_SearchScanFileId_Pair_Unique_Count_CachedResult = scanNumber_Count_Total
+
+        return this._scanNumber_SearchScanFileId_Pair_Unique_Count_CachedResult
+    }
+
+
+    /**
+     *
+     */
     private _compute__psmTblData_Array_Map_Key_ScanNumber__psms_DO_NOT_Have_ScanNumbers() {
 
         if ( this._psmTblData_Array_Map_Key_ScanNumber || this._psms_DO_NOT_Have_ScanNumbers ) {

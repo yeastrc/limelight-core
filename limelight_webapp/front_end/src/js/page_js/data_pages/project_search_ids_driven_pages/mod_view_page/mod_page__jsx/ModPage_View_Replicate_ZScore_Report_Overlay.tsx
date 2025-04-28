@@ -144,6 +144,7 @@ class ModPage_View_Replicate_ZScore_Report_Overlay extends React.Component< ModP
                 >
                     <table>
                         <thead>
+                        <tr>
                         <th style={ columnHeader_Style }>
                             rep1 (searches)
                         </th>
@@ -174,6 +175,7 @@ class ModPage_View_Replicate_ZScore_Report_Overlay extends React.Component< ModP
                         <th style={ columnHeader_Style }>
                             rank
                         </th>
+                        </tr>
                         </thead>
                         <tbody>
                         { this.props.props_value.tableRows.map( ( tableRow_Entry, index) => {

@@ -545,6 +545,7 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                             peptideSequence_UserSelections_StateObject : undefined,
                             userSearchString_LocationsOn_ProteinSequence_Root : undefined,
                             proteinPositionFilter_UserSelections_StateObject : undefined,
+                            proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
                             psm_Charge_Filter_UserSelection_StateObject : undefined,
                             psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : undefined,
                             peptideSequence_MissedCleavageCount_UserSelections_StateObject : undefined,

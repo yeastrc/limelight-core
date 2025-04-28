@@ -184,10 +184,25 @@ export class CentralPageStateManager {
 		if ( ! this._registeredComponents.has( componentUniqueId ) ) {
 			throw( "getEncodedData() Component unique id not registered: " + componentUniqueId );
 		}
+		return this._getEncodedData_INTERNAL({ componentUniqueId });
+	}
+
+	/**
+	 *
+	 */
+	getEncodedData__NO_ComponentRegisteredCheck__ONLY_USE_WHEN_HAVE_TO( { component } : { component : any } ) {
+		const componentUniqueId = component.getUniqueId();
+		return this._getEncodedData_INTERNAL({ componentUniqueId });
+	}
+
+	/**
+	 *
+	 */
+	private _getEncodedData_INTERNAL( { componentUniqueId } : { componentUniqueId : any } ) {
 		const componentData = this._pageState[ componentUniqueId ];
 		return componentData;
 	}
-	
+
 	/**
 	 * 
 	 */

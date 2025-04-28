@@ -28,6 +28,7 @@ const _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 
 const _ENCODED_DATA__PEPTIDE_UNIQUE_ENCODING_PROPERTY_NAME = 'b';
 
+const _DEFAULT_VALUE___optionSelected = true
 
 ///////
 
@@ -40,7 +41,7 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
 
     private _for_SingleProtein : boolean = false;
 
-    private _optionSelected : boolean = true; //  Default true
+    private _optionSelected : boolean = _DEFAULT_VALUE___optionSelected; //  Default true
 
     private _centralPageStateManager : CentralPageStateManager;
 
@@ -170,6 +171,29 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
         }
 
         this._optionSelected = treatOpenModMassZeroAsUnmodified_Selection;
+
+        // if ( ! this._centralPageStateManager ) {
+        //     throw Error( "this._centralPageStateManager not set" );
+        // }
+        if ( this._centralPageStateManager ) {
+            this._centralPageStateManager.setState({component: this});
+        }
+    }
+
+
+    /**
+     *
+     *
+     */
+    setTreatOpenModMassZeroAsUnmodified_Selection__TO_DEFAULT() : void {
+
+        if ( ! this._initializeCalled ) {
+            const msg = "Not Initialized and setTreatOpenModMassZeroAsUnmodified_Selection called"
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        this._optionSelected = _DEFAULT_VALUE___optionSelected;
 
         // if ( ! this._centralPageStateManager ) {
         //     throw Error( "this._centralPageStateManager not set" );

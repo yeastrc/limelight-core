@@ -1,25 +1,6 @@
 /**
  * ModPage_OptionsSection_UserInput_Display_MainContent_Component.tsx
  *
- *
- *          WARNING WARNING WARNING
- *
- * NOT a normal React Component.
- *
- * DOM input elements are assigned and read using jQuery using the 'id' on the elements as well as jQuery .find(  )
- *
- *
- * DO NOT call jQuery.empty() on any DOM element
- *
- *
- * Over time this may be migrated to be fully React.
- *
- * In the meantime, it supports inserting React based components for filtering/options
- *
- * !!! FORMATTING WARNING:
- *
- * The Positioning of the button "Update Visualization" and text after it is kind of a hack.
- * It needs to be checked if there is any changes to the contents of the other columns.
  */
 
 import React from "react";
@@ -28,42 +9,27 @@ import {
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 import {
-    proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent";
-import {
-    CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
-import {
-    ProteinPositionFilter_UserInput__Component,
-    ProteinPositionFilter_UserInput__Component__Get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction,
-    ProteinPositionFilter_UserInput__Component__Save_CallbackFunction,
-    ProteinPositionFilter_UserInput__Component__Save_CallbackFunction_Params
-} from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component";
-import {
-    ProteinPositionFilter_UserInput__Component__ProteinData_Root,
-    ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein
-} from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__ProteinData";
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
-import {
-    ModView_VizOptionsData
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
-import {
-    ModPage_ProteinPositionFilterDataManager
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModPage_ProteinPositionFilterDataManager";
-import {
-    ProteinPositionFilter_UserInput__Component__UserSelectionData_Root,
-    ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein,
-    ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleRange
-} from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__UserSelectionData";
+
+
+
+//  Delay after input change before call callback, to wait for additional keyboard input
+const CALL_CALLBACK_DELAY = 400;  // in milliseconds
+
+
 
 /**
  *
  */
 export class ModPage_OptionsSection_UserInput_Display_MainContent_Component_Props_Prop {
 
-    vizOptionsData : ModView_VizOptionsData
-    projectSearchIds : Array<number>
-    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+    valueChanged_Callback: () => void
 }
 
 /**
@@ -89,14 +55,23 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
     //  bind to 'this' for passing as parameters
 
-    private _any_InputField_Clicked_Callback_BindThis = this._any_InputField_Clicked_Callback.bind(this)
-    private _any_InputFieldChanged_Callback_BindThis = this._any_InputFieldChanged_Callback.bind(this)
+    private _quantType_Psms_Clicked_Callback_BindThis = this._quantType_Psms_Clicked_Callback.bind(this)
+    private _quantType_Scans_Clicked_Callback_BindThis = this._quantType_Scans_Clicked_Callback.bind(this)
 
-    private internal__ProteinPosition_Component_Changed__Callback_BindThis = this.internal__ProteinPosition_Component_Changed__Callback.bind(this)
 
-    private _update_Visualization_Button_Clicked_Callback_BindThis = this._update_Visualization_Button_Clicked_Callback.bind(this)
+    private _psmQuantMethod_Counts_Clicked_Callback_BindThis = this._psmQuantMethod_Counts_Clicked_Callback.bind(this)
+    private _psmQuantMethod_Ratios_Clicked_Callback_BindThis = this._psmQuantMethod_Ratios_Clicked_Callback.bind(this)
 
-    private _any_InputFieldChanged = false
+    private _psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator_Clicked_BindThis = this._psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator_Clicked.bind(this)
+
+    private _colorCutoffRatio_InputFieldChanged_Callback_BindThis = this._colorCutoffRatio_InputFieldChanged_Callback.bind(this)
+    private _colorCutoffCount_InputFieldChanged_Callback_BindThis = this._colorCutoffCount_InputFieldChanged_Callback.bind(this)
+    private _modMassCutoffMin_InputFieldChanged_Callback_BindThis = this._modMassCutoffMin_InputFieldChanged_Callback.bind(this)
+    private _modMassCutoffMax_InputFieldChanged_Callback_BindThis = this._modMassCutoffMax_InputFieldChanged_Callback.bind(this)
+
+    private _excludeUnlocalizedMods_InputFieldChanged_Callback_BindThis = this._excludeUnlocalizedMods_InputFieldChanged_Callback.bind(this)
+
+    private _transformations_InputFieldChanged_Callback_BindThis = this._transformations_InputFieldChanged_Callback.bind(this)
 
     /**
      *
@@ -124,35 +99,247 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
     //////////////
 
-    private _any_InputField_Clicked_Callback( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+    private _rerender_Then_After_SetTimeout_Call_valueChanged_Callback() {
 
-        //  For Radio buttons
-
-        this._any_InputFieldChanged = true
         this.setState({ forceReRender_Object: {} })
+
+        window.setTimeout( () => { try {
+
+            this.props.propsValue.valueChanged_Callback()
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
     }
 
     //////////////
 
-    private _any_InputFieldChanged_Callback( event: React.ChangeEvent<HTMLElement> ) {
+    private _quantType_Psms_Clicked_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
 
-        this._any_InputFieldChanged = true
-        this.setState({ forceReRender_Object: {} })
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_quantType( ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms )
+
+        this._rerender_Then_After_SetTimeout_Call_valueChanged_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    private _quantType_Scans_Clicked_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_quantType( ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans )
+
+        this._rerender_Then_After_SetTimeout_Call_valueChanged_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    private _psmQuantMethod_Counts_Clicked_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_psmQuant( ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts )
+
+        this._rerender_Then_After_SetTimeout_Call_valueChanged_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    private _psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator_Clicked( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator( event.target.checked )
+
+        this._rerender_Then_After_SetTimeout_Call_valueChanged_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+
+    private _psmQuantMethod_Ratios_Clicked_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_psmQuant( ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios )
+
+        this._rerender_Then_After_SetTimeout_Call_valueChanged_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    private _excludeUnlocalizedMods_InputFieldChanged_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue = event.target.checked
+
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_excludeUnlocalizedOpenMods( newValue )
+
+        this._rerender_Then_After_SetTimeout_Call_valueChanged_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+
+    //////////////
+
+    private _transformations_InputFieldChanged_Callback( event: React.ChangeEvent<HTMLSelectElement> ) { try {
+
+         const newValue = event.target.value
+
+        if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none )
+        } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.scaled_mean_diff ) {
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.scaled_mean_diff )
+        } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.per_mod_zscore ) {
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.per_mod_zscore )
+        } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_zscore ) {
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_zscore )
+        } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_pvalue_bonf ) {
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_pvalue_bonf )
+        } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_qvalue_bh ) {
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_qvalue_bh )
+        } else {
+            const msg = "_transformations_InputFieldChanged_Callback: event.target.value is NOT any value in ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum "
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        this._rerender_Then_After_SetTimeout_Call_valueChanged_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /////////
+
+    //  Process onChange on <input> text fields containing integers
+
+    /**
+     *
+     */
+    private _colorCutoffRatio_InputFieldChanged_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue_String = event.target.value
+
+        const newValue_Number = this._inputNumberField_Compute_NumberFromFieldContents( newValue_String )
+
+        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio() ) {
+            // No change so exit
+            return // EARLY RETURN
+        }
+
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_colorCutoffRatio( newValue_Number )
+
+        this._inputField_TypeText_Changed()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _colorCutoffCount_InputFieldChanged_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue_String = event.target.value
+
+        const newValue_Number = this._inputNumberField_Compute_NumberFromFieldContents( newValue_String )
+
+        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() ) {
+            // No change so exit
+            return // EARLY RETURN
+        }
+
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_colorCutoffCount( newValue_Number )
+
+        this._inputField_TypeText_Changed()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _modMassCutoffMin_InputFieldChanged_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue_String = event.target.value
+
+        const newValue_Number = this._inputNumberField_Compute_NumberFromFieldContents( newValue_String )
+
+        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() ) {
+            // No change so exit
+            return // EARLY RETURN
+        }
+
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin( newValue_Number )
+
+        this._inputField_TypeText_Changed()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _modMassCutoffMax_InputFieldChanged_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue_String = event.target.value
+
+        const newValue_Number = this._inputNumberField_Compute_NumberFromFieldContents( newValue_String )
+
+        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax() ) {
+            // No change so exit
+            return // EARLY RETURN
+        }
+
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax( newValue_Number )
+
+        this._inputField_TypeText_Changed()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _inputNumberField_Compute_NumberFromFieldContents( inputFieldValue_AsString: string ) {
+
+        const inputFieldValue_AsString_Trimmed = inputFieldValue_AsString.trim()
+
+        if ( inputFieldValue_AsString_Trimmed.length === 0 ) {
+            return undefined
+        }
+
+        const inputFieldValue_AsNumber = Number.parseInt( inputFieldValue_AsString_Trimmed )
+
+        if ( Number.isNaN( inputFieldValue_AsNumber ) ) {
+            return undefined
+        }
+
+        return inputFieldValue_AsNumber
     }
 
-    private internal__ProteinPosition_Component_Changed__Callback() {
+    private _inputField_TypeText_Changed() {
 
-        this._any_InputFieldChanged = true
         this.setState({ forceReRender_Object: {} })
+
+        this._callUpdateCallback_AfterTimeout()
     }
 
-    private _update_Visualization_Button_Clicked_Callback( event: React.MouseEvent<HTMLElement, MouseEvent> ) {
+    /**
+     * TimeoutId for delaying updating rest of page for user update <input> fields with numbers
+     * @private
+     */
+    private _inputFieldChanged_TimeoutId : number;
 
-        //  NO Stop propogation since this other onClick Handler
+    /**
+     *
+     */
+    private _callUpdateCallback_AfterTimeout() {
 
-        this._any_InputFieldChanged = false
-        this.setState({ forceReRender_Object: {} })
+        if ( this._inputFieldChanged_TimeoutId ) {
+            window.clearTimeout( this._inputFieldChanged_TimeoutId );
+            this._inputFieldChanged_TimeoutId = undefined;
+        }
+
+        this._inputFieldChanged_TimeoutId = window.setTimeout( () => {
+            try {
+                this.props.propsValue.valueChanged_Callback();
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        }, CALL_CALLBACK_DELAY );
     }
+
+
+
+
+    // private _update_Visualization_Button_Clicked_Callback( event: React.MouseEvent<HTMLElement, MouseEvent> ) {
+    //
+    //     //  NO Stop propogation since this other onClick Handler
+    //
+    //     this._any_InputFieldChanged = false
+    //     this.setState({ forceReRender_Object: {} })
+    // }
 
     ////////////////////////////////////////
 
@@ -161,22 +348,13 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
      */
     render() {
 
-
         const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer();
-
-
-        // WARNING WARNING WARNING
-        //
-        // NOT a normal React Component.  See message at TOP of file.
-        //
-        // DO NOT call jQuery.empty() on any DOM element
-
 
         return (
             <div className="data-viz-options-container">
-                <div className="data-viz-title" style={ { marginBottom: 0 } }>Data Visualization Options:</div>
                 <div style={ { marginTop: 0, fontSize: "10pt" } }>Mouse over items for help.
                 </div>
+
                 <div id="data-viz-form" className="data-viz-form">
 
                     {/*  Outer FlexBox -- First 4 blocks together and then Protein Filter as Second  */}
@@ -213,7 +391,8 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                         title={
                                             <span>
-                                                Choose how modification masses are quantified in each search. Either as PSM or scan counts and either as raw counts or ratios.
+                                                Choose how modification masses are quantified in each search. Either as
+                                                PSM or scan counts and either as raw counts or ratios.
                                             </span>
                                         }
                                         { ...tooltip_Main_Props }
@@ -224,86 +403,156 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                                     <div style={ { marginTop: 10 } }>
-
-                                        <label>
-                                            <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" defaultChecked={ false } onClick={ this._any_InputField_Clicked_Callback_BindThis  } />
-                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                title={
+                                        <div>
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="quant-type"
+                                                    id="quant-type-option-psms"
+                                                    value="psms"
+                                                    checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms }
+                                                    onChange={ this._quantType_Psms_Clicked_Callback_BindThis }
+                                                />
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            Counts are based on # of distinct peptide-spectrum matches
+                                                            containing a mod mass. Each scan may result in multiple PSMs if
+                                                            multiple peptides are IDed by the same scan.
+                                                        </span>
+                                                    }
+                                                    { ...tooltip_Main_Props }
+                                                >
                                                     <span>
-                                                        View as ratio of # of PSMs or scans with mod mass / total number of PSMs or scans in search.
+                                                        PSMs
                                                     </span>
-                                                }
-                                                { ...tooltip_Main_Props }
-                                            >
-                                                <span>
-                                                    Ratios
-                                                </span>
-                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                        </label>
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                            </label>
+                                        </div>
 
-                                        <br/>
-
-                                        <label>
-                                            <input type="radio" name="psm-quant" id="psm-quant-option-counts" value="counts"  defaultChecked={ true } onClick={ this._any_InputField_Clicked_Callback_BindThis  }  />
-                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                title={
+                                        <div>
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="quant-type"
+                                                    id="quant-type-option-psms"
+                                                    value="scans"
+                                                    checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans }
+                                                    onChange={ this._quantType_Scans_Clicked_Callback_BindThis }
+                                                />
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            Counts are based on the # of distinct scans that were IDed as a
+                                                            peptide containing a mod mass. A scan will only count once even
+                                                            if multiple peptides are IDed by the same scan.
+                                                        </span>
+                                                    }
+                                                    { ...tooltip_Main_Props }
+                                                >
                                                     <span>
-                                                        View as count of PSMs or scans with mod mass in search.
+                                                        Scans
                                                     </span>
-                                                }
-                                                { ...tooltip_Main_Props }
-                                            >
-                                                <span>
-                                                    Counts
-                                                </span>
-                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                        </label>
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                            </label>
+                                        </div>
                                     </div>
 
                                     <div style={ { marginTop: 10 } }>
-                                        <label>
-                                            <input type="radio" name="quant-type" id="quant-type-option-psms" value="psms" defaultChecked={ true } onClick={ this._any_InputField_Clicked_Callback_BindThis  } />
-                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                title={
+
+                                        <div>
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="psm-quant"
+                                                    id="psm-quant-option-ratios"
+                                                    value="counts"
+                                                    checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts }
+                                                    onChange={ this._psmQuantMethod_Counts_Clicked_Callback_BindThis }
+                                                />
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            View as count of PSMs or scans with mod mass in search.
+                                                        </span>
+                                                    }
+                                                    { ...tooltip_Main_Props }
+                                                >
                                                     <span>
-                                                        Counts are based on # of distinct peptide-spectrum matches containing a mod mass. Each scan may result in multiple PSMs if multiple peptides are IDed by the same scan.
+                                                        Counts
                                                     </span>
-                                                }
-                                                { ...tooltip_Main_Props }
-                                            >
-                                                <span>
-                                                    PSMs
-                                                </span>
-                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                        </label>
-                                        <br/>
-                                        <label>
-                                            <input type="radio" name="quant-type" id="quant-type-option-scans" value="scans" defaultChecked={ false } onClick={ this._any_InputField_Clicked_Callback_BindThis  } />
-                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                title={
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                            </label>
+                                        </div>
+
+
+                                        <div>
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name="psm-quant"
+                                                    id="psm-quant-option-ratios"
+                                                    value="ratios"
+                                                    checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios }
+                                                    onChange={ this._psmQuantMethod_Ratios_Clicked_Callback_BindThis }
+                                                />
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            View as ratio of # of PSMs or scans with mod mass / total number
+                                                            of PSMs or scans in search.
+                                                        </span>
+                                                    }
+                                                    { ...tooltip_Main_Props }
+                                                >
                                                     <span>
-                                                        Counts are based on the # of distinct scans that were IDed as a peptide containing a mod mass. A scan will only count once even if multiple peptides are IDed by the same scan.
+                                                        Ratios
                                                     </span>
-                                                }
-                                                { ...tooltip_Main_Props }
-                                            >
-                                                <span>
-                                                    Scans
-                                                </span>
-                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                        </label>
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                            </label>
+                                        </div>
+
+                                        { this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios ? (
+                                            //  'ratios' selected
+
+                                            <div style={ { marginTop: 5, marginLeft: 10 } }>
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator() }
+                                                        onChange={ this._psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator_Clicked_BindThis }
+                                                    />
+                                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                        title={
+                                                            <span>
+                                                                { "Ratios are normally counted using all PSMs passing primary filters for each search (e.g., q-value <= 0.01) in the denominator. Select this option to only use PSMs that also pass all secondary filters on the page (e.g., a specified retention time range) in the denominator. " }
+                                                            </span>
+                                                        }
+                                                        { ...tooltip_Main_Props }
+                                                    >
+                                                        <span>
+                                                            Ratios Total use secondary filters
+                                                        </span>
+                                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                                </label>
+                                            </div>
+
+                                            ) : null }
+
                                     </div>
+
                                 </div>
 
-                                {/*  2 of 4 Inner Flex Box Items  */}
+                                {/*  2 of 4 Inner Flex Box Items  */ }
 
-                                {/*  Column In "flex"  */}
+                                {/*  Column In "flex"  */ }
                                 <div className="viz-form-section">
 
                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                         title={
                                             <span>
-                                                Override maximum values used when determining the color scale in the visualization.
+                                                Override maximum values used when determining the color scale in the
+                                                visualization.
                                             </span>
                                         }
                                         { ...tooltip_Main_Props }
@@ -317,42 +566,77 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
                                     <table style={ { marginTop: 10 } }>
                                         <tbody>
-                                        <tr>
-                                            <td>
-                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                    title={
-                                                        <span>
-                                                            Override maximum value for ratio when scaling color in visualization. Only used when quant method is set to ratios.
-                                                        </span>
-                                                    }
-                                                    { ...tooltip_Main_Props }
-                                                >
-                                                    <span>
-                                                        Ratio:
-                                                    </span>
-                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                            </td>
-                                            <td><input type="text" id="color-cutoff-ratio" name="color-cutoff-ratio" size={ 4 } defaultValue="" onChange={ this._any_InputFieldChanged_Callback_BindThis  } />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                    title={
-                                                        <span>
-                                                            Override maximum value for PSM or scan count when scaling color in visualization. Only used when quant method is set to counts.
-                                                        </span>
-                                                    }
-                                                    { ...tooltip_Main_Props }
-                                                >
-                                                    <span>
-                                                        Count:
-                                                    </span>
-                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                            </td>
-                                            <td><input type="text" id="color-cutoff-count" name="color-cutoff-count" size={ 4 } defaultValue="" onChange={ this._any_InputFieldChanged_Callback_BindThis  } />
-                                            </td>
-                                        </tr>
+
+                                            { this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts ? (
+                                                    //  'counts' selected
+
+                                                <tr>
+                                                    <td>
+                                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                            title={
+                                                                <span>
+                                                                    Override maximum value for PSM or scan count when scaling color in visualization. Only used when quant method is set to counts.
+                                                                </span>
+                                                            }
+                                                            { ...tooltip_Main_Props }
+                                                        >
+                                                            <span>Count: </span>
+                                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            id="color-cutoff-count"
+                                                            name="color-cutoff-count"
+                                                            size={ 4 }
+                                                            value={
+                                                                this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() !== undefined
+                                                                && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() !== null
+                                                                    ? this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount()
+                                                                    : ""
+                                                            }
+                                                            onChange={ this._colorCutoffCount_InputFieldChanged_Callback_BindThis  }
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            ) : null }
+
+                                            { this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios ? (
+                                                //  'ratios' selected
+
+                                                <tr>
+                                                    <td>
+                                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                            title={
+                                                                <span>
+                                                                    Override maximum value for ratio when scaling color in
+                                                                    visualization. Only used when quant method is set to ratios.
+                                                                </span>
+                                                            }
+                                                            { ...tooltip_Main_Props }
+                                                        >
+                                                            <span>
+                                                                Ratio:
+                                                            </span>
+                                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            id="color-cutoff-ratio"
+                                                            name="color-cutoff-ratio"
+                                                            size={ 4 }
+                                                            value={
+                                                                this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio() !== undefined
+                                                                && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio() !== null
+                                                                    ? this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio()
+                                                                    : ""
+                                                            }
+                                                            onChange={ this._colorCutoffRatio_InputFieldChanged_Callback_BindThis  }
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            ) : null }
                                         </tbody>
                                     </table>
                                 </div>
@@ -390,7 +674,20 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                                     <span>Minimum:</span>
                                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             </td>
-                                            <td><input type="text" id="modmass-cutoff-min" name="modmass-cutoff-min" size={ 4 } defaultValue="" onChange={ this._any_InputFieldChanged_Callback_BindThis  } />
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    id="modmass-cutoff-min"
+                                                    name="modmass-cutoff-min"
+                                                    size={ 4 }
+                                                    value={
+                                                        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() !== undefined
+                                                        && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() !== null
+                                                            ? this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin()
+                                                            : ""
+                                                    }
+                                                    onChange={ this._modMassCutoffMin_InputFieldChanged_Callback_BindThis  }
+                                                />
                                             </td>
                                         </tr>
                                         <tr>
@@ -407,7 +704,19 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             </td>
                                             <td>
-                                                <input type="text" id="modmass-cutoff-max" name="modmass-cutoff-max" size={ 4 }  defaultValue="" onChange={ this._any_InputFieldChanged_Callback_BindThis  } />
+                                                <input
+                                                    type="text"
+                                                    id="modmass-cutoff-max"
+                                                    name="modmass-cutoff-max"
+                                                    size={ 4 }
+                                                    value={
+                                                        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax() !== undefined
+                                                        && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax() !== null
+                                                            ? this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax()
+                                                            : ""
+                                                    }
+                                                    onChange={ this._modMassCutoffMax_InputFieldChanged_Callback_BindThis  }
+                                                />
                                             </td>
                                         </tr>
                                         </tbody>
@@ -433,7 +742,11 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                             </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             <span> </span>
                                             <input
-                                                type="checkbox" name="exclude-unlocalized-mods" id="exclude-unlocalized-mods-checkbox" onChange={ this._any_InputFieldChanged_Callback_BindThis }
+                                                type="checkbox"
+                                                name="exclude-unlocalized-mods"
+                                                id="exclude-unlocalized-mods-checkbox"
+                                                checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_excludeUnlocalizedOpenMods() }
+                                                onChange={ this._excludeUnlocalizedMods_InputFieldChanged_Callback_BindThis }
                                             />
                                         </label>
                                     </div>
@@ -452,92 +765,55 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                     </div>
 
                                     <div>
-                                        <select id="transformation-pulldown" onChange={ this._any_InputFieldChanged_Callback_BindThis  }>
-                                            <option value="none" title="No data transformation.">None</option>
-                                            <option value="scaled-mean-diff"
-                                                    title="For each mod mass and search display: (x - μ) / μ, where x is the count or ratio for a mod mass in a search and μ is the mean for a mod mass across all searches.">Scaled
-                                                Mean Diff.
+                                        <select
+                                            id="transformation-pulldown"
+                                            value={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() }
+                                            onChange={ this._transformations_InputFieldChanged_Callback_BindThis  }
+                                        >
+                                            <option
+                                                value={ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none }
+                                                title="No data transformation."
+                                            >
+                                                None
                                             </option>
-                                            <option value="per-mod-zscore"
-                                                    title="For each mod mass and search display: (x - μ) / s, where x is the count or ratio for a mod mass in a search, μ is the mean for a mod mass across all searches, and s is the standard deviation for this mod mass across all searches.">Per-mod
-                                                Z-Score
+                                            <option
+                                                value={ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.scaled_mean_diff }
+                                                title="For each mod mass and search display: (x - μ) / μ, where x is the count or ratio for a mod mass in a search and μ is the mean for a mod mass across all searches."
+                                            >
+                                                Scaled Mean Diff.
                                             </option>
-                                            <option value="global-zscore"
-                                                    title="For each mod mass and search display: (x - μ) / s, where x is the count or ratio for a mod mass in a search, μ is the mean for all mod masses across all searches, and s is the standard deviation across all mod masses in all searches.">Global
-                                                Z-Score
+                                            <option
+                                                value={ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.per_mod_zscore }
+                                                title="For each mod mass and search display: (x - μ) / s, where x is the count or ratio for a mod mass in a search, μ is the mean for a mod mass across all searches, and s is the standard deviation for this mod mass across all searches."
+                                            >
+                                                Per-mod Z-Score
                                             </option>
-                                            <option value="global-pvalue-bonf"
-                                                    title="For each mod mass and search display: p, where p is the Bonferroni-corrected p-value associated with the global z-score (the probability of observing a z-score of that magnitude or greater by chance given a normal distribution with the observed mean and standard deviation.">Global
-                                                P-Value (Bonferroni)
+                                            <option
+                                                value={ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_zscore }
+                                                title="For each mod mass and search display: (x - μ) / s, where x is the count or ratio for a mod mass in a search, μ is the mean for all mod masses across all searches, and s is the standard deviation across all mod masses in all searches."
+                                            >
+                                                Global Z-Score
                                             </option>
-                                            <option value="global-qvalue-bh"
-                                                    title="For each mod mass and search display: q, where q is the Benjamini-Hochberg q-value associated with the global z-score (the probability of observing a z-score of that magnitude or greater by chance given a normal distribution with the observed mean and standard deviation.">Global
-                                                Q-Value (B-H)
+                                            <option
+                                                value={ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_pvalue_bonf }
+                                                title="For each mod mass and search display: p, where p is the Bonferroni-corrected p-value associated with the global z-score (the probability of observing a z-score of that magnitude or greater by chance given a normal distribution with the observed mean and standard deviation."
+                                            >
+                                                Global P-Value (Bonferroni)
+                                            </option>
+                                            <option
+                                                value={ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_qvalue_bh }
+                                                title="For each mod mass and search display: q, where q is the Benjamini-Hochberg q-value associated with the global z-score (the probability of observing a z-score of that magnitude or greater by chance given a normal distribution with the observed mean and standard deviation."
+                                            >
+                                                Global Q-Value (B-H)
                                             </option>
                                         </select>
 
                                     </div>
                                 </div>
                             </div>
-
-                            {/*  'Update Visualization' Button --  At bottom of inner FlexBox  */}
-
-                            {/*  Put button here so that when display text to right of button it can all be displayed without wrapping */}
-
-                            <div style={ { marginTop: 10 } }>
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                    title={
-                                        <span>
-                                            Update the data visualization and table below with new options.
-                                        </span>
-                                    }
-                                    { ...tooltip_Main_Props }
-                                >
-                                    <input
-                                        type="button" id="update-viz-button"
-                                        className="button" value="Update Visualization"
-                                        onClick={ this._update_Visualization_Button_Clicked_Callback_BindThis }
-                                    />
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-
-                                { this._any_InputFieldChanged ? (
-                                    <span
-                                        className="general-attention-grabbing-text--color-red"
-                                        style={ { marginLeft: 10 } }
-                                    >
-                                        Visualization may not match user options. Press "Update Visualization" to synchronize.
-                                    </span>
-                                ) : null }
-                            </div>
                         </div>
 
                         {/*  2 of 2 Outer Flex Box Items  */}
-
-                        {/*  Column In "flex"  */}
-                        <div className="viz-form-section">
-
-                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                title={
-                                    <span>
-                                        Filter results to only include specific proteins or positions in proteins.
-                                    </span>
-                                }
-                                { ...tooltip_Main_Props }
-                            >
-                                <span>Protein position filters:</span>
-                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                            <br/>
-
-                            <div style={ { marginTop: 5 } }>
-
-                                <INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component
-                                    vizOptionsData={ this.props.propsValue.vizOptionsData }
-                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
-                                    valueChanged_Callback={ this.internal__ProteinPosition_Component_Changed__Callback_BindThis }
-                                />
-                            </div>
-                        </div>
 
                     </div>
                     {/* <!-- end form sections --> */ }
@@ -549,327 +825,3 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
     }
 
 }
-
-///////////////////////
-
-
-/**
- *
- */
-export interface INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component_Props {
-
-    vizOptionsData: ModView_VizOptionsData
-    projectSearchIds: Array<number>
-    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-
-    valueChanged_Callback: () => void
-}
-
-/**
- *
- */
-interface INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component_State {
-
-    force_RerenderObject? : object
-}
-
-/**
- *
- */
-export class INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component extends React.Component< INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component_Props, INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component_State > {
-
-    //  bind to 'this' for passing as parameters
-
-    private _get_ProteinData_ReturnPromise_CallbackFunction_BindThis = this._get_ProteinData_ReturnPromise_CallbackFunction.bind(this)
-    private _update_PageState_FromChildComponent_SaveCall_BindThis = this._update_PageState_FromChildComponent_SaveCall.bind(this);
-
-    private _DONOTCALL() {  //  Test Funcion cast
-        const _get_ProteinData_ReturnPromise_CallbackFunction: ProteinPositionFilter_UserInput__Component__Get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction = this._get_ProteinData_ReturnPromise_CallbackFunction
-        const _update_PageState_FromChildComponent_SaveCall_BindThis : ProteinPositionFilter_UserInput__Component__Save_CallbackFunction = this._update_PageState_FromChildComponent_SaveCall
-    }
-
-    private _proteinPositionFilter_UserInput__Component__ProteinData : ProteinPositionFilter_UserInput__Component__ProteinData_Root
-    private _promise__proteinPositionFilter_UserInput__Component__ProteinData : Promise<ProteinPositionFilter_UserInput__Component__ProteinData_Root>
-
-    private _proteinPositionFilter_UserInput__Component__Existing_userSelections : ProteinPositionFilter_UserInput__Component__UserSelectionData_Root
-
-    private _load_ProteinData_For_Populating_ProteinRanges = false
-
-    private _show_LoadingData_Message = false
-
-    /**
-     *
-     */
-    constructor(props : INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component_Props) {
-        super(props);
-
-        try {
-            this._proteinPositionFilter_UserInput__Component__Existing_userSelections = new ProteinPositionFilter_UserInput__Component__UserSelectionData_Root()
-
-            if ( this.props.vizOptionsData.data.proteinPositionFilter ) {
-                const proteinRanges = this.props.vizOptionsData.data.proteinPositionFilter.getProteinRanges()
-                if ( proteinRanges && proteinRanges.length > 0 ) {
-
-                    //  Need to load protein first before display since need protein lengths
-
-                    this._load_ProteinData_For_Populating_ProteinRanges = true
-
-                    this._show_LoadingData_Message = true
-                }
-            }
-
-            this.state = {
-                force_RerenderObject: {}
-            };
-        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-    }
-
-    componentDidMount() {
-        try {
-            if ( this._load_ProteinData_For_Populating_ProteinRanges ) {
-
-                this._load_ProteinData_For_Populating_ProteinRanges = false
-
-                if ( this._no_Input_ProteinRanges_In_VizOptionsData() ) {
-
-                    // NO longer protein ranges
-
-                    this._show_LoadingData_Message = false
-
-                    this.setState({ force_RerenderObject: {} })
-
-                    return // EARLY RETURN
-                }
-
-                const promise = this._get_ProteinData_ReturnPromise_CallbackFunction()
-                promise.catch(reason => {})
-                promise.then( proteinData => { try {
-
-                    if ( this._no_Input_ProteinRanges_In_VizOptionsData() ) {
-
-                        // NO longer protein ranges
-
-                        this._show_LoadingData_Message = false
-
-                        this.setState({ force_RerenderObject: {} })
-
-                        return // EARLY RETURN
-                    }
-
-                    const proteinData_Map_Key_ProteinSequenceVersionId: Map<number, ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein> = new Map()
-                    for ( const protein of proteinData.proteins ) {
-                        proteinData_Map_Key_ProteinSequenceVersionId.set( protein.proteinSequenceVersionId, protein )
-                    }
-
-                    const vizOptionsData = this.props.vizOptionsData
-
-                    const selectedProteins_Map_Key_ProteinSequenceVersionId: Map<number, ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein> = new Map()
-
-                    for ( const proteinRange of vizOptionsData.data.proteinPositionFilter.getProteinRanges() ) {
-
-                        const proteinData_For_ProteinSequenceVersionId = proteinData_Map_Key_ProteinSequenceVersionId.get( proteinRange.proteinId )
-                        if ( ! proteinData_For_ProteinSequenceVersionId ) {
-
-                            //  Protein NOT in the Proteins for current PSM/Peptide/etc filters.
-
-                            //  One source of this error is when change searches and remove all searches that contain this protein
-                            //  One source of this error is when change PSM/Peptide/etc filters to remove this protein
-
-                            //  TODO  Would be best to remove this entry from State stored in the URL
-
-                            //  CANNOT skip this since previous code did NOT drop these.
-
-                            // const msg = "proteinData_Map_Key_ProteinSequenceVersionId.get( proteinRange.proteinId ) returned NOTHING for proteinRange.proteinId: " + proteinRange.proteinId
-                            // console.warn(msg)
-                            // throw Error(msg)
-                        }
-
-                        let selectedProtein_result = selectedProteins_Map_Key_ProteinSequenceVersionId.get( proteinRange.proteinId )
-                        if ( ! selectedProtein_result ) {
-                            selectedProtein_result = new ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein()
-                            selectedProtein_result.proteinSequenceVersionId = proteinRange.proteinId
-                            selectedProteins_Map_Key_ProteinSequenceVersionId.set( proteinRange.proteinId, selectedProtein_result )
-                        }
-
-                        if ( ( ! proteinData_For_ProteinSequenceVersionId ) || ( proteinRange.start !== 1 || proteinRange.end !== proteinData_For_ProteinSequenceVersionId.proteinLength ) ) {
-
-                            if ( ! selectedProtein_result.ranges ) {
-                                selectedProtein_result.ranges = []
-                            }
-
-                            const selectedProteinRange_ForChildComponent = new ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleRange();
-                            selectedProtein_result.ranges.push( selectedProteinRange_ForChildComponent );
-
-                            selectedProteinRange_ForChildComponent.start = proteinRange.start
-                            selectedProteinRange_ForChildComponent.end = proteinRange.end
-                        }
-                    }
-
-                    const selectedProteins_ForChildComponent: Array<ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein> = Array.from( selectedProteins_Map_Key_ProteinSequenceVersionId.values() )
-
-                    this._proteinPositionFilter_UserInput__Component__Existing_userSelections.proteins = selectedProteins_ForChildComponent
-
-                    this._show_LoadingData_Message = false
-
-                    this.setState({ force_RerenderObject: {} })
-
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-            }
-
-        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-    }
-
-    /**
-     *
-     */
-    private _no_Input_ProteinRanges_In_VizOptionsData() : boolean {
-
-        let noProteinRanges = false
-
-        if ( this.props.vizOptionsData.data.proteinPositionFilter ) {
-            const proteinRanges = this.props.vizOptionsData.data.proteinPositionFilter.getProteinRanges()
-            if ( ( ! proteinRanges ) || ( ! ( proteinRanges.length > 0 ) ) ) {
-
-                noProteinRanges = true
-            }
-        } else {
-            noProteinRanges = true
-        }
-        return noProteinRanges
-    }
-
-    /**
-     *
-     */
-    private _get_ProteinData_ReturnPromise_CallbackFunction() : Promise<ProteinPositionFilter_UserInput__Component__ProteinData_Root> {
-
-        if ( this._proteinPositionFilter_UserInput__Component__ProteinData ) {
-
-            return Promise.resolve( this._proteinPositionFilter_UserInput__Component__ProteinData )  // EARLY RETURN
-        }
-
-        if ( this._promise__proteinPositionFilter_UserInput__Component__ProteinData ) {
-            return this._promise__proteinPositionFilter_UserInput__Component__ProteinData
-        }
-
-
-        const promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data = proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent({
-            projectSearchIds: this.props.projectSearchIds,
-            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-        })
-
-        this._promise__proteinPositionFilter_UserInput__Component__ProteinData = new Promise<ProteinPositionFilter_UserInput__Component__ProteinData_Root>((resolve, reject) => { try {
-
-            promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.catch(reason => reject(reason))
-            promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.then(value => { try {
-
-                this._proteinPositionFilter_UserInput__Component__ProteinData = value.proteinPositionFilter_UserInput__Component__ProteinData_Root
-
-                this._promise__proteinPositionFilter_UserInput__Component__ProteinData = undefined
-
-                resolve( this._proteinPositionFilter_UserInput__Component__ProteinData )
-
-            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-        return this._promise__proteinPositionFilter_UserInput__Component__ProteinData
-    }
-
-    /**
-     *
-     */
-    private _update_PageState_FromChildComponent_SaveCall( params: ProteinPositionFilter_UserInput__Component__Save_CallbackFunction_Params ) {
-
-        const vizOptionsData = this.props.vizOptionsData
-
-        // data checks out if we got here, add it to the page
-
-        //  Reset filter in vizOptionsData
-        vizOptionsData.data.proteinPositionFilter = new ModPage_ProteinPositionFilterDataManager();
-
-
-        const proteinPositionFilter: ModPage_ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
-
-
-        for ( const protein_FromChild of params.userSelections.proteins ) {
-
-            const proteinSequenceVersionId = protein_FromChild.proteinSequenceVersionId;
-
-            if ( protein_FromChild.ranges && protein_FromChild.ranges.length > 0 ) {
-
-                for ( const protein_FromChild_range of protein_FromChild.ranges ) {
-
-                    proteinPositionFilter.addProteinRange({ proteinId: proteinSequenceVersionId, start: protein_FromChild_range.start, end: protein_FromChild_range.end });
-                }
-            } else {
-
-                let protein_Found_For_proteinSequenceVersionId = false
-
-                for ( const protein of this._proteinPositionFilter_UserInput__Component__ProteinData.proteins ) {
-
-                    if ( protein.proteinSequenceVersionId === proteinSequenceVersionId ) {
-
-                        protein_Found_For_proteinSequenceVersionId = true
-
-                        proteinPositionFilter.addProteinRange({ proteinId: proteinSequenceVersionId, start: 1, end: protein.proteinLength });
-
-                        break
-                    }
-                }
-
-                if ( ! protein_Found_For_proteinSequenceVersionId ) {
-
-                    const msg = "proteinSequenceVersionId NOT FOUND in this._proteinPositionFilter_UserInput__Component__ProteinData.proteins.  proteinSequenceVersionId: " + proteinSequenceVersionId
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-            }
-        }
-
-        this.props.valueChanged_Callback()
-    }
-
-    ////////////////////////////////////////
-
-    render() {
-
-        if ( this._show_LoadingData_Message ) {
-
-            return (
-                <div>
-                    Loading Data...
-                </div>
-            )
-        }
-
-
-        return (
-
-            <React.Fragment>
-                {/*   Consider using this component when add in other filter components from Peptide page */}
-                {/*<ProteinPositionFilter_UserSelections*/ }
-                {/*    proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ undefined }*/ }
-                {/*    proteinPositionFilter_UserSelections_StateObject={ this._proteinPositionFilter_UserSelections_StateObject }*/ }
-                {/*    proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data={ undefined }*/ }
-                {/*    proteinPositionFilter_UserSelections_Component_GetData_Callback={ this._getProteinData_Callback_BindThis }*/ }
-                {/*    updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis }*/ }
-                {/*/>*/ }
-
-                <div>
-                    <ProteinPositionFilter_UserInput__Component
-                        proteinData_InitiallyProvided={ undefined } //  Never set in this component.  Always use the callback
-                        get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction={ this._get_ProteinData_ReturnPromise_CallbackFunction_BindThis }
-                        userSelections={ this._proteinPositionFilter_UserInput__Component__Existing_userSelections }
-                        callbackOn_Save_Clicked={ this._update_PageState_FromChildComponent_SaveCall_BindThis }
-                    />
-                </div>
-
-            </React.Fragment>
-        )
-    }
-
-
-}
-
-

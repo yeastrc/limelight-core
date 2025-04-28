@@ -746,6 +746,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
                 modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
                 reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
+                proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
                 proteinPositionFilter_UserSelections_StateObject: undefined,
                 psm_Charge_Filter_UserSelection_StateObject:  this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
@@ -1886,6 +1887,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                 peptideSequence_UserSelections_StateObject : undefined,
                 userSearchString_LocationsOn_ProteinSequence_Root : undefined,
                 proteinPositionFilter_UserSelections_StateObject : undefined,
+                proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined
             });
 
             //   !!!  using 'await'

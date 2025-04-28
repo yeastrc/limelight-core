@@ -18,12 +18,22 @@ import {SearchDataLookupParams_For_Single_ProjectSearchId} from "page_js/data_pa
 /**
  *
  */
+export class CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId_SinglePositionEntry {
+
+    position : number
+    isNTerminal : boolean
+    isCTerminal : boolean
+}
+
+/**
+ *
+ */
 export class CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId {
     psmId : number
     openModificationMass : number
     openModificationMass_Rounded : number
     // - positionsMap_KeyPosition has Map values of Array to handle entry position 1 and entry n-term true that has position of 1
-    positionsMap_KeyPosition: Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>>
+    positionsMap_KeyPosition: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId_SinglePositionEntry>>
 }
 
 /**
@@ -443,7 +453,7 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_
         const psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs :
             Map<number, { reportedPeptideId : number, psmOpenModificationMassPerPSM_ForPsmIdMap :
                     Map<number, { psmId : number, openModificationMass : number, openModificationMass_Rounded : number,
-                        positionsMap_KeyPosition: Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>> }> }> = new Map();
+                        positionsMap_KeyPosition: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId_SinglePositionEntry>> }> }> = new Map();
 
         //  	PSM: Open Modification: Psm Ids per Rounded Mass for current cutoffs per Reported Peptide Id
         // 				- Map<Reported Peptide Id, { reportedPeptideId, Set<psm id has any open Mod mass>, Map<openModificationMass_Rounded, { openModificationMass_Rounded, Set<psmId> } > } >
@@ -472,7 +482,7 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_
         const psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs :
             Map<number, { reportedPeptideId : number, psmOpenModificationMassPerPSM_ForPsmIdMap :
                     Map<number, { psmId : number, openModificationMass : number, openModificationMass_Rounded : number,
-                        positionsMap_KeyPosition: Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>> }> }> = new Map();
+                        positionsMap_KeyPosition: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId_SinglePositionEntry>> }> }> = new Map();
 
         //  	PSM: Open Modification: Psm Ids per Rounded Mass for current cutoffs per Reported Peptide Id
         // 				- Map<Reported Peptide Id, { reportedPeptideId, Set<psm id has any open Mod mass>, Map<openModificationMass_Rounded, { openModificationMass_Rounded, Set<psmId> } > } >
@@ -488,7 +498,7 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_
 
             let psmOpenModificationMassPerPSM_ForPsmIdMap :
                 Map<number, { psmId : number, openModificationMass : number, openModificationMass_Rounded : number,
-                    positionsMap_KeyPosition: Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>> }> = undefined;
+                    positionsMap_KeyPosition: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId_SinglePositionEntry>> }> = undefined;
             {
                 let psmOpenModificationMassPerPSM_ForPsmIdMap_Object = psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.get( reportedPeptideId );
                 if ( ! psmOpenModificationMassPerPSM_ForPsmIdMap_Object ) {
@@ -534,7 +544,7 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_
 
                 if ( psmOpenModificationMassPositionsList != null && psmOpenModificationMassPositionsList != undefined && psmOpenModificationMassPositionsList.length > 0 ) {
                     // Have positions
-                    let positionsMap_KeyPosition : Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>> = psmOpenModificationMassPerPSM.positionsMap_KeyPosition;
+                    let positionsMap_KeyPosition : Map<number, Array<CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId_SinglePositionEntry>> = psmOpenModificationMassPerPSM.positionsMap_KeyPosition;
                     if ( ! positionsMap_KeyPosition ) {
                         positionsMap_KeyPosition = new Map();
                         psmOpenModificationMassPerPSM.positionsMap_KeyPosition = positionsMap_KeyPosition;
@@ -580,7 +590,7 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_
             const psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs :
                 Map<number, { reportedPeptideId : number, psmOpenModificationMassPerPSM_ForPsmIdMap :
                         Map<number, { psmId : number, openModificationMass : number, openModificationMass_Rounded : number,
-                            positionsMap_KeyPosition: Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>> }> }> = new Map()
+                            positionsMap_KeyPosition: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId_SinglePositionEntry>> }> }> = new Map()
 
             for ( const psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs_Entry of psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs.entries() ) {
 
@@ -589,7 +599,7 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_
 
                 const psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmIdMap_Result :
                     Map<number, { psmId : number, openModificationMass : number, openModificationMass_Rounded : number,
-                        positionsMap_KeyPosition: Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>> }> = new Map()
+                        positionsMap_KeyPosition: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId_SinglePositionEntry>> }> = new Map()
 
                 psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs_MapValue.reportedPeptideId
 
@@ -600,7 +610,7 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_
                     if ( psmOpenModificationMassPerPSM_ForPsmIdMapValue.openModificationMass_Rounded > 0 ) {
 
                         const psmOpenModificationMassPerPSM_DropEntriesThatRoundToZero_ForPsmId_Result : { psmId : number, openModificationMass : number, openModificationMass_Rounded : number,
-                            positionsMap_KeyPosition: Map<number, Array<{ position : number, isNTerminal : boolean, isCTerminal : boolean}>> } = {
+                            positionsMap_KeyPosition: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId_SinglePositionEntry>> } = {
                             psmId: psmOpenModificationMassPerPSM_ForPsmIdMapValue.psmId,
                             openModificationMass: psmOpenModificationMassPerPSM_ForPsmIdMapValue.openModificationMass,
                             openModificationMass_Rounded: psmOpenModificationMassPerPSM_ForPsmIdMapValue.openModificationMass_Rounded,

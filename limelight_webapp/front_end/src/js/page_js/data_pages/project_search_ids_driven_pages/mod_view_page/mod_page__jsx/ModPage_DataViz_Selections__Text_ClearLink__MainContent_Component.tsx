@@ -6,28 +6,33 @@
  * "Clear Selections" Link
  *
  *
- * DO NOT call jQuery.empty() on any DOM element
  *
  */
 
 import React from "react";
 
-import {
-    ModView_VizOptionsData_SubPart_selectedStateObject
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import { DataPageStateManager } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
-    limelight__Sort_ArrayOfNumbers_SortArrayInPlace
-} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasses_ProjectSearchIds_Visualization_Selections_SelectedModMassRanges_ForSingleSearch
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
+import {
+    ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/ModView_DataViz_Compute_ColorScale_WidthHeight_Etc";
+import {
+    ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable";
 
 /**
  *
  */
 export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component_Props_Prop {
 
-    selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject
-    modMap: Map<number, Map<number, number>>
+    modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+    modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
+    modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
     projectSearchIds : Array<number>
+
     dataPageStateManager_DataFrom_Server: DataPageStateManager
 
     clear_Clicked_Callback: () => void
@@ -69,72 +74,14 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
         };
     }
 
-
-    private _compute___projectSearchIds_All_Selected() : Set<number> {
-
-        const projectSearchIds_ThatHave_ALL_ModMasses_Selected: Set<number> = new Set()
-
-        if ( ( ! this.props.propsValue.selectedStateObject )
-            || ( ! this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId )
-            || ( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size === 0 ) ) {
-
-            //  NOTHING Selected
-
-            return projectSearchIds_ThatHave_ALL_ModMasses_Selected
-        }
-
-        const projectSearchId_Selected_Array: Array<number> = Array.from( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.keys() )
-
-        for ( const projectSearchId_Selected of projectSearchId_Selected_Array ) {
-
-            const modMasses_Selected_Array = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_Selected )
-            if ( ! modMasses_Selected_Array ) {
-                const msg = "this.props.propsValue.selectedStateObject.data[ projectSearchId_Selected ] returned NOTHING for projectSearchId_Selected: " + projectSearchId_Selected
-                console.warn(msg)
-                throw Error(msg)
-            }
-            const modMasses_Selected_Set = new Set( modMasses_Selected_Array )
-
-            //  modMasses_Selected_Set may contain mod masses that are NOT in the search.
-
-            //  If all mod masses for search in 'modMap' are in modMasses_Selected_Set then search is fully selected
-
-            let all_ModMasses_InSearch_AreSelected = true
-
-            for ( const modMap_Entry_Key_ModMass of this.props.propsValue.modMap ) {
-
-                const modMass_InSearch = modMap_Entry_Key_ModMass[0]
-
-                for ( const projectSearchId__modMap_SubEntry_Key of modMap_Entry_Key_ModMass[1].keys() ) {
-
-                    if ( projectSearchId__modMap_SubEntry_Key === projectSearchId_Selected ) {
-
-                        if ( ! modMasses_Selected_Set.has( modMass_InSearch ) ) {
-
-                            all_ModMasses_InSearch_AreSelected = false
-                            break
-                        }
-                    }
-                }
-                if ( ! all_ModMasses_InSearch_AreSelected ) {
-                    break
-                }
-            }
-
-            if ( all_ModMasses_InSearch_AreSelected ) {
-
-                projectSearchIds_ThatHave_ALL_ModMasses_Selected.add( projectSearchId_Selected )
-            }
-        }
-
-        return projectSearchIds_ThatHave_ALL_ModMasses_Selected
-    }
-
     //////////////
 
     private _clear_Clicked_Callback( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
 
         event.stopPropagation()
+
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().clear_All()
+
         this.props.propsValue.clear_Clicked_Callback()
     }
 
@@ -142,55 +89,27 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
     private _forRender__Create__mods_Display__From_selectionModificationsArray(
         {
-            selectionModificationsArray
+            visualization_Selections_SelectedModMassRanges_ForSingleSearch
         } : {
-            selectionModificationsArray: Array<number>
+            visualization_Selections_SelectedModMassRanges_ForSingleSearch: ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasses_ProjectSearchIds_Visualization_Selections_SelectedModMassRanges_ForSingleSearch
         }
     ) {
 
         const modMassRanges: Array<INTERNAL__ModificationMass_RangeEntry> = []
 
-        const selectionModificationsArray_Local_Sorted = Array.from( selectionModificationsArray ) as Array<number>
+        for ( const range_Input of visualization_Selections_SelectedModMassRanges_ForSingleSearch.selectionRanges ) {
 
-        limelight__Sort_ArrayOfNumbers_SortArrayInPlace( selectionModificationsArray_Local_Sorted )
-
-        let modMass_RangeStart: number = undefined
-        let modMass_Prev: number = undefined
-
-        for ( let index = 0; index < selectionModificationsArray_Local_Sorted.length; index++ ) {
-            const modMass = selectionModificationsArray_Local_Sorted[ index ]
-            if ( index === 0 ) {
-                modMass_RangeStart = modMass
-                modMass_Prev = modMass
+            if ( range_Input.rangeStart === range_Input.rangeEnd ) {
+                //  Only 1 entry in range
+                modMassRanges.push({ start: range_Input.rangeStart, end: undefined })
             } else {
-                if ( ( modMass_Prev + 1 ) !== modMass ) {
-                    //  Mod mass not contiguous so new range
-
-                    if ( modMass_Prev === modMass_RangeStart ) {
-                        //  Only 1 entry in range
-                        modMassRanges.push({ start: modMass_RangeStart, end: undefined })
-                    } else {
-                        //  Multiple entries in range
-                        modMassRanges.push({ start: modMass_RangeStart, end: modMass_Prev })
-                    }
-                    modMass_RangeStart = modMass
-                    modMass_Prev = modMass
-                }
-                modMass_Prev = modMass
+                //  Multiple entries in range
+                modMassRanges.push({ start: range_Input.rangeStart, end: range_Input.rangeEnd })
             }
         }
 
-        //  Process LAST range
-        if ( modMass_Prev === modMass_RangeStart ) {
-            //  Only 1 entry in range
-            modMassRanges.push({ start: modMass_RangeStart, end: undefined })
-        } else {
-            //  Multiple entries in range
-            modMassRanges.push({ start: modMass_RangeStart, end: modMass_Prev })
-        }
-
         let massPlural = ""
-        if ( selectionModificationsArray.length > 1 ) {
+        if ( modMassRanges.length > 1 || ( modMassRanges.length > 0 && modMassRanges[0].start !== modMassRanges[0].end ) ) {
             massPlural = "es"
         }
 
@@ -206,9 +125,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
      */
     render() {
 
-        if ( ( ! this.props.propsValue.selectedStateObject )
-            || ( ! this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId )
-            || ( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size === 0 ) ) {
+        if ( ! this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().is_AnySelections() ) {
 
             //  NOTHING to Render
 
@@ -260,7 +177,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
             let allSearchesSelected_Have_All_ModMasses_Selected = true
 
-            for ( const projectSearchId_Selection_Number of this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.keys() ) {
+            for ( const projectSearchId_Selection_Number of this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_Selection_ProjectSearchIds() ) {
                 if ( ! projectSearchIds_ThatHave_ALL_ModMasses_Selected.has( projectSearchId_Selection_Number ) ) {
                     allSearchesSelected_Have_All_ModMasses_Selected = false
                     break
@@ -275,7 +192,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
                 for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
 
-                    const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId )
+                    const selectionModificationsArray = this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMassRanges_ForSingleSearch( projectSearchId )
                     if ( selectionModificationsArray ) {
 
                         const searchData = this.props.propsValue.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
@@ -305,43 +222,52 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
             let allSearchesSelected_Have_Same_ModMass_Selections = true
 
             {
+                const projectSearchIds_Selection = Array.from( this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_Selection_ProjectSearchIds() )
 
-                if ( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.size > 1 ) {
+                if ( projectSearchIds_Selection.length > 1 ) {
 
-                    const projectSearchIds_Selection = Array.from( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.keys() )
-
-                    let modMassSelections_First_Search: Set<number>
+                    let selectedModMassRanges_ForSingleSearch_First_Search: ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasses_ProjectSearchIds_Visualization_Selections_SelectedModMassRanges_ForSingleSearch
                     {
                         const projectSearchId_First = projectSearchIds_Selection[ 0 ]
 
-                        const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_First )
-                        if ( ! selectionModificationsArray ) {
-                            throw Error( "this.props.propsValue.selectedStateObject.data__New__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_First ) returned NOTHING for projectSearchId_First ( from projectSearchIds_Selection ): " + projectSearchId_First )
+                        selectedModMassRanges_ForSingleSearch_First_Search = this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMassRanges_ForSingleSearch( projectSearchId_First )
+                        if ( ! selectedModMassRanges_ForSingleSearch_First_Search ) {
+                            throw Error( "this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMassRanges_ForSingleSearch( projectSearchId_First ): " + projectSearchId_First )
                         }
-                        modMassSelections_First_Search = new Set( selectionModificationsArray )
                     }
 
                     //  Process rest of selections
 
                     for ( let index__projectSearchIds_Selection = 1; index__projectSearchIds_Selection < projectSearchIds_Selection.length; index__projectSearchIds_Selection++ ) {
+
                         const projectSearchId_Selection = projectSearchIds_Selection[ index__projectSearchIds_Selection ]
 
-                        const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_Selection )
-                        if ( ! selectionModificationsArray ) {
-                            throw Error( "this.props.propsValue.selectedStateObject.data__New__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_First ) returned NOTHING for projectSearchId ( from projectSearchIds_Selection ): " + projectSearchId_Selection )
+                        const selectedModMassRanges_ForSingleSearch_Selection = this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMassRanges_ForSingleSearch( projectSearchId_Selection )
+                        if ( ! selectedModMassRanges_ForSingleSearch_Selection ) {
+                            throw Error( "this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMassRanges_ForSingleSearch( projectSearchId_Selection ): " + projectSearchId_Selection )
                         }
-                        const selectionModifications_Set = new Set( selectionModificationsArray )
-                        if ( selectionModifications_Set.size !== modMassSelections_First_Search.size ) {
+
+                        if ( selectedModMassRanges_ForSingleSearch_First_Search.selectionRanges.length !== selectedModMassRanges_ForSingleSearch_Selection.selectionRanges.length ) {
 
                             allSearchesSelected_Have_Same_ModMass_Selections = false
                             break
-                        }
-                        for ( const selectionModification of selectionModifications_Set ) {
-                            if ( ! modMassSelections_First_Search.has( selectionModification ) ) {
 
-                                allSearchesSelected_Have_Same_ModMass_Selections = false
-                                break
+                        } else {
+
+                            for ( let index = 0; index < selectedModMassRanges_ForSingleSearch_Selection.selectionRanges.length; index++ ) {
+
+                                const selectionRange_First_Search = selectedModMassRanges_ForSingleSearch_First_Search.selectionRanges[ index ]
+                                const selectionRange_Selection = selectedModMassRanges_ForSingleSearch_Selection.selectionRanges[ index ]
+
+                                if ( selectionRange_First_Search.rangeStart !== selectionRange_Selection.rangeStart || selectionRange_First_Search.rangeEnd !== selectionRange_Selection.rangeEnd ) {
+
+                                    allSearchesSelected_Have_Same_ModMass_Selections = false
+                                    break
+                                }
                             }
+                        }
+                        if ( ! allSearchesSelected_Have_Same_ModMass_Selections ) {
+                            break
                         }
                     }
                 }
@@ -361,8 +287,8 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
                 for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
 
-                    const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId )
-                    if ( selectionModificationsArray ) {
+                    const  visualization_Selections_SelectedModMassRanges_ForSingleSearch = this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMassRanges_ForSingleSearch( projectSearchId )
+                    if ( visualization_Selections_SelectedModMassRanges_ForSingleSearch ) {
 
 
                         const searchData = this.props.propsValue.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
@@ -382,7 +308,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
                         } else {
 
-                            const mods_Display = this._forRender__Create__mods_Display__From_selectionModificationsArray( { selectionModificationsArray } )
+                            const mods_Display = this._forRender__Create__mods_Display__From_selectionModificationsArray( {  visualization_Selections_SelectedModMassRanges_ForSingleSearch } )
 
                             searches_AND_Mods_Local.push({
                                 projectSearchId_ForKey: projectSearchId,
@@ -499,14 +425,14 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
                 //  SAME Mod mass selections for ALL Searches
 
-                const projectSearchIds_Selection = Array.from( this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.keys() )
+                const projectSearchIds_Selection = Array.from( this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_Selection_ProjectSearchIds() )
                 const projectSearchId_First = projectSearchIds_Selection[ 0 ]
-                const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId_First )
-                if ( ! selectionModificationsArray ) {
-                    throw Error( "this.props.propsValue.selectedStateObject.data[ projectSearchId ] returned NOTHING for projectSearchId_First ( from projectSearchIds_Selection ): " + projectSearchId_First )
+                const visualization_Selections_SelectedModMassRanges_ForSingleSearch = this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMassRanges_ForSingleSearch( projectSearchId_First )
+                if ( ! visualization_Selections_SelectedModMassRanges_ForSingleSearch ) {
+                    throw Error( "this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMassRanges_ForSingleSearch( projectSearchId_First ): " + projectSearchId_First )
                 }
 
-                const mods_Display = this._forRender__Create__mods_Display__From_selectionModificationsArray({ selectionModificationsArray })
+                const mods_Display = this._forRender__Create__mods_Display__From_selectionModificationsArray({ visualization_Selections_SelectedModMassRanges_ForSingleSearch })
 
                 let searchId_Display: string
 
@@ -523,8 +449,8 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
 
                     for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
 
-                        const selectionModificationsArray = this.props.propsValue.selectedStateObject.data__ModMass_Array_Map_Key_ProjectSearchId.get( projectSearchId )
-                        if ( selectionModificationsArray ) {
+                        const visualization_Selections_SelectedModMassRanges_ForSingleSearch = this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMassRanges_ForSingleSearch( projectSearchId )
+                        if ( visualization_Selections_SelectedModMassRanges_ForSingleSearch ) {
 
                             const searchData = this.props.propsValue.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
                             if ( ! searchData ) {
@@ -611,12 +537,81 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
                         </>
                     ) }
                 </div>
-
-
-
             </div>
-
         )
+    }
+
+    /**
+     * called from render()
+     */
+    private _compute___projectSearchIds_All_Selected() : Set<number> {
+
+        const projectSearchIds_ThatHave_ALL_ModMasses_Selected: Set<number> = new Set()
+
+        if ( ! this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().is_AnySelections() ) {
+
+            //  NOTHING Selected
+
+            return projectSearchIds_ThatHave_ALL_ModMasses_Selected
+        }
+
+        // for ( const projectSearchId of this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_Selection_ProjectSearchIds() ) {
+        //
+        //     const selectedModMasses_Set_For_ProjectSearchId = this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMasses_Set_For_ProjectSearchId( projectSearchId )
+        //
+        //     if ( selectedModMasses_Set_For_ProjectSearchId ) {
+        //         selectedModMasses_Set_For_ProjectSearchId.
+        //     }
+        // }
+
+        const projectSearchId_Selected_Array: Array<number> = Array.from( this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_Selection_ProjectSearchIds() )
+
+        for ( const projectSearchId_Selected of projectSearchId_Selected_Array ) {
+
+            const selectedModMasses_Set_For_ProjectSearchId = this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMasses_Set_For_ProjectSearchId( projectSearchId_Selected )
+            if ( ! selectedModMasses_Set_For_ProjectSearchId ) {
+                const msg = "this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMasses_Set_For_ProjectSearchId( projectSearchId_Selected ) returned NOTHING for projectSearchId_Selected: " + projectSearchId_Selected
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            const modMasses_Selected_Set = new Set( selectedModMasses_Set_For_ProjectSearchId )
+
+            //  modMasses_Selected_Set may contain mod masses that are NOT in the search.
+
+            //  If all mod masses for search in 'modMap' are in modMasses_Selected_Set then search is fully selected
+
+            let all_ModMasses_InSearch_AreSelected = true
+
+            for ( const modMap_Entry_Key_ModMass of this.props.propsValue.modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.get_Data_AllValues() ) {
+
+                const modMass_InSearch = modMap_Entry_Key_ModMass.modMass
+
+                for ( const computeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId_Entry of modMap_Entry_Key_ModMass.get_Data_AllValues() ) {
+
+                    const projectSearchId_Or_SubSearchId = computeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId_Entry.projectSearchId_Or_SubSearchId
+
+                    if ( projectSearchId_Or_SubSearchId === projectSearchId_Selected ) {
+
+                        if ( ! modMasses_Selected_Set.has( modMass_InSearch ) ) {
+
+                            all_ModMasses_InSearch_AreSelected = false
+                            break
+                        }
+                    }
+                }
+                if ( ! all_ModMasses_InSearch_AreSelected ) {
+                    break
+                }
+            }
+
+            if ( all_ModMasses_InSearch_AreSelected ) {
+
+                projectSearchIds_ThatHave_ALL_ModMasses_Selected.add( projectSearchId_Selected )
+            }
+        }
+
+        return projectSearchIds_ThatHave_ALL_ModMasses_Selected
     }
 
     private _render_Clear_Link() {
@@ -671,9 +666,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
                 )}
             </span>
         )
-
     }
-
 }
 
 

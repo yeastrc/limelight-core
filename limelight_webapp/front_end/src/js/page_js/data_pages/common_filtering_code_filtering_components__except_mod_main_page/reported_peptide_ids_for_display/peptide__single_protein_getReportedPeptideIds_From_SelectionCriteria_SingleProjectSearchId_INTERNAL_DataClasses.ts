@@ -23,6 +23,9 @@ import {
 import {
     ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
+import {
+    ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
 
 /**
  * The primary passed in object to most of the filtering code
@@ -50,6 +53,7 @@ export class Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
     peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
     proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
     proteinPositionFilter_UserSelections_StateObject: ProteinPositionFilter_UserSelections_StateObject
+    proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
 }
 
 /**

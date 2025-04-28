@@ -15,6 +15,7 @@ import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToS
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters";
 
+
 /**
  *
  */
@@ -22,7 +23,7 @@ export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifica
 
     // 		Variable/Dynamic Modifications Per Reported Peptide Id.   position is int, mass is double
     // 					- Map <integer,[Object]> <reportedPeptideId,<[{ reportedPeptideId, position, mass, is_N_Terminal : boolean, is_C_Terminal : boolean }]>>
-    private _variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId : Map<number, Array<{reportedPeptideId : number, position : number, mass : number, is_N_Terminal : boolean, is_C_Terminal : boolean}>>
+    private _variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId : Map<number, Array<CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder__SingleEntry>>
 
     /**
      * @param variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId
@@ -31,7 +32,7 @@ export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifica
         {
             variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId
         } : {
-            variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId : Map<number, Array<{reportedPeptideId : number, position : number, mass : number, is_N_Terminal : boolean, is_C_Terminal : boolean}>>
+            variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId : Map<number, Array<CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder__SingleEntry>>
         }
     ) {
         this._variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId = variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId;
@@ -58,6 +59,15 @@ export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifica
         }
         return false
     }
+}
+
+export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder__SingleEntry {
+
+    readonly reportedPeptideId : number
+    readonly position : number
+    readonly mass : number
+    readonly is_N_Terminal : boolean
+    readonly is_C_Terminal : boolean
 }
 
 /**
@@ -304,7 +314,7 @@ export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifica
      */
     private _createEmpty_No_ReportedPeptideIds() {
 
-        const variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId: Map<number, {reportedPeptideId: number, position: number, mass: number, is_N_Terminal: boolean, is_C_Terminal: boolean}[]> = new Map();
+        const variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder__SingleEntry>> = new Map();
 
         const variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder =
             new CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder({ variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId });
@@ -324,7 +334,7 @@ export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifica
 
         const dynamicModificationData_KeyReportedPeptideIdFromServer = responseData.dynamicModification_KeyReportedPeptideId;
 
-        const variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId: Map<number, {reportedPeptideId: number, position: number, mass: number, is_N_Terminal: boolean, is_C_Terminal: boolean}[]> = new Map();
+        const variable_Dynamic_ModificationsOnReportedPeptide_KeyReportedPeptideId: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder__SingleEntry>> = new Map();
 
         //   dynamicModificationData_KeyReportedPeptideIdFromServer:
         //  JS Object.   <Reported Peptide Id, <Ann Type Id, PsmBestFilterableData_For_ReportedPeptideIds_AnnTypeIds_ProjectSearchId_Searcher_Item>> annData_KeyAnnTypeId_KeyReportedPeptideId;

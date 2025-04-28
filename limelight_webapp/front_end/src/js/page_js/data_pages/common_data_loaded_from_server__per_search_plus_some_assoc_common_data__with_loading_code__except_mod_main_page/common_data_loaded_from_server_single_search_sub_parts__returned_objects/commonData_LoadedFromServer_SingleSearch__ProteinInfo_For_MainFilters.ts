@@ -23,13 +23,13 @@ import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_al
  */
 export class CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilters_Holder {
 
-    private _proteinInfoMapKeyProteinSequenceVersionId: Map<number,{ proteinLength : number, annotations : Array<{ name : string, description : string, taxonomy : number }>}>
+    private _proteinInfoMapKeyProteinSequenceVersionId: Map<number,{ proteinSequenceVersionId: number, proteinLength : number, annotations : Array<{ name : string, description : string, taxonomy : number }>}>
 
     constructor(
         {
             proteinInfoMapKeyProteinSequenceVersionId
         } : {
-            proteinInfoMapKeyProteinSequenceVersionId: Map<number,{ proteinLength : number, annotations : Array<{ name : string, description : string, taxonomy : number }>}>
+            proteinInfoMapKeyProteinSequenceVersionId: Map<number,{ proteinSequenceVersionId: number, proteinLength : number, annotations : Array<{ name : string, description : string, taxonomy : number }>}>
         }
     ) {
         this._proteinInfoMapKeyProteinSequenceVersionId = proteinInfoMapKeyProteinSequenceVersionId;
@@ -44,10 +44,10 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilte
     }
 
     /**
-     * Prefer this is NOT USED.  Here to support existing code
+     *
      */
-    get_proteinInfoMapKeyProteinSequenceVersionId_PREFER_NOT_USE() {
-        return this._proteinInfoMapKeyProteinSequenceVersionId;
+    get_proteinInfoMap_Values() {
+        return this._proteinInfoMapKeyProteinSequenceVersionId.values();
     }
 }
 
@@ -291,7 +291,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilte
         const proteinAnnotationList = responseData.proteinAnnotationList;
         const proteinLengthList = responseData.proteinLengthList;
 
-        const proteinInfoMapKeyProteinSequenceVersionId: Map<number,{ proteinLength : number, annotations : Array<{ name : string, description : string, taxonomy : number }>}> = new Map();
+        const proteinInfoMapKeyProteinSequenceVersionId: Map<number,{ proteinSequenceVersionId: number, proteinLength : number, annotations : Array<{ name : string, description : string, taxonomy : number }>}> = new Map();
 
         for ( const proteinLengthServerItem of proteinLengthList ) {
 
@@ -319,7 +319,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilte
                 throw Error(msg);
             }
 
-            const proteinInfo = { proteinLength, annotations: [] }
+            const proteinInfo = { proteinSequenceVersionId, proteinLength, annotations: [] }
 
             proteinInfoMapKeyProteinSequenceVersionId.set( proteinSequenceVersionId, proteinInfo );
         }

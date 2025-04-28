@@ -807,6 +807,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
                 modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
                 reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
+                proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
                 proteinPositionFilter_UserSelections_StateObject: this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
                 psm_Charge_Filter_UserSelection_StateObject:  this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
@@ -2813,6 +2814,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                     peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                     userSearchString_LocationsOn_ProteinSequence_Root : null,
                     proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
+                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
                     psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
                 });
 

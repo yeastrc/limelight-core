@@ -162,6 +162,7 @@ const compute_FullPage_Except_ExperimentGraphic = async function(
             peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
             userSearchString_LocationsOn_ProteinSequence_Root : null,
             proteinPositionFilter_UserSelections_StateObject,
+            proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
             psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
         });
 

@@ -388,6 +388,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: undefined,
                         userSearchString_LocationsOn_ProteinSequence_Root: null,
                         proteinPositionFilter_UserSelections_StateObject: undefined,
+                        proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
                         psm_Charge_Filter_UserSelection_StateObject: undefined,
                         psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
                     } );

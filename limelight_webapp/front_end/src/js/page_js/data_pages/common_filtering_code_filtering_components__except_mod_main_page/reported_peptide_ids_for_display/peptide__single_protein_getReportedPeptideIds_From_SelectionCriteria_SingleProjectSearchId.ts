@@ -64,6 +64,9 @@ import {
 import {
     CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
 } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
+import {
+    ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
 
 
 /////////   Returned Classes
@@ -398,6 +401,7 @@ class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Pa
     peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
     proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
     proteinPositionFilter_UserSelections_StateObject: ProteinPositionFilter_UserSelections_StateObject
+    proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
     userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root
 }
 
@@ -634,7 +638,8 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 peptideSequence_MissedCleavageCount_UserSelections_StateObject : main_FunctionParams.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
                 peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : main_FunctionParams.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                 proteinSequenceWidget_StateObject: main_FunctionParams.proteinSequenceWidget_StateObject,
-                proteinPositionFilter_UserSelections_StateObject: main_FunctionParams.proteinPositionFilter_UserSelections_StateObject
+                proteinPositionFilter_UserSelections_StateObject: main_FunctionParams.proteinPositionFilter_UserSelections_StateObject,
+                proteinPosition_Of_Modification_Filter_UserSelections_StateObject: main_FunctionParams.proteinPosition_Of_Modification_Filter_UserSelections_StateObject
             }
 
             const result_processing_TopLevel = this._processing_TopLevel__With__FilteringParams_Object({
@@ -738,7 +743,8 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
             peptideSequence_MissedCleavageCount_UserSelections_StateObject : main_FunctionParams.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
             peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : main_FunctionParams.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
             proteinSequenceWidget_StateObject: main_FunctionParams.proteinSequenceWidget_StateObject,
-            proteinPositionFilter_UserSelections_StateObject: main_FunctionParams.proteinPositionFilter_UserSelections_StateObject
+            proteinPositionFilter_UserSelections_StateObject: main_FunctionParams.proteinPositionFilter_UserSelections_StateObject,
+            proteinPosition_Of_Modification_Filter_UserSelections_StateObject: main_FunctionParams.proteinPosition_Of_Modification_Filter_UserSelections_StateObject
         }
 
         return this._processing_TopLevel__With__FilteringParams_Object({ filtering_Params_Main })
@@ -918,6 +924,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                     peptideSequence_MissedCleavageCount_UserSelections_StateObject: filtering_Params_Main.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
                     proteinSequenceWidget_StateObject: filtering_Params_Main.proteinSequenceWidget_StateObject,
                     proteinPositionFilter_UserSelections_StateObject: filtering_Params_Main.proteinPositionFilter_UserSelections_StateObject,
+                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject: filtering_Params_Main.proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
                     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: filtering_Params_Main.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
                     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
                 });

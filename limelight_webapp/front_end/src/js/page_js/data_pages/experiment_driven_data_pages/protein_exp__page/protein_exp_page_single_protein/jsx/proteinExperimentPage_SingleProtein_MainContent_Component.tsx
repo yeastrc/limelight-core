@@ -715,6 +715,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
                 modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
                 reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
+                proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
                 proteinPositionFilter_UserSelections_StateObject: undefined,
                 psm_Charge_Filter_UserSelection_StateObject:  this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
@@ -1400,6 +1401,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                     peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                     userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
                     proteinPositionFilter_UserSelections_StateObject : undefined,
+                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
                     psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
                 });
 
@@ -1514,6 +1516,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                     peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                     userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
                     proteinPositionFilter_UserSelections_StateObject : undefined,
+                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
                     psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
                 });
 
@@ -1619,6 +1622,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                         peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                         userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
                         proteinPositionFilter_UserSelections_StateObject : undefined,
+                        proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
                         psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
                     });
 
@@ -2677,6 +2681,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                     peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                     userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
                     proteinPositionFilter_UserSelections_StateObject : undefined,
+                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
                     psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
                 });
 

@@ -30,12 +30,13 @@ import {
     ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
 import {
-    CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
-} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
-import {
     ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
 import { DataPageStateManager } from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    ProteinPosition_Of_Modification_Filter_UserSelections_StateObject,
+    ProteinPosition_Of_Modification_Filter_UserSelections_StateObject_Get_RangeEntries_SingleRange
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
 
 
 /**
@@ -48,6 +49,7 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
         modificationMass_UserSelections_StateObject,
         reporterIonMass_UserSelections_StateObject,
+        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
         proteinPositionFilter_UserSelections_StateObject,
         psm_Charge_Filter_UserSelection_StateObject,
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
@@ -57,9 +59,10 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
         projectSearchIds : Array<number>
         dataPageStateManager: DataPageStateManager
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
-        reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
-        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
+        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject
+        reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
+        proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
+        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
         psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
 
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
@@ -101,6 +104,7 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
             modificationMass_UserSelections_StateObject,
             reporterIonMass_UserSelections_StateObject,
+            proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject,
             psm_Charge_Filter_UserSelection_StateObject
         })
@@ -137,14 +141,16 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
         modificationMass_UserSelections_StateObject,
         reporterIonMass_UserSelections_StateObject,
+        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
         proteinPositionFilter_UserSelections_StateObject,
         psm_Charge_Filter_UserSelection_StateObject
     } : {
         projectSearchIds : Array<number>,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
-        reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
-        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
+        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject
+        reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
+        proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
+        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
         psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
     }  ) : Promise<void> {
     try {
@@ -152,6 +158,7 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
         let variableModification_AnySelection = false;
         let openModification_AnySelection = false;
         let reporterIon_AnySelection = false;
+        let proteinPosition_Of_Modification_Filter_AnySelection = false;
         let proteinPositionFilter_AnySelection = false;
         let psm_Charge_Filter_Not_AllSelected = false;
 
@@ -176,6 +183,12 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
             }
         }
 
+        if ( proteinPosition_Of_Modification_Filter_UserSelections_StateObject ) {
+            if (proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections()) {
+                proteinPosition_Of_Modification_Filter_AnySelection = true;
+            }
+        }
+
         if ( proteinPositionFilter_UserSelections_StateObject ) {
             if (proteinPositionFilter_UserSelections_StateObject.isAnySelections()) {
                 proteinPositionFilter_AnySelection = true;
@@ -192,6 +205,7 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
             ( ! variableModification_AnySelection ) &&
             ( ! openModification_AnySelection ) &&
             ( ! reporterIon_AnySelection ) &&
+            ( ! proteinPosition_Of_Modification_Filter_AnySelection ) &&
             ( ! proteinPositionFilter_AnySelection ) &&
             ( ! psm_Charge_Filter_Not_AllSelected ) ) {
 
@@ -204,7 +218,7 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
         const variableModificationMasses_All_Set = new Set<number>();
         const openModificationMasses_All_Set = new Set<number>();
         const reporterIonMasses_All_Set = new Set<number>();
-        const proteinSequenceVersionId_All_Set = new Set<number>();
+        const proteinEntries_All_Map__Key_ProteinSequenceVersionId_Value_ProteinSequenceVersionId_ProteinLength = new Map<number, { proteinSequenceVersionId: number, proteinLength: number }>();
         const psm_Charge_Values_All_Set = new Set<number>();
 
         for (const projectSearchId of projectSearchIds) {
@@ -269,13 +283,28 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
                     reporterIonMasses_All_Set.add(reporterIonMass_Rounded);
                 }
             }
-            if ( proteinPositionFilter_AnySelection) {
-                const get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result =
-                    await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters().
-                    get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise();
-                const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder = get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder;
-                for ( const proteinSequenceVersionId of proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_proteinSequenceVersionIdsUnique() ) {
-                    proteinSequenceVersionId_All_Set.add(proteinSequenceVersionId);
+            if ( proteinPosition_Of_Modification_Filter_AnySelection || proteinPositionFilter_AnySelection ) {
+
+                const get_ProteinInfoHolder_AllForSearch_ReturnPromise_Result =
+                    await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilters().get_ProteinInfoHolder_AllForSearch_ReturnPromise()
+
+                for ( const proteinInfoMap_Value of get_ProteinInfoHolder_AllForSearch_ReturnPromise_Result.proteinInfo_For_MainFilters_Holder.get_proteinInfoMap_Values() ) {
+
+                    proteinInfoMap_Value.proteinSequenceVersionId
+                    proteinInfoMap_Value.proteinLength
+
+                    const existingSavedMapEntry = proteinEntries_All_Map__Key_ProteinSequenceVersionId_Value_ProteinSequenceVersionId_ProteinLength.get( proteinInfoMap_Value.proteinSequenceVersionId )
+                    if ( existingSavedMapEntry !== undefined && existingSavedMapEntry !== null ) {
+                        //  Protein Length from Map MUST be same as from proteinInfoMap_Value
+                        if ( proteinInfoMap_Value.proteinLength !== existingSavedMapEntry.proteinLength ) {
+                            const msg = "Value from proteinEntries_All_Map__Key_ProteinSequenceVersionId_Value_ProteinSequenceVersionId_ProteinLength.get( proteinInfoMap_Value.proteinSequenceVersionId ) is NOT SAME AS proteinInfoMap_Value.proteinLength"
+                            console.warn(msg)
+                            throw Error( msg )
+                        }
+                    } else {
+                        // proteinInfoMap_Value.proteinSequenceVersionId is NOT in Map so add it
+                        proteinEntries_All_Map__Key_ProteinSequenceVersionId_Value_ProteinSequenceVersionId_ProteinLength.set( proteinInfoMap_Value.proteinSequenceVersionId, { proteinSequenceVersionId: proteinInfoMap_Value.proteinSequenceVersionId, proteinLength: proteinInfoMap_Value.proteinLength })
+                    }
                 }
             }
 
@@ -298,14 +327,79 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
             psm_Charge_Filter_UserSelection_StateObject.remove_chargeValues_OnPSMs_Selected_NOT_in_All_ChargesSet({ all_Charges: psm_Charge_Values_All_Set })
         }
 
+        if ( proteinPosition_Of_Modification_Filter_AnySelection ) {
+
+            let selections_Ranges__AnyChanged = false
+
+            const selections_Ranges = proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges();
+
+            const selections_Ranges_MapValues = Array.from( selections_Ranges.entriesMap_Key_proteinSequenceVersionId.values() )
+            for ( const selections_Ranges_mapValue of selections_Ranges_MapValues ) {
+
+                const selections_Ranges_mapValue_ProteinSequenceVersionId = selections_Ranges_mapValue.proteinSequenceVersionId;
+
+                const proteinEntries_All_Entry_For_ProteinSequenceVersionId = proteinEntries_All_Map__Key_ProteinSequenceVersionId_Value_ProteinSequenceVersionId_ProteinLength.get( selections_Ranges_mapValue_ProteinSequenceVersionId )
+
+                if ( ! proteinEntries_All_Entry_For_ProteinSequenceVersionId ) {
+                    //  proteinSequenceVersionId not in loaded data so delete
+                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject.remove_Selected_ProteinSequenceVersionId({proteinSequenceVersionId: selections_Ranges_mapValue_ProteinSequenceVersionId});
+                } else {
+
+                    //  Remove any Range Entries for ProteinSequenceVersionId that are the full Protein length.  This cleans up old Mod Page Filter on Protein Position Range entries that cover the whole protein length.
+
+                    if ( selections_Ranges_mapValue.rangeEntries ) {
+
+                        const selections_RangeEntries_Filtered: Array<ProteinPosition_Of_Modification_Filter_UserSelections_StateObject_Get_RangeEntries_SingleRange> = []
+
+                        for ( const selections_RangeEntry of selections_Ranges_mapValue.rangeEntries ) {
+
+                            if ( selections_RangeEntry.proteinPosition_Start === 1 && selections_RangeEntry.proteinPosition_End === proteinEntries_All_Entry_For_ProteinSequenceVersionId.proteinLength ) {
+
+                                // Drop any range entries for full protein length so SKIP
+
+                            } else {
+                                selections_RangeEntries_Filtered.push( selections_RangeEntry )
+                            }
+                        }
+
+                        if ( selections_RangeEntries_Filtered.length === 0 ) {
+                            //  NO range entries after filtering so switch to Full Protein length filtering
+
+                            selections_Ranges_mapValue.fullProteinSelected = true
+                            selections_Ranges_mapValue.rangeEntries = undefined
+
+                            selections_Ranges__AnyChanged = true
+
+                        } else {
+                            if ( selections_RangeEntries_Filtered.length !== selections_Ranges_mapValue.rangeEntries.length ) {
+                                //  Ranges were removed so update the selections
+
+                                selections_Ranges_mapValue.rangeEntries = selections_RangeEntries_Filtered
+
+                                selections_Ranges__AnyChanged = true
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ( selections_Ranges__AnyChanged ) {
+
+                //  Set to itself to force update of URL
+
+                proteinPosition_Of_Modification_Filter_UserSelections_StateObject.setSelections_Ranges({ entriesMap_Key_proteinSequenceVersionId: proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId })
+            }
+        }
+
         if ( proteinPositionFilter_AnySelection ) {
             const selections_Ranges : ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_Root = proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges();
 
-            for ( const mapEntry of selections_Ranges.entriesMap_Key_proteinSequenceVersionId.entries() ) {
+            const mapEntries = Array.from( selections_Ranges.entriesMap_Key_proteinSequenceVersionId.entries() )
+            for ( const mapEntry of mapEntries ) {
                 const mapEntryValue = mapEntry[1];
                 const proteinSequenceVersionId = mapEntryValue.proteinSequenceVersionId;
 
-                if ( ! proteinSequenceVersionId_All_Set.has( proteinSequenceVersionId) ) {
+                if ( ! proteinEntries_All_Map__Key_ProteinSequenceVersionId_Value_ProteinSequenceVersionId_ProteinLength.has( proteinSequenceVersionId) ) {
                     //  proteinSequenceVersionId not in loaded data so delete
                     proteinPositionFilter_UserSelections_StateObject.remove_Selected_ProteinSequenceVersionId({proteinSequenceVersionId});
                 }

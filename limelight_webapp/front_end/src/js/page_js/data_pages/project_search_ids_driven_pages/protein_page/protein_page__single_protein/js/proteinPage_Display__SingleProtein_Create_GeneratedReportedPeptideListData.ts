@@ -2,11 +2,20 @@
 /**
  * proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData.ts
  *
- * Get Generated Reported Peptide List
+ * Get Generated Reported Peptide List.
+ *
+ * Primarily used on Peptide Page and Single Protein Overlay but also used on other pages like Mod page for filtering
  *
  * Create Generated Reported Peptide String, and combine data per project search id and reported peptide id under them
  *
  */
+
+
+//   Search this file for:    MAIN FUNCTION
+
+//   There is also:    Uses Main Function ONLY for FILTERING
+
+
 
 //   Modification Mass Rounding to provide some level of commonality between searches
 import {
@@ -115,11 +124,152 @@ export class CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_
     }
 }
 
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
+
+////////   MAIN Functions
+
+//   Second is the Primary Main function
+
+//////////
+
+//  This function uses the Main Function ONLY for FILTERING
+
+/**
+ * FILTERING ONLY.  Returns class Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
+ *
+ * Some pages like Mod page call this function INSTEAD since ONLY call for filtering like on PSM Minimum Count so that the results are the same as the Peptide Page.
+ *
+ *
+ * !!!!!  IMPORTANT:   Always return Promise since caller uses 'await'   !!!!!
+ */
+export const create_GeneratedReportedPeptideListData__SingleProtein___ONLY_for_FILTERING__Returns__ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = async function(
+    {
+        forPeptidePage,
+
+        psmMinimumCount_Filter_UserEntry,  // May be undefined or null
+
+        searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+        generatedPeptideContents_UserSelections_StateObject,
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+
+        dataPageStateManager,
+
+        proteinSequenceVersionId,  // Not Populated on Peptide Page
+        projectSearchIds,
+
+        conditionGroupsContainer,      // Only populated for experiment Page
+        conditionGroupsDataContainer,  // Only populated for experiment Page
+
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    } : {
+        forPeptidePage: boolean
+
+        psmMinimumCount_Filter_UserEntry: number
+
+        searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
+        generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
+        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+
+        dataPageStateManager : DataPageStateManager
+
+        proteinSequenceVersionId : number  // Not Populated on Peptide Page
+        projectSearchIds : Array<number>
+
+        conditionGroupsContainer : Experiment_ConditionGroupsContainer
+        conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
+
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+
+    } ) : Promise<Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds> {
+
+    try {
+
+        let psmMinimumCount_Filter_UserEntry__Filtering = false
+        {
+            if ( psmMinimumCount_Filter_UserEntry && psmMinimumCount_Filter_UserEntry > 1 ) {
+                psmMinimumCount_Filter_UserEntry__Filtering = true
+            }
+        }
+
+
+        let NO__SearchSubGroupIds_OR_All_SearchSubGroupIds = true
+
+        {
+            if ( searchSubGroup_Ids_Selected ) {
+
+                if ( projectSearchIds.length !== 1 ) {
+                    throw Error( "( searchSubGroup_Ids_Selected ) AND ( projectSearchIds.length !== 1 )" )
+                }
+
+                const projectSearchId = projectSearchIds[ 0 ]
+
+                const searchSubGroups_ALL_ForProjectSearchId = dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId )
+                if ( ! searchSubGroups_ALL_ForProjectSearchId ) {
+                    throw Error( "( searchSubGroup_Ids_Selected ) AND dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                }
+
+                const searchSubGroups_ALL_Array = searchSubGroups_ALL_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode()
+
+                if ( searchSubGroups_ALL_Array.length !== searchSubGroup_Ids_Selected.size ) {
+
+                    NO__SearchSubGroupIds_OR_All_SearchSubGroupIds = false
+                } else {
+                    for ( const searchSubGroup_Of_ALL_Array of searchSubGroups_ALL_Array ) {
+                        if ( ! searchSubGroup_Ids_Selected.has(  searchSubGroup_Of_ALL_Array.searchSubGroup_Id ) ) {
+                            NO__SearchSubGroupIds_OR_All_SearchSubGroupIds = false
+                            break
+                        }
+                    }
+                }
+            }
+        }
+
+        //   !!!!!!!!!!   WARNING:     THIS "if" MUST be kept up to date for ANY filtering
+
+        if ( NO__SearchSubGroupIds_OR_All_SearchSubGroupIds && ( ! psmMinimumCount_Filter_UserEntry__Filtering ) ) {
+
+            //   NO Filtering so just return reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+
+            return reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds   //  EARLY RETURN
+        }
+
+        const create_GeneratedReportedPeptideListData__SingleProtein__Result =
+            await create_GeneratedReportedPeptideListData__SingleProtein({
+                    forPeptidePage,
+
+                    psmMinimumCount_Filter_UserEntry,  // May be undefined or null
+
+                    searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+                    generatedPeptideContents_UserSelections_StateObject,
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+
+                    dataPageStateManager,
+
+                    proteinSequenceVersionId,  // Not Populated on Peptide Page
+                    projectSearchIds,
+
+                    conditionGroupsContainer,      // Only populated for experiment Page
+                    conditionGroupsDataContainer,  // Only populated for experiment Page
+
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+                })
+
+        return create_GeneratedReportedPeptideListData__SingleProtein__Result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+}
+
 /**
  * !!!!!  IMPORTANT:   Always return Promise since caller uses 'await'   !!!!!
  *
  *
- * !!!!!    Main Function --- called from outside this file   !!!!!!!!!!!!!!!!!
+ * !!!!!    MAIN FUNCTION --- called from outside this file   !!!!!!!!!!!!!!!!!
  *
  *
  * Create Reported Peptide Data for Display or Download

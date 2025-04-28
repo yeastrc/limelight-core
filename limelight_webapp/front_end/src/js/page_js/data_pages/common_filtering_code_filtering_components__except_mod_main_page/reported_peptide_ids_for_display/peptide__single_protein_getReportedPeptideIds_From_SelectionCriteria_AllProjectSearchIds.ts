@@ -51,6 +51,9 @@ import {
 import {
     ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
+import {
+    ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
 
 /**
  * object of this class is returned from function 'getReportedPeptideIdsForDisplay_AllProjectSearchIds' which is in this file
@@ -107,6 +110,7 @@ class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class__MainMethod_Requ
     peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject
     userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root
     proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
+    proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
     psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
     psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject
     peptideSequence_MissedCleavageCount_UserSelections_StateObject : PeptideSequence_MissedCleavageCount_UserSelections_StateObject
@@ -387,6 +391,7 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
             peptideSequence_UserSelections_StateObject: requestParams.peptideSequence_UserSelections_StateObject,
             userSearchString_LocationsOn_ProteinSequence_Root: requestParams.userSearchString_LocationsOn_ProteinSequence_Root,
             proteinPositionFilter_UserSelections_StateObject: requestParams.proteinPositionFilter_UserSelections_StateObject,
+            proteinPosition_Of_Modification_Filter_UserSelections_StateObject: requestParams.proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
             psm_Charge_Filter_UserSelection_StateObject: requestParams.psm_Charge_Filter_UserSelection_StateObject,
             psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: requestParams.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
             peptideSequence_MissedCleavageCount_UserSelections_StateObject: requestParams.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
@@ -874,6 +879,7 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
                         peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : requestParams.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                         proteinSequenceWidget_StateObject: requestParams.proteinSequenceWidget_StateObject,
                         proteinPositionFilter_UserSelections_StateObject: requestParams.proteinPositionFilter_UserSelections_StateObject,
+                        proteinPosition_Of_Modification_Filter_UserSelections_StateObject: requestParams.proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
                         userSearchString_LocationsOn_ProteinSequence_Root: requestParams.userSearchString_LocationsOn_ProteinSequence_Root
                     },
                     reportedPeptideIds_Override__FromFirstFilteringRun: reportedPeptideIds_Override
