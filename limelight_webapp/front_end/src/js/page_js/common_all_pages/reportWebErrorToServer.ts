@@ -64,7 +64,7 @@ var reportWebErrorToServer = {
 				return //   EARLY RETURN
 			}
 
-			if ( errorException.stack && errorException.stack.includes( "chrome-extension://" ) ) {
+			if ( errorException && errorException.stack && errorException.stack.includes( "chrome-extension://" ) ) {
 
 				//  Skip exceptions caused by Chrome Extensions.  The React Chrome Extension sometimes triggers an exception
 
