@@ -203,7 +203,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
         const newValue_String = event.target.value
 
-        const newValue_Number = this._inputNumberField_Compute_NumberFromFieldContents( newValue_String )
+        const newValue_Number = _inputNumberField_Compute_NumberFromFieldContents( newValue_String )
 
         if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio() ) {
             // No change so exit
@@ -223,7 +223,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
         const newValue_String = event.target.value
 
-        const newValue_Number = this._inputNumberField_Compute_NumberFromFieldContents( newValue_String )
+        const newValue_Number = _inputNumberField_Compute_NumberFromFieldContents( newValue_String )
 
         if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() ) {
             // No change so exit
@@ -239,11 +239,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
     /**
      *
      */
-    private _modMassCutoffMin_InputFieldChanged_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
-
-        const newValue_String = event.target.value
-
-        const newValue_Number = this._inputNumberField_Compute_NumberFromFieldContents( newValue_String )
+    private _modMassCutoffMin_InputFieldChanged_Callback( newValue_Number: number ) { try {
 
         if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() ) {
             // No change so exit
@@ -259,11 +255,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
     /**
      *
      */
-    private _modMassCutoffMax_InputFieldChanged_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
-
-        const newValue_String = event.target.value
-
-        const newValue_Number = this._inputNumberField_Compute_NumberFromFieldContents( newValue_String )
+    private _modMassCutoffMax_InputFieldChanged_Callback( newValue_Number: number ) { try {
 
         if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax() ) {
             // No change so exit
@@ -279,23 +271,6 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
     /**
      *
      */
-    private _inputNumberField_Compute_NumberFromFieldContents( inputFieldValue_AsString: string ) {
-
-        const inputFieldValue_AsString_Trimmed = inputFieldValue_AsString.trim()
-
-        if ( inputFieldValue_AsString_Trimmed.length === 0 ) {
-            return undefined
-        }
-
-        const inputFieldValue_AsNumber = Number.parseInt( inputFieldValue_AsString_Trimmed )
-
-        if ( Number.isNaN( inputFieldValue_AsNumber ) ) {
-            return undefined
-        }
-
-        return inputFieldValue_AsNumber
-    }
-
     private _inputField_TypeText_Changed() {
 
         this.setState({ forceReRender_Object: {} })
@@ -675,18 +650,9 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             </td>
                                             <td>
-                                                <input
-                                                    type="text"
-                                                    id="modmass-cutoff-min"
-                                                    name="modmass-cutoff-min"
-                                                    size={ 4 }
-                                                    value={
-                                                        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() !== undefined
-                                                        && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() !== null
-                                                            ? this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin()
-                                                            : ""
-                                                    }
-                                                    onChange={ this._modMassCutoffMin_InputFieldChanged_Callback_BindThis  }
+                                                <INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component
+                                                    existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() }
+                                                    valueChanged_Callback={ this._modMassCutoffMin_InputFieldChanged_Callback_BindThis }
                                                 />
                                             </td>
                                         </tr>
@@ -704,18 +670,9 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             </td>
                                             <td>
-                                                <input
-                                                    type="text"
-                                                    id="modmass-cutoff-max"
-                                                    name="modmass-cutoff-max"
-                                                    size={ 4 }
-                                                    value={
-                                                        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax() !== undefined
-                                                        && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax() !== null
-                                                            ? this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax()
-                                                            : ""
-                                                    }
-                                                    onChange={ this._modMassCutoffMax_InputFieldChanged_Callback_BindThis  }
+                                                <INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component
+                                                    existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax() }
+                                                    valueChanged_Callback={ this._modMassCutoffMax_InputFieldChanged_Callback_BindThis }
                                                 />
                                             </td>
                                         </tr>
@@ -823,5 +780,149 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
             </div>
         );
     }
+}
 
+///////////////////
+
+//   Input Field for Min or Max Mod Mass
+
+/**
+ *
+ */
+export interface INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component_Props {
+
+    existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager: number
+    valueChanged_Callback: ( newValue: number ) => void
+}
+
+/**
+ *
+ */
+interface INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component_State {
+
+    forceReRender_Object? : object
+}
+
+/**
+ *
+ */
+export class INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component extends React.Component< INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component_Props, INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component_State > {
+
+    //  bind to 'this' for passing as parameters
+
+    private _inputFieldChanged_BindThis = this._inputFieldChanged.bind( this )
+
+    private _value_ForInputField: string
+
+    /**
+     *
+     */
+    constructor( props: INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component_Props ) { try {
+        super( props );
+
+        this._value_ForInputField = ""
+
+        if ( this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager !== undefined && this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager !== null ) {
+
+            this._value_ForInputField = this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager.toString()
+        }
+
+        this.state = {
+            forceReRender_Object: {}
+        };
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    componentDidUpdate( prevProps: Readonly<INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component_Props>, prevState: Readonly<INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component_State>, snapshot?: any ) { try {
+
+        if ( prevProps.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager !== this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager ) {
+
+            //  Upstream value changed so update input field
+
+            this._value_ForInputField = ""
+
+            if ( this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager !== undefined && this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager !== null ) {
+
+                this._value_ForInputField = this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager.toString()
+            }
+
+            this.setState({ forceReRender_Object: {} })
+        }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _inputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue_String = event.target.value.trim()
+
+        const newValue_Number = _inputNumberField_Compute_NumberFromFieldContents( newValue_String )
+
+
+        if ( newValue_String === "-" ) {
+
+            this._value_ForInputField = newValue_String
+
+        } else {
+
+            this._value_ForInputField = ""
+
+            if ( newValue_Number !== undefined && newValue_Number !== null ) {
+
+                this._value_ForInputField = newValue_Number.toString()
+            }
+        }
+
+        this.setState({ forceReRender_Object: {} })
+
+        if ( newValue_Number === this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager ) {
+            // No change so exit
+            return // EARLY RETURN
+        }
+
+        this.props.valueChanged_Callback( newValue_Number )
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    render() { try {
+
+        return (
+            <input
+                type="text"
+                size={ 4 }
+                value={ this._value_ForInputField }
+                onChange={ this._inputFieldChanged_BindThis }
+            />
+        )
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+}
+
+////////////
+
+/**
+ *
+ */
+const _inputNumberField_Compute_NumberFromFieldContents = function ( inputFieldValue_AsString: string ) : number {
+
+    const inputFieldValue_AsString_Trimmed = inputFieldValue_AsString.trim()
+
+    if ( inputFieldValue_AsString_Trimmed.length === 0 ) {
+        return undefined
+    }
+
+    const inputFieldValue_AsNumber = Number.parseInt( inputFieldValue_AsString_Trimmed )
+
+    if ( Number.isNaN( inputFieldValue_AsNumber ) ) {
+        return undefined
+    }
+
+    return inputFieldValue_AsNumber
 }
