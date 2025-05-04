@@ -611,6 +611,13 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
             //  Array of Arrays of reportLineParts
             const reportLineParts_AllLines : Array<Array<string>> = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join
 
+            if ( this.props.tableObject.tableDataObject.download_Content_PrefixLines ) {
+                //  Add prefixLines to start of download
+                for ( const prefixLine of this.props.tableObject.tableDataObject.download_Content_PrefixLines ) {
+                    reportLineParts_AllLines.push( [ prefixLine ] )
+                }
+            }
+
             //  reportLineParts will be joined with separator '\t'
 
             //  Header Line
@@ -655,6 +662,13 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
         try {
             //  Array of Arrays of reportLineParts
             const reportLineParts_AllLines : Array<Array<string>> = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join
+
+            if ( this.props.tableObject.tableDataObject.download_Content_PrefixLines ) {
+                //  Add prefixLines to start of download
+                for ( const prefixLine of this.props.tableObject.tableDataObject.download_Content_PrefixLines ) {
+                    reportLineParts_AllLines.push( [ prefixLine ] )
+                }
+            }
 
             //  reportLineParts will be joined with separator '\t'
 

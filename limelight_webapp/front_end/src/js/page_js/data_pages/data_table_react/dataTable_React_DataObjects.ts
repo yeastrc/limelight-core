@@ -144,24 +144,34 @@ class DataTable_RootTableDataObject {
     columns : Array<DataTable_Column>
     columns_tableDownload : Array<DataTable_Column_DownloadTable>
     text_Optional_After_CurrentlyShowing_X_Of_Y: string  //  Optional Text to display after the "Currently Showing: ..." in the display of the data table
+    download_Content_PrefixLines: Array<string> // Optional Lines to add to start of download content
 
     private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
     /**
-     *
+     * @param text_Optional_After_CurrentlyShowing_X_Of_Y: Optional Text to display after the "Currently Showing: ..." in the display of the data table
+     * @param download_Content_PrefixLines: Optional Lines to add to start of download content.  One array element string per line.  Probably start with "#" so clear it is NOT primary data being downloaded
      */
-    constructor({ columns, columns_tableDownload, dataTable_DataRowEntries, dataTable_DataGroupRowEntries, text_Optional_After_CurrentlyShowing_X_Of_Y } : {
+    constructor({ columns, columns_tableDownload, dataTable_DataRowEntries, dataTable_DataGroupRowEntries, text_Optional_After_CurrentlyShowing_X_Of_Y, download_Content_PrefixLines } : {
         dataTable_DataRowEntries? : Array<DataTable_DataRowEntry>
         dataTable_DataGroupRowEntries? : Array<DataTable_DataGroupRowEntry>
         columns : Array<DataTable_Column>
         columns_tableDownload : Array<DataTable_Column_DownloadTable>
-        text_Optional_After_CurrentlyShowing_X_Of_Y?: string  //  Optional Text to display after the "Currently Showing: ..." in the display of the data table
+        /**
+         * text_Optional_After_CurrentlyShowing_X_Of_Y: Optional Text to display after the "Currently Showing: ..." in the display of the data table
+         */
+        text_Optional_After_CurrentlyShowing_X_Of_Y?: string
+        /**
+         * Optional Lines to add to start of download content.  One array element string per line.  Probably start with "#" so clear it is NOT primary data being downloaded
+         */
+        download_Content_PrefixLines?: Array<string>
     }) {
         this.columns = columns;
         this.columns_tableDownload = columns_tableDownload;
         this.dataTable_DataRowEntries = dataTable_DataRowEntries;
         this.dataTable_DataGroupRowEntries = dataTable_DataGroupRowEntries;
         this.text_Optional_After_CurrentlyShowing_X_Of_Y = text_Optional_After_CurrentlyShowing_X_Of_Y;
+        this.download_Content_PrefixLines = download_Content_PrefixLines
 
         DataTable_RootTableDataObject.constructorDataValidation( this )
     }
