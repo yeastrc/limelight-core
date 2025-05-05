@@ -176,35 +176,32 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component 
 
         const marginBottomSize = 4;
 
+        const tooltipContent = (
+            <span>
+                <span>Any open modification mass that rounds to zero </span>
+                <span style={ { whiteSpace: "nowrap" } }>{ "(>= -0.5 Da and < 0.5 Da)" }</span>
+                <span> will not be treated as a modified peptide for purposes of defining distinct peptides, building
+                    modified peptide sequence strings, or any other purpose.</span>
+            </span>
+        )
+
         return (
             <React.Fragment>
 
-                {/* Parent is CSS Grid with 2 Columns */}
+                {/* Parent is CSS Grid with 2 Columns */ }
 
-                <div className=" filter-common-filter-label " style={ { marginBottom : marginBottomSize } }>
+                <div className=" filter-common-filter-label " style={ { marginBottom: marginBottomSize } }>
                     Treat Mass 0 As Unmodified:
 
                     <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                        title={
-                            <span>
-                                <span>Any open modification mass that rounds to zero </span>
-                                <span style={ { whiteSpace: "nowrap" } }>{ "(>= -0.5 Da and < 0.5 Da)" }</span>
-                                <span>  will not be treated as a modified peptide for purposes of defining distinct peptides, building modified peptide sequence strings, or any other purpose.</span>
-                            </span>
-                        }
+                        title={ tooltipContent }
                     />
                 </div>
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { marginBottom : marginBottomSize } } >
                     <div className=" filter-common-selection-inner-block ">
                         <div className=" ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                title={
-                                    <span>
-                                        <span>Do not treat open modification masses that </span>
-                                        <span style={ { whiteSpace: "nowrap" } }>{ "round to 0 (0.5 <= mass < 0.5)" }</span>
-                                        <span> as open modifications.</span>
-                                    </span>
-                                }
+                                title={ tooltipContent }
                                 { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
                                 <input type="checkbox" checked={ treatOpenModMassZeroAsUnmodified_UserSelection }

@@ -142,6 +142,8 @@ export class ModificationMass_ShowOtherPeptidesWherePeptideSequenceMatchPeptides
 
         const marginBottomSize = 4;
 
+        const tooltipText = "For all peptides found using the modification filters, include all modified and unmodified versions of those peptides (I.e., the same peptide with different modifications)."
+
         return (
             <React.Fragment>
 
@@ -151,22 +153,14 @@ export class ModificationMass_ShowOtherPeptidesWherePeptideSequenceMatchPeptides
                     Include all versions of peptides found using modification filters:
 
                     <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                        title={
-                            <span>
-                                For all peptides found using the modification filters, include all modified and unmodified versions of those peptides (I.e., the same peptide with different modifications).
-                            </span>
-                        }
+                        title={ tooltipText }
                     />
                 </div>
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { marginBottom : marginBottomSize } } >
                     <div className=" filter-common-selection-inner-block ">
                         <div className=" ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                title={
-                                    <span>
-                                        For all peptides found using the modification filters, include the unmodified versions of those peptides.
-                                    </span>
-                                }
+                                title={ tooltipText }
                                 { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
                                 <input type="checkbox" checked={ selected }
