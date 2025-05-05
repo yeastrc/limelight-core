@@ -199,11 +199,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
     /**
      *
      */
-    private _colorCutoffRatio_InputFieldChanged_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
-
-        const newValue_String = event.target.value
-
-        const newValue_Number = _inputNumberField_Compute_NumberFromFieldContents( newValue_String )
+    private _colorCutoffRatio_InputFieldChanged_Callback( newValue_Number: number ) { try {
 
         if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio() ) {
             // No change so exit
@@ -223,7 +219,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
         const newValue_String = event.target.value
 
-        const newValue_Number = _inputNumberField_Compute_NumberFromFieldContents( newValue_String )
+        const newValue_Number = _inputNumberField_Compute_IntegerNumberFromFieldContents( newValue_String )
 
         if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() ) {
             // No change so exit
@@ -561,8 +557,6 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                                     <td>
                                                         <input
                                                             type="text"
-                                                            id="color-cutoff-count"
-                                                            name="color-cutoff-count"
                                                             size={ 4 }
                                                             value={
                                                                 this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() !== undefined
@@ -596,18 +590,9 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                     </td>
                                                     <td>
-                                                        <input
-                                                            type="text"
-                                                            id="color-cutoff-ratio"
-                                                            name="color-cutoff-ratio"
-                                                            size={ 4 }
-                                                            value={
-                                                                this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio() !== undefined
-                                                                && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio() !== null
-                                                                    ? this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio()
-                                                                    : ""
-                                                            }
-                                                            onChange={ this._colorCutoffRatio_InputFieldChanged_Callback_BindThis  }
+                                                        <INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component
+                                                            existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio() }
+                                                            valueChanged_Callback={ this._colorCutoffRatio_InputFieldChanged_Callback_BindThis }
                                                         />
                                                     </td>
                                                 </tr>
@@ -782,9 +767,10 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
     }
 }
 
+
 ///////////////////
 
-//   Input Field for Min or Max Mod Mass
+//   Input Field for Min or Max Mod Mass - Allow Negative numbers
 
 /**
  *
@@ -860,10 +846,131 @@ export class INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component extends Rea
 
         const newValue_String = event.target.value.trim()
 
-        const newValue_Number = _inputNumberField_Compute_NumberFromFieldContents( newValue_String )
-
+        const newValue_Number = _inputNumberField_Compute_IntegerNumberFromFieldContents( newValue_String )
 
         if ( newValue_String === "-" ) {
+
+            this._value_ForInputField = newValue_String
+
+        } else {
+
+            this._value_ForInputField = ""
+
+            if ( newValue_Number !== undefined && newValue_Number !== null ) {
+
+                this._value_ForInputField = newValue_Number.toString()
+            }
+        }
+
+        this.setState({ forceReRender_Object: {} })
+
+        if ( newValue_Number === this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager ) {
+            // No change so exit
+            return // EARLY RETURN
+        }
+
+        this.props.valueChanged_Callback( newValue_Number )
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    render() { try {
+
+        return (
+            <input
+                type="text"
+                size={ 4 }
+                value={ this._value_ForInputField }
+                onChange={ this._inputFieldChanged_BindThis }
+            />
+        )
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+}
+
+///////////////////
+
+//   Input Field for Max Cutoff for Color Scale for Ratio - Allow Decimal numbers
+
+/**
+ *
+ */
+export interface INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component_Props {
+
+    existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager: number
+    valueChanged_Callback: ( newValue: number ) => void
+}
+
+/**
+ *
+ */
+interface INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component_State {
+
+    forceReRender_Object? : object
+}
+
+/**
+ *
+ */
+export class INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component extends React.Component< INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component_Props, INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component_State > {
+
+    //  bind to 'this' for passing as parameters
+
+    private _inputFieldChanged_BindThis = this._inputFieldChanged.bind( this )
+
+    private _value_ForInputField: string
+
+    /**
+     *
+     */
+    constructor( props: INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component_Props ) { try {
+        super( props );
+
+        this._value_ForInputField = ""
+
+        if ( this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager !== undefined && this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager !== null ) {
+
+            this._value_ForInputField = this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager.toString()
+        }
+
+        this.state = {
+            forceReRender_Object: {}
+        };
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    componentDidUpdate( prevProps: Readonly<INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component_Props>, prevState: Readonly<INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component_State>, snapshot?: any ) { try {
+
+        if ( prevProps.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager !== this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager ) {
+
+            //  Upstream value changed so update input field
+
+            this._value_ForInputField = ""
+
+            if ( this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager !== undefined && this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager !== null ) {
+
+                this._value_ForInputField = this.props.existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager.toString()
+            }
+
+            this.setState({ forceReRender_Object: {} })
+        }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _inputFieldChanged( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue_String = event.target.value.trim()
+
+        const newValue_Number = _inputNumberField_Compute_DecimalNumberFromFieldContents( newValue_String )
+
+        if ( newValue_String.endsWith( "." ) ) {
 
             this._value_ForInputField = newValue_String
 
@@ -910,7 +1017,7 @@ export class INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component extends Rea
 /**
  *
  */
-const _inputNumberField_Compute_NumberFromFieldContents = function ( inputFieldValue_AsString: string ) : number {
+const _inputNumberField_Compute_IntegerNumberFromFieldContents = function ( inputFieldValue_AsString: string ) : number {
 
     const inputFieldValue_AsString_Trimmed = inputFieldValue_AsString.trim()
 
@@ -919,6 +1026,26 @@ const _inputNumberField_Compute_NumberFromFieldContents = function ( inputFieldV
     }
 
     const inputFieldValue_AsNumber = Number.parseInt( inputFieldValue_AsString_Trimmed )
+
+    if ( Number.isNaN( inputFieldValue_AsNumber ) ) {
+        return undefined
+    }
+
+    return inputFieldValue_AsNumber
+}
+
+/**
+ *
+ */
+const _inputNumberField_Compute_DecimalNumberFromFieldContents = function ( inputFieldValue_AsString: string ) : number {
+
+    const inputFieldValue_AsString_Trimmed = inputFieldValue_AsString.trim()
+
+    if ( inputFieldValue_AsString_Trimmed.length === 0 ) {
+        return undefined
+    }
+
+    const inputFieldValue_AsNumber = Number.parseFloat( inputFieldValue_AsString_Trimmed )
 
     if ( Number.isNaN( inputFieldValue_AsNumber ) ) {
         return undefined
