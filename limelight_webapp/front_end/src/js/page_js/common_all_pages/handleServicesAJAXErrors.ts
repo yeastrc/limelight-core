@@ -257,6 +257,10 @@ function handleAJAXError(
 		
 		showAjaxErrorMsg( { errorMsg : "Internal Server error, status code 500, textStatus: " + textStatus__LOCAL  } );
 
+	} else if ( ajaxResponse_StatusCode === 503 ) {
+
+		showAjaxErrorMsg( { errorMsg : "Internal Server error, status code 503, textStatus: " + textStatus__LOCAL  } );
+
 	} else if ( ajaxResponse_StatusCode === 0 ) {
 
 		showAjaxErrorMsg( { errorMsg : "Internal Server error, status code 0, textStatus: " + textStatus__LOCAL  } );
