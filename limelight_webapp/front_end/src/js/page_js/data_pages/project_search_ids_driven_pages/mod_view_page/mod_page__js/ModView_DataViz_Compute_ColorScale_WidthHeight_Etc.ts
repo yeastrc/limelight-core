@@ -63,7 +63,6 @@ export const modView_DataViz_Compute_ColorScale_WidthHeight_Etc = function (
         var z = 0
     }
 
-    const modMatrix: INTERNAL__ModMatrix = _getModMatrix({ modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root, projectSearchIds});
     const sortedModMasses = modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.get_ModMass_Values_OrderedArray()
 
     let minValue_ForViz = 0;
@@ -153,6 +152,10 @@ export const modView_DataViz_Compute_ColorScale_WidthHeight_Etc = function (
             // @ts-ignore
             .range(["white", "#57c4ad", "#006164"]);
     }
+
+    const modMatrix: INTERNAL__ModMatrix = _getModMatrix({
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root, projectSearchIds, minValue_ForViz, maxValue_ForViz
+    });
 
     const result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result = {
         colorScale, xScale, yScale, minValue_ForViz, maxValue_ForViz, width, height,
@@ -269,10 +272,13 @@ const _getMax_topLevelTable_DisplayValue_Or_UserEntered_MaxColorPsmCount_Or_MaxC
 
 const _getModMatrix = function (
     {
-        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root, projectSearchIds
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root, projectSearchIds, minValue_ForViz, maxValue_ForViz
     } : {
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
         projectSearchIds: Array<number>
+
+        minValue_ForViz: number
+        maxValue_ForViz: number
 
     }) : INTERNAL__ModMatrix {
 
@@ -300,10 +306,23 @@ const _getModMatrix = function (
 
                     const topLevelTable_DisplayValue = data_For__ProjectSearchId_Or_SubSearchId.topLevelTable_DisplayValue
 
+                    let topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale = topLevelTable_DisplayValue
+
+                    //  Clamp to min/max
+                    if ( topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale < minValue_ForViz ) {
+                        topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale = minValue_ForViz
+                    }
+                    if ( topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale > maxValue_ForViz ) {
+                        topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale = maxValue_ForViz
+                    }
+
                     modMatrix[modMass_Index][searchIndex] = {
-                        topLevelTable_DisplayValue: topLevelTable_DisplayValue,
+                        topLevelTable_DisplayValue,
+                        topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale,
                         projectSearchId_OR_SubSearchId: projectSearchId,
                         modMass: modMass,
+                        minValue_ForViz,
+                        maxValue_ForViz
                         // searchIndex: searchIndex,
                         // modMassIndex: modMass_Index
                     };
@@ -319,8 +338,11 @@ const _getModMatrix = function (
 
                 modMatrix[modMass_Index][searchIndex] = {
                     topLevelTable_DisplayValue: 0,
+                    topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale: 0,
                     projectSearchId_OR_SubSearchId: projectSearchId,
                     modMass: modMass,
+                    minValue_ForViz,
+                    maxValue_ForViz
                     // searchIndex: searchIndex,
                     // modMassIndex: modMass_Index
                 };
@@ -340,9 +362,29 @@ const _getModMatrix = function (
  *  Used by the code that uses D3 to generate the Mod Mass Visualization Graphic
  */
 class INTERNAL__ModMatrix_Entry {
+
     topLevelTable_DisplayValue: number
+
+    /**
+     * Enforce user input "Max cutoff for color scale:"
+     *
+     * When used in the "color" function from 'd3' this keeps the returned color within the color range as shown below the visualization.
+     */
+    topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale: number
+
     projectSearchId_OR_SubSearchId: number
     modMass: number
+
+    /**
+     * Added for Clamping Color  Computation
+     */
+    minValue_ForViz: number
+
+    /**
+     * Added for Clamping Color  Computation
+     */
+    maxValue_ForViz: number
+
     // searchIndex: number
     // modMassIndex: number
 }

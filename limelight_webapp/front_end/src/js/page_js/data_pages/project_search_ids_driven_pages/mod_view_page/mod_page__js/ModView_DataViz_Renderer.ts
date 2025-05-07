@@ -200,7 +200,12 @@ const _addColoredRectangles = function (
         .attr('width', modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.xScale.bandwidth())
         .attr('height', modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale.bandwidth())
         .attr('stroke', 'none')
-        .attr('fill', (d) => (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.colorScale(d.topLevelTable_DisplayValue)))
+        .attr('fill', (d) => {
+
+            const color = modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.colorScale( d.topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale )
+
+            return color
+        })
         .on("mousemove", function ( event_Param, dataElement_Param ) {
 
             const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param.projectSearchId_OR_SubSearchId );

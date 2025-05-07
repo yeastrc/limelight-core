@@ -389,7 +389,7 @@ const _getDataTableRows = function (
                     return modPage_Get_WholeModTable_ShowCount_ExternalReactComponent({
                         modMass: modMass,
                         projectSearchId: projectSearchId,
-                        d3ColorScaler: modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.colorScale,
+                        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
                         numericValue : value_ForDisplay_For_ModMass_ProjectSearchId,
                         displayedValue : value_ForDisplay_Formatted
                     });

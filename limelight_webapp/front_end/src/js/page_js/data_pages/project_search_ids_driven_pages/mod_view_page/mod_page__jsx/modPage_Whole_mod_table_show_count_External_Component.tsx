@@ -1,31 +1,17 @@
 
 import React from 'react'
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/ModView_DataViz_Compute_ColorScale_WidthHeight_Etc";
 
 
 export const modPage_Get_WholeModTable_ShowCount_ExternalReactComponent = function (
-    {
-        modMass,
-        projectSearchId,
-        d3ColorScaler,
-        numericValue,
-        displayedValue
-    } : {
-        modMass : number,
-        projectSearchId : number,
-        d3ColorScaler : any   // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
-        numericValue : number,
-        displayedValue : string | number,
-
-    }) : JSX.Element { try {
+    params: WholeModTable_ShowCount_ExternalReactComponent_Props ) : JSX.Element { try {
 
     return (
         <WholeModTable_ShowCount_ExternalReactComponent
-            modMass={ modMass }
-            projectSearchId={ projectSearchId }
-            d3ColorScaler={ d3ColorScaler }
-            numericValue={ numericValue }
-            displayedValue={ displayedValue }
+            { ...params }
         />
     )
 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
@@ -37,7 +23,7 @@ interface WholeModTable_ShowCount_ExternalReactComponent_Props {
 
     modMass : number
     projectSearchId : number
-    d3ColorScaler : any   // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
+    modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
     numericValue : number
     displayedValue : string | number
 }
@@ -58,7 +44,16 @@ class WholeModTable_ShowCount_ExternalReactComponent extends React.Component< Wh
 
     render() { try {
 
-        const fillColor = (this.props.d3ColorScaler(this.props.numericValue));
+        let valueForColor = this.props.numericValue
+
+        if ( valueForColor < this.props.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.minValue_ForViz ) {
+            valueForColor = this.props.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.minValue_ForViz
+        }
+        if ( valueForColor > this.props.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.maxValue_ForViz ) {
+            valueForColor = this.props.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.maxValue_ForViz
+        }
+
+        const fillColor = (this.props.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.colorScale( valueForColor ));
 
         return (
             <div>
