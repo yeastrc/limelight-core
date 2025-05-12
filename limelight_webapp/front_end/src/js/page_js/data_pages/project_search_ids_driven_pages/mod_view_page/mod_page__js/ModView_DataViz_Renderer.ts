@@ -787,7 +787,7 @@ const _addColorScaleLegend = function (
 
 
     const psmQuantType =
-        modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() ||
+        modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === undefined ||
         modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms
 
     const quantType = psmQuantType ? 'PSM' : 'Scan';
