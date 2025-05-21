@@ -1563,7 +1563,21 @@ class Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends Rea
         let filterLabel_TD_Style : React.CSSProperties = { paddingRight : 5 };
 
         if ( this.props.forMultipleSearches ) {
+
+            //  ONLY for Multiple Searches since positioned differently.  Set width to try to align across searches.  Does fail to align if have longer labels but most often used labels fit.
+
+            //  Ideal solution would probably be to rewrite whole search details block with grid and use sub grid.
+
             filterLabel_TD_Style = { width : 125 }
+        }
+
+        const editIcon_Style: React.CSSProperties = { marginLeft: 4 }
+
+        if ( this.props.forMultipleSearches ) {
+
+            //  ONLY for Multiple Searches since positioned differently.  Ensure space to right when have longer labels to left.
+
+            editIcon_Style.marginRight = 10
         }
 
         return (
@@ -1575,7 +1589,7 @@ class Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends Rea
                         { this.props.type_label } Filters:
                         { ( this.props.propValue.displayOnly ) ? null :
                             (
-                                <span style={ { marginLeft: 4 } }>
+                                <span style={ editIcon_Style }>
                                    <img src="static/images/icon-edit.png" className=" icon-small " />
                                 </span>
                             )
