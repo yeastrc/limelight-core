@@ -81,6 +81,10 @@ interface ProteinPage_Display__SingleProtein_ReportedPeptideListSection_Componen
  */
 export class ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component extends React.Component< ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_Props, ProteinPage_Display__SingleProtein_ReportedPeptideListSection_Component_State > {
 
+    private _showGettingDataMessage : boolean = true
+    private _showUpdatingMessage : boolean = false
+
+
     /**
      * 
      */    
@@ -140,6 +144,11 @@ export class ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSect
                 this.setState({ peptideList_Empty: true, dataTable_RootTableObject: null })
 
             } else {
+
+                this._showUpdatingMessage = true
+
+                this.forceUpdate() // Force rerender
+
                 window.setTimeout( () => {
 
                     this._get__GetDataTableDataObjects_MultipleSearch_SingleProtein_Result__SetState()
@@ -155,6 +164,10 @@ export class ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSect
         try {
             if ( ! this.props.create_GeneratedReportedPeptideListData_Result ) {
                 //  No Data so just skip
+
+                this._showGettingDataMessage = false
+                this._showUpdatingMessage = false
+
                 return; // EARLY RETURN
             }
 
@@ -186,6 +199,9 @@ export class ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSect
 
                 const dataTable_RootTableObject : DataTable_RootTableObject = getDataTableDataObjects_Result.dataTable_RootTableObject;
 
+                this._showGettingDataMessage = false
+                this._showUpdatingMessage = false
+
                 this.setState({ peptideList_Empty: false, dataTable_RootTableObject })
 
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
@@ -209,14 +225,14 @@ export class ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSect
         let updatingMessage = undefined;
         let gettingDataMessage = undefined;
 
-        if ( this.props.showUpdatingMessage ) {
+        if ( this.props.showUpdatingMessage || this._showUpdatingMessage ) {
 
             updatingMessage = (
                 <div  className=" block-updating-overlay-container " >
                     Updating Peptide List
                 </div>
             )
-        } else if ( this.props.showGettingDataMessage ) {
+        } else if ( this.props.showGettingDataMessage || this._showGettingDataMessage ) {
 
             gettingDataMessage = (
                 <div  className=" block-updating-overlay-container " >
@@ -369,6 +385,7 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
         } else {
 
             if ( this.props.dataTable_RootTableObject ) {
+
                 havePeptideDataTableContentsForDownload = true;
 
                 peptideListTable = (
