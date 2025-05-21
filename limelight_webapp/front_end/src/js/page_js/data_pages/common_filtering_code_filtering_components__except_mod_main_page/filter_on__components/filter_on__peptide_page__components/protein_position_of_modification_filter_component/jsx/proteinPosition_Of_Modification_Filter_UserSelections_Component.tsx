@@ -36,18 +36,15 @@ import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorT
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
+import {
+    proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent";
+
 
 export type ProteinPosition_Of_Modification_Filter_UserSelections_Component__UpdateMadeTo_proteinPosition_Of_Modification_Filter_UserSelections_StateObject = () => void;
-
-
-export class ProteinPosition_Of_Modification_Filter_UserSelections_Component_GetData_Callback_ReturnedValue {
-    proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
-    promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : Promise<ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data>
-}
-
-export type ProteinPosition_Of_Modification_Filter_UserSelections_Component_GetData_Callback =
-    () => ProteinPosition_Of_Modification_Filter_UserSelections_Component_GetData_Callback_ReturnedValue
-
 
 /**
  *
@@ -57,9 +54,8 @@ export interface ProteinPosition_Of_Modification_Filter_UserSelections_Props {
     proteinPosition_Of_Modification_Filter_UserSelections_Component_Force_ReRender_Object : object
     proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject;
 
-    // one of next 2 is required
-    proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
-    proteinPosition_Of_Modification_Filter_UserSelections_Component_GetData_Callback : ProteinPosition_Of_Modification_Filter_UserSelections_Component_GetData_Callback
+    projectSearchIds : Array<number>
+    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 
     updateMadeTo_proteinPosition_Of_Modification_Filter_UserSelections_StateObject_Callback : ProteinPosition_Of_Modification_Filter_UserSelections_Component__UpdateMadeTo_proteinPosition_Of_Modification_Filter_UserSelections_StateObject
 }
@@ -83,7 +79,8 @@ export class ProteinPosition_Of_Modification_Filter_UserSelections extends React
         const _update_PageState_FromChildComponent_SaveCall_BindThis : ProteinPositionFilter_UserInput__Component__Save_CallbackFunction = this._update_PageState_FromChildComponent_SaveCall
     }
 
-    private _proteinPosition_Of_Modification_Filter_UserInput__Component__ProteinData : ProteinPositionFilter_UserInput__Component__ProteinData_Root
+    private _promise_InProgress_ProteinPositionFilter_UserInput__Component__ProteinData_Root: Promise<ProteinPositionFilter_UserInput__Component__ProteinData_Root>
+    private _proteinPositionFilter_UserInput__Component__ProteinData_Root : ProteinPositionFilter_UserInput__Component__ProteinData_Root
     private _proteinPosition_Of_Modification_Filter_UserInput__Component__Existing_userSelections : ProteinPositionFilter_UserInput__Component__UserSelectionData_Root
 
     /**
@@ -93,16 +90,6 @@ export class ProteinPosition_Of_Modification_Filter_UserSelections extends React
         super(props);
 
         try {
-            if ( ( ! props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) && ( ! props.proteinPosition_Of_Modification_Filter_UserSelections_Component_GetData_Callback ) ) {
-                const msg = "Invalid Props: ( ( ! props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) && ( ! props.proteinPosition_Of_Modification_Filter_UserSelections_Component_GetData_Callback ) )"
-                console.warn(msg)
-                throw Error(msg)
-            }
-
-            if ( props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
-                this._proteinPosition_Of_Modification_Filter_UserInput__Component__ProteinData = props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.proteinPositionFilter_UserInput__Component__ProteinData_Root
-            }
-
             this._update_Local_Property_From_Props___proteinPosition_Of_Modification_Filter_UserInput__Component__Existing_userSelections({ proteinPosition_Of_Modification_Filter_UserSelections_StateObject: props.proteinPosition_Of_Modification_Filter_UserSelections_StateObject })
 
             this.state = {
@@ -116,9 +103,7 @@ export class ProteinPosition_Of_Modification_Filter_UserSelections extends React
      */
     shouldComponentUpdate(nextProps: Readonly<ProteinPosition_Of_Modification_Filter_UserSelections_Props>, nextState: Readonly<ProteinPosition_Of_Modification_Filter_UserSelections_State>, nextContext: any): boolean {
 
-        if (
-            this.props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data !== nextProps.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
-            || this.props.proteinPosition_Of_Modification_Filter_UserSelections_Component_Force_ReRender_Object !== nextProps.proteinPosition_Of_Modification_Filter_UserSelections_Component_Force_ReRender_Object
+        if ( this.props.proteinPosition_Of_Modification_Filter_UserSelections_Component_Force_ReRender_Object !== nextProps.proteinPosition_Of_Modification_Filter_UserSelections_Component_Force_ReRender_Object
             || this.state.forceRerender_Object !== nextState.forceRerender_Object ) {
             return true;
         }
@@ -136,13 +121,6 @@ export class ProteinPosition_Of_Modification_Filter_UserSelections extends React
                 //  One of the Props objects changed so create new versions of Local Properties
 
                 this._update_Local_Property_From_Props___proteinPosition_Of_Modification_Filter_UserInput__Component__Existing_userSelections({ proteinPosition_Of_Modification_Filter_UserSelections_StateObject: this.props.proteinPosition_Of_Modification_Filter_UserSelections_StateObject })
-
-                this.setState({ forceRerender_Object: {} })
-            }
-
-            if ( this.props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data !== prevProps.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
-
-                this._proteinPosition_Of_Modification_Filter_UserInput__Component__ProteinData = this.props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.proteinPositionFilter_UserInput__Component__ProteinData_Root
 
                 this.setState({ forceRerender_Object: {} })
             }
@@ -206,43 +184,43 @@ export class ProteinPosition_Of_Modification_Filter_UserSelections extends React
      */
     private _get_ProteinData_ReturnPromise_CallbackFunction() : Promise<ProteinPositionFilter_UserInput__Component__ProteinData_Root> {
 
-        if ( this._proteinPosition_Of_Modification_Filter_UserInput__Component__ProteinData ) {
+        if ( this._proteinPositionFilter_UserInput__Component__ProteinData_Root ) {
 
-            return Promise.resolve( this._proteinPosition_Of_Modification_Filter_UserInput__Component__ProteinData )  // EARLY RETURN
+            return Promise.resolve( this._proteinPositionFilter_UserInput__Component__ProteinData_Root )  // EARLY RETURN
         }
 
-        if ( ! this.props.proteinPosition_Of_Modification_Filter_UserSelections_Component_GetData_Callback ) {
-            const msg = "In _get_ProteinData_ReturnPromise_CallbackFunction(): else of ( this._proteinPosition_Of_Modification_Filter_UserInput__Component__ProteinData )  AND ( ! this.props.proteinPosition_Of_Modification_Filter_UserSelections_Component_GetData_Callback )"
-            console.warn(msg)
-            throw Error(msg)
+        if ( this._promise_InProgress_ProteinPositionFilter_UserInput__Component__ProteinData_Root ) {
+
+            // EARLY RETURN
+
+            return this._promise_InProgress_ProteinPositionFilter_UserInput__Component__ProteinData_Root
         }
 
-        const getData_Callback_Result = this.props.proteinPosition_Of_Modification_Filter_UserSelections_Component_GetData_Callback()
+        const promise_InProgress_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data = proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent({
+            projectSearchIds: this.props.projectSearchIds,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+        })
 
-        if ( getData_Callback_Result.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
+        this._promise_InProgress_ProteinPositionFilter_UserInput__Component__ProteinData_Root = new Promise<ProteinPositionFilter_UserInput__Component__ProteinData_Root>((resolve, reject) => { try {
 
-            this._proteinPosition_Of_Modification_Filter_UserInput__Component__ProteinData = getData_Callback_Result.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.proteinPositionFilter_UserInput__Component__ProteinData_Root
+            promise_InProgress_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.catch(reason => {
 
-            return Promise.resolve( this._proteinPosition_Of_Modification_Filter_UserInput__Component__ProteinData )   // EARLY RETURN
+                this._promise_InProgress_ProteinPositionFilter_UserInput__Component__ProteinData_Root = undefined
+                reject( reason )
+            })
+            promise_InProgress_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.then(value => { try {
 
-        } else if ( getData_Callback_Result.promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
+                this._proteinPositionFilter_UserInput__Component__ProteinData_Root = value.proteinPositionFilter_UserInput__Component__ProteinData_Root
 
-        return new Promise((resolve, reject) => { try {
+                this._promise_InProgress_ProteinPositionFilter_UserInput__Component__ProteinData_Root = undefined
 
-            getData_Callback_Result.promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.catch(reason => reject(reason))
-            getData_Callback_Result.promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.then(value => { try {
-
-                this._proteinPosition_Of_Modification_Filter_UserInput__Component__ProteinData = value.proteinPositionFilter_UserInput__Component__ProteinData_Root
-
-                resolve( this._proteinPosition_Of_Modification_Filter_UserInput__Component__ProteinData )
+                resolve( this._proteinPositionFilter_UserInput__Component__ProteinData_Root )
 
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
-        } else {
-            throw Error("getData_Callback_Result NO proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data or promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data")
-        }
+        return this._promise_InProgress_ProteinPositionFilter_UserInput__Component__ProteinData_Root
     }
 
     /**
@@ -327,7 +305,7 @@ export class ProteinPosition_Of_Modification_Filter_UserSelections extends React
 
                             <div >
                                 <ProteinPositionFilter_UserInput__Component
-                                    proteinData_InitiallyProvided={ this._proteinPosition_Of_Modification_Filter_UserInput__Component__ProteinData }
+                                    proteinData_InitiallyProvided={ this._proteinPositionFilter_UserInput__Component__ProteinData_Root }
                                     get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction={ this._get_ProteinData_ReturnPromise_CallbackFunction_BindThis }
                                     userSelections={ this._proteinPosition_Of_Modification_Filter_UserInput__Component__Existing_userSelections }
                                     callbackOn_Save_Clicked={ this._update_PageState_FromChildComponent_SaveCall_BindThis }

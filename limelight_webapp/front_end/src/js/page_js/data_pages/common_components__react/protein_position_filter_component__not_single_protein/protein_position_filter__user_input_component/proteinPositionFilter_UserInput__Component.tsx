@@ -129,7 +129,9 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
             this._userSelections_Map_Key_proteinSequenceVersionId = _copy_UserSelectionsToLocal({ userSelections: props.userSelections, proteinData: this._proteinData_Local });
         }
 
-        if ( ( ! ( ! props.userSelections ) || ( ! props.userSelections.proteins ) || ( ! ( props.userSelections.proteins.length > 0 ) ) )
+        const userSelections_Proteins = this.props?.userSelections?.proteins
+
+        if ( userSelections_Proteins && userSelections_Proteins.length > 0
             && ( ! this._proteinData_Local ) ) {
 
             //  Have User selections and NOT have Protein data so need to load Protein data to display existing User selections
@@ -146,8 +148,12 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
      */
     componentDidMount() {
         try {
-            if ( ( ! ( ! this.props.userSelections ) || ( ! this.props.userSelections.proteins ) || ( ! ( this.props.userSelections.proteins.length > 0 ) ) )
+            const userSelections_Proteins = this.props?.userSelections?.proteins
+
+            if ( userSelections_Proteins && userSelections_Proteins.length > 0
                 && ( ! this._proteinData_Local ) ) {
+
+                //  Have selected proteins AND NOT have protein data so load protein data
 
                 this._populate_Properties___proteinData_Local_AND__userSelections_Map_Key_proteinSequenceVersionId()
                 this._proteinData_GetData_Populate__userSelections_Map_Key_proteinSequenceVersionId_Promise.catch(reason => {})
