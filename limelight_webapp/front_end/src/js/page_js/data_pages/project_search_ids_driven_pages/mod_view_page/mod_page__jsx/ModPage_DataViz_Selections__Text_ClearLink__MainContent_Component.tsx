@@ -22,11 +22,18 @@ import {
 import {
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
  */
 export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component_Props_Prop {
+
+    renderOnlyContent_WithoutBorder: boolean
+    renderClearLink: boolean
 
     modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
     modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
@@ -300,7 +307,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
                             searches_AND_Mods_Selected_Display_RenderArray =  []
                         }
 
-                        const searchIds_And_Label = " in search " + searchData.searchId
+                        // const searchIds_And_Label = " in search " + searchData.searchId
 
                         if ( projectSearchIds_ThatHave_ALL_ModMasses_Selected.has( projectSearchId ) ) {
 
@@ -485,58 +492,94 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
         // should probably detect if all searches are selected and just show "all searches" instead of listing them all
 
 
-        // WARNING WARNING WARNING
-        //
-        // DO NOT call jQuery.empty() on any DOM element
+        const coreContent = (
+
+            <div>
+                { searches_AND_Mods_Selected_Display_RenderArray ? (
+                    // Searches have DIFFERENT Mod Mass Selections (From OLD Code)
+                    <>
+                        <div style={ { fontWeight: "bold" } }>
+                            Currently filtering Modification List on:
+                        </div>
+                        <div
+                            // style={ { marginLeft: 15 } }  //  Align with above but also maybe then need to indent the fake-link below
+                        >
+                            { searches_AND_Mods_Selected_Display_RenderArray.map( searches_AND_Mods_Selected_Display_Entry => {
+                                return (
+                                    <div
+                                        key={ searches_AND_Mods_Selected_Display_Entry.projectSearchId_ForKey }
+                                    >
+                                        {
+                                            this._render__INTERNAL__ModificationInfo_Single( { modificationInfo_Single: searches_AND_Mods_Selected_Display_Entry.modificationInfo } )
+                                        }
+                                        { searches_AND_Mods_Selected_Display_Entry.searchIds_And_Label }
+                                    </div>
+                                )
+                            } ) }
+                            { searches_AND_Mods_Selected_Different__AllModsSelectedForSearches_Display }
+                            { this._render_Clear_Link() }
+                        </div>
+                    </>
+                ) : allSearchesSameModsSelected_SingleDisplayString ? (
+                    //  ALL Searches have SAME Mod Mass Selections, display as single string
+                    <>
+                        <div>
+                            {/*  Change to <div> so on separate line  */}
+                            <div style={ { fontWeight: "bold" } }>Currently filtering Modification List on: </div>
+                            {/*<span style={ { fontWeight: "bold" } }>Currently filtering Modification List on: </span>*/}
+
+                            <span>{ allSearchesSameModsSelected_SingleDisplayString }</span>
+                        </div>
+                        { this._render_Clear_Link() }
+                    </>
+                ) : (
+                    <>
+                        <div>
+                            {/*  Change to <div> so on separate line  */ }
+                            <div style={ { fontWeight: "bold" } }>Currently filtering Modification List on:</div>
+                            {/*<span style={ { fontWeight: "bold" } }>Currently filtering Modification List on: </span>*/ }
+
+                            { this._render__INTERNAL__ModificationInfo_Single( { modificationInfo_Single: allSearchesSameModsSelected_RenderObject.modificationInfo } ) }
+                            <span>{ allSearchesSameModsSelected_RenderObject.searchId_Display }</span>
+                        </div>
+                        { this._render_Clear_Link() }
+                    </>
+                ) }
+            </div>
+        )
+
+        if ( this.props.propsValue.renderOnlyContent_WithoutBorder  ) {
+
+            return coreContent
+        }
 
         return (
-            <div>
-                <div>
-                    { searches_AND_Mods_Selected_Display_RenderArray ? (
-                        // Searches have DIFFERENT Mod Mass Selections (From OLD Code)
-                        <>
-                            <div style={ { fontWeight: "bold" } }>
-                                Currently filtering on:
+
+            <div style={ {
+                borderStyle: "solid",
+                borderWidth: 4,
+                borderColor: "green",
+                display: "inline-block",
+                padding: 10,
+                marginTop: 10
+            } }>
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <div>
+                            <div style={ { marginBottom: 4 } }>
+                                This URL contains old style filtering that is no longer supported in general.
                             </div>
-                            <div
-                                // style={ { marginLeft: 15 } }  //  Align with above but also maybe then need to indent the fake-link below
-                            >
-                                { searches_AND_Mods_Selected_Display_RenderArray.map( searches_AND_Mods_Selected_Display_Entry => {
-                                    return (
-                                        <div
-                                            key={ searches_AND_Mods_Selected_Display_Entry.projectSearchId_ForKey }
-                                        >
-                                            {
-                                                this._render__INTERNAL__ModificationInfo_Single({ modificationInfo_Single: searches_AND_Mods_Selected_Display_Entry.modificationInfo })
-                                            }
-                                            { searches_AND_Mods_Selected_Display_Entry.searchIds_And_Label }
-                                        </div>
-                                    )
-                                })}
-                                { searches_AND_Mods_Selected_Different__AllModsSelectedForSearches_Display }
-                                { this._render_Clear_Link() }
+                            <div style={ { marginBottom: 4 } }>
+                                ONLY The Modification List below is filtered using the following filters. NO other
+                                display of data is filtered. No changes to the filters are supported.
                             </div>
-                        </>
-                    ) : allSearchesSameModsSelected_SingleDisplayString ? (
-                        //  ALL Searches have SAME Mod Mass Selections, display as single string
-                        <>
-                            <div>
-                                <span style={ { fontWeight: "bold" } }>Currently filtering on: </span>
-                                <span>{ allSearchesSameModsSelected_SingleDisplayString }</span>
-                            </div>
-                            { this._render_Clear_Link() }
-                        </>
-                    ) : (
-                        <>
-                            <div>
-                                <span style={ { fontWeight: "bold" } }>Currently filtering on: </span>
-                                { this._render__INTERNAL__ModificationInfo_Single({ modificationInfo_Single: allSearchesSameModsSelected_RenderObject.modificationInfo }) }
-                                <span>{ allSearchesSameModsSelected_RenderObject.searchId_Display }</span>
-                            </div>
-                            { this._render_Clear_Link() }
-                        </>
-                    ) }
-                </div>
+                        </div>
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    {/*  Assumes 'coreContent' has ONLY ONE root DOM element  */}
+                    { coreContent }
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             </div>
         )
     }
@@ -544,7 +587,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
     /**
      * called from render()
      */
-    private _compute___projectSearchIds_All_Selected() : Set<number> {
+    private _compute___projectSearchIds_All_Selected(): Set<number> {
 
         const projectSearchIds_ThatHave_ALL_ModMasses_Selected: Set<number> = new Set()
 
@@ -555,15 +598,6 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
             return projectSearchIds_ThatHave_ALL_ModMasses_Selected
         }
 
-        // for ( const projectSearchId of this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_Selection_ProjectSearchIds() ) {
-        //
-        //     const selectedModMasses_Set_For_ProjectSearchId = this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMasses_Set_For_ProjectSearchId( projectSearchId )
-        //
-        //     if ( selectedModMasses_Set_For_ProjectSearchId ) {
-        //         selectedModMasses_Set_For_ProjectSearchId.
-        //     }
-        // }
-
         const projectSearchId_Selected_Array: Array<number> = Array.from( this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_Selection_ProjectSearchIds() )
 
         for ( const projectSearchId_Selected of projectSearchId_Selected_Array ) {
@@ -571,8 +605,8 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
             const selectedModMasses_Set_For_ProjectSearchId = this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMasses_Set_For_ProjectSearchId( projectSearchId_Selected )
             if ( ! selectedModMasses_Set_For_ProjectSearchId ) {
                 const msg = "this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().get_SelectedModMasses_Set_For_ProjectSearchId( projectSearchId_Selected ) returned NOTHING for projectSearchId_Selected: " + projectSearchId_Selected
-                console.warn(msg)
-                throw Error(msg)
+                console.warn( msg )
+                throw Error( msg )
             }
 
             const modMasses_Selected_Set = new Set( selectedModMasses_Set_For_ProjectSearchId )
@@ -615,13 +649,18 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
     }
 
     private _render_Clear_Link() {
+
+        if ( ! this.props.propsValue.renderClearLink ) {
+            return null
+        }
+
         return (
             <div>
                 <span
                     className=" fake-link "
                     onClick={ this._clear_Clicked_Callback_BindThis }
                 >
-                    Clear filters (show all searches and mod masses)
+                    Remove this filtering
                 </span>
             </div>
         )

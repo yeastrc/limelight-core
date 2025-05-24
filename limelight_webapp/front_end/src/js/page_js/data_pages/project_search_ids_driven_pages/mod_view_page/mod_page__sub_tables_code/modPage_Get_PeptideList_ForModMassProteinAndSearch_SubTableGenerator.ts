@@ -347,9 +347,6 @@ const _getDataTableRows = async function (
         // add the pre residue
         {
             const valueDisplay = Array.from( peptideData.peptide_Pre_Residues ).sort().join(", ")
-
-            // const valueDisplay = (await ModViewDataUtilities.getPreResidueForPeptideProtein({modViewDataManager, proteinSequenceVersionId:proteinId, reportedPeptideIds:proteinData.reportedPeptideIds, projectSearchId})).join(',');
-
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
@@ -366,9 +363,6 @@ const _getDataTableRows = async function (
         // add the post residue
         {
             const valueDisplay = Array.from( peptideData.peptide_Post_Residues ).sort().join(", ")
-
-            // const valueDisplay = (await ModViewDataUtilities.getPostResidueForPeptideProtein({modViewDataManager, proteinSequenceVersionId:proteinId, reportedPeptideIds:proteinData.reportedPeptideIds, projectSearchId})).join(',');
-
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({

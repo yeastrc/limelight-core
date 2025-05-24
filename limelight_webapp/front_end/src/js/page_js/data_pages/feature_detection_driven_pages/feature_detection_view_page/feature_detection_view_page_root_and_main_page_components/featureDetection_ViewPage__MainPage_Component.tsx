@@ -1410,6 +1410,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                     dataPageStateManager_DataFrom_Server: this.props.propsValue.dataPageStateManager_DataFrom_Server,
                     searchDetailsBlockDataMgmtProcessing: this.props.propsValue.searchDetailsBlockDataMgmtProcessing,
                     filterValuesChanged_Callback,
+                    callback_Before_ReadURLtoGenerateNewURL_ReOrderSearchesOverlay: null,
                     searchSubGroup_PropValue: null,
                     limelight_Colors_For_MultipleSearches: undefined
                 }

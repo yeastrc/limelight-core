@@ -3,8 +3,6 @@
  *
  */
 
-import jStat from 'jstat'
-
 import {
     limelight__Sort_ArrayOfNumbers_SortArrayInPlace
 } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
@@ -28,6 +26,12 @@ import {
     ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
     ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass";
+import {
+    Jstat_ExternalLibrary_Without_TypescriptDefinition_Calls
+} from "page_js/common_all_pages/external_libraries_without_typescript_definition__calls/jstat_ExternalLibrary_Without_TypescriptDefinition_Calls";
+import {
+    CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
 
 ///////////////////
 
@@ -45,19 +49,45 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Roo
 
     readonly projectSearchId_Or_SubSearchId_Enum: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum
 
-    private _dataEntry_SingleModMass__Map_Key_ModMass: Map<number, ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass>
+    private _dataEntry_SingleModMass__Map_Key_ModMass: Map<number, ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass> = new Map()
 
     private _modMassValues_Set: Set<number>
     private _modMassValues_OrderedArray: Array<number>
 
+    /**
+     * Copied from ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
+     */
+    private _psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId : ReadonlyMap<number, ReadonlyMap<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>
+
     constructor(
         {
-            projectSearchId_Or_SubSearchId_Enum
+            projectSearchId_Or_SubSearchId_Enum,
+            psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId
         } : {
             projectSearchId_Or_SubSearchId_Enum: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum
-        }) {
+            psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId : ReadonlyMap<number, ReadonlyMap<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>
+        }) { try {
+
         this.projectSearchId_Or_SubSearchId_Enum = projectSearchId_Or_SubSearchId_Enum
-        this._dataEntry_SingleModMass__Map_Key_ModMass = new Map()
+
+        if ( projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
+
+            const msg = "'SubSearchId' NOT SUPPORTED: param 'psmIds_With_NO_Modifications_Set_Map_Key_ProjectSearchId' is ONLY 'ProjectSearchId' class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: constructor(...) if ( projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {.  "
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        //  All Down Stream uses of this._psmIds_With_NO_Modifications_Set_Map_Key_ProjectSearchId have to change as well
+
+        this._psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId = psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     * Get the whole result in "Readonly" form
+     */
+    get_psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId() : ReadonlyMap<number, ReadonlyMap<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>> {
+        return this._psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId
     }
 
     /**
@@ -490,7 +520,8 @@ const _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData = 
     }
 
     const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root = new ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root({
-        projectSearchId_Or_SubSearchId_Enum
+        projectSearchId_Or_SubSearchId_Enum,
+        psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId: modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.get_psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId()
     })
 
     _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root({
@@ -868,7 +899,7 @@ const _set_GlobalPValue_In_ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTa
 
             const topLevelTable_DisplayValue_OLD = data_ForSingle_ProjectSearchId_Or_SubSearchId.topLevelTable_DisplayValue
 
-            const topLevelTable_DisplayValue_New = jStat.ztest( topLevelTable_DisplayValue_OLD, 2)
+            const topLevelTable_DisplayValue_New = Jstat_ExternalLibrary_Without_TypescriptDefinition_Calls.call_jStat_ztest( topLevelTable_DisplayValue_OLD, 2)
 
             numTests++;
 
@@ -945,7 +976,7 @@ const _set_GlobalQValue_In_ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTa
 
             const topLevelTable_DisplayValue_OLD = data_ForSingle_ProjectSearchId_Or_SubSearchId.topLevelTable_DisplayValue
 
-            const pvalue = jStat.ztest( topLevelTable_DisplayValue_OLD, 2 );
+            const pvalue = Jstat_ExternalLibrary_Without_TypescriptDefinition_Calls.call_jStat_ztest( topLevelTable_DisplayValue_OLD, 2 );
 
             const topLevelTable_DisplayValue_New = pvalue
 

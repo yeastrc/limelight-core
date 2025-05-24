@@ -9,20 +9,24 @@
  * * The main Data table below that
  */
 
+
 import React from "react";
+
 import { DataPageStateManager } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
-    ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component";
-import {
-    modView_DataViz_Compute_ColorScale_WidthHeight_Etc, ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
+    modView_DataViz_Compute_ColorScale_WidthHeight_Etc,
+    ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS,
+    ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/ModView_DataViz_Compute_ColorScale_WidthHeight_Etc";
 import {
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 import {
     modView_DataViz_Renderer
@@ -30,9 +34,6 @@ import {
 import {
     ModPage_OptionsSection_UserInput_Display_MainContent_Component
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_OptionsSection_UserInput_Display_MainContent_Component";
-import {
-    ModPage_TopLevelDataTable_Component
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_TopLevelDataTable_Component";
 import {
     modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
@@ -54,15 +55,6 @@ import {
     ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {
-    modPage_Download_SignificantMods
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__clickable_links_for_downloads_and_view_js/modPage_Download_SignificantMods";
-import {
-    modPage_View_SignificantMods
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__clickable_links_for_downloads_and_view_js/modPage_View_SignificantMods";
-import {
-    modPage_View_SignificantMods_CombineReps
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__clickable_links_for_downloads_and_view_js/modPage_View_SignificantMods_CombineReps";
-import {
     modPage_Download_SummaryStatistics
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__clickable_links_for_downloads_and_view_js/modPage_Download_SummaryStatistics";
 import {
@@ -81,6 +73,21 @@ import {
     ModPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_Display_MainContent_Component";
 import { Spinner_Limelight_Component } from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
+import {
+    ModPage_Tabs_Select__ModificationList_OR_ZScoreData__Component
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_Tabs_Select__ModificationList_OR_ZScoreData__Component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    modPage_Get_DataTransformationType_DisplayLabel
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_Get_DataTransformationType_DisplayLabel";
+
+
+//  Default and Min Width for the block for the search names and Color Legend Bar label to the left of the SVG with the Mod Mass Heat Map
+const _searchNamesBlock_LeftOfHeatMap_Width__DEFAULT = 330
+const _searchNamesBlock_LeftOfHeatMap_Width__MIN_WIDTH = _searchNamesBlock_LeftOfHeatMap_Width__DEFAULT // Min Width so that there is space for the Color Legend Bar label to the left
 
 /**
  *
@@ -123,13 +130,30 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
     private _updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback_BindThis = this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback.bind( this )
 
-    private __modView_DataViz_Renderer_UserInputMade_Callback_BindThis = this._modView_DataViz_Renderer_UserInputMade_Callback.bind(this)
+    private _modView_DataViz_Renderer_UserInputMade_Callback_BindThis = this._modView_DataViz_Renderer_UserInputMade_Callback.bind(this)
 
-    private _download_ZScore_Report_Clicked_BindThis = this._download_ZScore_Report_Clicked.bind(this)
-    private _view_ZScore_Report_Clicked_BindThis = this._view_ZScore_Report_Clicked.bind(this)
-    private _view_Replicate_ZScore_Report_Clicked_BindThis = this._view_Replicate_ZScore_Report_Clicked.bind(this)
+    private _onMouseDown_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis = this._onMouseDown_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG.bind(this)
+    private _onMouseMove_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis = this._onMouseMove_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG.bind(this)
+    private _onMouseUp_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis = this._onMouseUp_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG.bind(this)
+    //    Commented out _onMouseDoubleClick_Handler_... since currently NOT used
+    // private _onMouseDoubleClick_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis = this._onMouseDoubleClick_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG.bind(this)
+
     private _download_Data_Table_Clicked_BindThis = this._download_Data_Table_Clicked.bind(this)
     private _download_PSM_Localization_Report_Clicked_BindThis = this._download_PSM_Localization_Report_Clicked.bind(this)
+
+    /**
+     *  Width for the block for the search names and Color Legend Bar label to the left of the SVG with the Mod Mass Heat Map
+     *
+     *  The DOM element 'style.left' is directly manipulated in the code but also set here for subsequent React renders
+     */
+    private _searchNames_Etc_Block_LeftOfHeatMap_Width = _searchNamesBlock_LeftOfHeatMap_Width__DEFAULT
+
+    //  For user drag in heat map between search names and SVG
+
+    private _userDrag_InHeatMap_Between_SearchNames_And_SVG_MouseDownData: {
+        clientX_OnMouseDown: number
+        width_OfSearchNamesBlock_OnMouseDown: number
+    }
 
     /**
      * <div
@@ -138,6 +162,8 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
      * </div>
      */
     private readonly _data_viz_container_Ref :  React.RefObject<HTMLDivElement>
+
+    private readonly _search_names_Etc_Container_Ref :  React.RefObject<HTMLDivElement>
 
     private _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
     private _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
@@ -155,12 +181,29 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
         this._data_viz_container_Ref = React.createRef();
 
+        this._search_names_Etc_Container_Ref = React.createRef();
+
         this.state = {
             forceReRender_Object: {}
         };
     }
 
     componentWillUnmount() {
+
+        //  Remove Event Listeners on the 'document' related to dragging to change search names block width
+
+        try {
+            document.removeEventListener('mousemove', this._onMouseMove_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis );
+        } catch ( e ) {
+            console.warn( "Fail in call 'document.removeEventListener('mousemove', this._onMouseMove_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis );'.  exception: ", e )
+            // Eat Exception
+        }
+        try {
+            document.removeEventListener('mouseup', this._onMouseUp_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis );
+        } catch ( e ) {
+            console.warn( "Fail in call 'document.removeEventListener('mouseup', this._onMouseUp_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis );'.  exception: ", e )
+            // Eat Exception
+        }
 
         const data_viz_container_DOMElement = this._data_viz_container_Ref.current
 
@@ -179,6 +222,21 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
     componentDidMount() {
         try {
+
+            //  Add Event Listeners on the 'document' related to dragging to change search names block width
+
+            try {
+                document.addEventListener('mousemove', this._onMouseMove_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis );
+            } catch ( e ) {
+                console.warn( "Fail in call 'document.addEventListener('mousemove', this._onMouseMove_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis );'.  exception: ", e )
+                // Eat Exception
+            }
+            try {
+                document.addEventListener('mouseup', this._onMouseUp_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis );
+            } catch ( e ) {
+                console.warn( "Fail in call 'document.addEventListener('mouseup', this._onMouseUp_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis );'.  exception: ", e )
+                // Eat Exception
+            }
 
             this._computeLocalData_ModMassMap_From_InputProps()
 
@@ -394,7 +452,11 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
                 updated_modViewPage_DataVizOptions_VizSelections_PageStateManager: () => {
 
-                    this._create_Update_ModMassVisualization_For_Updated_DataOrUserInput()
+                    // this._create_Update_ModMassVisualization_For_Updated_DataOrUserInput()
+
+                    //  Change where start recompute since changing inputs to "Min and max mod masses:"
+
+                    this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
                 }
             } )
 
@@ -418,54 +480,122 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
     /**
      *
+     * @param event
      */
-    private _download_ZScore_Report_Clicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
+    private _onMouseDown_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG( event: React.MouseEvent<HTMLDivElement, globalThis.MouseEvent> ) { try {
 
-        modPage_Download_SignificantMods({
-            projectSearchIds: this.props.projectSearchIds_AllForPage,
-            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            dataPageStateManager: this.props.dataPageStateManager,
-            modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this.props.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
-        })
+        // console.log("Enter onMouseDown")
+
+        if ( ! this._search_names_Etc_Container_Ref.current ) {
+            //  NO element at the ref
+            return // EARLY RETURN
+        }
+
+        if ( event.ctrlKey || event.shiftKey ) {
+
+            //  CTRL key or Shift key down while clicking
+
+            //   Display the WHOLE search names by removing the 'width' style attribute
+
+            this._userDrag_InHeatMap_Between_SearchNames_And_SVG_MouseDownData = undefined  //  Clear so stop moving
+
+            this._searchNames_Etc_Block_LeftOfHeatMap_Width = undefined
+
+            this._search_names_Etc_Container_Ref.current.style.width = ""
+
+            return // EARLY RETURN
+        }
+
+        //  Get width from DOM element.  Use as starting point for setting 'width' style attribute when dragging
+
+        const width_OfSearchNamesBlock_OnMouseDown = Math.round( this._search_names_Etc_Container_Ref.current.getBoundingClientRect().width )
+
+        this._userDrag_InHeatMap_Between_SearchNames_And_SVG_MouseDownData = {
+            clientX_OnMouseDown: event.clientX,
+            width_OfSearchNamesBlock_OnMouseDown  // , this._searchNamesBlock_LeftOfHeatMap_Width
+        }
+
+        // console.log( "this._userDrag_InHeatMap_Between_SearchNames_And_SVG_MouseDownData.clientX_OnMouseDown: " + this._userDrag_InHeatMap_Between_SearchNames_And_SVG_MouseDownData.clientX_OnMouseDown )
+        //
+        // console.log( "this._searchNamesBlock_LeftOfHeatMap_Width: " + this._searchNamesBlock_LeftOfHeatMap_Width )
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+
+    /**
+     * This listener is attached to the document in ''
+     * @param event
+     */
+    private _onMouseMove_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG( event: globalThis.MouseEvent ) { try {
+
+        if ( ! this._userDrag_InHeatMap_Between_SearchNames_And_SVG_MouseDownData ) {
+
+            //  NOT Moving so EXIT
+
+            return  // EARLY RETURN
+        }
+
+        // console.log("Mod Page Resize Testing: Enter onMouseMove, after check   if ( ! _clientX_OnMouseDown ) { ")
+
+        const mouseMove_X = event.clientX - this._userDrag_InHeatMap_Between_SearchNames_And_SVG_MouseDownData.clientX_OnMouseDown
+
+        // console.log( "mouseMove_X: " + mouseMove_X )
+
+        let newWidth = this._userDrag_InHeatMap_Between_SearchNames_And_SVG_MouseDownData.width_OfSearchNamesBlock_OnMouseDown + mouseMove_X
+
+        if ( newWidth < _searchNamesBlock_LeftOfHeatMap_Width__MIN_WIDTH ) {
+            newWidth = _searchNamesBlock_LeftOfHeatMap_Width__MIN_WIDTH
+        }
+
+        this._searchNames_Etc_Block_LeftOfHeatMap_Width = newWidth
+
+        this._search_names_Etc_Container_Ref.current.style.width = this._searchNames_Etc_Block_LeftOfHeatMap_Width + "px"
+
+        // console.log( "this._searchNamesBlock_LeftOfHeatMap_Width: " + this._searchNamesBlock_LeftOfHeatMap_Width )
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      *
+     * @param event
      */
-    private _view_ZScore_Report_Clicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
+    private _onMouseUp_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG( event: globalThis.MouseEvent ) { try {
 
-        modPage_View_SignificantMods({
-            projectSearchIds: this.props.projectSearchIds_AllForPage,
-            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            dataPageStateManager: this.props.dataPageStateManager,
-            modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this.props.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
-        })
+        // console.log('Mod Page Resize Testing: Mouse up at: ', event.clientX, event.clientY);
+
+        this._userDrag_InHeatMap_Between_SearchNames_And_SVG_MouseDownData = undefined  //  Clear so stop moving
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    // /**
+    //  *  // use of 'onDoubleClick' caused problems with subsequent mouse down and drag so removed
+    //  *
+    //  *
+    //  * @param event
+    //  */
+    // private _onMouseDoubleClick_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG( event: React.MouseEvent<HTMLDivElement, globalThis.MouseEvent> ) { try {
+    //
+    //     console.log('Mod Page Resize Testing: Mouse double click at: ', event.clientX, event.clientY);
+    //
+    //     //////////    TO DO CURRENTLY NOT USED  !!!!!!!!!!!!!!!!!!
+    //
+    //     throw Error("CURRENTLY NOT USED")
+    //
+    //     // this._userDrag_InHeatMap_Between_SearchNames_And_SVG_MouseDownData = undefined  //  Clear so stop moving
+    //     //
+    //     // this._searchNamesBlock_LeftOfHeatMap_Width = undefined
+    //     //
+    //     // this._search_names_container_Ref.current.style.width = ""
+    //
+    // } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+
+    ////////////////////////////////////////////////////////////////////////
 
     /**
      *
      */
-    private _view_Replicate_ZScore_Report_Clicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
-
-        modPage_View_SignificantMods_CombineReps({
-            projectSearchIds: this.props.projectSearchIds_AllForPage,
-            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            dataPageStateManager: this.props.dataPageStateManager,
-            modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this.props.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
-            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-        })
-
-    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
-
-    /**
-     *
-     */
-    private _download_Data_Table_Clicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
+    private _download_Data_Table_Clicked( event: React.MouseEvent<HTMLSpanElement, globalThis.MouseEvent> ) { try {
 
         modPage_Download_SummaryStatistics({
             projectSearchIds: this.props.projectSearchIds_AllForPage,
@@ -480,7 +610,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
     /**
      *
      */
-    private _download_PSM_Localization_Report_Clicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
+    private _download_PSM_Localization_Report_Clicked( event: React.MouseEvent<HTMLSpanElement, globalThis.MouseEvent> ) { try {
 
         modPage_Download_PSM_Localization_Report({
             projectSearchIds: this.props.projectSearchIds_AllForPage,
@@ -502,8 +632,42 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
     render() {
         try {
 
+            let visualization_ColorScaleLegend_LabelText: string
+
+            {
+                const psmQuantType =
+                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === undefined ||
+                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms
+
+                const quantType = psmQuantType ? 'PSM' : 'Scan';
+
+                let labelText = quantType;
+                labelText += (
+                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
+                        ? ' Count' : ' Ratio'
+                )
+
+                if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== undefined
+                    && this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
+
+                    const labelText_Addition = modPage_Get_DataTransformationType_DisplayLabel( {
+                        modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager
+                    } )
+
+                    labelText += " (" + labelText_Addition + ")";
+                }
+
+                labelText += ' Color:';
+
+                visualization_ColorScaleLegend_LabelText = labelText
+            }
+
+
             return (
-                <div style={ { position: "relative" } }>
+                <div
+                    // id="mod_page_visualization_outer_container_block"
+                    style={ { position: "relative" } }
+                >
 
                     <ModPage_OptionsSection_UserInput_Display_MainContent_Component
                         propsValue={ {
@@ -525,65 +689,179 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                             position: "relative",
                             display:  // HIDE <div> and children with display: "none" when NOT is_ContainsAnyData().
                                 ( this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
-                                && ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.is_ContainsAnyData() ) ) ? "none" : undefined  } }
+                                    && ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.is_ContainsAnyData() ) ) ? "none" : undefined
+                        } }
                     >
-
-                        { this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root && this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result ? (
-
-                            <div>
-                                <ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component
-                                    propsValue={ {
-                                        projectSearchIds: this.props.projectSearchIds_AllForPage,
-                                        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-                                        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
-                                        dataPageStateManager_DataFrom_Server: this.props.dataPageStateManager,
-                                        modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                                        clear_Clicked_Callback: this.__modView_DataViz_Renderer_UserInputMade_Callback_BindThis
-                                    } }
-                                />
-                            </div>
-                        ) : null }
-
-                        {/*
-                            The Data Viz is put in this <div> with id="data-viz-container".  That id is used in code: 'd3.select("div#data-viz-container")'
-
-                                "componentWillUnmount()" method calls:     jQuery(this._data_viz_container_Ref.current).empty()
-                            }
-                        */ }
-
                         <div
-                            id="data-viz-container"
-                            ref={ this._data_viz_container_Ref }>
+                            className=" mod-page-data-visualization-block-outer-container " //  Primarily for ":hover" on child element
+                            style={ { width: "fit-content" } } //  Limit width to limit hover area to actual content
+                        >
+                            <div
+                                style={ {
+                                    display: "grid",
+                                    gridTemplateColumns: "min-content 10px min-content" //  Middle column is for resize functionality
+                                } }
+                            >
+                                <div
+                                    style={ {
+                                        //  Search Name and Color Legend Bar Label styling to match SVG contents
+                                        fontFamily: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.label_FontFamily,
+                                        fontSize: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize,
+                                        textAlign: "right"
+                                    } }
+                                >
+                                    <div
+                                        ref={ this._search_names_Etc_Container_Ref }
+                                        style={ {
+                                            //  'width' is also set directly in the JS using the 'ref'.  this._searchNamesBlock_LeftOfHeatMap_Width is updated every time the 'width' is directly updated.
+                                            width: this._searchNames_Etc_Block_LeftOfHeatMap_Width
+                                        } }
+                                    >
+                                        <div
+                                            style={ {
+                                                // Margin Top from the SVG creation
+                                                marginTop: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.top
+                                            } }
+                                        >
+                                            { this.props.projectSearchIds_AllForPage.map( projectSearchId => {
+
+                                                //  Display the Search Names
+
+                                                const searchData_For_ProjectSearchId = this.props.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+
+                                                let shortNameDisplay = ""
+
+                                                if ( searchData_For_ProjectSearchId.searchShortName ) {
+                                                    shortNameDisplay = "(" + searchData_For_ProjectSearchId.searchShortName + ") "
+                                                }
+
+                                                const searchDisplay = "(" + searchData_For_ProjectSearchId.searchId + ") " + shortNameDisplay + searchData_For_ProjectSearchId.name
+
+                                                return (
+                                                    <div
+                                                        key={ projectSearchId }
+                                                        style={ {
+                                                            // 'max' and 'min' in 'heightDefs' is set to the same value so using 'max'
+                                                            height: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.max,  // Height for data for the search
+
+                                                            display: "flex",
+                                                            alignItems: "center", // center vertical
+                                                        } }
+                                                    >
+                                                        <div style={ {
+                                                            //  Text on single line with hidden overflow and ellipse
+                                                            whiteSpace: "nowrap",
+                                                            overflowX: "hidden",
+                                                            textOverflow: "ellipsis",
+                                                            width: "100%"
+                                                        } }>
+                                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                                title={
+                                                                    <div>
+                                                                        <div>
+                                                                            Search:
+                                                                        </div>
+                                                                        <div>
+                                                                            { searchDisplay }
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                            >
+                                                                <span>
+                                                                    { searchDisplay }
+                                                                </span>
+                                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            } )
+                                            }
+                                        </div>
+
+                                        <div
+                                            style={ {
+                                                marginTop: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.colorScaleLegend_TopMargin,
+
+                                                height: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.legendHeight,  // Height for Label
+
+                                                display: "flex",
+                                                alignItems: "center", // center vertical
+                                            } }
+                                        >
+                                            <div style={ {
+                                                //  Text on single line with hidden overflow and ellipse
+                                                whiteSpace: "nowrap",
+                                                textAlign: "right",
+                                                width: "100%"
+                                            } }>
+                                                { visualization_ColorScaleLegend_LabelText }
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                {/*  2nd column.  Narrow for the resize handle for user drag to change width of first column  */}
+
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <div>
+                                            <ul>
+                                                <li>
+                                                    <b>Drag</b> to show more or less of search names.
+                                                </li>
+                                                <li style={ { marginTop: 20 } }>
+                                                    <b>Control click</b> or <b>Shift click</b> to show all characters of search names.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    disableInteractive={ true }
+                                    placement={ "right-end" }
+                                >
+                                    <div
+                                        style={ {
+                                            cursor: "col-resize",
+                                            //  marginTop and height so ONLY display in the searches area
+                                            // Margin Top from the SVG creation
+                                            marginTop: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.top,
+                                            height: this.props.projectSearchIds_AllForPage.length *
+                                                ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.max,  // Height for data for the search
+                                        } }
+                                        onMouseDown={ this._onMouseDown_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis }
+                                        // use of 'onDoubleClick' caused problems with subsequent mouse down and drag so removed
+                                        // onDoubleClick={ this._onMouseDoubleClick_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis }
+                                    >
+                                        <div
+                                            className=" draggable-to-change-search-names-display--mod-page "
+                                        >
+                                        </div>
+                                    </div>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                                {/*  3rd column for the SVG  */}
+
+                                <div>
+
+                                    {/*
+                                        The Data Viz is put in this <div> with id="data-viz-container".  That id is used in code: 'd3.select("div#data-viz-container")'
+
+                                            "componentWillUnmount()" method calls:     jQuery(this._data_viz_container_Ref.current).empty()
+                                    */ }
+
+                                    <div
+                                        id="data-viz-container"
+                                        ref={ this._data_viz_container_Ref }
+                                    >
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
 
                         <div>
-                            <div style={ { marginBottom: 4 } }>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._download_ZScore_Report_Clicked_BindThis }
-                                >
-                                    [Download ZScore Report]
-                                </span>
-                            </div>
-
-                            <div style={ { marginBottom: 4 } }>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._view_ZScore_Report_Clicked_BindThis }
-                                >
-                                    [View ZScore Report]
-                                </span>
-                            </div>
-
-                            <div style={ { marginBottom: 4 } }>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._view_Replicate_ZScore_Report_Clicked_BindThis }
-                                >
-                                    [View Replicate ZScore Report]
-                                </span>
-                            </div>
-
                             <div style={ { marginBottom: 4 } }>
                                 <span
                                     className=" fake-link "
@@ -603,38 +881,50 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                             </div>
                         </div>
 
-                        <div>
-                            <div style={ { marginTop: 15, marginBottom: 5 } }>
-                                <span style={ { fontSize: 18 } }>Modification List</span>
-                                <span> (click row to view proteins)</span>
-                            </div>
-                        </div>
+                        {
+                            this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
+                            && ( this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
+                                && this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root?.is_ContainsAnyData() )
+                            && this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result ? (
 
-                        { this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root && this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result ? (
+                                //  If no data passes the filters [.is_ContainsAnyData()] (including 'Min and max mod masses:' and 'Exclude unlocalized mods:'):
+                                //
+                                //    Does not mount this component
+                                //    Unmounts this component if mounted
 
-                            <ModPage_TopLevelDataTable_Component
-                                force_RecomputeTableData_Object={ null }
+                            <ModPage_Tabs_Select__ModificationList_OR_ZScoreData__Component
+
+                                projectSearchIds_AllForPage={ this.props.projectSearchIds_AllForPage }
+
+                                modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root={ this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root }
+                                modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass={ this.props.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass }
                                 modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root={ this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root }
                                 modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result={ this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result }
+
                                 searchDataLookupParameters_Root={ this.props.searchDataLookupParameters_Root }
                                 generatedPeptideContents_UserSelections_StateObject={ this.props.generatedPeptideContents_UserSelections_StateObject }
                                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass }
-                                projectSearchIds={ this.props.projectSearchIds_AllForPage }
                                 modViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager }
                                 proteinPosition_Of_Modification_Filter_UserSelections_StateObject={ this.props.proteinPosition_Of_Modification_Filter_UserSelections_StateObject }
                                 proteinPositionFilter_UserSelections_StateObject={ this.props.proteinPositionFilter_UserSelections_StateObject }
                                 dataPageStateManager_DataFrom_Server={ this.props.dataPageStateManager }
                                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
                                 modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function={ this.props.modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function }
+                                modViewPage_DataVizOptions_VizSelections_PageStateManager__get_modMasses_ProjectSearchIds_Visualization_Selections_Root__clear_All_Called_Callback_Function={
+                                    this._modView_DataViz_Renderer_UserInputMade_Callback_BindThis
+                                }
                             />
+
                         ) : null }
+
+                        {/*  Overall Overlay <div> for "Loading" and "Updating" messages */ }
 
                         { this._show_FullComponent_LoadingMessage ? (
                             <div
                                 className=" standard-background-color "
                                 style={ { position: "absolute", inset: 0, fontSize: 24, fontWeight: "bold" } }
                             >
-                                <div style={ { marginTop: 20, fontSize: 24, fontWeight: "bold"} }>
+                                <div style={ { marginTop: 20, fontSize: 24, fontWeight: "bold" } }>
                                     Loading Data...
                                 </div>
                                 <div style={ { paddingTop: 40, paddingBottom: 80 } }>
@@ -643,7 +933,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                             </div>
                         ) : null }
 
-                        {/*   "Updating Message" Cover <div>  */}
+                        {/*   "Updating Message" Cover <div>  */ }
 
                         { this._show_FullComponent_UpdatingMessage ? (
                             <div className=" block-updating-overlay-container ">

@@ -49,26 +49,35 @@ export class SearchDetailsAndFilterBlock_Re_Order_Searches {
     private _dataPageStateManager_DataFrom_Server : DataPageStateManager
     private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
     private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-    private _dataUpdated_Callback
 
-    private _searchList_ForUserSelection : Array<SearchDetailsAndFilterBlock_Re_Order_Searches_Overlay_Search_DisplayListItem>;
+    private _callback_Before_ReadURLtoGenerateNewURL: () => void
+
+    // private _dataUpdated_Callback
+    //
+    // private _searchList_ForUserSelection : Array<SearchDetailsAndFilterBlock_Re_Order_Searches_Overlay_Search_DisplayListItem>;
 
     private _changeSearches_Overlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF;
 
     /**
      *
      */
-    constructor({ dataPageStateManager_DataFrom_Server, dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, searchDetailsBlockDataMgmtProcessing, dataUpdated_Callback } : {
+    constructor(
+        {
+            dataPageStateManager_DataFrom_Server, dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, searchDetailsBlockDataMgmtProcessing, callback_Before_ReadURLtoGenerateNewURL,
+            // dataUpdated_Callback
+        } : {
 
         dataPageStateManager_DataFrom_Server : DataPageStateManager
         dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
         searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-        dataUpdated_Callback
+        callback_Before_ReadURLtoGenerateNewURL: () => void
+        // dataUpdated_Callback: () => void
     }) {
         this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
         this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
         this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
-        this._dataUpdated_Callback = dataUpdated_Callback;
+        this._callback_Before_ReadURLtoGenerateNewURL = callback_Before_ReadURLtoGenerateNewURL
+        // this._dataUpdated_Callback = dataUpdated_Callback;
     }
 
     /**
@@ -78,7 +87,7 @@ export class SearchDetailsAndFilterBlock_Re_Order_Searches {
 
         const searchList: SearchDetailsAndFilterBlock_Re_Order_Searches_Overlay_Search_DisplayListItem[] = this._getSearchList();
 
-        this._searchList_ForUserSelection = searchList;
+        // this._searchList_ForUserSelection = searchList;
 
         const overlayComponent = get_SearchDetailsAndFilterBlock_Re_Order_Searches_Overlay_Layout({
             searchList,
@@ -304,7 +313,12 @@ export class SearchDetailsAndFilterBlock_Re_Order_Searches {
             }
         });
 
-        promise.then( ( { searchDataLookupParamsCode, searchDataLookupParamsRoot } ) => {
+        promise.then( ( { searchDataLookupParamsCode, searchDataLookupParamsRoot } ) => { try {
+
+            if ( this._callback_Before_ReadURLtoGenerateNewURL ) {
+                // Have callback so call it next
+                this._callback_Before_ReadURLtoGenerateNewURL()
+            }
 
             const _parseURL_Into_PageStateParts = new ParseURL_Into_PageStateParts();
 
@@ -336,35 +350,12 @@ export class SearchDetailsAndFilterBlock_Re_Order_Searches {
             //  !! MORE steps needed here to load data for added searches (Search names, Annotation Types, ...) !!
             //
             // this._dataUpdated_Callback();
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
         })
     }
 
-}
-
-/**
- *
- */
-const _updateURL_withNew_searchDataLookupParamsCode = function( { searchDataLookupParamsCode_New, _parseURL_Into_PageStateParts } : {
-
-    searchDataLookupParamsCode_New,
-    _parseURL_Into_PageStateParts : ParseURL_Into_PageStateParts
-} ) {
-
-    // Current URL contents
-    const pageStatePartsFromURL = _parseURL_Into_PageStateParts.parseURL_Into_PageStateParts();
-
-    let pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
-
-    let newURL = newURL_Build_PerProjectSearchIds_Or_ExperimentId({
-        pageControllerPath,
-        searchDataLookupParamsCode : searchDataLookupParamsCode_New,
-        pageStateIdentifier : pageStatePartsFromURL.pageStateIdentifier,
-        pageStateString : pageStatePartsFromURL.pageStateString,
-        referrer : pageStatePartsFromURL.referrer,
-        experimentId : undefined
-    } );
-
-    window.history.replaceState( null, null, newURL );
-
-    navigation_dataPages_Maint_Instance.updateNavLinks();
 }

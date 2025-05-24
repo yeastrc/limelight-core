@@ -130,20 +130,6 @@ export class ModViewPage_RootClass_Common {
 
 	private _getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
 
-
-	// _modViewPage_DisplayDataOnPage : ModViewPage_DisplayDataOnPage;
-	//
-	// private _called__populateModDataBlock: boolean = false;
-	//
-	// _getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
-	//
-	// _loadCoreData_ProjectSearchIds_Based : LoadCoreData_ProjectSearchIds_Based;
-	//
-	// //  Main Data Loader object
-	// private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-	// private _commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT
-	// private _commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
-
 	/**
 	 * EncodedDat for this._modPageRoot_CentralStateManagerObjectClass in CentralStateManager at Page Load
 	 */
@@ -603,6 +589,11 @@ export class ModViewPage_RootClass_Common {
 			projectSearchIds : Array<number>
 		}) : void {
 
+		const callback_Before_ReadURLtoGenerateNewURL_ReOrderSearchesOverlay = () : void => {
+
+			this._modViewPage_DataVizOptions_VizSelections_PageStateManager.clear_projectSearchIds_OrderOverride_Deprecated()
+		}
+
 		//  Have all data in page variables to render the page
 
 		const propsValue : ModViewPage_Display_MainContent_Component_Props_Prop = {
@@ -638,7 +629,9 @@ export class ModViewPage_RootClass_Common {
 
 			singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,
 
-			dataPages_LoggedInUser_CommonObjectsFactory: this._dataPages_LoggedInUser_CommonObjectsFactory
+			dataPages_LoggedInUser_CommonObjectsFactory: this._dataPages_LoggedInUser_CommonObjectsFactory,
+
+			callback_Before_ReadURLtoGenerateNewURL_ReOrderSearchesOverlay
 		}
 
 		const props : ModViewPage_Display_Root_Component_Props = {

@@ -18,7 +18,7 @@ import {
 
 export const ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS = {
 
-    margin: { top: 60, right: 30, bottom: 78, left: 300 },
+    margin: { top: 60, right: 30, bottom: 78, left: 5 }, // 'left' changed to remove the search labels and color bar label on the left (Those were moved to HTML).  WAS:  margin: { top: 60, right: 30, bottom: 78, left: 300 },
     widthDefs: { default: 1000, min: 3, max: 40 },
     heightDefs: { default: 500, min: 40, max: 40 },
 
@@ -27,8 +27,21 @@ export const ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_M
     minLegendWidth: 400,
 
     // label defs
-    labelFontSize: 14,               // font size (in pixels) of labels
-    maxSearchLabelLength: 44        // max # of characters in a search label before truncation
+    /**
+     * font size (in pixels) of labels
+     */
+    labelFontSize: 14,
+    label_FontFamily: 'sans-serif',
+    /**
+     * max # of characters in a search label before truncation
+     */
+    maxSearchLabelLength: 44,
+
+    /**
+     * Margin between the Color Scale Legend and the main modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.height above it
+     */
+    colorScaleLegend_TopMargin: 10
+
 } as const
 
 
@@ -56,12 +69,6 @@ export const modView_DataViz_Compute_ColorScale_WidthHeight_Etc = function (
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
     }
 ): ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result {
-
-    {
-        const dataTransformation_In_VizSelections_PageStateManager = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation()
-
-        var z = 0
-    }
 
     const sortedModMasses = modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.get_ModMass_Values_OrderedArray()
 

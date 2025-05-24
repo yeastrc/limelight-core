@@ -91,9 +91,7 @@ import {
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinator_Class";
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 import {
-    create_GeneratedReportedPeptideListData__SingleProtein,
-    create_GeneratedReportedPeptideListData__SingleProtein___ONLY_for_FILTERING__Returns__ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-    Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result
+    create_GeneratedReportedPeptideListData__SingleProtein___ONLY_for_FILTERING__Returns__ReportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData";
 import {PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/jsx/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_Component";
 import {PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/js/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject";
@@ -227,6 +225,8 @@ export class ModViewPage_Display_MainContent_Component_Props_Prop {
     singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass
 
     dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
+
+    callback_Before_ReadURLtoGenerateNewURL_ReOrderSearchesOverlay: () => void
 }
 
 /**
@@ -351,8 +351,6 @@ export class ModViewPage_Display_MainContent_Component extends React.Component< 
     private _div_MainGridAtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Main <div> containing grid of left and on right the boxes Summary ...
     private _div_MainContent_LeftGridEntry_AtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Left <div> inside this._div_MainGridAtTop_Ref
 
-    private _proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component>
-
     private _proteinPage_Display__SingleProtein_Root: ProteinPage_Display__SingleProtein_Root;
 
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ModificationSelects : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
@@ -385,8 +383,6 @@ export class ModViewPage_Display_MainContent_Component extends React.Component< 
 
         this._div_MainGridAtTop_Ref = React.createRef<HTMLDivElement>();
         this._div_MainContent_LeftGridEntry_AtTop_Ref = React.createRef<HTMLDivElement>();
-
-        this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
         this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ModificationSelects =
             new ModificationMass_ReporterIon__UserSelections__Coordinator_Class({
@@ -2830,13 +2826,6 @@ export class ModViewPage_Display_MainContent_Component extends React.Component< 
 
                     </div>
 
-                    {/*<ModPage_OptionsSection_UserInput_Display_MainContent_Component*/ }
-                    {/*    propsValue={ {*/ }
-                    {/*        modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager,*/ }
-                    {/*        valueChanged_Callback: this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback_BindThis*/ }
-                    {/*    } }*/ }
-                    {/*/>*/ }
-
                 </div>
 
             </React.Fragment>
@@ -3332,6 +3321,11 @@ const _compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = funct
         limelight__ReloadPage_Function()  // TODO
     }
 
+    const callback_Before_ReadURLtoGenerateNewURL_ReOrderSearchesOverlay = () : void => {
+
+        propsValue.callback_Before_ReadURLtoGenerateNewURL_ReOrderSearchesOverlay()
+    }
+
     const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue =  {
         displayOnly : false,
         dataPages_LoggedInUser_CommonObjectsFactory : propsValue.dataPages_LoggedInUser_CommonObjectsFactory,
@@ -3339,6 +3333,7 @@ const _compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = funct
         dataPageStateManager_DataFrom_Server : propsValue.dataPageStateManager,
         searchDetailsBlockDataMgmtProcessing : propsValue.searchDetailsBlockDataMgmtProcessing,
         filterValuesChanged_Callback,
+        callback_Before_ReadURLtoGenerateNewURL_ReOrderSearchesOverlay,
         searchSubGroup_PropValue,
         limelight_Colors_For_MultipleSearches: undefined
     }

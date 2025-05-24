@@ -2,7 +2,7 @@
 /**
  * modPage_ProteinList_SubTableGenerator_ProteinName_Cell_Component.tsx
  *
- * Create JSX Elements for modPage_get_ProteinList_SubTable.ts
+ * Create JSX Elements for modPage_get_ProteinList_SubTable.tsx
  *
  *
  */

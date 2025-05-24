@@ -1,5 +1,5 @@
 /**
- * ModPage_TopLevelDataTable_Component.tsx
+ * ModPage_TopLevel_ModificationList_DataTable_Component.tsx
  *
  * The table of mod masses
  */
@@ -76,7 +76,7 @@ import {
 /**
  *
  */
-export interface ModPage_TopLevelDataTable_Component_Props {
+export interface ModPage_TopLevel_ModificationList_DataTable_Component_Props {
 
     force_RecomputeTableData_Object: object
     modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
@@ -98,7 +98,7 @@ export interface ModPage_TopLevelDataTable_Component_Props {
 /**
  *
  */
-interface ModPage_TopLevelDataTable_Component_State {
+interface ModPage_TopLevel_ModificationList_DataTable_Component_State {
 
     forceReRender_Object? : object
 }
@@ -106,7 +106,7 @@ interface ModPage_TopLevelDataTable_Component_State {
 /**
  *
  */
-export class ModPage_TopLevelDataTable_Component extends React.Component< ModPage_TopLevelDataTable_Component_Props, ModPage_TopLevelDataTable_Component_State > {
+export class ModPage_TopLevel_ModificationList_DataTable_Component extends React.Component< ModPage_TopLevel_ModificationList_DataTable_Component_Props, ModPage_TopLevel_ModificationList_DataTable_Component_State > {
 
     //  bind to 'this' for passing as parameters
 
@@ -116,10 +116,12 @@ export class ModPage_TopLevelDataTable_Component extends React.Component< ModPag
 
     private _dataTable_RootTableObject: DataTable_RootTableObject
 
+    private _show_FullComponent_UpdatingMessage = false
+
     /**
      *
      */
-    constructor( props: ModPage_TopLevelDataTable_Component_Props ) { try {
+    constructor( props: ModPage_TopLevel_ModificationList_DataTable_Component_Props ) { try {
         super( props );
 
         this._projectSearchIds_For_DisplayOrder = props.projectSearchIds
@@ -137,23 +139,43 @@ export class ModPage_TopLevelDataTable_Component extends React.Component< ModPag
         };
     } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
 
+    /**
+     *
+     */
     componentDidMount() { try {
 
         this._createNewTableData_ForceRerender()
 
     } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
 
-    componentDidUpdate( prevProps: Readonly<ModPage_TopLevelDataTable_Component_Props>, prevState: Readonly<ModPage_TopLevelDataTable_Component_State>, snapshot?: any ) { try {
+    /**
+     *
+     */
+    componentDidUpdate( prevProps: Readonly<ModPage_TopLevel_ModificationList_DataTable_Component_Props>, prevState: Readonly<ModPage_TopLevel_ModificationList_DataTable_Component_State>, snapshot?: any ) { try {
+
+        //  Keep these in sync with parent component as parent component will hold the previous instance of these until this tab is shown again
 
         if ( prevProps.force_RecomputeTableData_Object !== this.props.force_RecomputeTableData_Object
             || prevProps.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result !== this.props.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
             || prevProps.modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root !== this.props.modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root ) {
 
-            this._createNewTableData_ForceRerender()
+            this._show_FullComponent_UpdatingMessage = true
+
+            this.setState({ forceReRender_Object: {} })
+
+            window.setTimeout( () => { try {
+
+                this._createNewTableData_ForceRerender()
+
+            } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }, 10 )
+
         }
 
     } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
 
+    /**
+     *
+     */
     private _createNewTableData_ForceRerender() {
 
         this._dataTable_RootTableObject =
@@ -172,17 +194,32 @@ export class ModPage_TopLevelDataTable_Component extends React.Component< ModPag
                 modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function: this.props.modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
             })
 
+
+        this._show_FullComponent_UpdatingMessage = false
+
         this.setState({ forceReRender_Object: {} })
     }
 
-
+    /**
+     *
+     */
     render() {
         return (
-            <div>
+            <div style={ { position: "relative" } }>
                 { this._dataTable_RootTableObject ? (
-                    <div>
-                        <DataTable_TableRoot tableObject={ this._dataTable_RootTableObject }/>
-                    </div>
+                    <>
+                        <div>
+                            <DataTable_TableRoot tableObject={ this._dataTable_RootTableObject }/>
+                        </div>
+
+                        {/*   "Updating Message" Cover <div>  */ }
+
+                        { this._show_FullComponent_UpdatingMessage ? (
+                            <div className=" block-updating-overlay-container ">
+                                Updating
+                            </div>
+                        ) : null }
+                    </>
                 ) : null }
             </div>
         );
@@ -231,7 +268,8 @@ const _generateDataTable = function (
         projectSearchIds: Array<number>
 
         modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function: ModPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
-    }) {
+
+    }) : DataTable_RootTableObject {
 
     const dataTableId_ThisTable = "Mod View Show Mods Table";
 
@@ -395,6 +433,41 @@ const _getDataTableRows = function (
                     });
                 };
 
+            //   Tooltip for the cell for each Mod Mass data row.  Never deployed NOT Commented out.
+            //
+            //   Commented out since may be too distracting or use too many resources
+
+            // const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = () => {
+            //
+            //     const searchData = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
+            //     if ( ! searchData ) {
+            //         const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
+            //         console.warn( msg );
+            //         throw Error( msg );
+            //     }
+            //
+            //     let searchShortName_Label = ""
+            //
+            //     if ( searchData.searchShortName ) {
+            //         searchShortName_Label = "(" + searchData.searchShortName + ") "
+            //     }
+            //
+            //     const searchLabel = "(" + searchData.searchId + ") " + searchShortName_Label + searchData.name
+            //
+            //     return (
+            //         <>
+            //             <div style={ { fontWeight: "bold" } }>
+            //                 Search:
+            //             </div>
+            //             <div style={ { marginTop: 2 } }>
+            //                 { searchLabel }
+            //             </div>
+            //         </>
+            //     )
+            //
+            // };
+
+
             let valueDisplay__Search_Download : string = "";
             if ( value_ForDisplay_Formatted !== undefined && value_ForDisplay_Formatted !== null ) {
                 valueDisplay__Search_Download = value_ForDisplay_Formatted.toString();
@@ -404,7 +477,8 @@ const _getDataTableRows = function (
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
                 valueSort : value_ForDisplay_For_ModMass_ProjectSearchId,
-                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
+                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+                // tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
             });
             columnEntries.push( columnEntry );
 
@@ -500,11 +574,44 @@ const _getDataTableColumns = function (
 
         const displayName = _getDisplayNameForModMassColumn({projectSearchId, dataPageStateManager_DataFrom_Server, modViewPage_DataVizOptions_VizSelections_PageStateManager });
 
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+            const searchData = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
+            if ( ! searchData ) {
+                const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
+                console.warn( msg );
+                throw Error( msg );
+            }
+
+            let searchShortName_Label = ""
+
+            if ( searchData.searchShortName ) {
+                searchShortName_Label = "(" + searchData.searchShortName + ") "
+            }
+
+            const searchLabel = "(" + searchData.searchId + ") " + searchShortName_Label + searchData.name
+
+            return (
+                <>
+                    <div style={ { fontWeight: "bold" } }>
+                        { displayName }
+                    </div>
+                    <div style={ { marginTop: 5, fontWeight: "bold" } }>
+                        Search:
+                    </div>
+                    <div style={ { marginTop: 2 } }>
+                        { searchLabel }
+                    </div>
+                </>
+            )
+        }
+
         const dataTableColumn = new DataTable_Column({
             id : projectSearchId + "_val", // Used for tracking sort order. Keep short
             displayName,
             width : 100,
-            sortable : true
+            sortable : true,
+            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
         });
         dataTableColumns.push( dataTableColumn );
 

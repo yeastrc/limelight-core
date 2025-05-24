@@ -80,6 +80,7 @@ import {
 import {
     modPage_Get_SearchLabel__SearchShortName_OR_SearchId_ForProjectSearchId
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_Get_SearchLabel__SearchShortName_OR_SearchId_ForProjectSearchId";
+import React from "react";
 
 
 //   Classes past to child tables are at the bottom of this file
@@ -238,11 +239,44 @@ const _getDataTableColumns = function (
 
         const displayName = "PSM Count (" + searchIdXorShortName + ")";
 
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+            const searchData = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
+            if ( ! searchData ) {
+                const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
+                console.warn( msg );
+                throw Error( msg );
+            }
+
+            let searchShortName_Label = ""
+
+            if ( searchData.searchShortName ) {
+                searchShortName_Label = "(" + searchData.searchShortName + ") "
+            }
+
+            const searchLabel = "(" + searchData.searchId + ") " + searchShortName_Label + searchData.name
+
+            return (
+                <>
+                    <div style={ { fontWeight: "bold" } }>
+                        { displayName }
+                    </div>
+                    <div style={ { marginTop: 5, fontWeight: "bold" } }>
+                        Search:
+                    </div>
+                    <div style={ { marginTop: 2 } }>
+                        { searchLabel }
+                    </div>
+                </>
+            )
+        }
+
         const dataTableColumn = new DataTable_Column({
             id : projectSearchId + '-psms', // Used for tracking sort order. Keep short
             displayName,
             width : 100,
-            sortable : true
+            sortable : true,
+            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
         });
         dataTableColumns.push( dataTableColumn );
 
@@ -513,7 +547,7 @@ const _getDataTableRows =  async function (
 
     // The sorting NEEDS to happen before here
 
-    console.warn( "Currently sorting the dataTableRows rows for Mod Page Protein List.  It would be much better to sort the data BEFORE creating the dataTableRows ")
+    // console.warn( "Currently sorting the dataTableRows rows for Mod Page Protein List.  It would be much better to sort the data BEFORE creating the dataTableRows ")
 
     if ( projectSearchIds.length === 1 ) {
 

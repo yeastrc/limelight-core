@@ -1,18 +1,40 @@
 
 body.mod-page {
 
-  div.protein-position-filter-listing {
-    padding:1px 3px;
-    margin-right:3px;
-    white-space:nowrap;
-    background-color:#e4f9e4;
-    border:1px solid #d3d3d3;
-    display:inline-block;
-    vertical-align:middle;
-  }
-
   div.data-viz-options-container {
     margin-top:15px;
+
+    .mod-page-user-selection-entered {
+      background-color: $filtering-display-background-color;
+    }
+  }
+
+  .mod-page-data-visualization-block-outer-container {
+
+    .draggable-to-change-search-names-display--mod-page {
+
+      //  Display vertical lines (left & right borders) to draw user to this area so user then see tooltip for drag
+
+      height: 100%;
+
+      margin-left: 4px;
+      margin-right: 3px;
+
+      border-left-width: 1px;
+      border-right-width: 1px;
+      border-top-width: 0px;
+      border-bottom-width: 0px;
+      border-style: solid;
+      border-color: $site-color-gray;
+
+      opacity: 0; //  hide on NOT hover
+    }
+
+    &:hover .draggable-to-change-search-names-display--mod-page {
+
+      opacity: 1;  //  show on YES hover
+      transition: opacity 0.5s ease-in;
+    }
   }
 
   div.data-viz-title {

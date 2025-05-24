@@ -101,47 +101,48 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
     dataPageStateManager_DataFrom_Server : DataPageStateManager
     searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
     filterValuesChanged_Callback : ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
+    callback_Before_ReadURLtoGenerateNewURL_ReOrderSearchesOverlay: () => void
 
     searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
     limelight_Colors_For_MultipleSearches: Limelight_Colors_For_MultipleSearches //  Only populated for Multiple Search and Not always populated for multiple search
 
-    constructor(  //  Not every use calls the constructor
-        {
-            displayOnly, // No Click Handlers for changing Filters (PSM, Peptide, Protein)
-            do_NOT_Display_ChangeSearches_Link,
-            do_NOT_Display_Re_Order_Searches_Link,
-            dataPages_LoggedInUser_CommonObjectsFactory,
-            dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-            dataPageStateManager_DataFrom_Server,
-            searchDetailsBlockDataMgmtProcessing,
-            filterValuesChanged_Callback,
-            searchSubGroup_PropValue,
-            limelight_Colors_For_MultipleSearches //  Only populated for Multiple Search and Not always populated for multiple search
-        } : {
-
-            displayOnly : boolean // No Click Handlers for changing Filters (PSM, Peptide, Protein)
-            do_NOT_Display_ChangeSearches_Link? : boolean
-            do_NOT_Display_Re_Order_Searches_Link? : boolean
-            dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
-            dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
-            dataPageStateManager_DataFrom_Server : DataPageStateManager
-            searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-            filterValuesChanged_Callback : ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
-            searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
-            limelight_Colors_For_MultipleSearches: Limelight_Colors_For_MultipleSearches //  Only populated for Multiple Search and Not always populated for multiple search
-        }) {
-
-        this.displayOnly = displayOnly
-        this.do_NOT_Display_ChangeSearches_Link = do_NOT_Display_ChangeSearches_Link
-        this.do_NOT_Display_Re_Order_Searches_Link = do_NOT_Display_Re_Order_Searches_Link
-        this.dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory
-        this.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay
-        this.dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server
-        this.searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing
-        this.filterValuesChanged_Callback = filterValuesChanged_Callback
-        this.searchSubGroup_PropValue = searchSubGroup_PropValue
-        this.limelight_Colors_For_MultipleSearches = limelight_Colors_For_MultipleSearches
-    }
+    // constructor(  //  Not every use calls the constructor
+    //     {
+    //         displayOnly, // No Click Handlers for changing Filters (PSM, Peptide, Protein)
+    //         do_NOT_Display_ChangeSearches_Link,
+    //         do_NOT_Display_Re_Order_Searches_Link,
+    //         dataPages_LoggedInUser_CommonObjectsFactory,
+    //         dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+    //         dataPageStateManager_DataFrom_Server,
+    //         searchDetailsBlockDataMgmtProcessing,
+    //         filterValuesChanged_Callback,
+    //         searchSubGroup_PropValue,
+    //         limelight_Colors_For_MultipleSearches //  Only populated for Multiple Search and Not always populated for multiple search
+    //     } : {
+    //
+    //         displayOnly : boolean // No Click Handlers for changing Filters (PSM, Peptide, Protein)
+    //         do_NOT_Display_ChangeSearches_Link? : boolean
+    //         do_NOT_Display_Re_Order_Searches_Link? : boolean
+    //         dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
+    //         dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
+    //         dataPageStateManager_DataFrom_Server : DataPageStateManager
+    //         searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+    //         filterValuesChanged_Callback : ( params : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
+    //         searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
+    //         limelight_Colors_For_MultipleSearches: Limelight_Colors_For_MultipleSearches //  Only populated for Multiple Search and Not always populated for multiple search
+    //     }) {
+    //
+    //     this.displayOnly = displayOnly
+    //     this.do_NOT_Display_ChangeSearches_Link = do_NOT_Display_ChangeSearches_Link
+    //     this.do_NOT_Display_Re_Order_Searches_Link = do_NOT_Display_Re_Order_Searches_Link
+    //     this.dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory
+    //     this.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay
+    //     this.dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server
+    //     this.searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing
+    //     this.filterValuesChanged_Callback = filterValuesChanged_Callback
+    //     this.searchSubGroup_PropValue = searchSubGroup_PropValue
+    //     this.limelight_Colors_For_MultipleSearches = limelight_Colors_For_MultipleSearches
+    // }
 }
 
 /**
@@ -266,22 +267,23 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
      */
     private _openUserChangeSearchesOrder_Overlay_Callback() : void {
 
-        const dataUpdated_Callback = () => {
-
-            //  Currently, this will not be called.  The browser will be taken to a new href in searchDetailsAndFilterBlock_ChangeSearches.changeSearches();
-
-            throw Error("No Call to 'dataUpdated_Callback()' Expected.  Inside private _openUserChangeSearches_Overlay_Callback()")
-
-            // const params = new SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param();
-            //
-            // this.props.propValue.filterValuesChanged_Callback( params );
-        }
+        // const dataUpdated_Callback = () => {
+        //
+        //     //  Currently, this will not be called.  The browser will be taken to a new href in searchDetailsAndFilterBlock_ChangeSearches.changeSearches();
+        //
+        //     throw Error("No Call to 'dataUpdated_Callback()' Expected.  Inside private _openUserChangeSearches_Overlay_Callback()")
+        //
+        //     // const params = new SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param();
+        //     //
+        //     // this.props.propValue.filterValuesChanged_Callback( params );
+        // }
 
         const searchDetailsAndFilterBlock_Re_Order_Searches = new SearchDetailsAndFilterBlock_Re_Order_Searches({
             dataPageStateManager_DataFrom_Server : this.props.propValue.dataPageStateManager_DataFrom_Server,
             dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this.props.propValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
             searchDetailsBlockDataMgmtProcessing : this.props.propValue.searchDetailsBlockDataMgmtProcessing,
-            dataUpdated_Callback
+            callback_Before_ReadURLtoGenerateNewURL: this.props.propValue.callback_Before_ReadURLtoGenerateNewURL_ReOrderSearchesOverlay,
+            // dataUpdated_Callback
         })
 
         searchDetailsAndFilterBlock_Re_Order_Searches.open_Re_Order_Searches_Overlay();
@@ -479,9 +481,9 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
                     <td colSpan={ 2 }>
 
                         <div style={ { marginBottom: _Verbose_View_ContainerDiv_MarginBottom_AllSearches } }>
-                             <span
-                                 style={ _Verbose_View_ContainerSpan_Style }
-                             >Verbose view: </span>
+                            <span
+                                style={ _Verbose_View_ContainerSpan_Style }
+                            >Verbose view: </span>
                             <span>
                                 <input
                                     type="checkbox"
@@ -615,40 +617,40 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
             const singleSearchEntry = (
 
                 <table key={ projectSearchId }
-                    style={ { borderWidth : 0 } } className={ " table-no-border-no-cell-spacing-no-cell-padding " }>
+                       style={ { borderWidth : 0 } } className={ " table-no-border-no-cell-spacing-no-cell-padding " }>
                     <tbody>
-                        <tr>
-                            <td> {/* style={ { verticalAlign : "top", paddingRight : 3 } } */} {/* Color Block for the search */}
-                                {/* Comment out since not using the color anywhere else at the moment
+                    <tr>
+                        <td> {/* style={ { verticalAlign : "top", paddingRight : 3 } } */} {/* Color Block for the search */}
+                            {/* Comment out since not using the color anywhere else at the moment
                                    <span style="margin-right:10px;padding-left:10px;padding-right:10px; " class=" merged-search-search-background-color-{{ mergeColorId }}  "></span>
                                 */}
-                            </td>
-                            <SearchNameAndDetails_Root //   Inserts 2 columns in table
-                                propValue={ this.props.propValue }
-                                projectSearchId={ projectSearchId }
-                                multipleSearchEntry={ true }
-                                show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
-                            />
-                        </tr>
+                        </td>
+                        <SearchNameAndDetails_Root //   Inserts 2 columns in table
+                            propValue={ this.props.propValue }
+                            projectSearchId={ projectSearchId }
+                            multipleSearchEntry={ true }
+                            show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
+                        />
+                    </tr>
 
-                        <tr>
-                            <td></td>{/*  Spacer for Color Block  */}
-                            <td></td>{/*  Spacer for Expand Search Icon  */}
-                            <td>
-                                <table style={ { borderWidth : 0 } } className=" table-no-border-no-cell-spacing-no-cell-padding ">
-                                    <tbody>
-                                        <Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root
-                                            forMultipleSearches={ true }
-                                            propValue={ this.props.propValue }
-                                            openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
-                                            annotationTypeDataForProjectSearchId={ annotationTypeDataForProjectSearchId }
-                                            searchProgramsPerSearchDataForProjectSearchId={ searchProgramsPerSearchDataForProjectSearchId }
-                                            filtersAnnTypeDisplay_For_Single_ProjectSearchId={ filtersAnnTypeDisplayPerProjectSearchId }
-                                        />
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td></td>{/*  Spacer for Color Block  */}
+                        <td></td>{/*  Spacer for Expand Search Icon  */}
+                        <td>
+                            <table style={ { borderWidth : 0 } } className=" table-no-border-no-cell-spacing-no-cell-padding ">
+                                <tbody>
+                                <Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root
+                                    forMultipleSearches={ true }
+                                    propValue={ this.props.propValue }
+                                    openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
+                                    annotationTypeDataForProjectSearchId={ annotationTypeDataForProjectSearchId }
+                                    searchProgramsPerSearchDataForProjectSearchId={ searchProgramsPerSearchDataForProjectSearchId }
+                                    filtersAnnTypeDisplay_For_Single_ProjectSearchId={ filtersAnnTypeDisplayPerProjectSearchId }
+                                />
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             );
@@ -703,9 +705,9 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
                     <td style={ { verticalAlign : "top" } }>
 
                         <div style={ { marginBottom: _Verbose_View_ContainerDiv_MarginBottom_AllSearches + _Verbose_View_ContainerDiv_MarginBottom_MultipleSearchAddition } }>
-                             <span
-                                 style={ _Verbose_View_ContainerSpan_Style }
-                             >Verbose view: </span>
+                            <span
+                                style={ _Verbose_View_ContainerSpan_Style }
+                            >Verbose view: </span>
                             <span>
                                 <input
                                     type="checkbox"
@@ -1173,7 +1175,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
                     { ( colorBlockForSearch_Color ) ? (
                         <span
                             style={ { marginRight: 10, paddingLeft: 10, paddingRight: 10, backgroundColor: colorBlockForSearch_Color } }
-                            >
+                        >
                         </span>
                     ): null }
 
@@ -1181,7 +1183,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
                         <img className="icon-small fake-link-image "
                              onClick={ this._hideSearchDetails_Clicked_BindThis }
                              src="static/images/pointer-down.png"/>
-                        ) : (
+                    ) : (
                         <img className="icon-small fake-link-image "
                              onClick={ this._showSearchDetails_Clicked_BindThis }
                              src="static/images/pointer-right.png"/>
@@ -1604,7 +1606,7 @@ class Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends Rea
                                 <span className=" filter-single-value-display-block clickable " onClick={ filterTypeLabel_ClickHandler } >Showing All</span>
                                 <span style={ { fontSize: 1 } }> </span>
                             </React.Fragment>
-                            ) }
+                        ) }
                     </td>
                 </tr>
             </React.Fragment>

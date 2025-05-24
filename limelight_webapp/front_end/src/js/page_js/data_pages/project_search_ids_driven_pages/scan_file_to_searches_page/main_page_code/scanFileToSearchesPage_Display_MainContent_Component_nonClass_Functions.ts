@@ -340,6 +340,7 @@ const compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = functi
         dataPageStateManager_DataFrom_Server : propsValue.dataPageStateManager,
         searchDetailsBlockDataMgmtProcessing : propsValue.searchDetailsBlockDataMgmtProcessing,
         filterValuesChanged_Callback,
+        callback_Before_ReadURLtoGenerateNewURL_ReOrderSearchesOverlay: undefined,
         searchSubGroup_PropValue,
         limelight_Colors_For_MultipleSearches: undefined
     }

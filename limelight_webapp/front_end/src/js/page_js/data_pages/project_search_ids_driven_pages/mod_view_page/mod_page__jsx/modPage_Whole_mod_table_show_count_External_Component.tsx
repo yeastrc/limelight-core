@@ -5,7 +5,13 @@ import {
     ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/ModView_DataViz_Compute_ColorScale_WidthHeight_Etc";
 
-
+/**
+ * Contents for Limelight Data Table cell
+ *
+ * Must be put in a block element.  Does NOT have its own block element.
+ *
+ * @param params
+ */
 export const modPage_Get_WholeModTable_ShowCount_ExternalReactComponent = function (
     params: WholeModTable_ShowCount_ExternalReactComponent_Props ) : JSX.Element { try {
 
@@ -56,13 +62,13 @@ class WholeModTable_ShowCount_ExternalReactComponent extends React.Component< Wh
         const fillColor = (this.props.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.colorScale( valueForColor ));
 
         return (
-            <div>
-                <svg width="15" height="15" style={{marginRight:"10px"}}>
-                    <rect width="15" height="15" style={{fill:fillColor,strokeWidth:"1",stroke:"rgb(0,0,0)"}} />
+            <>
+                <svg width="15" height="15" style={ { marginRight: "10px" } }>
+                    <rect width="15" height="15" style={ { fill: fillColor, strokeWidth: "1", stroke: "rgb(0,0,0)" } } />
                 </svg>
 
                 <span>{this.props.displayedValue}</span>
-            </div>
+            </>
         );
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 }
