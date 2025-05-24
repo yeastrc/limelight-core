@@ -637,7 +637,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                                 <label>
                                                     <input
                                                         type="checkbox"
-                                                        checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator() }
+                                                        checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator() ? true : false }
                                                         onChange={ this._psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator_Clicked_BindThis }
                                                     />
                                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
