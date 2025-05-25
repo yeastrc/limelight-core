@@ -830,9 +830,6 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
         projectSearchId_Or_SubSearchId_Enum
     })
 
-     modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin()
-     modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax()
-
     for ( const projectSearchId of projectSearchIds ) {
 
         const reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId = modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId(projectSearchId)
@@ -1000,7 +997,39 @@ const _process_SinglePsm = function (
     }
 ) {
 
-    let psm_AddedTo_Any_ModMassEntry = false
+    //
+    //   These 2 boolean variables track if ANY Modification found for PSM and if the Mod Mass entry passed the filters.
+    //
+    //        NOTE:
+    //          Open Mod mass entries where mass rounds to zero
+    //          and user selection modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass is Selected (Selected is default)
+    //          Then those open mod mass entries are excluded from processing to identify the PSM as having mod mass entries
+    //          and the PSM may end up in the "Unmodified" dependent on any other Mod Mass entries for that PSM.
+    //
+    //   At bottom of function have this conditional and method call:
+
+    //       if ( ( ! psm_Any_ModMassEntry_ForPSM_Passed_Filters ) && ( ! psm_has_Any_ModMassEntries___Includes_ModificationsThat_NOT_PassesFilters___EXCLUDES__OpenModMassRoundsToZero_AND_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Checked ) ) {
+    //
+    //           modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.INTERNAL__AddTo_psmIds_With_NO_Modifications_Set_For_ProjectSearchId({ psmTblData, projectSearchId })
+    //       }
+
+    /**
+     * Used in conditional at end of function
+     *
+     *    For call to 'modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.INTERNAL__AddTo_psmIds_With_NO_Modifications_Set_For_ProjectSearchId({ psmTblData, projectSearchId })'
+     *    For Storing "Unmodified" PSMs
+     */
+    let psm_has_Any_ModMassEntries___Includes_ModificationsThat_NOT_PassesFilters___EXCLUDES__OpenModMassRoundsToZero_AND_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Checked = false
+
+    /**
+     * Used in conditional at end of function
+     *
+     *    For call to 'modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.INTERNAL__AddTo_psmIds_With_NO_Modifications_Set_For_ProjectSearchId({ psmTblData, projectSearchId })'
+     *    For Storing "Unmodified" PSMs
+     */
+    let psm_Any_ModMassEntry_ForPSM_Passed_Filters = false
+
+    /////////
 
     if ( dataPage_common_Flags_SingleSearch_ForProjectSearchId.anyPsmHas_DynamicModifications ) {
 
@@ -1016,6 +1045,8 @@ const _process_SinglePsm = function (
             if ( psmVariable_Dynamic_ModificationMass_Entries_PerPSM_ForPsmId ) {
 
                 for ( const psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId of psmVariable_Dynamic_ModificationMass_Entries_PerPSM_ForPsmId.modificationsArray ) {
+
+                    psm_has_Any_ModMassEntries___Includes_ModificationsThat_NOT_PassesFilters___EXCLUDES__OpenModMassRoundsToZero_AND_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Checked = true
 
                     //                          Round again here since may round to different value from whole number
                     const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId.modificationMass )
@@ -1067,7 +1098,7 @@ const _process_SinglePsm = function (
                                 psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId
                             } )
 
-                            psm_AddedTo_Any_ModMassEntry = true
+                            psm_Any_ModMassEntry_ForPSM_Passed_Filters = true
                         }
                     }
                 }
@@ -1087,6 +1118,8 @@ const _process_SinglePsm = function (
         if ( variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId ) {
 
             for ( const variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry of variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId ) {
+
+                psm_has_Any_ModMassEntries___Includes_ModificationsThat_NOT_PassesFilters___EXCLUDES__OpenModMassRoundsToZero_AND_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Checked = true
 
                 //                          Round again here since may round to different value from whole number
                 const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.mass )
@@ -1139,7 +1172,7 @@ const _process_SinglePsm = function (
                             variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry
                         } )
 
-                        psm_AddedTo_Any_ModMassEntry = true
+                        psm_Any_ModMassEntry_ForPSM_Passed_Filters = true
                     }
                 }
             }
@@ -1175,6 +1208,8 @@ const _process_SinglePsm = function (
                 }
 
                 if ( ! skipModificationEntry_Since_RoundedToZero_And_TreatingZeroAsUnmodified ) {
+
+                    psm_has_Any_ModMassEntries___Includes_ModificationsThat_NOT_PassesFilters___EXCLUDES__OpenModMassRoundsToZero_AND_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Checked = true
 
                     //                          Round again here since may round to different value from whole number
                     const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( psmOpenModificationMassForPsmId.openModificationMass )
@@ -1262,7 +1297,7 @@ const _process_SinglePsm = function (
                                 psmOpenModificationForPsmId: psmOpenModificationMassForPsmId
                             } )
 
-                            psm_AddedTo_Any_ModMassEntry = true
+                            psm_Any_ModMassEntry_ForPSM_Passed_Filters = true
                         }
                     }
                 }
@@ -1270,7 +1305,7 @@ const _process_SinglePsm = function (
         }
     }
 
-    if ( ! psm_AddedTo_Any_ModMassEntry ) {
+    if ( ( ! psm_Any_ModMassEntry_ForPSM_Passed_Filters ) && ( ! psm_has_Any_ModMassEntries___Includes_ModificationsThat_NOT_PassesFilters___EXCLUDES__OpenModMassRoundsToZero_AND_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Checked ) ) {
 
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.INTERNAL__AddTo_psmIds_With_NO_Modifications_Set_For_ProjectSearchId({ psmTblData, projectSearchId })
     }
