@@ -360,7 +360,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
         const tooltipContents__PsmQuant_Ratios_Total_use_secondary_filters_Label = (
             <span>
-                { "Ratios are normally counted using all PSMs passing primary filters for each search (e.g., q-value <= 0.01) in the denominator. Select this option to only use PSMs that also pass all secondary filters on the page (e.g., a specified retention time range) in the denominator. " }
+                { "Ratios are normally counted using all PSMs passing primary filters for each search (e.g., q-value <= 0.01) in the denominator. Select this option to only use PSMs that also pass all secondary filters on the page (e.g., a specified retention time range or min/max mod mass range) in the denominator. " }
             </span>
         )
 
