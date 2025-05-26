@@ -269,7 +269,11 @@
 		<echo>Executing ANT target name="generalized_build_specific_js_bundle_entry_then_copy_to_tomcat" </echo>
 
 		<echo>Executing webpack using executable: ${webpack_executable}</echo>
-		
+
+		<property name="build_entry_Concat_styles" value="${build_entry} styles" />
+
+		<echo>build_entry_Concat_styles: ${build_entry_Concat_styles}</echo>
+
 		<exec executable="${webpack_executable}" dir="." failonerror="true" 
 		    resolveexecutable="true" >
 		    <!--
@@ -285,7 +289,7 @@
 
 			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
 			<arg value="--env" />
-			<arg value="build_entry=${build_entry}" />
+			<arg value="build_entry=${build_entry} styles" /> <!-- add 'styles' so Always rebuild the CSS styles -->
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 
@@ -295,6 +299,13 @@
 		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" overwrite="true" >
 		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
 		</copy>
-		
+
+		<delete dir="${tomcat.static}${file.separator}css_generated"/>
+		<mkdir  dir="${tomcat.static}${file.separator}css_generated"/>
+
+		<copy todir="${tomcat.static}${file.separator}css_generated" overwrite="true" >
+			<fileset dir="webpack_build_output${file.separator}css_generated" />
+		</copy>
+
 	</target>
 </project>
