@@ -46,17 +46,8 @@ class DataTable_Table_DataRowEntry_State {
  */
 export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Table_DataRowEntry_Props, DataTable_Table_DataRowEntry_State > {
 
-    private _cellContentsDiv_onMouseEnterCallback_BindThis = this._cellContentsDiv_onMouseEnterCallback.bind(this);
-    private _cellContentsDiv_onMouseLeaveCallback_BindThis = this._cellContentsDiv_onMouseLeaveCallback.bind(this);
-
-    private readonly _displayNameValue_TD_Ref :  React.RefObject<HTMLTableDataCellElement>
-
-    private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
-
   constructor(props : DataTable_Table_DataRowEntry_Props) {
     super(props);
-
-      this._displayNameValue_TD_Ref = React.createRef();
 
       this.state = {
           _placeholder: null
@@ -118,52 +109,6 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
   // }
 
     /**
-     *
-     */
-  private _cellContentsDiv_onMouseEnterCallback( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
-      try {
-          const params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params = {
-
-          }
-          const tooltipContents = this.props.dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough(params);
-
-          if ( tooltipContents ) {
-              this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValue_TD_Ref.current })
-          }
-
-      } catch( e ) {
-          console.warn( "Error in DataTable_Table_DataRowEntry._cellContentsDiv_onMouseEnterCallback: ", e )
-          reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-          throw e;
-      }
-  }
-
-    /**
-     *
-     */
-    private _cellContentsDiv_onMouseLeaveCallback( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
-        try {
-            this._removeTooltip();
-
-        } catch( e ) {
-            console.warn( "Error in DataTable_Table_DataRowEntry._cellContentsDiv_onMouseLeaveCallback: ", e )
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    }
-
-    /**
-     *
-     */
-    private _removeTooltip() {
-
-        if ( this._tooltip_Limelight_Created_Tooltip ) {
-            this._tooltip_Limelight_Created_Tooltip.removeTooltip()
-        }
-        this._tooltip_Limelight_Created_Tooltip = undefined
-    }
-
-    /**
    * 
    * 
    * 
@@ -183,7 +128,7 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
       const styleContainerDiv : React.CSSProperties = { width: column.width, minWidth: column.width, maxWidth: column.width };
 
       //  Height not restricted to column.heightInitial
-      
+
       //    column.heightInitial may or may not be populated.
 
       if ( column.heightInitial !== undefined && column.heightInitial !== null ) {
@@ -215,7 +160,6 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
           return ( //  EARLY RETURN
               <td
-                  ref={ this._displayNameValue_TD_Ref }
                   style={ styleContainerDiv }
                   className={ className_Container_TD }
 
@@ -233,7 +177,7 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
       let horizontalGraph = undefined;
       let horizontalGraph_SpaceAfter = undefined;
 
-       
+
       if ( column.showHorizontalGraph ) {
 
         if ( dataObject_columnEntry.valueSort == undefined || dataObject_columnEntry.valueSort === null ) {
@@ -263,9 +207,9 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
         horizontalGraph = (
           <svg width={ column.graphWidth + "px" } height="14px" preserveAspectRatio="none">
-            <rect x="0" y="0" width={ column.graphWidth + "px" } height="100%" 
+            <rect x="0" y="0" width={ column.graphWidth + "px" } height="100%"
               style={ { fillOpacity : 0.0, fill:"rgb(255,255,255)", strokeWidth : 2, stroke : "#d3d3d3"} } />
-            <rect x="0" y="0" width={ widthForValue + "px" } height="100%" 
+            <rect x="0" y="0" width={ widthForValue + "px" } height="100%"
               style={ { fillOpacity:1.0, fill: "#32cd32", strokeWidth: 1 ,stroke : "#d3d3d3" } } />
           </svg>
         );
@@ -274,8 +218,6 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
       const valueDisplay = dataObject_columnEntry.valueDisplay;
       const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = dataObject_columnEntry.valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough;
-
-      const tooltipText = dataObject_columnEntry.tooltipText;
 
       if ( ( ! valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough ) && ( valueDisplay === undefined || valueDisplay === null ) ) {
         const msg = "DataTable_Table_DataRowEntry: Invalid value for valueDisplay: (valueDisplay === undefined || valueDisplay === null) is true: valueDisplay: " + valueDisplay + ", column.id " + column.id + ", dataObject_columnEntry: ";
@@ -315,52 +257,56 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
           valueDisplay_ForCell = null;
       }
 
-      //  Cell tooltip
-
-      let cellContentsDiv_onMouseEnterCallback = undefined;
-      let cellContentsDiv_onMouseLeaveCallback = undefined;
-
-      if ( dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough ) {
-
-          cellContentsDiv_onMouseEnterCallback = this._cellContentsDiv_onMouseEnterCallback_BindThis;
-          cellContentsDiv_onMouseLeaveCallback = this._cellContentsDiv_onMouseLeaveCallback_BindThis;
-      }
-
       //   "return" earlier for certain conditions
 
       const mainReturnElement = (
-          <td
-              ref={ this._displayNameValue_TD_Ref }
-              style={ styleContainerDiv }
-              className={ className_Container_TD }
-              //  Set onMouse... if have tooltip callback
-              onMouseEnter={ cellContentsDiv_onMouseEnterCallback }
-              onMouseLeave={ cellContentsDiv_onMouseLeaveCallback }
-              // Set title attribute if have text tooltip
-          >
+            <td
+                style={ styleContainerDiv }
+                className={ className_Container_TD }
+            >
 
-              { horizontalGraph }
-              { horizontalGraph_SpaceAfter }
-              { valueDisplay }{ cellDisplayContents_FromCallback }
-          </td>
+                { horizontalGraph }
+                { horizontalGraph_SpaceAfter }
+                { valueDisplay }{ cellDisplayContents_FromCallback }
+            </td>
       )
 
-      if ( ! tooltipText ) {
-          return mainReturnElement
-      }
+    if ( ( ! dataObject_columnEntry.tooltipText ) && ( ! dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough ) ) {
 
-      return (
-          <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-              title={
-                  <span>
-                      { tooltipText }
-                  </span>
-              }
-              { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-          >
-              { mainReturnElement }
-          </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-      )
+        return mainReturnElement  // EARLY RETURN
+    }
+
+    //  Have one of tooltip properties so surround the main element <td> with the Tooltip component
+
+    if ( dataObject_columnEntry.tooltipText ) {
+
+        // EARLY RETURN
+
+        return (
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                title={
+                    dataObject_columnEntry.tooltipText
+                }
+                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+            >
+                { mainReturnElement }
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+        )
+    }
+
+
+    const params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params = {
+
+    }
+
+    return (
+        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+            title={ dataObject_columnEntry.tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough( params ) }
+            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+        >
+            { mainReturnElement }
+        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+    )
     }
 
 }
