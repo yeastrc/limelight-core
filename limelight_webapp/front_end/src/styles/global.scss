@@ -31,14 +31,20 @@ $site-color-dark-alt: #CDCD32;
 $site-color-gray: #d3d3d3;
 $site-color-gray-text: #a3a3a3;
 
+//  color for 'gentle' notifications - less in the users face compare to red - currently a special yellow
+$site-color-gentle-notification: #FEDD00;
+
+
 $link-color-unvisited: #005606;
 $link-color-visited: #005606;
 $link-color-hover: $site-color-dark;
 $link-color-active: $site-color-dark;
 $link-color-underline: #65A96A;
 
+
+
 //  color for "Filtering"
-$filtering-display-color: #FEDD00;
+$filtering-display-color: $site-color-gentle-notification;
 $filtering-display-background-color: $filtering-display-color; //  Background color for Data Page "Filtering On" and other uses
 $filtering-display-border-color: $filtering-display-color;
 

@@ -399,6 +399,15 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
                             </ul>
                         </div>
 
+                        { group_1_SearchNames_Elements.length !== group_2_SearchNames_Elements.length ? (
+                            <div
+                                className=" mod-page-gentle-notification-background "
+                                style={ { marginBottom: 10 } }
+                            >
+                                Warning: Number of searches in groups 1 and 2 are not equal.
+                            </div>
+                        ) : null }
+
                         { notIn_Any_Group_SearchNames_Elements.length > 0 ? (
                             <>
                                 <div style={ { fontWeight: "bold" } }>

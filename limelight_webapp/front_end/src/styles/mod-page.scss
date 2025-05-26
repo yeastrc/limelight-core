@@ -1,6 +1,11 @@
 
 body.mod-page {
 
+  .mod-page-gentle-notification-background {
+    background-color: $site-color-gentle-notification;
+    width: fit-content;
+  }
+
   div.data-viz-options-container {
     margin-top:15px;
 
