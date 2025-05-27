@@ -437,35 +437,35 @@ const _getDataTableRows = function (
             //
             //   Commented out since may be too distracting or use too many resources
 
-            // const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = () => {
-            //
-            //     const searchData = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
-            //     if ( ! searchData ) {
-            //         const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
-            //         console.warn( msg );
-            //         throw Error( msg );
-            //     }
-            //
-            //     let searchShortName_Label = ""
-            //
-            //     if ( searchData.searchShortName ) {
-            //         searchShortName_Label = "(" + searchData.searchShortName + ") "
-            //     }
-            //
-            //     const searchLabel = "(" + searchData.searchId + ") " + searchShortName_Label + searchData.name
-            //
-            //     return (
-            //         <>
-            //             <div style={ { fontWeight: "bold" } }>
-            //                 Search:
-            //             </div>
-            //             <div style={ { marginTop: 2 } }>
-            //                 { searchLabel }
-            //             </div>
-            //         </>
-            //     )
-            //
-            // };
+            const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = () => {
+
+                const searchData = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchData ) {
+                    const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                let searchShortName_Label = ""
+
+                if ( searchData.searchShortName ) {
+                    searchShortName_Label = "(" + searchData.searchShortName + ") "
+                }
+
+                const searchLabel = "(" + searchData.searchId + ") " + searchShortName_Label + searchData.name
+
+                return (
+                    <>
+                        <div style={ { fontWeight: "bold" } }>
+                            Search:
+                        </div>
+                        <div style={ { marginTop: 2 } }>
+                            { searchLabel }
+                        </div>
+                    </>
+                )
+
+            };
 
 
             let valueDisplay__Search_Download : string = "";
@@ -478,7 +478,7 @@ const _getDataTableRows = function (
                 searchTableData,
                 valueSort : value_ForDisplay_For_ModMass_ProjectSearchId,
                 valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
-                // tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
+                tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
             });
             columnEntries.push( columnEntry );
 
