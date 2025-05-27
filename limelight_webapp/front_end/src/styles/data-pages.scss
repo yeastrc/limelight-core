@@ -200,6 +200,13 @@
             vertical-align:bottom;
             white-space:normal;
 
+            &:hover {
+              outline-color: $site-color-very-dark;
+              outline-style: solid;
+              outline-width: 4px;
+              outline-offset: 4px;
+            }
+
             div.display-name-container {
 
                 align-self: end;

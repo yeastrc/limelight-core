@@ -35,7 +35,8 @@ export const Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Co
         borderWidth: 2,
         borderColor: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_very_dark,
         fontSize: theme.typography.pxToRem(limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number),
-        fontFamily: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.theme_font
+        fontFamily: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.theme_font,
+        maxWidth: 600
     },
 }));
 

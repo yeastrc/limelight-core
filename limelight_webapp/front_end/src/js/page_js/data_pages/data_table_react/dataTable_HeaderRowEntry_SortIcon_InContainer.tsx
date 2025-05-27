@@ -6,10 +6,9 @@
 import React from 'react'
 import { SORT_DIRECTION_ASCENDING, SORT_DIRECTION_DECENDING } from './dataTable_constants';
 import {
-  tooltip_Limelight_Create_Tooltip,
-  Tooltip_Limelight_Created_Tooltip
-} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
-import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+  limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition,
+  Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 const sortIconWidth  = 12;  // in px
@@ -59,9 +58,9 @@ const sortIcon_NotCurrentLyForSorting = (
 
 export interface DataTable_Table_HeaderRowEntry_SortIcon_InContainer_Props {
 
-  column_sortDirection?: any ; // may be undefined
-  column_sortPosition: any
-  lastColumn: any;
+  column_sortDirection?: string // may be undefined
+  column_sortPosition: number
+  lastColumn: boolean
 }
 
 /**
@@ -69,88 +68,11 @@ export interface DataTable_Table_HeaderRowEntry_SortIcon_InContainer_Props {
  */
 export class DataTable_Table_HeaderRowEntry_SortIcon_InContainer extends React.Component< DataTable_Table_HeaderRowEntry_SortIcon_InContainer_Props, {} > {
 
-  private _sortIconDOMElement_onMouseEnter_BindThis = this._sortIconDOMElement_onMouseEnter.bind(this);
-  private _sortIconDOMElement_onMouseLeave_BindThis = this._sortIconDOMElement_onMouseLeave.bind(this);
-
-  private readonly _sortIconDiv_Ref :  React.RefObject<HTMLDivElement>
-
-  private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
-
   //  Add state so can update tooltip when tooltip in props changes
   constructor(props : DataTable_Table_HeaderRowEntry_SortIcon_InContainer_Props) {
       super(props);
 
-
-    this._sortIconDiv_Ref = React.createRef();
-
       // this.state = {};
-  }
-
-  /**
-   *
-   */
-  componentWillUnmount() {
-    try {
-      this._removeTooltip();
-
-    } catch( e ) {
-      console.warn( "Error in DataTable_Table_HeaderRowEntry.componentWillUnmount: ", e )
-      reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-      throw e;
-    }
-  }
-
-  /**
-   *
-   */
-  private _sortIconDOMElement_onMouseEnter( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
-    try {
-      const tooltipContents = (
-          <div>
-            <div >
-              Click to sort on column. Click again to toggle sort direction.
-            </div>
-            <div>
-              Sorting may be done on multiple columns.
-            </div>
-            <div>
-              Use Control-click (Command-click) to add or remove a column for sorting.
-            </div>
-          </div>
-      );
-
-      this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._sortIconDiv_Ref.current })
-
-    } catch( e ) {
-      console.warn( "Error in DataTable_Table_HeaderRowEntry._sortIconDOMElement_onMouseEnter: ", e )
-      reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-      throw e;
-    }
-  }
-
-  /**
-   *
-   */
-  private _sortIconDOMElement_onMouseLeave( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
-    try {
-      this._removeTooltip();
-
-    } catch( e ) {
-      console.warn( "Error in DataTable_Table_HeaderRowEntry._sortIconDOMElement_onMouseLeave: ", e )
-      reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-      throw e;
-    }
-  }
-
-  /**
-   *
-   */
-  private _removeTooltip() {
-
-    if ( this._tooltip_Limelight_Created_Tooltip ) {
-      this._tooltip_Limelight_Created_Tooltip.removeTooltip()
-    }
-    this._tooltip_Limelight_Created_Tooltip = undefined
   }
 
   /**
@@ -217,14 +139,33 @@ export class DataTable_Table_HeaderRowEntry_SortIcon_InContainer extends React.C
     }
 
     const sortIconContainer =  (
-        <div
-            style={ sortIconStyle }
-            onMouseEnter={ this._sortIconDOMElement_onMouseEnter_BindThis }
-            onMouseLeave={ this._sortIconDOMElement_onMouseLeave_BindThis }
-            ref={ this._sortIconDiv_Ref }
+        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition() }
+            disableInteractive={ true }
+            placement={ "top" }
+            title={
+              <div>
+                <div>
+                  Click to sort on column.
+                </div>
+                <div>
+                  Click again to toggle sort direction.
+                </div>
+                <div style={ { marginTop: 5 } }>
+                  Sorting may be done on multiple columns.
+                </div>
+                <div style={ { marginTop: 5 } }>
+                  Use Control-click (Command-click) to add or remove a column for sorting.
+                </div>
+              </div>
+            }
         >
-          { sortIcon }
-        </div>
+          <div
+              style={ sortIconStyle }
+          >
+            { sortIcon }
+          </div>
+        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
     );
 
     return sortIconContainer;

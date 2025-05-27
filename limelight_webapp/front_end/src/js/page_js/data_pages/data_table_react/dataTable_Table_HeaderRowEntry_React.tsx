@@ -11,11 +11,6 @@ import {DataTable_Column, DataTable_ColumnId} from 'page_js/data_pages/data_tabl
 
 import { DataTable_Table_HeaderRowEntry_SortIcon_InContainer } from './dataTable_HeaderRowEntry_SortIcon_InContainer'
 import {
-  tooltip_Limelight_Create_Tooltip,
-  Tooltip_Limelight_Created_Tooltip
-} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
-import {
-  limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
   limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition,
   Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
@@ -48,32 +43,9 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
 
   private _headerColumnClicked_BindThis = this._headerColumnClicked.bind(this);
 
-  private _displayNameValueDOMElement_onMouseEnter_BindThis = this._displayNameValueDOMElement_onMouseEnter.bind(this);
-  private _displayNameValueDOMElement_onMouseLeave_BindThis = this._displayNameValueDOMElement_onMouseLeave.bind(this);
-
-  private readonly _displayNameValueDiv_Ref :  React.RefObject<HTMLDivElement>
-
-  private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
-
-
   constructor(props : DataTable_Table_HeaderRowEntry_Props ) {
     super(props);
 
-    this._displayNameValueDiv_Ref = React.createRef();
-  }
-
-  /**
-   *
-   */
-  componentWillUnmount() {
-    try {
-      this._removeTooltip();
-
-    } catch( e ) {
-      console.warn( "Error in DataTable_Table_HeaderRowEntry.componentWillUnmount: ", e )
-      reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-      throw e;
-    }
   }
 
   /**
@@ -109,47 +81,6 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
       reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
       throw e;
     }
-  }
-
-  /**
-   *
-   */
-  private _displayNameValueDOMElement_onMouseEnter( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
-    try {
-      const tooltipContents = this.props.column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element();
-
-      this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._displayNameValueDiv_Ref.current })
-
-    } catch( e ) {
-      console.warn( "Error in DataTable_Table_HeaderRowEntry._displayNameValueDOMElement_onMouseEnter: ", e )
-      reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-      throw e;
-    }
-  }
-
-  /**
-   *
-   */
-  private _displayNameValueDOMElement_onMouseLeave( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
-    try {
-        this._removeTooltip();
-
-    } catch( e ) {
-      console.warn( "Error in DataTable_Table_HeaderRowEntry._displayNameValueDOMElement_onMouseLeave: ", e )
-      reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-      throw e;
-    }
-  }
-
-  /**
-   *
-   */
-  private _removeTooltip() {
-
-    if ( this._tooltip_Limelight_Created_Tooltip ) {
-      this._tooltip_Limelight_Created_Tooltip.removeTooltip()
-    }
-    this._tooltip_Limelight_Created_Tooltip = undefined
   }
 
   /**
@@ -270,71 +201,13 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
           className_InnermostDiv_Column_DisplayName = " display-name-container " + classesAdditions
       }
 
-      // let spanTitle : string = null;
-      //
-      // if ( column.columnHeader_Tooltip_HTML_TitleAttribute ) {
-      //
-      //     spanTitle = column.columnHeader_Tooltip_HTML_TitleAttribute;
-      // }
-
-      // let displayNameValueDOMElement_onMouseEnter = null;
-      // let displayNameValueDOMElement_onMouseLeave = null;
-      //
-      // if ( column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element ) {
-      //
-      //   displayNameValueDOMElement_onMouseEnter = this._displayNameValueDOMElement_onMouseEnter_BindThis;
-      //   displayNameValueDOMElement_onMouseLeave = this._displayNameValueDOMElement_onMouseLeave_BindThis;
-      // }
-
       let column_Title_Element: JSX.Element = (
 
-          <div
-              // title={ spanTitle }
-              ref={ this._displayNameValueDiv_Ref }
-              // onMouseEnter={ displayNameValueDOMElement_onMouseEnter }
-              // onMouseLeave={ displayNameValueDOMElement_onMouseLeave }
+          <div style={ styleDisplayNameDiv } className={ className_InnermostDiv_Column_DisplayName }>
 
-              style={ styleDisplayNameDiv } className={ className_InnermostDiv_Column_DisplayName }>
-
-                  <span className=" display-name-value "
-                  >{ column.displayName }</span>
+                  <span className=" display-name-value ">{ column.displayName }</span>
           </div>
-
       )
-
-      if ( column.columnHeader_Tooltip_HTML_TitleAttribute ) {
-
-        const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition();
-
-        column_Title_Element = (
-            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                { ...tooltip_Main_Props }
-                disableInteractive={ false }
-              title={
-                <span>{ column.columnHeader_Tooltip_HTML_TitleAttribute }</span>
-              }
-            >
-              { column_Title_Element }
-            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-        )
-
-      } else if ( column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element ) {
-
-        const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition();
-
-        column_Title_Element = (
-            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                { ...tooltip_Main_Props }
-                disableInteractive={ false }
-                title={
-                  <span>{ column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element() }</span>
-                }
-            >
-              { column_Title_Element }
-            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-        )
-      }
-
 
       headerItem = (
           <th
@@ -354,6 +227,42 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
         </th>
       );
     }
+
+    if ( column.columnHeader_Tooltip_HTML_TitleAttribute ) {
+
+      const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition();
+
+      headerItem = (
+          <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+              { ...tooltip_Main_Props }
+              disableInteractive={ false }
+              placement={ "top" }
+              title={
+                <span>{ column.columnHeader_Tooltip_HTML_TitleAttribute }</span>
+              }
+          >
+            { headerItem }
+          </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+      )
+
+    } else if ( column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element ) {
+
+      const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition();
+
+      headerItem = (
+          <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+              { ...tooltip_Main_Props }
+              disableInteractive={ false }
+              placement={ "top" }
+              title={
+                <span>{ column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element() }</span>
+              }
+          >
+            { headerItem }
+          </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+      )
+    }
+
 
     return headerItem;
   }
