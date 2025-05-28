@@ -3,6 +3,12 @@
  */
 
 
+//  Use to get Typescript typings, but then switch since it does NOT build with this import
+// import Plotly from "plotly.js"
+
+//  Plotly ONLY imports successfully for a Build using this import
+import Plotly from 'plotly.js-dist/plotly'
+
 import React from "react";
 import {
     ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum,
@@ -10,7 +16,8 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering";
 import {
     ModViewPage_DataVizOptions_VizSelections_PageStateManager,
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 import {
     DataPageStateManager,
@@ -51,6 +58,9 @@ import { DataTable_TableRoot } from "page_js/data_pages/data_table_react/dataTab
 import {
     modPage_GetSearchNameForProjectSearchId
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_GetSearchNameForProjectSearchId";
+import {
+    qcPage_StandardChartConfig
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartConfig";
 
 //////
 
@@ -85,6 +95,11 @@ interface ModPage_ZScore_ReplicateReport_DataTable_Component_State {
  */
 export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Component< ModPage_ZScore_ReplicateReport_DataTable_Component_Props, ModPage_ZScore_ReplicateReport_DataTable_Component_State > {
 
+    private readonly _volcanoPlot_1_Div_Ref :  React.RefObject<HTMLDivElement>
+    private readonly _volcanoPlot_2_Div_Ref :  React.RefObject<HTMLDivElement>
+
+    private _INTERNAL__Compute_SignificantMods_CombineReps__Result: INTERNAL__Compute_SignificantMods_CombineReps__Result
+
     private _dataTable_RootTableObject: DataTable_RootTableObject
 
     private _group_1_ProjectSearchIds_PrevRendered: ReadonlySet<number>
@@ -99,12 +114,39 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
         super( props );
 
+        this._volcanoPlot_1_Div_Ref = React.createRef();
+        this._volcanoPlot_2_Div_Ref = React.createRef();
+
         const searchGroups = props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
         this._group_1_ProjectSearchIds_PrevRendered = searchGroups.group_1_SearchGroup_ProjectSearchIds_Set
         this._group_2_ProjectSearchIds_PrevRendered = searchGroups.group_2_SearchGroup_ProjectSearchIds_Set
 
         this.state = { forceReRender_Object: {} };
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    componentWillUnmount() { try {
+
+        try {
+            if ( this._volcanoPlot_1_Div_Ref.current ) {
+
+                Plotly.purge( this._volcanoPlot_1_Div_Ref.current )
+            }
+        } catch ( e ) {
+            console.warn( "Failed to remove Plotly chart for this._volcanoPlot_1_Div_Ref.current. Error: ", e )
+            //  Eat Error. NOT rethrow
+        }
+
+        try {
+            if ( this._volcanoPlot_2_Div_Ref.current ) {
+
+                Plotly.purge( this._volcanoPlot_2_Div_Ref.current )
+            }
+        } catch ( e ) {
+            console.warn( "Failed to remove Plotly chart for this._volcanoPlot_2_Div_Ref.current. Error: ", e )
+            //  Eat Error. NOT rethrow
+        }
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
@@ -196,6 +238,10 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
         if ( result.data ) {
 
+            this._INTERNAL__Compute_SignificantMods_CombineReps__Result = result.data
+
+            this._create_VolcanoPlot()
+
             this._dataTable_RootTableObject = _create_DataTable_Data(
                 {
                     tableRows: result.data.tableRows,
@@ -212,6 +258,10 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
         } else if ( result.promise ) {
             result.promise.catch(reason => {})
             result.promise.then(value => { try {
+
+                this._INTERNAL__Compute_SignificantMods_CombineReps__Result = value
+
+                this._create_VolcanoPlot()
 
                 this._dataTable_RootTableObject = _create_DataTable_Data(
                     {
@@ -235,28 +285,561 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
     /**
      *
      */
+    private _create_VolcanoPlot() {
+
+        this._create_VolcanoPlot_Each({
+            subtract_GroupRatios_Log2: true,
+            domElement_ToPut_PlotIn: this._volcanoPlot_1_Div_Ref.current
+        })
+
+
+        this._create_VolcanoPlot_Each({
+            subtract_GroupRatios_Log2: false,
+            domElement_ToPut_PlotIn: this._volcanoPlot_2_Div_Ref.current
+        })
+
+    }
+
+
+    /**
+     *
+     */
+    private _create_VolcanoPlot_Each(
+        {
+            subtract_GroupRatios_Log2,
+            domElement_ToPut_PlotIn
+        } : {
+            subtract_GroupRatios_Log2: boolean
+            domElement_ToPut_PlotIn: HTMLDivElement
+        }
+    ) {
+
+        const compute_Result = this._INTERNAL__Compute_SignificantMods_CombineReps__Result
+
+        if ( ! domElement_ToPut_PlotIn ) {
+            // NO DOM element to put volcano plot in
+            return // EARLY RETURN
+        }
+
+        const _P_VALUE_SIGNIFICANT_LINE = 0.01
+
+        const _P_VALUE_SIGNIFICANT_LINE__CHART_Y = -Math.log10( _P_VALUE_SIGNIFICANT_LINE )
+
+
+        const chart_Entries: Array<{
+            chart_X: number
+            chart_Y: number
+
+            chart_Marker_Label_Text: string
+            chart_TooltipText: string
+
+            pvalue_For_Chart_Y_Calculation: number  // Only when using p-value
+
+            modMass: number
+
+        }> = []
+
+        // const _Z_SCORE_SIGNIFICANT_LINE = 2.576
+
+        for ( const tableRow of compute_Result.tableRows ) {
+
+            const psm_Or_Scan_Count_ForRatio_ALL_Groups = tableRow.psm_Or_Scan_Count_ForRatio_Group_1 + tableRow.psm_Or_Scan_Count_ForRatio_Group_2
+
+            let chart_X: number = undefined
+
+            if ( subtract_GroupRatios_Log2 ) {
+
+                //  Add to handle Ratio of zero so log2 not result in infinity
+                const addTo_GroupRatio = 1 / psm_Or_Scan_Count_ForRatio_ALL_Groups
+
+                const groupRatio_1__Log2 = Math.log2( tableRow.groupRatio_1 + addTo_GroupRatio )
+                const groupRatio_2__Log2 = Math.log2( tableRow.groupRatio_2 + addTo_GroupRatio )
+
+                chart_X = groupRatio_2__Log2 - groupRatio_1__Log2
+
+            } else {
+                chart_X = tableRow.groupRatio_2 - tableRow.groupRatio_1
+            }
+
+            let chart_Y: number = undefined
+
+            let tooltipText_Part: string = undefined
+
+            let pvalue_For_Chart_Y_Calculation: number = undefined
+
+            if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
+
+                tooltipText_Part = "p-value: " + tableRow.pvalue.toExponential( 2 ) + "<br>"
+
+                pvalue_For_Chart_Y_Calculation = tableRow.pvalue
+
+                const _ASSUMED_SMALLEST_NUMBER_FROM_JSTAT_TEST = Number.EPSILON / 2 // was 1.11e-16
+
+                //  Following 'if' is ONLY for testing.  Was briefly used for testing.
+
+                // if ( pvalue_For_Chart_Y_Calculation > 0 && pvalue_For_Chart_Y_Calculation <  _ASSUMED_SMALLEST_NUMBER_FROM_JSTAT_TEST ) {
+                //
+                //     const msg = "Unexpected p-value value: ( pvalue_For_Chart_Y_Calculation > 0 && pvalue_For_Chart_Y_Calculation <  _ASSUMED_SMALLEST_NUMBER_FROM_JSTAT_TEST ). p-value: " +
+                //         pvalue_For_Chart_Y_Calculation +
+                //         + ", _ASSUMED_SMALLEST_NUMBER_FROM_JSTAT_TEST: " + _ASSUMED_SMALLEST_NUMBER_FROM_JSTAT_TEST
+                //     console.warn(msg)
+                //     throw Error(msg)
+                // }
+
+                if ( pvalue_For_Chart_Y_Calculation === 0 ) {
+
+                    pvalue_For_Chart_Y_Calculation = _ASSUMED_SMALLEST_NUMBER_FROM_JSTAT_TEST  // special for computing chart 'y' value
+                }
+
+                chart_Y = -Math.log10( pvalue_For_Chart_Y_Calculation )
+
+            } else {
+
+                tooltipText_Part = "zscore: " + tableRow.zscore.toFixed( 2 ) + "<br>"
+                // +
+                // "zscore (abs): " + Math.abs( tableRow.zscore ).toFixed( 2 ) + "<br>"
+
+                chart_Y = Math.abs( tableRow.zscore )
+            }
+
+            const chart_TooltipText =
+                "Mod mass: " + tableRow.modMass + "<br>" +
+                tooltipText_Part +
+                "group 1 ratio: " + tableRow.groupRatio_1.toExponential( 2 ) + "<br>" +
+                "group 2 ratio: " + tableRow.groupRatio_2.toExponential( 2 ) + "<br>"
+
+            chart_Entries.push( {
+                chart_X,
+                chart_Y,
+                chart_Marker_Label_Text: undefined,
+                chart_TooltipText,
+                pvalue_For_Chart_Y_Calculation,
+                modMass: tableRow.modMass
+            } )
+        }
+
+
+        const chart_Data__AboveLine: {
+            chart_X: Array<number>
+            chart_Y: Array<number>
+            chart_Marker_Label_Text: Array<string>
+            chart_TooltipText: Array<string>
+        } = {
+            chart_X: [],
+            chart_Y: [],
+            chart_Marker_Label_Text: [],
+            chart_TooltipText: []
+        }
+
+        const chart_Data__BelowLine: {
+            chart_X: Array<number>
+            chart_Y: Array<number>
+            chart_Marker_Label_Text: Array<string>
+            chart_TooltipText: Array<string>
+        } = {
+            chart_X: [],
+            chart_Y: [],
+            chart_Marker_Label_Text: [],
+            chart_TooltipText: []
+        }
+
+        //  Remove Setting chart_Marker_Label_Text since Plotly has NO logic to prevent labels from overlapping labels
+
+        //    Remove sorting and adding labels to specific points
+
+        // chart_Entries.sort( ( a, b ) => {
+        //     //  Sort on chart_Y descending, chart_X ascending, modMass ascending
+        //     if ( a.chart_Y > b.chart_Y ) {
+        //         return -1
+        //     }
+        //     if ( a.chart_Y < b.chart_Y ) {
+        //         return 1
+        //     }
+        //     if ( a.chart_X < b.chart_X ) {
+        //         return -1
+        //     }
+        //     if ( a.chart_X > b.chart_X ) {
+        //         return 1
+        //     }
+        //     if ( a.modMass < b.modMass ) {
+        //         return -1
+        //     }
+        //     if ( a.modMass > b.modMass ) {
+        //         return 1
+        //     }
+        //     return 0
+        // } )
+        //
+        // let max_Chart_Y: number = undefined
+        //
+        // if ( chart_Entries.length > 0 ) {
+        //     max_Chart_Y = chart_Entries[ 0 ].chart_Y
+        // }
+        //
+        // { //  Set chart_Marker_Label_Text to modMass for first 10 entries
+        //
+        //     let counter = 1;
+        //
+        //     for ( const chart_Entry of chart_Entries ) {
+        //
+        //         if ( counter > 10 && chart_Entry.chart_Y !== max_Chart_Y ) {
+        //             //  Exit loop after 10 entries
+        //             break
+        //         }
+        //
+        //         chart_Entry.chart_Marker_Label_Text = chart_Entry.modMass.toString()
+        //
+        //         counter++
+        //
+        //     }
+        // }
+
+        for ( const chart_Entry of chart_Entries ) {
+
+            if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
+
+                if ( chart_Entry.pvalue_For_Chart_Y_Calculation < _P_VALUE_SIGNIFICANT_LINE ) {
+
+                    chart_Data__AboveLine.chart_X.push( chart_Entry.chart_X )
+                    chart_Data__AboveLine.chart_Y.push( chart_Entry.chart_Y )
+
+                    chart_Data__AboveLine.chart_TooltipText.push( chart_Entry.chart_TooltipText )
+
+                    //  Remove Setting chart_Marker_Label_Text since Plotly has NO logic to prevent labels from overlapping labels
+                    // chart_Data__AboveLine.chart_Marker_Label_Text.push( chart_Entry.chart_Marker_Label_Text )
+
+                } else {
+
+                    chart_Data__BelowLine.chart_X.push( chart_Entry.chart_X )
+                    chart_Data__BelowLine.chart_Y.push( chart_Entry.chart_Y )
+
+                    chart_Data__BelowLine.chart_TooltipText.push( chart_Entry.chart_TooltipText )
+
+                    //  Remove Setting chart_Marker_Label_Text since Plotly has NO logic to prevent labels from overlapping labels
+                    chart_Data__BelowLine.chart_Marker_Label_Text.push( chart_Entry.chart_Marker_Label_Text )
+                }
+            } else {
+
+                chart_Data__AboveLine.chart_X.push( chart_Entry.chart_X )
+                chart_Data__AboveLine.chart_Y.push( chart_Entry.chart_Y )
+
+                chart_Data__AboveLine.chart_TooltipText.push( chart_Entry.chart_TooltipText )
+
+                //  Remove Setting chart_Marker_Label_Text since Plotly has NO logic to prevent labels from overlapping labels
+                // chart_Data__AboveLine.chart_Marker_Label_Text.push( chart_Entry.chart_Marker_Label_Text )
+            }
+        }
+
+
+        let chart_Data__AboveLine_PlotlyTrace_TraceName = "Significant"
+        let chart_Data__AboveLine_PlotlyTrace_Color = "red"
+
+        if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE ) {
+
+            chart_Data__AboveLine_PlotlyTrace_TraceName = "Mod Masses"
+        }
+
+
+        const _PLOTLY_MARKER_SIZE = 12 // default 6 per https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
+
+        const _PLOTLY_MARKER_OPACITY = .5
+
+        const chart_Data__AboveLine_PlotlyTrace = {
+
+            name: chart_Data__AboveLine_PlotlyTrace_TraceName,
+            type: 'scatter',
+            mode: 'markers+text', // Include markers and text
+            marker: {
+                size: _PLOTLY_MARKER_SIZE, //   https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
+                color: chart_Data__AboveLine_PlotlyTrace_Color,
+                opacity: _PLOTLY_MARKER_OPACITY
+                // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
+            },
+            // xaxis: {
+            //     range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
+            // },
+            // yaxis: {
+            //     range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
+            // },
+            x: chart_Data__AboveLine.chart_X,
+            y: chart_Data__AboveLine.chart_Y,
+
+            //  Remove Setting chart_Marker_Label_Text since Plotly has NO logic to prevent labels from overlapping labels
+            // text: chart_Data__AboveLine.chart_Marker_Label_Text,
+            // textposition: 'top center', // Position of the labels (e.g., 'top center', 'bottom left')
+
+            hovertext: chart_Data__AboveLine.chart_TooltipText,
+            hoverinfo: 'text',
+            // 'hovertemplate' is INCORRECT. Needs changing if used.
+            // hovertemplate: //  Added '<extra></extra>' to remove secondary box with trace name
+            //     // Remove this line: '<b>MS' + MS_2_Plus_PrecursorData_ScanLevel_String + ' data for PSM</b>' +
+            //     '<br><b>m/z</b>: %{y}' +
+            //     '<br><b>Retention Time</b>: %{x}<extra></extra>'
+        }
+
+        const chart_Data__BelowLine_PlotlyTrace = {
+
+            name: "Not Significant",
+            type: 'scatter',
+            mode: 'markers+text', // Include markers and text
+            marker: {
+                size: _PLOTLY_MARKER_SIZE, //   https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
+                color: "gray",
+                opacity: _PLOTLY_MARKER_OPACITY
+                // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
+            },
+            // xaxis: {
+            //     range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
+            // },
+            // yaxis: {
+            //     range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
+            // },
+            x: chart_Data__BelowLine.chart_X,
+            y: chart_Data__BelowLine.chart_Y,
+
+            //  Remove Setting chart_Marker_Label_Text since Plotly has NO logic to prevent labels from overlapping labels
+            // text: chart_Data__BelowLine.chart_Marker_Label_Text,
+            // textposition: 'top center', // Position of the labels (e.g., 'top center', 'bottom left')
+
+            hovertext: chart_Data__BelowLine.chart_TooltipText,
+            hoverinfo: 'text',
+            // 'hovertemplate' is INCORRECT. Needs changing if used.
+            // hovertemplate: //  Added '<extra></extra>' to remove secondary box with trace name
+            //     // Remove this line: '<b>MS' + MS_2_Plus_PrecursorData_ScanLevel_String + ' data for PSM</b>' +
+            //     '<br><b>m/z</b>: %{y}' +
+            //     '<br><b>Retention Time</b>: %{x}<extra></extra>'
+        }
+
+        // Total Chart Data
+
+        //  Plot "Below" first so if an Above dot and Below dot overlap the Above will be on top
+
+        const chart_Data: Array<any> = []
+
+
+        if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
+
+            chart_Data.push( chart_Data__BelowLine_PlotlyTrace )
+        }
+
+        chart_Data.push( chart_Data__AboveLine_PlotlyTrace )
+
+
+        ///////
+
+        //  General Chart
+
+        const _CHART_WIDTH = 600
+        const _CHART_HEIGHT = 600
+
+        let chartTitle_PValue_ZScore_Label = "P-value"
+
+        if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE ) {
+            chartTitle_PValue_ZScore_Label = "Z-score"
+        }
+
+        let chartTitle_Log2_Difference_Label = "Log2-Fold Change"
+
+        if ( ! subtract_GroupRatios_Log2 ) {
+            chartTitle_Log2_Difference_Label = "Difference of Ratios"
+        }
+
+        const chartTitle = "Volcano Plot: " + chartTitle_PValue_ZScore_Label + " vs/ " + chartTitle_Log2_Difference_Label
+
+        let chart_X_Axis_Label = "log2-fold change of ratios"
+
+        if ( ! subtract_GroupRatios_Log2 ) {
+            chart_X_Axis_Label = "difference of ratios"
+        }
+
+        let chart_Y_Axis_Label = "-log10(p-value)"
+
+        if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE ) {
+
+            chart_Y_Axis_Label = "abs(z-score)"
+        }
+
+        const showlegend_Local = true
+
+        const chart_Layout: any = {
+            title:{
+                text: chartTitle
+            },
+            autosize: false,
+            width: _CHART_WIDTH,
+            height: _CHART_HEIGHT,
+            xaxis: {
+                title: {
+                    text: chart_X_Axis_Label
+                },
+                // range: [ retentionTimeSeconds_Range_ForChart_Min / 60, retentionTimeSeconds_Range_ForChart_Max / 60 ],
+
+                exponentformat: 'e'  // https://plotly.com/javascript/tick-formatting/#using-exponentformat
+            },
+            yaxis: {
+                title: {
+                    text: chart_Y_Axis_Label
+                },
+                exponentformat: 'e'
+            },
+            showlegend: showlegend_Local,
+            legend: {
+                traceorder: "reversed"  // reverse so "Above" is shown first in the legend.  "Below" trace is first in chart data so that overlapping dots will have "Above on top.
+            }
+
+        }
+
+
+        if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
+
+            chart_Layout.shapes = [ {
+                name: _P_VALUE_SIGNIFICANT_LINE,    //  Shown in legend
+                showlegend: true,           //  Add to legend.  requires min Plotly version 2.27.0
+                type: 'line',
+                xref: 'paper',
+                yref: 'y',
+                x0: 0,
+                x1: 1,
+                // x0: chart_X_MIN,
+                y0: _P_VALUE_SIGNIFICANT_LINE__CHART_Y,
+                // x1: chart_X_MAX,
+                // yref: 'paper',
+                y1: _P_VALUE_SIGNIFICANT_LINE__CHART_Y,
+                line: {
+                    color: 'black',
+                    width: 1.5,
+                    dash: 'dot'
+                }
+            } ]
+        } else {
+
+            // chart_Layout.shapes = [ {
+            //     name: _Z_SCORE_SIGNIFICANT_LINE,    //  Shown in legend
+            //     showlegend: true,           //  Add to legend.  requires min Plotly version 2.27.0
+            //     type: 'line',
+            //     xref: 'paper',
+            //     yref: 'y',
+            //     x0: 0,
+            //     x1: 1,
+            //     // x0: chart_X_MIN,
+            //     y0: _Z_SCORE_SIGNIFICANT_LINE,
+            //     // x1: chart_X_MAX,
+            //     // yref: 'paper',
+            //     y1: _Z_SCORE_SIGNIFICANT_LINE,
+            //     line: {
+            //         color: 'black',
+            //         width: 1.5,
+            //         dash: 'dot'
+            //     }
+            // } ]
+        }
+
+
+
+        const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: domElement_ToPut_PlotIn });
+
+        const newPlotResulting_Promise = Plotly.newPlot(
+            domElement_ToPut_PlotIn,
+            chart_Data,
+            chart_Layout,
+            chart_config
+        )
+
+    }
+
+
+
+    /**
+     *
+     */
     render() {
 
         return (
 
             <div>
-                { ! this._dataTable_RootTableObject ? (
-                    <div>
-                        Loading Data / Creating Table
+                <div>
+                    Significance Metric:
+
+                    <span> </span>
+                    <label>
+                        <input
+                            type="radio"
+                            name="ModPage_ZScore_ReplicateReport_DataTable_Component__p-value-zscore-radio-button"
+                            checked={ this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE }
+                            onChange={ ( event: React.ChangeEvent<HTMLElement> ) => {
+                                try {
+                                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_significance_metric_chart_type( ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE )
+
+                                    this._create_VolcanoPlot()
+
+                                    this.setState( { forceReRender_Object: {} } )
+                                } catch ( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                    throw e
+                                }
+                            } }
+                        />
+                        Z-score
+                    </label>
+                    <span> </span>
+                    <label>
+                        <input
+                            type="radio"
+                            name="ModPage_ZScore_ReplicateReport_DataTable_Component__p-value-zscore-radio-button"
+                            checked={ this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE }
+                            onChange={ ( event: React.ChangeEvent<HTMLElement> ) => {
+                                try {
+                                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_significance_metric_chart_type( ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE )
+
+                                    this._create_VolcanoPlot()
+
+                                    this.setState( { forceReRender_Object: {} } )
+                                } catch ( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                    throw e
+                                }
+                            } }
+                        />
+                        P-value
+                    </label>
+                </div>
+
+                <div style={ { position: "relative", width: "fit-content" } }>
+
+                    <div
+                        style={ { display: "flex", flexWrap: "wrap" } }
+                    >
+                        {/*  Div to hold Volcano Plot - Plotly  */ }
+                        <div
+                            ref={ this._volcanoPlot_1_Div_Ref }
+                            style={ { flexGrow: 0, flexShrink: 0 } }
+                        >
+                        </div>
+                        {/*  Div to hold Volcano Plot - Plotly  */ }
+                        <div
+                            ref={ this._volcanoPlot_2_Div_Ref }
+                            style={ { flexGrow: 0, flexShrink: 0 } }
+                        >
+                        </div>
                     </div>
-                ) : (
-                    <div style={ { position: "relative" } }>
+
+                    { ! this._dataTable_RootTableObject ? (
+                        <div>
+                            Loading Data
+                        </div>
+                    ) : (
                         <DataTable_TableRoot tableObject={ this._dataTable_RootTableObject }/>
+                    ) }
 
-                        {/*   "Updating Message" Cover <div>  */ }
+                    {/*   "Updating Message" Cover <div>  */ }
 
-                        { this._show_UpdatingMessage ? (
-                            <div className=" block-updating-overlay-container ">
-                                Updating
-                            </div>
-                        ) : null }
-                    </div>
-                ) }
+                    { this._show_UpdatingMessage ? (
+                        <div className=" block-updating-overlay-container ">
+                            Updating
+                        </div>
+                    ) : null }
+                </div>
+
             </div>
         )
     }
@@ -661,6 +1244,10 @@ const _create_DataTable_Data = function (
 
 /////////////////////////////////
 
+class INTERNAL__Compute_SignificantMods_CombineReps__Result {
+    tableRows: Array<INTERNAL_TableRow>
+}
+
 /**
  *
  */
@@ -684,12 +1271,8 @@ const _compute_SignificantMods_CombineReps = function (
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     }
 ) : {
-    data: {
-        tableRows: Array<INTERNAL_TableRow>
-    }
-    promise: Promise<{
-        tableRows: Array<INTERNAL_TableRow>
-    }>
+    data: INTERNAL__Compute_SignificantMods_CombineReps__Result
+    promise: Promise<INTERNAL__Compute_SignificantMods_CombineReps__Result>
 } {
 
     const projectSearchIds_All_Set: Set<number> = new Set()
@@ -997,10 +1580,10 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
         combinedModMap__PsmCount_Map_Key_Group_1_or_2_Map_Key_ModMass.set( result_ForSingle_ModMass.modMass, combinedModMap__PsmCount_Or_ScanCount_Map_Key_Group_1_or_2 )
     }
 
-    // get combined total psm count for each rep group
+    // get combined total psm count for each rep group, and ALL Together
 
-    let psm_Or_Scan_Count_Group_1 = undefined
-    let psm_Or_Scan_Count_Group_2 = undefined
+    let psm_Or_Scan_Count_Group_1: number = undefined
+    let psm_Or_Scan_Count_Group_2: number = undefined
 
     if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
 
@@ -1121,31 +1704,66 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
         let filteredZscore: number = undefined
         let filteredPvalue: number = undefined
 
+        let psm_Or_Scan_Count_ForRatio_Group_1: number = undefined
+        let psm_Or_Scan_Count_ForRatio_Group_2: number = undefined
+
+        let groupRatio_1: number = undefined
+        let groupRatio_2: number = undefined
+
         if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
 
             if ( psm_Or_Scan_Count_Group_1 === undefined || psm_Or_Scan_Count_Group_2 === undefined ) {
                 throw Error("if ( psm_Or_Scan_Count_Group_1 === undefined || psm_Or_Scan_Count_Group_2 === undefined ) {")
             }
 
-            zscore = ModPage_ModStatsUtils.getZScoreForTwoRatios({ x1: x_1, n1: psm_Or_Scan_Count_Group_1, x2: x_2, n2: psm_Or_Scan_Count_Group_2 });
+            //  Flip 1 & 2
+            zscore = ModPage_ModStatsUtils.getZScoreForTwoRatios({ x1: x_2, n1: psm_Or_Scan_Count_Group_2, x2: x_1, n2: psm_Or_Scan_Count_Group_1 });
+
+            //  WAS
+            // zscore = ModPage_ModStatsUtils.getZScoreForTwoRatios({ x1: x_1, n1: psm_Or_Scan_Count_Group_1, x2: x_2, n2: psm_Or_Scan_Count_Group_2 });
 
             pvalue = ModPage_ModStatsUtils.getPValueForTwoRatios({ x1: x_1, n1: psm_Or_Scan_Count_Group_1, x2: x_2, n2: psm_Or_Scan_Count_Group_2 });
             pvalue = pvalue * sortedModMasses.length;
             if (pvalue > 1) {
                 pvalue = 1;
             }
+
+            psm_Or_Scan_Count_ForRatio_Group_1 = psm_Or_Scan_Count_Group_1
+            psm_Or_Scan_Count_ForRatio_Group_2 = psm_Or_Scan_Count_Group_2
+
+            groupRatio_1 = x_1 / psm_Or_Scan_Count_Group_1
+            groupRatio_2 = x_2 / psm_Or_Scan_Count_Group_2
+
+            if ( groupRatio_1 === 0 || groupRatio_2 === 0 ) {
+                var z = 0
+            }
+
         } else {
 
             if ( filtered_Psm_Or_Scan_Count_1 === undefined || filtered_Psm_Or_Scan_Count_2 === undefined ) {
                 throw Error("if ( filtered_Psm_Or_Scan_Count_1 === undefined || filtered_Psm_Or_Scan_Count_2 === undefined ) {")
             }
 
-            filteredZscore = ModPage_ModStatsUtils.getZScoreForTwoRatios({ x1: x_1, n1: filtered_Psm_Or_Scan_Count_1, x2: x_2, n2: filtered_Psm_Or_Scan_Count_2 });
+            //  Flip 1 & 2
+            filteredZscore = ModPage_ModStatsUtils.getZScoreForTwoRatios({ x1: x_2, n1: filtered_Psm_Or_Scan_Count_2, x2: x_1, n2: filtered_Psm_Or_Scan_Count_1 });
+
+            //  WAS
+            // filteredZscore = ModPage_ModStatsUtils.getZScoreForTwoRatios({ x1: x_1, n1: filtered_Psm_Or_Scan_Count_1, x2: x_2, n2: filtered_Psm_Or_Scan_Count_2 });
 
             filteredPvalue = ModPage_ModStatsUtils.getPValueForTwoRatios({ x1: x_1, n1: filtered_Psm_Or_Scan_Count_1, x2: x_2, n2: filtered_Psm_Or_Scan_Count_2 });
             filteredPvalue = filteredPvalue * sortedModMasses.length;
             if (filteredPvalue > 1) {
                 filteredPvalue = 1;
+            }
+
+            psm_Or_Scan_Count_ForRatio_Group_1 = filtered_Psm_Or_Scan_Count_1
+            psm_Or_Scan_Count_ForRatio_Group_2 = filtered_Psm_Or_Scan_Count_2
+
+            groupRatio_1 = x_1 / filtered_Psm_Or_Scan_Count_1
+            groupRatio_2 = x_2 / filtered_Psm_Or_Scan_Count_2
+
+            if ( groupRatio_1 === 0 || groupRatio_2 === 0 ) {
+                var z = 0
             }
         }
 
@@ -1243,6 +1861,12 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
             count_2: x_2,
             zscore: zscore,
             pvalue: pvalue,
+
+            psm_Or_Scan_Count_ForRatio_Group_1,
+            psm_Or_Scan_Count_ForRatio_Group_2,
+            groupRatio_1,
+            groupRatio_2,
+
             rank: undefined  //  Set later
         };
 
@@ -1308,5 +1932,12 @@ type INTERNAL_TableRow = {
     count_2: number
     zscore: number
     pvalue: number
+
+    psm_Or_Scan_Count_ForRatio_Group_1: number
+    psm_Or_Scan_Count_ForRatio_Group_2: number
+
+    groupRatio_1: number
+    groupRatio_2: number
+
     rank: number
 }

@@ -42,6 +42,14 @@ export enum ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRAN
     global_qvalue_bh = "global-qvalue-bh"
 }
 
+
+export enum ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum {
+    PVALUE = "PVALUE",
+    ZSCORE = "ZSCORE"
+}
+
+
+
 /////////////////
 
 
@@ -542,14 +550,15 @@ const _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION = 1;
 const _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'v';
 
 const _SAVE_STATE_KEYS = {
-    PROJECT_SEARCH_IDS: 'p',
-    'PSM_QUANT_METHOD': 'q',
     'QUANT_TYPE': 'a',
+    SIGNIFICANCE_METRIC_CHART_TYPE: 'b',
     'COLOR_MAX_CUTOFF_COUNT': 'c',
     'DISPLAY_TAB': 'd',
     zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData: 'f',
     searchGroups_For_ZScore_Selections: 'g',
     'MOD_MASS_MIN_CUTOFF': 'n',
+    PROJECT_SEARCH_IDS: 'p',
+    'PSM_QUANT_METHOD': 'q',
     'COLOR_MAX_CUTOFF_RATIO': 'r',
     'SELECTED_RECTS': 's',
     'DATA_TRANSFORMATION' : 't',
@@ -607,6 +616,20 @@ const _DATA_TRANSFORMATION_DECODING_KEYS = [
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_qvalue_bh
 ];
 
+////
+
+
+const _SIGNIFICANCE_METRIC_CHART_TYPE_ENCODING_KEYS = {}
+
+_SIGNIFICANCE_METRIC_CHART_TYPE_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ] = 0
+_SIGNIFICANCE_METRIC_CHART_TYPE_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE ] = 1
+
+const _SIGNIFICANCE_METRIC_CHART_TYPE_DECODING_KEYS = [
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE
+];
+
+
 //////////////////////
 //////////////////////
 
@@ -641,6 +664,8 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
         searchGroups_For_ZScore_Selections: ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections
 
         zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData : boolean
+
+        significance_metric_chart_type : ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum
     }
 
     private _projectSearchIds_WereLoadedFromStateInURL = false
@@ -679,8 +704,11 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
                 new ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasses_ProjectSearchIds_Visualization_Selections({ callbackOnChange: this._updateState_ForChange_BindThis }),
             searchGroups_For_ZScore_Selections:
                 new ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections({ callbackOnChange: this._updateState_ForChange_BindThis }),
-            zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData: false  //  DEFAULT false
+            zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData: false,  //  DEFAULT false
+            significance_metric_chart_type : ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE // DEFAULT ZSCORE
         }
+
+        var z = 0
     }
 
     private _updateState_ForChange() {
@@ -876,6 +904,18 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
         this._updateState_ForChange()
     }
 
+    get_significance_metric_chart_type() {
+
+        return this._storedState.significance_metric_chart_type
+    }
+
+    set_significance_metric_chart_type( significance_metric_chart_type : ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum ) {
+
+        this._storedState.significance_metric_chart_type = significance_metric_chart_type
+
+        this._updateState_ForChange()
+    }
+
     /**
      * take in deserialized json that represents an optimized view of the data and save it as a working view of the data
      *
@@ -1051,6 +1091,11 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
                 this._storedState.zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData = encodedStateData[_SAVE_STATE_KEYS.zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData] != 0;    // boolean trick, 0 == false, !0 == true
             }
 
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.SIGNIFICANCE_METRIC_CHART_TYPE)) {
+                this._storedState.significance_metric_chart_type = _SIGNIFICANCE_METRIC_CHART_TYPE_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.SIGNIFICANCE_METRIC_CHART_TYPE]];
+            }
+
+
             ///   WARNING:  This MUST be the LAST value taken from the encoded state in URL.  The URL will be updated for changes to proteinPosition_Of_Modification_Filter_UserSelections_StateObject
 
             if ( initParams && initParams.proteinPosition_Of_Modification_Filter_UserSelections_StateObject ) {
@@ -1176,6 +1221,10 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
 
         if ( this._storedState.excludeUnlocalizedOpenMods !== undefined ) {
             dataForEncoding[_SAVE_STATE_KEYS.EXCLUDE_UNLOCALIZED_MODS] = this._storedState.excludeUnlocalizedOpenMods ? 1 : 0;  // encode true as 1, false as 0
+        }
+
+        if ( this._storedState.significance_metric_chart_type !== undefined) {
+            dataForEncoding[_SAVE_STATE_KEYS.SIGNIFICANCE_METRIC_CHART_TYPE] =  _SIGNIFICANCE_METRIC_CHART_TYPE_ENCODING_KEYS[this._storedState.significance_metric_chart_type];
         }
 
         {
