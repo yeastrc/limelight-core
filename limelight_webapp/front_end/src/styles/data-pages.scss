@@ -154,12 +154,16 @@
             }
         }
 
+        $data-table-react-border-spacing-horizontal-half: 6px;  //  Half since need half in other places
+
+        $data-table-react-border-spacing-horizontal-full: $data-table-react-border-spacing-horizontal-half * 2;
+
         //  !!!  Header Table and Data Rows Table.  <table> and children values.  !!!
 
         table.data-table-header-table, table.data-table-data-rows-table {
 
           font-size: 12px;  //  DataTable Default Font Size
-          border-spacing: 12px 6px;  // <Horizontal> <Vertical> -- Spacing around cells in table
+          border-spacing: $data-table-react-border-spacing-horizontal-full 6px;  // <Horizontal> <Vertical> -- Spacing around cells in table
         }
 
         //  Data Table Row Border values.  Declared here since also used in Table Header formatting
@@ -214,6 +218,17 @@
                 span.display-name-value {
                     overflow-wrap: break-word;
                 }
+            }
+
+            div.header-cell-divider-line-outer-container {
+
+              position: relative;
+              display: inline-block;
+
+              div.header-cell-divider-line-inner-container {
+                position: absolute;
+                left: $data-table-react-border-spacing-horizontal-half
+              }
             }
         }
       }

@@ -171,8 +171,13 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
 
         //  Column separator vertical line positioned to be on the edge between cells in the table
         columnSeparator = (
-          <div style={ { position: "relative", display: "inline-block" } }>
-            <div style={ { position: "absolute", left: 4, bottom: svg_BottomPosition } }>
+          <div
+              className=" header-cell-divider-line-outer-container "  // Value for 'position' and 'display'
+          >
+            <div
+                className=" header-cell-divider-line-inner-container "  // Value for 'left' and 'position'
+                style={ { bottom: svg_BottomPosition } }
+            >
                 <svg preserveAspectRatio="none" height="16px" width="2px"><line x1="0" y1="0" x2="0" y2="16" style={ { stroke: "#d3d3d3", strokeWidth:2 } } /></svg>
             </div>
           </div>
