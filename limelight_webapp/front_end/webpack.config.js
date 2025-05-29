@@ -8,6 +8,7 @@ const path = require('path');
 
 	//  https://www.npmjs.com/package/case-sensitive-paths-webpack-plugin
 var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 
 //  !!!!!!!  'extensions:' Needs to be updated for any new file extensions used
@@ -46,25 +47,11 @@ const module_MAIN = {
 			options: {  } // Do not put this inside options: { } :  { presets: ["@babel/env"] }
 		},
 		{
-			test:/\.scss$/,
+			test: /\.scss$/,
 			use: [
-				{
-					loader: 'file-loader',
-					options: {
-						name: '[name].css',
-						outputPath: 'css_generated/'
-					}
-				},
-				{
-					loader: 'extract-loader'
-				},
-				{
-					loader: 'css-loader',
-					options: {} //  WAS { minimize: true }  Output is minimized anyway
-				},
-				{
-					loader: 'sass-loader'
-				}
+				MiniCssExtractPlugin.loader, // Extracts CSS into files
+				'css-loader',                // Turns CSS into JS modules
+				'sass-loader'                // Compiles Sass to CSS
 			]
 		}
 	]
@@ -83,7 +70,10 @@ const resolve = {
 }
 
 const plugins = [
-	new CaseSensitivePathsPlugin()
+	new CaseSensitivePathsPlugin(),
+	new MiniCssExtractPlugin({
+		filename: 'css_generated/global.css' // Output file name
+	})
 ]
 
 
