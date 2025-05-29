@@ -64,9 +64,6 @@ import {
     ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass";
 import {
-    modPage_Download_PSM_Localization_Report
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__clickable_links_for_downloads_and_view_js/modPage_Download_PSM_Localization_Report";
-import {
     ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
 import {
@@ -83,6 +80,9 @@ import {
 import {
     modPage_Get_DataTransformationType_DisplayLabel
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_Get_DataTransformationType_DisplayLabel";
+import {
+    open_ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividually_Overlay
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/modPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividually_Overlay";
 
 
 //  Default and Min Width for the block for the search names and Color Legend Bar label to the left of the SVG with the Mod Mass Heat Map
@@ -620,7 +620,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
      */
     private _download_PSM_Localization_Report_Clicked( event: React.MouseEvent<HTMLSpanElement, globalThis.MouseEvent> ) { try {
 
-        modPage_Download_PSM_Localization_Report({
+        open_ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividually_Overlay({
             projectSearchIds: this.props.projectSearchIds_AllForPage,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
             modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,

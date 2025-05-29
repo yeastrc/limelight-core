@@ -356,6 +356,8 @@ const _modPage_Download_PSM_Localization_Report_After_GetData = function (
     //     modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms
     // )
 
+    const searchIds_Array: Array<number> = []
+
     const reportLines:Array<string> = []
 
     //  HEADER LINE
@@ -368,6 +370,8 @@ const _modPage_Download_PSM_Localization_Report_After_GetData = function (
         const peptideIds_For_MainFilters_Holder = peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
         const scanFileData_Holder_For_ProjectSearchId = scanFileData_Holder.get_For_ProjectSearchId( projectSearchId )
         const proteinInfo_For_MainFilters_Holder = proteinInfo_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
+
+        searchIds_Array.push( searchId )
 
         //  Cache protein names string for ProteinSequenceVersionId
         const proteinNames_String_Output_Map_Key_ProteinSequenceVersionId: Map<number, string> = new Map()
@@ -865,16 +869,27 @@ const _modPage_Download_PSM_Localization_Report_After_GetData = function (
 
         const e_message = e.message
 
-        window.alert( "Failed to create string to download.  Total character count is probably too large. Total Character Count All Lines: " + totalCharacterCountAllLines.toLocaleString() +".  Try changing to a few searches at a time to download." )
+        window.alert( "Failed to create string to download.  Total character count is probably too large. Total Character Count All Lines: " + totalCharacterCountAllLines.toLocaleString() +"." )
 
-        const msg = "modPage_Download_PSM_Localization_Report(...): Failed to create string to download. Total Character Count All Lines: " + totalCharacterCountAllLines.toLocaleString() + ", error msg: " + e_message
+        //  WAS when downloading all searches at once
+        // window.alert( "Failed to create string to download.  Total character count is probably too large. Total Character Count All Lines: " + totalCharacterCountAllLines.toLocaleString() +".  Try changing to a few searches at a time to download." )
+
+        const msg = "modPage_Download_PSM_Localization_Report(...): Failed to create string to download. Total Character Count All Lines: " + totalCharacterCountAllLines.toLocaleString() + ". Project Search Ids: " + projectSearchIds.join(",") + ", error msg: " + e_message
 
         console.warn(msg)
 
         throw Error( msg )
     }
 
-    StringDownloadUtils.downloadStringAsFile( { stringToDownload : downloadString, filename: 'psm_modification_localization_report.txt' } );
+    let download_Filename_SearchIdsLabel = "search"
+
+    if ( searchIds_Array.length > 1 ) {
+        download_Filename_SearchIdsLabel += "es"
+    }
+
+    const download_Filename = 'psm_modification_localization_report__' + download_Filename_SearchIdsLabel + "_" + searchIds_Array.join("_") + ".txt"
+
+    StringDownloadUtils.downloadStringAsFile( { stringToDownload : downloadString, filename: download_Filename } );
 }
 
 
