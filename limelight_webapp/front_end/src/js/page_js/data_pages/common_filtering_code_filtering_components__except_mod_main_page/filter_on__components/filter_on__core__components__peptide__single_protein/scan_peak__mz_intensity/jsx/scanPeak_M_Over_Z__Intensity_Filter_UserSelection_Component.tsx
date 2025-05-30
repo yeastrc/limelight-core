@@ -206,9 +206,14 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                             <div style={ { marginRight: 5 } }>
                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                     title={
-                                        <span>
-                                            Click to change filter value
-                                        </span>
+                                        <div>
+                                            <div>
+                                                Click to change filter value
+                                            </div>
+                                            <div style={ { marginTop: 15 } }>
+                                                A PSM is shown if it passes <b>any</b> of the filters.
+                                            </div>
+                                        </div>
                                     }
                                     { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
@@ -234,9 +239,14 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                             <div>
                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                     title={
-                                        <span>
-                                            Click to change filter value
-                                        </span>
+                                        <div>
+                                            <div>
+                                                Click to change filter value
+                                            </div>
+                                            <div style={ { marginTop: 15 } }>
+                                                A PSM is shown if it passes <b>any</b> of the filters.
+                                            </div>
+                                        </div>
                                     }
                                     { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
