@@ -288,9 +288,14 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
 
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
-                                <span>
-                                    Only show PSMs that contain a peak for a given mass and charge.
-                                </span>
+                                <div>
+                                    <div>
+                                        Only show PSMs that contain a peak for a given mass and charge.
+                                    </div>
+                                    <div style={ { marginTop: 15 } }>
+                                        A PSM is shown if it passes <b>any</b> of the filters.
+                                    </div>
+                                </div>
                             }
                         />
                     </div>

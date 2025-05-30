@@ -350,8 +350,14 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
                                      } }
                                 ></div>
 
-                                <div style={ { fontSize: 18, fontWeight: "bold" } }>
-                                    Current Special Ion Filters:
+                                <div>
+                                    <span style={ { fontSize: 18, fontWeight: "bold" } }>
+                                        Current Special Ion Filters:
+                                    </span>
+                                    <span> </span>
+                                    <span>
+                                        (A PSM is shown if it passes <b>any</b> of the filters)
+                                    </span>
                                 </div>
                             </>
                         ) : null }
