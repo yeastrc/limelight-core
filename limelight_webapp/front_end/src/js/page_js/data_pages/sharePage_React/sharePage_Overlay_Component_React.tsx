@@ -88,7 +88,7 @@ class SharePage_Overlay_Component extends React.Component< SharePage_Overlay_Com
 
                 <div className=" change-searches-overlay-outer-block top-level single-entry-variable-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
                 >
-                    <div>
+                    <div style={ { userSelect: "all" } }>
                         { this.props.urlShortcutString}
                     </div>
                     <div style={ { marginTop: 15 } }>
