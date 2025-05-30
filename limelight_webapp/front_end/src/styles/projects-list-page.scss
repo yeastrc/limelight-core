@@ -1,5 +1,13 @@
 // styles specific to the projects list page
 
+// import common SCSS Variables
+
+@use 'a-common-scss-variables.scss' as *;
+
+// import our mixins
+@use 'mixins.scss' as *;
+
+
 body.projects-list-page {
 
     .your-projects-title {

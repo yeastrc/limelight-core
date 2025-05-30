@@ -2,6 +2,16 @@
  * Styles applicable to all pages in the site
  */
 
+
+// import common SCSS Variables
+
+@use 'a-common-scss-variables.scss' as *;
+
+
+// import our mixins
+@use 'mixins.scss' as *;
+
+
 html, body {
 	margin:0;
 	padding:0;
@@ -145,12 +155,9 @@ input[type="checkbox"], .left-margin-same-as-checkbox {
 
 // set the sizes of our icons
 
-$icon-small--max-height: 12px;
-$icon-small--max-width: 12px;
-
 img.icon-small, input[type="image"].icon-small  { 
   max-height: 16px;
-  max-width:12px;
+  max-width: $icon-small--max-width;  //  use SCSS variable since use the value other CSS classes
 }
 
 img.icon-small-svg, input[type="image"].icon-small-svg  {

@@ -3,6 +3,14 @@
  *
  */
 
+// import common SCSS Variables
+
+@use 'a-common-scss-variables.scss' as *;
+
+// import our mixins
+@use 'mixins.scss' as *;
+
+
 @use "sass:math";
 
 body.qc-page {

@@ -7,7 +7,16 @@
  *   **  Includes footer-outer-container  **
  */
 
- body.standard-header-pages {
+// import common SCSS Variables
+
+@use 'a-common-scss-variables.scss' as *;
+
+
+// import our mixins
+@use 'mixins.scss' as *;
+
+
+body.standard-header-pages {
 
      //  Is not inside the 'div.header-outer-container'
      div.header-projects-list-container {

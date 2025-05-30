@@ -1,0 +1,86 @@
+
+//  a-common-scss-variables.scss
+
+//  Common SCSS Variable values that are included in all files using "@use"
+
+
+//  Keep colors and values in   limelight__Limelight_Colors_Etc__SyncWith_global.scss__Constants.ts
+
+// our colors
+$color-white: #ffffff;
+
+$site-standard-background-color: $color-white;
+
+$font-color-dark: #172B4D;
+
+$font-color-default: $font-color-dark;  // used on <body>
+
+$font-color-light-gray: #808080; // rgb(128,128,128): Used for 'fading out' text
+
+$font-background-color-gray: #969696;  // Currently NOT USED.  Was used in Sequence Coverage
+
+$font-background-color-orange: orange;  // Currently used in Sequence Coverage
+
+$font-background-color-disabled: #540000;  //  Currently used on "Share Data" on Project Page for Disabled
+
+$site-color-very-dark:#005606;
+$site-color-dark: #32cd32;
+$site-color-medium: #e4f9e4;
+$site-color-light: #f0f7f0;
+
+$site-color-dark-alt: #CDCD32;
+
+$site-color-gray: #d3d3d3;
+$site-color-gray-text: #a3a3a3;
+
+//  color for 'gentle' notifications - less in the users face compare to red - currently a special yellow
+$site-color-gentle-notification: #FEDD00;
+
+
+$link-color-unvisited: #005606;
+$link-color-visited: #005606;
+$link-color-hover: $site-color-dark;
+$link-color-active: $site-color-dark;
+$link-color-underline: #65A96A;
+
+
+
+//  color for "Filtering"
+$filtering-display-color: $site-color-gentle-notification;
+$filtering-display-background-color: $filtering-display-color; //  Background color for Data Page "Filtering On" and other uses
+$filtering-display-border-color: $filtering-display-color;
+
+//  Search Details Block PSM/Peptide Filter
+
+$search-details-block-filter-background-color-not-default-filter-value: #F2DC84;  // Background color for Search Details Block Filter Value when NOT search default value
+
+//  The border color used for the NOT of OR/AND/NOT Peptide Filters
+
+$peptide-filter--not-border-color: red;
+
+//  Light Red for background
+
+$color-light-red-for-background: #FFD8D8;
+
+//  Light Red for background
+
+$color-light-blue-for-background: #D8DCFF;
+
+
+
+
+//  Error Text
+
+$error-text-color: #A55353;
+
+// our fonts
+$theme-font: arial, sans-serif;
+
+//  Default font size (Applied to <body> in all-pages.scss)
+$default-font-size: 14px;
+
+
+
+// set the sizes of our icons
+
+$icon-small--max-width: 12px;

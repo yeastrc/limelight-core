@@ -3,8 +3,16 @@
  *
  * Also found on Project page, Project List Page, and Project Search Page (All Searches for all Projects for current user)
  */
-    
- body.data-page {
+
+// import common SCSS Variables
+
+@use 'a-common-scss-variables.scss' as *;
+
+// import our mixins
+@use 'mixins.scss' as *;
+
+
+body.data-page {
 
     
     div.hovered-div-highlight:hover {

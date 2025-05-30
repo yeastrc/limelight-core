@@ -1,4 +1,10 @@
 
+
+// import common SCSS Variables
+
+@use 'a-common-scss-variables.scss' as *;
+
+
 // grabbed from http://zerosixthree.se/8-sass-mixins-you-must-have-in-your-toolbox/
 @mixin opacity($opacity) {
     opacity: $opacity;
