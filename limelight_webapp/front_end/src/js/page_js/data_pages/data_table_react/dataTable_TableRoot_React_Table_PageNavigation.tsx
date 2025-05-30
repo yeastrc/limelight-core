@@ -8,7 +8,11 @@
  *      Enter a page number and click "Go to page" button
  *
  */
+
+
 import React from 'react'
+import { tooltipClasses } from '@mui/material/Tooltip';
+
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {DataTable_INTERNAL_RootTableDataObject} from "page_js/data_pages/data_table_react/dataTable_React_INTERNAL_DataObjects";
 import {
@@ -543,11 +547,33 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
                                 <div style={ { position: "relative", display: "inline-block", marginLeft: 10 } } >
                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                         title={
-                                            <span>
+                                            <div style={ { margin: 4 } }>
                                                 { ( this.state.pageNavigation_InputField_Value_NotEmpty_NotANumber? "Value must be an Integer": "Enter a Page number to go to" )}
-                                            </span>
+                                            </div>
                                         }
                                         { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        //  MUI Tooltip properties
+                                        arrow
+                                        followCursor={ false }
+                                        placement={ "right" } // Move to right since display pages below
+                                        slotProps={{
+                                            popper: {
+                                                // modifiers: [
+                                                //     {
+                                                //         name: 'offset',
+                                                //         options: {
+                                                //             offset: [0, -18], // WAS offset: [0, -14],
+                                                //         },
+                                                //     },
+                                                // ],
+                                                sx: {
+                                                    [`&.${tooltipClasses.popper}[data-popper-placement*="right"] .${tooltipClasses.tooltip}`]:
+                                                        {
+                                                            marginLeft: '3px',
+                                                        },
+                                                },
+                                            },
+                                        }}
                                     >
                                         <input
                                             type="text"
