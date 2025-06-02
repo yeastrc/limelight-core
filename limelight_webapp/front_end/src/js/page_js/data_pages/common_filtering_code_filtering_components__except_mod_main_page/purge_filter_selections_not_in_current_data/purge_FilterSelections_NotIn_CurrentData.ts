@@ -265,7 +265,7 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
                 }
 
                 const get_StaticModsHolder_Result =
-                    this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId.
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
                     get_commonData_LoadedFromServer_SingleSearch__StaticModifications().get_StaticModsHolder();
 
                 if ( get_StaticModsHolder_Result.data ) {

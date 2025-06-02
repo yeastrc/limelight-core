@@ -139,11 +139,16 @@ function initShowHideErrorMessage( ) {
 
 function initShowHideErrorMessageSpecificElements( $elements ) {
 
-	$elements.click( function(eventObject) {
+	//  Added Typescript Config: enable: "noImplicitThis": true,
+
+	$elements.click( function(eventObject) { //  Another option is to change parameters to:  (this: HTMLElement, eventObject)
 		
 		//  Add click hander to the "X" in the error message to close the error message
 
-		var clickThis = this;
+		//  Added Typescript Config: enable: "noImplicitThis": true,
+
+		// @ts-ignore
+		var clickThis = this;  //  'this' is passed to function as element clicked on
 		
 		var $clickThis = $( clickThis );
 		

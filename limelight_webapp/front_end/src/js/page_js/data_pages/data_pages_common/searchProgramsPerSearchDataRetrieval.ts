@@ -155,7 +155,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 			searchProgramsPerSearchData_Root = new SearchProgramsPerSearchData_Root();
 		}
 		
-		perSearchList.forEach(function( perSearchListArrayItem: any, index: any, array: any ) {
+		perSearchList.forEach( ( perSearchListArrayItem: any, index: any, array: any ) => {
 			
 			//  Convert SearchProgramsPerSearch list to ...
 
@@ -174,7 +174,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 			searchProgramsPerSearchItems_PerProjectSearchId.projectSearchId = perSearchListArrayItem.projectSearchId
 			searchProgramsPerSearchItems_PerProjectSearchId.searchId = perSearchListArrayItem.searchId
 
-			perSearchListArrayItem.searchProgramsPerSearchs.forEach(function( searchProgramsPerSearchsArrayItem: any, index: any, array: any ) {
+			perSearchListArrayItem.searchProgramsPerSearchs.forEach( ( searchProgramsPerSearchsArrayItem: any, index: any, array: any ) => {
 
 				if ( ! limelight__variable_is_type_number_Check( searchProgramsPerSearchsArrayItem.searchProgramsPerSearchId ) ) {
 					const msg = "searchProgramsPerSearchsArrayItem.searchProgramsPerSearchId is not a number: " + searchProgramsPerSearchsArrayItem.searchProgramsPerSearchId;
@@ -196,12 +196,12 @@ export class SearchProgramsPerSearchDataRetrieval {
 				});
 				Object.seal( searchProgramsPerSearchItem );
 				searchProgramsPerSearchItems_PerProjectSearchId.searchProgramsPerSearchItem_Map.set( searchProgramsPerSearchItem.searchProgramsPerSearchId, searchProgramsPerSearchItem );
-			}, this );
+			} );
 			
 			//  Put in Map, key projectSearchId
 			searchProgramsPerSearchData_Root.searchProgramsPerSearchItems_PerProjectSearchId_Map.set( searchProgramsPerSearchItems_PerProjectSearchId.projectSearchId, searchProgramsPerSearchItems_PerProjectSearchId );
 			
-		}, this );
+		} );
 		
 		//  Save Data to state manager
 		dataPageStateManager_DataFrom_Server.set_searchProgramsPerSearchData_Root( searchProgramsPerSearchData_Root );

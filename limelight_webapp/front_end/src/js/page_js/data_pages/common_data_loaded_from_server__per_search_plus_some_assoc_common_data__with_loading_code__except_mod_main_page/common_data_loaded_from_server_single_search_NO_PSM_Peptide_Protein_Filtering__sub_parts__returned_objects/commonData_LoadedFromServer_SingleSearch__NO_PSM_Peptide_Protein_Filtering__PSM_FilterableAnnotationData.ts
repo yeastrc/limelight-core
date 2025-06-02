@@ -306,7 +306,7 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
      * @param webserviceRetrievals_InProgress
      * @private
      */
-    private _get_PSM_FilterableAnnotationData_Unfiltered__Holder = function(
+    private _get_PSM_FilterableAnnotationData_Unfiltered__Holder(
         {
             psmFilterableAnnotationTypeIds_Requested, include_DecoyPSM,
             get_PSM_FilterableAnnotationData_Holder, webserviceRetrievals_InProgress

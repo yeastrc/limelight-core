@@ -65,10 +65,10 @@ export const loadGoogleRecaptcha = function() : { isLoaded: boolean, grecaptcha:
 						googleRecaptcha_DeferredToResolveOnLoad = []; // reset
 
 						if ( googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local.length > 0 ) {
-							googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local.forEach(function( googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoadItem, i, array) {
+							googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local.forEach( ( googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoadItem, i, array) => {
 								//						console.log("Processsing entry in googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local, index: " + i );
 								googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoadItem.resolvePromise();
-							}, this)
+							} )
 						}
 
 						// @ts-ignore
