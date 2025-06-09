@@ -41,6 +41,7 @@ head_section_include_every_page.jsp
     		https://www.recaptcha.net/recaptcha/api.js  <%-- Google Recaptcha --%>
     		https://www.google.com/recaptcha/api.js  <%-- Google Recaptcha Original path --%>
     		;
+    		object-src 'none';
     		">
  
 <%-- Included script tests for Internet Explorer. --%>
