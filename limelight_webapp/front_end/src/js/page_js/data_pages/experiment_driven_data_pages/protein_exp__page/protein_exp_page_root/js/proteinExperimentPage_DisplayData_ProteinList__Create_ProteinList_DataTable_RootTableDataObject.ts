@@ -10,6 +10,8 @@ import {
     DataTable_Column_DownloadTable,
     DataTable_DataGroupRowEntry,
     DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+    DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
     DataTable_DataRow_ColumnEntry_SearchTableData,
     DataTable_DataRowEntry,
@@ -23,8 +25,7 @@ import {
 
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 import {
-    get_ProteinList_ProteinDescription_ExternalReactComponent,
-    get_ProteinList_ProteinName_ExternalReactComponent
+    get_ProteinName_ProteinDescription_Tooltip_Contents
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/jsx/proteinViewPage_DisplayData_ProteinList__ProteinName_ProteinDescription_DataTable_Component";
 import {ProteinNameDescriptionCacheEntry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/protein_view_page__display_data__protein_list__create_protein_display_data__before__not_grouped__grouped";
 import {
@@ -599,21 +600,20 @@ const _createProteinItem_DataTableEntry = function(
             throw Error( "_createProteinItem_DataTableEntry(...): proteinListItem.proteinNames not populated: " + proteinListItem.proteinNames )
         }
 
-        const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+        const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+            ( params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
 
-                return get_ProteinList_ProteinName_ExternalReactComponent({
-                    proteinName: proteinListItem.proteinNames, proteinSequenceVersionId: proteinListItem.proteinSequenceVersionId, proteinNameDescriptionForToolip
-                });
-            };
+                return get_ProteinName_ProteinDescription_Tooltip_Contents({ proteinNameDescriptionForToolip })
+            }
 
         const valueDisplay = proteinListItem.proteinNames;
         const searchEntriesForColumn : Array<string> = [ valueDisplay ];
         const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn });
         const columnEntry = new DataTable_DataRow_ColumnEntry({
             searchTableData,
+            valueDisplay: proteinListItem.proteinNames,
             valueSort : proteinListItem.proteinNames,
-            valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
+            tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
         })
         columnEntries.push( columnEntry );
 
@@ -626,21 +626,20 @@ const _createProteinItem_DataTableEntry = function(
             proteinDescription = "";  // Was undefined, null, or empty string so make it empty string
         }
 
-        const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+        const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+            ( params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
 
-                return get_ProteinList_ProteinDescription_ExternalReactComponent({
-                    proteinDescription: proteinDescription, proteinSequenceVersionId: proteinListItem.proteinSequenceVersionId, proteinNameDescriptionForToolip
-                });
-            };
+                return get_ProteinName_ProteinDescription_Tooltip_Contents({ proteinNameDescriptionForToolip })
+            }
 
         const valueDisplay = proteinDescription;
         const searchEntriesForColumn : Array<string> = [ valueDisplay ]
         const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
         const columnEntry = new DataTable_DataRow_ColumnEntry({
             searchTableData,
+            valueDisplay,
             valueSort : proteinDescription,
-            valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
+            tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
         })
         columnEntries.push( columnEntry );
 

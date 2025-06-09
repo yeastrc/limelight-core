@@ -9,9 +9,9 @@
 
 import React from "react";
 import {
-    tooltip_Limelight_Create_Tooltip,
-    Tooltip_Limelight_Created_Tooltip
-} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 /**
@@ -151,84 +151,42 @@ interface SingleProteinName_Entry_Component_State {
  */
 class SingleProteinName_Entry_Component extends React.Component< SingleProteinName_Entry_Component_Props, SingleProteinName_Entry_Component_State > {
 
-    private _onMouseEnter_BindThis = this._onMouseEnter.bind(this);
-    private _onMouseLeave_BindThis = this._onMouseLeave.bind(this);
-
-    private _containingDOMElement_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()
-
-    private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip;
-
-    private _unmounted = false;
-
+    private _onClick_Handler_BindThis = this._onClick_Handler.bind(this);
     /**
      *
      */
     constructor(props : SingleProteinName_Entry_Component_Props) {
         super(props);
-
-        this._containingDOMElement_Ref = React.createRef<HTMLDivElement>();
-    }
-
-    componentWillUnmount() {
-
-        this._unmounted = true;
-
-        if ( this._tooltip_Limelight_Created_Tooltip ) {
-            this._tooltip_Limelight_Created_Tooltip.removeTooltip();
-        }
-        this._tooltip_Limelight_Created_Tooltip = null;
     }
 
     /**
      *
      */
-    private _onMouseEnter( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+    private _onClick_Handler( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
 
-        // event.stopPropagation();
+        event.stopPropagation();
 
-        if ( ! this._containingDOMElement_Ref.current ) {
-            return;
-        }
-
-        const tooltipContents = _getTooltipText( this.props.proteinNameDescriptionForToolip );
-        this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element: this._containingDOMElement_Ref.current, tooltipContents });
-
-    }
-
-    /**
-     *
-     */
-    private _onMouseLeave( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
-
-        // event.stopPropagation();
-
-        if ( this._tooltip_Limelight_Created_Tooltip ) {
-            this._tooltip_Limelight_Created_Tooltip.removeTooltip();
-        }
-        this._tooltip_Limelight_Created_Tooltip = null;
+        this.props.proteinName_Clicked_Callback({
+            proteinSequenceVersionId: this.props.proteinSequenceVersionId,
+            ctrlKey_From_ClickEvent: event.ctrlKey,
+            metaKey_From_ClickEvent: event.metaKey
+        });
     }
 
     render() {
         return (
-            <span
-                ref={ this._containingDOMElement_Ref }
-                className={" fake-link "}
-                onClick={
-                    ( event ) => {
-                        event.stopPropagation();
-                        this.props.proteinName_Clicked_Callback(
-                            {
-                                proteinSequenceVersionId: this.props.proteinSequenceVersionId,
-                                ctrlKey_From_ClickEvent: event.ctrlKey,
-                                metaKey_From_ClickEvent: event.metaKey
-                            });
-                    }
-                }
-                onMouseEnter={ this._onMouseEnter_BindThis }
-                onMouseLeave={ this._onMouseLeave_BindThis }
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                title={ _getTooltipText( this.props.proteinNameDescriptionForToolip ) }
+                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
             >
-                { this.props.proteinName }
-            </span>
+                <span
+                    // ref={ this._containingDOMElement_Ref }
+                    className={" fake-link "}
+                    onClick={ this._onClick_Handler_BindThis }
+                >
+                    { this.props.proteinName }
+                </span>
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         );
     }
 }

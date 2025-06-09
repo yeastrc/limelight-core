@@ -13,10 +13,6 @@ import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__dis
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import ReactDOM from "react-dom";
 import {
-    tooltip_Limelight_Create_Tooltip,
-    Tooltip_Limelight_Created_Tooltip
-} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
-import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
@@ -1079,20 +1075,12 @@ class INTERNAL__OverlayUpdateButton extends React.Component< INTERNAL__OverlayUp
 
     //  bind to 'this' for passing as parameters
     private _onClick_BindThis = this._onClick.bind(this)
-    private _onMouseEnter_BindThis = this._onMouseEnter.bind(this)
-    private _onMouseLeave_BindThis = this._onMouseLeave.bind(this)
-
-    private readonly _button_Ref :  React.RefObject<HTMLInputElement>
-
-    private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
 
     /**
      *
      */
     constructor(props: INTERNAL__OverlayUpdateButton_Props) {
         super(props);
-
-        this._button_Ref = React.createRef();
 
         // this.state = { };
     }
@@ -1104,15 +1092,18 @@ class INTERNAL__OverlayUpdateButton extends React.Component< INTERNAL__OverlayUp
 
         event.stopPropagation()
 
-        this._removeTooltip()
-
         this.props.buttonClicked_Callback()
     }
 
     /**
      *
      */
-    private _onMouseEnter() {
+    render() {
+        let buttonDisabled = false
+
+        if ( this.props.isCurrentSelection ) {
+            buttonDisabled = true
+        }
 
         let tooltipContents : JSX.Element = undefined
         if ( this.props.isCurrentSelection && this.props.buttonTooltip_WhenCurrentSelectionText ) {
@@ -1135,56 +1126,30 @@ class INTERNAL__OverlayUpdateButton extends React.Component< INTERNAL__OverlayUp
                 </div>
             )
         }
-        this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._button_Ref.current })
-    }
-
-    /**
-     *
-     */
-    private _onMouseLeave() {
-
-        this._removeTooltip()
-    }
-
-    /**
-     *
-     */
-    private _removeTooltip() {
-
-        if ( this._tooltip_Limelight_Created_Tooltip ) {
-            this._tooltip_Limelight_Created_Tooltip.removeTooltip()
-        }
-        this._tooltip_Limelight_Created_Tooltip = undefined
-    }
-
-    /**
-     *
-     */
-    render() {
-        let buttonDisabled = false
-
-        if ( this.props.isCurrentSelection ) {
-            buttonDisabled = true
-        }
 
         return (
             <div style={ { display : "inline-block", position: "relative" } }>
-                <input
-                    type="button"
-                    value={ this.props.buttonLabel }
-                    disabled={ buttonDisabled }
-                    ref={ this._button_Ref }
-                    onClick={ this._onClick_BindThis }
-                    onMouseEnter={ this._onMouseEnter_BindThis }
-                    onMouseLeave={ this._onMouseLeave_BindThis }
-                />
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={ tooltipContents }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    <input
+                        type="button"
+                        value={ this.props.buttonLabel }
+                        disabled={ buttonDisabled }
+                        onClick={ this._onClick_BindThis }
+                    />
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 { (this.props.isCurrentSelection) ?
                     ( // Add Overlay Div to provide target for tooltip
-                        <div style={ { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 } }
-                             onMouseEnter={ this._onMouseEnter_BindThis }
-                             onMouseLeave={ this._onMouseLeave_BindThis }
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={ tooltipContents }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                        </div>
+                            <div style={ { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 } }
+                            >
+                            </div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     )
                     : null
                 }

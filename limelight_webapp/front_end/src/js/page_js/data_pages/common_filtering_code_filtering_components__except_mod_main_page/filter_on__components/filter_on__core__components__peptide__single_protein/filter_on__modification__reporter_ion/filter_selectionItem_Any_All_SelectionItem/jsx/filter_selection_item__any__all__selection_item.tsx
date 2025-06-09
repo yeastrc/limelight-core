@@ -10,9 +10,12 @@
 
 import React from 'react'
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
-import {tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 import {filter_selection_item__any__all__selection_item_TooltipText__Selected} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_TooltipText__Selected_and_Buttons";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 /**
@@ -37,18 +40,12 @@ export class Filter_selectionItem_Any_All_SelectionItem extends React.Component<
 
     //  bind to 'this' for passing as parameters
 
-    private readonly _entry_Ref :  React.RefObject<HTMLDivElement>
-    private _entry_OnMouseEnter_BindThis = this._entry_OnMouseEnter.bind(this);
-    private _entry_OnMouseLeave_BindThis = this._entry_OnMouseLeave.bind(this);
-    private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
-
     /**
      *
      */
     constructor(props: Filter_selectionItem_Any_All_SelectionItem_Props) {
         super(props);
 
-        this._entry_Ref = React.createRef();
     }
 
 
@@ -72,14 +69,17 @@ export class Filter_selectionItem_Any_All_SelectionItem extends React.Component<
 
     componentDidUpdate(prevProps: Readonly<Filter_selectionItem_Any_All_SelectionItem_Props>, prevState: Readonly<Filter_selectionItem_Any_All_SelectionItem_State>, snapshot?: any) {
 
-        this._removeTooltip()
     }
-
 
     /**
      *
      */
-    private _entry_OnMouseEnter() {
+    render() {
+
+        const cssClassNames_total = " clickable"
+
+        const iconStyle : React.CSSProperties = { marginTop: 2, marginLeft: 2, marginRight: 2 }
+
 
         let tooltipMainText : string = undefined
 
@@ -97,70 +97,35 @@ export class Filter_selectionItem_Any_All_SelectionItem extends React.Component<
             tooltipMainText = filter_selection_item__any__all__selection_item_TooltipText__Selected._NOT__TOOLTIP_MAIN_TEXT_STRING
         } else {
 
-            return // EARLY RETURN
+            //  No tooltip text needed.  Tooltip component will properly handle 'undefined' and NOT display a tooltip.
         }
-
-        let tooltipContents : JSX.Element = (
-            <div >
-                <div>
-                    { tooltipMainText }
-                </div>
-            </div>
-        )
-
-        this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltipContents, tooltip_target_DOM_Element : this._entry_Ref.current })
-    }
-
-    /**
-     *
-     */
-    private _entry_OnMouseLeave() {
-
-        this._removeTooltip()
-    }
-
-    /**
-     *
-     */
-    private _removeTooltip() {
-
-        if ( this._tooltip_Limelight_Created_Tooltip ) {
-            this._tooltip_Limelight_Created_Tooltip.removeTooltip()
-        }
-        this._tooltip_Limelight_Created_Tooltip = undefined
-    }
-
-    /**
-     *
-     */
-    render() {
-
-        const cssClassNames_total = " clickable"
-
-        const iconStyle : React.CSSProperties = { marginTop: 2, marginLeft: 2, marginRight: 2 }
 
         return (
             <div className=" " style={ { position : "relative" } }>
 
-                <div className={ cssClassNames_total }
-                     ref={ this._entry_Ref }
-                     onMouseEnter={ this._entry_OnMouseEnter_BindThis } onMouseLeave={ this._entry_OnMouseLeave_BindThis }
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={ tooltipMainText }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
+                    <div
+                        className={ cssClassNames_total }
+                    >
 
-                    <div style={ { display: "inline-block" } }>
+                        <div style={ { display: "inline-block" } }>
 
-                        {(this.props.current_selection_SelectionType) ?
-                            //  Selected: Edit Icon: Pencil
-                            <img src="static/images/icon-edit.png" className="fake-link-image icon-small" style={ iconStyle } />
-                            :
-                            //  Not Selected: Add Icon: Plus
-                            <img src="static/images/icon-expand.png" className="fake-link-image icon-small" style={ iconStyle } />
-                        }
+                            {(this.props.current_selection_SelectionType) ?
+                                //  Selected: Edit Icon: Pencil
+                                <img src="static/images/icon-edit.png" className="fake-link-image icon-small" style={ iconStyle } />
+                                :
+                                //  Not Selected: Add Icon: Plus
+                                <img src="static/images/icon-expand.png" className="fake-link-image icon-small" style={ iconStyle } />
+                            }
+                        </div>
+                        <div style={ { display: "inline-block", whiteSpace : "nowrap" } }>
+                            { this.props.textLabel }
+                        </div>
                     </div>
-                    <div style={ { display: "inline-block", whiteSpace : "nowrap" } }>
-                        { this.props.textLabel }
-                    </div>
-                </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             </div>
         )
     }

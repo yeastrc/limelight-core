@@ -34,10 +34,6 @@ import {
 } from "page_js/data_pages/common_components__react/protein_selection_generic_component/proteinSelection_Generic__ProteinData";
 import {ProteinSelection_Generic__UserSelectionData_Root} from "page_js/data_pages/common_components__react/protein_selection_generic_component/proteinSelection_Generic__UserSelectionData";
 import {
-    tooltip_Limelight_Create_Tooltip,
-    Tooltip_Limelight_Created_Tooltip
-} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
-import {
     limelight__Sort_ArrayOfNumbers_SortArrayInPlace
 } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 import {
@@ -1361,96 +1357,47 @@ interface ProteinName_Component_State {
  */
 class ProteinName_Component extends React.Component< ProteinName_Component_Props, ProteinName_Component_State > {
 
-    private _onMouseEnter_BindThis = this._onMouseEnter.bind(this);
-    private _onMouseLeave_BindThis = this._onMouseLeave.bind(this);
-
-    private _proteinNameSpan_Ref: React.RefObject<HTMLSpanElement>
-
-    private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip;
-
-    private _unmounted = false;
-
     /**
      *
      */
     constructor(props: ProteinName_Component_Props) {
         super(props);
-
-        this._proteinNameSpan_Ref = React.createRef<HTMLSpanElement>();
-    }
-
-    componentWillUnmount() {
-
-        this._unmounted = true;
-
-        if ( this._tooltip_Limelight_Created_Tooltip ) {
-            this._tooltip_Limelight_Created_Tooltip.removeTooltip();
-        }
-        this._tooltip_Limelight_Created_Tooltip = null;
-    }
-
-    /**
-     *
-     */
-    private _onMouseEnter( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
-
-        // event.stopPropagation();
-
-        if ( ! this._proteinNameSpan_Ref.current ) {
-            return;
-        }
-
-        const tooltipContents = (
-            <div style={ { marginBottom: 10 } } className="isTooltip">
-
-                <div style={ { marginBottom: 10 } } className="isTooltip">
-                    <span className='is-tooltip-label'>Name(s) and description(s) uploaded to Limelight:</span>
-                </div>
-
-                { this.props.protein.proteinNameDescriptionForTooltip_Entries.map( (value, index) => {
-
-                        return (
-                            <div key={ index }
-                                 style={ { marginBottom : 15 ,marginLeft : 10 } } className="isTooltip"
-                            >
-                                <span>{ value.name }</span>
-                                <span> </span>
-                                <span>{ value.description }</span>
-                            </div>
-                        )
-                    }
-                )
-                }
-
-
-            </div>
-        );
-        this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element: this._proteinNameSpan_Ref.current, tooltipContents });
-
-    }
-
-    /**
-     *
-     */
-    private _onMouseLeave( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
-
-        // event.stopPropagation();
-
-        if ( this._tooltip_Limelight_Created_Tooltip ) {
-            this._tooltip_Limelight_Created_Tooltip.removeTooltip();
-        }
-        this._tooltip_Limelight_Created_Tooltip = null;
     }
 
     render() {
         return (
-            <span
-                ref={ this._proteinNameSpan_Ref }
-                onMouseEnter={ this._onMouseEnter_BindThis}
-                onMouseLeave={ this._onMouseLeave_BindThis }
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                title={
+                    <div style={ { marginBottom: 10 } } >
+
+                        <div style={ { marginBottom: 10 } } >
+                            <span >Name(s) and description(s) uploaded to Limelight:</span>
+                        </div>
+
+                        { this.props.protein.proteinNameDescriptionForTooltip_Entries.map( ( value, index ) => {
+
+                                return (
+                                    <div key={ index }
+                                         style={ { marginBottom: 15, marginLeft: 10 } } className="isTooltip"
+                                    >
+                                        <span>{ value.name }</span>
+                                        <span> </span>
+                                        <span>{ value.description }</span>
+                                    </div>
+                                )
+                            }
+                        )
+                        }
+
+
+                    </div>
+                }
+                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
             >
-                { this.props.protein.proteinName }
-            </span>
+                <span>
+                    { this.props.protein.proteinName }
+                </span>
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         )
     }
 
@@ -1463,14 +1410,16 @@ class ProteinName_Component extends React.Component< ProteinName_Component_Props
 /////////////
 
 class SingleRange_Entry_From_or_To_InputField_Changed_NewValue_Callback_Params {
-    newValue : number
+    newValue: number
 }
-type SingleRange_Entry_From_or_To_InputField_Changed_NewValue_Callback_Type = ( params : SingleRange_Entry_From_or_To_InputField_Changed_NewValue_Callback_Params ) => void;
+
+type SingleRange_Entry_From_or_To_InputField_Changed_NewValue_Callback_Type = ( params: SingleRange_Entry_From_or_To_InputField_Changed_NewValue_Callback_Params ) => void;
 
 class SingleRange_Entry_From_or_To_InputField_Changed_ErrorMessage_Callback_Params {
-    errorMessage : string
+    errorMessage: string
 }
-type SingleRange_Entry_From_or_To_InputField_Changed_ErrorMessage_Callback_Type = ( params : SingleRange_Entry_From_or_To_InputField_Changed_ErrorMessage_Callback_Params ) => void;
+
+type SingleRange_Entry_From_or_To_InputField_Changed_ErrorMessage_Callback_Type = ( params: SingleRange_Entry_From_or_To_InputField_Changed_ErrorMessage_Callback_Params ) => void;
 
 /**
  *
