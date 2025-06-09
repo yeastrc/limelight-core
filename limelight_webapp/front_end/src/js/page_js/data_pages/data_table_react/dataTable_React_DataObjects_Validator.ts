@@ -232,10 +232,19 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
                     }
                 } else {
                     // Column Marked Sortable and NOT have sortFunction so property valueSort must have a value
-                    if (dataTable_DataRow_ColumnEntry.valueSort === undefined || dataTable_DataRow_ColumnEntry.valueSort === null) {
-                        const msg = "Validator: column.sortable is true and dataObject_columnEntry.valueSort is undefined or null.  dataTableId: " + dataTableId;
+
+                    if (dataTable_DataRow_ColumnEntry.valueSort === undefined) {
+                        const msg = "Validator: column.sortable is true and dataObject_columnEntry.valueSort is undefined.  dataTableId: " + dataTableId;
                         console.warn(msg);
                         throw Error(msg);
+                    }
+
+                    if ( ! dataTable_ColumnEntry.sort_Null_BeforeValues_AfterValues_Enum ) {
+                        if ( dataTable_DataRow_ColumnEntry.valueSort === null ) {
+                            const msg = "Validator: column.sortable is true and dataTable_ColumnEntry.sort_Null_BeforeValues_AfterValues_Enum is not set and dataObject_columnEntry.valueSort is null.  dataTableId: " + dataTableId;
+                            console.warn( msg );
+                            throw Error( msg );
+                        }
                     }
                 }
             }

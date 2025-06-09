@@ -5,7 +5,12 @@
  * Sort Data Rows or Data Group Rows
  */
 
-import { DataTable_Column, DataTable_DataGroupRowEntry, DataTable_DataRowEntry } from "./dataTable_React_DataObjects";
+import {
+    DataTable_Column,
+    DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum,
+    DataTable_DataGroupRowEntry,
+    DataTable_DataRowEntry
+} from "./dataTable_React_DataObjects";
 import { SORT_DIRECTION_ASCENDING, SORT_DIRECTION_DECENDING } from "./dataTable_constants";
 import {
     DataTable_INTERNAL_DataGroupRowEntry,
@@ -93,116 +98,147 @@ export const dataTable_SortDataRows__sort_dataRows_on_sortColumnsInfo = function
             if ( a_ColumnEntry ) {
                 a_ColumnValue = a_ColumnEntry.valueSort;
                 a_ColumnValue_FOR_DataTable_Column_sortFunction = a_ColumnEntry.valueSort_FOR_DataTable_Column_sortFunction;
+            } else {
+                var z = 0
+                // window.alert( "else of if ( a_ColumnEntry ) {")
             }
             if ( b_ColumnEntry ) {
                 b_ColumnValue = b_ColumnEntry.valueSort;
                 b_ColumnValue_FOR_DataTable_Column_sortFunction = b_ColumnEntry.valueSort_FOR_DataTable_Column_sortFunction;
+            } else {
+                var z = 0
+                // window.alert( "else of if ( b_ColumnEntry ) {")
             }
 
-            if ( dataTable_Column_ForIndex.sortFunction ) {
+            //  Sort where a_ColumnValue OR b_ColumnValue is undefined --  Should NEVER Happen
 
-                if ( ( a_ColumnValue_FOR_DataTable_Column_sortFunction === undefined || a_ColumnValue_FOR_DataTable_Column_sortFunction === null )
-                    && ( b_ColumnValue_FOR_DataTable_Column_sortFunction === undefined || b_ColumnValue_FOR_DataTable_Column_sortFunction === null ) ) {
-                    continue;  // EARLY CONTINUE
-                }
+            if ( ( a_ColumnValue === undefined ) && ( b_ColumnValue === undefined ) ) {
 
-            } else {
-
-                if ( ( a_ColumnValue === undefined || a_ColumnValue === null ) && ( b_ColumnValue === undefined || b_ColumnValue === null ) ) {
-                    continue;  // EARLY CONTINUE
-                }
+                continue;  // EARLY CONTINUE
             }
 
-            if ( dataTable_Column_ForIndex.sortFunction ) {
+            //  Sort where a_ColumnValue OR b_ColumnValue is null
 
-                if ( ( a_ColumnValue_FOR_DataTable_Column_sortFunction === undefined || a_ColumnValue_FOR_DataTable_Column_sortFunction === null )
-                    && ( b_ColumnValue_FOR_DataTable_Column_sortFunction !== undefined && b_ColumnValue_FOR_DataTable_Column_sortFunction !== null ) ) {
-                    // Sort (undefined or null) before (not undefined and not null)
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return -1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return 1;
-                    }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
+            if ( a_ColumnValue === null || b_ColumnValue === null ) {
+
+                if ( ! dataTable_Column_ForIndex.sort_Null_BeforeValues_AfterValues_Enum ) {
+                    const msg = "DataTable: Unexpected valueSort of null since dataTable_Column_ForIndex.sort_Null_BeforeValues_AfterValues_Enum NOT populated"
+                    console.warn(msg)
+                    throw Error(msg)
                 }
-                if ( ( a_ColumnValue_FOR_DataTable_Column_sortFunction !== undefined && a_ColumnValue_FOR_DataTable_Column_sortFunction !== null )
-                    && ( b_ColumnValue_FOR_DataTable_Column_sortFunction === undefined || b_ColumnValue_FOR_DataTable_Column_sortFunction === null ) ) {
-                    // Sort (undefined or null) before (not undefined and not null)
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return 1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return -1;
+
+                if ( a_ColumnValue === null && b_ColumnValue === null ) {
+
+                    //  Skip to next sort
+
+                    var z = 0
+
+                } else {
+
+                    if ( a_ColumnValue === null ) {
+
+                        if ( dataTable_Column_ForIndex.sort_Null_BeforeValues_AfterValues_Enum === DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_BEFORE_SMALLEST_VALUE ) {
+
+                            if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                                return -1;
+                            } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                                return 1;
+                            }
+
+                        } else if ( dataTable_Column_ForIndex.sort_Null_BeforeValues_AfterValues_Enum === DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_AFTER_LARGEST_VALUE ) {
+
+                            if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                                return 1;
+                            } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                                return -1;
+                            }
+
+                        } else {
+                            const msg = "DataTable: dataTable_Column_ForIndex.sort_Null_BeforeValues_AfterValues_Enum is NEITHER OF SORT_NULL_BEFORE_VALUES SORT_NULL_AFTER_VALUES"
+                            console.warn(msg)
+                            throw Error(msg)
+                        }
                     }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
+
+                    if ( b_ColumnValue === null ) {
+
+                        if ( dataTable_Column_ForIndex.sort_Null_BeforeValues_AfterValues_Enum === DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_BEFORE_SMALLEST_VALUE ) {
+
+                            if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                                return 1;
+                            } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                                return -1;
+                            }
+
+                        } else if ( dataTable_Column_ForIndex.sort_Null_BeforeValues_AfterValues_Enum === DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_AFTER_LARGEST_VALUE ) {
+
+                            if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                                return -1;
+                            } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                                return 1;
+                            }
+
+                        } else {
+                            const msg = "DataTable: dataTable_Column_ForIndex.sort_Null_BeforeValues_AfterValues_Enum is NEITHER OF SORT_NULL_BEFORE_VALUES SORT_NULL_AFTER_VALUES"
+                            console.warn(msg)
+                            throw Error(msg)
+                        }
+                    }
                 }
             } else {
 
-                if ( ( a_ColumnValue === undefined || a_ColumnValue === null ) && ( b_ColumnValue !== undefined && b_ColumnValue !== null ) ) {
-                    // Sort (undefined or null) before (not undefined and not null)
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return -1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return 1;
+                //  Sort where NEITHER OF a_ColumnValue OR b_ColumnValue is null
+
+                if ( dataTable_Column_ForIndex.sortFunction ) {
+
+                    //  custom sort function
+
+                    const sortOrderResponse = dataTable_Column_ForIndex.sortFunction( {
+                        sortValue_A: a_ColumnValue_FOR_DataTable_Column_sortFunction,
+                        sortValue_B: b_ColumnValue_FOR_DataTable_Column_sortFunction
+                    } );
+
+                    if ( sortOrderResponse < 0 ) {
+                        if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                            return -1;
+                        } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                            return 1;
+                        }
+                        throw Error( "column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
                     }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
-                }
-                if ( ( a_ColumnValue !== undefined && a_ColumnValue !== null ) && ( b_ColumnValue === undefined || b_ColumnValue === null ) ) {
-                    // Sort (undefined or null) before (not undefined and not null)
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return 1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return -1;
+                    if ( sortOrderResponse > 0 ) {
+                        if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                            return 1;
+                        } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                            return -1;
+                        }
+                        throw Error( "column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
                     }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
-                }
 
-            }
+                } else {
 
-            if ( dataTable_Column_ForIndex.sortFunction ) {
+                    // NO custom sort function
 
-                //  custom sort function
-
-                const sortOrderResponse = dataTable_Column_ForIndex.sortFunction({ sortValue_A : a_ColumnValue_FOR_DataTable_Column_sortFunction, sortValue_B : b_ColumnValue_FOR_DataTable_Column_sortFunction });
-
-                if ( sortOrderResponse < 0 ) {
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return -1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return 1;
+                    if ( a_ColumnValue < b_ColumnValue ) {
+                        if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                            return -1;
+                        } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                            return 1;
+                        }
+                        throw Error( "column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
                     }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
-                }
-                if ( sortOrderResponse > 0 ) {
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return 1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return -1;
+                    if ( a_ColumnValue > b_ColumnValue ) {
+                        if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
+                            return 1;
+                        } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
+                            return -1;
+                        }
+                        throw Error( "column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
                     }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
-                }
-
-            } else {
-
-                // NO custom sort function
-
-                if ( a_ColumnValue < b_ColumnValue ) {
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return -1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return 1;
-                    }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
-                }
-                if ( a_ColumnValue > b_ColumnValue ) {
-                    if ( column_sortDirection === SORT_DIRECTION_ASCENDING ) {
-                        return 1;
-                    } else if ( column_sortDirection === SORT_DIRECTION_DECENDING ) {
-                        return -1;
-                    }
-                    throw Error("column_sortDirection Not Ascending or Descending, is: " + column_sortDirection );
                 }
             }
         }
+
         //  All sort columns match so sort on sortOrder_OnEquals
 
         if ( dataObject_A.sortOrder_OnEquals < dataObject_B.sortOrder_OnEquals ) {

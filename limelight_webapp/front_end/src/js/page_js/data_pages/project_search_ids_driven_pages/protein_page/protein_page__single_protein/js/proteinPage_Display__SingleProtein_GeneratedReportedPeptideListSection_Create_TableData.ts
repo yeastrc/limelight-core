@@ -11,7 +11,7 @@
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 import {
     DataTable_Column,
-    DataTable_Column_DownloadTable,
+    DataTable_Column_DownloadTable, DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum,
     DataTable_DataRow_ColumnEntry,
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
@@ -565,6 +565,20 @@ const _create_AfterDataLoaded = function (
                             throw Error( msg );
                         }
 
+                        let sort_Null_BeforeValues_AfterValues_Enum: DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum = undefined
+
+                        if ( annotationTypeItem.filterDirectionBelow ) {
+
+                            sort_Null_BeforeValues_AfterValues_Enum = DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_AFTER_LARGEST_VALUE
+
+                        } else if ( annotationTypeItem.filterDirectionAbove ) {
+
+                            sort_Null_BeforeValues_AfterValues_Enum = DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_BEFORE_SMALLEST_VALUE
+
+                        } else {
+                            throw Error("NEITHER OF annotationTypeItem.filterDirectionBelow annotationTypeItem.filterDirectionAbove")
+                        }
+
                         const displayName_Start = annotationName_Prefix_BestOfPsmValues_TextLabel + annotationTypeItem.name;
 
                         const displayName = displayName_Start + " (" + searchSubGroup.subgroupName_Display + ")";
@@ -573,7 +587,8 @@ const _create_AfterDataLoaded = function (
                             id: "bestPsmAnn_" + annotationTypeItem.annotationTypeId + "_" + searchSubGroup.searchSubGroup_Id, // Used for tracking sort order. Keep short
                             displayName,
                             width: 100,
-                            sortable: true
+                            sortable: true,
+                            sort_Null_BeforeValues_AfterValues_Enum
                         });
                         dataTable_Columns.push(dataTable_Column);
 
@@ -631,6 +646,20 @@ const _create_AfterDataLoaded = function (
                             throw Error( msg );
                         }
 
+                        let sort_Null_BeforeValues_AfterValues_Enum: DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum = undefined
+
+                        if ( annotationTypeItem.filterDirectionBelow ) {
+
+                            sort_Null_BeforeValues_AfterValues_Enum = DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_AFTER_LARGEST_VALUE
+
+                        } else if ( annotationTypeItem.filterDirectionAbove ) {
+
+                            sort_Null_BeforeValues_AfterValues_Enum = DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_BEFORE_SMALLEST_VALUE
+
+                        } else {
+                            throw Error("NEITHER OF annotationTypeItem.filterDirectionBelow annotationTypeItem.filterDirectionAbove")
+                        }
+
                         const displayName_Start = annotationName_Prefix_BestOfPsmValues_TextLabel + annotationTypeItem.name;
 
                         let displayName: string = undefined;
@@ -647,7 +676,8 @@ const _create_AfterDataLoaded = function (
                             id: "bestPsmAnn_" + annotationTypeItem.annotationTypeId + "_" + projectSearchId, // Used for tracking sort order. Keep short
                             displayName,
                             width: 100,
-                            sortable: true
+                            sortable: true,
+                            sort_Null_BeforeValues_AfterValues_Enum
                         } );
                         dataTable_Columns.push( dataTable_Column );
 
@@ -1202,7 +1232,7 @@ const _create_AfterDataLoaded = function (
                                             const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
                                                 searchTableData,
                                                 valueDisplay,
-                                                valueSort: ""
+                                                valueSort: null
                                             });
                                             dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
 
@@ -1344,7 +1374,7 @@ const _create_AfterDataLoaded = function (
                                     const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
                                         searchTableData,
                                         valueDisplay,
-                                        valueSort: ""
+                                        valueSort: null
                                     });
                                     dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
 

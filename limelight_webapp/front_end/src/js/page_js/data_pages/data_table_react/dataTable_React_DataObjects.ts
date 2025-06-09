@@ -237,6 +237,25 @@ class DataTable_RootTableDataObject {
 }
 
 /**
+ * Smallest Value - Closest to negative infinity
+ * Largest Value  - Closest to positive infinity
+ *
+ * The general goal is to sort the null values to after the worst non-null values when sorting scores.
+ */
+enum DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum {
+
+    /**
+     * Smallest Value - Closest to negative infinity
+     */
+    SORT_NULL_BEFORE_SMALLEST_VALUE = 'SORT_NULL_BEFORE_SMALLEST_VALUE',
+
+    /**
+     * Largest Value  - Closest to positive infinity
+     */
+    SORT_NULL_AFTER_LARGEST_VALUE = 'SORT_NULL_AFTER_LARGEST_VALUE'
+}
+
+/**
  * Param to DataTable_TableOptions.dataRowClickHandler
  */
 class DataTable_Column_sortFunction_Param {
@@ -284,6 +303,12 @@ class DataTable_Column {
     columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element  // Function that takes no params and returns JSX.Element
 
     sortable?: boolean  // Assumed false if missing
+
+    /**
+     *  allow valueSort to be null and sort the null before or after the values
+     */
+    sort_Null_BeforeValues_AfterValues_Enum?: DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum
+
     sortFunction?: ( param : DataTable_Column_sortFunction_Param ) => number  //  Called passing each cell valueSort_FOR_DataTable_Column_sortFunction for custom sorting
 
     hideColumnHeader?: boolean  // Assumed false if missing
@@ -316,7 +341,7 @@ class DataTable_Column {
             //  If true, then in the first DataRow of a Group will the valueDisplay be shown in the table.  In other rows the table cell will be empty
             onlyShow_ValueDisplay_FirstRowOfGroup,
 
-            sortable, sortFunction, hideColumnHeader, style_override_HeaderRowCell_React
+            sortable, sort_Null_BeforeValues_AfterValues_Enum, sortFunction, hideColumnHeader, style_override_HeaderRowCell_React
         }: {
             id: DataTable_ColumnId,
             displayName: string
@@ -347,8 +372,18 @@ class DataTable_Column {
             //  If true, then in the first DataRow of a Group will the valueDisplay be shown in the table.  In other rows the table cell will be empty
             onlyShow_ValueDisplay_FirstRowOfGroup?: boolean;
 
+            //   Sorting of column on user click of column heading
+
             sortable?: boolean  // Assumed false if missing
+
+            /**
+             *  allow valueSort to be null and sort the null before or after the values
+             */
+            sort_Null_BeforeValues_AfterValues_Enum?: DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum
+
             sortFunction?: ( param : DataTable_Column_sortFunction_Param ) => number  //  Called passing each cell valueSort_FOR_DataTable_Column_sortFunction for custom sorting
+
+            ////
 
             hideColumnHeader?: boolean  // Assumed false if missing
 
@@ -376,6 +411,7 @@ class DataTable_Column {
         this.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element;
         this.onlyShow_ValueDisplay_FirstRowOfGroup = onlyShow_ValueDisplay_FirstRowOfGroup;
         this.sortable = sortable;
+        this.sort_Null_BeforeValues_AfterValues_Enum = sort_Null_BeforeValues_AfterValues_Enum
         this.sortFunction = sortFunction;
         this.hideColumnHeader = hideColumnHeader
         this.style_override_HeaderRowCell_React = style_override_HeaderRowCell_React
@@ -1058,8 +1094,13 @@ class DataTable_DataRow_ColumnEntry {
 
         searchTableData? : DataTable_DataRow_ColumnEntry_SearchTableData
 
-        //  valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
-
+        /**
+         *   valueSort MUST be populated if object of DataTable_Column has 'sortable' property set to true
+         *
+         *   Must be sortable using Javascript < > comparators
+         *
+         *   If DataTable_Column.sort_Null_BeforeValues_AfterValues_Enum is populated for this column, then valueSort can be null and will be sorted according to this property
+         */
         valueSort?: string | number  //  Must be sortable using Javascript < > comparators
 
 
@@ -1173,6 +1214,7 @@ export {
     DataTable_TableOptions,
 
     DataTable_Column,
+    DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum,
     DataTable_Column_sortFunction_Param,
     DataTable_Column_DownloadTable,
 

@@ -236,10 +236,19 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
                   }
               } else {
                   // Column Marked Sortable and NOT have sortFunction so property valueSort must have a value
-                  if (dataObject_columnEntry.valueSort === undefined || dataObject_columnEntry.valueSort === null) {
-                      const msg = "DataTable_Table_DataRowEntry: column.sortable is true and dataObject_columnEntry.valueSort is undefined or null. ";
+
+                  if (dataObject_columnEntry.valueSort === undefined) {
+                      const msg = "DataTable_Table_DataRowEntry: column.sortable is true and dataObject_columnEntry.valueSort is undefined."
                       console.warn(msg);
                       throw Error(msg);
+                  }
+
+                  if ( ! column.sort_Null_BeforeValues_AfterValues_Enum ) {
+                      if ( dataObject_columnEntry.valueSort === null ) {
+                          const msg = "DataTable_Table_DataRowEntry: column.sortable is true and dataTable_ColumnEntry.sort_Null_BeforeValues_AfterValues_Enum is not set and dataObject_columnEntry.valueSort is null."
+                          console.warn( msg );
+                          throw Error( msg );
+                      }
                   }
               }
           }
