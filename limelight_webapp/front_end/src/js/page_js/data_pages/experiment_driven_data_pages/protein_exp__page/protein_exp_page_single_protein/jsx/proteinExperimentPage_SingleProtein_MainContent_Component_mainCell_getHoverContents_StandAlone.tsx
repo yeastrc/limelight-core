@@ -21,10 +21,14 @@ import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/expe
 import { SearchNames_AsMap } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 
+export class MainCell_getHoverContents_StandAlone_Result {
+    hoverContent: JSX.Element
+}
+
 /**
  * 
  */
-const mainCell_getHoverContents_StandAlone = function({ 
+export const mainCell_getHoverContents_StandAlone = function({
     conditionIdPath, 
     conditionGroupsContainer, 
     conditionGroupsDataContainer, 
@@ -34,7 +38,7 @@ const mainCell_getHoverContents_StandAlone = function({
     conditionGroupsContainer : Experiment_ConditionGroupsContainer;
     conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer;
     searchNamesMap_KeyProjectSearchId  : SearchNames_AsMap
-}) {
+}) : MainCell_getHoverContents_StandAlone_Result {
     // console.log("_mainCell_getHoverContents_StandAlone")
 
     const conditionGroupsDisplay = [];
@@ -191,11 +195,3 @@ const mainCell_getHoverContents_StandAlone = function({
     return { hoverContent };
 }
 
-	
-
-///////////////////////////////////////////////
-
-
-export { 
-    mainCell_getHoverContents_StandAlone
-}

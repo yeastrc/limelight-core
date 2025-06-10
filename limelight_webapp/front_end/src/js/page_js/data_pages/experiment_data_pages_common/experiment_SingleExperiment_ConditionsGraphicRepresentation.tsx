@@ -28,13 +28,18 @@ import React, {CSSProperties} from 'react'
 
 import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
-import { tooltip_Limelight_Create_Tooltip, Tooltip_Limelight_Created_Tooltip } from 'page_js/common_all_pages/tooltip_LimelightLocal_ReactBased';
-
 import { Experiment_ConditionGroupsContainer, Experiment_ConditionGroup, Experiment_Condition } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 
 import { ExperimentConditions_GraphicRepresentation_MainCell_Identifier, ExperimentConditions_GraphicRepresentation_ConditionCell_Identifier } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Cell_Identifiers';
 
 import { ExperimentConditions_GraphicRepresentation_SelectedCells } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation_Selections';
+import {
+    MainCell_getHoverContents_StandAlone_Result
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/jsx/proteinExperimentPage_SingleProtein_MainContent_Component_mainCell_getHoverContents_StandAlone";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 // const tableStyle_Default = { borderCollapse : "collapse", borderSpacing: "0px", padding: "0px", width: "100%" }; // borderCollapse : "collapse", 
@@ -61,7 +66,7 @@ export class ExperimentConditions_GraphicRepresentation_MainCell_getHoverContent
 /**
  * 
  */
-export type ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents = ( params : ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params ) => void
+export type ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents = ( params : ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params ) => MainCell_getHoverContents_StandAlone_Result
 
 
 /**
@@ -149,7 +154,7 @@ export interface Experiment_SingleExperiment_ConditionsGraphicRepresentation_Pro
     manage_SelectedCells_ConditionCell_Selection_UserClick_Updates? : boolean
     conditionCellClickHandler? : ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler
     mainCellClickHandler? : ExperimentConditions_GraphicRepresentation_MainCellClickHandler
-    mainCell_getHoverContents?: any
+    mainCell_getHoverContents?: ( params : ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params ) => MainCell_getHoverContents_StandAlone_Result
     conditionGroups_ChangeOrder_Clicked_Callback?: () => void
 }
 
@@ -163,8 +168,6 @@ interface Experiment_SingleExperiment_ConditionsGraphicRepresentation_State {
  */
 export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends React.Component< Experiment_SingleExperiment_ConditionsGraphicRepresentation_Props, Experiment_SingleExperiment_ConditionsGraphicRepresentation_State > {
 
-    private _mainCellTooltipDisplayManager : MainCellTooltipDisplayManager;
-
     private  _clearSelectionClickHandler_BindThis = this._clearSelectionClickHandler.bind(this);
     private _conditionGroups_ChangeOrder_Clicked_Callback_BindThis = this._conditionGroups_ChangeOrder_Clicked_Callback.bind(this)
 
@@ -173,8 +176,6 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
      */
     constructor(props : Experiment_SingleExperiment_ConditionsGraphicRepresentation_Props) {
         super(props);
-
-        this._mainCellTooltipDisplayManager = new MainCellTooltipDisplayManager();
 
         // this.state = { };
         // console.log("class Experiment_SingleExperiment_ConditionsGraphicRepresentation: constructor()");
@@ -250,7 +251,6 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
                             <TableCell key={ counter_Cell }
                                 cell={ cell }
                                 experiment_SingleExperiment_ConditionsGraphicRepresentation_Props={ this.props }
-                                mainCellTooltipDisplayManager={ this._mainCellTooltipDisplayManager }
                             />
                         );
                         cellsDisplay.push( cellDisplay );
@@ -336,7 +336,6 @@ interface TableCell_Props {
 
     cell: ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell
     experiment_SingleExperiment_ConditionsGraphicRepresentation_Props: Experiment_SingleExperiment_ConditionsGraphicRepresentation_Props
-    mainCellTooltipDisplayManager: any
 }
 
 interface TableCell_State {
@@ -350,8 +349,6 @@ interface TableCell_State {
 class TableCell extends React.Component< TableCell_Props, TableCell_State > {
 
     private _cellClickHandler_BindThis = this._cellClickHandler.bind(this);
-    private _cell_onMouseEnterHandler_BindThis = this._cell_onMouseEnterHandler.bind(this);
-    private _cell_onMouseLeaveHandler_BindThis = this._cell_onMouseLeaveHandler.bind(this);
 
     private paddingTop_Set: boolean
     private readonly td_Ref: React.RefObject<HTMLTableCellElement>
@@ -522,12 +519,6 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
 
                     // console.warn( "Ignoring value for this.props.mainCellClickHandler")
 
-                    let entryCell_onMouseLeaveHandler = undefined;
-
-                    if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCell_getHoverContents ) {
-                        entryCell_onMouseLeaveHandler = this._cell_onMouseLeaveHandler_BindThis;
-                    }
-
                     const conditionIdPath = this.props.cell.conditionIdPath;
                     if ( ! conditionIdPath ) {
                         const msg = "No value for cell.conditionIdPath:  In if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCellClickHandler ) {"
@@ -542,7 +533,7 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
                     this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCellClickHandler({
                         event,
                         mainCellIdentifier : experimentConditions_GraphicRepresentation_MainCell_Identifier,
-                        entryCell_onMouseLeaveHandler
+                        entryCell_onMouseLeaveHandler: undefined
                     });
                 }
             }
@@ -551,23 +542,6 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
         }
-    }
-
-    _cell_onMouseEnterHandler( event : React.MouseEvent<HTMLElement, MouseEvent> ) { 
-
-        const conditionIdPath = this.props.cell.conditionIdPath;
-
-        const hoverContents = this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCell_getHoverContents({ conditionIdPath });
-
-        const tooltipContents = hoverContents.hoverContent;
-        
-        this.props.mainCellTooltipDisplayManager.mainCellMouseEnter({ event, tooltipContents });
-    }
-
-    _cell_onMouseLeaveHandler( event : React.MouseEvent<HTMLElement, MouseEvent> ) { 
-        // console.log("TableCell: onMouseLeave: entryCell_onMouseLeaveHandler");
-
-        this.props.mainCellTooltipDisplayManager.mainCellMouseLeave({ event });
     }
 
     /////////////////////////////////////////////
@@ -579,8 +553,6 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
     render() {
 
         let entryCell_ClickHandler = undefined;
-        let entryCell_onMouseEnterHandler = undefined;
-        let entryCell_onMouseLeaveHandler = undefined;
 
         if ( this.props.cell.conditionLabelCell ) {
 
@@ -591,12 +563,17 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
             }
         }
 
+        let tooltipContents: JSX.Element = undefined
+
         if ( this.props.cell.mainDataCell ) {
 
             if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCell_getHoverContents ) {
 
-                entryCell_onMouseEnterHandler = this._cell_onMouseEnterHandler_BindThis;
-                entryCell_onMouseLeaveHandler = this._cell_onMouseLeaveHandler_BindThis
+                const conditionIdPath = this.props.cell.conditionIdPath;
+
+                const hoverContents = this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCell_getHoverContents({ conditionIdPath });
+
+                tooltipContents = hoverContents.hoverContent;
             }
 
             if ( this.props.experiment_SingleExperiment_ConditionsGraphicRepresentation_Props.mainCellClickHandler ) {
@@ -709,18 +686,21 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
         }
             
         return (
-            <td ref={ this.td_Ref }
-                onClick={ entryCell_ClickHandler }
-                onMouseEnter={ entryCell_onMouseEnterHandler }
-                onMouseLeave={ entryCell_onMouseLeaveHandler }
-                className={ className }
-                style={ style }
-                rowSpan={ this.props.cell.rowSpan }
-                data-component="TableCell" >
-                <div className=" cell-contents-container ">
-                    { this.props.cell.label }
-                </div>
-            </td>
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                title={ tooltipContents }
+                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+            >
+                <td ref={ this.td_Ref }
+                    onClick={ entryCell_ClickHandler }
+                    className={ className }
+                    style={ style }
+                    rowSpan={ this.props.cell.rowSpan }
+                    data-component="TableCell" >
+                    <div className=" cell-contents-container ">
+                        { this.props.cell.label }
+                    </div>
+                </td>
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         );
     }
 }
@@ -740,68 +720,3 @@ const getDefaultCellStyle = function() : CSSProperties {
     };
 }
 
-
-/**
- * Class to manage tooltip for Main Cell
- */
-class MainCellTooltipDisplayManager {
-
-    private _tooltip_CurrentTooltip : Tooltip_Limelight_Created_Tooltip
-
-	/**
-	 * Called when onMouseEnter of main cell
-	 */
-	mainCellMouseEnter(
-	    {
-            event, tooltipContents
-	    }: {
-	        event : React.MouseEvent<HTMLElement, MouseEvent>
-            tooltipContents: any
-        }) {
-
-        const mouseEnter_target_DOM_Element = event.target as any;
-        
-        if ( this._tooltip_CurrentTooltip ) {
-
-            //  Already have tooltip so remove it
-
-            this._tooltip_CurrentTooltip.removeTooltip();
-
-            this._tooltip_CurrentTooltip = undefined;
-        }
-
-        const tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element : mouseEnter_target_DOM_Element, tooltipContents });
-
-        this._tooltip_CurrentTooltip = tooltip_Limelight_Created_Tooltip;
-	}
-
-	/**
-	 * Called when onMouseLeave of main cell
-	 */
-	mainCellMouseLeave({ event }: { event: any }) {
-
-        // console.log("mainCellMouseLeave(...)");
-
-        if ( ! this._tooltip_CurrentTooltip ) {
-
-            //  No <div> to hold tooltip exists so exit
-
-            return; // EARLY EXIT
-        }
-
-        //  Hack hack to leave tooltip shown after number of mouse leave events
-        // if ( this._leaveCount >= 2 ) {
-        //     return;
-        // }
-
-        // if ( ! this._leaveCount ) {
-        //     this._leaveCount = 0;
-        // }
-        // this._leaveCount++;
-
-        this._tooltip_CurrentTooltip.removeTooltip();
-
-        this._tooltip_CurrentTooltip = undefined;
-	}
-
-}

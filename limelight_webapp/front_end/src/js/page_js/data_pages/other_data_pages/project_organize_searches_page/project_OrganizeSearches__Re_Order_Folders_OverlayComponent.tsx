@@ -10,10 +10,6 @@ import React from 'react'
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-import {
-    tooltip_Limelight_Create_Tooltip,
-    Tooltip_Limelight_Created_Tooltip
-} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
 import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
@@ -327,8 +323,6 @@ import {
 //
 //     private _folderNameText_Div_Ref :  React.RefObject<HTMLDivElement>;
 //
-//     private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip;
-//
 //     /**
 //      *
 //      */
@@ -359,12 +353,7 @@ import {
 //                 { this.state.folderNameDisplay }
 //             </div>
 //         );
-//
-//         if ( this._tooltip_Limelight_Created_Tooltip ) {
-//             this._tooltip_Limelight_Created_Tooltip.removeTooltip();
-//         }
-//         this._tooltip_Limelight_Created_Tooltip =
-//             tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element, tooltipContents });
+//                      Convert to <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 //     }
 //
 //     private _onMouseLeave_folderNameText_Div(  ) {

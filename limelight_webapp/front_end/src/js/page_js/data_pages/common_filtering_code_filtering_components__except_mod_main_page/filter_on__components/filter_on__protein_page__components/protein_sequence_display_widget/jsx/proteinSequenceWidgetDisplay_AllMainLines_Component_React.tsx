@@ -20,8 +20,11 @@ import {
 } from 'page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_display_widget/js/proteinSequenceWidgetDisplay_Component_Data';
 
 
-import { ProteinSequenceWidgetDisplay_SequencePosition_TooltipDisplayManager } from './proteinSequenceWidgetDisplay_SequencePosition_TooltipManager';
 import {ProteinSequenceWidget_SinglePositionFlags} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_display_widget/js/proteinSequenceWidget_SinglePositionFlags";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 // const _HTML_ELEMENT_DATA_KEY__SEQUENCE_POSITION = "position";
@@ -517,13 +520,8 @@ interface ProteinSequence_SinglePosition_Props {
  */
 class ProteinSequence_SinglePosition extends React.Component< ProteinSequence_SinglePosition_Props, {} > {
 
-    private _sequencePosition_TooltipDisplayManager : ProteinSequenceWidgetDisplay_SequencePosition_TooltipDisplayManager = new ProteinSequenceWidgetDisplay_SequencePosition_TooltipDisplayManager();
-
         //  bind to 'this' for passing as parameters
     private _onClick_BindThis = this._onClick.bind(this);
-    private _onMouseEnter_BindThis = this._onMouseEnter.bind(this);
-    private _onMouseLeave_BindThis = this._onMouseLeave.bind(this);
-
 
     /**
      * 
@@ -545,110 +543,6 @@ class ProteinSequence_SinglePosition extends React.Component< ProteinSequence_Si
         console.log("ProteinSequence_SinglePosition: onClick: this.props.position: " + this.props.position )
 
         this.props.positionClicked_Callback({ position, ctrlKey_or_metaKey_Down });
-    }
-
-    _onMouseEnter( event: React.MouseEvent<HTMLElement, MouseEvent> ) {
-
-        //  event cannot be passed through a setTimeout
-
-        let variableModificationsDisplay : JSX.Element = undefined;
-        let staticModificationsDisplay : JSX.Element = undefined;
-
-        if ( this.props.data_At_SequencePosition.variableModifications && this.props.data_At_SequencePosition.variableModifications.length > 0 ) {
-
-            const variableModificationsDisplayEntries = [];
-            {
-                let firstEntry = true;
-                let reactListKey = 0;
-                for ( const variableModificationEntry of this.props.data_At_SequencePosition.variableModifications ) {
-                    if ( firstEntry ) {
-                        firstEntry = false;
-                    } else {
-                        reactListKey++;
-                        const commaSeparator = (
-                            <span key={ reactListKey } >, </span>
-                        )
-                        variableModificationsDisplayEntries.push( commaSeparator );
-                    }
-                    let entryStyle: React.CSSProperties = undefined;
-                    if ( variableModificationEntry.isSelected ) {
-                        entryStyle = { fontWeight: "bold" }
-                    }
-                    reactListKey++;
-                    const variableModificationsDisplayEntry = (
-                        <span key={ reactListKey } style={ entryStyle }>{ variableModificationEntry.variableModificationMass }</span>
-                    );
-                    variableModificationsDisplayEntries.push( variableModificationsDisplayEntry );
-                }
-            }
-
-            variableModificationsDisplay = (
-                <React.Fragment >
-                    <div style={ { marginTop: 5, marginBottom: 3, fontWeight: "bold" } }>
-                        Variable Modifications:
-                    </div>
-                    <div >
-                        { variableModificationsDisplayEntries }
-                    </div>
-                </React.Fragment>
-            );
-        }
-
-        if ( this.props.data_At_SequencePosition.staticModifications && this.props.data_At_SequencePosition.staticModifications.length > 0 ) {
-
-            const staticModificationsDisplayEntries = [];
-            {
-                let firstEntry = true;
-                let reactListKey = 0;
-                for ( const staticModificationEntry of this.props.data_At_SequencePosition.staticModifications ) {
-                    if ( firstEntry ) {
-                        firstEntry = false;
-                    } else {
-                        reactListKey++;
-                        const commaSeparator = (
-                            <span key={ reactListKey } >, </span>
-                        )
-                        staticModificationsDisplayEntries.push( commaSeparator );
-                    }
-                    let entryStyle: React.CSSProperties = undefined;
-                    if ( staticModificationEntry.isSelected ) {
-                        entryStyle = { fontWeight: "bold" }
-                    }
-                    reactListKey++;
-                    const staticModificationsDisplayEntry = (
-                        <span key={ reactListKey } style={ entryStyle }>{ staticModificationEntry.staticModificationMass }</span>
-                    );
-                    staticModificationsDisplayEntries.push( staticModificationsDisplayEntry );
-                }
-            }
-
-            staticModificationsDisplay = (
-                <React.Fragment >
-                    <div style={ { marginTop: 5, marginBottom: 3, fontWeight: "bold" } }>
-                        Static Modifications:
-                    </div>
-                    <div >
-                        { staticModificationsDisplayEntries }
-                    </div>
-                </React.Fragment>
-            );
-        }
-
-        const tooltipContents = (
-            <React.Fragment >
-                <div style={ { fontWeight: "bold" } }>Position: { this.props.position }</div>
-                { variableModificationsDisplay }
-                { staticModificationsDisplay }
-            </React.Fragment>
-        );
-
-        this._sequencePosition_TooltipDisplayManager.mouseEnter_SequencePosition({ event, tooltipContents });
-
-    }
-
-    _onMouseLeave( event: React.MouseEvent<HTMLElement, MouseEvent> ) {
-
-        this._sequencePosition_TooltipDisplayManager.mouseLeave_SequencePosition({ event });
     }
 
     /**
@@ -691,18 +585,138 @@ class ProteinSequence_SinglePosition extends React.Component< ProteinSequence_Si
         );
 
         return (
-            <div 
-                onClick={ this._onClick_BindThis }
-                onMouseEnter={ this._onMouseEnter_BindThis }
-                onMouseLeave={ this._onMouseLeave_BindThis }
-                className={ className }
-                data-pos={ this.props.position }  
-                // data-pos= is info only, not used by code. Code uses .data( ) attached to this DOM element 
-            >{ residue }
-            </div>
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                title={
+                    <ProteinSequenceWidgetDisplay_AllMainLines_Component_React__TooltipContents
+                        data_At_SequencePosition={ this.props.data_At_SequencePosition }
+                        position={ this.props.position }
+                    />
+                }
+                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+            >
+                <div
+                    onClick={ this._onClick_BindThis }
+                    className={ className }
+                    data-pos={ this.props.position }
+                    // data-pos= is info only, not used by code. Code uses .data( ) attached to this DOM element
+                >{ residue }
+                </div>
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         );
     }
 }
+
+
+/**
+ * Component for tooltip
+ *
+ * Made a component so only created when element is hovered over
+ *
+ * @param props
+ * @constructor
+ */
+const ProteinSequenceWidgetDisplay_AllMainLines_Component_React__TooltipContents = function (
+    props : {
+        data_At_SequencePosition : ProteinSequenceWidgetDisplay_Component_DataPerSequencePositionEntry;
+        position : number
+    }
+) : JSX.Element {
+
+    let variableModificationsDisplay : JSX.Element = undefined;
+    let staticModificationsDisplay : JSX.Element = undefined;
+
+    if ( props.data_At_SequencePosition.variableModifications && props.data_At_SequencePosition.variableModifications.length > 0 ) {
+
+        const variableModificationsDisplayEntries = [];
+        {
+            let firstEntry = true;
+            let reactListKey = 0;
+            for ( const variableModificationEntry of props.data_At_SequencePosition.variableModifications ) {
+                if ( firstEntry ) {
+                    firstEntry = false;
+                } else {
+                    reactListKey++;
+                    const commaSeparator = (
+                        <span key={ reactListKey } >, </span>
+                    )
+                    variableModificationsDisplayEntries.push( commaSeparator );
+                }
+                let entryStyle: React.CSSProperties = undefined;
+                if ( variableModificationEntry.isSelected ) {
+                    entryStyle = { fontWeight: "bold" }
+                }
+                reactListKey++;
+                const variableModificationsDisplayEntry = (
+                    <span key={ reactListKey } style={ entryStyle }>{ variableModificationEntry.variableModificationMass }</span>
+                );
+                variableModificationsDisplayEntries.push( variableModificationsDisplayEntry );
+            }
+        }
+
+        variableModificationsDisplay = (
+            <React.Fragment >
+                <div style={ { marginTop: 5, marginBottom: 3, fontWeight: "bold" } }>
+                    Variable Modifications:
+                </div>
+                <div >
+                    { variableModificationsDisplayEntries }
+                </div>
+            </React.Fragment>
+        );
+    }
+
+    if ( props.data_At_SequencePosition.staticModifications && props.data_At_SequencePosition.staticModifications.length > 0 ) {
+
+        const staticModificationsDisplayEntries = [];
+        {
+            let firstEntry = true;
+            let reactListKey = 0;
+            for ( const staticModificationEntry of props.data_At_SequencePosition.staticModifications ) {
+                if ( firstEntry ) {
+                    firstEntry = false;
+                } else {
+                    reactListKey++;
+                    const commaSeparator = (
+                        <span key={ reactListKey } >, </span>
+                    )
+                    staticModificationsDisplayEntries.push( commaSeparator );
+                }
+                let entryStyle: React.CSSProperties = undefined;
+                if ( staticModificationEntry.isSelected ) {
+                    entryStyle = { fontWeight: "bold" }
+                }
+                reactListKey++;
+                const staticModificationsDisplayEntry = (
+                    <span key={ reactListKey } style={ entryStyle }>{ staticModificationEntry.staticModificationMass }</span>
+                );
+                staticModificationsDisplayEntries.push( staticModificationsDisplayEntry );
+            }
+        }
+
+        staticModificationsDisplay = (
+            <React.Fragment >
+                <div style={ { marginTop: 5, marginBottom: 3, fontWeight: "bold" } }>
+                    Static Modifications:
+                </div>
+                <div >
+                    { staticModificationsDisplayEntries }
+                </div>
+            </React.Fragment>
+        );
+    }
+
+    const tooltipContents = (
+        <React.Fragment >
+            <div style={ { fontWeight: "bold" } }>Position: { props.position }</div>
+            { variableModificationsDisplay }
+            { staticModificationsDisplay }
+        </React.Fragment>
+    );
+
+    return tooltipContents
+
+}
+
 
 
 const _proteinSequence_SinglePosition_GetPrimaryClassName = function({ sequencePosition_Flags }: { sequencePosition_Flags: ProteinSequenceWidget_SinglePositionFlags }) {

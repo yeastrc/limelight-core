@@ -11,12 +11,7 @@
  */
 
 import React from "react";
-import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {ProjectPage_ShareDataSection_ProjectOwnerInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction";
-import {
-    tooltip_Limelight_Create_Tooltip,
-    Tooltip_Limelight_Created_Tooltip
-} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
 import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -353,10 +348,6 @@ interface Generate_new_Access_Code_Disabled_Component_Component_State {
 class Generate_new_Access_Code_Disabled_Component_Component extends React.Component< Generate_new_Access_Code_Disabled_Component_Component_Props, Generate_new_Access_Code_Disabled_Component_Component_State > {
 
     private _linkSpan_onClick_BindThis = this._linkSpan_onClick.bind(this);
-    private _linkSpan_onMouseEnter_BindThis = this._linkSpan_onMouseEnter.bind(this);
-    private _linkSpan_onMouseLeave_BindThis = this._linkSpan_onMouseLeave.bind(this);
-
-    private _tooltip_For_LinkSpan : Tooltip_Limelight_Created_Tooltip
 
     private _linkSpan_Ref : React.RefObject<HTMLElement>; //  React.createRef()
 
@@ -383,30 +374,6 @@ class Generate_new_Access_Code_Disabled_Component_Component extends React.Compon
     /**
      *
      */
-    private _linkSpan_onMouseEnter( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) : void {
-
-        const tooltipContents : JSX.Element = (
-            <div>
-                { this.props.tooltipText }
-            </div>
-        )
-
-        this._tooltip_For_LinkSpan = tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element : this._linkSpan_Ref.current , tooltipContents })
-    }
-    /**
-     *
-     */
-    private _linkSpan_onMouseLeave( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) : void {
-
-        if ( this._tooltip_For_LinkSpan ) {
-            this._tooltip_For_LinkSpan.removeTooltip();
-        }
-        this._tooltip_For_LinkSpan = null;
-    }
-
-    /**
-     *
-     */
     render() {
 
         return (
@@ -419,8 +386,6 @@ class Generate_new_Access_Code_Disabled_Component_Component extends React.Compon
                 <span
                     ref={ this._linkSpan_Ref }
                     className=" disabled-generate-link "
-                    // onMouseEnter={ this._linkSpan_onMouseEnter_BindThis }
-                    // onMouseLeave={ this._linkSpan_onMouseLeave_BindThis }
                     onClick={ this._linkSpan_onClick_BindThis }
                 >
                     Generate new Access Code

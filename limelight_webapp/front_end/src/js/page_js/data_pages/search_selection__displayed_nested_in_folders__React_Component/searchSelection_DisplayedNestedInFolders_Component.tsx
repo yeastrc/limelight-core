@@ -30,10 +30,6 @@ import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data,
     getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds
 } from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
-import {
-    tooltip_Limelight_Create_Tooltip,
-    Tooltip_Limelight_Created_Tooltip
-} from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
 import {Search_Tags_DisplaySearchTags_UnderSearchName_Component} from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
@@ -873,7 +869,7 @@ interface SearchEntry_Props {
  *
  */
 interface SearchEntry_State {
-    _placeHolder
+    _placeHolder: unknown
 }
 
 /**
@@ -884,59 +880,13 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
     private _searchRowClicked_BindThis = this._searchRowClicked.bind(this);
     private _searchName_Clicked_BindThis = this._searchName_Clicked.bind(this)
 
-    private _onMouseEnter_RootDiv_BindThis = this._onMouseEnter_RootDiv.bind(this);
-    private _onMouseLeave_RootDiv_BindThis = this._onMouseLeave_RootDiv.bind(this);
-
-    private readonly rootDiv_Ref: React.RefObject<HTMLDivElement>;
-
-    private tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
-
     /**
      *
      */
     constructor(props: SearchEntry_Props) {
         super(props);
 
-        this.rootDiv_Ref = React.createRef();
-
         // this.state = {};
-    }
-
-    /**
-     *
-     */
-    private _onMouseEnter_RootDiv( event : React.MouseEvent<HTMLDivElement> ) {
-
-        if ( this.tooltip_Limelight_Created_Tooltip ) {
-            this.tooltip_Limelight_Created_Tooltip.removeTooltip();
-        }
-        this.tooltip_Limelight_Created_Tooltip = null;
-
-        const tooltip_target_DOM_Element = this.rootDiv_Ref.current
-
-        const tooltipContents : JSX.Element = (
-            <div>
-                <div>
-                    This search is already in another condition.
-                </div>
-                <div>
-                    Selecting this search will remove it from the other condition.
-                </div>
-            </div>
-        )
-
-        this.tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element, tooltipContents });
-    }
-
-    /**
-     *
-     */
-    private _onMouseLeave_RootDiv( event : React.MouseEvent<HTMLDivElement> ) {
-
-        if ( this.tooltip_Limelight_Created_Tooltip ) {
-            this.tooltip_Limelight_Created_Tooltip.removeTooltip();
-        }
-        this.tooltip_Limelight_Created_Tooltip = null;
     }
 
     /**
@@ -972,12 +922,19 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
             selectedOtherCellClass = " selected-other-cell "
         }
 
-        let onMouseEnter_RootDiv = null;
-        let onMouseLeave_RootDiv = null;
+        let tooltipContents_RootDiv: JSX.Element = undefined
 
         if ( search_selectedInOtherCell ) {
-            onMouseEnter_RootDiv = this._onMouseEnter_RootDiv_BindThis;
-            onMouseLeave_RootDiv = this._onMouseLeave_RootDiv_BindThis;
+            tooltipContents_RootDiv = (
+                <div>
+                    <div>
+                        This search is already in another condition.
+                    </div>
+                    <div>
+                        Selecting this search will remove it from the other condition.
+                    </div>
+                </div>
+            )
         }
 
         const searchNameDisplay = "(" + this.props.searchDisplayListItem.searchId + ") " + this.props.searchDisplayListItem.searchName;
@@ -1064,63 +1021,66 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
 
         return (
             <React.Fragment>
-                <div
-                    ref={ this.rootDiv_Ref }
-                    onMouseEnter={ onMouseEnter_RootDiv }
-                    onMouseLeave={ onMouseLeave_RootDiv }
-                    onClick={ row_Div_ClickHandler }
-                    className={ topLevelDiv_CSS_Classes }
-                    style={ style_TopLevelDiv }
+
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={ tooltipContents_RootDiv }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
+                    <div
+                        onClick={ row_Div_ClickHandler }
+                        className={ topLevelDiv_CSS_Classes }
+                        style={ style_TopLevelDiv }
+                    >
 
-                    { this.props.select_ONLY_ONE_Search ? (
-                        //  YES select_ONLY_ONE_Search
-                        <>
-                            {/*  2 Column Grid  */}
-                            <div style={ { marginRight: 8 } }>
-                                {/*  Button hidden if selected search  */}
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                    title={
-                                        "Select this search"
-                                    }
-                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                >
-                                    <button
-                                        style={ selectButton_Style }
-                                        onClick={ this._searchName_Clicked_BindThis }
+                        { this.props.select_ONLY_ONE_Search ? (
+                            //  YES select_ONLY_ONE_Search
+                            <>
+                                {/*  2 Column Grid  */}
+                                <div style={ { marginRight: 8 } }>
+                                    {/*  Button hidden if selected search  */}
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            "Select this search"
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        Select
-                                    </button>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                            </div>
-                        </>
-                    ) : (
-                        //  NO select_ONLY_ONE_Search
-                        <>
-                            {/*  2 Column Grid  */}
-                            <div style={ { marginRight: 8 } }>
-                                <input type="checkbox" checked={ this.props.selected } onChange={ () => { /* nothing since have click handler on containing row div */ } } />
-                            </div>
-                        </>
-                    ) }
+                                        <button
+                                            style={ selectButton_Style }
+                                            onClick={ this._searchName_Clicked_BindThis }
+                                        >
+                                            Select
+                                        </button>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                </div>
+                            </>
+                        ) : (
+                            //  NO select_ONLY_ONE_Search
+                            <>
+                                {/*  2 Column Grid  */}
+                                <div style={ { marginRight: 8 } }>
+                                    <input type="checkbox" checked={ this.props.selected } onChange={ () => { /* nothing since have click handler on containing row div */ } } />
+                                </div>
+                            </>
+                        ) }
 
-                    {/*  Second Column or only Div */}
-                    <div >
-                        <div style={ { marginBottom: 2 } }>
-                            <span
-                                className={ searchName_SPAN_CSS_Classes }
-                                style={ { overflowWrap : "break-word"}}
-                                onClick={ searchName_OnClick }
-                            >
-                                { searchNameDisplay }
-                            </span>
+                        {/*  Second Column or only Div */}
+                        <div >
+                            <div style={ { marginBottom: 2 } }>
+                                <span
+                                    className={ searchName_SPAN_CSS_Classes }
+                                    style={ { overflowWrap : "break-word"}}
+                                    onClick={ searchName_OnClick }
+                                >
+                                    { searchNameDisplay }
+                                </span>
+                            </div>
+
+                            {/*  Search Tags  */}
+                            { searchTags_Block }
                         </div>
 
-                        {/*  Search Tags  */}
-                        { searchTags_Block }
                     </div>
-
-                </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                 {this.props.showSeparatorBelow ?
                     <div className="standard-border-color-dark"
