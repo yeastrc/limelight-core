@@ -472,45 +472,43 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
 
         return (
             <React.Fragment>
-                <tr >
-                    <td style={ { verticalAlign : "top" } }>
-                        <div>
-                            Search:
-                        </div>
-                    </td>
-                    <td colSpan={ 2 }>
 
-                        <div style={ { marginBottom: _Verbose_View_ContainerDiv_MarginBottom_AllSearches } }>
-                            <span
-                                style={ _Verbose_View_ContainerSpan_Style }
-                            >Verbose view: </span>
-                            <span>
-                                <input
-                                    type="checkbox"
-                                    checked={ this.state.show_SearchTag_Categories }
-                                    onChange={ event => {
-                                        const show_SearchTag_Categories = event.target.checked
+                <div style={ {  } }>
+                    <div>
+                        Search:
+                    </div>
+                </div>
+                <div style={ { gridColumnStart: 2, gridColumnEnd: "-1" } }>
 
-                                        this.setState({ show_SearchTag_Categories })
+                    <div style={ { marginBottom: _Verbose_View_ContainerDiv_MarginBottom_AllSearches } }>
+                        <span
+                            style={ _Verbose_View_ContainerSpan_Style }
+                        >Verbose view: </span>
+                        <span>
+                            <input
+                                type="checkbox"
+                                checked={ this.state.show_SearchTag_Categories }
+                                onChange={ event => {
+                                    const show_SearchTag_Categories = event.target.checked
 
-                                        Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value(show_SearchTag_Categories)
-                                    }}
-                                />
-                            </span>
-                        </div>
-                    </td>
-                </tr>
-                <tr >
-                    <td style={ { verticalAlign : "top" } }>
-                        { changeSearchesJSX }
-                    </td>
-                    <SearchNameAndDetails_Root //   Inserts 2 columns in table
-                        propValue={ this.props.propValue }
-                        projectSearchId={ projectSearchId }
-                        multipleSearchEntry={ false }
-                        show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
-                    />
-                </tr>
+                                    this.setState({ show_SearchTag_Categories })
+
+                                    Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value(show_SearchTag_Categories)
+                                }}
+                            />
+                        </span>
+                    </div>
+                </div>
+                <div style={ {  } }>
+                    { changeSearchesJSX }
+                </div>
+                <SearchNameAndDetails_Root //   Inserts 2 columns in table
+                    propValue={ this.props.propValue }
+                    projectSearchId={ projectSearchId }
+                    multipleSearchEntry={ false }
+                    show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
+                />
+
                 <Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root
                     forMultipleSearches={ false }
                     propValue={ this.props.propValue }
@@ -616,43 +614,38 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
 
             const singleSearchEntry = (
 
-                <table key={ projectSearchId }
-                       style={ { borderWidth : 0 } } className={ " table-no-border-no-cell-spacing-no-cell-padding " }>
-                    <tbody>
-                    <tr>
-                        <td> {/* style={ { verticalAlign : "top", paddingRight : 3 } } */} {/* Color Block for the search */}
-                            {/* Comment out since not using the color anywhere else at the moment
+                <div
+                    style={ { display: "grid", gridTemplateColumns: "max-content max-content auto", rowGap: 2, marginBottom: 3 } }
+                >
+                    <div>
+                        {/* Comment out since not using the color anywhere else at the moment
                                    <span style="margin-right:10px;padding-left:10px;padding-right:10px; " class=" merged-search-search-background-color-{{ mergeColorId }}  "></span>
                                 */}
-                        </td>
-                        <SearchNameAndDetails_Root //   Inserts 2 columns in table
-                            propValue={ this.props.propValue }
-                            projectSearchId={ projectSearchId }
-                            multipleSearchEntry={ true }
-                            show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
-                        />
-                    </tr>
+                    </div>
+                    <SearchNameAndDetails_Root //   Inserts 2 columns in table
+                        propValue={ this.props.propValue }
+                        projectSearchId={ projectSearchId }
+                        multipleSearchEntry={ true }
+                        show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
+                    />
 
-                    <tr>
-                        <td></td>{/*  Spacer for Color Block  */}
-                        <td></td>{/*  Spacer for Expand Search Icon  */}
-                        <td>
-                            <table style={ { borderWidth : 0 } } className=" table-no-border-no-cell-spacing-no-cell-padding ">
-                                <tbody>
-                                <Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root
-                                    forMultipleSearches={ true }
-                                    propValue={ this.props.propValue }
-                                    openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
-                                    annotationTypeDataForProjectSearchId={ annotationTypeDataForProjectSearchId }
-                                    searchProgramsPerSearchDataForProjectSearchId={ searchProgramsPerSearchDataForProjectSearchId }
-                                    filtersAnnTypeDisplay_For_Single_ProjectSearchId={ filtersAnnTypeDisplayPerProjectSearchId }
-                                />
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                    <div></div>{/*  Spacer for Color Block  */}
+                    <div></div>{/*  Spacer for Expand Search Icon  */}
+                    <div>
+                        <div
+                            style={ { display: "grid", gridTemplateColumns: "max-content max-content auto", rowGap: 2, marginBottom: 3 } }
+                        >
+                            <Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root
+                                forMultipleSearches={ true }
+                                propValue={ this.props.propValue }
+                                openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
+                                annotationTypeDataForProjectSearchId={ annotationTypeDataForProjectSearchId }
+                                searchProgramsPerSearchDataForProjectSearchId={ searchProgramsPerSearchDataForProjectSearchId }
+                                filtersAnnTypeDisplay_For_Single_ProjectSearchId={ filtersAnnTypeDisplayPerProjectSearchId }
+                            />
+                        </div>
+                    </div>
+                </div>
             );
 
             singleSearchesInsideSearchesBlock.push( singleSearchEntry )
@@ -694,38 +687,37 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
 
         return (
             <React.Fragment>
-                <tr >
-                    <td style={ { verticalAlign : "top" } }>
-                        <div>
-                            Searches:
-                        </div>
-                        { changeSearchesJSX }
-                        { reorderSearchesJSX }
-                    </td>
-                    <td style={ { verticalAlign : "top" } }>
+                <div style={ { paddingRight: 5 } }>
+                    <div>
+                        Searches:
+                    </div>
+                    { changeSearchesJSX }
+                    { reorderSearchesJSX }
+                </div>
+                <div>
 
-                        <div style={ { marginBottom: _Verbose_View_ContainerDiv_MarginBottom_AllSearches + _Verbose_View_ContainerDiv_MarginBottom_MultipleSearchAddition } }>
-                            <span
-                                style={ _Verbose_View_ContainerSpan_Style }
-                            >Verbose view: </span>
-                            <span>
-                                <input
-                                    type="checkbox"
-                                    checked={ this.state.show_SearchTag_Categories }
-                                    onChange={ event => {
-                                        const show_SearchTag_Categories = event.target.checked
+                    <div
+                        style={ { marginBottom: _Verbose_View_ContainerDiv_MarginBottom_AllSearches + _Verbose_View_ContainerDiv_MarginBottom_MultipleSearchAddition } }>
+                        <span
+                            style={ _Verbose_View_ContainerSpan_Style }
+                        >Verbose view: </span>
+                        <span>
+                            <input
+                                type="checkbox"
+                                checked={ this.state.show_SearchTag_Categories }
+                                onChange={ event => {
+                                    const show_SearchTag_Categories = event.target.checked
 
-                                        this.setState({ show_SearchTag_Categories })
+                                    this.setState( { show_SearchTag_Categories } )
 
-                                        Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value(show_SearchTag_Categories)
-                                    }}
-                                />
-                            </span>
-                        </div>
+                                    Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value( show_SearchTag_Categories )
+                                } }
+                            />
+                        </span>
+                    </div>
 
-                        { singleSearchesInsideSearchesBlock }
-                    </td>
-                </tr>
+                    { singleSearchesInsideSearchesBlock }
+                </div>
             </React.Fragment>
         )
     }
@@ -1142,10 +1134,12 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
             throw Error("No Search Name for projectSearchId: " + projectSearchId );
         }
 
-        const searchName_TD_Style : React.CSSProperties = { verticalAlign : "top" };
+        const searchName_TD_Style : React.CSSProperties = { };
 
         if ( this.props.multipleSearchEntry ) {
             searchName_TD_Style.paddingBottom = 6;
+        } else {
+            searchName_TD_Style.paddingBottom = 3;
         }
 
         const searchDetailsContainer_div_Style : React.CSSProperties = {}
@@ -1170,7 +1164,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
 
         return (
             <React.Fragment>
-                <td style={ { verticalAlign : "top" } }>
+                <div style={ { marginRight: 3 } }>
 
                     { ( colorBlockForSearch_Color ) ? (
                         <span
@@ -1188,8 +1182,8 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
                              onClick={ this._showSearchDetails_Clicked_BindThis }
                              src="static/images/pointer-right.png"/>
                     )}
-                </td>
-                <td style={ searchName_TD_Style }>
+                </div>
+                <div style={ searchName_TD_Style }>
                     <div >
                         <div
                             ref={ this._searchName_Div_Ref }
@@ -1295,7 +1289,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
                         </div>
                     ) : null }
 
-                </td>
+                </div>
             </React.Fragment>
         )
     }
@@ -1570,10 +1564,10 @@ class Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends Rea
 
             //  Ideal solution would probably be to rewrite whole search details block with grid and use sub grid.
 
-            filterLabel_TD_Style = { width : 125 }
+            filterLabel_TD_Style = { minWidth : 125 }
         }
 
-        const editIcon_Style: React.CSSProperties = { marginLeft: 4 }
+        const editIcon_Style: React.CSSProperties = { marginLeft: 4, marginRight: 3 }
 
         if ( this.props.forMultipleSearches ) {
 
@@ -1584,31 +1578,32 @@ class Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends Rea
 
         return (
             <React.Fragment>
-                <tr style={ { verticalAlign : "top" } }>
 
-                    <td className={ typeLabel_TD_ClassName } style={ filterLabel_TD_Style } onClick={ filterTypeLabel_ClickHandler }>
+                <div className={ typeLabel_TD_ClassName } style={ filterLabel_TD_Style } onClick={ filterTypeLabel_ClickHandler }>
 
-                        { this.props.type_label } Filters:
-                        { ( this.props.propValue.displayOnly ) ? null :
-                            (
-                                <span style={ editIcon_Style }>
-                                   <img src="static/images/icon-edit.png" className=" icon-small " />
-                                </span>
-                            )
-                        }
-                    </td>
-                    <td colSpan={ 2 }>
+                    { this.props.type_label } Filters:
+                    { ( this.props.propValue.displayOnly ) ? null :
+                        (
+                            <span style={ editIcon_Style }>
+                               <img src="static/images/icon-edit.png" className=" icon-small " />
+                            </span>
+                        )
+                    }
+                </div>
+                <div
+                    style={ { gridColumnStart: 2, gridColumnEnd: "-1" } }
+                >
 
-                        { ( cutoffEntryComponents ) ? (
-                            cutoffEntryComponents
-                        ) : (
-                            <React.Fragment>
-                                <span className=" filter-single-value-display-block clickable " onClick={ filterTypeLabel_ClickHandler } >Showing All</span>
-                                <span style={ { fontSize: 1 } }> </span>
-                            </React.Fragment>
-                        ) }
-                    </td>
-                </tr>
+                    { ( cutoffEntryComponents ) ? (
+                        cutoffEntryComponents
+                    ) : (
+                        <React.Fragment>
+                            <span className=" filter-single-value-display-block clickable " onClick={ filterTypeLabel_ClickHandler } >Showing All</span>
+                            <span style={ { fontSize: 1 } }> </span>
+                        </React.Fragment>
+                    ) }
+                </div>
+
             </React.Fragment>
         )
     }

@@ -47,11 +47,13 @@ export class SearchDetailsAndOtherFiltersOuterBlock_Layout extends React.Compone
     render() {
 
         return (
-            <table style={ { borderWidth : 0 } } >
-                <tbody>
-                    { this.props.children }
-                </tbody>
-            </table>
+            <div
+                style={ { display: "grid", gridTemplateColumns: "max-content max-content auto", rowGap: 2, marginBottom: 3 } }
+            >
+
+                { this.props.children }
+
+            </div>
         )
     }
 }
