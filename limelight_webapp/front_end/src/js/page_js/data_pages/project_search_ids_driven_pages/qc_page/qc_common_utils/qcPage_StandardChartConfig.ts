@@ -3,12 +3,20 @@
  *
  */
 
+//  Import from 'plotly.js-dist/plotly' will build in Webpack
+
 import Plotly from 'plotly.js-dist/plotly'
+
+//  Import from 'plotly.js' will NOT build in Webpack
+
+// import { ModeBarButtonAny, ModeBarDefaultButtons } from "plotly.js";
+// import Plotly from "plotly.js";
+
+
 import {
     qcPage_StandardChartLayout_StandardHeight,
     qcPage_StandardChartLayout_StandardWidth
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
-
 
 
 const _CHART_DOWNLOAD_WIDTH = 2000;
@@ -53,21 +61,31 @@ export const qcPage_StandardChartConfig = function (
     const chart_DownloadWidth = _CHART_DOWNLOAD_WIDTH
     const chart_DownloadHeight = chart_DownloadWidth / chart_AspectRatio;
 
-    return {
 
-        //  Remove "Produced by Plotly" icon on right end of Modebar
-        displaylogo:false,
+    //  Change ModeBarDefaultButtons to type 'any' since type 'ModeBarDefaultButtons' is imported from "plotly.js"; and will not build in webpack
 
-        //  Remove existing PNG download
-        modeBarButtonsToRemove: ['toImage'],
+    const modeBarButtonsToRemove:
+        // Array<ModeBarDefaultButtons> = (
+        Array<any> = (
 
-        //  Add buttons to Right end of Modebar
+        [ 'toImage' ]
+    )
 
-        modeBarButtonsToAdd: [
+    //  Change modeBarButtonsToAdd to type 'any' since:
+    //
+    //      1)   type 'ModeBarButtonAny' is missing property 'direction' which is in the Plotly example.  https://plotly.com/javascript/configuration-options/
+    //      2)   type 'ModeBarButtonAny' is imported from "plotly.js"; and will not build in webpack
+
+    //  Property 'direction' has been removed since does not appear to be needed for the icon 'camera'.  Maybe in the example it is needed for icon 'pencil'.
+
+    const modeBarButtonsToAdd:
+        // Array<ModeBarButtonAny> = (
+        Array<any> = (
+        [
             {
                 name: 'Download plot as a png',
                 icon: Plotly.Icons.camera,
-                direction: 'up',
+                // direction: 'up',  //  'direction'  is in example but NOT in Typescript typing file for Plotly.  Example: https://plotly.com/javascript/configuration-options/
                 click: function(gd) {
                     Plotly.downloadImage(
                         chartContainer_DOM_Element,
@@ -85,7 +103,7 @@ export const qcPage_StandardChartConfig = function (
             {
                 name: 'Download plot as a svg',
                 icon: Plotly.Icons.camera,
-                direction: 'up',
+                // direction: 'up',  //  'direction'  is in example but NOT in Typescript typing file for Plotly.  Example: https://plotly.com/javascript/configuration-options/
                 click: function(gd) {
                     Plotly.downloadImage(
                         chartContainer_DOM_Element,
@@ -101,6 +119,19 @@ export const qcPage_StandardChartConfig = function (
                 }
             }
         ]
+    )
+
+    return {
+
+        //  Remove "Produced by Plotly" icon on right end of Modebar
+        displaylogo:false,
+
+        //  Remove existing PNG download
+        modeBarButtonsToRemove,
+
+        //  Add buttons to Right end of Modebar
+
+        modeBarButtonsToAdd
     }
 
 }
