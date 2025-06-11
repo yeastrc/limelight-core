@@ -284,26 +284,6 @@ img.icon-large-svg, input[type="image"].icon-large-svg  {
   bottom: 0px;
 }
 
-//  Tooltip developed in Limelight:  tooltip_LimelightLocal_ReactBased.tsx
-
-.tooltip-limelight-react-based-outer-container {
-  position: absolute; 
-  background-color: white;
-  padding: 5px;
-  border-width: 2px;
-  border-style: solid;
-  border-color: $site-color-very-dark
-
-  //  Set in the code: See code for current values
-
-  // z-index: 1000, 
-  // top: tooltip_Top,
-  // left: tooltip_Left, 
-  // minWidth: 50, 
-  // maxWidth: "calc( 100vw - 100px )", //  Viewport width (100vw) minus 100px.  100px chosen in part to allow for vertical scrollbar
-}
-
-
 
 .table-no-border-no-cell-spacing-no-cell-padding { border-width:0px; padding: 0px; border-spacing : 0px; }
 

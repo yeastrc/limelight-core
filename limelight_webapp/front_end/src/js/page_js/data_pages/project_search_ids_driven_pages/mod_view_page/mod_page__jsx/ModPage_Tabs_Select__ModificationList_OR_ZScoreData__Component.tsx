@@ -65,6 +65,9 @@ import {
 import {
     open_ModPage_ZScoreTab_Chosen_ClearOld_VisualizationSelection_Overlay
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/modPage_ZScoreTab_Chosen_ClearOld_VisualizationSelection_Overlay";
+import {
+    SearchSubGroup_CentralStateManagerObjectClass
+} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 
 
 
@@ -84,6 +87,7 @@ export interface ModPage_Tabs_Select__ModificationList_OR_ZScoreData__Component_
     modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
     searchDataLookupParameters_Root : SearchDataLookupParameters_Root
 
+    searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
     generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
     modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
@@ -358,6 +362,7 @@ export class ModPage_Tabs_Select__ModificationList_OR_ZScoreData__Component exte
                                 modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result={ this.props.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result }
 
                                 searchDataLookupParameters_Root={ this.props.searchDataLookupParameters_Root }
+                                searchSubGroup_CentralStateManagerObjectClass={ this.props.searchSubGroup_CentralStateManagerObjectClass }
                                 generatedPeptideContents_UserSelections_StateObject={ this.props.generatedPeptideContents_UserSelections_StateObject }
                                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass }
                                 projectSearchIds={ this.props.projectSearchIds_AllForPage }

@@ -19,7 +19,10 @@ import {
     DataTable_RootTableObject,
     DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
-import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    DataPageStateManager,
+    SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     ModPage_Mod_Unlocalized_StartEnd_ContainerClass
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModPage_Mod_Unlocalized_StartEnd_ContainerClass";
@@ -30,6 +33,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_ProteinList_SubTableGenerator_ProteinName_Cell_Component";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
+    ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_Psm,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
@@ -81,6 +85,15 @@ import {
     modPage_Get_SearchLabel__SearchShortName_OR_SearchId_ForProjectSearchId
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_Get_SearchLabel__SearchShortName_OR_SearchId_ForProjectSearchId";
 import React from "react";
+import {
+    searchSubGroup_Get_Selected_SearchSubGroupIds
+} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Get_Selected_SearchSubGroupIds";
+import {
+    SearchSubGroup_CentralStateManagerObjectClass
+} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
+import {
+    modPage_Get_ProteinData_By_SubSearch_List_SubTableGenerator
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_Get_ProteinData_By_SubSearch_List_SubTableGenerator";
 
 
 //   Classes past to child tables are at the bottom of this file
@@ -92,6 +105,8 @@ export const modPage_get_ProteinList_SubTable = async function (
 
         projectSearchIds,
         searchDataLookupParameters_Root,
+
+        searchSubGroup_CentralStateManagerObjectClass,
         generatedPeptideContents_UserSelections_StateObject,
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
@@ -108,6 +123,7 @@ export const modPage_get_ProteinList_SubTable = async function (
         projectSearchIds: Array<number>
         searchDataLookupParameters_Root : SearchDataLookupParameters_Root
 
+        searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
         generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
@@ -122,9 +138,49 @@ export const modPage_get_ProteinList_SubTable = async function (
 
     const dataTableId_ThisTable = "Mod View Protein List Sub Table";
 
+
+    let searchSubGroups_DisplayOrder_Filtered: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>
+
+    if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum
+        === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
+
+        //  Only display for 1 search
+
+        if ( projectSearchIds.length !== 1 ) {
+            const msg = "if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND if ( projectSearchIds.length !== 1 ) {"
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        const projectSearchId = projectSearchIds[ 0 ];
+
+        const searchSubGroups_ForProjectSearchId = dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
+        if ( ! searchSubGroups_ForProjectSearchId ) {
+            const msg = "returned nothing: dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        const searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
+            searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
+        })
+
+        searchSubGroups_DisplayOrder_Filtered = []
+
+        for ( const searchSubGroup of searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
+
+            if ( searchSubGroup_Ids_Selected.has( searchSubGroup.searchSubGroup_Id ) ) {
+
+                searchSubGroups_DisplayOrder_Filtered.push( searchSubGroup )
+            }
+        }
+    }
+
+
     // create the columns for the table
     const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = _getDataTableColumns({
         projectSearchIds,
+        searchSubGroups_DisplayOrder_Filtered,
         dataPageStateManager_DataFrom_Server
     });
 
@@ -132,6 +188,7 @@ export const modPage_get_ProteinList_SubTable = async function (
     const dataTableRows : Array<DataTable_DataRowEntry> = await _getDataTableRows({
         data_For_ModMass,
         projectSearchIds,
+        searchSubGroups_DisplayOrder_Filtered,
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
         proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
@@ -168,9 +225,11 @@ export const modPage_get_ProteinList_SubTable = async function (
 const _getDataTableColumns = function (
     {
         projectSearchIds,
+        searchSubGroups_DisplayOrder_Filtered,
         dataPageStateManager_DataFrom_Server
     }:{
         projectSearchIds: Array<number>
+        searchSubGroups_DisplayOrder_Filtered: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>
         dataPageStateManager_DataFrom_Server:DataPageStateManager
     }
 ) : DataTable_RootTableDataObject_Both_ColumnArrays { try {
@@ -234,54 +293,91 @@ const _getDataTableColumns = function (
         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
-    for ( const projectSearchId of projectSearchIds ) {
-        const searchIdXorShortName = modPage_Get_SearchLabel__SearchShortName_OR_SearchId_ForProjectSearchId({projectSearchId, dataPageStateManager_DataFrom_Server});
+    if ( searchSubGroups_DisplayOrder_Filtered ) {
 
-        const displayName = "PSM Count (" + searchIdXorShortName + ")";
+        // add a column for each project search id
+        for ( const searchSubGroup of searchSubGroups_DisplayOrder_Filtered ) {
 
-        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+            const displayName = searchSubGroup.subgroupName_Display
 
-            const searchData = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
-            if ( ! searchData ) {
-                const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
-                console.warn( msg );
-                throw Error( msg );
+            const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+                return (
+                    <>
+                        <div style={ { fontWeight: "bold" } }>
+                            { displayName }
+                        </div>
+                        <div style={ { marginTop: 2 } }>
+                            { searchSubGroup.searchSubgroupName_fromImportFile }
+                        </div>
+                    </>
+                )
             }
 
-            let searchShortName_Label = ""
+            const dataTableColumn = new DataTable_Column( {
+                id: searchSubGroup.searchSubGroup_Id + "_val", // Used for tracking sort order. Keep short
+                displayName,
+                width: 100,
+                sortable: true,
+                columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
+            } );
+            dataTableColumns.push( dataTableColumn );
 
-            if ( searchData.searchShortName ) {
-                searchShortName_Label = "(" + searchData.searchShortName + ") "
-            }
-
-            const searchLabel = "(" + searchData.searchId + ") " + searchShortName_Label + searchData.name
-
-            return (
-                <>
-                    <div style={ { fontWeight: "bold" } }>
-                        { displayName }
-                    </div>
-                    <div style={ { marginTop: 5, fontWeight: "bold" } }>
-                        Search:
-                    </div>
-                    <div style={ { marginTop: 2 } }>
-                        { searchLabel }
-                    </div>
-                </>
-            )
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
 
-        const dataTableColumn = new DataTable_Column({
-            id : projectSearchId + '-psms', // Used for tracking sort order. Keep short
-            displayName,
-            width : 100,
-            sortable : true,
-            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
-        });
-        dataTableColumns.push( dataTableColumn );
+    } else {
 
-        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
-        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        for ( const projectSearchId of projectSearchIds ) {
+            const searchIdXorShortName = modPage_Get_SearchLabel__SearchShortName_OR_SearchId_ForProjectSearchId({projectSearchId, dataPageStateManager_DataFrom_Server});
+
+            const displayName = "PSM Count (" + searchIdXorShortName + ")";
+
+            const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+                const searchData = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchData ) {
+                    const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                let searchShortName_Label = ""
+
+                if ( searchData.searchShortName ) {
+                    searchShortName_Label = "(" + searchData.searchShortName + ") "
+                }
+
+                const searchLabel = "(" + searchData.searchId + ") " + searchShortName_Label + searchData.name
+
+                return (
+                    <>
+                        <div style={ { fontWeight: "bold" } }>
+                            { displayName }
+                        </div>
+                        <div style={ { marginTop: 5, fontWeight: "bold" } }>
+                            Search:
+                        </div>
+                        <div style={ { marginTop: 2 } }>
+                            { searchLabel }
+                        </div>
+                    </>
+                )
+            }
+
+            const dataTableColumn = new DataTable_Column({
+                id : projectSearchId + '-psms', // Used for tracking sort order. Keep short
+                displayName,
+                width : 100,
+                sortable : true,
+                columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
+            });
+            dataTableColumns.push( dataTableColumn );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        }
     }
 
     const dataTable_RootTableDataObject_Both_ColumnArrays = new DataTable_RootTableDataObject_Both_ColumnArrays({ columns : dataTableColumns, columns_tableDownload : dataTable_Column_DownloadTable_Entries});
@@ -296,6 +392,7 @@ const _getDataTableRows =  async function (
     {
         data_For_ModMass,
         projectSearchIds,
+        searchSubGroups_DisplayOrder_Filtered,
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
         proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
@@ -309,6 +406,7 @@ const _getDataTableRows =  async function (
     } : {
         data_For_ModMass: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass
         projectSearchIds: Array<number>
+        searchSubGroups_DisplayOrder_Filtered: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
@@ -340,13 +438,15 @@ const _getDataTableRows =  async function (
             dataPageStateManager_DataFrom_Server
         });
 
-    const allProteinDataForModMass: Array<ModPage_get_ProteinList_SubTable__SingleProteinData_Root> = await _getProteinDataForModMass({
+    const getProteinDataForModMass_Result = await _getProteinDataForModMass({
         data_For_ModMass,
         modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
         projectSearchIds,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
         dataPageStateManager_DataFrom_Server
     });
+
+    const allProteinDataForModMass: Array<ModPage_get_ProteinList_SubTable__SingleProteinData_Root> = getProteinDataForModMass_Result.singleProteinData_Root_Array
 
     for ( const proteinData of allProteinDataForModMass ) {
 
@@ -375,7 +475,7 @@ const _getDataTableRows =  async function (
                         proteinId: proteinData.proteinId,
                         modMass: data_For_ModMass.modMass,
                         projectSearchIds,
-                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+                        proteinInfo_For_MainFilters_Holder_Map_Key_ProjectSearchId: getProteinDataForModMass_Result.get_Data_FromServer_Result.proteinInfo_For_MainFilters_Holder_Map_Key_ProjectSearchId,
                         clickCallback
                     });
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
@@ -459,76 +559,160 @@ const _getDataTableRows =  async function (
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
-        // add in psm counts for each project search id
 
-        for ( const projectSearchId of projectSearchIds ) {
+        if ( searchSubGroups_DisplayOrder_Filtered ) {
 
-            let count = 0
+            // add in psm counts for each sub search id
 
-            const data_For_ProjectSearchId_Or_SubSearch =
-                proteinData.data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId.get( projectSearchId )
+            for ( const searchSubGroup of searchSubGroups_DisplayOrder_Filtered ) {
 
-            if ( data_For_ProjectSearchId_Or_SubSearch ) {
+                // add in psm counts for each project search id
 
-                count = data_For_ProjectSearchId_Or_SubSearch.dataFor_SinglePsm_Map_Key_PsmId.size
+                let count = 0
+
+                const data_For_ProjectSearchId_Or_SubSearch =
+                    proteinData.data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId.get( searchSubGroup.searchSubGroup_Id )
+
+                if ( data_For_ProjectSearchId_Or_SubSearch ) {
+
+                    count = data_For_ProjectSearchId_Or_SubSearch.dataFor_SinglePsm_Map_Key_PsmId.size
+                }
+
+                const valueDisplay = count.toString();
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort : count
+                });
+                columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
 
-            const valueDisplay = count.toString();
-            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
-            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                searchTableData,
-                valueDisplay,
-                valueSort : count
-            });
-            columnEntries.push( columnEntry );
+        } else {
 
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
-            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+            // add in psm counts for each project search id
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                let count = 0
+
+                const data_For_ProjectSearchId_Or_SubSearch =
+                    proteinData.data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId.get( projectSearchId )
+
+                if ( data_For_ProjectSearchId_Or_SubSearch ) {
+
+                    count = data_For_ProjectSearchId_Or_SubSearch.dataFor_SinglePsm_Map_Key_PsmId.size
+                }
+
+                const valueDisplay = count.toString();
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort : count
+                });
+                columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+            }
         }
 
         // call for sub table
         let dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject : DataTable_DataRowEntry__GetChildTableData_Return_Promise_DataTable_RootTableObject;
 
-        if ( projectSearchIds.length !== 1 ) {
 
-            dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
-                ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
 
-                return modPage_Get_ProteinData_BySearch_List_SubTableGenerator({
-                    data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId: proteinData.data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId,
-                    data_For_ModMass,
-                    modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-                    modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
-                    modPage_get_ProteinList_SubTable__SingleProteinData_Root: proteinData,
+        if ( searchSubGroups_DisplayOrder_Filtered ) {
 
-                    projectSearchIds,
-                    searchDataLookupParameters_Root,
-                    generatedPeptideContents_UserSelections_StateObject,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-                    modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                    proteinPositionFilter_UserSelections_StateObject,
-                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-                    dataPageStateManager_DataFrom_Server
-                })
-                }
+            if ( searchSubGroups_DisplayOrder_Filtered.length !== 1 ) {
+
+                dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
+                    ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+
+                        return modPage_Get_ProteinData_By_SubSearch_List_SubTableGenerator({
+                            data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId: proteinData.data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId,
+                            data_For_ModMass,
+                            modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+                            modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
+                            modPage_get_ProteinList_SubTable__SingleProteinData_Root: proteinData,
+
+                            projectSearchIds,
+                            searchDataLookupParameters_Root,
+                            generatedPeptideContents_UserSelections_StateObject,
+                            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+                            modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                            proteinPositionFilter_UserSelections_StateObject,
+                            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+                            dataPageStateManager_DataFrom_Server
+                        })
+                    }
+            } else {
+
+                dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
+                    ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+
+                        return modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerator({
+                            projectSearchId_Or_SubSearchId: searchSubGroups_DisplayOrder_Filtered[ 0 ].searchSubGroup_Id,
+                            projectSearchId_ForUseWhereRequire_projectSearchId: projectSearchIds[ 0 ],
+                            modPage_get_ProteinList_SubTable__SingleProteinData_Root: proteinData,
+                            modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
+                            data_For_ModMass,
+                            searchDataLookupParameters_Root,
+                            generatedPeptideContents_UserSelections_StateObject,
+                            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+                            dataPageStateManager_DataFrom_Server
+                        })
+                    };
+            }
+
         } else {
 
-            dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
-                ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+            if ( projectSearchIds.length !== 1 ) {
 
-                    return modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerator({
-                        projectSearchId: projectSearchIds[ 0 ],
-                        projectSearchId_ForUseWhereRequire_projectSearchId: projectSearchIds[ 0 ],
-                        modPage_get_ProteinList_SubTable__SingleProteinData_Root: proteinData,
-                        modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
-                        data_For_ModMass,
-                        searchDataLookupParameters_Root,
-                        generatedPeptideContents_UserSelections_StateObject,
-                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-                        dataPageStateManager_DataFrom_Server
-                    })
-                };
+                dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
+                    ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+
+                        return modPage_Get_ProteinData_BySearch_List_SubTableGenerator({
+                            data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId: proteinData.data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId,
+                            data_For_ModMass,
+                            modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+                            modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
+                            modPage_get_ProteinList_SubTable__SingleProteinData_Root: proteinData,
+
+                            projectSearchIds,
+                            searchDataLookupParameters_Root,
+                            generatedPeptideContents_UserSelections_StateObject,
+                            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+                            modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                            proteinPositionFilter_UserSelections_StateObject,
+                            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+                            dataPageStateManager_DataFrom_Server
+                        })
+                    }
+            } else {
+
+                dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
+                    ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+
+                        return modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerator({
+                            projectSearchId_Or_SubSearchId: projectSearchIds[ 0 ],
+                            projectSearchId_ForUseWhereRequire_projectSearchId: projectSearchIds[ 0 ],
+                            modPage_get_ProteinList_SubTable__SingleProteinData_Root: proteinData,
+                            modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
+                            data_For_ModMass,
+                            searchDataLookupParameters_Root,
+                            generatedPeptideContents_UserSelections_StateObject,
+                            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+                            dataPageStateManager_DataFrom_Server
+                        })
+                    };
+            }
         }
 
         const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
@@ -549,7 +733,7 @@ const _getDataTableRows =  async function (
 
     // console.warn( "Currently sorting the dataTableRows rows for Mod Page Protein List.  It would be much better to sort the data BEFORE creating the dataTableRows ")
 
-    if ( projectSearchIds.length === 1 ) {
+    if ( projectSearchIds.length === 1 && ( ! searchSubGroups_DisplayOrder_Filtered ) ) {
 
         // sort by psm count if there is one project search id
         dataTableRows.sort((function(a, b) {
@@ -626,7 +810,10 @@ const _getProteinDataForModMass = async function (
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         dataPageStateManager_DataFrom_Server:DataPageStateManager
     }
-) : Promise<Array<ModPage_get_ProteinList_SubTable__SingleProteinData_Root>> { try {
+) : Promise<{
+    singleProteinData_Root_Array: Array<ModPage_get_ProteinList_SubTable__SingleProteinData_Root>
+    get_Data_FromServer_Result: Internal_get_Data_FromServer_Result
+}> { try {
 
     const projectSearchId_ForUseWhereRequire_projectSearchId_ALL_Set = new Set( projectSearchIds )
 
@@ -734,10 +921,18 @@ const _getProteinDataForModMass = async function (
         proteinDataEntry.proteinDescription = Array.from( proteinDescriptions_Set ).sort().join(", ")
     }
 
-    return proteinDataForModMass;
+    return {
+        singleProteinData_Root_Array: proteinDataForModMass,
+        get_Data_FromServer_Result: data_FromServer
+    };
 
 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
+
+
+class Internal_get_Data_FromServer_Result {
+    proteinInfo_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilters_Holder>
+}
 
 const _get_Data_FromServer = function (
     {
@@ -747,9 +942,7 @@ const _get_Data_FromServer = function (
         projectSearchId_ForUseWhereRequire_projectSearchId_ALL_Set: Set<number>
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     }
-) : Promise<{
-    proteinInfo_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilters_Holder>
-}> {
+) : Promise<Internal_get_Data_FromServer_Result> {
 
     const proteinInfo_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilters_Holder> = new Map()
 
@@ -794,9 +987,7 @@ const _get_Data_FromServer = function (
 
     const promisesAll = Promise.all( promises )
 
-    return new Promise<{
-        proteinInfo_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilters_Holder>
-    }>( (resolve, reject) =>  { try {
+    return new Promise<Internal_get_Data_FromServer_Result>( (resolve, reject) =>  { try {
 
         promisesAll.catch(reason => reject(reason))
         promisesAll.then(novalue => { try {

@@ -1,5 +1,5 @@
 /**
- * modPage_Get_ProteinData_BySearch_List_SubTableGenerator.ts
+ * modPage_Get_ProteinData_By_SubSearch_List_SubTableGenerator.ts
  */
 
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
@@ -27,6 +27,7 @@ import {
     ModPage_get_ProteinList_SubTable__SingleProteinData_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_get_ProteinList_SubTable";
 import {
+    ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable";
@@ -48,7 +49,10 @@ import {
 import {
     ProteinPositionFilter_UserSelections_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
-import { DataPageStateManager } from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    DataPageStateManager, SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry,
+    SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass";
@@ -61,17 +65,20 @@ import {
 import {
     modPage_CompressUnlocalizedRanges
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_CompressUnlocalizedRanges";
+import {
+    searchSubGroup_Get_Selected_SearchSubGroupIds
+} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Get_Selected_SearchSubGroupIds";
 
 
 //////////////////////
 
 
-const dataTableId_ThisTable = "Mod View Protein List By Search Sub Table";
+const dataTableId_ThisTable = "Mod View Protein List By Sub Search Sub Table";
 
 
 
 
-export const modPage_Get_ProteinData_BySearch_List_SubTableGenerator  = async function (
+export const modPage_Get_ProteinData_By_SubSearch_List_SubTableGenerator  = async function (
     {
         data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId,
         data_For_ModMass,
@@ -151,10 +158,10 @@ const _getDataTableColumns = function () : DataTable_RootTableDataObject_Both_Co
     const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
     {
-        const displayName = "Search";
+        const displayName = "Sub Search";
 
         const dataTableColumn = new DataTable_Column({
-            id : "searchProteinSearchName", // Used for tracking sort order. Keep short
+            id : "sub search", // Used for tracking sort order. Keep short
             displayName,
             width : 500,
             sortable : true
@@ -248,6 +255,10 @@ const _getDataTableRows = async function (
     }
 ) : Promise<Array<DataTable_DataRowEntry>> { try {
 
+    let searchSubGroups_ForProjectSearchId: SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry = undefined
+    let projectSearchId__searchSubGroups_ForProjectSearchId: number = undefined
+
+
     const dataTableRows : Array<DataTable_DataRowEntry> = [];
 
     const allProteinData_ForSearches_ForModMass = await _getProteinData_PerSearch_ForModMass({
@@ -263,22 +274,37 @@ const _getDataTableRows = async function (
 
         // add the name
         {
-            const searchData_For_ProjectSearchId = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( proteinData.projectSearchId_ForUseWhereRequire_projectSearchId )
-            if ( ! searchData_For_ProjectSearchId ) {
-                throw Error("dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( proteinData.projectSearchId_ForUseWhereRequire_projectSearchId ) returned NOTHING for proteinData.projectSearchId_ForUseWhereRequire_projectSearchId: " + proteinData.projectSearchId_ForUseWhereRequire_projectSearchId )
+            {
+                let populate__searchSubGroups_ForProjectSearchId = false
+                if ( ! searchSubGroups_ForProjectSearchId ) {
+
+                    populate__searchSubGroups_ForProjectSearchId = true
+
+                } else if ( projectSearchId__searchSubGroups_ForProjectSearchId !== proteinData.projectSearchId_ForUseWhereRequire_projectSearchId ) {
+
+                    populate__searchSubGroups_ForProjectSearchId = true
+                }
+
+                if ( populate__searchSubGroups_ForProjectSearchId ) {
+                    projectSearchId__searchSubGroups_ForProjectSearchId = proteinData.projectSearchId_ForUseWhereRequire_projectSearchId
+                    searchSubGroups_ForProjectSearchId = dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId__searchSubGroups_ForProjectSearchId );
+
+                    if ( ! searchSubGroups_ForProjectSearchId ) {
+                        const msg = "returned nothing: dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId__searchSubGroups_ForProjectSearchId ), projectSearchId__searchSubGroups_ForProjectSearchId: " + projectSearchId__searchSubGroups_ForProjectSearchId;
+                        console.warn( msg )
+                        throw Error( msg )
+                    }
+                }
             }
 
-            const searchId = searchData_For_ProjectSearchId.searchId
-
-            const searchName = searchData_For_ProjectSearchId.name
-
-            const searchShortName = searchData_For_ProjectSearchId.searchShortName
-
-            let displayString = searchName;
-            if ( searchShortName && searchShortName.length > 0 ) {
-                displayString += " (" + searchShortName + ")";
+            const searchSubGroup_For_SearchSubGroup_Id = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( proteinData.projectSearchId_Or_SubSearchId )
+            if ( ! searchSubGroup_For_SearchSubGroup_Id ) {
+                const msg = "returned nothing: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( proteinData.projectSearchId_Or_SubSearchId ), proteinData.projectSearchId_Or_SubSearchId: " + proteinData.projectSearchId_Or_SubSearchId;
+                console.warn( msg )
+                throw Error( msg )
             }
-            displayString += " (" + searchId + ")";
+
+            let displayString = searchSubGroup_For_SearchSubGroup_Id.subgroupName_Display;
 
             const valueDisplay = displayString;
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]

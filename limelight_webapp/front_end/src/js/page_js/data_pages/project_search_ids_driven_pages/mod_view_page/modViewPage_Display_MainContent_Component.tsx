@@ -2456,25 +2456,25 @@ export class ModViewPage_Display_MainContent_Component extends React.Component< 
             filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section = this._render_filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section({  })
         }
 
-        let searchSubGroup_Ids_Selected : Set<number> = undefined;
-
-        if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
-
-            //  Only display for 1 search
-
-            const projectSearchId = this.props.propsValue.projectSearchIds[ 0 ];
-
-            const searchSubGroups_ForProjectSearchId = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
-            if ( ! searchSubGroups_ForProjectSearchId ) {
-                const msg = "returned nothing: props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
-                console.warn( msg )
-                throw Error( msg )
-            }
-
-            searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
-                searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
-            })
-        }
+        // let searchSubGroup_Ids_Selected : Set<number> = undefined;
+        //
+        // if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
+        //
+        //     //  Only display for 1 search
+        //
+        //     const projectSearchId = this.props.propsValue.projectSearchIds[ 0 ];
+        //
+        //     const searchSubGroups_ForProjectSearchId = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
+        //     if ( ! searchSubGroups_ForProjectSearchId ) {
+        //         const msg = "returned nothing: props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
+        //         console.warn( msg )
+        //         throw Error( msg )
+        //     }
+        //
+        //     searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
+        //         searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
+        //     })
+        // }
 
         return (
             <React.Fragment>
@@ -2546,6 +2546,7 @@ export class ModViewPage_Display_MainContent_Component extends React.Component< 
                                 modViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager }
                                 proteinPositionFilter_UserSelections_StateObject={ this.props.propsValue.proteinPositionFilter_UserSelections_StateObject }
                                 proteinPosition_Of_Modification_Filter_UserSelections_StateObject={ this.props.propsValue.proteinPosition_Of_Modification_Filter_UserSelections_StateObject }
+                                searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
                                 dataPageStateManager={ this.props.propsValue.dataPageStateManager }
                                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
                                 modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function={ this._proteinName_Clicked_Callback_Function_BindThis }

@@ -192,6 +192,10 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 		return this._value.projectSearchId;
 	}
 
+	/**
+	 *
+	 * @param selectedSearchSubGroupIds - Undefined if all are selected, to minimize storage needs
+	 */
 	set_selectedSearchSubGroupIds( { selectedSearchSubGroupIds } : { selectedSearchSubGroupIds : Set<number> } ) {
 		this._value.selectedSearchSubGroupIds = selectedSearchSubGroupIds;
 
@@ -202,6 +206,10 @@ export class SearchSubGroup_CentralStateManagerObjectClass {
 			this._centralPageStateManager.setState({component: this});
 		}
 	}
+
+	/**
+	 * @returns Undefined if all are selected, to minimize storage needs
+	 */
 	get_selectedSearchSubGroupIds() : Set<number> {
 		return this._value.selectedSearchSubGroupIds;
 	}

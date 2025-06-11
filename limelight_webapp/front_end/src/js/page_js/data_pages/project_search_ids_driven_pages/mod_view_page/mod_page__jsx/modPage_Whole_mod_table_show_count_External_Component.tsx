@@ -28,7 +28,6 @@ export const modPage_Get_WholeModTable_ShowCount_ExternalReactComponent = functi
 interface WholeModTable_ShowCount_ExternalReactComponent_Props {
 
     modMass : number
-    projectSearchId : number
     modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
     numericValue : number
     displayedValue : string | number

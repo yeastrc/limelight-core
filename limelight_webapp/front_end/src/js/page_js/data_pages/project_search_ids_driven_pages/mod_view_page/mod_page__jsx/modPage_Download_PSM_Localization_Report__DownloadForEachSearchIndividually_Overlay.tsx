@@ -46,6 +46,9 @@ import {
 import {
     modPage_Download_PSM_Localization_Report
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__clickable_links_for_downloads_and_view_js/modPage_Download_PSM_Localization_Report";
+import {
+    SearchSubGroup_CentralStateManagerObjectClass
+} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 
 /////
 
@@ -69,6 +72,7 @@ export class ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndi
     proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
     proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject //  To limit which proteins are included
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+    searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
     dataPageStateManager : DataPageStateManager
     modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
@@ -180,6 +184,7 @@ class ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividuall
             proteinPosition_Of_Modification_Filter_UserSelections_StateObject: this.props.props_value.proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject: this.props.props_value.proteinPositionFilter_UserSelections_StateObject,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.props_value.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+            searchSubGroup_CentralStateManagerObjectClass: this.props.props_value.searchSubGroup_CentralStateManagerObjectClass,
             dataPageStateManager: this.props.props_value.dataPageStateManager,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this.props.props_value.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.props_value.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root

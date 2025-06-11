@@ -23,7 +23,10 @@ import {
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
-import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    DataPageStateManager,
+    SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/js/psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects";
@@ -36,6 +39,7 @@ import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {
+    ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable";
@@ -60,6 +64,9 @@ import {
 import {
     modPage_CompressUnlocalizedRanges
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_CompressUnlocalizedRanges";
+import {
+    searchSubGroup_Get_Selected_SearchSubGroupIds
+} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Get_Selected_SearchSubGroupIds";
 
 
 
@@ -69,7 +76,7 @@ const dataTableId_ThisTable = "Mod View Protein List By Search Sub Table";
 
 export const modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerator = async function (
     {
-        projectSearchId,
+        projectSearchId_Or_SubSearchId,
         projectSearchId_ForUseWhereRequire_projectSearchId,
         modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
         modPage_get_ProteinList_SubTable__SingleProteinData_Root,
@@ -79,7 +86,7 @@ export const modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerato
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
         dataPageStateManager_DataFrom_Server
     } : {
-        projectSearchId: number
+        projectSearchId_Or_SubSearchId: number
         projectSearchId_ForUseWhereRequire_projectSearchId: number
         modPage_get_ProteinList_SubTable__SingleProteinData_Root: ModPage_get_ProteinList_SubTable__SingleProteinData_Root
         modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result: ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_Root
@@ -92,15 +99,15 @@ export const modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerato
     }
 ) : Promise<DataTable_RootTableObject> { try {
 
-    const data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId = data_For_ModMass.get_For__ProjectSearchId_Or_SubSearchId( projectSearchId)
+    const data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId = data_For_ModMass.get_For__ProjectSearchId_Or_SubSearchId( projectSearchId_Or_SubSearchId)
     if ( ! data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId ) {
-        throw Error("data_For_ModMass.get_For__ProjectSearchId_Or_SubSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+        throw Error("data_For_ModMass.get_For__ProjectSearchId_Or_SubSearchId( projectSearchId ) returned NOTHING for projectSearchId_Or_SubSearchId: " + projectSearchId_Or_SubSearchId )
     }
 
     const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId_ForUseWhereRequire_projectSearchId)
     if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
-        throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId_ForUseWhereRequire_projectSearchId) returned NOTHING for proprojectSearchId_ForUseWhereRequire_projectSearchIdjectSearchId: " + projectSearchId_ForUseWhereRequire_projectSearchId )
+        throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId_ForUseWhereRequire_projectSearchId) returned NOTHING for projectSearchId_ForUseWhereRequire_projectSearchId: " + projectSearchId_ForUseWhereRequire_projectSearchId )
     }
 
     // create the columns for the table

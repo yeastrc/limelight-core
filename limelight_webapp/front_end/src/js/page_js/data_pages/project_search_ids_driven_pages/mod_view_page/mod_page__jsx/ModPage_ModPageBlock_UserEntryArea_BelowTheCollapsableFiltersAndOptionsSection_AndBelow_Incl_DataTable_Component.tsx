@@ -36,6 +36,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_OptionsSection_UserInput_Display_MainContent_Component";
 import {
     modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable,
+    ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable";
 import {
@@ -83,6 +84,9 @@ import {
 import {
     open_ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividually_Overlay
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/modPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividually_Overlay";
+import {
+    SearchSubGroup_CentralStateManagerObjectClass
+} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 
 
 //  Default and Min Width for the block for the search names and Color Legend Bar label to the left of the SVG with the Mod Mass Heat Map
@@ -105,6 +109,7 @@ export interface ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAn
 
     proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject //  To limit which proteins are displayed when expand mod mass table row
     proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject //  To limit which proteins are displayed when expand mod mass table row
+    searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
 
     dataPageStateManager: DataPageStateManager
     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
@@ -324,6 +329,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
             proteinPosition_Of_Modification_Filter_UserSelections_StateObject: this.props.proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject: this.props.proteinPositionFilter_UserSelections_StateObject,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+            searchSubGroup_CentralStateManagerObjectClass: this.props.searchSubGroup_CentralStateManagerObjectClass,
             dataPageStateManager: this.props.dataPageStateManager,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         } )
@@ -372,6 +378,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
         this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass =
             new ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass({
                 modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                searchSubGroup_CentralStateManagerObjectClass: this.props.searchSubGroup_CentralStateManagerObjectClass,
                 modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
             })
@@ -380,7 +387,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
             modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable( {
                 override_UserInput_For_PsmQuant_ToUse_Counts_Boolean: false,
                 override_UserInput_For_DataTransformation_ToUse_NONE_Boolean: false,
-                modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
+                modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
                 modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
                 modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
             } )
@@ -431,20 +438,75 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
      */
     private _create_Update_ModMassVisualization_For_Updated_DataOrUserInput() {
 
-        let projectSearchIds_For_DisplayOrder = this.props.projectSearchIds_AllForPage
+        let projectSearchIds_Or_SubSearchIds_For_DisplayOrder: Array<number> = undefined
 
-        {  //  Allow for projectSearchIds_OrderOverride_Deprecated ( OLD Functionality but since stored in URL needs to be supported )
-            const projectSearchIds_OrderOverride_Deprecated = this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_projectSearchIds_OrderOverride_Deprecated()
+        let projectSearchId_WhenHaveSingleSearchSubGroups: number = undefined
 
-            if ( projectSearchIds_OrderOverride_Deprecated ) {
-                projectSearchIds_For_DisplayOrder = projectSearchIds_OrderOverride_Deprecated
+        if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum
+            === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
+
+            if ( this.props.projectSearchIds_AllForPage.length !== 1 ) {
+                const msg = "if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND if ( this.props.projectSearchIds_AllForPage.length !== 1 ) {"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            const projectSearchId = this.props.projectSearchIds_AllForPage[ 0 ]
+
+            projectSearchId_WhenHaveSingleSearchSubGroups = projectSearchId
+
+            const searchSubGroups_Root = this.props.dataPageStateManager.get_SearchSubGroups_Root()
+            if ( ! searchSubGroups_Root ) {
+                const msg = "if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND this.props.dataPageStateManager.get_SearchSubGroups_Root() returned NOTHING"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId )
+            if ( ! searchSubGroups_ForProjectSearchId ) {
+                const msg = "if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId ) returned NOTHING. projectSearchId: " + projectSearchId
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            projectSearchIds_Or_SubSearchIds_For_DisplayOrder = []
+
+            for ( const searchSubGroup of searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
+
+                if ( this.props.searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
+                    //  Specifically track if NO sub groups were selected
+                    continue // EARLY CONTINUE
+                }
+                {
+                    const selectedSearchSubGroupIds = this.props.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds()
+                    //  selectedSearchSubGroupIds is undefined if ALL sub groups are selected
+
+                    if ( selectedSearchSubGroupIds && ( ! selectedSearchSubGroupIds.has( searchSubGroup.searchSubGroup_Id ) ) ) {
+                        //  Have selection and this sub group NOT selected
+                        continue // EARLY CONTINUE
+                    }
+                }
+
+                projectSearchIds_Or_SubSearchIds_For_DisplayOrder.push( searchSubGroup.searchSubGroup_Id )
+            }
+
+        } else {
+
+            projectSearchIds_Or_SubSearchIds_For_DisplayOrder = this.props.projectSearchIds_AllForPage
+
+            {  //  Allow for projectSearchIds_OrderOverride_Deprecated ( OLD Functionality but since stored in URL needs to be supported )
+                const projectSearchIds_OrderOverride_Deprecated = this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_projectSearchIds_OrderOverride_Deprecated()
+
+                if ( projectSearchIds_OrderOverride_Deprecated ) {
+                    projectSearchIds_Or_SubSearchIds_For_DisplayOrder = projectSearchIds_OrderOverride_Deprecated
+                }
             }
         }
 
         this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result =
             modView_DataViz_Compute_ColorScale_WidthHeight_Etc( {
                 modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-                projectSearchIds: projectSearchIds_For_DisplayOrder,
+                projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
                 modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager
             } )
 
@@ -453,7 +515,8 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
             modView_DataViz_Renderer( {
                 modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-                projectSearchIds: projectSearchIds_For_DisplayOrder,
+                projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
+                projectSearchId_WhenHaveSingleSearchSubGroups,
                 modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
                 modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
                 dataPageStateManager_DataFrom_Server: this.props.dataPageStateManager,
@@ -609,8 +672,10 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
             projectSearchIds: this.props.projectSearchIds_AllForPage,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
             modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+            searchSubGroup_CentralStateManagerObjectClass: this.props.searchSubGroup_CentralStateManagerObjectClass,
             dataPageStateManager: this.props.dataPageStateManager,
-            modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
+            modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         })
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
@@ -627,6 +692,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
             proteinPosition_Of_Modification_Filter_UserSelections_StateObject: this.props.proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject: this.props.proteinPositionFilter_UserSelections_StateObject,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+            searchSubGroup_CentralStateManagerObjectClass: this.props.searchSubGroup_CentralStateManagerObjectClass,
             dataPageStateManager: this.props.dataPageStateManager,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
@@ -670,6 +736,162 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                 visualization_ColorScaleLegend_LabelText = labelText
             }
 
+            let searchNames_Or_SearchSubGroupNames_Block: JSX.Element = undefined
+            let numberOf_Searches_Or_Subsearches: number = undefined
+
+            if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root ) {
+
+                if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum
+                    === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
+
+                    if ( this.props.projectSearchIds_AllForPage.length !== 1 ) {
+                        const msg = "if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND if ( this.props.projectSearchIds_AllForPage.length !== 1 ) {"
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+
+                    const projectSearchId = this.props.projectSearchIds_AllForPage[ 0 ]
+
+                    const searchSubGroups_Root = this.props.dataPageStateManager.get_SearchSubGroups_Root()
+                    if ( ! searchSubGroups_Root ) {
+                        const msg = "if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND this.props.dataPageStateManager.get_SearchSubGroups_Root() returned NOTHING"
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+                    const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId )
+                    if ( ! searchSubGroups_ForProjectSearchId ) {
+                        const msg = "if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId ) returned NOTHING. projectSearchId: " + projectSearchId
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+
+                    const elements: Array<JSX.Element> = []
+                    numberOf_Searches_Or_Subsearches = 0
+
+                    for ( const searchSubGroup of searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
+
+                        if ( this.props.searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds()
+                            || ( this.props.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds()
+                                && ( ! this.props.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds().has(  searchSubGroup.searchSubGroup_Id ) ) ) ) {
+
+                            continue // EARLY CONTINUE
+                        }
+
+                        const searchSubGroupDisplay = "(" + searchSubGroup.subgroupName_Display + ") " + searchSubGroup.searchSubgroupName_fromImportFile
+
+                        const element = (
+                            <div
+                                key={ searchSubGroup.searchSubGroup_Id }
+                                style={ {
+                                    // 'max' and 'min' in 'heightDefs' is set to the same value so using 'max'
+                                    height: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.max,  // Height for data for the search
+
+                                    display: "flex",
+                                    alignItems: "center", // center vertical
+                                } }
+                            >
+                                <div style={ {
+                                    //  Text on single line with hidden overflow and ellipse
+                                    whiteSpace: "nowrap",
+                                    overflowX: "hidden",
+                                    textOverflow: "ellipsis",
+                                    width: "100%"
+                                } }>
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <div>
+                                                <div>
+                                                    Sub Search:
+                                                </div>
+                                                <div>
+                                                    { searchSubGroupDisplay }
+                                                </div>
+                                            </div>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <span>
+                                            { searchSubGroupDisplay }
+                                        </span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                </div>
+                            </div>
+                        )
+
+                        elements.push( element )
+
+                        numberOf_Searches_Or_Subsearches++
+                    }
+
+                    searchNames_Or_SearchSubGroupNames_Block = (
+                        <>
+                            { elements }
+                        </>
+                    )
+                } else {
+
+                    numberOf_Searches_Or_Subsearches = this.props.projectSearchIds_AllForPage.length
+
+                    searchNames_Or_SearchSubGroupNames_Block = (
+                        <>
+                            { this.props.projectSearchIds_AllForPage.map( projectSearchId => {
+
+                                //  Display the Search Names
+
+                                const searchData_For_ProjectSearchId = this.props.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+
+                                let shortNameDisplay = ""
+
+                                if ( searchData_For_ProjectSearchId.searchShortName ) {
+                                    shortNameDisplay = "(" + searchData_For_ProjectSearchId.searchShortName + ") "
+                                }
+
+                                const searchDisplay = "(" + searchData_For_ProjectSearchId.searchId + ") " + shortNameDisplay + searchData_For_ProjectSearchId.name
+
+                                return (
+                                    <div
+                                        key={ projectSearchId }
+                                        style={ {
+                                            // 'max' and 'min' in 'heightDefs' is set to the same value so using 'max'
+                                            height: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.max,  // Height for data for the search
+
+                                            display: "flex",
+                                            alignItems: "center", // center vertical
+                                        } }
+                                    >
+                                        <div style={ {
+                                            //  Text on single line with hidden overflow and ellipse
+                                            whiteSpace: "nowrap",
+                                            overflowX: "hidden",
+                                            textOverflow: "ellipsis",
+                                            width: "100%"
+                                        } }>
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    <div>
+                                                        <div>
+                                                            Search:
+                                                        </div>
+                                                        <div>
+                                                            { searchDisplay }
+                                                        </div>
+                                                    </div>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                            >
+                                                <span>
+                                                    { searchDisplay }
+                                                </span>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        </div>
+                                    </div>
+                                )
+                            } )
+                            }
+                        </>
+                    )
+                }
+            }
 
             return (
                 <div
@@ -731,60 +953,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                                 marginTop: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.top
                                             } }
                                         >
-                                            { this.props.projectSearchIds_AllForPage.map( projectSearchId => {
-
-                                                //  Display the Search Names
-
-                                                const searchData_For_ProjectSearchId = this.props.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
-
-                                                let shortNameDisplay = ""
-
-                                                if ( searchData_For_ProjectSearchId.searchShortName ) {
-                                                    shortNameDisplay = "(" + searchData_For_ProjectSearchId.searchShortName + ") "
-                                                }
-
-                                                const searchDisplay = "(" + searchData_For_ProjectSearchId.searchId + ") " + shortNameDisplay + searchData_For_ProjectSearchId.name
-
-                                                return (
-                                                    <div
-                                                        key={ projectSearchId }
-                                                        style={ {
-                                                            // 'max' and 'min' in 'heightDefs' is set to the same value so using 'max'
-                                                            height: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.max,  // Height for data for the search
-
-                                                            display: "flex",
-                                                            alignItems: "center", // center vertical
-                                                        } }
-                                                    >
-                                                        <div style={ {
-                                                            //  Text on single line with hidden overflow and ellipse
-                                                            whiteSpace: "nowrap",
-                                                            overflowX: "hidden",
-                                                            textOverflow: "ellipsis",
-                                                            width: "100%"
-                                                        } }>
-                                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                                title={
-                                                                    <div>
-                                                                        <div>
-                                                                            Search:
-                                                                        </div>
-                                                                        <div>
-                                                                            { searchDisplay }
-                                                                        </div>
-                                                                    </div>
-                                                                }
-                                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                                            >
-                                                                <span>
-                                                                    { searchDisplay }
-                                                                </span>
-                                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            } )
-                                            }
+                                            { searchNames_Or_SearchSubGroupNames_Block }
                                         </div>
 
                                         <div
@@ -812,42 +981,51 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
                                 {/*  2nd column.  Narrow for the resize handle for user drag to change width of first column  */}
 
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                    title={
-                                        <div>
-                                            <ul>
-                                                <li>
-                                                    <b>Drag</b> to show more or less of search names.
-                                                </li>
-                                                <li style={ { marginTop: 20 } }>
-                                                    <b>Control click</b> or <b>Shift click</b> to show all characters of search names.
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    }
-                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                    disableInteractive={ true }
-                                    placement={ "right-end" }
-                                >
-                                    <div
-                                        style={ {
-                                            cursor: "col-resize",
-                                            //  marginTop and height so ONLY display in the searches area
-                                            // Margin Top from the SVG creation
-                                            marginTop: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.top,
-                                            height: this.props.projectSearchIds_AllForPage.length *
-                                                ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.max,  // Height for data for the search
-                                        } }
-                                        onMouseDown={ this._onMouseDown_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis }
-                                        // use of 'onDoubleClick' caused problems with subsequent mouse down and drag so removed
-                                        // onDoubleClick={ this._onMouseDoubleClick_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis }
-                                    >
-                                        <div
-                                            className=" draggable-to-change-search-names-display--mod-page "
+                                <div>
+
+                                    { numberOf_Searches_Or_Subsearches ? (
+
+                                        // render once have value for numberOf_Searches_Or_Subsearches since used in computing 'height' below
+
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <div>
+                                                    <ul>
+                                                        <li>
+                                                            <b>Drag</b> to show more or less of search names.
+                                                        </li>
+                                                        <li style={ { marginTop: 20 } }>
+                                                            <b>Control click</b> or <b>Shift click</b> to show all characters of search names.
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                            disableInteractive={ true }
+                                            placement={ "right-end" }
                                         >
-                                        </div>
-                                    </div>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                            <div
+                                                style={ {
+                                                    cursor: "col-resize",
+                                                    //  marginTop and height so ONLY display in the searches area
+                                                    // Margin Top from the SVG creation
+                                                    marginTop: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.top,
+                                                    height: numberOf_Searches_Or_Subsearches *
+                                                        ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.max,  // Height for data for the search
+                                                } }
+                                                onMouseDown={ this._onMouseDown_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis }
+                                                // use of 'onDoubleClick' caused problems with subsequent mouse down and drag so removed
+                                                // onDoubleClick={ this._onMouseDoubleClick_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis }
+                                            >
+                                                <div
+                                                    className=" draggable-to-change-search-names-display--mod-page "
+                                                >
+                                                </div>
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                                    ) : null }
+                                </div>
 
                                 {/*  3rd column for the SVG  */}
 
@@ -910,6 +1088,8 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                 modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result={ this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result }
 
                                 searchDataLookupParameters_Root={ this.props.searchDataLookupParameters_Root }
+
+                                searchSubGroup_CentralStateManagerObjectClass={ this.props.searchSubGroup_CentralStateManagerObjectClass  }
                                 generatedPeptideContents_UserSelections_StateObject={ this.props.generatedPeptideContents_UserSelections_StateObject }
                                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass }
                                 modViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager }

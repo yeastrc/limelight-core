@@ -60,11 +60,11 @@ export class ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result {
 export const modView_DataViz_Compute_ColorScale_WidthHeight_Etc = function (
     {
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-        projectSearchIds,
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
         modViewPage_DataVizOptions_VizSelections_PageStateManager
     } : {
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
-        projectSearchIds: Array<number>
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder: Array<number>
 
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
     }
@@ -107,7 +107,7 @@ export const modView_DataViz_Compute_ColorScale_WidthHeight_Etc = function (
 
 
     const width = _getWidth({sortedModMasses});
-    const height = _getHeight({projectSearchIds:projectSearchIds});
+    const height = _getHeight({ projectSearchIds_Or_SubSearchIds_For_DisplayOrder });
 
     // set up our scales
     let xScale = d3.scaleBand()
@@ -117,7 +117,7 @@ export const modView_DataViz_Compute_ColorScale_WidthHeight_Etc = function (
 
     let yScale = d3.scaleBand()
         // @ts-ignore  -- Typescript types for '.domain(...)' is Array<string>
-        .domain(projectSearchIds)
+        .domain(projectSearchIds_Or_SubSearchIds_For_DisplayOrder)
         .range([0, height]);
 
     let colorScale: any  // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
@@ -161,7 +161,7 @@ export const modView_DataViz_Compute_ColorScale_WidthHeight_Etc = function (
     }
 
     const modMatrix: INTERNAL__ModMatrix = _getModMatrix({
-        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root, projectSearchIds, minValue_ForViz, maxValue_ForViz
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root, projectSearchIds_Or_SubSearchIds_For_DisplayOrder, minValue_ForViz, maxValue_ForViz
     });
 
     const result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result = {
@@ -196,15 +196,15 @@ const _getWidth = function ({sortedModMasses}: { sortedModMasses: ReadonlyArray<
     return width;
 }
 
-const _getHeight = function ({projectSearchIds}: { projectSearchIds: Array<number> }) {
+const _getHeight = function ({projectSearchIds_Or_SubSearchIds_For_DisplayOrder}: { projectSearchIds_Or_SubSearchIds_For_DisplayOrder: Array<number> }) {
 
     let height = ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.default;
 
     // adjust width as necessary
-    if(height < projectSearchIds.length * ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.min) {
-        height = projectSearchIds.length * ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.min;
-    } else if(height > projectSearchIds.length * ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.max) {
-        height = projectSearchIds.length * ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.max;
+    if(height < projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length * ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.min) {
+        height = projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length * ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.min;
+    } else if(height > projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length * ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.max) {
+        height = projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length * ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.heightDefs.max;
     }
 
     return height;
@@ -279,10 +279,10 @@ const _getMax_topLevelTable_DisplayValue_Or_UserEntered_MaxColorPsmCount_Or_MaxC
 
 const _getModMatrix = function (
     {
-        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root, projectSearchIds, minValue_ForViz, maxValue_ForViz
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root, projectSearchIds_Or_SubSearchIds_For_DisplayOrder, minValue_ForViz, maxValue_ForViz
     } : {
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
-        projectSearchIds: Array<number>
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder: Array<number>
 
         minValue_ForViz: number
         maxValue_ForViz: number
@@ -297,11 +297,11 @@ const _getModMatrix = function (
 
     for ( const modMass of sortedModMasses ) {
 
-        modMatrix[modMass_Index] = Array(projectSearchIds.length);
+        modMatrix[modMass_Index] = Array(projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length);
 
         let searchIndex = 0;
 
-        for ( const projectSearchId of projectSearchIds ) {
+        for ( const projectSearchId of projectSearchIds_Or_SubSearchIds_For_DisplayOrder ) {
 
             let found_For_ModMass_ProjectSearchId = false
 

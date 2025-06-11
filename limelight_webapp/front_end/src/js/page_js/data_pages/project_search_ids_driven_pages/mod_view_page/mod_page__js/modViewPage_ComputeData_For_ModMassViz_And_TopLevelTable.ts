@@ -23,8 +23,8 @@ import {
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
-    ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
-    ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result
+    ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_or_SubSearchIds_Result,
+    ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_or_SubSearchIds_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass";
 import {
     Jstat_ExternalLibrary_Without_TypescriptDefinition_Calls
@@ -32,6 +32,9 @@ import {
 import {
     CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
+import {
+    SearchSubGroup_CentralStateManagerObjectClass
+} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 
 ///////////////////
 
@@ -70,12 +73,12 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Roo
 
         this.projectSearchId_Or_SubSearchId_Enum = projectSearchId_Or_SubSearchId_Enum
 
-        if ( projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
-
-            const msg = "'SubSearchId' NOT SUPPORTED: param 'psmIds_With_NO_Modifications_Set_Map_Key_ProjectSearchId' is ONLY 'ProjectSearchId' class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: constructor(...) if ( projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {.  "
-            console.warn(msg)
-            throw Error(msg)
-        }
+        // if ( projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
+        //
+        //     const msg = "'SubSearchId' NOT SUPPORTED: param 'psmIds_With_NO_Modifications_Set_Map_Key_ProjectSearchId' is ONLY 'ProjectSearchId' class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: constructor(...) if ( projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {.  "
+        //     console.warn(msg)
+        //     throw Error(msg)
+        // }
 
         //  All Down Stream uses of this._psmIds_With_NO_Modifications_Set_Map_Key_ProjectSearchId have to change as well
 
@@ -304,7 +307,7 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_For
  *
  * @param override_UserInput_For_PsmQuant_ToUse_Counts_Boolean
  * @param override_UserInput_For_DataTransformation_ToUse_NONE_Boolean
- * @param modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root
+ * @param modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
  * @param modViewPage_DataVizOptions_VizSelections_PageStateManager
  * @param commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
  */
@@ -314,7 +317,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
 
         override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,  // Ignore UserInput  For DataTransformation and use None
 
-        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
+        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
 
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass  // Used for Ratios
@@ -329,7 +332,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
          */
         override_UserInput_For_DataTransformation_ToUse_NONE_Boolean: boolean
 
-        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
+        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
 
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
@@ -347,29 +350,29 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
 
             //  PSM Quant is Ratio AND QuantType is PSMs.  Need Total PSM Count per Project SearchId
 
-            let modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result
+            let modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_or_SubSearchIds_Result
 
             const promises: Array<Promise<void>> = []
 
             {
-                const projectSearchIds = Array.from( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.get_ProjectSearchId_ForUseWhereRequire_projectSearchId_AcrossAllModMasses() )
+                const projectSearchIds = Array.from( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_ProjectSearchId_ForUseWhereRequire_projectSearchId_AcrossAllModMasses() )
 
-                const getScanCount_For_ProjectSearchIds_Result =
+                const getPsmCount_ForRatiosDenominator_For_ProjectSearchIds_Result =
                     modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass.getPsmCount_ForRatiosDenominator_For_ProjectSearchIds( projectSearchIds )
 
-                if ( getScanCount_For_ProjectSearchIds_Result.data ) {
-                    modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result = getScanCount_For_ProjectSearchIds_Result.data
-                } else if ( getScanCount_For_ProjectSearchIds_Result.promise ) {
+                if ( getPsmCount_ForRatiosDenominator_For_ProjectSearchIds_Result.data ) {
+                    modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result = getPsmCount_ForRatiosDenominator_For_ProjectSearchIds_Result.data
+                } else if ( getPsmCount_ForRatiosDenominator_For_ProjectSearchIds_Result.promise ) {
                     const promise = new Promise<void>( (resolve, reject) => { try {
-                        getScanCount_For_ProjectSearchIds_Result.promise.catch(reason => { reject(reason)})
-                        getScanCount_For_ProjectSearchIds_Result.promise.then(value => { try {
+                        getPsmCount_ForRatiosDenominator_For_ProjectSearchIds_Result.promise.catch(reason => { reject(reason)})
+                        getPsmCount_ForRatiosDenominator_For_ProjectSearchIds_Result.promise.then(value => { try {
                             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result = value
                             resolve()
                         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
                     promises.push( promise )
                 } else {
-                    throw Error("getScanCount_For_ProjectSearchIds_Result no 'data' or 'promise'")
+                    throw Error("getPsmCount_ForRatiosDenominator_For_ProjectSearchIds_Result no 'data' or 'promise'")
                 }
             }
 
@@ -379,7 +382,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
                 return { promise: undefined, data: _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData({
                         override_UserInput_For_PsmQuant_ToUse_Counts_Boolean,
                         override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,
-                        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
+                        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
                         modViewPage_DataVizOptions_VizSelections_PageStateManager,
                         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
                         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: undefined
@@ -395,7 +398,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
                         const result = _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData({
                             override_UserInput_For_PsmQuant_ToUse_Counts_Boolean,
                             override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,
-                            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
+                            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
                             modViewPage_DataVizOptions_VizSelections_PageStateManager,
                             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
                             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: undefined
@@ -409,12 +412,12 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
 
             //  PSM Quant is Ratio AND QuantType is Scans.  Need Total Scan Count per Project SearchId for computing Total Count of: Scan Number / Search Scan File Id Pair Count
 
-            let modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result
+            let modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_or_SubSearchIds_Result
 
             const promises: Array<Promise<void>> = []
 
             {
-                const projectSearchIds = Array.from( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.get_ProjectSearchId_ForUseWhereRequire_projectSearchId_AcrossAllModMasses() )
+                const projectSearchIds = Array.from( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_ProjectSearchId_ForUseWhereRequire_projectSearchId_AcrossAllModMasses() )
 
                 const getScanCount_For_ProjectSearchIds_Result =
                     modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass.get_ScanNumber_SearchScanFileId_Pair_Unique_Count__ForRatiosDenominator__Map_Key_ProjectSearchId_For_ProjectSearchIds( projectSearchIds )
@@ -441,7 +444,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
                 return { promise: undefined, data: _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData({
                         override_UserInput_For_PsmQuant_ToUse_Counts_Boolean,
                         override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,
-                        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
+                        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
                         modViewPage_DataVizOptions_VizSelections_PageStateManager,
                         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result,
                         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: undefined
@@ -457,7 +460,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
                         const result = _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData({
                             override_UserInput_For_PsmQuant_ToUse_Counts_Boolean,
                             override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,
-                            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
+                            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
                             modViewPage_DataVizOptions_VizSelections_PageStateManager,
                             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result,
                             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: undefined
@@ -473,7 +476,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
         return { promise: undefined, data: _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData({
                 override_UserInput_For_PsmQuant_ToUse_Counts_Boolean,
                 override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,
-                modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
+                modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
                 modViewPage_DataVizOptions_VizSelections_PageStateManager,
                 modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: undefined,  //  NOT 'PSM Quant is Ratio'
                 modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: undefined  //  NOT 'PSM Quant is Ratio'
@@ -489,7 +492,7 @@ const _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData = 
 
         override_UserInput_For_DataTransformation_ToUse_NONE_Boolean, // Ignore UserInput  For DataTransformation and use None
 
-        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
+        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
 
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,  //  undefined if NOT ( 'QuantType is Ratio' and 'scans'
@@ -506,26 +509,26 @@ const _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData = 
         override_UserInput_For_DataTransformation_ToUse_NONE_Boolean: boolean
 
 
-        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
+        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
 
-        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result
-        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result
+        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_or_SubSearchIds_Result
+        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_or_SubSearchIds_Result
     }
 ) : ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root {
 
     let projectSearchId_Or_SubSearchId_Enum = ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.ProjectSearchId
-    if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
+    if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
         projectSearchId_Or_SubSearchId_Enum = ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId
     }
 
     const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root = new ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root({
         projectSearchId_Or_SubSearchId_Enum,
-        psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId: modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.get_psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId()
+        psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId: modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId()
     })
 
     _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root({
-        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
+        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
 
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
 
@@ -549,7 +552,7 @@ const _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData = 
 
         _set_To_Ratio_OfTotal_For_SearchOrSubSearch_In_ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root({
             modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
+            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
             modViewPage_DataVizOptions_VizSelections_PageStateManager,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result
@@ -598,7 +601,7 @@ const _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData = 
 
 const _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root = function (
     {
-        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
+        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
 
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
 
@@ -606,7 +609,7 @@ const _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root = function (
 
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root  // Updated
     } : {
-        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
+        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
 
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
 
@@ -616,7 +619,7 @@ const _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root = function (
     }
 ) {
 
-    for ( const dataEntry_SingleModMass of modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.get_All_Values() ) {
+    for ( const dataEntry_SingleModMass of modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_All_Values() ) {
 
         const modMass = dataEntry_SingleModMass.modMass
 
@@ -700,7 +703,7 @@ const _set_from_ScanCount_In_ModViewPage_ComputeData_For_ModMassViz_And_TopLevel
 const _set_To_Ratio_OfTotal_For_SearchOrSubSearch_In_ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root = function (
     {
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
+        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
 
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result, //  Used for Ratios
@@ -708,12 +711,12 @@ const _set_To_Ratio_OfTotal_For_SearchOrSubSearch_In_ModViewPage_ComputeData_For
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result
     } : {
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
-        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
+        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
 
-        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result
+        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_or_SubSearchIds_Result
 
-        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result
+        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_or_SubSearchIds_Result
     }) {
 
     //    WARNING:   This code assumes that the VALUE in "data_ForSingle_ProjectSearchId_Or_SubSearchId.topLevelTable_DisplayValue"
@@ -734,22 +737,39 @@ const _set_To_Ratio_OfTotal_For_SearchOrSubSearch_In_ModViewPage_ComputeData_For
 
         //   Computed for ALL PSMs that pass the PSM/Peptide filters at the top of the page AND filters in 'Click to Hide Filters and Options'
 
-        if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.projectSearchId_Or_SubSearchId_Enum ===
+        if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.projectSearchId_Or_SubSearchId_Enum ===
             ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
 
-            const msg = "NOT Coded to handle SubSearchId"
-            console.warn(msg)
-            throw Error(msg)
-        }
+            {  //  Validate only 1 search
 
-        for ( const projectSearchId of modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.get_ProjectSearchId_ForUseWhereRequire_projectSearchId_AcrossAllModMasses() ) {
+                const projectSearchIds = Array.from( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_ProjectSearchId_ForUseWhereRequire_projectSearchId_AcrossAllModMasses() )
 
-            const psmCount_For__ProjectSearchId = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId.get( projectSearchId )
-            if ( psmCount_For__ProjectSearchId === undefined || psmCount_For__ProjectSearchId === null ) {
-                throw Error("= modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                if ( projectSearchIds.length !== 1 ) {
+                    const msg = "if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND if ( projectSearchIds.length !== 1 ) {"
+                    console.warn( msg )
+                    throw Error( msg )
+                }
             }
 
-            totalSummed_PsmCount_Or_ScanCount__Map_Key_ProjectSearchId_Or_SubSearchId.set( projectSearchId, psmCount_For__ProjectSearchId )
+            for ( const mapEntry of modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId_or_SubSearchId.entries() ) {
+
+                const mapKey = mapEntry[ 0 ]
+                const mapValue = mapEntry[ 1 ]
+
+                totalSummed_PsmCount_Or_ScanCount__Map_Key_ProjectSearchId_Or_SubSearchId.set( mapKey, mapValue )
+            }
+
+        } else {
+
+            for ( const projectSearchId of modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_ProjectSearchId_ForUseWhereRequire_projectSearchId_AcrossAllModMasses() ) {
+
+                const psmCount_For__ProjectSearchId = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId )
+                if ( psmCount_For__ProjectSearchId === undefined || psmCount_For__ProjectSearchId === null ) {
+                    throw Error( "= modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                }
+
+                totalSummed_PsmCount_Or_ScanCount__Map_Key_ProjectSearchId_Or_SubSearchId.set( projectSearchId, psmCount_For__ProjectSearchId )
+            }
         }
 
     } else if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans ) {
@@ -764,25 +784,39 @@ const _set_To_Ratio_OfTotal_For_SearchOrSubSearch_In_ModViewPage_ComputeData_For
 
         //   Computed for ALL PSMs that pass the PSM/Peptide filters at the top of the page AND filters in 'Click to Hide Filters and Options'
 
-        //  TODO  Could compute and cache this number in psmTblData_For_ReportedPeptideId_For_MainFilters_Holder
-
-
-        if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.projectSearchId_Or_SubSearchId_Enum ===
+        if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.projectSearchId_Or_SubSearchId_Enum ===
             ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
 
-            const msg = "NOT Coded to handle SubSearchId"
-            console.warn(msg)
-            throw Error(msg)
-        }
+            {  //  Validate only 1 search
 
-        for ( const projectSearchId of modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.get_ProjectSearchId_ForUseWhereRequire_projectSearchId_AcrossAllModMasses() ) {
+                const projectSearchIds = Array.from( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_ProjectSearchId_ForUseWhereRequire_projectSearchId_AcrossAllModMasses() )
 
-            const scanNumber_SearchScanFileId_Pair_Unique_Count = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId.get( projectSearchId )
-            if ( scanNumber_SearchScanFileId_Pair_Unique_Count === undefined || scanNumber_SearchScanFileId_Pair_Unique_Count === null ) {
-                throw Error("modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                if ( projectSearchIds.length !== 1 ) {
+                    const msg = "if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND if ( projectSearchIds.length !== 1 ) {"
+                    console.warn( msg )
+                    throw Error( msg )
+                }
             }
 
-            totalSummed_PsmCount_Or_ScanCount__Map_Key_ProjectSearchId_Or_SubSearchId.set( projectSearchId, scanNumber_SearchScanFileId_Pair_Unique_Count )
+            for ( const mapEntry of modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId.entries() ) {
+
+                const mapKey = mapEntry[ 0 ]
+                const mapValue = mapEntry[ 1 ]
+
+                totalSummed_PsmCount_Or_ScanCount__Map_Key_ProjectSearchId_Or_SubSearchId.set( mapKey, mapValue )
+            }
+
+        } else {
+
+            for ( const projectSearchId of modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_ProjectSearchId_ForUseWhereRequire_projectSearchId_AcrossAllModMasses() ) {
+
+                const scanNumber_SearchScanFileId_Pair_Unique_Count = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId )
+                if ( scanNumber_SearchScanFileId_Pair_Unique_Count === undefined || scanNumber_SearchScanFileId_Pair_Unique_Count === null ) {
+                    throw Error( "modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                }
+
+                totalSummed_PsmCount_Or_ScanCount__Map_Key_ProjectSearchId_Or_SubSearchId.set( projectSearchId, scanNumber_SearchScanFileId_Pair_Unique_Count )
+            }
         }
 
     } else {

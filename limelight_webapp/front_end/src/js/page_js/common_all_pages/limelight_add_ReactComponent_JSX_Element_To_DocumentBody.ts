@@ -11,11 +11,8 @@ import ReactDOM from "react-dom";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 /**
- * Creates the tooltip and returns object of class tooltip_Limelight_Create_Tooltip
  *
- * @param componentToAdd - JSX Element to add
- *
- * @returns object of class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder
+ * @param componentToAdd
  */
 export const limelight_add_ReactComponent_JSX_Element_To_DocumentBody = function({ componentToAdd } : {
 
@@ -59,9 +56,7 @@ export interface Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holde
     removeContents_AndContainer_FromDOM();
 }
 
-
 /**
- * class returned from tooltip_Limelight_Create_Tooltip
  *
  */
 class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder implements Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF {

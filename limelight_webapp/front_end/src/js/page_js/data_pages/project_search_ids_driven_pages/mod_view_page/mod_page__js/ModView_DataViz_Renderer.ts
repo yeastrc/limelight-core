@@ -23,14 +23,9 @@ import {
     limelight__Input_NumberOrString_ReturnNumber
 } from "page_js/common_all_pages/limelight__Input_NumberOrString_ReturnNumber";
 import {
-    modPage_Get_DataTransformationType_DisplayLabel
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_Get_DataTransformationType_DisplayLabel";
-import {
+    ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable";
-import {
-    modPage_GetSearchNameForProjectSearchId
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_GetSearchNameForProjectSearchId";
 import {
     modPage_GetSearchIdForProjectSearchId
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_GetSearchIdForProjectSearchId";
@@ -57,7 +52,8 @@ const _SELECTION_TOOLTIP_TO_MOD_MASS_DOM_ID = "mod-viz-tooltip-selection-to-mod-
 export const modView_DataViz_Renderer = function (
     {
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-        projectSearchIds,
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
+        projectSearchId_WhenHaveSingleSearchSubGroups,
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
 
@@ -66,7 +62,8 @@ export const modView_DataViz_Renderer = function (
         updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
     } : {
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
-        projectSearchIds: Array<number>
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder: Array<number>
+        projectSearchId_WhenHaveSingleSearchSubGroups: number
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
 
@@ -180,16 +177,19 @@ export const modView_DataViz_Renderer = function (
     _addColoredRectangles({
         svg,
         sortedModMasses: modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.sortedModMasses,
-        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result, projectSearchIds, tooltip, modViewPage_DataVizOptions_VizSelections_PageStateManager, dataPageStateManager_DataFrom_Server
+        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result, projectSearchIds_Or_SubSearchIds_For_DisplayOrder, projectSearchId_WhenHaveSingleSearchSubGroups,
+        tooltip, modViewPage_DataVizOptions_VizSelections_PageStateManager,
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+        dataPageStateManager_DataFrom_Server
     });
 
-    _addSeparatorLines({ svg, projectSearchIds, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result });
+    _addSeparatorLines({ svg, projectSearchIds_Or_SubSearchIds_For_DisplayOrder, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result });
 
     // _addSearchLabels({
     //     svg,
     //     tooltip,
     //     modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-    //     projectSearchIds,
+    //     projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
     //     modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
     //     modViewPage_DataVizOptions_VizSelections_PageStateManager,
     //     dataPageStateManager_DataFrom_Server,
@@ -206,7 +206,7 @@ export const modView_DataViz_Renderer = function (
 
     _addDragHandlerToRects({
         svg,
-        projectSearchIds,
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
         dataPageStateManager_DataFrom_Server,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
@@ -220,14 +220,20 @@ export const modView_DataViz_Renderer = function (
 
 const _addColoredRectangles = function (
     {
-        svg, sortedModMasses, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result, projectSearchIds, tooltip, modViewPage_DataVizOptions_VizSelections_PageStateManager, dataPageStateManager_DataFrom_Server
+        svg, sortedModMasses, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result, projectSearchIds_Or_SubSearchIds_For_DisplayOrder, projectSearchId_WhenHaveSingleSearchSubGroups,
+        tooltip, modViewPage_DataVizOptions_VizSelections_PageStateManager,
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+        dataPageStateManager_DataFrom_Server
     } : {
         svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
         sortedModMasses: ReadonlyArray<number>
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
-        projectSearchIds : ReadonlyArray<number>,
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder : ReadonlyArray<number>,
+        projectSearchId_WhenHaveSingleSearchSubGroups: number
         tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 
         dataPageStateManager_DataFrom_Server:DataPageStateManager
     }) {
@@ -249,7 +255,7 @@ const _addColoredRectangles = function (
         .data(function(d) { return d; })
         .enter()
         .append('rect')
-        .attr('y', (d, i) => (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds[i])))
+        .attr('y', (d, i) => (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i])))
         .attr('class', (d, i) => ('project-search-id-' + d.projectSearchId_OR_SubSearchId + ' mod-mass-' + d.modMass))
         .attr('width', modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.xScale.bandwidth())
         .attr('height', modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale.bandwidth())
@@ -262,15 +268,17 @@ const _addColoredRectangles = function (
         })
         .on("mousemove", function ( event_Param, dataElement_Param ) {
 
-            const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param.projectSearchId_OR_SubSearchId );
+            const projectSearchId_Or_SubSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param.projectSearchId_OR_SubSearchId );
 
             _showToolTip({
                 onSearchLabel_OnLeft: false,
-                projectSearchId,
+                projectSearchId_Or_SubSearchId,
+                projectSearchId_WhenHaveSingleSearchSubGroups,
                 modMass: dataElement_Param.modMass,
                 topLevelTable_DisplayValue: dataElement_Param.topLevelTable_DisplayValue,
                 tooltip,
                 modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
                 dataPageStateManager_DataFrom_Server
             })
         })
@@ -294,22 +302,22 @@ const _addColoredRectangles = function (
 
 const _addSeparatorLines = function (
     {
-        svg, projectSearchIds, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
+        svg, projectSearchIds_Or_SubSearchIds_For_DisplayOrder, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
     }: {
         svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
-        projectSearchIds: Array<number>
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder: Array<number>
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
     }) {
 
     svg.select('#rect-group').selectAll('.separator-line')
-        .data(projectSearchIds)
+        .data(projectSearchIds_Or_SubSearchIds_For_DisplayOrder)
         .enter()
         .append('line')
         .attr('class', 'separator-line')
         .attr('x1', '0')
-        .attr('y1', (d, i) => (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds[i])))
+        .attr('y1', (d, i) => (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i])))
         .attr('x2', modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.width)
-        .attr('y2', (d, i) => (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds[i])))
+        .attr('y2', (d, i) => (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i])))
         .attr('stroke', 'gray')
         .attr('stroke-width', '1')
         .attr('opacity','0.75');
@@ -333,7 +341,7 @@ const _addSeparatorLines = function (
 //         svg,
 //         tooltip,
 //         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-//         projectSearchIds,
+//         projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
 //         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
 //         modViewPage_DataVizOptions_VizSelections_PageStateManager,
 //         dataPageStateManager_DataFrom_Server,
@@ -344,7 +352,7 @@ const _addSeparatorLines = function (
 //         tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>
 //
 //         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
-//         projectSearchIds: Array<number>
+//         projectSearchIds_Or_SubSearchIds_For_DisplayOrder: Array<number>
 //
 //         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
 //         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
@@ -353,27 +361,27 @@ const _addSeparatorLines = function (
 //         updated_modViewPage_DataVizOptions_VizSelections_PageStateManager: () => void
 //     }) {
 //
-//     for ( let i = 0; i < projectSearchIds.length; i++ ) {
-//         var z = ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds[i]) )
-//         var y = ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds[i]) +
+//     for ( let i = 0; i < projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length; i++ ) {
+//         var z = ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i]) )
+//         var y = ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i]) +
 //             (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale.bandwidth() / 2) + (ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize / 2))
 //         var zzzz = 0
 //     }
 //
 //     svg.selectAll('.project-label')
-//         .data(projectSearchIds)
+//         .data(projectSearchIds_Or_SubSearchIds_For_DisplayOrder)
 //         .enter()
 //         .append('text')
 //         .attr('class', 'search-label')
 //         .attr('x', -10)
 //         .attr('y',
 //             (d, i) =>
-//                 ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds[i]) +
+//                 ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i]) +
 //                     (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale.bandwidth() / 2) + (ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize / 2)))
 //         .attr("text-anchor", "end")
 //         .attr('font-size', ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 'px')
 //         .attr('font-family', ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.label_FontFamily )
-//         .text((d,i) => ( _getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds[i], dataPageStateManager_DataFrom_Server }) ) )
+//         .text((d,i) => ( _getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i], dataPageStateManager_DataFrom_Server }) ) )
 //         .on("mousemove", function ( event_Param, dataElement_Param ) {
 //             const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param );
 //             _showToolTip({
@@ -411,7 +419,7 @@ const _addSeparatorLines = function (
 const _addDragHandlerToRects = function (
     {
         svg,
-        projectSearchIds,
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
         dataPageStateManager_DataFrom_Server,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
@@ -419,7 +427,7 @@ const _addDragHandlerToRects = function (
         updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
     } : {
         svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
-        projectSearchIds : Array<number>
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder : Array<number>
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
         dataPageStateManager_DataFrom_Server : DataPageStateManager
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
@@ -441,30 +449,30 @@ const _addDragHandlerToRects = function (
             const pointer_X = p[ 0 ]
             const pointer_Y = p[ 1 ]
 
-            const projectSearchId_Total_MinMaxPosition_NOT_SET = undefined
+            const projectSearchId_Or_SubSearchId_Total_MinMaxPosition_NOT_SET = undefined
 
-            let projectSearchId_Total_MinPosition: number = projectSearchId_Total_MinMaxPosition_NOT_SET
-            let projectSearchId_Total_MaxPosition: number = projectSearchId_Total_MinMaxPosition_NOT_SET
+            let projectSearchId_Or_SubSearchId_Total_MinPosition: number = projectSearchId_Or_SubSearchId_Total_MinMaxPosition_NOT_SET
+            let projectSearchId_Or_SubSearchId_Total_MaxPosition: number = projectSearchId_Or_SubSearchId_Total_MinMaxPosition_NOT_SET
 
-            for ( const projectSearchId of projectSearchIds ) {
+            for ( const projectSearchId_Or_SubSearchId of projectSearchIds_Or_SubSearchIds_For_DisplayOrder ) {
 
-                const psidMinPosition = modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale( projectSearchId );
+                const psidMinPosition = modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale( projectSearchId_Or_SubSearchId );
                 const psidMaxPosition = psidMinPosition + modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale.bandwidth();
 
-                if ( projectSearchId_Total_MinPosition === projectSearchId_Total_MinMaxPosition_NOT_SET ) {
-                    projectSearchId_Total_MinPosition = psidMinPosition
-                } else if ( projectSearchId_Total_MinPosition > psidMinPosition ) {
-                    projectSearchId_Total_MinPosition = psidMinPosition
+                if ( projectSearchId_Or_SubSearchId_Total_MinPosition === projectSearchId_Or_SubSearchId_Total_MinMaxPosition_NOT_SET ) {
+                    projectSearchId_Or_SubSearchId_Total_MinPosition = psidMinPosition
+                } else if ( projectSearchId_Or_SubSearchId_Total_MinPosition > psidMinPosition ) {
+                    projectSearchId_Or_SubSearchId_Total_MinPosition = psidMinPosition
                 }
-                if ( projectSearchId_Total_MaxPosition === projectSearchId_Total_MinMaxPosition_NOT_SET ) {
-                    projectSearchId_Total_MaxPosition = psidMaxPosition
-                } else if ( projectSearchId_Total_MaxPosition < psidMaxPosition ) {
-                    projectSearchId_Total_MaxPosition = psidMaxPosition
+                if ( projectSearchId_Or_SubSearchId_Total_MaxPosition === projectSearchId_Or_SubSearchId_Total_MinMaxPosition_NOT_SET ) {
+                    projectSearchId_Or_SubSearchId_Total_MaxPosition = psidMaxPosition
+                } else if ( projectSearchId_Or_SubSearchId_Total_MaxPosition < psidMaxPosition ) {
+                    projectSearchId_Or_SubSearchId_Total_MaxPosition = psidMaxPosition
                 }
             }
 
-            const selectionRect_Y = projectSearchId_Total_MinPosition + 10
-            const selectionRect_Height = projectSearchId_Total_MaxPosition - 10 - 10
+            const selectionRect_Y = projectSearchId_Or_SubSearchId_Total_MinPosition + 10
+            const selectionRect_Height = projectSearchId_Or_SubSearchId_Total_MaxPosition - 10 - 10
 
             svg.select('#rect-group')
                 .append( "rect")
@@ -549,7 +557,7 @@ const _addDragHandlerToRects = function (
                 _updateSelectedRectIndicators({
                     // event_Param__CtrlKey,
                     // event_Param__MetaKey,
-                    svg, projectSearchIds, modViewPage_DataVizOptions_VizSelections_PageStateManager, rectParams, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
+                    svg, projectSearchIds_Or_SubSearchIds_For_DisplayOrder, modViewPage_DataVizOptions_VizSelections_PageStateManager, rectParams, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
                 });
 
                 // remove selection frame
@@ -699,11 +707,11 @@ const _show_Tooltip_During_Selection = function (
 
 const _updateSelectedRectIndicators = function (
     {
-        svg, projectSearchIds, modViewPage_DataVizOptions_VizSelections_PageStateManager, rectParams, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
+        svg, projectSearchIds_Or_SubSearchIds_For_DisplayOrder, modViewPage_DataVizOptions_VizSelections_PageStateManager, rectParams, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
     } : {
         svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-        projectSearchIds : Array<number>
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder : Array<number>
         rectParams: INTERNAL__RrectParams_Class
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
     }) {
@@ -723,9 +731,9 @@ const _updateSelectedRectIndicators = function (
 
         if ( _rectangleContainsModMass({ modMass, rectParams, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result })) {
 
-            for (const projectSearchId of projectSearchIds) {
+            for (const projectSearchId_Or_SubSearchId of projectSearchIds_Or_SubSearchIds_For_DisplayOrder) {
 
-                if ( _rectangleContainsProjectSearchId({ projectSearchId, rectParams, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result }) ) {
+                if ( _rectangleContains_ProjectSearchId_Or_SubSearchId({ projectSearchId_Or_SubSearchId, rectParams, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result }) ) {
 
                     // const selector = 'rect.mod-mass-' + modMass + '.project-search-id-' + projectSearchId;
                     // svg.select('#rect-group').select(selector).style('opacity', '1.0');
@@ -788,16 +796,16 @@ const _rectangleContainsModMass = function (
     return false;
 }
 
-const _rectangleContainsProjectSearchId = function (
+const _rectangleContains_ProjectSearchId_Or_SubSearchId = function (
     {
-        projectSearchId, rectParams, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
+        projectSearchId_Or_SubSearchId, rectParams, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
     }: {
-        projectSearchId: number
+        projectSearchId_Or_SubSearchId: number
         rectParams: INTERNAL__RrectParams_Class
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
     }) {
 
-    const psidMinPosition = modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchId);
+    const psidMinPosition = modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchId_Or_SubSearchId);
     const psidMaxPosition = psidMinPosition + modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale.bandwidth();
 
     const rectTop = parseInt(rectParams.y);
@@ -814,14 +822,19 @@ const _rectangleContainsProjectSearchId = function (
 
 const _showToolTip = function (
     {
-        onSearchLabel_OnLeft, projectSearchId, modMass, topLevelTable_DisplayValue, tooltip, modViewPage_DataVizOptions_VizSelections_PageStateManager, dataPageStateManager_DataFrom_Server
+        onSearchLabel_OnLeft, projectSearchId_Or_SubSearchId, projectSearchId_WhenHaveSingleSearchSubGroups,
+        modMass, topLevelTable_DisplayValue, tooltip, modViewPage_DataVizOptions_VizSelections_PageStateManager,
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+        dataPageStateManager_DataFrom_Server
     } : {
         onSearchLabel_OnLeft: boolean
-        projectSearchId : number,
+        projectSearchId_Or_SubSearchId : number
+        projectSearchId_WhenHaveSingleSearchSubGroups: number
         modMass: number
         topLevelTable_DisplayValue: number
         tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
         dataPageStateManager_DataFrom_Server:DataPageStateManager
     }) {
 
@@ -883,33 +896,48 @@ const _showToolTip = function (
                 txt += "<p>Mod mass: " + modMass + "</p>";
             }
 
-            if ( projectSearchId ) {
+            if ( projectSearchId_Or_SubSearchId ) {
 
+                if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum
+                    === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
 
-                const searchId = modPage_GetSearchIdForProjectSearchId({
-                    projectSearchId:projectSearchId,
-                    dataPageStateManager_DataFrom_Server
-                });
+                    const searchSubGroups_ForProjectSearchId = dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId_WhenHaveSingleSearchSubGroups )
 
-                const searchName = modPage_GetSearchNameOnlyForProjectSearchId({
-                    projectSearchId:projectSearchId,
-                    dataPageStateManager_DataFrom_Server
-                });
+                    const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( projectSearchId_Or_SubSearchId )
 
-                const searchShortName = modPage_GetSearchShortNameForProjectSearchId({
-                    projectSearchId:projectSearchId,
-                    dataPageStateManager_DataFrom_Server
-                });
+                    searchSubGroup.subgroupName_Display
 
-                let displayString = searchName;
-                if(searchShortName && searchShortName.length > 0) {
-                    displayString += " (" + searchShortName + ")";
+                    searchDisplayString = "(" + searchSubGroup.subgroupName_Display + ") " + searchSubGroup.searchSubgroupName_fromImportFile
+
+                    txt += "<p>Sub Search: <span id='mod_viz_tooltip__search_display_string'></span></p>";
+
+                } else {
+
+                    const searchId = modPage_GetSearchIdForProjectSearchId({
+                        projectSearchId:projectSearchId_Or_SubSearchId,
+                        dataPageStateManager_DataFrom_Server
+                    });
+
+                    const searchName = modPage_GetSearchNameOnlyForProjectSearchId({
+                        projectSearchId:projectSearchId_Or_SubSearchId,
+                        dataPageStateManager_DataFrom_Server
+                    });
+
+                    const searchShortName = modPage_GetSearchShortNameForProjectSearchId({
+                        projectSearchId:projectSearchId_Or_SubSearchId,
+                        dataPageStateManager_DataFrom_Server
+                    });
+
+                    let displayString = searchName;
+                    if(searchShortName && searchShortName.length > 0) {
+                        displayString += " (" + searchShortName + ")";
+                    }
+                    displayString += " (" + searchId + ")";
+
+                    searchDisplayString = displayString
+
+                    txt += "<p>Search: <span id='mod_viz_tooltip__search_display_string'></span></p>";
                 }
-                displayString += " (" + searchId + ")";
-
-                searchDisplayString = displayString
-
-                txt += "<p>Search: <span id='mod_viz_tooltip__search_display_string'></span></p>";
             }
 
             if ( topLevelTable_DisplayValue !== undefined ) {
