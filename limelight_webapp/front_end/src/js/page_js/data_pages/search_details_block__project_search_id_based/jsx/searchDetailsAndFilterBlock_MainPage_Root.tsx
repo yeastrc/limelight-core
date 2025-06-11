@@ -383,8 +383,8 @@ interface SingleSearch_Only_Root_Props {
 
     searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
     openUserChangeFiltersOverlay_Callback : OpenUserChangeFiltersOverlay_Callback
-    changeSearchesClickedCallback
-    removeSearchesClickedCallback
+    changeSearchesClickedCallback: () => void
+    removeSearchesClickedCallback: () => void
     searchSubGroup_SelectionsChanged_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_SelectionsChanged_Callback
     searchSubGroup_ManageGroupNames_Clicked_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_ManageGroupNames_Clicked_Callback
 }
@@ -402,6 +402,8 @@ interface SingleSearch_Only_Root_State {
  */
 class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Props, SingleSearch_Only_Root_State > {
 
+    private _verboseView_CheckboxChanged_BindThis = this._verboseView_Checkbox_Changed.bind(this)
+
     /**
      *
      */
@@ -412,6 +414,24 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
 
         this.state = { show_SearchTag_Categories };
     }
+
+    /**
+     *
+     * @param event
+     * @private
+     */
+    private _verboseView_Checkbox_Changed( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        const show_SearchTag_Categories = event.target.checked
+
+        this.setState( { show_SearchTag_Categories } )
+
+        Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value( show_SearchTag_Categories )
+
+    } catch( e ) {
+        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        throw e;
+    } }
 
     ////////////////////////////////////////
 
@@ -488,13 +508,7 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
                             <input
                                 type="checkbox"
                                 checked={ this.state.show_SearchTag_Categories }
-                                onChange={ event => {
-                                    const show_SearchTag_Categories = event.target.checked
-
-                                    this.setState({ show_SearchTag_Categories })
-
-                                    Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value(show_SearchTag_Categories)
-                                }}
+                                onChange={ this._verboseView_CheckboxChanged_BindThis }
                             />
                         </span>
                     </div>
@@ -544,9 +558,9 @@ interface MultipleSearch_Only_Root_Props {
     propValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 
     openUserChangeFiltersOverlay_Callback : OpenUserChangeFiltersOverlay_Callback
-    changeSearchesClickedCallback
-    changeSearchesOrderClickedCallback
-    removeSearchesClickedCallback
+    changeSearchesClickedCallback: () => void
+    changeSearchesOrderClickedCallback: () => void
+    removeSearchesClickedCallback: () => void
 }
 
 /**
@@ -562,6 +576,8 @@ interface MultipleSearch_Only_Root_State {
  */
 class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root_Props, MultipleSearch_Only_Root_State > {
 
+    private _verboseView_Checkbox_Changed_BindThis = this._verboseView_Checkbox_Changed.bind(this)
+
     /**
      *
      */
@@ -572,6 +588,24 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
 
         this.state = { show_SearchTag_Categories };
     }
+
+    /**
+     *
+     * @param event
+     * @private
+     */
+    private _verboseView_Checkbox_Changed( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        const show_SearchTag_Categories = event.target.checked
+
+        this.setState( { show_SearchTag_Categories } )
+
+        Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value( show_SearchTag_Categories )
+
+    } catch( e ) {
+        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        throw e;
+    } }
 
     ////////////////////////////////////////
 
@@ -705,13 +739,7 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
                             <input
                                 type="checkbox"
                                 checked={ this.state.show_SearchTag_Categories }
-                                onChange={ event => {
-                                    const show_SearchTag_Categories = event.target.checked
-
-                                    this.setState( { show_SearchTag_Categories } )
-
-                                    Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value( show_SearchTag_Categories )
-                                } }
+                                onChange={ this._verboseView_Checkbox_Changed_BindThis }
                             />
                         </span>
                     </div>
@@ -734,7 +762,7 @@ interface RemoveSearches_Props {
 
     select_ONLY_ONE_Search: boolean  //  If true, User can select only ONE Search.
 
-    removeSearchesClickedCallback
+    removeSearchesClickedCallback: () => void
 }
 
 /**
@@ -789,7 +817,7 @@ interface ChangeSearches_Props {
 
     select_ONLY_ONE_Search: boolean  //  If true, User can select only ONE Search.
 
-    changeSearchesClickedCallback
+    changeSearchesClickedCallback: () => void
 }
 
 /**
@@ -840,7 +868,7 @@ class ChangeSearches extends React.Component< ChangeSearches_Props, ChangeSearch
  */
 interface ChangeSearchesOrder_Props {
 
-    changeSearchesOrderClickedCallback
+    changeSearchesOrderClickedCallback: () => void
 }
 
 /**
