@@ -617,6 +617,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                                     title={ tooltipContents__PsmQuant_Ratios_Label }
                                                     { ...tooltip_Main_Props }
+                                                    placement={ "right" }
                                                 >
                                                     <span>
                                                         Ratios
