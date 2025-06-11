@@ -649,6 +649,7 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
             const singleSearchEntry = (
 
                 <div
+                    key={ projectSearchId }
                     style={ { display: "grid", gridTemplateColumns: "max-content max-content auto", rowGap: 2, marginBottom: 3 } }
                 >
                     <div>
