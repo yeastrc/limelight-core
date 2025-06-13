@@ -87,6 +87,7 @@ import {
 import {
     SearchSubGroup_CentralStateManagerObjectClass
 } from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
+import { StringDownloadUtils } from "page_js/data_pages/data_pages_common/downloadStringAsFile";
 
 
 //  Default and Min Width for the block for the search names and Color Legend Bar label to the left of the SVG with the Mod Mass Heat Map
@@ -135,6 +136,8 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
     private _updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback_BindThis = this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback.bind( this )
 
     private _modView_DataViz_Renderer_UserInputMade_Callback_BindThis = this._modView_DataViz_Renderer_UserInputMade_Callback.bind(this)
+
+    private _download_ModMassVisualization_SVG_And_LabelsToLeft_As_CombinedSVG_BindThis = this._download_ModMassVisualization_SVG_And_LabelsToLeft_As_CombinedSVG.bind(this)
 
     private _onMouseDown_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis = this._onMouseDown_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG.bind(this)
     private _onMouseMove_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis = this._onMouseMove_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG.bind(this)
@@ -438,6 +441,74 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
      */
     private _create_Update_ModMassVisualization_For_Updated_DataOrUserInput() {
 
+        const {
+            projectSearchIds_Or_SubSearchIds_For_DisplayOrder, projectSearchId_WhenHaveSingleSearchSubGroups
+        } = this._compute_ForCallToFunctions__modView_DataViz_Compute_ColorScale_WidthHeight_Etc__modView_DataViz_Renderer__RETURN_projectSearchIds_Or_SubSearchIds_For_DisplayOrder__projectSearchId_WhenHaveSingleSearchSubGroups()
+
+        this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result =
+            modView_DataViz_Compute_ColorScale_WidthHeight_Etc( {
+                modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+                projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
+                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager
+            } )
+
+        {
+            // window.setTimeout( () => { try {
+
+            const data_viz_container_DOMElement = this._data_viz_container_Ref.current
+
+            if ( ! data_viz_container_DOMElement ) {
+                const msg = "this._data_viz_container_Ref.current returned NOTHING so unable to call modView_DataViz_Renderer(...)"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            modView_DataViz_Renderer( {
+
+                render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel: false, // false since PRIMARY render visible to user
+
+                data_viz_container_DOMElement,
+                modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+                projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
+                projectSearchId_WhenHaveSingleSearchSubGroups,
+                modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
+                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                dataPageStateManager_DataFrom_Server: this.props.dataPageStateManager,
+
+                updated_modViewPage_DataVizOptions_VizSelections_PageStateManager: () => {
+
+                    // this._create_Update_ModMassVisualization_For_Updated_DataOrUserInput()
+
+                    //  Change where start recompute since changing inputs to "Min and max mod masses:"
+
+                    this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+                }
+            } )
+
+            window.setTimeout( () => {
+                try {
+                    this._show_FullComponent_LoadingMessage = false
+
+                    this._show_FullComponent_UpdatingMessage = false
+
+                    this.setState( { forceReRender_Object: {} } )
+
+                } catch ( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                    throw e
+                }
+            }, 10 )
+
+            // } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
+        }
+    }
+
+    /**
+     *
+     * @private
+     */
+    private _compute_ForCallToFunctions__modView_DataViz_Compute_ColorScale_WidthHeight_Etc__modView_DataViz_Renderer__RETURN_projectSearchIds_Or_SubSearchIds_For_DisplayOrder__projectSearchId_WhenHaveSingleSearchSubGroups() {
+
         let projectSearchIds_Or_SubSearchIds_For_DisplayOrder: Array<number> = undefined
 
         let projectSearchId_WhenHaveSingleSearchSubGroups: number = undefined
@@ -503,51 +574,77 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
             }
         }
 
-        this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result =
-            modView_DataViz_Compute_ColorScale_WidthHeight_Etc( {
-                modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-                projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
-                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager
-            } )
-
-        {
-            // window.setTimeout( () => { try {
-
-            modView_DataViz_Renderer( {
-                modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-                projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
-                projectSearchId_WhenHaveSingleSearchSubGroups,
-                modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
-                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                dataPageStateManager_DataFrom_Server: this.props.dataPageStateManager,
-
-                updated_modViewPage_DataVizOptions_VizSelections_PageStateManager: () => {
-
-                    // this._create_Update_ModMassVisualization_For_Updated_DataOrUserInput()
-
-                    //  Change where start recompute since changing inputs to "Min and max mod masses:"
-
-                    this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-                }
-            } )
-
-            window.setTimeout( () => {
-                try {
-                    this._show_FullComponent_LoadingMessage = false
-
-                    this._show_FullComponent_UpdatingMessage = false
-
-                    this.setState( { forceReRender_Object: {} } )
-
-                } catch ( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                    throw e
-                }
-            }, 10 )
-
-            // } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
-        }
+        return { projectSearchIds_Or_SubSearchIds_For_DisplayOrder, projectSearchId_WhenHaveSingleSearchSubGroups }
     }
+
+    /**
+     *
+     * @param event
+     */
+    private _download_ModMassVisualization_SVG_And_LabelsToLeft_As_CombinedSVG( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
+
+        event.stopPropagation()
+
+        const {
+            projectSearchIds_Or_SubSearchIds_For_DisplayOrder, projectSearchId_WhenHaveSingleSearchSubGroups
+        } = this._compute_ForCallToFunctions__modView_DataViz_Compute_ColorScale_WidthHeight_Etc__modView_DataViz_Renderer__RETURN_projectSearchIds_Or_SubSearchIds_For_DisplayOrder__projectSearchId_WhenHaveSingleSearchSubGroups()
+
+
+        const offscreenLevel_1_DivElementDOM = document.createElement("div");
+
+        offscreenLevel_1_DivElementDOM.style.position = "relative"
+        offscreenLevel_1_DivElementDOM.style.width = "0px"
+
+        const documentBody = document.querySelector('body');
+
+        documentBody.appendChild( offscreenLevel_1_DivElementDOM );
+
+        const offscreenLevel_2_ForRender_DivElementDOM = document.createElement("div");
+
+        //  Move off screen to left and up from bottom
+        offscreenLevel_2_ForRender_DivElementDOM.style.position = "absolute"
+        offscreenLevel_2_ForRender_DivElementDOM.style.right = "50px"
+        offscreenLevel_2_ForRender_DivElementDOM.style.bottom = "50px"
+
+        offscreenLevel_1_DivElementDOM.appendChild( offscreenLevel_2_ForRender_DivElementDOM )
+
+
+
+        modView_DataViz_Renderer( {
+
+            render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel: true,
+            data_viz_container_DOMElement: offscreenLevel_2_ForRender_DivElementDOM,
+            modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+            projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
+            projectSearchId_WhenHaveSingleSearchSubGroups,
+            modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
+            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+            dataPageStateManager_DataFrom_Server: this.props.dataPageStateManager,
+
+            updated_modViewPage_DataVizOptions_VizSelections_PageStateManager: undefined
+
+            // updated_modViewPage_DataVizOptions_VizSelections_PageStateManager: () => {
+            //
+            //     // this._create_Update_ModMassVisualization_For_Updated_DataOrUserInput()
+            //
+            //     //  Change where start recompute since changing inputs to "Min and max mod masses:"
+            //
+            //     this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+            // }
+        } )
+
+
+        const svgContents = offscreenLevel_2_ForRender_DivElementDOM.innerHTML
+
+        const filename = 'mod-mass-heatmap-visualization.svg'
+
+        StringDownloadUtils.downloadStringAsFile( { stringToDownload : svgContents, filename: filename } );
+
+
+        jQuery( offscreenLevel_1_DivElementDOM ).remove()
+
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      *
@@ -777,6 +874,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                             continue // EARLY CONTINUE
                         }
 
+                        //  Keep same data format as in 'ModView_DataViz_Renderer.ts'
                         const searchSubGroupDisplay = "(" + searchSubGroup.subgroupName_Display + ") " + searchSubGroup.searchSubgroupName_fromImportFile
 
                         const element = (
@@ -846,6 +944,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                     shortNameDisplay = "(" + searchData_For_ProjectSearchId.searchShortName + ") "
                                 }
 
+                                //  Keep same data format as in 'ModView_DataViz_Renderer.ts'
                                 const searchDisplay = "(" + searchData_For_ProjectSearchId.searchId + ") " + shortNameDisplay + searchData_For_ProjectSearchId.name
 
                                 return (
@@ -931,6 +1030,29 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                             className=" mod-page-data-visualization-block-outer-container " //  Primarily for ":hover" on child element
                             style={ { width: "fit-content", position: "relative" } } //  Limit width to limit hover area to actual content
                         >
+                            <div
+                                className=" download-as-svg-fake-link-container "  //  class to only display on parent div hover
+                                style={ {
+                                    position: "absolute", left: 0, top: download_As_SVG_Div_Top
+                                } }
+                            >
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <div>
+                                            Download the visualization as SVG
+                                        </div>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ this._download_ModMassVisualization_SVG_And_LabelsToLeft_As_CombinedSVG_BindThis }
+                                    >
+                                        Download as SVG
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            </div>
+
                             <div
                                 style={ {
                                     display: "grid",
@@ -1037,13 +1159,12 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                 <div>
 
                                     {/*
-                                        The Data Viz is put in this <div> with id="data-viz-container".  That id is used in code: 'd3.select("div#data-viz-container")'
+                                        The Data Viz is put in this <div>.   'd3.select()' is passed this._data_viz_container_Ref.current
 
                                             "componentWillUnmount()" method calls:     jQuery(this._data_viz_container_Ref.current).empty()
                                     */ }
 
                                     <div
-                                        id="data-viz-container"
                                         ref={ this._data_viz_container_Ref }
                                     >
                                     </div>

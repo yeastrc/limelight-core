@@ -35,6 +35,9 @@ import {
 import {
     modPage_GetSearchShortNameForProjectSearchId
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_GetSearchShortNameForProjectSearchId";
+import {
+    modPage_Get_DataTransformationType_DisplayLabel
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_Get_DataTransformationType_DisplayLabel";
 
 
 
@@ -45,12 +48,18 @@ const _SELECTION_TOOLTIP_FROM_MOD_MASS_DOM_ID = "mod-viz-tooltip-selection-from-
 const _SELECTION_TOOLTIP_TO_MOD_MASS_DOM_ID = "mod-viz-tooltip-selection-to-mod-mass"
 
 
+const _LABELS_TO_LEFT_OFFSET = -10
+
 /**
  * Call for each update
  *
  */
 export const modView_DataViz_Renderer = function (
     {
+        render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel,
+
+        data_viz_container_DOMElement,
+
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
         projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
         projectSearchId_WhenHaveSingleSearchSubGroups,
@@ -61,6 +70,10 @@ export const modView_DataViz_Renderer = function (
 
         updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
     } : {
+        render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel: boolean
+
+        data_viz_container_DOMElement: HTMLDivElement
+
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
         projectSearchIds_Or_SubSearchIds_For_DisplayOrder: Array<number>
         projectSearchId_WhenHaveSingleSearchSubGroups: number
@@ -75,24 +88,12 @@ export const modView_DataViz_Renderer = function (
 
     // console.log('called ModView_DataViz_Renderer()');
 
-    {
-        const $vizDiv = $("div#data-viz-container");
-        if ( $vizDiv.length === 0 ) {
-            const msg = "NO DOM element for selector 'div#data-viz-container'"
-            console.warn(msg)
-            throw Error(msg)
-        }
-    }
+    $(data_viz_container_DOMElement).show();
 
-    $('div#data-viz-container').show();
-
-    // $('div#data-viz-container').empty();
-    // $('div#data-viz-container').html('<h2>Loading data, please standby...</h2>');
-
-    $('div#data-viz-container').empty();
+    $(data_viz_container_DOMElement).empty();
 
     // start drawing the actual viz
-    let svg = d3.select("div#data-viz-container").append("svg")
+    let svg_RootElement_D3 = d3.select(data_viz_container_DOMElement).append("svg")
         .attr("width",
             modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.width +
             ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.left +
@@ -103,73 +104,79 @@ export const modView_DataViz_Renderer = function (
             ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.top
             + ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.bottom )
 
-        .append("g")
+
+    let svg = svg_RootElement_D3.append("g")
 
         .attr("transform", "translate(" + ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.left +
             "," + ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.top + ")");
 
-    // set up div to use for tooltips
-    d3.select('#mod-viz-tooltip').remove();
-    const tooltip = d3.select("body")
-        .append("div")
-        .attr("id", "mod-viz-tooltip")
-        .style("display", "none")
-        .style("width", "auto")
-        .style("height", "auto")
-        .style("background-color", "white")
-        .style("position", "absolute")
-        .style("z-index", "10")
-        .style("border-style", "solid")
-        .style("border-color", "gray")
-        .style("border-width", "1px")
-        .style("padding", "10px")
-        .style("min-width", "450px")   //  set min-width so when display when scrolled to right past what would be right edge of view port when no scroll right.
-        .style("max-width", "450px");  //  max-width
+
+    let  tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>
+
+    if ( ! render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel ) {
+
+        // set up div to use for tooltips
+        d3.select( '#mod-viz-tooltip' ).remove();
+        tooltip = d3.select( "body" )
+            .append( "div" )
+            .attr( "id", "mod-viz-tooltip" )
+            .style( "display", "none" )
+            .style( "width", "auto" )
+            .style( "height", "auto" )
+            .style( "background-color", "white" )
+            .style( "position", "absolute" )
+            .style( "z-index", "10" )
+            .style( "border-style", "solid" )
+            .style( "border-color", "gray" )
+            .style( "border-width", "1px" )
+            .style( "padding", "10px" )
+            .style( "min-width", "450px" )   //  set min-width so when display when scrolled to right past what would be right edge of view port when no scroll right.
+            .style( "max-width", "450px" );  //  max-width
 
 
+        {   //  Tooltip shown while selecting mod masses by click and drag in the visualization
 
+            const container_ID = "mod-viz-tooltip-selection-outer-container"
 
-    {   //  Tooltip shown while selecting mod masses by click and drag in the visualization
+            const domElement = document.getElementById( container_ID )
 
-        const container_ID = "mod-viz-tooltip-selection-outer-container"
+            if ( domElement ) {
 
-        const domElement = document.getElementById( container_ID )
+                // Hide old <div> if in DOM
 
-        if ( domElement ) {
+                const domMainElement = document.getElementById( _SELECTION_TOOLTIP_DOM_ID )
+                if ( ! domMainElement ) {
+                    throw Error( "NO DOM element with id: " + _SELECTION_TOOLTIP_DOM_ID )
+                }
 
-            // Hide old <div> if in DOM
+                domMainElement.style.display = "none"
 
-            const domMainElement = document.getElementById( _SELECTION_TOOLTIP_DOM_ID )
-            if ( ! domMainElement ) {
-                throw Error("NO DOM element with id: " + _SELECTION_TOOLTIP_DOM_ID )
+            } else {
+
+                // Add new <div>
+
+                const addedDivElementDOM = document.createElement( "div" );
+
+                const documentBody = document.querySelector( 'body' );
+
+                documentBody.appendChild( addedDivElementDOM );
+
+                addedDivElementDOM.id = container_ID
+
+                //  set min-width so when display when scrolled to right past what would be right edge of view port when no scroll right.
+
+                addedDivElementDOM.innerHTML =
+                    '<div id="' + _SELECTION_TOOLTIP_DOM_ID + '" style=" display: none; width: auto; height: auto; background-color: white; position: absolute; z-index: 10; ' +
+                    ' border-style: solid; border-color: gray; border-width: 1px; padding: 10px; ' +
+                    ' min-width: 350px; max-width: 350px; " >' +
+                    'Selecting from modification mass ' +
+                    '<span id="' + _SELECTION_TOOLTIP_FROM_MOD_MASS_DOM_ID + '"></span>' +
+                    ' to <span id="' + _SELECTION_TOOLTIP_TO_MOD_MASS_DOM_ID + '"></span>' +
+                    '.' +
+                    '</div>'
             }
-
-            domMainElement.style.display = "none"
-
-        } else {
-
-            // Add new <div>
-
-            const addedDivElementDOM = document.createElement( "div" );
-
-            const documentBody = document.querySelector( 'body' );
-
-            documentBody.appendChild( addedDivElementDOM );
-
-            addedDivElementDOM.id = container_ID
-
-            //  set min-width so when display when scrolled to right past what would be right edge of view port when no scroll right.
-
-            addedDivElementDOM.innerHTML =
-                '<div id="' + _SELECTION_TOOLTIP_DOM_ID + '" style=" display: none; width: auto; height: auto; background-color: white; position: absolute; z-index: 10; ' +
-                ' border-style: solid; border-color: gray; border-width: 1px; padding: 10px; ' +
-                ' min-width: 350px; max-width: 350px; " >' +
-                'Selecting from modification mass ' +
-                '<span id="' + _SELECTION_TOOLTIP_FROM_MOD_MASS_DOM_ID + '"></span>' +
-                ' to <span id="' + _SELECTION_TOOLTIP_TO_MOD_MASS_DOM_ID + '"></span>' +
-                '.' +
-                '</div>'
         }
+
     }
 
     // keep track of what the user has selected to see
@@ -185,34 +192,69 @@ export const modView_DataViz_Renderer = function (
 
     _addSeparatorLines({ svg, projectSearchIds_Or_SubSearchIds_For_DisplayOrder, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result });
 
-    // _addSearchLabels({
-    //     svg,
-    //     tooltip,
-    //     modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-    //     projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
-    //     modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
-    //     modViewPage_DataVizOptions_VizSelections_PageStateManager,
-    //     dataPageStateManager_DataFrom_Server,
-    //     updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
-    // });
+    let searchesGroup_Width: number = undefined
+
+    if ( render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel ) {
+
+        const addSearchLabels_Result =
+            _addSearchLabels( {
+                svg,
+                // tooltip,
+                modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+                projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
+                projectSearchId_WhenHaveSingleSearchSubGroups,
+                modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
+                modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                dataPageStateManager_DataFrom_Server,
+                updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
+            } );
+
+        searchesGroup_Width = addSearchLabels_Result.searchesGroup_Width
+    }
 
     _addModLabels({ svg, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result });
     _addModLabelsHeader({ svg, width: modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.width });
-    _addColorScaleLegend({
-        svg,
-        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager
-    });
 
-    _addDragHandlerToRects({
-        svg,
-        projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
-        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
-        dataPageStateManager_DataFrom_Server,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
 
-        updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
-    });
+    const addColorScaleLegend_Result =
+        _addColorScaleLegend({
+            render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel,
+            svg,
+            modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
+            modViewPage_DataVizOptions_VizSelections_PageStateManager
+        });
+
+    if ( ! render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel ) {
+
+        _addDragHandlerToRects( {
+            svg,
+            projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
+            modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
+            dataPageStateManager_DataFrom_Server,
+            modViewPage_DataVizOptions_VizSelections_PageStateManager,
+
+            updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
+        } );
+    }
+
+
+    if ( render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel ) {
+
+        const labelsToLeft_MaxWidth_PlusAddition = Math.ceil( Math.max( searchesGroup_Width, addColorScaleLegend_Result.labelElementWidth ) ) + 20
+
+        const topLevelGroup_TranslateX = ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.left + labelsToLeft_MaxWidth_PlusAddition
+
+        svg.attr("transform", "translate(" + topLevelGroup_TranslateX +
+            "," + ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.top + ")");
+
+        svg_RootElement_D3
+            .attr("width",
+                labelsToLeft_MaxWidth_PlusAddition +
+                modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.width +
+                ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.left +
+                ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.right )
+
+    }
 
 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
@@ -335,84 +377,184 @@ const _addSeparatorLines = function (
 }
 
 
+/**
+ * !!!  ONLY for render for create SVG for download
+ *
+ * @param svg
+ * @param tooltip
+ * @param modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
+ * @param projectSearchIds_Or_SubSearchIds_For_DisplayOrder
+ * @param modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
+ * @param modViewPage_DataVizOptions_VizSelections_PageStateManager
+ * @param dataPageStateManager_DataFrom_Server
+ * @param updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
+ */
+const _addSearchLabels = function (
+    {
+        svg,
+        // tooltip,
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
+        projectSearchId_WhenHaveSingleSearchSubGroups,
 
-// const _addSearchLabels = function (
+        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
+        modViewPage_DataVizOptions_VizSelections_PageStateManager,
+        dataPageStateManager_DataFrom_Server,
+
+        updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
+    } : {
+        svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
+        // tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>
+
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
+        projectSearchIds_Or_SubSearchIds_For_DisplayOrder: Array<number>
+        projectSearchId_WhenHaveSingleSearchSubGroups: number
+
+        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
+        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+        dataPageStateManager_DataFrom_Server : DataPageStateManager
+
+        updated_modViewPage_DataVizOptions_VizSelections_PageStateManager: () => void
+    }) {
+
+    // for ( let i = 0; i < projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length; i++ ) {
+    //     var z = ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i]) )
+    //     var y = ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i]) +
+    //         (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale.bandwidth() / 2) + (ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize / 2))
+    //     var zzzz = 0
+    // }
+
+
+    const searchesGroup = svg.append("g")
+
+    searchesGroup.attr("data-search-group", "search-group")
+
+    const displayLabels_Map_Key_ProjectSearchId_OR_SubSearchId: Map<number, string> = new Map()
+
+    if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum
+        === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
+
+        const searchSubGroups_Root = dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
+        if ( ! searchSubGroups_Root ) {
+            const msg = "if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root() returned NOTHING"
+            console.warn( msg )
+            throw Error( msg )
+        }
+        const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId_WhenHaveSingleSearchSubGroups )
+        if ( ! searchSubGroups_ForProjectSearchId ) {
+            const msg = "if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId_WhenHaveSingleSearchSubGroups ) returned NOTHING. projectSearchId_WhenHaveSingleSearchSubGroups: " + projectSearchId_WhenHaveSingleSearchSubGroups
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        for ( const subSearchId of projectSearchIds_Or_SubSearchIds_For_DisplayOrder ) {
+
+            const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId )
+            if ( ! searchSubGroup ) {
+                const msg = "In _addSearchLabels = function: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId ) returned NOTHING for subSearchId: " + subSearchId
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            const searchSubGroupDisplay = "(" + searchSubGroup.subgroupName_Display + ") " + searchSubGroup.searchSubgroupName_fromImportFile
+
+            displayLabels_Map_Key_ProjectSearchId_OR_SubSearchId.set( subSearchId, searchSubGroupDisplay )
+        }
+
+    } else {
+
+        //  Display the Search Names
+
+        for ( const projectSearchId of projectSearchIds_Or_SubSearchIds_For_DisplayOrder ) {
+
+            const searchData_For_ProjectSearchId = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+            if ( ! searchData_For_ProjectSearchId ) {
+                const msg = "In _addSearchLabels = function: dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            let shortNameDisplay = ""
+
+            if ( searchData_For_ProjectSearchId.searchShortName ) {
+                shortNameDisplay = "(" + searchData_For_ProjectSearchId.searchShortName + ") "
+            }
+
+            //  Keep same data format as in 'ModView_DataViz_Renderer.ts'
+            const searchDisplay = "(" + searchData_For_ProjectSearchId.searchId + ") " + shortNameDisplay + searchData_For_ProjectSearchId.name
+
+            displayLabels_Map_Key_ProjectSearchId_OR_SubSearchId.set( projectSearchId, searchDisplay )
+        }
+
+    }
+
+    searchesGroup.selectAll('.non-existent-class') //  use .selectAll so can use .data
+        .data(projectSearchIds_Or_SubSearchIds_For_DisplayOrder)
+        .enter()
+        .append('text')
+        .attr('class', 'search-label')
+        .attr('x', _LABELS_TO_LEFT_OFFSET )
+        .attr('y',
+            (d, i) =>
+                ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i]) +
+                    (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale.bandwidth() / 2) + (ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize / 2)))
+        .attr("text-anchor", "end")
+        .attr('font-size', ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 'px')
+        .attr('font-family', ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.label_FontFamily )
+        .text((d,i) => {
+            const projectSearchId_Or_SubSearchId =  projectSearchIds_Or_SubSearchIds_For_DisplayOrder[ i ]
+            const displayLabel = displayLabels_Map_Key_ProjectSearchId_OR_SubSearchId.get( projectSearchId_Or_SubSearchId )
+            return displayLabel
+        })
+
+        // .text((d,i) => ( _getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i], dataPageStateManager_DataFrom_Server }) ) )
+
+        // .on("mousemove", function ( event_Param, dataElement_Param ) {
+        //     const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param );
+        //     _showToolTip({
+        //         onSearchLabel_OnLeft: true, projectSearchId, tooltip, modViewPage_DataVizOptions_VizSelections_PageStateManager, modMass : undefined, topLevelTable_DisplayValue : undefined, dataPageStateManager_DataFrom_Server
+        //     })
+        // })
+        // .on("mouseout", function ( event_Param, dataElement_Param ) {
+        //     //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
+        //     _hideToolTip({tooltip});
+        // })
+
+    const searchesGroup_BoundingClientRect  = searchesGroup.node().getBoundingClientRect()
+
+    const searchesGroup_Width = Math.ceil( searchesGroup_BoundingClientRect.width )
+
+    return { searchesGroup_Width }
+
+}
+
+// const _getTruncatedSearchNameForProjectSearchId = function (
 //     {
-//         svg,
-//         tooltip,
-//         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-//         projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
-//         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
-//         modViewPage_DataVizOptions_VizSelections_PageStateManager,
-//         dataPageStateManager_DataFrom_Server,
-//
-//         updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
+//         projectSearchId,
+//         dataPageStateManager_DataFrom_Server
 //     } : {
-//         svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
-//         tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>
-//
-//         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
-//         projectSearchIds_Or_SubSearchIds_For_DisplayOrder: Array<number>
-//
-//         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
-//         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-//         dataPageStateManager_DataFrom_Server : DataPageStateManager
-//
-//         updated_modViewPage_DataVizOptions_VizSelections_PageStateManager: () => void
+//         projectSearchId : number
+//         dataPageStateManager_DataFrom_Server:DataPageStateManager
 //     }) {
 //
-//     for ( let i = 0; i < projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length; i++ ) {
-//         var z = ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i]) )
-//         var y = ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i]) +
-//             (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale.bandwidth() / 2) + (ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize / 2))
-//         var zzzz = 0
+//     let searchName: string
+//     const searchShortName = modPage_GetSearchShortNameForProjectSearchId({
+//         projectSearchId:projectSearchId,
+//         dataPageStateManager_DataFrom_Server
+//     });
+//
+//     if(searchShortName && searchShortName.length > 1) {
+//         searchName = searchShortName;
+//     } else {
+//         searchName = modPage_GetSearchNameForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server });
 //     }
 //
-//     svg.selectAll('.project-label')
-//         .data(projectSearchIds_Or_SubSearchIds_For_DisplayOrder)
-//         .enter()
-//         .append('text')
-//         .attr('class', 'search-label')
-//         .attr('x', -10)
-//         .attr('y',
-//             (d, i) =>
-//                 ( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale(projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i]) +
-//                     (modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.yScale.bandwidth() / 2) + (ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize / 2)))
-//         .attr("text-anchor", "end")
-//         .attr('font-size', ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 'px')
-//         .attr('font-family', ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.label_FontFamily )
-//         .text((d,i) => ( _getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds_Or_SubSearchIds_For_DisplayOrder[i], dataPageStateManager_DataFrom_Server }) ) )
-//         .on("mousemove", function ( event_Param, dataElement_Param ) {
-//             const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param );
-//             _showToolTip({
-//                 onSearchLabel_OnLeft: true, projectSearchId, tooltip, modViewPage_DataVizOptions_VizSelections_PageStateManager, modMass : undefined, topLevelTable_DisplayValue : undefined, dataPageStateManager_DataFrom_Server
-//             })
-//         })
-//         .on("mouseout", function ( event_Param, dataElement_Param ) {
-//             //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
-//             _hideToolTip({tooltip});
-//         })
-//         // .on("click", function( event_Param, dataElement_Param ) {
-//         //
-//         //     // @ts-ignore  -- Make absolutely sure dataElement_Param is a number
-//         //     const projectSearchId = Number.parseInt( dataElement_Param )
-//         //
-//         //     //  Reset reset selected state object and then select
-//         //     svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
-//         //
-//         //
-//         //
-//         //     modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().clear_All()
-//         //
-//         //     const selectedModMasses_Set: Set<number> = new Set( modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.sortedModMasses )
-//         //
-//         //     modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root().set_SelectedModMasses_Set_For_ProjectSearchId({ projectSearchId, selectedModMasses_Set })
-//         //
-//         //     // update final opacity for viz
-//         //     _updateShownRectOpacities({ svg, modViewPage_DataVizOptions_VizSelections_PageStateManager })
-//         //
-//         //     updated_modViewPage_DataVizOptions_VizSelections_PageStateManager()
-//         // })
+//     if(searchName.length > ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.maxSearchLabelLength) {
+//         searchName = searchName.substring(0, ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.maxSearchLabelLength - 4) + '...';
+//     }
+//
+//     return searchName;
+//
 // }
 
 
@@ -1009,39 +1151,15 @@ const _hideToolTip = function ({ tooltip } : { tooltip: d3.Selection<HTMLDivElem
 }
 
 
-// const _getTruncatedSearchNameForProjectSearchId = function (
-//     {
-//         projectSearchId,
-//         dataPageStateManager_DataFrom_Server
-//     } : {
-//         projectSearchId : number
-//         dataPageStateManager_DataFrom_Server:DataPageStateManager
-//     }) {
-//
-//     let searchName: string
-//     const searchShortName = modPage_GetSearchShortNameForProjectSearchId({
-//         projectSearchId:projectSearchId,
-//         dataPageStateManager_DataFrom_Server
-//     });
-//
-//     if(searchShortName && searchShortName.length > 1) {
-//         searchName = searchShortName;
-//     } else {
-//         searchName = modPage_GetSearchNameForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server });
-//     }
-//
-//     if(searchName.length > ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.maxSearchLabelLength) {
-//         searchName = searchName.substring(0, ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.maxSearchLabelLength - 4) + '...';
-//     }
-//
-//     return searchName;
-//
-// }
 
 const _addColorScaleLegend = function (
     {
+        render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel,
+
         svg, modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result, modViewPage_DataVizOptions_VizSelections_PageStateManager
     } : {
+        render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel: boolean
+
         svg: d3.Selection<SVGGElement, unknown, HTMLElement, any>
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
@@ -1072,18 +1190,6 @@ const _addColorScaleLegend = function (
         showInts = false;
     }
 
-    // let labelText = quantType;
-    // labelText += (
-    //     modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
-    //         ? ' Count' : ' Ratio'
-    // )
-    //
-    // if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== undefined
-    //     && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
-    //     labelText += " (" + modPage_Get_DataTransformationType_DisplayLabel({ modViewPage_DataVizOptions_VizSelections_PageStateManager }) + ")";
-    // }
-    // labelText += ' Color:';
-
     // create group element to hold legend
 
     const legend_SVG_Group__Translate_Y = rectAreaHeight + ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.colorScaleLegend_TopMargin
@@ -1091,15 +1197,38 @@ const _addColorScaleLegend = function (
     const legend_SVG_Group = svg.append('g')
         .attr("transform", () => 'translate(0, ' + legend_SVG_Group__Translate_Y + ')');
 
-    // // add legend text label
-    // legendGroup.append('text')
-    //     .attr('class', 'project-label')
-    //     .attr('x', -10)
-    //     .attr('y', () => ( (yScale.bandwidth() / 2) + (ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize / 2) ))
-    //     .attr("text-anchor", "end")
-    //     .attr('font-size', ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 'px')
-    //     .attr('font-family', ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.label_FontFamily )
-    //     .text(() => (labelText));
+
+    let labelElementWidth: number = undefined
+
+    if ( render_ForGet_SVG_Only_IncludeLabelsToLeft_Search_SubSearch_ColorLabel ) {
+
+        let labelText = quantType;
+        labelText += (
+            modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
+                ? ' Count' : ' Ratio'
+        )
+
+        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== undefined
+            && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
+            labelText += " (" + modPage_Get_DataTransformationType_DisplayLabel( { modViewPage_DataVizOptions_VizSelections_PageStateManager } ) + ")";
+        }
+        labelText += ' Color:';
+
+        // add legend text label
+        const labelElement_D3 = legend_SVG_Group.append('text')
+
+        labelElement_D3.attr('class', 'project-label')
+            .attr('x', _LABELS_TO_LEFT_OFFSET )
+            .attr('y', () => ( (yScale.bandwidth() / 2) + (ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize / 2) ))
+            .attr("text-anchor", "end")
+            .attr('font-size', ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.labelFontSize + 'px')
+            .attr('font-family', ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.label_FontFamily )
+            .text(() => (labelText));
+
+        labelElementWidth = labelElement_D3.node().getBoundingClientRect().width
+    }
+
+
 
     // width of color scale bar
     const width = ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.minLegendWidth;
@@ -1172,6 +1301,8 @@ const _addColorScaleLegend = function (
                 showInts ? psmCountForX : psmCountForX.toExponential(2)
             ));
     }
+
+    return { labelElementWidth }
 }
 
 
