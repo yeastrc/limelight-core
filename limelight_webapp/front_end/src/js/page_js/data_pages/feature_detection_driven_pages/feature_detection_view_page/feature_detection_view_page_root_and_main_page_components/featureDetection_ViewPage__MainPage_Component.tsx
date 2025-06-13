@@ -1427,7 +1427,9 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
                         <div style={ { marginBottom: 20 } }>
 
-                            <SearchDetailsAndOtherFiltersOuterBlock_Layout>
+                            <SearchDetailsAndOtherFiltersOuterBlock_Layout
+                                projectSearchIds={ this.props.propsValue.searchDataLookupParametersFromPage.projectSearchIds }
+                            >
                                 <SearchDetailsAndFilterBlock_MainPage_Root
                                     propValue={ searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue }
                                     select_ONLY_ONE_Search={ true }

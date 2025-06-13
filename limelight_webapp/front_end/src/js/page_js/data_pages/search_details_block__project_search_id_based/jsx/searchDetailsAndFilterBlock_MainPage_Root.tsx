@@ -668,7 +668,7 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
                     <div></div>{/*  Spacer for Expand Search Icon  */}
                     <div>
                         <div
-                            style={ { display: "grid", gridTemplateColumns: "max-content max-content auto", rowGap: 2, marginBottom: 3 } }
+                            style={ { display: "grid", gridTemplateColumns: "max-content auto", rowGap: 2, marginBottom: 3 } }
                         >
                             <Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root
                                 forMultipleSearches={ true }

@@ -3600,7 +3600,9 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                     
                         {/* Main Content above Reported Peptides  */}
 
-                        <SearchDetailsAndOtherFiltersOuterBlock_Layout>
+                        <SearchDetailsAndOtherFiltersOuterBlock_Layout
+                            projectSearchIds={ this.props.propsValue.projectSearchIds }
+                        >
                             <SearchDetailsAndFilterBlock_MainPage_Root
                                 propValue={ this.state.searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue }
                                 searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }

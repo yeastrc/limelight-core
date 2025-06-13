@@ -15,6 +15,7 @@ import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorT
  */
 export interface SearchDetailsAndOtherFiltersOuterBlock_Layout_Props {
 
+    projectSearchIds: Array<number>
 }
 
 /**
@@ -46,9 +47,21 @@ export class SearchDetailsAndOtherFiltersOuterBlock_Layout extends React.Compone
      */
     render() {
 
+        const divStyle: React.CSSProperties = {
+            display: "grid", rowGap: 2, marginBottom: 3
+        }
+
+        if ( this.props.projectSearchIds.length === 1 ) {
+
+            divStyle.gridTemplateColumns = "max-content min-content auto"
+        } else {
+
+            divStyle.gridTemplateColumns = "max-content auto"
+        }
+
         return (
             <div
-                style={ { display: "grid", gridTemplateColumns: "max-content max-content auto", rowGap: 2, marginBottom: 3 } }
+                style={ divStyle }
             >
 
                 { this.props.children }

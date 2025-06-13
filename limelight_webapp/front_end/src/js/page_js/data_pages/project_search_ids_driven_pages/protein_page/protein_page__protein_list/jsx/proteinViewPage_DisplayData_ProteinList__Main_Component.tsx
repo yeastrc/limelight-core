@@ -3423,7 +3423,9 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                         <div >
                             {/* Main Content above Protein List  */}
 
-                            <SearchDetailsAndOtherFiltersOuterBlock_Layout>
+                            <SearchDetailsAndOtherFiltersOuterBlock_Layout
+                                projectSearchIds={ this.props.propsValue.projectSearchIds }
+                            >
                                 <SearchDetailsAndFilterBlock_MainPage_Root
                                     propValue={ this.state.searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue }
                                     searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
