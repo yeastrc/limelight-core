@@ -50,15 +50,6 @@ export const modPage_Compute_Total_Scan_Counts_Per_ProjectSearchId_Or_SubSearchI
     }
 ) : ModPage_Compute_Total_Scan_Counts_Per_ProjectSearchId_Or_SubSearchId_From_ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root_Result_Root {
 
-
-    if ( computeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
-
-        const msg = "SubSearchId NOT Supported: const projectSearchId_Or_SubSearchId = projectSearchId: modPage_Compute_Total_PsmId_Counts_Per_ProjectSearchId_Or_SubSearchId_From_ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root(...) if ( computeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { "
-        console.warn( msg )
-        throw Error( msg )
-    }
-
-
     //   Intermediate Results
 
     const scanNumbers_Set_Map_Key_SearchScanFileId_AcrossAllModMasses__OnlyWhen_SearchScanFileId_YES_Populated__Map_Key_ProjectSearchId_Or_SubSearchId: Map<number, Map<number, Set<number>>> = new Map()
@@ -76,12 +67,10 @@ export const modPage_Compute_Total_Scan_Counts_Per_ProjectSearchId_Or_SubSearchI
 
         //  Since 'open modifications rounded to zero and "Treat Mass 0 As Unmodified:" is checked' are treated as unmodified, whether or not they are unlocalized is ignored re-guarding filtering "Exclude unlocalized mods:"
 
-        for ( const psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId__MapEntry of computeData_For_ModMassViz_And_TopLevelTable_Result_Root.get_psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId() ) {
+        for ( const psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId__MapEntry of computeData_For_ModMassViz_And_TopLevelTable_Result_Root.get_psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId() ) {
 
-            const projectSearchId = psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId__MapEntry[ 0 ]
-            const psmTblData_With_NO_Modifications_Map_Key_PsmId_With_NO_Modifications_Map = psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId__MapEntry[ 1 ]
-
-            const projectSearchId_Or_SubSearchId = projectSearchId
+            const projectSearchId_Or_SubSearchId = psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId__MapEntry[ 0 ]
+            const psmTblData_With_NO_Modifications_Map_Key_PsmId_With_NO_Modifications_Map = psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId__MapEntry[ 1 ]
 
             let scanNumbers_Set_Map_Key_SearchScanFileId_AcrossAllModMasses__OnlyWhen_SearchScanFileId_YES_Populated = scanNumbers_Set_Map_Key_SearchScanFileId_AcrossAllModMasses__OnlyWhen_SearchScanFileId_YES_Populated__Map_Key_ProjectSearchId_Or_SubSearchId.get( projectSearchId_Or_SubSearchId )
             if ( ! scanNumbers_Set_Map_Key_SearchScanFileId_AcrossAllModMasses__OnlyWhen_SearchScanFileId_YES_Populated ) {

@@ -11,17 +11,17 @@ import Plotly from 'plotly.js-dist/plotly'
 
 import React from "react";
 import {
-    ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum,
     ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering";
 import {
     ModViewPage_DataVizOptions_VizSelections_PageStateManager,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 import {
     DataPageStateManager,
-    SearchData_SearchName_Etc_SingleSearchEntry__DataPageStateManagerEntry
+    SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
@@ -33,7 +33,6 @@ import {
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {
     modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable,
-    ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
@@ -72,8 +71,10 @@ interface ModPage_ZScore_ReplicateReport_DataTable_Component_Props {
 
     forceUpdate_Object: unknown
 
-    group_1_ProjectSearchIds: Array<number>
-    group_2_ProjectSearchIds: Array<number>
+    projectSearchIds_AllForPage: Array<number>
+
+    group_1_ProjectSearchIds_OR_SubSearchIds: Array<number>
+    group_2_ProjectSearchIds_OR_SubSearchIds: Array<number>
 
     modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
     modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
@@ -102,8 +103,8 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
     private _dataTable_RootTableObject: DataTable_RootTableObject
 
-    private _group_1_ProjectSearchIds_PrevRendered: ReadonlySet<number>
-    private _group_2_ProjectSearchIds_PrevRendered: ReadonlySet<number>
+    private _group_1_ProjectSearchIds_Or_SubSearchIds_PrevRendered: ReadonlySet<number>
+    private _group_2_ProjectSearchIds_Or_SubSearchIds_PrevRendered: ReadonlySet<number>
 
     private _show_UpdatingMessage = false
 
@@ -119,8 +120,8 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
         const searchGroups = props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
-        this._group_1_ProjectSearchIds_PrevRendered = searchGroups.group_1_SearchGroup_ProjectSearchIds_Set
-        this._group_2_ProjectSearchIds_PrevRendered = searchGroups.group_2_SearchGroup_ProjectSearchIds_Set
+        this._group_1_ProjectSearchIds_Or_SubSearchIds_PrevRendered = searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set
+        this._group_2_ProjectSearchIds_Or_SubSearchIds_PrevRendered = searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set
 
         this.state = { forceReRender_Object: {} };
 
@@ -164,25 +165,25 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
         const searchGroups = this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
-        if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Set !== this._group_1_ProjectSearchIds_PrevRendered
-            || searchGroups.group_2_SearchGroup_ProjectSearchIds_Set !== this._group_2_ProjectSearchIds_PrevRendered ) {
+        if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set !== this._group_1_ProjectSearchIds_Or_SubSearchIds_PrevRendered
+            || searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set !== this._group_2_ProjectSearchIds_Or_SubSearchIds_PrevRendered ) {
 
             searchGroupsDifferent = true
 
-        } else if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Set.size !== this._group_1_ProjectSearchIds_PrevRendered.size
-            || searchGroups.group_2_SearchGroup_ProjectSearchIds_Set.size !== this._group_2_ProjectSearchIds_PrevRendered.size ) {
+        } else if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size !== this._group_1_ProjectSearchIds_Or_SubSearchIds_PrevRendered.size
+            || searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size !== this._group_2_ProjectSearchIds_Or_SubSearchIds_PrevRendered.size ) {
 
             searchGroupsDifferent = true
         } else {
 
-            for ( const projectSearchId of this._group_1_ProjectSearchIds_PrevRendered ) {
-                if ( ! searchGroups.group_1_SearchGroup_ProjectSearchIds_Set.has( projectSearchId ) ) {
+            for ( const projectSearchId_Or_SubSearchId of this._group_1_ProjectSearchIds_Or_SubSearchIds_PrevRendered ) {
+                if ( ! searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId_Or_SubSearchId ) ) {
                     searchGroupsDifferent = true
                     break
                 }
             }
-            for ( const projectSearchId of this._group_2_ProjectSearchIds_PrevRendered ) {
-                if ( ! searchGroups.group_2_SearchGroup_ProjectSearchIds_Set.has( projectSearchId ) ) {
+            for ( const projectSearchId_Or_SubSearchId of this._group_2_ProjectSearchIds_Or_SubSearchIds_PrevRendered ) {
+                if ( ! searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId_Or_SubSearchId ) ) {
                     searchGroupsDifferent = true
                     break
                 }
@@ -193,8 +194,8 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
             //  Search Groups changed so save new Search Groups
 
-            this._group_1_ProjectSearchIds_PrevRendered = searchGroups.group_1_SearchGroup_ProjectSearchIds_Set
-            this._group_2_ProjectSearchIds_PrevRendered = searchGroups.group_2_SearchGroup_ProjectSearchIds_Set
+            this._group_1_ProjectSearchIds_Or_SubSearchIds_PrevRendered = searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set
+            this._group_2_ProjectSearchIds_Or_SubSearchIds_PrevRendered = searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set
         }
 
         //  If Any changes, recompute data for table then display
@@ -227,13 +228,12 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
     private _compute_DataFor_NewTableData_ThenCallToDisplay() {
 
         const result = _compute_SignificantMods_CombineReps({
-            group_1_ProjectSearchIds: this.props.group_1_ProjectSearchIds,
-            group_2_ProjectSearchIds: this.props.group_2_ProjectSearchIds,
+            group_1_ProjectSearchIds_Or_SubSearchIds: this.props.group_1_ProjectSearchIds_OR_SubSearchIds,
+            group_2_ProjectSearchIds_Or_SubSearchIds: this.props.group_2_ProjectSearchIds_OR_SubSearchIds,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this.props.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
             modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
             dataPageStateManager: this.props.dataPageStateManager,
-            modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this.props.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
-            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+            modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this.props.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
         })
 
         if ( result.data ) {
@@ -245,10 +245,11 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
             this._dataTable_RootTableObject = _create_DataTable_Data(
                 {
                     tableRows: result.data.tableRows,
-                    group_1_ProjectSearchIds: this.props.group_1_ProjectSearchIds,
-                    group_2_ProjectSearchIds: this.props.group_2_ProjectSearchIds,
+                    group_1_ProjectSearchIds_Or_SubSearchIds: this.props.group_1_ProjectSearchIds_OR_SubSearchIds,
+                    group_2_ProjectSearchIds_Or_SubSearchIds: this.props.group_2_ProjectSearchIds_OR_SubSearchIds,
                     modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                    dataPageStateManager: this.props.dataPageStateManager
+                    dataPageStateManager: this.props.dataPageStateManager,
+                    projectSearchIds_AllForPage: this.props.projectSearchIds_AllForPage
                 })
 
             this._show_UpdatingMessage = false
@@ -266,10 +267,11 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
                 this._dataTable_RootTableObject = _create_DataTable_Data(
                     {
                         tableRows: value.tableRows,
-                        group_1_ProjectSearchIds: this.props.group_1_ProjectSearchIds,
-                        group_2_ProjectSearchIds: this.props.group_2_ProjectSearchIds,
+                        group_1_ProjectSearchIds_Or_SubSearchIds: this.props.group_1_ProjectSearchIds_OR_SubSearchIds,
+                        group_2_ProjectSearchIds_Or_SubSearchIds: this.props.group_2_ProjectSearchIds_OR_SubSearchIds,
                         modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                        dataPageStateManager: this.props.dataPageStateManager
+                        dataPageStateManager: this.props.dataPageStateManager,
+                        projectSearchIds_AllForPage: this.props.projectSearchIds_AllForPage
                     })
 
                 this._show_UpdatingMessage = false
@@ -855,20 +857,48 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 const _create_DataTable_Data = function (
     {
         tableRows,
-        group_1_ProjectSearchIds,
-        group_2_ProjectSearchIds,
+        group_1_ProjectSearchIds_Or_SubSearchIds,
+        group_2_ProjectSearchIds_Or_SubSearchIds,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
-        dataPageStateManager
+        dataPageStateManager,
+        projectSearchIds_AllForPage
     } : {
         tableRows: INTERNAL_TableRow[]
 
-        group_1_ProjectSearchIds : Array<number>
-        group_2_ProjectSearchIds : Array<number>
+        group_1_ProjectSearchIds_Or_SubSearchIds : Array<number>
+        group_2_ProjectSearchIds_Or_SubSearchIds : Array<number>
 
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
         dataPageStateManager : DataPageStateManager
+        projectSearchIds_AllForPage: Array<number>
 
     }): DataTable_RootTableObject {
+
+    let processing_SubSearches = false
+
+    let searchSubGroups_ForProjectSearchId: SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry = undefined
+    {
+        const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+        if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
+
+            processing_SubSearches = true
+
+            if ( projectSearchIds_AllForPage.length !== 1 ) {
+                throw Error("if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) { AND if ( projectSearchIds_AllForPage.length !== 1 ) {")
+            }
+
+            const projectSearchId = projectSearchIds_AllForPage[ 0 ]
+
+            const searchSubGroups_Root = dataPageStateManager.get_SearchSubGroups_Root()
+            if ( ! searchSubGroups_Root ) {
+                throw Error( "if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) { AND dataPageStateManager.get_SearchSubGroups_Root() returned NOTHING" )
+            }
+            searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId )
+            if ( ! searchSubGroups_ForProjectSearchId ) {
+                throw Error("searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId ) returned NOTHING")
+            }
+        }
+    }
 
     const dataTableId_ThisTable = "Mod View ZScore Table";
 
@@ -884,24 +914,72 @@ const _create_DataTable_Data = function (
     let group_1_ColumnHeader_Addition = " Group 1"
     let group_2_ColumnHeader_Addition = " Group 2"
 
-    if ( group_1_ProjectSearchIds.length === 1 && group_2_ProjectSearchIds.length === 1 ) {
+    if ( group_1_ProjectSearchIds_Or_SubSearchIds.length === 1 && group_2_ProjectSearchIds_Or_SubSearchIds.length === 1 ) {
 
-        //  If Both groups have ONE search, put the search id in the column header
+        //  Both groups have ONE search or sub search
 
-        {
-            const projectSearchId = group_1_ProjectSearchIds[ 0 ]
+        const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
-            const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+        if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
-            group_1_ColumnHeader_Addition = " (" + searchData_For_ProjectSearchId.searchId + ")"
-        }
+            //  Put the sub search label in the column header
 
-        {
-            const projectSearchId = group_2_ProjectSearchIds[ 0 ]
+            if ( projectSearchIds_AllForPage.length !== 1 ) {
+                const msg = "if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) { AND ( projectSearchIds_AllForPage.length !== 1 )"
+                console.warn(msg)
+                throw Error(msg)
+            }
 
-            const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+            const projectSearchId = projectSearchIds_AllForPage[ 0 ]
 
-            group_2_ColumnHeader_Addition = " (" + searchData_For_ProjectSearchId.searchId + ")"
+            const searchSubGroups_Root = dataPageStateManager.get_SearchSubGroups_Root()
+            if ( ! searchSubGroups_Root ) {
+                const msg = "if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) { AND dataPageStateManager.get_SearchSubGroups_Root() returned NOTHING"
+                console.warn(msg)
+                throw Error(msg)
+            }
+            const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId )
+            if ( ! searchSubGroups_ForProjectSearchId ) {
+                const msg = "if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) { AND searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId ) returned NOTHING. projectSearchId: " + projectSearchId
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            {
+                const subSearchId = group_1_ProjectSearchIds_Or_SubSearchIds[ 0 ]
+
+                const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId )
+
+                group_1_ColumnHeader_Addition = " (" + searchSubGroup.subgroupName_Display + ")"
+            }
+
+            {
+                const subSearchId = group_2_ProjectSearchIds_Or_SubSearchIds[ 0 ]
+
+                const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId )
+
+                group_2_ColumnHeader_Addition = " (" + searchSubGroup.subgroupName_Display + ")"
+            }
+
+        } else {
+
+            //  Put the search id in the column header
+
+            {
+                const projectSearchId = group_1_ProjectSearchIds_Or_SubSearchIds[ 0 ]
+
+                const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+
+                group_1_ColumnHeader_Addition = " (" + searchData_For_ProjectSearchId.searchId + ")"
+            }
+
+            {
+                const projectSearchId = group_2_ProjectSearchIds_Or_SubSearchIds[ 0 ]
+
+                const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+
+                group_2_ColumnHeader_Addition = " (" + searchData_For_ProjectSearchId.searchId + ")"
+            }
         }
     }
 
@@ -923,13 +1001,46 @@ const _create_DataTable_Data = function (
     {
         const displayName = quantTypeString + " Count " + group_1_ColumnHeader_Addition;
 
-        const group_SearchData_For_ProjectSearchId: Array<SearchData_SearchName_Etc_SingleSearchEntry__DataPageStateManagerEntry> = []
+        let searchesOrSubSearches_Label_String = "Searches"
 
-        for ( const projectSearchId of group_1_ProjectSearchIds ) {
+        const searchName_Or_SubSearchLabels: Array<JSX.Element> = []
 
-            const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+        if ( processing_SubSearches ) {
 
-            group_SearchData_For_ProjectSearchId.push( searchData_For_ProjectSearchId )
+            searchesOrSubSearches_Label_String = "Sub searches"
+
+            for ( const subSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {
+
+                const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId )
+                if ( ! searchSubGroup ) {
+                    throw Error("searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId ) returned NOTHING for subSearchId: " + subSearchId )
+                }
+
+                searchName_Or_SubSearchLabels.push(
+                    <li
+                        key={ searchSubGroup.searchSubGroup_Id }
+                        style={ { marginBottom: 8 } }
+                    >
+                        ({ searchSubGroup.subgroupName_Display }) { searchSubGroup.searchSubgroupName_fromImportFile }
+                    </li>
+                )
+            }
+
+        } else {
+
+            for ( const projectSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {
+
+                const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+
+                searchName_Or_SubSearchLabels.push(
+                    <li
+                        key={ searchData_For_ProjectSearchId.projectSearchId }
+                        style={ { marginBottom: 8 } }
+                    >
+                        ({ searchData_For_ProjectSearchId.searchId }) { searchData_For_ProjectSearchId.name }
+                    </li>
+                )
+            }
         }
 
         const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
@@ -938,20 +1049,11 @@ const _create_DataTable_Data = function (
                     { quantTypeString + " Count " }
                 </div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
-                    Group 1 Searches:
+                    Group 1 { searchesOrSubSearches_Label_String }:
                 </div>
                 <div>
                     <ul>
-                        { group_SearchData_For_ProjectSearchId.map( value => {
-                            return (
-                                <li
-                                    key={ value.projectSearchId }
-                                    style={ { marginBottom: 8 } }
-                                >
-                                    ({ value.searchId }) { value.name }
-                                </li>
-                            )
-                        } ) }
+                        { searchName_Or_SubSearchLabels }
                     </ul>
                 </div>
             </div>
@@ -973,13 +1075,46 @@ const _create_DataTable_Data = function (
     {
         const displayName = quantTypeString + " Count " + group_2_ColumnHeader_Addition;
 
-        const group_SearchData_For_ProjectSearchId: Array<SearchData_SearchName_Etc_SingleSearchEntry__DataPageStateManagerEntry> = []
+        let searchesOrSubSearches_Label_String = "Searches"
 
-        for ( const projectSearchId of group_2_ProjectSearchIds ) {
+        const searchName_Or_SubSearchLabels: Array<JSX.Element> = []
 
-            const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+        if ( processing_SubSearches ) {
 
-            group_SearchData_For_ProjectSearchId.push( searchData_For_ProjectSearchId )
+            searchesOrSubSearches_Label_String = "Sub searches"
+
+            for ( const subSearchId of group_2_ProjectSearchIds_Or_SubSearchIds ) {
+
+                const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId )
+                if ( ! searchSubGroup ) {
+                    throw Error("searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId ) returned NOTHING for subSearchId: " + subSearchId )
+                }
+
+                searchName_Or_SubSearchLabels.push(
+                    <li
+                        key={ searchSubGroup.searchSubGroup_Id }
+                        style={ { marginBottom: 8 } }
+                    >
+                        ({ searchSubGroup.subgroupName_Display }) { searchSubGroup.searchSubgroupName_fromImportFile }
+                    </li>
+                )
+            }
+
+        } else {
+
+            for ( const projectSearchId of group_2_ProjectSearchIds_Or_SubSearchIds ) {
+
+                const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+
+                searchName_Or_SubSearchLabels.push(
+                    <li
+                        key={ searchData_For_ProjectSearchId.projectSearchId }
+                        style={ { marginBottom: 8 } }
+                    >
+                        ({ searchData_For_ProjectSearchId.searchId }) { searchData_For_ProjectSearchId.name }
+                    </li>
+                )
+            }
         }
 
         const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
@@ -988,20 +1123,11 @@ const _create_DataTable_Data = function (
                     { quantTypeString + " Count " }
                 </div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
-                    Group 2 Searches:
+                    Group 2 { searchesOrSubSearches_Label_String }:
                 </div>
                 <div>
                     <ul>
-                        { group_SearchData_For_ProjectSearchId.map( value => {
-                            return (
-                                <li
-                                    key={ value.projectSearchId }
-                                    style={ { marginBottom: 8 } }
-                                >
-                                    ({ value.searchId }) { value.name }
-                                </li>
-                            )
-                        } ) }
+                        { searchName_Or_SubSearchLabels }
                     </ul>
                 </div>
             </div>
@@ -1195,27 +1321,52 @@ const _create_DataTable_Data = function (
 
         const searchName_IndentSpaces = " ".repeat( 10 ) //  Indent the # of spaces in the 'repeat'
 
-        { //  Group 1 searches
-            dataTable_Download_Content_PrefixLines.push( "#   Group 1 searches" )
+        if ( processing_SubSearches ) {
 
-            for ( const projectSearchId of group_1_ProjectSearchIds ) {
-                const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
-                    projectSearchId,
-                    dataPageStateManager_DataFrom_Server: dataPageStateManager
-                } )
-                dataTable_Download_Content_PrefixLines.push( "#" + searchName_IndentSpaces + searchNameForProjectSearchId )
+            { //  Group 1 sub searches
+                dataTable_Download_Content_PrefixLines.push( "#   Group 1 sub searches" )
+
+                for ( const subSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {
+
+                    const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId )
+
+                    dataTable_Download_Content_PrefixLines.push( "#" + searchName_IndentSpaces + "(" + searchSubGroup.subgroupName_Display + ") " + searchSubGroup.searchSubgroupName_fromImportFile )
+                }
             }
-        }
 
-        { //  Group 2 searches
-            dataTable_Download_Content_PrefixLines.push( "#   Group 2 searches" )
+            { //  Group 2 sub searches
+                dataTable_Download_Content_PrefixLines.push( "#   Group 2 sub searches" )
 
-            for ( const projectSearchId of group_2_ProjectSearchIds ) {
-                const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
-                    projectSearchId,
-                    dataPageStateManager_DataFrom_Server: dataPageStateManager
-                } )
-                dataTable_Download_Content_PrefixLines.push( "#" + searchName_IndentSpaces + searchNameForProjectSearchId )
+                for ( const subSearchId of group_2_ProjectSearchIds_Or_SubSearchIds ) {
+                    const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId )
+                    dataTable_Download_Content_PrefixLines.push( "#" + searchName_IndentSpaces + "(" + searchSubGroup.subgroupName_Display + ") " + searchSubGroup.searchSubgroupName_fromImportFile )
+                }
+            }
+
+        } else {
+
+            { //  Group 1 searches
+                dataTable_Download_Content_PrefixLines.push( "#   Group 1 searches" )
+
+                for ( const projectSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {
+                    const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
+                        projectSearchId,
+                        dataPageStateManager_DataFrom_Server: dataPageStateManager
+                    } )
+                    dataTable_Download_Content_PrefixLines.push( "#" + searchName_IndentSpaces + searchNameForProjectSearchId )
+                }
+            }
+
+            { //  Group 2 searches
+                dataTable_Download_Content_PrefixLines.push( "#   Group 2 searches" )
+
+                for ( const projectSearchId of group_2_ProjectSearchIds_Or_SubSearchIds ) {
+                    const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
+                        projectSearchId,
+                        dataPageStateManager_DataFrom_Server: dataPageStateManager
+                    } )
+                    dataTable_Download_Content_PrefixLines.push( "#" + searchName_IndentSpaces + searchNameForProjectSearchId )
+                }
             }
         }
         //  Blank line
@@ -1253,36 +1404,25 @@ class INTERNAL__Compute_SignificantMods_CombineReps__Result {
  */
 const _compute_SignificantMods_CombineReps = function (
     {
-        group_1_ProjectSearchIds,
-        group_2_ProjectSearchIds,
+        group_1_ProjectSearchIds_Or_SubSearchIds,
+        group_2_ProjectSearchIds_Or_SubSearchIds,
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
         dataPageStateManager,
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
-        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     } : {
-        group_1_ProjectSearchIds: Array<number>
-        group_2_ProjectSearchIds: Array<number>
+        group_1_ProjectSearchIds_Or_SubSearchIds: Array<number>
+        group_2_ProjectSearchIds_Or_SubSearchIds: Array<number>
 
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
         dataPageStateManager : DataPageStateManager
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
-        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     }
 ) : {
     data: INTERNAL__Compute_SignificantMods_CombineReps__Result
     promise: Promise<INTERNAL__Compute_SignificantMods_CombineReps__Result>
 } {
-
-    const projectSearchIds_All_Set: Set<number> = new Set()
-
-    for ( const projectSearchId of group_1_ProjectSearchIds ) {
-        projectSearchIds_All_Set.add( projectSearchId )
-    }
-    for ( const projectSearchId of group_2_ProjectSearchIds ) {
-        projectSearchIds_All_Set.add( projectSearchId )
-    }
 
     /////////
 
@@ -1381,8 +1521,8 @@ const _compute_SignificantMods_CombineReps = function (
     if ( promises.length === 0 ) {
 
         const result = _modPage_View_SignificantMods_CombineReps_After_GetData({
-            group_1_ProjectSearchIds,
-            group_2_ProjectSearchIds,
+            group_1_ProjectSearchIds_Or_SubSearchIds,
+            group_2_ProjectSearchIds_Or_SubSearchIds,
             computeData_For_ModMassViz_And_TopLevelTable_Result_Root__Special_Override_PsmQuant_ToUse_Counts_NotRatio,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
@@ -1407,8 +1547,8 @@ const _compute_SignificantMods_CombineReps = function (
             promisesAll.then(novalue => { try {
 
                 const result = _modPage_View_SignificantMods_CombineReps_After_GetData({
-                    group_1_ProjectSearchIds,
-                    group_2_ProjectSearchIds,
+                    group_1_ProjectSearchIds_Or_SubSearchIds,
+                    group_2_ProjectSearchIds_Or_SubSearchIds,
                     computeData_For_ModMassViz_And_TopLevelTable_Result_Root__Special_Override_PsmQuant_ToUse_Counts_NotRatio,
                     modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
                     modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
@@ -1432,8 +1572,8 @@ const _compute_SignificantMods_CombineReps = function (
  */
 const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
     {
-        group_1_ProjectSearchIds,
-        group_2_ProjectSearchIds,
+        group_1_ProjectSearchIds_Or_SubSearchIds,
+        group_2_ProjectSearchIds_Or_SubSearchIds,
         computeData_For_ModMassViz_And_TopLevelTable_Result_Root__Special_Override_PsmQuant_ToUse_Counts_NotRatio,
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
@@ -1441,8 +1581,8 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
         dataPageStateManager
     } : {
-        group_1_ProjectSearchIds : Array<number>
-        group_2_ProjectSearchIds : Array<number>
+        group_1_ProjectSearchIds_Or_SubSearchIds : Array<number>
+        group_2_ProjectSearchIds_Or_SubSearchIds : Array<number>
         computeData_For_ModMassViz_And_TopLevelTable_Result_Root__Special_Override_PsmQuant_ToUse_Counts_NotRatio: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_or_SubSearchIds_Result
@@ -1453,15 +1593,6 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
 ): {
     tableRows: Array<INTERNAL_TableRow>
 } {
-
-    if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.projectSearchId_Or_SubSearchId_Enum ===
-        ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
-
-        const msg = "_modPage_View_SignificantMods_CombineReps_After_GetData(...): SubSearchId NOT Processed"
-        console.warn(msg)
-        window.alert(msg)
-        throw Error(msg)
-    }
 
     const psmQuantType = (
         modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === undefined ||
@@ -1539,11 +1670,6 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
     // combine psm counts for reps into single row in new mod map
     const combinedModMap__PsmCount_Map_Key_Group_1_or_2_Map_Key_ModMass: Map<number, Map<number, number>> = new Map();
 
-    if ( computeData_For_ModMassViz_And_TopLevelTable_Result_Root__Special_Override_PsmQuant_ToUse_Counts_NotRatio.projectSearchId_Or_SubSearchId_Enum
-        === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
-        throw Error( "CODE NOT HANDLE  ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId" )
-    }
-
     for ( const result_ForSingle_ModMass of computeData_For_ModMassViz_And_TopLevelTable_Result_Root__Special_Override_PsmQuant_ToUse_Counts_NotRatio.get_Data_AllValues() ) {
 
         const combinedModMap__PsmCount_Or_ScanCount_Map_Key_Group_1_or_2: Map<number, number> = new Map()
@@ -1551,7 +1677,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
         {
             let topLevelTable_DisplayValue_Summed = 0
 
-            for ( const projectSearchId of group_1_ProjectSearchIds ) {
+            for ( const projectSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {
 
                 const data_For__ProjectSearchId_Or_SubSearchId = result_ForSingle_ModMass.get_For__ProjectSearchId_Or_SubSearchId( projectSearchId )
                 if ( data_For__ProjectSearchId_Or_SubSearchId ) {
@@ -1565,7 +1691,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
         {
             let topLevelTable_DisplayValue_Summed = 0
 
-            for ( const projectSearchId of group_2_ProjectSearchIds ) {
+            for ( const projectSearchId of group_2_ProjectSearchIds_Or_SubSearchIds ) {
 
                 const data_For__ProjectSearchId_Or_SubSearchId = result_ForSingle_ModMass.get_For__ProjectSearchId_Or_SubSearchId( projectSearchId )
                 if ( data_For__ProjectSearchId_Or_SubSearchId ) {
@@ -1590,50 +1716,82 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
         psm_Or_Scan_Count_Group_1 = 0;
         psm_Or_Scan_Count_Group_2 = 0;
 
-        for ( const projectSearchId of group_1_ProjectSearchIds ) {
+        for ( const projectSearchId_Or_SubSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {
 
             let countForSearch: number = undefined
 
             if ( psmQuantType ) {
                 if ( ! modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result ) {
-                    throw Error( "In 'for ( const projectSearchId of group0 ) {': in 'if ( psmQuantType )': modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result is NOT set.   AFTER: if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) { " )
+                    throw Error( "In 'for ( const projectSearchId_Or_SubSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {': in 'if ( psmQuantType )': modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result is NOT set.   AFTER: if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) { " )
                 }
-                countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId )
+                countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
-                    throw Error( "In 'for ( const projectSearchId of group0 ) {': in 'if ( psmQuantType )':  modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId.get( projectSearchId ) returned undefined or null for projectSearchId: " + projectSearchId )
+
+                    const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
+
+                        //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero
+                        countForSearch = 0
+                    } else {
+                        throw Error( "In 'for ( const projectSearchId_Or_SubSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {': in 'if ( psmQuantType )':  modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId.get( projectSearchId_Or_SubSearchId ) returned undefined or null for projectSearchId_Or_SubSearchId: " + projectSearchId_Or_SubSearchId )
+                    }
                 }
             } else {
                 if ( ! modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result ) {
-                    throw Error( "In 'for ( const projectSearchId of group0 ) {': in 'else' of 'if ( psmQuantType )': modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result is NOT set.  AFTER if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {" )
+                    throw Error( "In 'for ( const projectSearchId_Or_SubSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {': in 'else' of 'if ( psmQuantType )': modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result is NOT set.  AFTER if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {" )
                 }
-                countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId )
+                countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
-                    throw Error( "In 'for ( const projectSearchId of group0 ) {': in 'else' of 'if ( psmQuantType )':  modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId.get( projectSearchId ) returned undefined or null for projectSearchId: " + projectSearchId )
+
+                    const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
+
+                        //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero
+                        countForSearch = 0
+                    } else {
+                        throw Error( "In 'for ( const projectSearchId_Or_SubSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {': in 'else' of 'if ( psmQuantType )':  modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId.get( projectSearchId_Or_SubSearchId ) returned undefined or null for projectSearchId_Or_SubSearchId: " + projectSearchId_Or_SubSearchId )
+                    }
                 }
             }
 
             psm_Or_Scan_Count_Group_1 += countForSearch
         }
 
-        for ( const projectSearchId of group_2_ProjectSearchIds ) {
+        for ( const projectSearchId_Or_SubSearchId of group_2_ProjectSearchIds_Or_SubSearchIds ) {
 
             let countForSearch: number = undefined
 
             if ( psmQuantType ) {
                 if ( ! modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result ) {
-                    throw Error( "In 'for ( const projectSearchId of group_2_ProjectSearchIds ) {': in 'if ( psmQuantType )': modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result is NOT set.  AFTER if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) { " )
+                    throw Error( "In 'for ( const projectSearchId_Or_SubSearchId of group_2_ProjectSearchIds ) {': in 'if ( psmQuantType )': modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result is NOT set.  AFTER if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) { " )
                 }
-                countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId )
+                countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
-                    throw Error( "In 'for ( const projectSearchId of group_2_ProjectSearchIds ) {': in 'if ( psmQuantType )':  modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId.get( projectSearchId ) returned undefined or null for projectSearchId: " + projectSearchId )
+
+                    const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
+
+                        //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero
+                        countForSearch = 0
+                    } else {
+                        throw Error( "In 'for ( const projectSearchId_Or_SubSearchId of group_2_ProjectSearchIds ) {': in 'if ( psmQuantType )':  modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId.get( projectSearchId_Or_SubSearchId ) returned undefined or null for projectSearchId_Or_SubSearchId: " + projectSearchId_Or_SubSearchId )
+                    }
                 }
             } else {
                 if ( ! modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result ) {
-                    throw Error( "In 'for ( const projectSearchId of group_2_ProjectSearchIds ) {': in 'else' of 'if ( psmQuantType )': modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result is NOT set.  AFTER  if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) { " )
+                    throw Error( "In 'for ( const projectSearchId_Or_SubSearchId of group_2_ProjectSearchIds ) {': in 'else' of 'if ( psmQuantType )': modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result is NOT set.  AFTER  if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) { " )
                 }
-                countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId )
+                countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
-                    throw Error( "In 'for ( const projectSearchId of group_2_ProjectSearchIds ) {': in 'else' of 'if ( psmQuantType )':  modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId.get( projectSearchId ) returned undefined or null for projectSearchId: " + projectSearchId )
+
+                    const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
+
+                        //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero
+                        countForSearch = 0
+                    } else {
+                        throw Error( "In 'for ( const projectSearchId_Or_SubSearchId of group_2_ProjectSearchIds ) {': in 'else' of 'if ( psmQuantType )':  modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId.get( projectSearchId_Or_SubSearchId ) returned undefined or null for projectSearchId_Or_SubSearchId: " + projectSearchId_Or_SubSearchId )
+                    }
                 }
             }
 
@@ -1654,14 +1812,14 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
         filtered_Psm_Or_Scan_Count_1 = 0;
         filtered_Psm_Or_Scan_Count_2 = 0;
 
-        for ( const projectSearchId of group_1_ProjectSearchIds ) {
-            const n = filtered_Psm_Or_Scan_Count_Map_Key_ProjectSearchId_Or_SubSearchId.get( projectSearchId );
+        for ( const projectSearchId_Or_SubSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {
+            const n = filtered_Psm_Or_Scan_Count_Map_Key_ProjectSearchId_Or_SubSearchId.get( projectSearchId_Or_SubSearchId );
             if ( n ) {
                 filtered_Psm_Or_Scan_Count_1 += n;
             }
         }
-        for ( const projectSearchId of group_2_ProjectSearchIds ) {
-            const n = filtered_Psm_Or_Scan_Count_Map_Key_ProjectSearchId_Or_SubSearchId.get( projectSearchId );
+        for ( const projectSearchId_Or_SubSearchId of group_2_ProjectSearchIds_Or_SubSearchIds ) {
+            const n = filtered_Psm_Or_Scan_Count_Map_Key_ProjectSearchId_Or_SubSearchId.get( projectSearchId_Or_SubSearchId );
             if ( n ) {
                 filtered_Psm_Or_Scan_Count_2 += n;
             }

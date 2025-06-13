@@ -6,7 +6,8 @@ import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
@@ -689,7 +690,7 @@ export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalSc
 
         if ( promises.length === 0 ) {
 
-            const result = this.get_ScanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_For_ProjectSearchIds__AfterLoadData({
+            const result = this._get_ScanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_For_ProjectSearchIds__AfterLoadData({
                 projectSearchIds, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
             })
 
@@ -709,7 +710,7 @@ export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalSc
                     promisesAll.catch(reason => reject(reason))
                     promisesAll.then(novalue => { try {
 
-                        const result = this.get_ScanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_For_ProjectSearchIds__AfterLoadData({
+                        const result = this._get_ScanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_For_ProjectSearchIds__AfterLoadData({
                             projectSearchIds, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
                         })
                         resolve( result )
@@ -724,7 +725,7 @@ export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalSc
      * @param projectSearchIds
      * @param psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
      */
-    private get_ScanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_For_ProjectSearchIds__AfterLoadData(
+    private _get_ScanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_For_ProjectSearchIds__AfterLoadData(
         {
             projectSearchIds, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
         } : {
@@ -737,19 +738,46 @@ export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalSc
 
         //   Computed for ALL PSMs that pass the PSM/Peptide filters at the top of the page AND filters in 'Click to Hide Filters and Options'
 
-        const scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId: Map<number, number> = new Map()
+        let processing_SubSearches = false
+        let projectSearchId_For_SubSearchProcessing_GetFromPsmHolder: number = undefined
+
+        {
+            const searchGroups = this._modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+
+            if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
+
+                processing_SubSearches = true
+
+                if ( projectSearchIds.length !== 1 ) {
+                    const msg = "if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) { AND if ( projectSearchIds.length !== 1 ) {"
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                projectSearchId_For_SubSearchProcessing_GetFromPsmHolder = projectSearchIds[ 0 ]
+            }
+        }
+
+        const scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId: Map<number, number> = new Map()
 
         const psmTblData_Map_Key_PsmId_Map_Key_ProjectSearchId = this._get_psmTblData_Map_Key_PsmId_Map_Key_ProjectSearchId_or_SubSearchId_For_RatiosDenominator_For_ProjectSearchIds_or_SubSearchIds__Filtered()
 
         for ( const psmTblData_Map_Key_PsmId_Map_Key_ProjectSearchId_MapEntry of psmTblData_Map_Key_PsmId_Map_Key_ProjectSearchId ) {
 
-            const projectSearchId = psmTblData_Map_Key_PsmId_Map_Key_ProjectSearchId_MapEntry[ 0 ]
+            const projectSearchId_or_SubSearchId = psmTblData_Map_Key_PsmId_Map_Key_ProjectSearchId_MapEntry[ 0 ]
 
             const psmTblData_Map_Key_PsmId = psmTblData_Map_Key_PsmId_Map_Key_ProjectSearchId_MapEntry[ 1 ]
 
-            const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
+
+            let projectSearchId_For_GetFromPsmHolder = projectSearchId_or_SubSearchId
+
+            if ( processing_SubSearches ) {
+                projectSearchId_For_GetFromPsmHolder = projectSearchId_For_SubSearchProcessing_GetFromPsmHolder
+            }
+
+            const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId_For_GetFromPsmHolder )
             if ( ! psmTblData_For_ReportedPeptideId_For_MainFilters_Holder ) {
-                throw Error("psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                throw Error("psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId_For_GetFromPsmHolder ) returned NOTHING for projectSearchId_For_GetFromPsmHolder: " + projectSearchId_For_GetFromPsmHolder )
             }
 
             const _SearchScanFileId_Value_ForWhen_NullOrUndefined = -999999
@@ -779,10 +807,10 @@ export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalSc
                 scanNumber_SearchScanFileId_Pair_Unique_Count += scanNumber_Set.size
             }
 
-            scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId.set( projectSearchId, scanNumber_SearchScanFileId_Pair_Unique_Count )
+            scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId.set( projectSearchId_or_SubSearchId, scanNumber_SearchScanFileId_Pair_Unique_Count )
         }
 
-        return { scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId: scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId }
+        return { scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId: scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId }
     }
 
     /**

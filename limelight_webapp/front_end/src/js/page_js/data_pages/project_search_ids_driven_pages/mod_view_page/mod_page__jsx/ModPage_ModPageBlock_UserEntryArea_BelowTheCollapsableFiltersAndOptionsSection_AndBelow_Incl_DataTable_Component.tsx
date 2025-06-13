@@ -893,6 +893,11 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                 }
             }
 
+            let download_As_SVG_Div_Top = ModView_DataViz_Compute_ColorScale_WidthHeight_Etc__VISUALIZATION_MAIN_CONSTANTS.margin.top - 30
+            if ( download_As_SVG_Div_Top < 0 ) {
+                download_As_SVG_Div_Top = 0
+            }
+
             return (
                 <div
                     // id="mod_page_visualization_outer_container_block"
@@ -924,7 +929,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                     >
                         <div
                             className=" mod-page-data-visualization-block-outer-container " //  Primarily for ":hover" on child element
-                            style={ { width: "fit-content" } } //  Limit width to limit hover area to actual content
+                            style={ { width: "fit-content", position: "relative" } } //  Limit width to limit hover area to actual content
                         >
                             <div
                                 style={ {

@@ -60,37 +60,30 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Roo
     /**
      * Copied from ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
      */
-    private _psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId : ReadonlyMap<number, ReadonlyMap<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>
+    private _psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId : ReadonlyMap<number, ReadonlyMap<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>
 
     constructor(
         {
             projectSearchId_Or_SubSearchId_Enum,
-            psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId
+            psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId
         } : {
             projectSearchId_Or_SubSearchId_Enum: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum
-            psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId : ReadonlyMap<number, ReadonlyMap<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>
+            psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId : ReadonlyMap<number, ReadonlyMap<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>
         }) { try {
 
         this.projectSearchId_Or_SubSearchId_Enum = projectSearchId_Or_SubSearchId_Enum
 
-        // if ( projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
-        //
-        //     const msg = "'SubSearchId' NOT SUPPORTED: param 'psmIds_With_NO_Modifications_Set_Map_Key_ProjectSearchId' is ONLY 'ProjectSearchId' class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: constructor(...) if ( projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {.  "
-        //     console.warn(msg)
-        //     throw Error(msg)
-        // }
-
         //  All Down Stream uses of this._psmIds_With_NO_Modifications_Set_Map_Key_ProjectSearchId have to change as well
 
-        this._psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId = psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId
+        this._psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId = psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * Get the whole result in "Readonly" form
      */
-    get_psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId() : ReadonlyMap<number, ReadonlyMap<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>> {
-        return this._psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId
+    get_psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId() : ReadonlyMap<number, ReadonlyMap<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>> {
+        return this._psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId
     }
 
     /**
@@ -524,7 +517,7 @@ const _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData = 
 
     const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root = new ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root({
         projectSearchId_Or_SubSearchId_Enum,
-        psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId: modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId()
+        psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId: modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId()
     })
 
     _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root({

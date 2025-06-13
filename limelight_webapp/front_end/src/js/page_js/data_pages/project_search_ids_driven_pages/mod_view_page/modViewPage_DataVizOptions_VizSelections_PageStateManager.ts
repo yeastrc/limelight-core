@@ -49,6 +49,10 @@ export enum ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICA
 }
 
 
+export enum ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum {
+    PROJECT_SEARCH_IDS = "PROJECT_SEARCH_IDS",
+    SUB_SEARCH_IDS = "SUB_SEARCH_IDS"
+}
 
 /////////////////
 
@@ -63,10 +67,24 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
     private static _ENCODING__GROUP_1_PROPERTY_NAME = 'b'
     private static _ENCODING__GROUP_2_PROPERTY_NAME = 'c'
     private static _ENCODING__NOT_IN_GROUP_PROPERTY_NAME = 'd'
+    private static _ENCODING__PROJECT_SEARCH_ID_FOR_SUB_SEARCH_IDS_PROPERTY_NAME = 'e'
+    private static _ENCODING__PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_PROPERTY_NAME = 'f'
 
-    private _group_1_SearchGroup_ProjectSearchIds_Set: Set<number> = new Set()
-    private _group_2_SearchGroup_ProjectSearchIds_Set: Set<number> = new Set()
-    private _searches_NOT_InAnyGroup_ProjectSearchIds_Set: Set<number> = new Set()
+    private static _PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS = {}
+
+    private static _PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_DECODING_KEYS = [
+        ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.PROJECT_SEARCH_IDS,
+        ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS
+    ];
+
+
+    private _group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: Set<number> = new Set()
+    private _group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: Set<number> = new Set()
+    private _searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set: Set<number> = new Set()
+
+    private _projectSearchId_FOR_SubSearchIds: number
+
+    private _projectSearchIds_Or_SubSearchIds_Enum: ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum
 
     private _selectionChanged_Callback: () => void
 
@@ -80,20 +98,27 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
         }
     ) {
         this._selectionChanged_Callback = callbackOnChange
+
+        ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.PROJECT_SEARCH_IDS ] = 0
+        ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ] = 1
     }
 
     /**
      *
      */
     get_SearchGroups(): {
-        group_1_SearchGroup_ProjectSearchIds_Set: ReadonlySet<number>
-        group_2_SearchGroup_ProjectSearchIds_Set: ReadonlySet<number>
-        searches_NOT_InAnyGroup_ProjectSearchIds_Set: ReadonlySet<number>
+        group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: ReadonlySet<number>
+        group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: ReadonlySet<number>
+        searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set: ReadonlySet<number>
+        projectSearchId_FOR_SubSearchIds: number
+        projectSearchIds_Or_SubSearchIds_Enum: ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum
     } {
         return {
-            group_1_SearchGroup_ProjectSearchIds_Set: this._group_1_SearchGroup_ProjectSearchIds_Set,
-            group_2_SearchGroup_ProjectSearchIds_Set: this._group_2_SearchGroup_ProjectSearchIds_Set,
-            searches_NOT_InAnyGroup_ProjectSearchIds_Set: this._searches_NOT_InAnyGroup_ProjectSearchIds_Set
+            group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
+            group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
+            searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set: this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set,
+            projectSearchId_FOR_SubSearchIds: this._projectSearchId_FOR_SubSearchIds,
+            projectSearchIds_Or_SubSearchIds_Enum: this._projectSearchIds_Or_SubSearchIds_Enum
         }
     }
 
@@ -105,32 +130,40 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
      */
     set_SearchGroups(
         {
-            group_1_SearchGroup_ProjectSearchIds_Set,
-            group_2_SearchGroup_ProjectSearchIds_Set,
-            searches_NOT_InAnyGroup_ProjectSearchIds_Set
+            group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
+            group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
+            searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set,
+            projectSearchId_FOR_SubSearchIds,
+            projectSearchIds_Or_SubSearchIds_Enum
         } : {
-            group_1_SearchGroup_ProjectSearchIds_Set: Set<number>
-            group_2_SearchGroup_ProjectSearchIds_Set: Set<number>
-            searches_NOT_InAnyGroup_ProjectSearchIds_Set: Set<number>
+            group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: Set<number>
+            group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: Set<number>
+            searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set: Set<number>
+            projectSearchId_FOR_SubSearchIds
+            projectSearchIds_Or_SubSearchIds_Enum: ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum
         }) : void {
 
-        if ( group_1_SearchGroup_ProjectSearchIds_Set ) {
-            this._group_1_SearchGroup_ProjectSearchIds_Set = new Set( group_1_SearchGroup_ProjectSearchIds_Set )
+        if ( group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set ) {
+            this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set )
         } else  {
-            this._group_1_SearchGroup_ProjectSearchIds_Set = undefined
+            this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
         }
 
-        if ( group_2_SearchGroup_ProjectSearchIds_Set ) {
-            this._group_2_SearchGroup_ProjectSearchIds_Set = new Set( group_2_SearchGroup_ProjectSearchIds_Set )
+        if ( group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set ) {
+            this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set )
         } else  {
-            this._group_2_SearchGroup_ProjectSearchIds_Set = undefined
+            this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
         }
 
-        if ( searches_NOT_InAnyGroup_ProjectSearchIds_Set ) {
-            this._searches_NOT_InAnyGroup_ProjectSearchIds_Set = new Set( searches_NOT_InAnyGroup_ProjectSearchIds_Set )
+        if ( searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set ) {
+            this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set )
         } else  {
-            this._searches_NOT_InAnyGroup_ProjectSearchIds_Set = undefined
+            this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
         }
+
+        this._projectSearchId_FOR_SubSearchIds = projectSearchId_FOR_SubSearchIds
+
+        this._projectSearchIds_Or_SubSearchIds_Enum = projectSearchIds_Or_SubSearchIds_Enum
 
         this._selectionChanged_Callback()
     }
@@ -165,60 +198,147 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
         {
             const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__GROUP_1_PROPERTY_NAME ]
             if ( encoded_Group ) {
-                this._group_1_SearchGroup_ProjectSearchIds_Set = new Set( encoded_Group )
+                this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( encoded_Group )
+            } else {
+                this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
             }
         }
         {
             const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__GROUP_2_PROPERTY_NAME ]
             if ( encoded_Group ) {
-                this._group_2_SearchGroup_ProjectSearchIds_Set = new Set( encoded_Group )
+                this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( encoded_Group )
+            } else {
+                this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
             }
         }
         {
             const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__NOT_IN_GROUP_PROPERTY_NAME ]
             if ( encoded_Group ) {
-                this._searches_NOT_InAnyGroup_ProjectSearchIds_Set = new Set( encoded_Group )
+                this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( encoded_Group )
+            } else {
+                this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
+            }
+        }
+        {
+            const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__PROJECT_SEARCH_ID_FOR_SUB_SEARCH_IDS_PROPERTY_NAME ]
+            if ( encoded_Group ) {
+                this._projectSearchId_FOR_SubSearchIds = encoded_Group
             }
         }
 
-        this._purge_NotIn_projectSearchIds_MainPage({ projectSearchIds_MainPage })
+        {
+            const encodedValue = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_PROPERTY_NAME ]
+            if ( encodedValue !== undefined ) {
+
+                const value = ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_DECODING_KEYS[ encodedValue ]
+                if ( value === undefined ) {
+                    const msg = "ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_DECODING_KEYS[ encodedValue ] returned undefined for encodedValue: " + encodedValue
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+                this._projectSearchIds_Or_SubSearchIds_Enum = value
+            } else {
+
+                if ( this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size > 0
+                    || this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size > 0
+                    || this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set.size > 0 ) {
+
+                    //  Set to default
+                    this._projectSearchIds_Or_SubSearchIds_Enum = ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.PROJECT_SEARCH_IDS
+                }
+            }
+        }
+
+        this._purge_NotIn_projectSearchIds_MainPage__On_DecodeFromURL({ projectSearchIds_MainPage })
     }
 
-    private _purge_NotIn_projectSearchIds_MainPage(
+    private _purge_NotIn_projectSearchIds_MainPage__On_DecodeFromURL(
         {
             projectSearchIds_MainPage
         } : {
             projectSearchIds_MainPage: Array<number>
         }) {
 
-        const projectSearchIds_MainPage_Set = new Set( projectSearchIds_MainPage )
+        if ( this._projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
-        if ( this._group_1_SearchGroup_ProjectSearchIds_Set ) {
+            //  Sub Searches
 
-            const group_ProjectSearchIds_Copy = Array.from( this._group_1_SearchGroup_ProjectSearchIds_Set )
-            for ( const projectSearchId of group_ProjectSearchIds_Copy ) {
-                if ( ! projectSearchIds_MainPage_Set.has( projectSearchId ) ) {
-                    this._group_1_SearchGroup_ProjectSearchIds_Set.delete( projectSearchId )
+            let purgeSubSearchIds = false
+
+            if ( projectSearchIds_MainPage.length === 1 ) {
+
+                const projectSearchId = projectSearchIds_MainPage[ 0 ]
+
+                if ( this._projectSearchId_FOR_SubSearchIds !== projectSearchId ) {
+                    //  projectSearchId changed so purge selection
+                    purgeSubSearchIds = true
                 }
+            } else {
+                //  > 1 projectSearchIds so change from sub searches to multiple searches so purge selection
+                purgeSubSearchIds = true
             }
-        }
 
-        if ( this._group_2_SearchGroup_ProjectSearchIds_Set ) {
+            if ( purgeSubSearchIds ) {
 
-            const group_ProjectSearchIds_Copy = Array.from( this._group_2_SearchGroup_ProjectSearchIds_Set )
-            for ( const projectSearchId of group_ProjectSearchIds_Copy ) {
-                if ( ! projectSearchIds_MainPage_Set.has( projectSearchId ) ) {
-                    this._group_2_SearchGroup_ProjectSearchIds_Set.delete( projectSearchId )
+                this._projectSearchIds_Or_SubSearchIds_Enum = undefined
+
+                this._projectSearchId_FOR_SubSearchIds = undefined
+
+                this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
+                this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
+                this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
+            }
+
+        } else {
+
+            //  NOT Search Sub Groups
+
+            if ( projectSearchIds_MainPage.length === 1 ) {
+
+                //  ONLY have 1 search so reset everything
+
+                this._projectSearchIds_Or_SubSearchIds_Enum = undefined
+
+                this._projectSearchId_FOR_SubSearchIds = undefined
+
+                this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
+                this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
+                this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set()
+
+            } else {
+
+                //  > 1 search so purge projectSearchIds NOT IN projectSearchIds_MainPage
+
+                const projectSearchIds_MainPage_Set = new Set( projectSearchIds_MainPage )
+
+                if ( this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set ) {
+
+                    const group_ProjectSearchIds_Copy = Array.from( this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set )
+                    for ( const projectSearchId of group_ProjectSearchIds_Copy ) {
+                        if ( ! projectSearchIds_MainPage_Set.has( projectSearchId ) ) {
+                            this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.delete( projectSearchId )
+                        }
+                    }
                 }
-            }
-        }
 
-        if ( this._searches_NOT_InAnyGroup_ProjectSearchIds_Set ) {
+                if ( this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set ) {
 
-            const group_ProjectSearchIds_Copy = Array.from( this._searches_NOT_InAnyGroup_ProjectSearchIds_Set )
-            for ( const projectSearchId of group_ProjectSearchIds_Copy ) {
-                if ( ! projectSearchIds_MainPage_Set.has( projectSearchId ) ) {
-                    this._searches_NOT_InAnyGroup_ProjectSearchIds_Set.delete( projectSearchId )
+                    const group_ProjectSearchIds_Copy = Array.from( this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set )
+                    for ( const projectSearchId of group_ProjectSearchIds_Copy ) {
+                        if ( ! projectSearchIds_MainPage_Set.has( projectSearchId ) ) {
+                            this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.delete( projectSearchId )
+                        }
+                    }
+                }
+
+                if ( this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set ) {
+
+                    const group_ProjectSearchIds_Copy = Array.from( this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set )
+                    for ( const projectSearchId of group_ProjectSearchIds_Copy ) {
+                        if ( ! projectSearchIds_MainPage_Set.has( projectSearchId ) ) {
+                            this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set.delete( projectSearchId )
+                        }
+                    }
                 }
             }
         }
@@ -231,25 +351,41 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
 
         const result = {}
 
-        if ( this._group_1_SearchGroup_ProjectSearchIds_Set && this._group_1_SearchGroup_ProjectSearchIds_Set.size > 0 ) {
+        if ( this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set && this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size > 0 ) {
 
-            const result_ProjectSearchIds = Array.from( this._group_1_SearchGroup_ProjectSearchIds_Set )
+            const result_ProjectSearchIds = Array.from( this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set )
 
             result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__GROUP_1_PROPERTY_NAME ] = result_ProjectSearchIds
         }
 
-        if ( this._group_2_SearchGroup_ProjectSearchIds_Set && this._group_2_SearchGroup_ProjectSearchIds_Set.size > 0 ) {
+        if ( this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set && this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size > 0 ) {
 
-            const result_ProjectSearchIds = Array.from( this._group_2_SearchGroup_ProjectSearchIds_Set )
+            const result_ProjectSearchIds = Array.from( this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set )
 
             result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__GROUP_2_PROPERTY_NAME ] = result_ProjectSearchIds
         }
 
-        if ( this._searches_NOT_InAnyGroup_ProjectSearchIds_Set && this._searches_NOT_InAnyGroup_ProjectSearchIds_Set.size > 0 ) {
+        if ( this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set && this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set.size > 0 ) {
 
-            const result_ProjectSearchIds = Array.from( this._searches_NOT_InAnyGroup_ProjectSearchIds_Set )
+            const result_ProjectSearchIds = Array.from( this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set )
 
             result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__NOT_IN_GROUP_PROPERTY_NAME ] = result_ProjectSearchIds
+        }
+
+        if ( this._projectSearchId_FOR_SubSearchIds ) {
+
+            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__PROJECT_SEARCH_ID_FOR_SUB_SEARCH_IDS_PROPERTY_NAME ] = this._projectSearchId_FOR_SubSearchIds
+        }
+
+        if ( this._projectSearchIds_Or_SubSearchIds_Enum !== undefined ) {
+
+            const encodedValue = ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS[ this._projectSearchIds_Or_SubSearchIds_Enum ]
+            if ( encodedValue === undefined ) {
+                const msg = "ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS[ this._projectSearchIds_Or_SubSearchIds_Enum ] returned undefined for this._projectSearchIds_Or_SubSearchIds_Enum: " + this._projectSearchIds_Or_SubSearchIds_Enum
+                console.warn( msg )
+                throw Error( msg )
+            }
+            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_PROPERTY_NAME ] = encodedValue
         }
 
         if ( Object.keys( result ).length === 0 ) {
