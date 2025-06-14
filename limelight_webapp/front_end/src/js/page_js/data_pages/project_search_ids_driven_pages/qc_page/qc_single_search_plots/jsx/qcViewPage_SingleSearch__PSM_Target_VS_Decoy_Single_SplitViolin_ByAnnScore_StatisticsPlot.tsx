@@ -38,6 +38,9 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_Target_VS_Decoy_Single_SplitViolin_ByAnnScore_OverlayContainer";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import {
+    Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition
+} from "page_js/common_all_pages/Plotly_PlottingLibrary_CommonCode/Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition";
 
 
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
@@ -924,8 +927,7 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Single_SplitViolin_ByA
                 // If "overlay", the violins are plotted over one another, you might need to set "opacity" to see them multiple violins.
                 // Has no effect on traces that have "width" set.
 
-                // @ts-ignore  -- NOT in the types but still in the docs so keep with the ignore
-                chart_Layout.violinmode = "overlay"  // Combines the 2 halves
+                Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.plotly_Set_chart_Layout_violinmode_To_Overlay({ chart_Layout })
 
                 //////////////
 

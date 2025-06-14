@@ -41,6 +41,9 @@ import {CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
 import { QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_AA__Root_DisplayBlock";
+import {
+    Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition
+} from "page_js/common_all_pages/Plotly_PlottingLibrary_CommonCode/Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition";
 
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_BELOW = "\u2264"; // "<=" as a single character
@@ -965,8 +968,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViol
                     // If "overlay", the violins are plotted over one another, you might need to set "opacity" to see them multiple violins.
                     // Has no effect on traces that have "width" set.
 
-                // @ts-ignore  -- NOT in the types but still in the docs so keep with the ignore
-                chart_Layout.violinmode = "overlay"  // Combines the 2 halves
+                Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.plotly_Set_chart_Layout_violinmode_To_Overlay({ chart_Layout })
 
                 // chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
 

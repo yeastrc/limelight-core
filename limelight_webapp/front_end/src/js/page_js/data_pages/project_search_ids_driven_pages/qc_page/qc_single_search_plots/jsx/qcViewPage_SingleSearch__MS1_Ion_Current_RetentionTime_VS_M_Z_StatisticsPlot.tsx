@@ -46,6 +46,9 @@ import {
     CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
 import { CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data";
+import {
+    Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition
+} from "page_js/common_all_pages/Plotly_PlottingLibrary_CommonCode/Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition";
 
 
 const _MainPage_Chart_Width = 1000; // + 200 for y axis label, tick marks
@@ -903,10 +906,16 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     width: 1
                 }
 
+                //  Replaced with call to 'plotly_Set_shapeLine_opacity' below:
+
                 //   Setting property 'opacity' is not in the Types for Plotly.
                 //        ALSO: appears to not change the resulting SVG.  Cannot find any elements with opacity of 0.1 (any other than opacity 1) when choose 'Show persistent feature boundaries' and change code to not render the heatmap or scatter traces above.
                 // @ts-ignore
-                shapeLine.opacity = 0.1  // Forced to separate assignment since not part of types.  Unsure it os doing anything.
+                // shapeLine.opacity = 0.1  // Forced to separate assignment since not part of types.  Unsure it os doing anything.
+
+                Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.plotly_Set_shapeLine_opacity({ shapeLine, opacity: 0.1 })
+
+                //////
 
                 const shape:  Partial<Shape> = {
                     type: 'rect',
