@@ -7,7 +7,7 @@
 // import Plotly from "plotly.js"
 
 //  Plotly ONLY imports successfully for a Build using this import
-import Plotly from 'plotly.js-dist/plotly'
+import Plotly from "plotly.js-dist-min";
 
 import React from "react";
 import {

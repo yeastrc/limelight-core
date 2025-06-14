@@ -7,6 +7,8 @@
 
 import React from "react";
 
+import { Shape, ShapeLine } from "plotly.js-dist-min";
+
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { qcPage_StandardChartLayout } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import { qcPage_StandardChartConfig } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartConfig";
@@ -897,7 +899,16 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     y1 = mz_upperRange;
                 }
 
-                const shape = {
+                const shapeLine: Partial<ShapeLine> = {
+                    width: 1
+                }
+
+                //   Setting property 'opacity' is not in the Types for Plotly.
+                //        ALSO: appears to not change the resulting SVG.  Cannot find any elements with opacity of 0.1 (any other than opacity 1) when choose 'Show persistent feature boundaries' and change code to not render the heatmap or scatter traces above.
+                // @ts-ignore
+                shapeLine.opacity = 0.1  // Forced to separate assignment since not part of types.  Unsure it os doing anything.
+
+                const shape:  Partial<Shape> = {
                     type: 'rect',
                     // x-reference is assigned to the x-values
                     xref: 'x',
@@ -909,10 +920,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     y1,
                     // fillcolor: 'black',
                     // opacity: 0.2,
-                    line: {
-                        width: 1,
-                        opacity: 0.1
-                    }
+                    line: shapeLine
                 }
 
                 chart_Layout.shapes.push( shape );

@@ -15,7 +15,10 @@ import { qcPage_StandardChartConfig } from "page_js/data_pages/project_search_id
 // import Plotly from "plotly.js"
 
 //  Plotly ONLY imports successfully for a Build using this import
-import Plotly from 'plotly.js-dist/plotly'
+import Plotly from "plotly.js-dist-min";
+import { Layout } from "plotly.js-dist-min";
+
+
 import { limelight__Sort_ArrayOfNumbers_SortArrayInPlace } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 import { C13_MASS_DELTA, PeptideMassCalculator } from "page_js/data_pages/peptide_mass_utils/PeptideMassCalculator";
 import { smoothLowess, smoothSavitzkyGolay } from "page_js/data_pages/peptide_mass_utils/SmoothingUtils";
@@ -2542,7 +2545,7 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
         const showlegend_Local = true
 
-        const chart_Layout = {
+        const chart_Layout: Partial<Layout> = {
             title:{
                 text: chartTitle
             },

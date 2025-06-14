@@ -7,6 +7,7 @@
 
 
 import React from "react";
+import { DataTitle } from "plotly.js-dist-min";
 
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
@@ -1092,7 +1093,12 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
         }
 
         chart_Layout.yaxis2 = {
-            title: 'Identification rate',
+            title: {
+                text: 'Identification rate',
+                font: undefined,
+                position: undefined,
+                standoff: undefined
+            },
             //     titlefont: {color: 'rgb(148, 103, 189)'},
             // tickfont: {color: 'rgb(148, 103, 189)'},
             overlaying: 'y',

@@ -29,5 +29,11 @@ Install:
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.13.2",
     
-    
-    
+
+Install:
+
+	
+npm install plotly.js-dist-min@2.30.0
+
+npm install @types/plotly.js-dist-min@2.3.4 --save-dev
+

@@ -18,7 +18,9 @@ import { qcPage_StandardChartConfig } from "page_js/data_pages/project_search_id
 // import Plotly from "plotly.js"
 
 //  Plotly ONLY imports successfully for a Build using this import
-import Plotly from 'plotly.js-dist/plotly'
+import Plotly from "plotly.js-dist-min";
+import { Layout } from "plotly.js-dist-min";
+
 import {
     DataTable_DataRowEntry
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
@@ -3221,7 +3223,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
         const showlegend_Local = true
 
-        const chart_Layout = {
+        const chart_Layout: Partial<Layout> = {
             title:{
                 text: chartTitle
             },

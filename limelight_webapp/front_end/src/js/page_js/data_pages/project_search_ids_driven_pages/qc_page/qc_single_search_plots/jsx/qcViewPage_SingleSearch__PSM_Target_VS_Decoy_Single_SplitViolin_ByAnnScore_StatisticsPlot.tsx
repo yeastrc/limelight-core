@@ -877,7 +877,7 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Single_SplitViolin_ByA
                     showlegend: true
                 });
 
-                chart_Layout.barmode = "overlay";     //  Trace 1 bars 'overlay' Trace 2 bars
+                // chart_Layout.barmode = "overlay";     //  Trace 1 bars 'overlay' Trace 2 bars
 
                 // chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
 
@@ -923,6 +923,8 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Single_SplitViolin_ByA
                 // If "group", the violins are plotted next to one another centered around the shared location.
                 // If "overlay", the violins are plotted over one another, you might need to set "opacity" to see them multiple violins.
                 // Has no effect on traces that have "width" set.
+
+                // @ts-ignore  -- NOT in the types but still in the docs so keep with the ignore
                 chart_Layout.violinmode = "overlay"  // Combines the 2 halves
 
                 //////////////

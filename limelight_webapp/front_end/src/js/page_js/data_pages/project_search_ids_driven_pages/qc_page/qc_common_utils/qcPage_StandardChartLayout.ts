@@ -3,7 +3,9 @@
  *
  */
 
-import Plotly from 'plotly.js-dist/plotly'
+//  Plotly ONLY imports successfully for a Build using this import
+import Plotly from "plotly.js-dist-min";
+import { Layout } from "plotly.js-dist-min";
 
 const _Search_SubSearch_Category_Each_MinWidth = 30;
 
@@ -100,9 +102,9 @@ export const qcPage_StandardChartLayout = function (
         notMoveTitle?: boolean
         search_SubSearch_Count_SizeFor?: number  //  Passed in for Combine Search and Sub Searches when Searches or Sub Searches are categories on Horizontal Access
 
-    }) : Plotly.Layout {
+    }) : Partial<Layout> {
 
-    let chart_X_Axis_IsTypeCategory_Local : string = undefined;
+    let chart_X_Axis_IsTypeCategory_Local :  Plotly.AxisType = undefined;
 
     if ( chart_X_Axis_IsTypeCategory ) {
         chart_X_Axis_IsTypeCategory_Local = 'category';

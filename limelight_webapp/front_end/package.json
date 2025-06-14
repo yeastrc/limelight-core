@@ -10,6 +10,7 @@
     "@babel/preset-env": "^7.27.2",
     "@babel/preset-react": "^7.27.1",
     "@types/jquery": "^3.3.31",
+    "@types/plotly.js-dist-min": "^2.3.4",
     "@types/react-dom": "^17.0.2",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "css-loader": "^6.11.0",
@@ -39,19 +40,16 @@
     "@mui/material": "^7.1.0",
     "@stdlib/stats-lowess": "^0.0.6",
     "@types/d3": "^7.4.3",
-    "@types/plotly.js": "^2.29.2",
     "@types/react": "^17.0.2",
     "@types/react-beautiful-dnd": "^11.0.3",
-    "@types/react-plotly.js": "^2.6.3",
     "babel-loader": "^10.0.0",
     "caniuse-lite": "^1.0.30001720",
     "d3": "^7.8.5",
     "jstat": "^1.9.1",
     "ml-savitzky-golay": "^5.0.0",
-    "plotly.js-dist": "^2.30.0",
+    "plotly.js-dist-min": "^2.30.0",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.1",
-    "react-dom": "^17.0.2",
-    "react-plotly.js": "^2.6.0"
+    "react-dom": "^17.0.2"
   }
 }

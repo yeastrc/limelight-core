@@ -18,7 +18,7 @@
 // import Plotly from "plotly.js"
 
 //  Plotly ONLY imports successfully for a Build using this import
-import Plotly from 'plotly.js-dist/plotly'
+import Plotly from "plotly.js-dist-min";
 
 
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
@@ -119,6 +119,15 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot {
 
                         if ( bodyChild.children && bodyChild.children.length > 0 ) {
                             const bodyChild_Child = bodyChild.children[0] //  First/Only Child assumed to hold the Plotly chart
+
+                            if ( ! ( bodyChild_Child instanceof HTMLElement ) ) {
+                                const msg = "IN '_renderSinglePlot_MainPage': if ( ! ( bodyChild_Child instanceof HTMLElement ) ) { "
+                                console.warn(msg)
+                                throw Error(msg)
+                            }
+
+                            const bodyChild_Child_HTMLElement = bodyChild_Child as HTMLElement
+
                             try {
                                 Plotly.purge(bodyChild_Child)
                             } catch (e) {
