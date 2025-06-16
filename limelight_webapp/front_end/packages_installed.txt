@@ -37,3 +37,11 @@ npm install plotly.js-dist-min@2.30.0
 
 npm install @types/plotly.js-dist-min@2.3.4 --save-dev
 
+Install:
+
+Web:FrontEnd: Upgrade Plotly to latest "3.0.1"
+
+Ran
+npm install plotly.js-dist-min@latest
+npm install @types/plotly.js-dist-min@latest --save-dev
+
