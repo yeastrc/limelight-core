@@ -702,7 +702,7 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Histogram_ByAnnScore_S
 
                 const annotationType_Name_Score_HTMLEncoded = annotationType_Name_Score
 
-                let chart_Trace_xbins = undefined;
+                let chart_Trace_xbins: any = undefined;
 
                 //  cannot use psmFilterableAnnotation_Score_Min === 0 since not updated when compute log10 or -log10
 

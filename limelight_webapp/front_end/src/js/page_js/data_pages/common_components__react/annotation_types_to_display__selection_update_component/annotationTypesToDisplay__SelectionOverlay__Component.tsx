@@ -604,7 +604,7 @@ class Internal__PerType_PSM_Peptide_Protein__Section__Component extends React.Co
     /**
      *
      */
-    private _onDragEnd_CurrentDisplayItem( result: any ) {
+    private _onDragEnd_CurrentDisplayItem( result: any ) : void {
 
         // dropped outside the list
         if ( ! result.destination ) {

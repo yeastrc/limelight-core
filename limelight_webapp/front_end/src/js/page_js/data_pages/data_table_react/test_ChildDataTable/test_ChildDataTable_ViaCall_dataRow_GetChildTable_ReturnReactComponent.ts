@@ -33,7 +33,7 @@ class FAKE_dataRow_GetChildTable_ReturnReactComponent_Parameter_FakeChildTableTe
 
 
 const fake_dataRow_GetChildTable_ReturnReactComponent = ( 
-    dataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm
+    dataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm: any
 ) : any /* React.Component */ => {
 
     if ( ! dataTable_TableOptions_dataRow_GetChildTable_ReturnReactComponent_RequestParm ) {

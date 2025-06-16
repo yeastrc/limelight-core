@@ -56,7 +56,7 @@ export class ScanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRang
  */
 export class ScanFileBrowserPage_SingleScan_UserSelections_StateObject__FeatureDetection_IndividualFeature_OR_PSM_Root {
 
-    readonly monoisotopicMass                                           // YES  populated for Feature Detection AND PSM
+    readonly monoisotopicMass: number                                           // YES  populated for Feature Detection AND PSM
     readonly baseIsotopePeak__Containing_M_Over_Z: number  //  m/z  --  Maybe populated for PSM.  YES populated for Feature Detection
     readonly charge: number
 }
@@ -193,7 +193,7 @@ export class ScanFileBrowserPage_SingleScan_UserSelections_StateObject {
      */
     getEncodedStateData() : any {
 
-        const result = {}
+        const result: { [key: string]: any } = {}
 
         if ( this._scanNumber_Selected !== undefined && this._scanNumber_Selected !== null ) {
             result[ _ENCODED_DATA__SCAN_NUMBER_SELECTED__ENCODING_PROPERTY_NAME ] = this._scanNumber_Selected;
@@ -201,7 +201,7 @@ export class ScanFileBrowserPage_SingleScan_UserSelections_StateObject {
 
         if (  this._zoomRange_Selected ) {
 
-            const zoomRange_Encoded: any = {}
+            const zoomRange_Encoded: { [key: string]: any } = {}
 
             if ( this._zoomRange_Selected.mz_Min_ZoomRange !== undefined ) {
                 zoomRange_Encoded[ _SUB_ENCODED_DATA__ZOOM_RANGE_MZ_MIN__ENCODING_PROPERTY_NAME ] = this._zoomRange_Selected.mz_Min_ZoomRange
@@ -221,7 +221,7 @@ export class ScanFileBrowserPage_SingleScan_UserSelections_StateObject {
 
         if ( this._featureDetection_IndividualFeature_OR_PSM_Root ) {
 
-            const entry_Encoded: any = {}
+            const entry_Encoded: { [key: string]: any } = {}
 
             if ( this._featureDetection_IndividualFeature_OR_PSM_Root.baseIsotopePeak__Containing_M_Over_Z !== undefined ) {
                 entry_Encoded[ _SUB_ENCODED_DATA__FEATURE_DETECTION_INDIVIDUAL_FEATURE__BASE_ISOTOPE_PEAK__ENCODING_PROPERTY_NAME ] = this._featureDetection_IndividualFeature_OR_PSM_Root.baseIsotopePeak__Containing_M_Over_Z

@@ -50,7 +50,7 @@ interface Internal__PsmList_ViewSpectrumCell_ExternalReactComponent_Props {
 
 interface Internal__PsmList_ViewSpectrumCell_ExternalReactComponent_State {
 
-    _placeholder
+    _placeholder: unknown
 }
 
 /**

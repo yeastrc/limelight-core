@@ -153,7 +153,7 @@ export class PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateOb
      */
     getEncodedStateData() : any {
 
-        const result = {}
+        const result: { [key: string]: any } = {}
 
         if ( this._userSelection !== undefined ) {
             result[ _ENCODED_DATA__SELECTION_VALUE_ENCODING_PROPERTY_NAME ] = this._userSelection;

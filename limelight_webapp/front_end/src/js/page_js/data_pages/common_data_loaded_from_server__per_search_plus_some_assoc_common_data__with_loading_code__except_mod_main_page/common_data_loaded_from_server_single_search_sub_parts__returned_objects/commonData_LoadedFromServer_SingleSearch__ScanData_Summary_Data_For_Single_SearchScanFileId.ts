@@ -35,7 +35,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Hol
         {
             searchScanFileId, entry
         } : {
-            searchScanFileId
+            searchScanFileId: number
             entry: CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId
         }) : void {
 

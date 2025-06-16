@@ -9,6 +9,7 @@
 // JavaScript directive:   all variables have to be declared with "var", maybe other things
 "use strict";
 
+// @ts-ignore
 import { Spinner } from 'libs/spinner/spin.min.js';
 
 
@@ -36,7 +37,7 @@ var SPINNER_OPTIONS = {
  *
  * Set to Instance of Spinner in createSpinner() and reset to undefined in destroySpinner() after calling loadingSpinner.stop();
  */
-var loadingSpinner;
+var loadingSpinner: any
 
 
 /**

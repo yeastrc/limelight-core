@@ -4590,7 +4590,7 @@ interface Internal__RetentionTime_Min_Max_UserEditable_Component_State {
  */
 class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Component< Internal__RetentionTime_Min_Max_UserEditable_Component_Props, Internal__RetentionTime_Min_Max_UserEditable_Component_State > {
 
-    private readonly _NUMBER_NOT_ASSIGNED = undefined
+    private readonly _NUMBER_NOT_ASSIGNED: number = undefined
 
     private _retentionTimeMinutes_Range_ForChart_Min__Current__Number: number
     private _retentionTimeMinutes_Range_ForChart_Max__Current__Number: number
@@ -5179,7 +5179,7 @@ const _compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus = function (
     {
         ppm_ExtendRange_AddSubtract_ToMinMaxValues, m_Over_Z_Mass
     } : {
-        ppm_ExtendRange_AddSubtract_ToMinMaxValues
+        ppm_ExtendRange_AddSubtract_ToMinMaxValues: number
         m_Over_Z_Mass: number
     }
 ) : number {

@@ -82,7 +82,7 @@ class CentralPageStateManager_Method_getURL_ForCurrentState_Params {
 export class CentralPageStateManager {
 
 	private _stateLoadedFromURL = false;
-	private _pageState : any = {}
+	private _pageState : { [key: string]: any } = {}
 	private _registeredComponents = new Map();
 	//
 	private _parseURL_Into_PageStateParts = new ParseURL_Into_PageStateParts();

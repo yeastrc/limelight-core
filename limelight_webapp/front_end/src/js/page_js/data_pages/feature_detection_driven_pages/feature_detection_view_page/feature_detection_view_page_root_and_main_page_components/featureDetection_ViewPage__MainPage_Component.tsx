@@ -1170,9 +1170,11 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
             const promise = new Promise((resolve,reject) => {
                 try {
+                    const searchDataLookupParamsRoot: any = undefined
+
                     const requestObj = {
                         projectSearchIds_CreateDefault,
-                        searchDataLookupParamsRoot: undefined,
+                        searchDataLookupParamsRoot,
                         sjklwuiowerzUIryhnIOWzq : true
                     };
 

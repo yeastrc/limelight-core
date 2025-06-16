@@ -33,6 +33,9 @@ import {LorikeetSpectrumViewer_DataFromServer_PSM_Peptide_Data_Entry} from "page
 import {
 	lorikeetSpectrumViewer_ParseURL
 } from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL_ParseURL";
+import {
+	limelight__variable_is_type_number_Check
+} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 
 /**
@@ -83,7 +86,7 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 		const urlParsed = lorikeetSpectrumViewer_ParseURL() // ONLY Query String for now
 
 		//  openmodPosition - the position as a number OR 'n' OR 'c'.  see LorikeetSpectrumViewer_Constants
-		let openmodPosition_QueryParam_Value : string = urlParsed.openmodPosition_QueryParam_Value //  null if not found
+		let openmodPosition_QueryParam_Value : string | number = urlParsed.openmodPosition_QueryParam_Value //  null if not found
 
 		if ( openmodPosition_QueryParam_Value === undefined || openmodPosition_QueryParam_Value === null ) {
 
@@ -106,7 +109,9 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 
 				//  Not 'n' or 'c' so must be a number
 
-				const openmodPositionNumber = Number.parseInt( openmodPosition_QueryParam_Value );
+				const openmodPosition_QueryParam_Value_String = openmodPosition_QueryParam_Value.toString()
+
+				const openmodPositionNumber = Number.parseInt( openmodPosition_QueryParam_Value_String );
 
 				if ( Number.isNaN( openmodPositionNumber ) ) {
 
@@ -207,7 +212,12 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 
 			promise_retrieveSearchNameFromServer.catch( () => { });
 
-			promise_retrieveSearchNameFromServer.then( ({ responseData }) => {
+			promise_retrieveSearchNameFromServer.then( (
+				{
+					responseData
+				} : {
+					responseData: any
+				}) => {
 				try {
 					const searchList = responseData.searchList;
 					if ( searchList.length === 0 ) {

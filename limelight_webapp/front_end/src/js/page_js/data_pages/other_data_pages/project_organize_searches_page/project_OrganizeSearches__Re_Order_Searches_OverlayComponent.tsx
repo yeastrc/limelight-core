@@ -140,7 +140,7 @@ class Project_OrganizeSearches_Re_Order_Searches_Overlay_OuterContainer_Componen
     /**
      *
      */
-    private _onDragEnd_SearchItem( result ) : void {
+    private _onDragEnd_SearchItem( result: any ) : void {
         // dropped outside the list
         if ( ! result.destination ) {
             return; // EARLY RETURN
@@ -312,7 +312,7 @@ class Project_OrganizeSearches_Re_Order_Searches_Overlay_OuterContainer_Componen
  */
 interface SearchEntry_Props {
     searchDisplayListItem : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
-    draggableId;
+    draggableId: any
     index : number;
 
 }

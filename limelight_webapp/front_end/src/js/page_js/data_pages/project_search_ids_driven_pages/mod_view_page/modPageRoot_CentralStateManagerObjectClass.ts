@@ -516,7 +516,7 @@ export class ModPageRoot_CentralStateManagerObjectClass {
 	 */
 	getDataForEncoding() {
 
-		const dataForEncoding = {}
+		const dataForEncoding: { [key: string]: any } = {}
 
 		dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 

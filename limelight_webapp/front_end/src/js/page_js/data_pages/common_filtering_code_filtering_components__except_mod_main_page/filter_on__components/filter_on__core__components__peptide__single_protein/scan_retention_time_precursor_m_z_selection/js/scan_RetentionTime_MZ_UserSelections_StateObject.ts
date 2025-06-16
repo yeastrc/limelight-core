@@ -184,7 +184,7 @@ export class Scan_RetentionTime_MZ_UserSelections_StateObject {
      */
     getEncodedStateData() : any {
 
-        const result = {}
+        const result: { [key: string]: any } = {}
 
         if ( this._retentionTime_InMinutes__From__Filter !== undefined ) {
             result[ _ENCODED_DATA__RETENTION_TIME__IN_MINUTES__FROM__FILTER_ENCODING_PROPERTY_NAME ] = this._retentionTime_InMinutes__From__Filter;

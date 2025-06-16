@@ -3,7 +3,9 @@
  */
 
 
+// @ts-ignore
 import jStat from 'jstat'
+
 import {
     limelight__variable_is_type_number_Check
 } from "page_js/common_all_pages/limelight__variable_is_type_number_Check";

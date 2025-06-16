@@ -24,13 +24,18 @@ export class Set_ProjectWide_DefaultFilter_Cutoffs_Overrides {
 
     private _initializeCalled = false;
 
-    private _projectIdentifierFromURL;
+    private _projectIdentifierFromURL: string;
 
 
     /**
      *
      */
-    constructor( { projectIdentifierFromURL } ) {
+    constructor(
+        {
+            projectIdentifierFromURL
+        } : {
+            projectIdentifierFromURL: string
+        } ) {
 
         this._initializeCalled = false;
 

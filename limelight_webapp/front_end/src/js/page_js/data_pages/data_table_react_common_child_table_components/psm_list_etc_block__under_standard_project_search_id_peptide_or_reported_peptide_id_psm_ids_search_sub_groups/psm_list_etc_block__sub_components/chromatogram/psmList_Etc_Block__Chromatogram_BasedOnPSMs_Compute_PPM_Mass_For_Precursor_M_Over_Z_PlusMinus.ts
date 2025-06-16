@@ -14,7 +14,7 @@ export const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_PPM_Mass_For_Pr
     {
         ppm_ExtendRange_AddSubtract_ToMinMaxValues, m_Over_Z_Mass
     } : {
-        ppm_ExtendRange_AddSubtract_ToMinMaxValues
+        ppm_ExtendRange_AddSubtract_ToMinMaxValues: number
         m_Over_Z_Mass: number
     }
 ) : number {

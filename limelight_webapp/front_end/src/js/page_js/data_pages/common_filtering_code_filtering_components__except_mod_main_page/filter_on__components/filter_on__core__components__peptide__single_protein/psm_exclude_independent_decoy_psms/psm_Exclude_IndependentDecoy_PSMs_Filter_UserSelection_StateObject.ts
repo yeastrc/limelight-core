@@ -106,7 +106,7 @@ export class Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject 
      */
     getEncodedStateData() : any {
 
-        const result = {}
+        const result: { [key: string]: any } = {}
 
         if ( this._psm_Exclude_IndependentDecoy_PSMs !== undefined ) {
             result[ _ENCODED_DATA___psm_Exclude_IndependentDecoy_PSMs_SELECTED_ENCODING_PROPERTY_NAME ] = this._psm_Exclude_IndependentDecoy_PSMs;

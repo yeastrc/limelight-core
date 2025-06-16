@@ -34,7 +34,7 @@ export class UserLogin_Subpart {
 
 	private _initialized = false;
 
-	private inviteTrackingCode
+	private inviteTrackingCode: string
 	private _termsOfServiceKey: string
 
 	/**
@@ -49,7 +49,14 @@ export class UserLogin_Subpart {
 	/**
 	 * show the login part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
 	 */
-	showOnPage( { containerHTMLElement, inviteTrackingCode } ) {
+	showOnPage(
+		{
+			containerHTMLElement,
+			inviteTrackingCode
+		} : {
+			containerHTMLElement: HTMLElement
+			inviteTrackingCode: string
+		} ) {
 
 		//  React Unmount
 
@@ -82,7 +89,12 @@ export class UserLogin_Subpart {
 
 	}
 
-	private _showOnPage_AfterRender({ inviteTrackingCode }) {
+	private _showOnPage_AfterRender(
+		{
+			inviteTrackingCode
+		} : {
+			inviteTrackingCode: string
+		}) {
 
 		var objectThis = this;
 
@@ -183,8 +195,10 @@ export class UserLogin_Subpart {
 		const password = usernamePassword_FromPageDOM_Response.password;
 
 		createSpinner(); // external function
+
+		const inviteTrackingCode: any = undefined
 		
-		var requestObj = { username, password, tos_key: this._termsOfServiceKey, inviteTrackingCode : undefined };
+		var requestObj = { username, password, tos_key: this._termsOfServiceKey, inviteTrackingCode };
 
 		if ( this.inviteTrackingCode ) {
 			requestObj.inviteTrackingCode = this.inviteTrackingCode;
@@ -216,7 +230,7 @@ export class UserLogin_Subpart {
 	/**
 	 * 
 	 */
-	loginPersonResponse(responseData) {
+	loginPersonResponse(responseData: any) {
 
 		if ( responseData.success ) {
 			let currentPageHref = window.location.href;

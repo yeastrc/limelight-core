@@ -70,7 +70,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
     private static _ENCODING__PROJECT_SEARCH_ID_FOR_SUB_SEARCH_IDS_PROPERTY_NAME = 'e'
     private static _ENCODING__PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_PROPERTY_NAME = 'f'
 
-    private static _PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS = {}
+    private static _PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS: { [key: string]: any } = {}
 
     private static _PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_DECODING_KEYS = [
         ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.PROJECT_SEARCH_IDS,
@@ -139,7 +139,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
             group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: Set<number>
             group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: Set<number>
             searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set: Set<number>
-            projectSearchId_FOR_SubSearchIds
+            projectSearchId_FOR_SubSearchIds: number
             projectSearchIds_Or_SubSearchIds_Enum: ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum
         }) : void {
 
@@ -349,7 +349,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
      */
     INTERNAL_ONLY__getEncodedSelection() : object {
 
-        const result = {}
+        const result: { [key: string]: any } = {}
 
         if ( this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set && this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size > 0 ) {
 
@@ -615,7 +615,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasse
             return undefined
         }
 
-        let encodedData = { };
+        let encodedData: any = { };
 
         for ( const projectSearchId of this._selected_ModMasses_Set_Map_Key_ProjectSearchId.keys() ) {
             const ranges = this._get_SelectedModMassRanges_ForSingleSearch_ForEncoding(projectSearchId);
@@ -706,7 +706,7 @@ const _SAVE_STATE_KEYS = {
 
 
 
-const _DISPLAY_TAB_ENCODING_KEYS: object = {}
+const _DISPLAY_TAB_ENCODING_KEYS: { [key: string]: any } = {}
 
 _DISPLAY_TAB_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DISPLAY_TAB_Values_Enum.modListTab ] = 0
 _DISPLAY_TAB_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DISPLAY_TAB_Values_Enum.zScoreTab ] = 1
@@ -716,7 +716,7 @@ const _DISPLAY_TAB_DECODING_KEYS = [
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__DISPLAY_TAB_Values_Enum.zScoreTab
 ]
 
-const _PSM_QUANT_METHOD_ENCODING_KEYS: object = {}
+const _PSM_QUANT_METHOD_ENCODING_KEYS: { [key: string]: any } = {}
 
 _PSM_QUANT_METHOD_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts ] = 0
 _PSM_QUANT_METHOD_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios ] = 1
@@ -726,7 +726,7 @@ const _PSM_QUANT_METHOD_DECODING_KEYS = [
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios
 ]
 
-const _QUANT_TYPE_ENCODING_KEYS = {}
+const _QUANT_TYPE_ENCODING_KEYS: { [key: string]: any } = {}
 
 _QUANT_TYPE_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms ] = 0
 _QUANT_TYPE_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans ] = 1
@@ -736,7 +736,7 @@ const _QUANT_TYPE_DECODING_KEYS = [
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans
 ]
 
-const _DATA_TRANSFORMATION_ENCODING_KEYS = {}
+const _DATA_TRANSFORMATION_ENCODING_KEYS: { [key: string]: any } = {}
 
 _DATA_TRANSFORMATION_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.scaled_mean_diff ] = 0
 _DATA_TRANSFORMATION_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.per_mod_zscore ] = 1
@@ -755,7 +755,7 @@ const _DATA_TRANSFORMATION_DECODING_KEYS = [
 ////
 
 
-const _SIGNIFICANCE_METRIC_CHART_TYPE_ENCODING_KEYS = {}
+const _SIGNIFICANCE_METRIC_CHART_TYPE_ENCODING_KEYS: { [key: string]: any } = {}
 
 _SIGNIFICANCE_METRIC_CHART_TYPE_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ] = 0
 _SIGNIFICANCE_METRIC_CHART_TYPE_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE ] = 1
@@ -1312,7 +1312,8 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
      */
     getDataForEncoding() {
 
-        const dataForEncoding = {};
+        const dataForEncoding: { [key: string]: any } = {};
+
         dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 
         //  ONLY store to URL IF were in URL when Page loaded, to preserve existing order stored in URL

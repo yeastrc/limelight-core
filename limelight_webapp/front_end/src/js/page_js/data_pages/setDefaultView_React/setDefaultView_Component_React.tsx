@@ -28,7 +28,7 @@ enum Page_auth_access_level_project_owner_allowed_DOMElement_Found_ENUM {
     YES, NO
 }
 
-let _valueNOTSET = undefined
+let _valueNOTSET: any = undefined
 
 let _page_auth_access_level_project_owner_allowed_DOMElement_Found: Page_auth_access_level_project_owner_allowed_DOMElement_Found_ENUM = _valueNOTSET
 

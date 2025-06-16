@@ -44,7 +44,7 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
 
     private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
     private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-    private _dataUpdated_Callback
+    private _dataUpdated_Callback: () => void
 
     private _changeSearches_Overlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF;
 
@@ -55,7 +55,7 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
 
         dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
         searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
-        dataUpdated_Callback
+        dataUpdated_Callback: () => void
     }) {
         this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
         this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;

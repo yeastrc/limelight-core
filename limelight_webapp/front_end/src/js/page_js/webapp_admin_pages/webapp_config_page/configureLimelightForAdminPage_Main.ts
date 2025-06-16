@@ -38,7 +38,7 @@ const getListConfiguration = function() {
 };
 
 ///////
-const getListConfigurationResponse = function(requestData, responseData) {
+const getListConfigurationResponse = function(requestData: any, responseData: any) {
 	
 	var configList = responseData.configList;
 	//  Process text inputs
@@ -79,8 +79,8 @@ const getListConfigurationResponse = function(requestData, responseData) {
 
 const saveListConfiguration = function() {
 	
-	var configList = [];
-	var input_footer_center_of_page_html_Val = null;
+	var configList: Array<any> = [];
+	var input_footer_center_of_page_html_Val: any = null;
 
 	{  //  Validate values for allow_scan_file_upload_checkbox AND spectral_storage_service_accept_import_base_url_input_field AND spectral_storage_service_get_data_base_url_input_field
 
@@ -286,7 +286,7 @@ const saveListConfiguration = function() {
 	} );
 }
 
-const saveListConfigurationResponse = function( params ) {
+const saveListConfigurationResponse = function( params: any ) {
 	
 //	var requestData = params.requestData;
 //	var responseData = params.responseData;

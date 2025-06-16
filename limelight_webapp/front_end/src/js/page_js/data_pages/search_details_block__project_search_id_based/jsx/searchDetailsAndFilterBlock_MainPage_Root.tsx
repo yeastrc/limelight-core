@@ -166,7 +166,7 @@ export interface SearchDetailsAndFilterBlock_MainPage_Root_Props {
  */
 interface SearchDetailsAndFilterBlock_MainPage_Root_State {
 
-    _placeHolder?
+    _placeHolder?: unknown
     // prev_PropValue? : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 }
 
@@ -771,7 +771,7 @@ interface RemoveSearches_Props {
  */
 class RemoveSearches_State {
 
-    placeholder?
+    placeholder?: unknown
 }
 
 /**
@@ -826,7 +826,7 @@ interface ChangeSearches_Props {
  */
 class ChangeSearches_State {
 
-    placeholder?
+    placeholder?: unknown
 }
 
 /**
@@ -877,7 +877,7 @@ interface ChangeSearchesOrder_Props {
  */
 class ChangeSearchesOrder_State {
 
-    placeholder?
+    placeholder?: unknown
 }
 
 /**
@@ -1024,7 +1024,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
      *
      * @param event
      */
-    private _add_Change_SearchTags_Clicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+    private _add_Change_SearchTags_Clicked() {  // Remove param so can pass to child component:  event: React.MouseEvent<HTMLSpanElement, MouseEvent>
 
         const searches: Array<Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_Params_SingleSearch> = []
 
@@ -1349,7 +1349,7 @@ interface Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root_Props {
  */
 interface Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root_State {
 
-    placeholder?
+    placeholder?: unknown
 }
 
 /**
@@ -1495,7 +1495,7 @@ interface Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_Props {
  */
 interface Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_State {
 
-    placeholder?
+    placeholder?: unknown
 }
 
 /**
@@ -1665,7 +1665,7 @@ interface SingleFilterEntryDisplay_Root_Props {
  */
 interface SingleFilterEntryDisplay_Root_State {
 
-    placeholder?
+    placeholder?: unknown
 }
 
 /**

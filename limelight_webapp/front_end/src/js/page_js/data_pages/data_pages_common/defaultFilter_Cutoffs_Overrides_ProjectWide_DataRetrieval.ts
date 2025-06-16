@@ -140,7 +140,7 @@ const _defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval_Get_Data_FromSe
  *
  * @param response
  */
-const _processWebserviceResult = function ( response ) : DefaultFilter_Cutoffs_Overrides_ProjectWide_Root {
+const _processWebserviceResult = function ( response: any ) : DefaultFilter_Cutoffs_Overrides_ProjectWide_Root {
 
     if ( ! response.responseData ) {
         const msg = "_processWebserviceResult: ( ! response.responseData )"

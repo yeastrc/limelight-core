@@ -29,7 +29,7 @@ export interface QcViewPage_SingleSearch__DistinctPeptide_CumulativeCorrectCount
  */
 interface QcViewPage_SingleSearch__DistinctPeptide_CumulativeCorrectCount_VS_EstimatedErrorByAnnScore_MainPageContainer_State {
 
-    _placeholder
+    _placeholder: unknown
 }
 
 /**

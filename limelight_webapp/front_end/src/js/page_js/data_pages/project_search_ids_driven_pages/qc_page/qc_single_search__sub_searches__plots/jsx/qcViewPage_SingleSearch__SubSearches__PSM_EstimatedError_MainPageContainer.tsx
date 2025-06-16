@@ -28,7 +28,7 @@ export interface QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError_Statis
  */
 interface QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError_StatisticsPlot_MainPageContainer_State {
 
-    _placeholder
+    _placeholder: unknown
 }
 
 /**

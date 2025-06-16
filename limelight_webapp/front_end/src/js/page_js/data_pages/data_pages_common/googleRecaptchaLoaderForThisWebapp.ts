@@ -51,7 +51,7 @@ export const loadGoogleRecaptcha = function() : { isLoaded: boolean, grecaptcha:
 			try {
 				let loadGoogleRecaptcha_Loader_Promise : any = _Loader()
 
-				loadGoogleRecaptcha_Loader_Promise.catch( reason => {
+				loadGoogleRecaptcha_Loader_Promise.catch( (reason: any) => {
 
 					reject( reason );
 				});

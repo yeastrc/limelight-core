@@ -46,8 +46,8 @@ export const projectPage_UploadData_UploadFiles__Common__Init_Upload__LimelightX
         projectIdentifier, searchName, searchShortName, files_InSubmitImport
     } : {
         projectIdentifier: string
-        searchName;
-        searchShortName;
+        searchName: any
+        searchShortName: any
         files_InSubmitImport?: Array<ProjectPage_UploadData_UploadFiles__Common_Init_Upload_Request_SingleFile>
 
         //  'files_InSubmitImport' will NOT be populated for OLD Submit Import Program versions

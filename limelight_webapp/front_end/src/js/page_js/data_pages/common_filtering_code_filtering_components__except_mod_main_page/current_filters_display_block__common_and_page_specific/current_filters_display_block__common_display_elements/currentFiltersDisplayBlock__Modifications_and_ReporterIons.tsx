@@ -402,8 +402,8 @@ const CurrentFiltersDisplayBlock__Modifications_and_ReporterIons = function(
         selection_OR_Group_Display_Entries : Array<JSX.Element>
         selection_NOT_Group_Display_Entries : Array<JSX.Element>
 
-        selection_NOT_UnModified_Variable_Mods_Selected
-        selection_NOT_UnModified_Open_Mods_Selected
+        selection_NOT_UnModified_Variable_Mods_Selected: boolean
+        selection_NOT_UnModified_Open_Mods_Selected: boolean
 
         modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject
 

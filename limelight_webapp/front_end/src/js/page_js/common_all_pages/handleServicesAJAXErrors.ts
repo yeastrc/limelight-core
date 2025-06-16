@@ -61,7 +61,7 @@ let beforeUnloadEvent_Triggered = false;
 
 //Handle when AJAX call gets failure
 
-function handleAJAXFailure( errMsg ) {
+function handleAJAXFailure( errMsg: any ) {
 
 	if ( beforeUnloadEvent_Triggered ) {
 
@@ -78,7 +78,7 @@ function handleAJAXFailure( errMsg ) {
 
 //  Handle when AJAX call gets error, non-jQuery Direct use of var xhr = new XMLHttpRequest();
 
-function handleRawAJAXError( xhr ) {
+function handleRawAJAXError( xhr: any ) {
 
 	if ( beforeUnloadEvent_Triggered ) {
 
@@ -135,12 +135,12 @@ function handleAJAXError(
 		fetch_Results, url, requestData
 	} : {
 		fetch_Results: {
-			fetch_Results_statusCode
-			fetch_Results_statusText
-			fetch_Results_ResponseText
+			fetch_Results_statusCode: any
+			fetch_Results_statusText: any
+			fetch_Results_ResponseText: any
 		}
-		url
-		requestData
+		url: any
+		requestData: any
 	}) {
 
 	if ( beforeUnloadEvent_Triggered ) {
@@ -340,7 +340,7 @@ function showAjaxErrorMsg( params: {
 }
 	
 
-function showAjaxErrorMsgFromMsg( params ) {
+function showAjaxErrorMsgFromMsg( params: any ) {
 
 	if ( beforeUnloadEvent_Triggered ) {
 

@@ -141,7 +141,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *
      */
-    private _onDragEnd_FolderItem( result ) : void {
+    private _onDragEnd_FolderItem( result: any ) : void {
         // dropped outside the list
         if ( ! result.destination ) {
             return; // EARLY RETURN
@@ -222,7 +222,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *  DOES this need to be modified to Use and UPDATE the Project Search Ids for SearchesNotIn_AnyFolder ?
      */
-    private _onDragEnd_SearchItem( result ) : void {
+    private _onDragEnd_SearchItem( result: any ) : void {
         // dropped outside the list
         if ( ! result.destination ) {
             return; // EARLY RETURN

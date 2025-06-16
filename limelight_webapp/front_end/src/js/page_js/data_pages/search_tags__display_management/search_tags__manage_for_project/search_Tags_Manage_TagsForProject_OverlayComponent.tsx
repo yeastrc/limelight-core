@@ -1716,7 +1716,7 @@ class SelectTagEntry_EDIT_CHANGE_Component extends React.Component< SelectTagEnt
 
             const categoryId_String = this._inputField_CategorySelect_Ref.current.value;
 
-            let categoryId = null;
+            let categoryId: number = null;
 
             if ( categoryId_String !== "" ) {
                 categoryId = Number.parseInt( categoryId_String )

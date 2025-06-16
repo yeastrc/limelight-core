@@ -15,7 +15,9 @@ import {
 
 //////////////////
 
-var adminGlobals = {
+var adminGlobals: {
+    logged_in_user_id: number
+} = {
     logged_in_user_id : null
 };
 

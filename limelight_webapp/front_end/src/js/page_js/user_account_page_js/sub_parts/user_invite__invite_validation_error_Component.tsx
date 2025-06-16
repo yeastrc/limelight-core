@@ -7,7 +7,7 @@ import React from "react";
 
 
 export class User_invite__invite_validation_error_Component_Props {
-    inviteTrackingCodeNotValidReason
+    inviteTrackingCodeNotValidReason: any
 }
 
 export const User_invite__invite_validation_error_Component = function ({ inviteTrackingCodeNotValidReason } : User_invite__invite_validation_error_Component_Props ) {

@@ -94,7 +94,7 @@ export const projectPage_ListExperimentsContainingProjectSearchIds = function (
 /**
  * @param responseData
  */
-const _projectPage_ListExperimentsContainingProjectSearchIds_convertResponse = function ( responseData ) : ProjectPage_ListExperimentsContainingProjectSearchIds_Result {
+const _projectPage_ListExperimentsContainingProjectSearchIds_convertResponse = function ( responseData: any ) : ProjectPage_ListExperimentsContainingProjectSearchIds_Result {
 
     if ( ! responseData.status ) {
         const msg = "_projectPage_ListExperimentsContainingProjectSearchIds_convertResponse: ( ! responseData.status )";

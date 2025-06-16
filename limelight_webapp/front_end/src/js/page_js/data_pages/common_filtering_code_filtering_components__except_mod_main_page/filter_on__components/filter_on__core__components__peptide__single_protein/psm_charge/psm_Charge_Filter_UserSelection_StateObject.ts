@@ -159,11 +159,12 @@ export class Psm_Charge_Filter_UserSelection_StateObject {
      */
     getEncodedStateData() : any {
 
-        const result = {}
+        const result: { [key: string]: any } = {}
 
         if ( this._chargeValues_OnPSMs_Selected !== undefined ) {
             const chargeValues = Array.from( this._chargeValues_OnPSMs_Selected );
             limelight__Sort_ArrayOfNumbers_SortArrayInPlace(chargeValues)
+
             result[ _ENCODED_DATA__PSM_CHARGE_VALUES_SELECTED_ENCODING_PROPERTY_NAME ] = chargeValues;
         }
 

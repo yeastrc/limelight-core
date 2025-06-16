@@ -253,7 +253,7 @@ class Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component extends Rea
     /**
      *
      */
-    private _onDragEnd_SearchItem( result ) : void {
+    private _onDragEnd_SearchItem( result: any ) : void {
         // dropped outside the list
         if ( ! result.destination ) {
             return; // EARLY RETURN
@@ -539,7 +539,7 @@ class Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component extends Rea
  */
 interface SearchEntry_Props {
     conditionGroupDisplayListItem : Experiment_ConditionGroup
-    draggableId;
+    draggableId: string
     index : number;
 
 }

@@ -14,13 +14,13 @@
 
 export class QcViewPage__ReferenceLine_Y_equals_X_Calculation_Class {
 
-    private _max_X;
-    private _max_Y;
+    private _max_X: number
+    private _max_Y: number
 
-    private _min_X;
-    private _min_Y;
+    private _min_X: number
+    private _min_Y: number
 
-    x_Entry( x_Entry ) {
+    x_Entry( x_Entry: number ) {
 
         if ( this._max_X === undefined ) {
             this._max_X = x_Entry;
@@ -35,7 +35,7 @@ export class QcViewPage__ReferenceLine_Y_equals_X_Calculation_Class {
         }
     }
 
-    y_Entry( y_Entry ) {
+    y_Entry( y_Entry: number ) {
 
         if ( this._max_Y === undefined ) {
             this._max_Y = y_Entry;

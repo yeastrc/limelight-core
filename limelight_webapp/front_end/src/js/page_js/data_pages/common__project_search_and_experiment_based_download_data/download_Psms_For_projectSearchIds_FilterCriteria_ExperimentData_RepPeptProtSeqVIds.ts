@@ -92,7 +92,7 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
 
             let reportedPeptideIdsAndTheirPsmIds__Encoded = undefined
 
-            const minimum_PSM_ID_InRequest_For_Search__NOT_SET = undefined
+            const minimum_PSM_ID_InRequest_For_Search__NOT_SET: number = undefined
             let minimum_PSM_ID_InRequest_For_Search: number = minimum_PSM_ID_InRequest_For_Search__NOT_SET
 
             if ( projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds ) {
@@ -122,7 +122,7 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
 
                 const reportedPeptideId_Block_Array : Array<string> = []
 
-                const reportedPeptideId_Prev__NOT_SET = undefined
+                const reportedPeptideId_Prev__NOT_SET: number = undefined
                 let reportedPeptideId_Prev: number = reportedPeptideId_Prev__NOT_SET
 
                 for ( const reportedPeptideIdsAndTheirPsmIds_Entry of projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds ) {
@@ -143,7 +143,7 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
                     if ( reportedPeptideIdsAndTheirPsmIds_Entry.psmIds_Include ) {
                         limelight__Sort_ArrayOfNumbers_SortArrayInPlace( reportedPeptideIdsAndTheirPsmIds_Entry.psmIds_Include )
 
-                        const psmId_Prev__NOT_SET = undefined
+                        const psmId_Prev__NOT_SET: number = undefined
                         let psmId_Prev: number = psmId_Prev__NOT_SET
 
                         const psmIds_ForRequest: Array<string> = []

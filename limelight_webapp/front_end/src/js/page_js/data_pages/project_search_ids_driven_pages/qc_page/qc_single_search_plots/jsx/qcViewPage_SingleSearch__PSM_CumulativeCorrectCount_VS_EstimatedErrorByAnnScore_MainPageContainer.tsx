@@ -29,7 +29,7 @@ export interface QcViewPage_SingleSearch__PSM_CumulativeCorrectCount_VS_Estimate
  */
 interface QcViewPage_SingleSearch__PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnnScore_MainPageContainer_State {
 
-    _placeholder
+    _placeholder: unknown
 }
 
 /**

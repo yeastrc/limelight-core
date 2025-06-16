@@ -37,7 +37,12 @@ export class UserResetPassword_Subpart {
 	/**
 	 * show the forgot password part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
 	 */
-	showOnPage( { containerHTMLElement } ) {
+	showOnPage(
+		{
+			containerHTMLElement
+		} : {
+			containerHTMLElement: HTMLElement
+		} ) {
 
 		//  React Unmount
 

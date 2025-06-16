@@ -132,7 +132,7 @@ export class PeptideSequence_MissedCleavageCount_UserSelections_StateObject {
      */
     getEncodedStateData() : any {
 
-        const result = {}
+        const result: { [key: string]: any } = {}
 
         if ( this._missedCleavageCount__From__Filter !== undefined ) {
             result[ _ENCODED_DATA__MISSED_CLEAVAGE_COUNT__FROM__FILTER_ENCODING_PROPERTY_NAME ] = this._missedCleavageCount__From__Filter;

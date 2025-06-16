@@ -5,6 +5,7 @@
 
 ///////////////////////////////////////////
 
+// @ts-ignore
 import { saveAs } from 'file-saver/FileSaver';
 
 /**

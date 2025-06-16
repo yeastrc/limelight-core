@@ -58,7 +58,12 @@ export class ProjectPage_SearchesAdmin {
 	/**
 	 * searchSelectionChangeCallback - function called when the search selection changes
 	 */
-	constructor({ projectIdentifierFromURL }) {
+	constructor(
+		{
+			projectIdentifierFromURL
+		} : {
+			projectIdentifierFromURL: string
+		}) {
 
 		this._initializeCalled = false;
 

@@ -52,7 +52,7 @@ interface SearchDetailsAndFilterBlock_Re_Order_Searches_UpdateInProgress_Overlay
  */
 interface SearchDetailsAndFilterBlock_Re_Order_Searches_UpdateInProgress_OverlayLayout_OuterContainer_Component_State {
 
-    _placeholder
+    _placeholder: unknown
 }
 
 /**

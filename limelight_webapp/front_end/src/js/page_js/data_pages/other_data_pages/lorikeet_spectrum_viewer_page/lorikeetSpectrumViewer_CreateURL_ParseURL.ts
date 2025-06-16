@@ -76,7 +76,7 @@ export const lorikeetSpectrumViewer_ParseURL = function() :
         //  ONLY Query String for now
         // projectSearchId: number
         // psmId: number
-        openmodPosition_QueryParam_Value: string
+        openmodPosition_QueryParam_Value: string | number
         // Maybe null or undefined
         scanPeaks_MZ_That_PassFilters_Array__For_PsmId: Array<number>
     } {
@@ -85,7 +85,7 @@ export const lorikeetSpectrumViewer_ParseURL = function() :
 
     // let projectSearchId: number = undefined
     // let psmId: number = undefined
-    let openmodPosition_QueryParam_Value: string = undefined
+    let openmodPosition_QueryParam_Value: string | number = undefined
     // Maybe null or undefined
     let scanPeaks_MZ_That_PassFilters_Array__For_PsmId: Array<number> = undefined
 

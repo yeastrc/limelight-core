@@ -15,5 +15,5 @@ export class LorikeetSpectrumViewer_Constants {
     static readonly OPENMOD_POSITION_QUERY_STRING_VALUE__N = "n";
     static readonly OPENMOD_POSITION_QUERY_STRING_VALUE__C = "c";
 
-    static readonly OPENMOD_POSITION__NO_POSITION_SELECTED = null;
+    static readonly OPENMOD_POSITION__NO_POSITION_SELECTED: string | number = null;
 }

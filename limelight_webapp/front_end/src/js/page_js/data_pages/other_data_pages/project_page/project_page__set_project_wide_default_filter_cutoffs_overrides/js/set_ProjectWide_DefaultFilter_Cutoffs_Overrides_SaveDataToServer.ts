@@ -89,7 +89,12 @@ const _create_saveObject = function (
         set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result: Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result
     }) : any {
 
-    const cutoffValues = {
+    const cutoffValues: {
+        reportedPeptideEntriesList: Array<any>
+        psmEntriesList: Array<any>
+        proteinEntriesList: Array<any>
+        modificationPositionEntriesList: Array<any>
+    } = {
         reportedPeptideEntriesList: [],
         psmEntriesList: [],
         proteinEntriesList: [],

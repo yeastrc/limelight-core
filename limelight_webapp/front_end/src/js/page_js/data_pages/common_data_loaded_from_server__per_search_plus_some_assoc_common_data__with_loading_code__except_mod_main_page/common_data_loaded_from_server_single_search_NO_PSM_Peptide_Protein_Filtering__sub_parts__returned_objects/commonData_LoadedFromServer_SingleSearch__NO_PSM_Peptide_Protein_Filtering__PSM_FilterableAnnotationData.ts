@@ -111,8 +111,8 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
     readonly psmId: number;
     readonly annotationTypeId: number;
     readonly annotationValueNumber: number;
-    readonly decoyPSM;
-    readonly independentDecoyPSM;
+    readonly decoyPSM: boolean
+    readonly independentDecoyPSM: boolean
 }
 
 ////////////////

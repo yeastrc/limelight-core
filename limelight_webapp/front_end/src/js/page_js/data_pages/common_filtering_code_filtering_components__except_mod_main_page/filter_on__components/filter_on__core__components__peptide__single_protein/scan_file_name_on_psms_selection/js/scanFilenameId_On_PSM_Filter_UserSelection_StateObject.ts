@@ -158,11 +158,12 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_StateObject {
      */
     getEncodedStateData() : any {
 
-        const result = {}
+        const result: { [key: string]: any } = {}
 
         if ( this._scanFilenameIds_Selected !== undefined ) {
             const scanFilenameIds_Selected = Array.from( this._scanFilenameIds_Selected );
             limelight__Sort_ArrayOfNumbers_SortArrayInPlace(scanFilenameIds_Selected);
+
             result[ _ENCODED_DATA__SCAN_FILENAME_IDS_SELECTED_ENCODING_PROPERTY_NAME ] = scanFilenameIds_Selected;
         }
 

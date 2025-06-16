@@ -42,7 +42,7 @@ export class SearchSubGroup_Manage_GroupNames__SubGroup_Display_Object {
     importedName : string
 
     errorEntry_IsDuplicate_DisplayName: boolean
-    errorEntry_IsEmpty_DisplayName
+    errorEntry_IsEmpty_DisplayName: boolean
 
     constructor({ id, displayName, importedName } : {
         id : number

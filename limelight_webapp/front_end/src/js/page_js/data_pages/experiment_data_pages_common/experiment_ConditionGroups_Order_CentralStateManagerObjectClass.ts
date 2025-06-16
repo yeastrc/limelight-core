@@ -212,7 +212,8 @@ export class Experiment_ConditionGroups_Order_CentralStateManagerObjectClass {
      * Called by Central State Manager and maybe other code
 	 */
 	getDataForEncoding() {
-		const dataForEncoding = {}
+
+		const dataForEncoding: { [key: string]: any } = {}
 
 		if ( this._value.conditionGroupIds_Order !== undefined ) {
 

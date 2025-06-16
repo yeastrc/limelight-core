@@ -35,8 +35,8 @@ export class UserCreateAccount_With_Invite_Subpart {
 
 	private _initialized = false;
 
-	private inviteTrackingCode;
-	private containerHTMLElement;
+	private inviteTrackingCode: any
+	private containerHTMLElement: any
 
 	private _termsOfServiceKey: string;
 
@@ -51,7 +51,14 @@ export class UserCreateAccount_With_Invite_Subpart {
 	/**
 	 * show the login part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
 	 */
-	showOnPage( { containerHTMLElement, inviteTrackingCode } ) {
+	showOnPage(
+		{
+			containerHTMLElement,
+			inviteTrackingCode
+		} : {
+			containerHTMLElement: HTMLElement
+			inviteTrackingCode: string
+		} ) {
 
 		try {
 
@@ -106,7 +113,14 @@ export class UserCreateAccount_With_Invite_Subpart {
 
 	}
 
-	private showOnPage_Internal_After_ReactRender({ containerHTMLElement, inviteTrackingCode }) {
+	private showOnPage_Internal_After_ReactRender(
+		{
+			containerHTMLElement,
+			inviteTrackingCode
+		} : {
+			containerHTMLElement: any
+			inviteTrackingCode: any
+		} ) {
 
 		let objectThis = this;
 		try {
@@ -290,17 +304,19 @@ export class UserCreateAccount_With_Invite_Subpart {
 			var $element = $("#error_message_password_confirm_password_not_match");
 			showErrorMsg( $element );
 			return null;  //  !!!  EARLY EXIT
-		} 
+		}
+
+		const inviteTrackingCode: any = undefined //  Set to undefined as added later
 
 		var formPageData = {
-				tosAcceptedKey: this._termsOfServiceKey,
-				firstName : firstName,
-				lastName :  lastName,
-				organization :  organization,
-				email :  email,
-				username :  username,
-				password :  password,
-				inviteTrackingCode : undefined //  Set to undefined as added later
+			tosAcceptedKey: this._termsOfServiceKey,
+			firstName : firstName,
+			lastName :  lastName,
+			organization :  organization,
+			email :  email,
+			username :  username,
+			password :  password,
+			inviteTrackingCode //  Set to undefined as added later
 		};
 
 		return formPageData;
@@ -347,7 +363,12 @@ export class UserCreateAccount_With_Invite_Subpart {
 	/**
 	 * 
 	 */
-	createAccountComplete( { responseData } ) {
+	createAccountComplete(
+		{
+			responseData
+		} : {
+			responseData: any
+		} ) {
 
 //		$("#terms_of_service_modal_dialog_overlay_background").hide();
 //		$("#terms_of_service_overlay_div").hide();
@@ -395,7 +416,12 @@ export class UserCreateAccount_With_Invite_Subpart {
 	/**
 	 * 
 	 */
-	_displayInviteTrackingNotValidMsg( { inviteTrackingCodeNotValidReason } ) {
+	_displayInviteTrackingNotValidMsg(
+		{
+			inviteTrackingCodeNotValidReason
+		} : {
+			inviteTrackingCodeNotValidReason: any
+		} ) {
 
 
 		try {

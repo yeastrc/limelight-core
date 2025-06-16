@@ -9,7 +9,7 @@
 export class LorikeetSpectrumViewer_DataFromServer_Spectrum_ServiceResult { //  Server class: public class LorikeetGetSpectrumServiceResult {
 
     data: LorikeetSpectrumViewer_DataFromServer_Spectrum_Data_Root
-    lorikeet_ScanData_RetentionTime_PrecursorMZ; Lorikeet_ScanData_RetentionTime_PrecursorMZ
+    lorikeet_ScanData_RetentionTime_PrecursorMZ: LorikeetSpectrumViewer_DataFromServer_ScanData_RetentionTime_PrecursorMZ
 }
 
 

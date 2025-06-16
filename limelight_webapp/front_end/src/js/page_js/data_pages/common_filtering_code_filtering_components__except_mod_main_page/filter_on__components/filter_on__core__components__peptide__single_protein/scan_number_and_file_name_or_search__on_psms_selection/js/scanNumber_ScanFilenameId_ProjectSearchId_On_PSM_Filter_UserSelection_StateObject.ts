@@ -256,7 +256,7 @@ export class ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelecti
      */
     getEncodedStateData() : any {
 
-        const result = {}
+        const result: { [key: string]: any } = {}
 
         if ( this._selections !== undefined && this._selections.length > 0 ) {
 
@@ -273,7 +273,7 @@ export class ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelecti
                     searchScanFile_Ids_Selected_Array = Array.from( selection_Entry.searchScanFile_Ids_Selected )
                 }
 
-                const encoded_Entry: any = {}
+                const encoded_Entry: { [key: string]: any } = {}
                 encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__SCAN_NUMBER ] =  selection_Entry.scanNumber
                 encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__ALL_SEARCHES_SELECTED ] =  selection_Entry.allSearches_Selected
                 encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__WHOLE_SEARCHES_SELECTED ] =  wholeSearchesSelected_Array

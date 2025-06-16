@@ -111,7 +111,7 @@ export class ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_Us
      */
     getEncodedStateData() : any {
 
-        const result = {}
+        const result: { [key: string]: any } = {}
         result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 
         if (  this._variableModifications_Selected ) {

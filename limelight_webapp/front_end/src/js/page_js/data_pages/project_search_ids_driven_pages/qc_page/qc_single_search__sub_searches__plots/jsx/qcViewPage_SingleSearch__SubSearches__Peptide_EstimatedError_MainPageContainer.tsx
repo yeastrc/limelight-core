@@ -28,7 +28,7 @@ export interface QcViewPage_SingleSearch__SubSearches__Peptide_EstimatedError_St
  */
 interface QcViewPage_SingleSearch__SubSearches__Peptide_EstimatedError_StatisticsPlot_MainPageContainer_State {
 
-    _placeholder
+    _placeholder: unknown
 }
 
 /**

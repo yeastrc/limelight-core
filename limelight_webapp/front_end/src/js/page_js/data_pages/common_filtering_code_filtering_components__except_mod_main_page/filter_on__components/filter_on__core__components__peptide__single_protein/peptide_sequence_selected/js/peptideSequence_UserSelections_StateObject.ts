@@ -120,7 +120,8 @@ export class PeptideSequence_UserSelections_StateObject {
 	 */
 	getEncodedStateData() : any {
 
-		const result = {}
+		const result: { [key: string]: any } = {}
+
 		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
         result[ _ENCODED_DATA__PEPTIDE_SEQUENCE_SEARCH_STRINGS_ENCODING_PROPERTY_NAME ] = this._peptideSearchStrings;
 		return result;

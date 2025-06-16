@@ -14,7 +14,9 @@ import { showErrorMsg, hideAllErrorMessages } from 'page_js/common_all_pages/sho
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-const adminGlobals = {
+const adminGlobals: {
+	logged_in_user_id: number
+} = {
 	logged_in_user_id : null
 };
 
@@ -208,7 +210,7 @@ const createAccountFormSubmit = function() {
     } );
 };
 
-const createAccountComplete = function( params ) {
+const createAccountComplete = function( params: any ) {
 	var responseData = params.responseData;
 	
 	if ( ! responseData.status ) {

@@ -8,7 +8,7 @@ import { webserviceCallStandardPost } from "page_js/webservice_call_common/webse
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { limelight__variable_is_type_number_Check } from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
-const _VALUE_NOT_SET = undefined
+const _VALUE_NOT_SET: number = undefined
 
 /**
  * Cached response

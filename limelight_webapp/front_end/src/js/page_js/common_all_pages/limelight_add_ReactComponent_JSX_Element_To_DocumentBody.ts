@@ -53,7 +53,7 @@ export interface Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holde
      * Remove the React Component / JSX Element  rendered on page by limelight_add_ReactComponent_JSX_Element_To_DocumentBody
      *
      */
-    removeContents_AndContainer_FromDOM();
+    removeContents_AndContainer_FromDOM: () => void
 }
 
 /**
@@ -71,7 +71,7 @@ class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder implement
      * Remove the React Component contained by the this._addedDivElementDOM
      *
      */
-    removeContents_AndContainer_FromDOM() {
+    removeContents_AndContainer_FromDOM(): void {
 
         if ( ! this._addedDivElementDOM ) {
             // Nothing to remove

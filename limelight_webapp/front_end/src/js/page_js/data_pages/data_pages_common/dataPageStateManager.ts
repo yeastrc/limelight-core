@@ -210,7 +210,7 @@ class DataPageStateManager {
 	/**
 	 *
 	 */
-	set_SearchTags_SearchTagCategories_Root(_searchTags_SearchTagCategories_Root ) : void {
+	set_SearchTags_SearchTagCategories_Root(_searchTags_SearchTagCategories_Root:  SearchTags_SearchTagCategories_Root__DataPageStateManagerEntry ) : void {
 		this._PrivateProperties_MayChangeWithoutNotice._searchTags_SearchTagCategories_Root = _searchTags_SearchTagCategories_Root;
 	}
 

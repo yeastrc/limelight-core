@@ -231,7 +231,7 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
 
         window.setTimeout( () => {
 
-            let updated_folderIds_ExpandedFolders = [];
+            let updated_folderIds_ExpandedFolders: Array<number> = [];
             if ( updated_folderIds_ExpandedFolders_Set ) {
                 updated_folderIds_ExpandedFolders = Array.from( updated_folderIds_ExpandedFolders_Set )
             }

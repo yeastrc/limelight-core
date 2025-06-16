@@ -405,7 +405,7 @@ export class Qc_SingleSearch_FeatureDetection_Statistics_Section extends React.C
         }
     ) {
         try {
-            const _PROJECT_SEARCH_ID_NOT_SET = undefined
+            const _PROJECT_SEARCH_ID_NOT_SET: number = undefined
 
             let projectSearchId__AtStartOfMethod: number = _PROJECT_SEARCH_ID_NOT_SET
 

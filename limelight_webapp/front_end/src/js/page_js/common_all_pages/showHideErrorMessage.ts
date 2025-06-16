@@ -40,7 +40,7 @@ var ERROR_MESSAGE_CONSTANTS = {
 
 ////////////
 
-function showErrorMsg( $element, clearMsg? ) {
+function showErrorMsg( $element: any, clearMsg?: any ) {
 	
 	if ( clearMsg === undefined ) { //  If no value passed, default to true;
 		
@@ -95,7 +95,7 @@ function hideAllErrorMessages() {
 
 ////////////
 
-function clearErrorMsg( $element, fadeErrorMsg? ) {
+function clearErrorMsg( $element: any, fadeErrorMsg?: any ) {
 
 	$element.stop( true /* [clearQueue ] */ /*  [, jumpToEnd ] */ );
 	
@@ -137,11 +137,11 @@ function initShowHideErrorMessage( ) {
 
 ////////////
 
-function initShowHideErrorMessageSpecificElements( $elements ) {
+function initShowHideErrorMessageSpecificElements( $elements: any ) {
 
 	//  Added Typescript Config: enable: "noImplicitThis": true,
 
-	$elements.click( function(eventObject) { //  Another option is to change parameters to:  (this: HTMLElement, eventObject)
+	$elements.click( function(eventObject: any) { //  Another option is to change parameters to:  (this: HTMLElement, eventObject)
 		
 		//  Add click hander to the "X" in the error message to close the error message
 

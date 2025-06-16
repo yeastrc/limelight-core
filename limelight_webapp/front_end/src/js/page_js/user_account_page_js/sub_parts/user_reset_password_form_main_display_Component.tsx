@@ -109,7 +109,7 @@ export class User_reset_password_form_main_display_Component extends React.Compo
     /**
      *
      */
-    _resetPasswordComplete(requestObj, responseData) {
+    _resetPasswordComplete(requestObj: any, responseData: any) {
 
         if ( ! responseData.status ) {
 

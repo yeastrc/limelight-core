@@ -18,7 +18,7 @@ import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js
  */
 export interface QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface {
 
-    set_Current_QcViewPage__Track_LatestUpdates_For_UserInput( item: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput );
+    set_Current_QcViewPage__Track_LatestUpdates_For_UserInput( item: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput ): void
 }
 
 /**

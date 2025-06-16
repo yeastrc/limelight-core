@@ -40,7 +40,7 @@ export class ModalOverlay_No_Titlebar_Limelight_Component_v001_Props {
 
 interface ModalOverlay_No_Titlebar_Limelight_Component_v001_State {
 
-    _placeholder
+    _placeholder: unknown
 }
 
 

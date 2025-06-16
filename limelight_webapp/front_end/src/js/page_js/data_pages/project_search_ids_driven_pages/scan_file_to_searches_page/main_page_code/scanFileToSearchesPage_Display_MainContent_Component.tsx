@@ -940,7 +940,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
         yes__URL_Has_ProjectScanFileId_FromProjectPage__NO_ProjectScanFileId_FoundInAnySearches: boolean
     } {
 
-        const projectScanFileId_NOT_SET = undefined
+        const projectScanFileId_NOT_SET: number = undefined
 
         let projectScanFileId_FromURL: number = projectScanFileId_NOT_SET
         {

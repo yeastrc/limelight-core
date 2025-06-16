@@ -146,7 +146,7 @@ class UserResetPasswordPage {
 	/**
 	 * 
 	 */
-	_resetPasswordComplete(responseData) {
+	_resetPasswordComplete(responseData: any) {
 
 		if ( ! responseData.status ) {
 

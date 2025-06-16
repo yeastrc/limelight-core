@@ -292,7 +292,7 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 			uniqueRequestIdentifier_ForThisFile: string
 			fileChunk_StartByte: number
 			fileChunk_SequenceNumber: number
-			contentToSend
+			contentToSend: any
 		}
 	) : Promise<{
 		sendTime_Milliseconds: number

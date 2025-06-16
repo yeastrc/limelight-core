@@ -33,11 +33,11 @@ export class UserCreateAccount_NO_Invite_Subpart {
 
 	private _initialized = false;
 
-	private _google_RecaptchaSiteKey;
+	private _google_RecaptchaSiteKey: string
 
-	private containerHTMLElement;
+	private containerHTMLElement: HTMLElement
 
-	private _google_Recaptcha;  //  Google Recaptcha object
+	private _google_Recaptcha: any  //  Google Recaptcha object
 
 	private _termsOfServiceKey: string;
 
@@ -52,7 +52,12 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	/**
 	 * show the create account part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
 	 */
-	showOnPage( { containerHTMLElement } ) {
+	showOnPage(
+		{
+			containerHTMLElement
+		} : {
+			containerHTMLElement: HTMLElement
+		} ) {
 
 		const promiseArray : Array<Promise<any>> = [];
 
@@ -190,7 +195,12 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	/**
 	 * @param containerHTMLElement
 	 */
-	private showOnPage_Internal( { containerHTMLElement } ) {
+	private showOnPage_Internal(
+		{
+			containerHTMLElement
+		} : {
+			containerHTMLElement: HTMLElement
+		} ) {
 
 		try {
 			const google_RecaptchaSiteKey = this._google_RecaptchaSiteKey;
@@ -230,7 +240,12 @@ export class UserCreateAccount_NO_Invite_Subpart {
 
 	}
 
-	private showOnPage_Internal_After_ReactRender({ containerHTMLElement }) {
+	private showOnPage_Internal_After_ReactRender(
+		{
+			containerHTMLElement
+		} : {
+			containerHTMLElement: HTMLElement
+		}) {
 
 		let objectThis = this;
 		try {
@@ -463,6 +478,8 @@ export class UserCreateAccount_NO_Invite_Subpart {
 			}
 		}
 
+		const inviteTrackingCode: any = undefined  //  Set to undefined as added later
+
 		const formPageData = {
 			tosAcceptedKey: this._termsOfServiceKey,
 			recaptchaValue : recaptchaValue,
@@ -472,7 +489,7 @@ export class UserCreateAccount_NO_Invite_Subpart {
 			email :  email,
 			username :  username,
 			password :  password,
-			inviteTrackingCode : undefined //  Set to undefined as added later
+			inviteTrackingCode
 		};
 
 		return formPageData;
@@ -519,7 +536,12 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	/**
 	 * 
 	 */
-	createAccountComplete( { responseData } ) {
+	createAccountComplete(
+		{
+			responseData
+		} : {
+			responseData: any
+		} ) {
 
 		// $("#terms_of_service_modal_dialog_overlay_background").hide();
 		// $("#terms_of_service_overlay_div").hide();

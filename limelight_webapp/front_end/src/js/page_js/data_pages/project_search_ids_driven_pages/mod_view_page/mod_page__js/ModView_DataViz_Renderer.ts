@@ -591,7 +591,7 @@ const _addDragHandlerToRects = function (
             const pointer_X = p[ 0 ]
             const pointer_Y = p[ 1 ]
 
-            const projectSearchId_Or_SubSearchId_Total_MinMaxPosition_NOT_SET = undefined
+            const projectSearchId_Or_SubSearchId_Total_MinMaxPosition_NOT_SET: number = undefined
 
             let projectSearchId_Or_SubSearchId_Total_MinPosition: number = projectSearchId_Or_SubSearchId_Total_MinMaxPosition_NOT_SET
             let projectSearchId_Or_SubSearchId_Total_MaxPosition: number = projectSearchId_Or_SubSearchId_Total_MinMaxPosition_NOT_SET
@@ -749,7 +749,7 @@ const _show_Tooltip_During_Selection = function (
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
     }) : void
 {
-    const modMass_FromTo_NOT_SET = undefined
+    const modMass_FromTo_NOT_SET: number = undefined
 
     let modMassFrom: number = modMass_FromTo_NOT_SET
     let modMassTo: number = modMass_FromTo_NOT_SET
@@ -863,7 +863,7 @@ const _updateSelectedRectIndicators = function (
 
     // const selectedModMasses_Set__Map_Key_ProjectSearchId: Map<number, Set<number>> = new Map()
 
-    const _MIN_MAX_NOT_SET = undefined
+    const _MIN_MAX_NOT_SET: number = undefined
 
     let min_ModMassSelected: number = _MIN_MAX_NOT_SET
     let max_ModMassSelected: number = _MIN_MAX_NOT_SET

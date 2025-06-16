@@ -208,8 +208,8 @@ class WebserviceCallStandardPost_RequestParams {
 class INTERNAL__Request_Holder {
 
     private promise: Promise<any>
-    private resolve: any
-    private reject: any
+    private resolve: (value: any) => void
+    private reject: (value: any) => void
 
     requestParams: WebserviceCallStandardPost_RequestParams
     api : WebserviceCallStandardPost_ApiObject_Class
@@ -235,10 +235,10 @@ class INTERNAL__Request_Holder {
     containedPromise() {
         return this.promise;
     }
-    resolvePromise(value) {
+    resolvePromise(value: any) {
         this.resolve(value);
     }
-    rejectPromise(reason) {
+    rejectPromise(reason: any) {
         this.reject(reason);
     }
 }

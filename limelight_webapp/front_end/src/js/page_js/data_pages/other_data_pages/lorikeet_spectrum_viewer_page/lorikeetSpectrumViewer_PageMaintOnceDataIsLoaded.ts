@@ -20,8 +20,11 @@
 
 import {reportWebErrorToServer} from 'page_js/common_all_pages/reportWebErrorToServer';
 
+// @ts-ignore
 import {addFlotToJquery} from 'libs/Lorikeet/jquery.flot';
+// @ts-ignore
 import {addFlotSelectionToJquery} from 'libs/Lorikeet/jquery.flot.selection';
+// @ts-ignore
 import {addLorikeetToJquery} from 'libs/Lorikeet/specview';
 
 

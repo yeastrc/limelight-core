@@ -202,7 +202,7 @@ export class ModViewPage_RootClass_Common {
 			//   !!!!!  WARNING:   Code below also commented to get value for this state object from Root State object on Page Load
 
 			//  Change to NOT have callback since no longer have the Component where the user can change so always use the defaults.
-			const generatedPeptideContents_UserSelections_StateObject_valueChangedCallback = undefined
+			const generatedPeptideContents_UserSelections_StateObject_valueChangedCallback: any = undefined
 
 			this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({valueChangedCallback: generatedPeptideContents_UserSelections_StateObject_valueChangedCallback});
 		}

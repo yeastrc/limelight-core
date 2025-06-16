@@ -133,7 +133,7 @@ class SearchDetailsAndFilterBlock_Re_Order_Searches_Overlay_OuterContainer_Compo
     /**
      *
      */
-    private _onDragEnd_SearchItem( result ) : void {
+    private _onDragEnd_SearchItem( result: any ) : void {
         // dropped outside the list
         if ( ! result.destination ) {
             return; // EARLY RETURN
@@ -286,7 +286,7 @@ class SearchDetailsAndFilterBlock_Re_Order_Searches_Overlay_OuterContainer_Compo
  */
 interface SearchEntry_Props {
     searchDisplayListItem : SearchDetailsAndFilterBlock_Re_Order_Searches_Overlay_Search_DisplayListItem
-    draggableId;
+    draggableId: string
     index : number;
 
 }

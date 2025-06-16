@@ -7,7 +7,7 @@
  * Populate the Projects drop down
  */
 
-let timeoutId = undefined
+let timeoutId: number = undefined
 
 /**
  *

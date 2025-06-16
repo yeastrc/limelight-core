@@ -13,7 +13,7 @@ export class ColorThemePretty implements ColorTheme_IF {
         return ColorThemePretty.getThemeName_Static();
     }
 
-    getColors( count ): Array<Limelight_Color_ForTheme_Holder>  {
+    getColors( count: number ): Array<Limelight_Color_ForTheme_Holder>  {
 
         return ColorThemePretty.getColors_Static( count );
     }
@@ -22,7 +22,7 @@ export class ColorThemePretty implements ColorTheme_IF {
         return "ColorThemePretty";
     }
 
-    static getColors_Static( count ): Array<Limelight_Color_ForTheme_Holder>  {
+    static getColors_Static( count: number ): Array<Limelight_Color_ForTheme_Holder>  {
 
         let colors: Array<Limelight_Color_ForTheme_Holder> = [];
         

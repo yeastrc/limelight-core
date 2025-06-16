@@ -21,7 +21,13 @@ import {
     SearchDataLookupParams_For_ProjectSearchIds,
     SearchDataLookupParams_For_Single_ProjectSearchId
 } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
-import {AnnotationTypeData_Root, AnnotationTypeItem, SearchNames_AsMap, SearchProgramsPerSearchData_Root} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    AnnotationTypeData_Root,
+    AnnotationTypeItem,
+    SearchNames_AsMap,
+    SearchProgramsPerSearchData_Root,
+    SearchProgramsPerSearchItem
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {copyObject_DeepCopy_Limelight} from "page_js/data_pages/data_pages_common/copyObject_DeepCopy";
 import {UpdatePageState_URL_With_NewFilterCutoffs_FromUser} from "page_js/data_pages/data_pages_common/updatePageState_URL_With_NewFilterCutoffs_FromUser";
@@ -139,7 +145,7 @@ class UserUpdatedInputValue_Callback_Params {
     projectSearchId : number
 }
 
-type UserUpdatedInputValue_Callback = ( UserUpdatedInputValue_Callback_Params ) => void;
+type UserUpdatedInputValue_Callback = ( params: UserUpdatedInputValue_Callback_Params ) => void;
 
 //  Internal React Components and more functions
 
@@ -507,7 +513,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
     /**
      * User Clicked Cancel or "X"
      */
-    _cancel( event ) {
+    _cancel( event: any ) {
 
         // console.log("_cancel called");
 
@@ -1094,7 +1100,7 @@ interface Single_Search_Entry_Props {
 
 interface Single_Search_Entry_State {
 
-    _placeHolder
+    _placeHolder: unknown
 }
 
 
@@ -1320,7 +1326,7 @@ const _getFilters_SingleFilterableType_Components = function(
         projectSearchId : number
         filterableAnnotationTypesMap_KeyAnnotationTypeId : Map<number, AnnotationTypeItem>
         filterDataMap_KeyAnnTypeId : Map<number, Internal_SingleFilterValue_Entry>
-        searchProgramsPerSearch_Key_searchProgramsPerSearchId,
+        searchProgramsPerSearch_Key_searchProgramsPerSearchId: Map<number, SearchProgramsPerSearchItem>
         userClickedOn_ToOpenOverlay : SearchDetailsAndFilterBlock_UserInputInOverlay_UserClickedOn_ToOpenOverlay
         pass_top_of_SubElement_To_ScrollTo : Pass_top_of_SubElement_To_ScrollTo
         userUpdatedInputValue_Callback : UserUpdatedInputValue_Callback
@@ -1399,7 +1405,7 @@ interface Single_Filterable_PerAnnotationType_Entry_Props {
 
 interface Single_Filterable_PerAnnotationType_Entry_State {
 
-    _placeHolder
+    _placeHolder: unknown
 }
 
 
@@ -1426,7 +1432,7 @@ class Single_Filterable_PerAnnotationType_Entry extends React.Component< Single_
     /**
      *
      */
-    _handleFilterAnnTypeValueChange( event ) {
+    _handleFilterAnnTypeValueChange( event: any ) {
 
         // const target = event.target;
         // const value = target.value;

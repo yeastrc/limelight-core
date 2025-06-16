@@ -111,7 +111,7 @@ export class User_login_form_public_access_code_Component extends React.Componen
     /**
      *
      */
-    process_PublicAccessCode_EnteredResponse(responseData) {
+    process_PublicAccessCode_EnteredResponse(responseData: any) {
 
         if ( responseData.success ) {
             let currentPageHref = window.location.href;

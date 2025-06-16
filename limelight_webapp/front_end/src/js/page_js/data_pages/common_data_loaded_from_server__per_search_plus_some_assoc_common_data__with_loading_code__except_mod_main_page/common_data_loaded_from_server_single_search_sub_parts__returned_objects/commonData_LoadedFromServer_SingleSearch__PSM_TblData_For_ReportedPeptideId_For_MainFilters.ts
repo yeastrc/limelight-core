@@ -491,7 +491,7 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
         const psm_HasReporterIons_Array = responseData.psm_HasReporterIons_Array as Array<boolean>
         const psm_IndependentDecoyPSM_Array = responseData.psm_IndependentDecoyPSM_Array as Array<boolean>
 
-        const psm_SearchScanFileId_Array = responseData.psm_SearchScanFileId_Array as Array<boolean>
+        const psm_SearchScanFileId_Array = responseData.psm_SearchScanFileId_Array as Array<number>
 
         if ( reportedPeptideId_OffsetFromPrevValue_Array === undefined || reportedPeptideId_OffsetFromPrevValue_Array === null ) {
             const msg = "( reportedPeptideId_OffsetFromPrevValue_Array === undefined || reportedPeptideId_OffsetFromPrevValue_Array === null )";

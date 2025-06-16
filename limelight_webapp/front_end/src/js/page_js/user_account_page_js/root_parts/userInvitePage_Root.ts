@@ -41,9 +41,9 @@ class UserInvitePage {
 	private _userLogin_Subpart = new UserLogin_Subpart();
 	private _userCreateAccount_With_Invite_Subpart = new UserCreateAccount_With_Invite_Subpart();
 
-	private invite_landing_invite_code;
-	private invite_landing_invite_project_id;
-	private invite_landing_invite_project_title;
+	private invite_landing_invite_code: string
+	private invite_landing_invite_project_id: number
+	private invite_landing_invite_project_title: string
 
 	/**
 	 * 

@@ -42,7 +42,7 @@ class FAKE_DataRow_GetChildTableDataParameter_FakeChildTableTesting {
 }
 
 
-const fake_dataRow_GetChildTableData = ( dataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) : DataTable_RootTableObject => {
+const fake_dataRow_GetChildTableData = ( dataTable_TableOptions_dataRow_GetChildTableData_RequestParm: any ) : DataTable_RootTableObject => {
     if ( ! dataTable_TableOptions_dataRow_GetChildTableData_RequestParm ) {
         throw Error("No value in dataTable_TableOptions_dataRow_GetChildTableData_RequestParm")
     }

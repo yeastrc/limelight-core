@@ -22,7 +22,7 @@ export interface Spinner_Limelight_Component_Props {
 
 interface Spinner_Limelight_Component_State {
 
-    _placeholder?
+    _placeholder?: unknown
 }
 
 /**

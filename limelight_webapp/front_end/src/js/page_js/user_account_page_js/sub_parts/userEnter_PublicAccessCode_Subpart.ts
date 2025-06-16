@@ -45,7 +45,14 @@ export class UserEnter_PublicAccessCode_Subpart {
 	/**
 	 * show the login part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
 	 */
-	showOnPage( { containerHTMLElement, inviteTrackingCode } ) {
+	showOnPage(
+		{
+			containerHTMLElement,
+			inviteTrackingCode
+		} : {
+			containerHTMLElement: HTMLElement
+			inviteTrackingCode: any
+		} ) {
 
 
 		//  React Unmount

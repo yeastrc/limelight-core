@@ -13,7 +13,7 @@ const _AJAX_POST_JSON_CONTENT_TYPE = "application/json; charset=utf-8";
 const LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM = "limelight_webservice_sync_tracking_code"  //  Keep in sync with server side
 
 
-let webservice_sync_tracking_code = undefined;
+let webservice_sync_tracking_code: string = undefined;
 
 let getWebserviceSyncTrackingCode = function() {
 	

@@ -7,7 +7,7 @@ import React from "react";
 
 
 export class User_invite__invite_landing_Component_Props {
-    inviteProjectTitle
+    inviteProjectTitle: any
 }
 
 export const User_invite__invite_landing_Component = function ({ inviteProjectTitle } : User_invite__invite_landing_Component_Props ) {

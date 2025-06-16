@@ -173,7 +173,8 @@ export class ProteinSequenceWidget_StateObject {
 	 */
 	getEncodedStateData() : any {
 
-		const result = {}
+		const result: { [key: string]: any } = {}
+
 		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 
 		if (this._selectedProteinSequencePositions && this._selectedProteinSequencePositions.size !== 0) {

@@ -460,7 +460,7 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 	 */
 	getDataForEncoding() {
 
-		const dataForEncoding = {}
+		const dataForEncoding: { [key: string]: any } = {}
 
 		if ( this._value.proteinSequenceVersionId !== undefined ) {
 			dataForEncoding[ _PROTEIN_SEQUENCE_VERSION_ID_ENCODING_PROPERTY_NAME ] = this._value.proteinSequenceVersionId;

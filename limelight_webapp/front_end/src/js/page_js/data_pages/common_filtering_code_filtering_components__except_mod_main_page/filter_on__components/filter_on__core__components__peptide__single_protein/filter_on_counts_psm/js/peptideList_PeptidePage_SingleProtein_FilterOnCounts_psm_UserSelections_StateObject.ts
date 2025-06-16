@@ -104,7 +104,7 @@ export class PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelect
      */
     getEncodedStateData() : any {
 
-        const result = {}
+        const result: { [key: string]: any } = {}
 
         result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 

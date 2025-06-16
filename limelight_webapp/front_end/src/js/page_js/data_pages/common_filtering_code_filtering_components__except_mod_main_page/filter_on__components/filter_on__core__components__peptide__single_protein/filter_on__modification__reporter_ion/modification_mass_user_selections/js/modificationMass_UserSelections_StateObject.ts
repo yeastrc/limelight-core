@@ -521,7 +521,8 @@ export class ModificationMass_UserSelections_StateObject {
         //        (which ends up in the array modificationsNonInteger)
         //     This results in the array modificationsNonInteger probably not being sorted properly, which isn't a big deal
 
-		const result = {}
+		const result: { [key: string]: any } = {}
+
 		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 
 		{
@@ -547,7 +548,7 @@ export class ModificationMass_UserSelections_StateObject {
 
             //  Convert to Javascript Object and Arrays for JSON encoding
 
-            const staticModificationsSelectedForEncoding = {};
+            const staticModificationsSelectedForEncoding: { [key: string]: any } = {};
 
             for ( const mapEntry of this._staticModificationsSelected.entries() ) {
 
@@ -579,7 +580,8 @@ export class ModificationMass_UserSelections_StateObject {
 
                     const selectEntryEncoded = _encodeStaticModSelection( selectEntry )
 
-                    const resultEntry = {}
+                    const resultEntry: { [key: string]: any } = {}
+
                     resultEntry[ _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_MASS_PROPERTY_NAME ] = massKey;
                     resultEntry[ _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE_PROPERTY_NAME ] = selectEntryEncoded;
 
@@ -621,7 +623,8 @@ export class ModificationMass_UserSelections_StateObject {
 			if ( encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ] ||
 				encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ] ) {
 
-				const encodedStateData_For_VariableModificationsSelections = {}
+				const encodedStateData_For_VariableModificationsSelections: { [key: string]: any } = {}
+
                 encodedStateData_For_VariableModificationsSelections[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = encodedStateData[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ];
 				encodedStateData_For_VariableModificationsSelections[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ] = encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ];
 				encodedStateData_For_VariableModificationsSelections[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ] = encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ];

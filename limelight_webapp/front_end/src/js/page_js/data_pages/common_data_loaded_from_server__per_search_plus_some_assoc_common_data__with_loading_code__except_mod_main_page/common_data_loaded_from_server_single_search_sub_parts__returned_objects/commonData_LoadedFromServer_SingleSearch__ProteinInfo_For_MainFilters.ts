@@ -319,7 +319,11 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilte
                 throw Error(msg);
             }
 
-            const proteinInfo = { proteinSequenceVersionId, proteinLength, annotations: [] }
+            const proteinInfo: {
+                proteinSequenceVersionId: number
+                proteinLength: number
+                annotations: Array<{ name: string, description: any, taxonomy: number }>
+            } = { proteinSequenceVersionId, proteinLength, annotations: [] }
 
             proteinInfoMapKeyProteinSequenceVersionId.set( proteinSequenceVersionId, proteinInfo );
         }

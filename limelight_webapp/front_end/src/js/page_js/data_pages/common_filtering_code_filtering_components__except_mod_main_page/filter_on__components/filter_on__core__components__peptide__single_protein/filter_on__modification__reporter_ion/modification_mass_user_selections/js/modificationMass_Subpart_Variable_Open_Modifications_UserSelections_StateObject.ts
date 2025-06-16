@@ -448,7 +448,8 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
 	 */
 	getEncodedStateData() {
 
-		const result = {}
+		const result: { [key: string]: any } = {}
+
 		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 
 		if ( this._UN_Modified_Selected ) {
