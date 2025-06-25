@@ -52,6 +52,12 @@ import {
 import {
     limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab
 } from "page_js/common_all_pages/limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    tooltip__green_question_mark_in_circle__tooltip_on_hover__COMMON_MESSAGE_Search_Tags_VerboseView_Checkbox_react_component
+} from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__COMMON_MESSAGE_Search_Tags_VerboseView_Checkbox_react_component";
 
 /**
  *
@@ -1063,6 +1069,12 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                      <span
                                          style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }
                                      >Verbose view: </span>
+                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                        title={
+                                            tooltip__green_question_mark_in_circle__tooltip_on_hover__COMMON_MESSAGE_Search_Tags_VerboseView_Checkbox_react_component()
+                                        }
+                                    />
+                                    <span> </span>
                                     <span>
                                         <input
                                             type="checkbox"

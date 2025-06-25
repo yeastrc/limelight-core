@@ -62,6 +62,12 @@ import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelig
 import {
     SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component
 } from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    tooltip__green_question_mark_in_circle__tooltip_on_hover__COMMON_MESSAGE_Search_Tags_VerboseView_Checkbox_react_component
+} from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__COMMON_MESSAGE_Search_Tags_VerboseView_Checkbox_react_component";
 
 
 //  Put here since used in multiple places
@@ -504,6 +510,12 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
                         <span
                             style={ _Verbose_View_ContainerSpan_Style }
                         >Verbose view: </span>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                tooltip__green_question_mark_in_circle__tooltip_on_hover__COMMON_MESSAGE_Search_Tags_VerboseView_Checkbox_react_component()
+                            }
+                        />
+                        <span> </span>
                         <span>
                             <input
                                 type="checkbox"
@@ -736,6 +748,12 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
                         <span
                             style={ _Verbose_View_ContainerSpan_Style }
                         >Verbose view: </span>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                tooltip__green_question_mark_in_circle__tooltip_on_hover__COMMON_MESSAGE_Search_Tags_VerboseView_Checkbox_react_component()
+                            }
+                        />
+                        <span> </span>
                         <span>
                             <input
                                 type="checkbox"
