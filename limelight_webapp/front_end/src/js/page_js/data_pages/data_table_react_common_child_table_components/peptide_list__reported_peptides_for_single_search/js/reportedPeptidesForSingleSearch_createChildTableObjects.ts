@@ -43,6 +43,9 @@ import {
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/js/psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects";
 import { psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComponent } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__root_component_and_code/psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComponent";
 import { PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component";
+import {
+    limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage
+} from "page_js/common_all_pages/annotation_data_display_common_formatting/limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage";
 
 //  Local
 
@@ -491,7 +494,17 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
                                 valueSort = annotationEntry.valueString; //  Needed for Descriptive Annotation Types
                             }
 
-                            const valueDisplay = annotationEntry.valueString;
+                            let valueDisplay = annotationEntry.valueString;
+
+                            let valueDisplay_Download = annotationEntry.valueString;
+
+                            if ( annotationEntry.valueDouble !== undefined && annotationEntry.valueDouble !== null ) {
+
+                                valueDisplay = limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage( annotationEntry.valueDouble )
+
+                                valueDisplay_Download = annotationEntry.valueDouble.toString()
+                            }
+
                             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                             const columnEntry = new DataTable_DataRow_ColumnEntry({
@@ -501,7 +514,7 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
                             })
                             columnEntries.push( columnEntry );
 
-                            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay_Download })
                             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                         }
                     }

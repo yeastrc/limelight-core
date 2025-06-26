@@ -35,6 +35,9 @@ import {
 	reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_C_TERMINUS_POSITION_INDEX,
 	reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_N_TERMINUS_POSITION_INDEX
 } from "page_js/data_pages/reported_peptide__generated_common__across_searches/reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches";
+import {
+	limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage
+} from "page_js/common_all_pages/annotation_data_display_common_formatting/limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage";
 
 
 //   !!!  Constants visible in this file/module
@@ -1081,7 +1084,18 @@ const _create_Single_DataTable_Row = function (
 					if (valueSort === undefined || valueSort === null) {
 						valueSort = entryForAnnTypeId.valueString;
 					}
-					const valueDisplay = entryForAnnTypeId.valueString;
+
+					let valueDisplay = entryForAnnTypeId.valueString;
+
+					let valueDisplay_Download = entryForAnnTypeId.valueString;
+
+					if ( entryForAnnTypeId.valueDouble !== undefined && entryForAnnTypeId.valueDouble !== null ) {
+
+						valueDisplay = limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage( entryForAnnTypeId.valueDouble )
+
+						valueDisplay_Download = entryForAnnTypeId.valueDouble.toString()
+					}
+
 					const searchEntriesForColumn : Array<string> = [ valueDisplay ]
 					const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 					const columnEntry = new DataTable_DataRow_ColumnEntry({
@@ -1091,7 +1105,7 @@ const _create_Single_DataTable_Row = function (
 					});
 					columnEntries.push(columnEntry);
 
-					const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+					const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay_Download })
 					dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
 				}
 			}

@@ -47,6 +47,9 @@ import {
 import {
     CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
 } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
+import {
+    limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage
+} from "page_js/common_all_pages/annotation_data_display_common_formatting/limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage";
 
 const dataTableId_ThisTable = "Child Table PSM List Table";
 
@@ -937,12 +940,25 @@ const _get_DataTable_DataRowEntries = function(
         let psmAnnotationData_Map_Key_AnnotationTypeId = psmListItem.psmAnnotationData_Map_Key_AnnotationTypeId;
         if ( psmAnnotationData_Map_Key_AnnotationTypeId ) {
             for ( const annTypeItem of psmAnnotationTypesForPsmListEntries_DisplayOrder ) {
+
                 const entryForAnnTypeId = psmAnnotationData_Map_Key_AnnotationTypeId.get( annTypeItem.annotationTypeId );
+
                 let valueSort: string | number = entryForAnnTypeId.valueDouble;
                 if ( valueSort === undefined || valueSort === null ) {
                     valueSort = entryForAnnTypeId.valueString;
                 }
-                const valueDisplay = entryForAnnTypeId.valueString;
+
+                let valueDisplay = entryForAnnTypeId.valueString;
+
+                let valueDisplay_Download = entryForAnnTypeId.valueString;
+
+                if ( entryForAnnTypeId.valueDouble !== undefined && entryForAnnTypeId.valueDouble !== null ) {
+
+                    valueDisplay = limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage( entryForAnnTypeId.valueDouble )
+
+                    valueDisplay_Download = entryForAnnTypeId.valueDouble.toString()
+                }
+
                 const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
@@ -952,7 +968,7 @@ const _get_DataTable_DataRowEntries = function(
                 });
                 columnEntries.push( columnEntry );
 
-                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay_Download })
                 dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
         }

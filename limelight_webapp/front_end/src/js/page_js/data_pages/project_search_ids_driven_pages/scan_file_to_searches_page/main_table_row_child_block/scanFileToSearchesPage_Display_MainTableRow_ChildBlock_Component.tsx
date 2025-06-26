@@ -56,6 +56,9 @@ import {
     Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
     Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
+import {
+    limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage
+} from "page_js/common_all_pages/annotation_data_display_common_formatting/limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage";
 
 
 export const scanFileToSearchesPage_Display_MainTableRow_ChildBlock__Get_Component = function (
@@ -619,7 +622,17 @@ class INTERNAL_ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_ReportedPe
                                 valueSort = annotationEntry.valueString; //  Needed for Descriptive Annotation Types
                             }
 
-                            const valueDisplay = annotationEntry.valueString;
+                            let valueDisplay = annotationEntry.valueString;
+
+                            let valueDisplay_Download = annotationEntry.valueString;
+
+                            if ( annotationEntry.valueDouble !== undefined && annotationEntry.valueDouble !== null ) {
+
+                                valueDisplay = limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage( annotationEntry.valueDouble )
+
+                                valueDisplay_Download = annotationEntry.valueDouble.toString()
+                            }
+
                             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                             const columnEntry = new DataTable_DataRow_ColumnEntry({
@@ -629,7 +642,7 @@ class INTERNAL_ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_ReportedPe
                             })
                             dataTable_DataRow_ColumnEntries.push( columnEntry );
 
-                            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay_Download })
                             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                         }
                     }
