@@ -67,6 +67,9 @@ import {
     get_proteinPage_Display__SingleProtein_SearchSubGroup_PSM_Count_Header_Text_DataTable_Component,
     get_proteinPage_Display__SingleProtein_SearchSubGroup_PSM_Count_Header_Tooltip_DataTable_Component
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/jsx/proteinPage_Display__SingleProtein_SearchSubGroup_PSM_Count_Header_Text_And_Tooltip_DataTable_Component";
+import {
+    limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage
+} from "page_js/common_all_pages/annotation_data_display_common_formatting/limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage";
 
 
 //  Child Data Searches for Single Peptide show/hide
@@ -1319,7 +1322,9 @@ const _create_AfterDataLoaded = function (
 
                                     const cellValue = bestPsm_FilterableValue_ForAllPSMs_ForPeptide
 
-                                    const valueDisplay = cellValue.toString();
+                                    const valueDisplay = limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage( cellValue )
+                                    const valueDisplay_Download = cellValue.toString();
+
                                     const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                                     const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                                     const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
@@ -1329,7 +1334,7 @@ const _create_AfterDataLoaded = function (
                                     });
                                     dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
 
-                                    const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                                    const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay_Download })
                                     dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                                 }
                             }
@@ -1512,7 +1517,9 @@ const _create_AfterDataLoaded = function (
 
                                 const cellValue = bestPsm_FilterableValue_ForAllPSMs_ForPeptide
 
-                                const valueDisplay = cellValue.toString();
+                                const valueDisplay = limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage( cellValue )
+                                const valueDisplay_Download = cellValue.toString();
+
                                 const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                                 const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
@@ -1522,7 +1529,7 @@ const _create_AfterDataLoaded = function (
                                 });
                                 dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
 
-                                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay_Download })
                                 dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                             }
                         }
