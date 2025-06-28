@@ -108,6 +108,9 @@ import {
 import {
     ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/jsx/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component";
+import {
+    WebserviceCallStandardPost_RejectObject_Class
+} from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
 
 
 /**
@@ -732,6 +735,13 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             const promiseAll = Promise.all(promises);
             promiseAll.catch( (reason) => {
                 try {
+                    if ( reason instanceof WebserviceCallStandardPost_RejectObject_Class ) {
+
+                        console.warn( "promiseAll reject reason is instanceof WebserviceCallStandardPost_RejectObject_Class so throw it" )
+
+                        throw reason  //  Throw reason
+                    }
+
                     console.warn("promise catch: reason: ", reason );
                     throw Error("promise catch: reason: " + reason )
                 } catch( e ) {

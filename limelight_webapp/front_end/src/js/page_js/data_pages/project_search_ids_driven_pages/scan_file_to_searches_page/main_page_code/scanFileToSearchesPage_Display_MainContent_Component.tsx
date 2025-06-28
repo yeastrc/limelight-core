@@ -191,6 +191,9 @@ import {
 import {
     ProjectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject
 } from "page_js/data_pages/project_search_ids_driven_pages/scan_file_to_searches_page/main_page_code/projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject";
+import {
+    WebserviceCallStandardPost_RejectObject_Class
+} from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
 
 
 ////
@@ -725,6 +728,13 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
             const promiseAll = Promise.all(promises);
             promiseAll.catch( (reason) => {
                 try {
+                    if ( reason instanceof WebserviceCallStandardPost_RejectObject_Class ) {
+
+                        console.warn( "promiseAll reject reason is instanceof WebserviceCallStandardPost_RejectObject_Class so throw it" )
+
+                        throw reason  //  Throw reason
+                    }
+
                     console.warn("promise catch: reason: ", reason );
                     throw Error("promise catch: reason: " + reason )
                 } catch( e ) {
@@ -1537,6 +1547,13 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
             const promiseAll = Promise.all(promises);
             promiseAll.catch( (reason) => {
                 try {
+                    if ( reason instanceof WebserviceCallStandardPost_RejectObject_Class ) {
+
+                        console.warn( "promiseAll reject reason is instanceof WebserviceCallStandardPost_RejectObject_Class so throw it" )
+
+                        throw reason  //  Throw reason
+                    }
+
                     console.warn("promise catch: reason: ", reason );
                     throw Error("promise catch: reason: " + reason )
                 } catch( e ) {

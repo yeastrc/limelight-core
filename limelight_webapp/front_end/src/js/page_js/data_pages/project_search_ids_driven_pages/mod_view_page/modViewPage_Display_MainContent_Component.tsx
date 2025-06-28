@@ -171,6 +171,9 @@ import {
 import {
     Mod_Page_FiltersDisplay
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__each_root_component_and_their_data_objects/mod_page/mod_Page_FiltersDisplay";
+import {
+    WebserviceCallStandardPost_RejectObject_Class
+} from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
 
 
 ////
@@ -782,6 +785,13 @@ export class ModViewPage_Display_MainContent_Component extends React.Component< 
             const promiseAll = Promise.all(promises);
             promiseAll.catch( (reason) => {
                 try {
+                    if ( reason instanceof WebserviceCallStandardPost_RejectObject_Class ) {
+
+                        console.warn( "promiseAll reject reason is instanceof WebserviceCallStandardPost_RejectObject_Class so throw it" )
+
+                        throw reason  //  Throw reason
+                    }
+
                     console.warn("promise catch: reason: ", reason );
                     throw Error("promise catch: reason: " + reason )
                 } catch( e ) {
