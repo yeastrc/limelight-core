@@ -8,7 +8,8 @@
 
 import React from "react";
 import {
-    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
 
 //  Set since what is returned is put into an Array.  Simply set to root function name.
@@ -73,8 +74,15 @@ const CurrentFiltersDisplayBlock__ScanNumber_ScanFilenameId_ProjectSearchId_On_P
             )
         } else {
             //  NOT First Entry Text before
+
+            let or_and_text = "or"
+
+            if ( scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get_anyAll_Selection() === ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ALL ) {
+                or_and_text = "and a peak with"
+            }
+
             selectionsElements.push(
-                <span key={ "text_before_" + selectionsElements.length }> or </span>
+                <span key={ "text_before_" + selectionsElements.length }> { or_and_text } </span>
             )
         }
 

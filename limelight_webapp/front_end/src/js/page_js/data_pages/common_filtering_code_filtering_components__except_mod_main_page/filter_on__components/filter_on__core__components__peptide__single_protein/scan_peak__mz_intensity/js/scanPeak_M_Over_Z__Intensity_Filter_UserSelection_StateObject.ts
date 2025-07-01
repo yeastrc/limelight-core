@@ -26,6 +26,7 @@ const _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION = 1;
 const _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 
 const _ENCODED_DATA__SELECTED_DATA__ENCODING_PROPERTY_NAME = 'b';
+const _ENCODED_DATA__SELECTED_ANY_ALL__ENCODING_PROPERTY_NAME = 'c';
 
 
 //  Encoding for Single entry
@@ -39,6 +40,29 @@ const _ENCODED_DATA__SINGLE_ENTRY__MASS_OVER_CHARGE = 'e'
 ///////
 
 
+export enum ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum {
+    ANY = "ANY",
+    ALL = "ALL"
+}
+
+const scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum_DEFAULT = ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ANY
+
+const scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum_STATE_ENCODING: { [key: string]: any } = {}
+
+scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum_STATE_ENCODING[ ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ANY ] = 0
+scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum_STATE_ENCODING[ ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ALL ] = 1
+
+const scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum_STATE_DECODING: Array<ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum> = [
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ANY,
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ALL
+]
+
+
+///////
+
+/**
+ *
+ */
 export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY {
 
     massOverCharge: number
@@ -56,6 +80,8 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
 
     private _selections : Array<ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY> = undefined;
 
+    private _anyAll_Selection: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum = scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum_DEFAULT
+
     private _valueChangedCallback: () => void;
 
     /**
@@ -69,6 +95,14 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
         }) {
 
         this._valueChangedCallback = valueChangedCallback;
+    }
+
+    get_anyAll_Selection() {
+        return this._anyAll_Selection
+    }
+
+    set_anyAll_Selection( anyAll_Selection : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum ) {
+        this._anyAll_Selection = anyAll_Selection
     }
 
     is_AnySelections() : boolean {
@@ -102,57 +136,13 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
         this._valueChangedCallback();
     }
 
-    //  Validate if Uncomment this
-
-    // /**
-    //  *
-    //  */
-    // add_Entry( entry: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY ) : void {
-    //
-    //     if ( ! this._selections ) {
-    //         this._selections = []
-    //     }
-    //
-    //     this._selections.push( entry )
-    //
-    //     if ( ! this._valueChangedCallback ) {
-    //         throw Error("add_Entry::( ! this._valueChangedCallback )")
-    //     }
-    //
-    //     this._valueChangedCallback();
-    // }
-    //
-    // /**
-    //  * Uses Object Reference to delete
-    //  *
-    //  * @param entry_ToDelete
-    //  */
-    // delete_Entry( entry_ToDelete: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY ) : void {
-    //
-    //     this._selections = this._selections.filter( (entry_InArray) => {
-    //         if ( entry_InArray !== entry_ToDelete ) {
-    //             return true
-    //         }
-    //         return  false
-    //     })
-    //
-    //     if ( this._selections.length === 0 ) {
-    //         this._selections = undefined
-    //     }
-    //
-    //     if ( ! this._valueChangedCallback ) {
-    //         throw Error("add_Entry::( ! this._valueChangedCallback )")
-    //     }
-    //
-    //     this._valueChangedCallback();
-    // }
-
     /**
      *
      *
      */
     clearAll() {
 
+        this._anyAll_Selection = scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum_DEFAULT
         this._selections = undefined;
 
         if ( ! this._valueChangedCallback ) {
@@ -191,6 +181,10 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
             }
 
             result[ _ENCODED_DATA__SELECTED_DATA__ENCODING_PROPERTY_NAME ] = encoded_Entry_Array;
+
+            // Only save 'ANY'/'ALL' selection if have any entries to save, so save it here
+
+            result[ _ENCODED_DATA__SELECTED_ANY_ALL__ENCODING_PROPERTY_NAME ] =  scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum_STATE_ENCODING[ this._anyAll_Selection ]
         }
 
         if ( Object.keys(result).length === 0 ) {
@@ -284,6 +278,16 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
 
                         this._selections.push( stateEntry )
                     }
+                }
+            }
+
+            // Only save 'ANY'/'ALL' selection if have any entries to save, so save it here
+
+            {
+                if ( encodedStateData[ _ENCODED_DATA__SELECTED_ANY_ALL__ENCODING_PROPERTY_NAME ] !== undefined ) {
+
+                    const encodedValue = encodedStateData[ _ENCODED_DATA__SELECTED_ANY_ALL__ENCODING_PROPERTY_NAME ]
+                    this._anyAll_Selection = scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum_STATE_DECODING[ encodedValue ]
                 }
             }
         }

@@ -21,7 +21,8 @@ import {
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {
     ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
-    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY,
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
 import {
     get_scanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Component
@@ -186,9 +187,16 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                 return null
             }
 
+            let any_All_Text = "any"
+
+            if ( this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get_anyAll_Selection() === ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ALL ) {
+                any_All_Text = "all"
+            }
+
             let selectionsElements: Array<JSX.Element> = undefined;
 
             if ( this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.is_AnySelections() ) {
+
 
                 selectionsElements = []
 
@@ -211,7 +219,9 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                                 Click to change filter value
                                             </div>
                                             <div style={ { marginTop: 15 } }>
-                                                A PSM is shown if it passes <b>any</b> of the filters.
+                                                <span>A PSM is shown if it contains </span>
+                                                <b>{ any_All_Text }</b>
+                                                <span> of the special ions.</span>
                                             </div>
                                         </div>
                                     }
@@ -244,7 +254,9 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                                 Click to change filter value
                                             </div>
                                             <div style={ { marginTop: 15 } }>
-                                                A PSM is shown if it passes <b>any</b> of the filters.
+                                                <span>A PSM is shown if it contains </span>
+                                                <b>{ any_All_Text }</b>
+                                                <span> of the special ions.</span>
                                             </div>
                                         </div>
                                     }
@@ -303,7 +315,9 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                         Only show PSMs that contain a peak for a given mass and charge.
                                     </div>
                                     <div style={ { marginTop: 15 } }>
-                                        A PSM is shown if it passes <b>any</b> of the filters.
+                                        <span>A PSM is shown if it contains </span>
+                                        <b>{ any_All_Text }</b>
+                                        <span> of the special ions.</span>
                                     </div>
                                 </div>
                             }
@@ -351,6 +365,14 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                 ) : (
                                     <>
                                         { selectionsElements }
+
+                                        { selectionsElements.length > 1 ? (
+                                            <div>
+                                                <span>A PSM is shown if it contains </span>
+                                                <b>{ any_All_Text }</b>
+                                                <span> of the special ions.</span>
+                                            </div>
+                                        ) : null }
 
                                         <div style={ { marginBottom: 10 } }>
 

@@ -10,7 +10,8 @@ import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_al
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
-    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY,
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
 import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
@@ -355,9 +356,43 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
                                         Current Special Ion Filters:
                                     </span>
                                     <span> </span>
-                                    <span>
-                                        (A PSM is shown if it passes <b>any</b> of the filters)
-                                    </span>
+
+                                    <span>A PSM is show if it passes</span>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            checked={ this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get_anyAll_Selection() === ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ANY }
+                                            onChange={ event => { try {
+                                                event.stopPropagation()
+
+                                                this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.set_anyAll_Selection( ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ANY )
+
+                                                this._any_ChangesMade_To_CurrentEntries = true
+
+                                                this.setState({ objectForceRerender: {} })
+
+                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
+                                        />
+                                        <b>any</b>
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            checked={ this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get_anyAll_Selection() === ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ALL }
+                                            onChange={ event => { try {
+                                                event.stopPropagation()
+
+                                                this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.set_anyAll_Selection( ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ALL )
+
+                                                this._any_ChangesMade_To_CurrentEntries = true
+
+                                                this.setState({ objectForceRerender: {} })
+
+                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
+                                        />
+                                        <b>all</b>
+                                    </label>
+                                    <span> of the filters.</span>
                                 </div>
                             </>
                         ) : null }

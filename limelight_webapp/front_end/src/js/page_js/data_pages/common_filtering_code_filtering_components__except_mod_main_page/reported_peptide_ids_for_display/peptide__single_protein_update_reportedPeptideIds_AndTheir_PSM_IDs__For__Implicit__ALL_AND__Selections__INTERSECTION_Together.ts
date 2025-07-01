@@ -54,7 +54,8 @@ import {
     ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
 import {
-    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
 import {
     CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
@@ -3824,7 +3825,17 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
 
                         for ( const scanPeak of scanData_YES_Peaks_Data.peaks ) {
 
+                            let scanMustPass_ALL_Filters = false
+
+                            if ( scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get_anyAll_Selection() === ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ALL ) {
+                                scanMustPass_ALL_Filters = true
+                            }
+
+                            let scanPasses_all_Filters = true
+
                             for ( const scanPeak_M_Over_Z__Intensity_Selection of scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections() ) {
+
+                                let scanPasses_Single_Filter = false
 
                                 const m_Over_Z_Mass_Base = scanPeak_M_Over_Z__Intensity_Selection.massOverCharge
 
@@ -3841,12 +3852,40 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
 
                                     if ( scanPeak.intensity >= min_ScanPeak_Intensity_FilterOn ) {
 
+                                        scanPasses_Single_Filter = true
+                                    }
+                                }
+
+                                if ( scanMustPass_ALL_Filters ) {
+
+                                    if ( ! scanPasses_Single_Filter ) {
+
+                                        scanPasses_all_Filters = false
+
+                                        break
+                                    }
+
+                                } else {
+
+                                    if ( scanPasses_Single_Filter ) {
                                         //  scanPeak meets ALL criteria so save it
 
                                         scanPeak_That_PassFilters_Array.push( scanPeak )
 
                                         break  // EARLY EXIT  Processing Selections
                                     }
+                                }
+                            }
+
+
+                            if ( scanMustPass_ALL_Filters ) {
+
+                                if ( scanPasses_all_Filters ) {
+                                    //  scanPeak meets ALL criteria for all filters so save it
+
+                                    scanPeak_That_PassFilters_Array.push( scanPeak )
+
+                                    break  // EARLY EXIT  Processing Selections
                                 }
                             }
                         }
