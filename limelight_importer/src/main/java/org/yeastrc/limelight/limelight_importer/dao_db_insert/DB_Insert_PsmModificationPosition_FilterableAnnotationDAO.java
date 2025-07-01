@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.yeastrc.limelight.limelight_importer.annotation_data_min_max_accumulation_computation.AnnotationData_MinMax_AccumulationComputation_SingletonInstance;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_shared.constants.AnnotationValueStringLocalFieldLengthConstants;
@@ -186,6 +187,11 @@ public class DB_Insert_PsmModificationPosition_FilterableAnnotationDAO {
 				log.error( msg );
 				throw new IllegalArgumentException(msg);
 			}
+		}
+
+		for ( PsmModificationPositionFilterableAnnotationDTO item : psmModificationPosition_FilterableAnnotationDTO_List ) {
+
+			AnnotationData_MinMax_AccumulationComputation_SingletonInstance.getSingletonInstance().add_AnnotationDataBaseDTO(item);
 		}
 		
 

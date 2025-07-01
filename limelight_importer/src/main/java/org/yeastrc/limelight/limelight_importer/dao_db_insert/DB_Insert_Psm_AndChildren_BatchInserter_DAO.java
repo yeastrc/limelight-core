@@ -12,6 +12,8 @@ import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmModificationPositionDescriptiveAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmModificationPositionFilterableAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmPeptidePositionFilterableAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmReporterIonMassDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmSearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_importer.dao_batch_insert_registry.DB_BatchInsert_ValidateCall_InsertLastBatch_ToDB_Registry;
@@ -60,6 +62,15 @@ public class DB_Insert_Psm_AndChildren_BatchInserter_DAO implements DB_BatchInse
 		List<PsmModificationPositionDescriptiveAnnotationDTO> psmModificationPositionDescriptiveAnnotationDTO_Descriptive_List;
 		
 		List<PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO> psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List;
+		
+		////
+
+		List<PsmPeptidePositionFilterableAnnotationDTO> psmPeptidePositionFilterableAnnotationDTO_Filterable_List;
+
+		//  NO Descriptive
+//		List<PsmPeptidePositionDescriptiveAnnotationDTO> psmPeptidePositionDescriptiveAnnotationDTO_Descriptive_List;
+		
+		List<PsmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO> psmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO_List;
 
 
 
@@ -106,6 +117,20 @@ public class DB_Insert_Psm_AndChildren_BatchInserter_DAO implements DB_BatchInse
 		public void setPsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List(
 				List<PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO> psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List) {
 			this.psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List = psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List;
+		}
+		public List<PsmPeptidePositionFilterableAnnotationDTO> getPsmPeptidePositionFilterableAnnotationDTO_Filterable_List() {
+			return psmPeptidePositionFilterableAnnotationDTO_Filterable_List;
+		}
+		public List<PsmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO> getPsmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO_List() {
+			return psmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO_List;
+		}
+		public void setPsmPeptidePositionFilterableAnnotationDTO_Filterable_List(
+				List<PsmPeptidePositionFilterableAnnotationDTO> psmPeptidePositionFilterableAnnotationDTO_Filterable_List) {
+			this.psmPeptidePositionFilterableAnnotationDTO_Filterable_List = psmPeptidePositionFilterableAnnotationDTO_Filterable_List;
+		}
+		public void setPsmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO_List(
+				List<PsmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO> psmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO_List) {
+			this.psmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO_List = psmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO_List;
 		}
 		
 		
@@ -184,6 +209,14 @@ public class DB_Insert_Psm_AndChildren_BatchInserter_DAO implements DB_BatchInse
 		DB_Insert_PsmModificationPosition_DescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 		
 		DB_Insert_PsmModificationPosition_Worst_FilterableAnnotation_Lookup_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+
+		
+		DB_Insert_PsmPeptidePosition_FilterableAnnotation_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+		
+		//  No Descriptive
+//		DB_Insert_PsmPeptidePosition_DescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+		
+		DB_Insert_PsmPeptidePosition_Worst_FilterableAnnotation_Lookup_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 	}
 	
 	
@@ -288,6 +321,24 @@ public class DB_Insert_Psm_AndChildren_BatchInserter_DAO implements DB_BatchInse
 					for ( PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO : saveHolder_AndChildren.psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List ) {
 
 						DB_Insert_PsmModificationPosition_Worst_FilterableAnnotation_Lookup_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO );
+					}
+				}
+				
+				/////
+
+				if ( saveHolder_AndChildren.psmPeptidePositionFilterableAnnotationDTO_Filterable_List != null ) {
+					for ( PsmPeptidePositionFilterableAnnotationDTO psmPeptidePositionFilterableAnnotationDTO : saveHolder_AndChildren.psmPeptidePositionFilterableAnnotationDTO_Filterable_List ) {	
+						DB_Insert_PsmPeptidePosition_FilterableAnnotation_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmPeptidePositionFilterableAnnotationDTO );
+					}
+				}
+
+				//  NO Descriptive
+				
+				if ( saveHolder_AndChildren.psmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO_List != null ) {
+				
+					for ( PsmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO psmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO : saveHolder_AndChildren.psmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO_List ) {
+
+						DB_Insert_PsmPeptidePosition_Worst_FilterableAnnotation_Lookup_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmPeptidePosition_Worst_FilterableAnnotation_Lookup_DTO );
 					}
 				}
 			}

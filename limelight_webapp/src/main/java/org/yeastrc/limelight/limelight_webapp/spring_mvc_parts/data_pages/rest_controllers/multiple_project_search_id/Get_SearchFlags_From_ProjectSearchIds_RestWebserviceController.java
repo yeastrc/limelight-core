@@ -205,6 +205,7 @@ public class Get_SearchFlags_From_ProjectSearchIds_RestWebserviceController {
 				item.anyPsmHas_DynamicModifications = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_DynamicModifications();
 				item.anyPsmHas_OpenModifications = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_OpenModifications();
 				item.anyPsmHas_ReporterIons = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_ReporterIons();
+				item.anyPsmHas_PsmPeptidePositionAnnotation = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_PsmPeptidePositionAnnotation();
 				
 				item.anyPsmHas_IsDecoy_True = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True();
 				item.anyPsmHas_IsIndependentDecoy_True = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsIndependentDecoy_True();
@@ -281,6 +282,7 @@ public class Get_SearchFlags_From_ProjectSearchIds_RestWebserviceController {
 		private boolean anyPsmHas_DynamicModifications;
 		private boolean anyPsmHas_OpenModifications;
 		private boolean anyPsmHas_ReporterIons;
+		private boolean anyPsmHas_PsmPeptidePositionAnnotation;
 
 		private boolean anyPsmHas_IsDecoy_True;
 		private boolean anyPsmHas_IsIndependentDecoy_True;
@@ -328,6 +330,9 @@ public class Get_SearchFlags_From_ProjectSearchIds_RestWebserviceController {
 		}
 		public Boolean getPsmIds_AreSequential_PossiblyNull() {
 			return psmIds_AreSequential_PossiblyNull;
+		}
+		public boolean isAnyPsmHas_PsmPeptidePositionAnnotation() {
+			return anyPsmHas_PsmPeptidePositionAnnotation;
 		}
 	
     	

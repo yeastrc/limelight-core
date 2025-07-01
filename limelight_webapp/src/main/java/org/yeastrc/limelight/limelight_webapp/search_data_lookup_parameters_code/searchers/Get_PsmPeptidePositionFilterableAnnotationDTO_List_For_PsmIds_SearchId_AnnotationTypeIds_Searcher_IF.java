@@ -1,0 +1,14 @@
+package org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeId_Searcher.Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result;
+
+public interface Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_IF {
+
+	List<Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result> get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds(
+
+			int searchId, List<Integer> annotationTypeIds, List<Long> psmIds) throws SQLException;
+
+}

@@ -26,6 +26,8 @@ import {
     DataTable_DataRowEntry_DownloadTable_SingleColumn,
     DataTable_DataRowEntry_DownloadTable,
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+    DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum,
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
 import {
@@ -48,8 +50,24 @@ import {
     CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
 } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
 import {
+    common_data_loaded_from_server_single_search_FilterOn_PSM_IDs_AnnotationTypeId__PsmPeptidePositionAnnotation_Records,
+    Common_data_loaded_from_server_single_search_FilterOn_PSM_IDs_AnnotationTypeId__PsmPeptidePositionAnnotation_Records_Result,
+    Common_data_loaded_from_server_single_search_FilterOn_PSM_IDs_AnnotationTypeId__PsmPeptidePositionAnnotation_Records_ResultEntry
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_FilterOn_PSM_IDs_Etc__sub_parts__returned_objects/common_data_loaded_from_server_single_search_FilterOn_PSM_IDs_AnnotationTypeId__PsmPeptidePositionAnnotation_Records";
+import {
+    get_Psm_list_psmPeptidePositionAnnotation_cell_ExternalComponent,
+    get_Psm_list_psmPeptidePositionAnnotation_cell_ExternalComponent__Compute_BestScoreWorstScore_ForPSM,
+    get_Psm_list_psmPeptidePositionAnnotation_cell_ExternalComponent__ComputeWidthTotal
+} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_psmPeptidePositionAnnotation_cell_ExternalComponent";
+import {
+    get_Psm_list_psmPeptidePositionAnnotation_cell_HeaderTooltip_ExternalComponent
+} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_psmPeptidePositionAnnotation_cell_HeaderTooltip_ExternalComponent";
+import {
     limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage
 } from "page_js/common_all_pages/annotation_data_display_common_formatting/limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage";
+import React from "react";
+
+
 
 const dataTableId_ThisTable = "Child Table PSM List Table";
 
@@ -172,7 +190,7 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
 
 }) : Promise<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result> => {
 
-    const promise = new Promise<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result>( ( resolve, reject ) => {
+    const promise = new Promise<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result>( ( resolve_TopLevel, reject_TopLevel ) => {
         try {
 
             const projectSearchId = params.projectSearchId
@@ -188,21 +206,134 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
             });
 
             loadPromise.catch( (reason) => { 
-                reject( reason ) 
+                reject_TopLevel( reason )
             });
 
-            loadPromise.then( ( ajaxResponse ) => {
+            loadPromise.then( ( psmList_Object_FromServer ) => {
                 try {
-                    const dataTable_Data = _create_DataTable_RootTableObject({
-                        ajaxResponse,
-                        dataPageStateManager, 
-                        projectSearchId,
-                        searchDataLookupParamsRoot,
-                        openModPositionOverride,
-                        topLevel_Params: params
-                    });
+                    let searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId = undefined
 
-                    resolve( { dataTable_Data, webserviceResult_Root: ajaxResponse } );
+                    for ( const searchDataLookupParams_For_Single_ProjectSearchId_FromList of searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
+                        if ( searchDataLookupParams_For_Single_ProjectSearchId_FromList.projectSearchId === projectSearchId ) {
+                            searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchId_FromList
+                            break
+                        }
+                    }
+                    if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
+                        throw Error("NO Entry in searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList for projectSearchId: " + projectSearchId )
+                    }
+
+                    if ( searchDataLookupParams_For_Single_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay && searchDataLookupParams_For_Single_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay.length > 0 ) {
+
+                        //  HAVE PSM Peptide Position Annotations to Display
+
+                        const annotationTypeItems_PerProjectSearchId = dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId )
+                        if ( ! annotationTypeItems_PerProjectSearchId ) {
+                            throw Error( "dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                        }
+                        if ( ! annotationTypeItems_PerProjectSearchId.psmPeptidePositionFilterableAnnotationTypes ) {
+                            throw Error( "( searchDataLookupParams_For_Single_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay && searchDataLookupParams_For_Single_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay.length > 0 ) AND ( ! annotationTypeItems_PerProjectSearchId.psmPeptidePositionFilterableAnnotationTypes )" )
+                        }
+
+                        const psmPeptidePositionFilterableAnnotationTypes: Array<AnnotationTypeItem> = []
+
+                        for ( const annotationTypeId of searchDataLookupParams_For_Single_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay ) {
+                            const annotationType = annotationTypeItems_PerProjectSearchId.psmPeptidePositionFilterableAnnotationTypes.get( annotationTypeId )
+                            if ( ! annotationType ) {
+                                throw Error( "annotationTypeItems_PerProjectSearchId.psmPeptidePositionFilterableAnnotationTypes.get( annotationTypeId ) returned NOTHING for annotationTypeId: " + annotationTypeId + " from searchDataLookupParams_For_Single_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay" )
+                            }
+
+                            psmPeptidePositionFilterableAnnotationTypes.push( annotationType )
+                        }
+
+                        //  Data Loaded from server:
+
+                        let psmPeptidePositionAnnotation_Records_Result: Common_data_loaded_from_server_single_search_FilterOn_PSM_IDs_AnnotationTypeId__PsmPeptidePositionAnnotation_Records_Result = undefined
+
+                        const promises: Array<Promise<void>> = []
+
+                        {
+                            const promise_psmPeptidePositionAnnotation_Records_Result = new Promise<void>( ( resolve_psmPeptidePositionAnnotation_Records_Result, reject_psmPeptidePositionAnnotation_Records_Result ) => {
+                                try {
+                                    const psmIds: Array<number> = []
+
+                                    for ( const entry of psmList_Object_FromServer.resultList ) {
+                                        psmIds.push( entry.psmId )
+                                    }
+
+                                    const annotationTypeIds: Array<number> = []
+
+                                    for ( const annotationType of annotationTypeItems_PerProjectSearchId.psmPeptidePositionFilterableAnnotationTypes.values() ) {
+                                        annotationTypeIds.push( annotationType.annotationTypeId )
+                                    }
+
+                                    const get_PsmPeptidePositionAnnotation_Records_Records_Promise =
+                                        common_data_loaded_from_server_single_search_FilterOn_PSM_IDs_AnnotationTypeId__PsmPeptidePositionAnnotation_Records( {
+                                            projectSearchId, annotationTypeIds, psmIds
+                                        } )
+
+                                    get_PsmPeptidePositionAnnotation_Records_Records_Promise.catch( reason => reject_TopLevel( reason ) )
+                                    get_PsmPeptidePositionAnnotation_Records_Records_Promise.then( value => {
+                                        try {
+
+                                            psmPeptidePositionAnnotation_Records_Result = value
+                                            resolve_psmPeptidePositionAnnotation_Records_Result()
+
+                                        } catch ( e ) {
+                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                            throw e;
+                                        }
+                                    } )
+                                } catch ( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                    throw e;
+                                }
+                            } )
+                            promises.push( promise_psmPeptidePositionAnnotation_Records_Result )
+                        }
+
+                        const promisesAll = Promise.all( promises )
+
+                        promisesAll.catch(reason => reject_TopLevel(reason))
+                        promisesAll.then(value => { try {
+
+                            const dataTable_Data = _create_DataTable_RootTableObject({
+                                ajaxResponse: psmList_Object_FromServer,
+                                psmPeptidePositionAnnotation_Records_Result,
+                                psmPeptidePositionFilterableAnnotationTypes,
+                                dataPageStateManager,
+                                projectSearchId,
+                                searchDataLookupParamsRoot,
+                                openModPositionOverride,
+                                topLevel_Params: params
+                            });
+
+                            resolve_TopLevel( { dataTable_Data, webserviceResult_Root: psmList_Object_FromServer } );
+
+                        } catch ( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                            throw e;
+                        }
+                        })
+
+
+                    } else {
+
+                        //  NOT HAVE PSM Peptide Position Annotations to Display
+
+                        const dataTable_Data = _create_DataTable_RootTableObject( {
+                            ajaxResponse: psmList_Object_FromServer,
+                            psmPeptidePositionAnnotation_Records_Result: undefined,
+                            psmPeptidePositionFilterableAnnotationTypes: undefined,
+                            dataPageStateManager,
+                            projectSearchId,
+                            searchDataLookupParamsRoot,
+                            openModPositionOverride,
+                            topLevel_Params: params
+                        } );
+
+                        resolve_TopLevel( { dataTable_Data, webserviceResult_Root: psmList_Object_FromServer } );
+                    }
 
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -226,6 +357,8 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
 const _create_DataTable_RootTableObject = function(
     {
         ajaxResponse,
+        psmPeptidePositionAnnotation_Records_Result,
+        psmPeptidePositionFilterableAnnotationTypes,
         dataPageStateManager,
         projectSearchId,
         searchDataLookupParamsRoot,
@@ -235,6 +368,8 @@ const _create_DataTable_RootTableObject = function(
 
     } : {
         ajaxResponse: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result
+        psmPeptidePositionAnnotation_Records_Result: Common_data_loaded_from_server_single_search_FilterOn_PSM_IDs_AnnotationTypeId__PsmPeptidePositionAnnotation_Records_Result
+        psmPeptidePositionFilterableAnnotationTypes: Array<AnnotationTypeItem>
         dataPageStateManager : DataPageStateManager
         projectSearchId : number
         searchDataLookupParamsRoot: SearchDataLookupParameters_Root
@@ -244,8 +379,18 @@ const _create_DataTable_RootTableObject = function(
 
     }) : PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result_DataTable_Data {
 
+    let have_psmPeptidePositionAnnotation_Records = false
+
+    if ( psmPeptidePositionFilterableAnnotationTypes && psmPeptidePositionAnnotation_Records_Result.allEntries.length > 0 ) {
+
+        have_psmPeptidePositionAnnotation_Records = true
+    }
+
+    const psmPeptidePositionFilterableAnnotation_MaxSVG_Width_Map_Key_AnnotationTypeId: Map<number, number> = new Map()
+
+
     let psmList = ajaxResponse.resultList;
-    let searchHasScanData = ajaxResponse.searchHasScanData;
+    // let searchHasScanData = ajaxResponse.searchHasScanData;
 
     //  Get AnnotationType records for Displaying Annotation data in display order in psmList
     const annotationTypeRecords_DisplayOrder : { psmAnnotationTypesForPsmListEntries : Array<AnnotationTypeItem> } =
@@ -254,7 +399,9 @@ const _create_DataTable_RootTableObject = function(
 
     const get_DataTable_DataRowEntries_Result =
         _get_DataTable_DataRowEntries({
-            psmList, projectSearchId, dataPageStateManager, psmAnnotationTypesForPsmListEntries_DisplayOrder, openModPositionOverride, ajaxResponse, topLevel_Params
+            psmList, projectSearchId, dataPageStateManager, psmAnnotationTypesForPsmListEntries_DisplayOrder, openModPositionOverride,
+            have_psmPeptidePositionAnnotation_Records, psmPeptidePositionFilterableAnnotationTypes, psmPeptidePositionAnnotation_Records_Result, psmPeptidePositionFilterableAnnotation_MaxSVG_Width_Map_Key_AnnotationTypeId,
+            ajaxResponse, topLevel_Params
         });
     const dataTable_DataRowEntries = get_DataTable_DataRowEntries_Result.dataTable_DataRowEntries;
     const dataTable_DataRowEntries_Map_Key_Psm_Id = get_DataTable_DataRowEntries_Result.dataTable_DataRowEntries_Map_Key_Psm_Id;
@@ -267,6 +414,9 @@ const _create_DataTable_RootTableObject = function(
         dataPageStateManager, 
         projectSearchId,
         psmAnnotationTypesForPsmListEntries_DisplayOrder,
+        have_psmPeptidePositionAnnotation_Records,
+        psmPeptidePositionFilterableAnnotationTypes,
+        psmPeptidePositionFilterableAnnotation_MaxSVG_Width_Map_Key_AnnotationTypeId,
         anyPsmsHave_precursor_M_Over_Z : get_DataTable_DataRowEntries_Result.anyPsmsHave_precursor_M_Over_Z,
         anyPsmsHave_retentionTime : get_DataTable_DataRowEntries_Result.anyPsmsHave_retentionTime,
         anyPsmsHave_reporterIonMassesDisplay : get_DataTable_DataRowEntries_Result.anyPsmsHave_reporterIonMassesDisplay,
@@ -314,6 +464,9 @@ const _getDataTableColumns = function({
     dataPageStateManager, 
     projectSearchId,
     psmAnnotationTypesForPsmListEntries_DisplayOrder,
+    have_psmPeptidePositionAnnotation_Records,
+    psmPeptidePositionFilterableAnnotationTypes,
+    psmPeptidePositionFilterableAnnotation_MaxSVG_Width_Map_Key_AnnotationTypeId,
     anyPsmsHave_precursor_M_Over_Z,
     anyPsmsHave_retentionTime,
     anyPsmsHave_reporterIonMassesDisplay,
@@ -327,6 +480,9 @@ const _getDataTableColumns = function({
     dataPageStateManager : DataPageStateManager, 
     projectSearchId : number
     psmAnnotationTypesForPsmListEntries_DisplayOrder : Array<AnnotationTypeItem>
+    have_psmPeptidePositionAnnotation_Records: boolean
+    psmPeptidePositionFilterableAnnotationTypes: Array<AnnotationTypeItem>
+    psmPeptidePositionFilterableAnnotation_MaxSVG_Width_Map_Key_AnnotationTypeId: Map<number, number>
     anyPsmsHave_precursor_M_Over_Z? : boolean
     anyPsmsHave_retentionTime? : boolean
     anyPsmsHave_reporterIonMassesDisplay? : boolean
@@ -530,6 +686,90 @@ const _getDataTableColumns = function({
 
     }
 
+    if ( have_psmPeptidePositionAnnotation_Records ) {
+
+        for ( const psmPeptidePositionFilterableAnnotationType of psmPeptidePositionFilterableAnnotationTypes ) {
+
+            {
+                //  PSM Peptide Position Annotations - characters
+
+                // if ( have_psmPeptidePositionAnnotation_Records ) {
+                //
+                //     const displayName = psmPeptidePositionFilterableAnnotationType.name
+                //
+                //     const dataTable_Column = new DataTable_Column( {
+                //         id: psmPeptidePositionFilterableAnnotationType.annotationTypeId.toString() + "_Chars",
+                //         displayName,
+                //         width: 100,
+                //         sortable: false,
+                //         columnHeader_Tooltip_HTML_TitleAttribute: "PSM Peptide Position Annotation.  Name: " + psmPeptidePositionFilterableAnnotationType.name
+                //     } );
+                //
+                //     dataTable_Columns.push( dataTable_Column );
+                //
+                //     const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
+                //     dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+                // }
+            }
+
+            {
+                //  PSM Peptide Position Annotations - SVG
+
+                if ( have_psmPeptidePositionAnnotation_Records ) {
+
+                    const maxSVG_Width = psmPeptidePositionFilterableAnnotation_MaxSVG_Width_Map_Key_AnnotationTypeId.get( psmPeptidePositionFilterableAnnotationType.annotationTypeId )
+                    if ( maxSVG_Width === undefined || maxSVG_Width === null ) {
+                        const msg = "psmPeptidePositionFilterableAnnotation_MaxSVG_Width_Map_Key_AnnotationTypeId.get( psmPeptidePositionFilterableAnnotationType.annotationTypeId ) returned NOTHING for psmPeptidePositionFilterableAnnotationType.annotationTypeId: " + psmPeptidePositionFilterableAnnotationType.annotationTypeId
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+
+                    let columnWidth = maxSVG_Width + 6
+                    if ( columnWidth < 100 ) {
+                        columnWidth = 100
+                    }
+
+                    let sort_Null_BeforeValues_AfterValues_Enum = DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_BEFORE_SMALLEST_VALUE
+
+                    if ( psmPeptidePositionFilterableAnnotationType.filterDirectionBelow ) {
+                        sort_Null_BeforeValues_AfterValues_Enum = DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_AFTER_LARGEST_VALUE
+
+                    } else if ( psmPeptidePositionFilterableAnnotationType.filterDirectionAbove ) {
+                        sort_Null_BeforeValues_AfterValues_Enum = DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_BEFORE_SMALLEST_VALUE
+                    } else {
+                        throw Error("NEITHER TRUE: psmPeptidePositionFilterableAnnotationType.filterDirectionBelow NOR psmPeptidePositionFilterableAnnotationType.filterDirectionAbove")
+                    }
+
+                    const displayName = psmPeptidePositionFilterableAnnotationType.name
+
+                    const cell_ColumnHeader_String_Column_DownloadTable = "PSM Peptide Position Annotation: " + psmPeptidePositionFilterableAnnotationType.name + ". Field Format: comma delimited. Each position: <position>:<value>"
+
+                    const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+                        return get_Psm_list_psmPeptidePositionAnnotation_cell_HeaderTooltip_ExternalComponent({
+                            annotationName: psmPeptidePositionFilterableAnnotationType.name
+                        })
+                    }
+
+                    const dataTable_Column = new DataTable_Column( {
+                        id: psmPeptidePositionFilterableAnnotationType.annotationTypeId.toString() + "_SVG",
+                        displayName,
+                        width: columnWidth,
+                        sortable: true,
+                        sort_Null_BeforeValues_AfterValues_Enum,
+
+                        columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
+                    } );
+
+                    dataTable_Columns.push( dataTable_Column );
+
+                    const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: cell_ColumnHeader_String_Column_DownloadTable } );
+                    dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+                }
+            }
+        }
+    }
+
     return { dataTable_Columns, dataTable_Column_DownloadTable_Entries };
 }
 
@@ -558,6 +798,10 @@ const _get_DataTable_DataRowEntries = function(
         dataPageStateManager,
         psmAnnotationTypesForPsmListEntries_DisplayOrder,
         openModPositionOverride,
+        have_psmPeptidePositionAnnotation_Records,
+        psmPeptidePositionFilterableAnnotationTypes,
+        psmPeptidePositionAnnotation_Records_Result,
+        psmPeptidePositionFilterableAnnotation_MaxSVG_Width_Map_Key_AnnotationTypeId,
         ajaxResponse,
         topLevel_Params
     } : {
@@ -566,6 +810,11 @@ const _get_DataTable_DataRowEntries = function(
         dataPageStateManager : DataPageStateManager
         psmAnnotationTypesForPsmListEntries_DisplayOrder: Array<AnnotationTypeItem>
         openModPositionOverride: OpenModPosition_DataType
+
+        have_psmPeptidePositionAnnotation_Records: boolean
+        psmPeptidePositionFilterableAnnotationTypes: AnnotationTypeItem[]
+        psmPeptidePositionAnnotation_Records_Result: Common_data_loaded_from_server_single_search_FilterOn_PSM_IDs_AnnotationTypeId__PsmPeptidePositionAnnotation_Records_Result
+        psmPeptidePositionFilterableAnnotation_MaxSVG_Width_Map_Key_AnnotationTypeId: Map<number, number>
 
         ajaxResponse: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result
 
@@ -972,6 +1221,133 @@ const _get_DataTable_DataRowEntries = function(
                 dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
         }
+
+        //  Add PsmPeptidePosition Annotations - PSM Peptide Position
+
+        if ( have_psmPeptidePositionAnnotation_Records ) {
+
+            for ( const psmPeptidePositionFilterableAnnotationType of psmPeptidePositionFilterableAnnotationTypes ) {
+
+                { // Characters
+
+                    // let valueDisplay = ""
+                    //
+                    // const psmPeptidePositionAnnotation_Records_EntriesForAll_AnnotationTypeId_Values__For_PsmId = psmPeptidePositionAnnotation_Records_Result.get_EntriesForAll_AnnotationTypeId_Values__For_PsmId( psmListItem.psmId )
+                    // if ( psmPeptidePositionAnnotation_Records_EntriesForAll_AnnotationTypeId_Values__For_PsmId ) {
+                    //
+                    //     const psmPeptidePositionAnnotation_Records_EntriesFor_AnnotationTypeId =
+                    //         psmPeptidePositionAnnotation_Records_EntriesForAll_AnnotationTypeId_Values__For_PsmId.get_EntriesArray_For_AnnotationTypeId( psmPeptidePositionFilterableAnnotationType.annotationTypeId )
+                    //
+                    //     if ( psmPeptidePositionAnnotation_Records_EntriesFor_AnnotationTypeId ) {
+                    //
+                    //         valueDisplay = ""
+                    //
+                    //         for ( const psmPeptidePositionAnnotation_Records_Entry of psmPeptidePositionAnnotation_Records_EntriesFor_AnnotationTypeId ) {
+                    //
+                    //             valueDisplay += "P" + psmPeptidePositionAnnotation_Records_Entry.peptidePosition +
+                    //                 "V" + psmPeptidePositionAnnotation_Records_Entry.valueDouble + ","
+                    //         }
+                    //     }
+                    // }
+                    // const searchEntriesForColumn: Array<string> = [ valueDisplay ]
+                    // const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData( { searchEntriesForColumn } )
+                    // const columnEntry = new DataTable_DataRow_ColumnEntry( {
+                    //     searchTableData,
+                    //     valueDisplay,
+                    //     valueSort: undefined
+                    // } );
+                    // columnEntries.push( columnEntry );
+                    //
+                    // const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn( { cell_ColumnData_String: valueDisplay } )
+                    // dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                }
+                { // SVG
+
+                    let valueDisplay = ""
+                    let valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = undefined
+
+                    let valueSort = null
+
+                    let valueDisplay_Download = ""
+
+                    const searchEntriesForColumn: Array<string> = []
+
+                    const psmPeptidePositionAnnotation_Records_EntriesForAll_AnnotationTypeId_Values__For_PsmId = psmPeptidePositionAnnotation_Records_Result.get_EntriesForAll_AnnotationTypeId_Values__For_PsmId( psmListItem.psmId )
+                    if ( psmPeptidePositionAnnotation_Records_EntriesForAll_AnnotationTypeId_Values__For_PsmId ) {
+
+                        const psmPeptidePositionAnnotation_Records_EntriesFor_AnnotationTypeId =
+                            psmPeptidePositionAnnotation_Records_EntriesForAll_AnnotationTypeId_Values__For_PsmId.get_EntriesArray_For_AnnotationTypeId( psmPeptidePositionFilterableAnnotationType.annotationTypeId )
+
+                        if ( psmPeptidePositionAnnotation_Records_EntriesFor_AnnotationTypeId ) {
+
+                            const psmPeptidePositionAnnotation_Records_EntriesForAll_AnnotationTypeId_Values__For_PsmId = psmPeptidePositionAnnotation_Records_Result.get_EntriesForAll_AnnotationTypeId_Values__For_PsmId( psmListItem.psmId )
+                            if ( psmPeptidePositionAnnotation_Records_EntriesForAll_AnnotationTypeId_Values__For_PsmId ) {
+
+                                const { bestScore_ForPSM, worstScore_ForPSM } = get_Psm_list_psmPeptidePositionAnnotation_cell_ExternalComponent__Compute_BestScoreWorstScore_ForPSM( {
+                                    psmPeptidePositionAnnotation_Records_Array: psmPeptidePositionAnnotation_Records_EntriesFor_AnnotationTypeId,
+                                    psmPeptidePositionFilterableAnnotationType
+                                } )
+
+                                valueSort = worstScore_ForPSM
+
+                                {
+                                    const widthTotal_SVG = get_Psm_list_psmPeptidePositionAnnotation_cell_ExternalComponent__ComputeWidthTotal( {
+                                        psmPeptidePositionAnnotation_Records_Array: psmPeptidePositionAnnotation_Records_EntriesFor_AnnotationTypeId
+                                    } )
+
+                                    const widthTotal_SVG_InMap = psmPeptidePositionFilterableAnnotation_MaxSVG_Width_Map_Key_AnnotationTypeId.get( psmPeptidePositionFilterableAnnotationType.annotationTypeId )
+                                    if ( ( ! widthTotal_SVG_InMap ) || ( widthTotal_SVG_InMap < widthTotal_SVG ) ) {
+                                        psmPeptidePositionFilterableAnnotation_MaxSVG_Width_Map_Key_AnnotationTypeId.set( psmPeptidePositionFilterableAnnotationType.annotationTypeId, widthTotal_SVG )
+                                    }
+                                }
+
+                                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = () => {
+                                    return get_Psm_list_psmPeptidePositionAnnotation_cell_ExternalComponent( {
+                                        psmPeptidePositionAnnotation_Records_Array: psmPeptidePositionAnnotation_Records_EntriesFor_AnnotationTypeId,
+                                        psmPeptidePositionFilterableAnnotationType,
+                                        psmListItem,
+                                        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: topLevel_Params.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+                                    } )
+                                }
+
+                                const valueDisplay_Download_EntriesArray: Array<string> = []
+
+                                for ( const psmPeptidePositionAnnotation_Records_Entry of psmPeptidePositionAnnotation_Records_EntriesFor_AnnotationTypeId ) {
+
+                                    valueDisplay_Download_EntriesArray.push(
+                                        + psmPeptidePositionAnnotation_Records_Entry.peptidePosition +
+                                        ":" + psmPeptidePositionAnnotation_Records_Entry.valueDouble
+                                    )
+
+                                    //  Make values searchable
+                                    searchEntriesForColumn.push( psmPeptidePositionAnnotation_Records_Entry.valueDouble.toString() )
+                                }
+
+                                valueDisplay_Download = valueDisplay_Download_EntriesArray.join(", ")
+
+                                valueDisplay = "" // Clear since populated valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
+                            }
+                        }
+                    }
+
+
+                    const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData( { searchEntriesForColumn } )
+                    const columnEntry = new DataTable_DataRow_ColumnEntry( {
+                        searchTableData,
+                        valueDisplay,
+                        valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+                        valueSort
+                    } );
+                    columnEntries.push( columnEntry );
+
+                    const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn( { cell_ColumnData_String: valueDisplay_Download } )
+                    dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                }
+            }
+        }
+
+
+        ////////////////
 
         let row_CSS_Additions: string = undefined;
 

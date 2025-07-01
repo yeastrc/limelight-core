@@ -156,6 +156,7 @@ CREATE TABLE  search_tbl (
   any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has__is_decoy_true TINYINT UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has__is_independent_decoy_true TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  any_psm_has__psm_peptide_position_annotation TINYINT UNSIGNED NOT NULL DEFAULT 0,
   all_psms_have_precursor_retention_time TINYINT UNSIGNED NULL,
   all_psms_have_precursor_m_z TINYINT UNSIGNED NULL,
   psm_ids_are_sequential TINYINT UNSIGNED NULL COMMENT 'All PSM Ids for the search are sequential - can use PSM Id ranges',
@@ -678,7 +679,7 @@ CREATE TABLE  annotation_type_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   search_id MEDIUMINT UNSIGNED NOT NULL,
   search_programs_per_search_id INT(10) UNSIGNED NOT NULL,
-  psm_peptide_protein_type ENUM('psm', 'peptide', 'matched_protein', 'modification_position') NOT NULL COMMENT '\'peptide\' is actually reported peptide',
+  psm_peptide_protein_type ENUM('psm', 'peptide', 'matched_protein', 'modification_position', 'psm_peptide_position') NOT NULL COMMENT '\'peptide\' is actually reported peptide',
   filterable_descriptive_type ENUM('filterable','descriptive') NOT NULL,
   name VARCHAR(255) NOT NULL,
   default_visible INT(1) NOT NULL,
@@ -4495,6 +4496,63 @@ ENGINE = InnoDB
 COMMENT = 'When Copy a search to new project, track the from and to project search ids';
 
 CREATE INDEX project_search_id_new ON project_search_copy_from_to_ids_tbl (project_search_id_new ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table psm_peptide_position_filterable_annotation_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_peptide_position_filterable_annotation_tbl (
+  psm_id BIGINT UNSIGNED NOT NULL,
+  annotation_type_id INT UNSIGNED NOT NULL,
+  peptide_position MEDIUMINT UNSIGNED NOT NULL,
+  value_double DOUBLE NOT NULL,
+  value_string VARCHAR(50) NOT NULL COMMENT 'Length is also coded in Java class AnnotationValueStringLocalFieldLengthConstants',
+  PRIMARY KEY (psm_id, annotation_type_id, peptide_position),
+  CONSTRAINT psm_mod_pos_fltrbl_annttn__psm_id_fk0
+    FOREIGN KEY (psm_id)
+    REFERENCES psm_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table psm_peptide_position_worst_filterable_annotation_lookup_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_peptide_position_worst_filterable_annotation_lookup_tbl (
+  psm_id BIGINT UNSIGNED NOT NULL,
+  annotation_type_id INT UNSIGNED NOT NULL,
+  worst_value_double DOUBLE NOT NULL,
+  PRIMARY KEY (psm_id, annotation_type_id),
+  CONSTRAINT psm_mod_pos_fltrbl_annttn__psm_id_fk00
+    FOREIGN KEY (psm_id)
+    REFERENCES psm_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table search_level_annotation_min_max_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search_level_annotation_min_max_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  annotation_type_id INT UNSIGNED NOT NULL,
+  min_value_double DOUBLE NOT NULL COMMENT 'value closest to negative infinity',
+  max_value_double DOUBLE NOT NULL COMMENT 'value closest to positive infinity',
+  best_value_double DOUBLE NOT NULL COMMENT 'best value per annotation type',
+  worst_value_double DOUBLE NOT NULL COMMENT 'worst value per annotation type',
+  set_1_on_insert_duplicate TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (search_id, annotation_type_id),
+  CONSTRAINT search_level_annotation_min_max_tbl_srch_id_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_bin
+COMMENT = 'Annotation Min/Max Values for search and Annotation Type Id';
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

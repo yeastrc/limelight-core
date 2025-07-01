@@ -34,6 +34,7 @@ public class SearchDTO_Importer {
 	private boolean hasIsotopeLabel;
 	private boolean hasSearchSubGroups;
 	private boolean anyPsmHasOpenModificationMasses;
+	private boolean anyPsmHas_PsmPeptidePositionAnnotation;
 	
 	private boolean anyPsmHas_IsDecoy_True;
 	private boolean anyPsmHas_IsIndependentDecoy_True;
@@ -154,5 +155,11 @@ public class SearchDTO_Importer {
 	}
 	public void setAllPsmHave_Precursor_M_Over_Z(boolean allPsmHave_Precursor_M_Over_Z) {
 		this.allPsmHave_Precursor_M_Over_Z = allPsmHave_Precursor_M_Over_Z;
+	}
+	public boolean isAnyPsmHas_PsmPeptidePositionAnnotation() {
+		return anyPsmHas_PsmPeptidePositionAnnotation;
+	}
+	public void setAnyPsmHas_PsmPeptidePositionAnnotation(boolean anyPsmHas_PsmPeptidePositionAnnotation) {
+		this.anyPsmHas_PsmPeptidePositionAnnotation = anyPsmHas_PsmPeptidePositionAnnotation;
 	}
 }

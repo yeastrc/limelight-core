@@ -661,6 +661,7 @@ class AnnotationTypeItems_PerProjectSearchId {
 	reportedPeptideFilterableAnnotationTypes : Map<number, AnnotationTypeItem>;
 	matchedProteinFilterableAnnotationTypes : Map<number, AnnotationTypeItem>;
 	modificationPositionFilterableAnnotationTypes : Map<number, AnnotationTypeItem>;
+	psmPeptidePositionFilterableAnnotationTypes : Map<number, AnnotationTypeItem>;
 
 	//  Descriptive Annotation Types
 	psmDescriptiveAnnotationTypes : Map<number, AnnotationTypeItem>;
@@ -694,6 +695,11 @@ class AnnotationTypeItem {
 	readonly defaultFilterValue : number;
 	readonly defaultFilterValueString : string;
 
+	readonly min_ValueDouble : number
+	readonly max_ValueDouble : number
+	readonly best_ValueDouble : number
+	readonly worst_ValueDouble : number
+
 	readonly sortOrder : number;
 
 	//  Added by Javascript: 
@@ -723,9 +729,14 @@ class AnnotationTypeItem {
 		defaultFilterValue,
 		defaultFilterValueString,
 
+		min_ValueDouble,
+		max_ValueDouble,
+		best_ValueDouble,
+		worst_ValueDouble,
+
 		sortOrder,
 
-		//  Added by Javascript: 
+		//  Added by Javascript:
 		
 		//  Used by V1 DataTable (Non-React version)
 		sorttype, //  Label as sort as number or string for Filterable or Descriptive
@@ -751,6 +762,23 @@ class AnnotationTypeItem {
 		defaultFilter : boolean;
 		defaultFilterValue : number;
 		defaultFilterValueString : string;
+
+		/**
+		 * null if Descriptive Annotation or NOT populated in DB for this search
+		 */
+		min_ValueDouble : number
+		/**
+		 * null if Descriptive Annotation or NOT populated in DB for this search
+		 */
+		max_ValueDouble : number
+		/**
+		 * null if Descriptive Annotation or NOT populated in DB for this search
+		 */
+		best_ValueDouble : number
+		/**
+		 * null if Descriptive Annotation or NOT populated in DB for this search
+		 */
+		worst_ValueDouble : number
 
 		sortOrder : number;
 
@@ -780,6 +808,11 @@ class AnnotationTypeItem {
 		this.defaultFilter = defaultFilter;
 		this.defaultFilterValue = defaultFilterValue;
 		this.defaultFilterValueString = defaultFilterValueString;
+
+		this.min_ValueDouble = min_ValueDouble
+		this.max_ValueDouble = max_ValueDouble
+		this.best_ValueDouble = best_ValueDouble
+		this.worst_ValueDouble = worst_ValueDouble
 
 		this.sortOrder = sortOrder;
 

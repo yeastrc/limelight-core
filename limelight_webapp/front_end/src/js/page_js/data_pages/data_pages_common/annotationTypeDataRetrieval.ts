@@ -213,6 +213,9 @@ export class AnnotationTypeDataRetrieval {
 			const modificationPositionFilterableAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
 				annotationTypeArray : perSearchItem.modificationPositionFilterableAnnotationTypes, sorttype : _SORT_TYPE_NUMBER
 			});
+			const psmPeptidePositionFilterableAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
+				annotationTypeArray : perSearchItem.psmPeptidePositionFilterableAnnotationTypes, sorttype : _SORT_TYPE_NUMBER
+			});
 
 			const psmDescriptiveAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
 				annotationTypeArray : perSearchItem.psmDescriptiveAnnotationTypes, sorttype : _SORT_TYPE_STRING 
@@ -234,6 +237,7 @@ export class AnnotationTypeDataRetrieval {
 				reportedPeptideFilterableAnnotationTypes,
 				matchedProteinFilterableAnnotationTypes,
 				modificationPositionFilterableAnnotationTypes,
+				psmPeptidePositionFilterableAnnotationTypes,
 				psmDescriptiveAnnotationTypes,
 				reportedPeptideDescriptiveAnnotationTypes,
 				matchedProteinDescriptiveAnnotationTypes,
@@ -297,7 +301,37 @@ export class AnnotationTypeDataRetrieval {
 					throw Error( msg );
 				}
 			}
-			
+
+
+			if ( annotationTypeItem_ServerItem.min_ValueDouble !== undefined && annotationTypeItem_ServerItem.min_ValueDouble !== null ) {
+				if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.min_ValueDouble ) ) {
+					const msg = "if ( annotationTypeItem_ServerItem.min_ValueDouble !== undefined && annotationTypeItem_ServerItem.min_ValueDouble !== null ): if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.min_ValueDouble ) ): annotationTypeItem_ServerItem.min_ValueDouble: " + annotationTypeItem_ServerItem.min_ValueDouble;
+					console.warn( msg );
+					throw Error( msg );
+				}
+			}
+			if ( annotationTypeItem_ServerItem.max_ValueDouble !== undefined && annotationTypeItem_ServerItem.max_ValueDouble !== null ) {
+				if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.max_ValueDouble ) ) {
+					const msg = "if ( annotationTypeItem_ServerItem.max_ValueDouble !== undefined && annotationTypeItem_ServerItem.max_ValueDouble !== null ): if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.max_ValueDouble ) ): annotationTypeItem_ServerItem.max_ValueDouble: " + annotationTypeItem_ServerItem.max_ValueDouble;
+					console.warn( msg );
+					throw Error( msg );
+				}
+			}
+			if ( annotationTypeItem_ServerItem.best_ValueDouble !== undefined && annotationTypeItem_ServerItem.best_ValueDouble !== null ) {
+				if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.best_ValueDouble ) ) {
+					const msg = "if ( annotationTypeItem_ServerItem.best_ValueDouble !== undefined && annotationTypeItem_ServerItem.best_ValueDouble !== null ): if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.best_ValueDouble ) ): annotationTypeItem_ServerItem.best_ValueDouble: " + annotationTypeItem_ServerItem.best_ValueDouble;
+					console.warn( msg );
+					throw Error( msg );
+				}
+			}
+			if ( annotationTypeItem_ServerItem.worst_ValueDouble !== undefined && annotationTypeItem_ServerItem.worst_ValueDouble !== null ) {
+				if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.worst_ValueDouble ) ) {
+					const msg = "if ( annotationTypeItem_ServerItem.worst_ValueDouble !== undefined && annotationTypeItem_ServerItem.worst_ValueDouble !== null ): if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.worst_ValueDouble ) ): annotationTypeItem_ServerItem.worst_ValueDouble: " + annotationTypeItem_ServerItem.worst_ValueDouble;
+					console.warn( msg );
+					throw Error( msg );
+				}
+			}
+
 			const annotationTypeItem = new AnnotationTypeItem({
 
 				 //  Label as sort as number or string for Filterable or Descriptive
@@ -322,9 +356,14 @@ export class AnnotationTypeDataRetrieval {
 				defaultFilterValue : annotationTypeItem_ServerItem.defaultFilterValue,
 				defaultFilterValueString : annotationTypeItem_ServerItem.defaultFilterValueString,
 
+				min_ValueDouble : annotationTypeItem_ServerItem.min_ValueDouble,
+				max_ValueDouble : annotationTypeItem_ServerItem.max_ValueDouble,
+				best_ValueDouble : annotationTypeItem_ServerItem.best_ValueDouble,
+				worst_ValueDouble : annotationTypeItem_ServerItem.worst_ValueDouble,
+
 				sortOrder : annotationTypeItem_ServerItem.sortOrder,
 
-				//  Added by Javascript: 
+				//  Added by Javascript:
 				
 				//  Used by V1 DataTable (Non-React version)
 				sorttype //  Label as sort as number or string for Filterable or Descriptive

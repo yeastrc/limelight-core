@@ -70,6 +70,8 @@ public class GetAnnotationTypeData implements GetAnnotationTypeDataIF {
 					result.matchedProteinFilterableAnnotationTypeData.put( annotationTypeDTO.getId(), annotationTypeDTO );
 				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION ) {
 					result.modificationPositionFilterableAnnotationTypeData.put( annotationTypeDTO.getId(), annotationTypeDTO );
+				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.PSM_PEPTIDE_POSITION ) {
+					result.psmPeptidePositionFilterableAnnotationTypeData.put( annotationTypeDTO.getId(), annotationTypeDTO );
 				} else {
 					String msg = "Unknow value for 'PsmPeptideMatchedProteinAnnotationType'.  Annotation type id: " 
 	    					+ annotationTypeDTO.getId()
@@ -122,6 +124,7 @@ public class GetAnnotationTypeData implements GetAnnotationTypeDataIF {
 		private Map<Integer, AnnotationTypeDTO> matchedProteinDescriptiveAnnotationTypeData = new HashMap<>();
 		private Map<Integer, AnnotationTypeDTO> modificationPositionFilterableAnnotationTypeData = new HashMap<>();
 		private Map<Integer, AnnotationTypeDTO> modificationPositionDescriptiveAnnotationTypeData = new HashMap<>();
+		private Map<Integer, AnnotationTypeDTO> psmPeptidePositionFilterableAnnotationTypeData = new HashMap<>();
 		
 		public Map<Integer, AnnotationTypeDTO> getAllEntriesAnnotationTypeData() {
 			return allEntriesAnnotationTypeData;
@@ -182,6 +185,13 @@ public class GetAnnotationTypeData implements GetAnnotationTypeDataIF {
 		public void setModificationPositionDescriptiveAnnotationTypeData(
 				Map<Integer, AnnotationTypeDTO> modificationPositionDescriptiveAnnotationTypeData) {
 			this.modificationPositionDescriptiveAnnotationTypeData = modificationPositionDescriptiveAnnotationTypeData;
+		}
+		public Map<Integer, AnnotationTypeDTO> getPsmPeptidePositionFilterableAnnotationTypeData() {
+			return psmPeptidePositionFilterableAnnotationTypeData;
+		}
+		public void setPsmPeptidePositionFilterableAnnotationTypeData(
+				Map<Integer, AnnotationTypeDTO> psmPeptidePositionFilterableAnnotationTypeData) {
+			this.psmPeptidePositionFilterableAnnotationTypeData = psmPeptidePositionFilterableAnnotationTypeData;
 		}
 		
 	}

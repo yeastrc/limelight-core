@@ -252,6 +252,8 @@ public class ProcessLimelightInput {
 					createPsmFilterableAnnotationTypesOnId( searchProgramEntryMap ) );
 			reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.setFilterable_ModificationPosition_AnnotationTypesOnId(
 					createModificationPositionFilterableAnnotationTypesOnId( searchProgramEntryMap ) );
+			reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.setFilterable_PsmPeptidePosition_AnnotationTypesOnId(
+					createPsmPeptidePositionFilterableAnnotationTypesOnId( searchProgramEntryMap ) );
 			
 			if ( reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterablePsmAnnotationTypesOnId() == null ) {
 				String msg = "filterablePsmAnnotationTypesOnId == null";
@@ -448,6 +450,29 @@ public class ProcessLimelightInput {
 		}
 		return filterableAnnotationTypesOnId;
 	}
+
+	/**
+	 * @param searchProgramEntryMap
+	 * @return
+	 */
+	private Map<Integer, AnnotationTypeDTO> createPsmPeptidePositionFilterableAnnotationTypesOnId( Map<String, SearchProgramEntry> searchProgramEntryMap ) {
+		
+		///  Build list of Filterable annotation type ids
+		Map<Integer, AnnotationTypeDTO> filterableAnnotationTypesOnId = new HashMap<>();
+		for ( Map.Entry<String, SearchProgramEntry> searchProgramEntryMapEntry : searchProgramEntryMap.entrySet() ) {
+			SearchProgramEntry searchProgramEntry = searchProgramEntryMapEntry.getValue();
+			
+			Map<String, AnnotationTypeDTO> annotationTypeDTOMap = searchProgramEntry.getPsmPeptidePositionAnnotationTypeDTOMap();
+			for ( Map.Entry<String, AnnotationTypeDTO> annotationTypeDTOMapEntry : annotationTypeDTOMap.entrySet() ) {
+				AnnotationTypeDTO annotationTypeDTO = annotationTypeDTOMapEntry.getValue();
+				if ( annotationTypeDTO.getFilterableDescriptiveAnnotationType()
+						== FilterableDescriptiveAnnotationType.FILTERABLE ) {
+					filterableAnnotationTypesOnId.put( annotationTypeDTO.getId(), annotationTypeDTO );
+				}
+			}
+		}
+		return filterableAnnotationTypesOnId;
+	}	
 	
 	//////////////////////////////
 	
@@ -463,6 +488,7 @@ public class ProcessLimelightInput {
 		
 		searchDTO.setHasIsotopeLabel( searchContains_peptideContainsIsotopeLabel( limelightInput ) );
 		searchDTO.setAnyPsmHasOpenModificationMasses( searchContains_PSM_WithOpenModificationMass( limelightInput ) );
+		searchDTO.setAnyPsmHas_PsmPeptidePositionAnnotation( searchContains_PSM_WithPsmPeptidePosition( limelightInput ) );
 		searchDTO.setReportedPeptideMatchedProteinMappingProvided( reportedPeptides_Any_Contain_MatchedProteinForPeptide( limelightInput ) );
 
 		update_SearchDTO_Importer__Set_IsDecoy_IsIndependentDecoy_BasedOn_LimelightInput_Contents( searchDTO, limelightInput );
@@ -630,6 +656,41 @@ public class ProcessLimelightInput {
 							if ( psm.getPsmOpenModification() != null && psm.getPsmOpenModification().getMass() != null ) {
 								//  This PSM contains "psm_open_modification"
 								 //  May also be PSMs that do NOT have Open Modifications
+								return true;  //  EARLY RETURN 
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	/**
+	 * At least one "reported_peptide" contains "psm" that contains "psm_peptide_position_annotations"
+	 * @param limelightInput
+	 * @throws LimelightImporterDataException for data errors
+	 */
+	private boolean searchContains_PSM_WithPsmPeptidePosition( LimelightInput limelightInput ) throws LimelightImporterDataException {
+		
+		ReportedPeptides reportedPeptides = limelightInput.getReportedPeptides();
+		if ( reportedPeptides != null ) {
+			List<ReportedPeptide> reportedPeptideList =
+					reportedPeptides.getReportedPeptide();
+			if ( reportedPeptideList != null && ( ! reportedPeptideList.isEmpty() ) ) {
+				for ( ReportedPeptide reportedPeptide : reportedPeptideList ) {
+					
+					if ( reportedPeptide.getPsms() != null && ( ! ( reportedPeptide.getPsms().getPsm().isEmpty() ) ) ) {
+						
+						for ( Psm psm : reportedPeptide.getPsms().getPsm() ) {
+							
+							if ( psm.getPsmPeptidePositionAnnotations() != null 
+									&& psm.getPsmPeptidePositionAnnotations().getFilterablePsmPeptidePositionAnnotations() != null
+									&& psm.getPsmPeptidePositionAnnotations().getFilterablePsmPeptidePositionAnnotations().getFilterablePsmPeptidePositionAnnotation() != null
+									&& ( ! psm.getPsmPeptidePositionAnnotations().getFilterablePsmPeptidePositionAnnotations().getFilterablePsmPeptidePositionAnnotation().isEmpty() ) ) {
+								//  This PSM contains "psm_peptide_position_annotations"
+								 //  May also be PSMs that do NOT have Psm Peptide Position
 								return true;  //  EARLY RETURN 
 							}
 						}

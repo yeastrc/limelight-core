@@ -66,6 +66,7 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 		private boolean anyPsmHas_DynamicModifications;
 		private boolean anyPsmHas_OpenModifications;
 		private boolean anyPsmHas_ReporterIons;
+		private boolean anyPsmHas_PsmPeptidePositionAnnotation;
 
 		private boolean anyPsmHas_IsDecoy_True;
 		private boolean anyPsmHas_IsIndependentDecoy_True;
@@ -123,6 +124,9 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 		public Boolean getPsmIds_AreSequential() {
 			return psmIds_AreSequential;
 		}
+		public boolean isAnyPsmHas_PsmPeptidePositionAnnotation() {
+			return anyPsmHas_PsmPeptidePositionAnnotation;
+		}
 		
 	}
 		
@@ -136,6 +140,7 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 			+ " any_psm_has_reporter_ions,"
 			+ " any_psm_has__is_decoy_true,"
 			+ " any_psm_has__is_independent_decoy_true,"
+			+ " any_psm_has__psm_peptide_position_annotation, "
 			+ " all_psms_have_precursor_retention_time,"	//  NOT Populated Yet for Existing Searches
 			+ " all_psms_have_precursor_m_z,"				//  NOT Populated Yet for Existing Searches
 			+ " psm_ids_are_sequential,"					//  NOT Populated Yet for Existing Searches
@@ -213,6 +218,12 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 					int anyPsmHas_ReporterIons = rs.getInt( "any_psm_has_reporter_ions" );
 					if ( anyPsmHas_ReporterIons == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
 						resultItem.anyPsmHas_ReporterIons = true;
+					}
+					{
+						int anyPsmHas = rs.getInt( "any_psm_has__psm_peptide_position_annotation" );
+						if ( anyPsmHas == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							resultItem.anyPsmHas_PsmPeptidePositionAnnotation = true;
+						}	
 					}
 					{
 						int fieldIntValue = rs.getInt( "any_psm_has__is_decoy_true" );

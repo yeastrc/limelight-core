@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.yeastrc.limelight.limelight_importer.annotation_data_min_max_accumulation_computation.AnnotationData_MinMax_AccumulationComputation_SingletonInstance;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_shared.constants.AnnotationValueStringLocalFieldLengthConstants;
 import org.yeastrc.limelight.limelight_shared.dto.Search_Protein_FilterableAnnotation_DTO;
@@ -122,6 +123,11 @@ public class DB_Insert_Search_Protein_FilterableAnnotation_DAO {
 				log.error( msg );
 				throw new IllegalArgumentException(msg);
 			}
+		}
+
+		for ( Search_Protein_FilterableAnnotation_DTO item : itemList ) {
+		
+			AnnotationData_MinMax_AccumulationComputation_SingletonInstance.getSingletonInstance().add_AnnotationDataBaseDTO(item);
 		}
 		
 		final String insertSQL = this.create_insert_SQL( itemList.size() );

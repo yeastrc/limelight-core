@@ -25,6 +25,7 @@ import java.sql.Statement;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
+import org.yeastrc.limelight.limelight_importer.annotation_data_min_max_accumulation_computation.AnnotationData_MinMax_AccumulationComputation_SingletonInstance;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDatabaseException;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
@@ -170,6 +171,12 @@ public class AnnotationTypeDAO {
 			log.debug( "Saving AnnotationTypeDTO item: " + item );
 		}
 
+		
+		
+		AnnotationData_MinMax_AccumulationComputation_SingletonInstance.getSingletonInstance().store_AnnotationTypeDTO_OnlyWhenContains_AnnotationTypeFilterableDTO( item );
+		
+		
+		
 		if ( item.getFilterableDescriptiveAnnotationType() == FilterableDescriptiveAnnotationType.FILTERABLE ) {
 			
 			AnnotationTypeFilterableDTO annotationTypeFilterableDTO = item.getAnnotationTypeFilterableDTO();

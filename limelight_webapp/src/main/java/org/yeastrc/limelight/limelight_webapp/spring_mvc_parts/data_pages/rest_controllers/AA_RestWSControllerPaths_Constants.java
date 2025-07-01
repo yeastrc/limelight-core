@@ -687,6 +687,9 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PSM_VARIABLE_DYNAMIC_MODIFICATION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002 = 
 			"d/rws/for-page/psb/psm-variable-dynamic-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0002";
 
+	public static final String PSM_PEPTIDE_POSITION_ANNOTATIONS_FOR_PSM_IDS_ANNOTATION_TYPE_ID_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
+			"psm-peptide-position-annotations-for-psm-ids-annotation-type-id-single-project-search-id-rest-webservice-controller";
+
 	public static final String PSM_LIST_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/psm-list";
 
 	public static final String SCAN_DATA_NO_PEAKS_FOR_SCAN_NUMBERS_PROJECT_SEARCH_ID_SEARCH_SCAN_FILE_ID_REST_WEBSERVICE_CONTROLLER = 

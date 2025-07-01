@@ -398,7 +398,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 const searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId = {
                     projectSearchId,
                     psmFilters: undefined, reportedPeptideFilters: undefined, matchedProteinFilters: undefined, modificationPositionFilters: undefined,
-                    psmAnnTypeDisplay: undefined, reportedPeptideAnnTypeDisplay: undefined, matchedProteinAnnTypeDisplay: undefined, bestPsm_AnnTypeDisplay: undefined
+                    psmAnnTypeDisplay: undefined, reportedPeptideAnnTypeDisplay: undefined, matchedProteinAnnTypeDisplay: undefined,
+                    bestPsm_AnnTypeDisplay: undefined, psmPeptidePosition_AnnTypeDisplay: undefined
                 }
                 paramsForProjectSearchIdsList.push(searchDataLookupParams_For_Single_ProjectSearchId);
             }
@@ -898,29 +899,29 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
         const compute_For_UNFILTERED__proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result =
             async () : Promise<ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result> => {
 
-            const getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result =
-                await this.state.getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING.getReportedPeptideIdsForDisplay_AllProjectSearchIds_ReturnPromise({ // External Function Call
-                    not_filtered_position_modification_selections : false,
-                    proteinSequenceVersionId : null,
-                    searchSubGroup_Ids_Selected: undefined,
-                    proteinSequenceWidget_StateObject : undefined,
-                    modificationMass_UserSelections_StateObject : undefined,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: undefined,
-                    reporterIonMass_UserSelections_StateObject : undefined,
-                    peptideUnique_UserSelection_StateObject : undefined,
-                    peptideSequence_MissedCleavageCount_UserSelections_StateObject : undefined,
-                    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : undefined,
-                    peptideSequence_UserSelections_StateObject : undefined,
-                    userSearchString_LocationsOn_ProteinSequence_Root : null,
-                    proteinPositionFilter_UserSelections_StateObject : undefined,
-                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
-                    scanFilenameId_On_PSM_Filter_UserSelection_StateObject : undefined,
-                    scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: undefined,
-                    scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: undefined,
-                    scan_RetentionTime_MZ_UserSelection_StateObject : undefined,
-                    psm_Charge_Filter_UserSelection_StateObject: undefined,
-                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
-                });
+                const getReportedPeptideIdsForDisplay_AllProjectSearchIds_Result =
+                    await this.state.getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING.getReportedPeptideIdsForDisplay_AllProjectSearchIds_ReturnPromise({ // External Function Call
+                        not_filtered_position_modification_selections : false,
+                        proteinSequenceVersionId : null,
+                        searchSubGroup_Ids_Selected: undefined,
+                        proteinSequenceWidget_StateObject : undefined,
+                        modificationMass_UserSelections_StateObject : undefined,
+                        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: undefined,
+                        reporterIonMass_UserSelections_StateObject : undefined,
+                        peptideUnique_UserSelection_StateObject : undefined,
+                        peptideSequence_MissedCleavageCount_UserSelections_StateObject : undefined,
+                        peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : undefined,
+                        peptideSequence_UserSelections_StateObject : undefined,
+                        userSearchString_LocationsOn_ProteinSequence_Root : null,
+                        proteinPositionFilter_UserSelections_StateObject : undefined,
+                        proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
+                        scanFilenameId_On_PSM_Filter_UserSelection_StateObject : undefined,
+                        scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: undefined,
+                        scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: undefined,
+                        scan_RetentionTime_MZ_UserSelection_StateObject : undefined,
+                        psm_Charge_Filter_UserSelection_StateObject: undefined,
+                        psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
+                    });
 
                 const result =
                     await proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides({

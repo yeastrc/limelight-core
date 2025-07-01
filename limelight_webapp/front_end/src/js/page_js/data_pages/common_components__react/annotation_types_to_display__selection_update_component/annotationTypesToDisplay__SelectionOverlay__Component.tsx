@@ -110,6 +110,7 @@ class Local_AnnTypeDisplay_Per_ProjectSearchId {
     reportedPeptideAnnTypeDisplay : Array<number>;
     matchedProteinAnnTypeDisplay : Array<number>;
     bestPsm_AnnTypeDisplay: Array<number>;
+    psmPeptidePosition_AnnTypeDisplay: Array<number>;
 }
 
 class Local_SearchesList {
@@ -283,6 +284,7 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
                     searchDataLookupParameters_Single_ProjectSearchId.reportedPeptideAnnTypeDisplay = local_annTypeDisplay_For_ProjectSearchId.reportedPeptideAnnTypeDisplay;
                     searchDataLookupParameters_Single_ProjectSearchId.matchedProteinAnnTypeDisplay = local_annTypeDisplay_For_ProjectSearchId.matchedProteinAnnTypeDisplay;
                     searchDataLookupParameters_Single_ProjectSearchId.bestPsm_AnnTypeDisplay = local_annTypeDisplay_For_ProjectSearchId.bestPsm_AnnTypeDisplay;
+                    searchDataLookupParameters_Single_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay = local_annTypeDisplay_For_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay
                 }
             }
 
@@ -318,6 +320,7 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
         const reportedPeptideAnnTypeDisplay = local_AnnTypeDisplay_For_ProjectSearchId.reportedPeptideAnnTypeDisplay;
         const matchedProteinAnnTypeDisplay = local_AnnTypeDisplay_For_ProjectSearchId.matchedProteinAnnTypeDisplay;
         const bestPsm_AnnTypeDisplay = local_AnnTypeDisplay_For_ProjectSearchId.bestPsm_AnnTypeDisplay;
+        const psmPeptidePosition_AnnTypeDisplay = local_AnnTypeDisplay_For_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay;
 
         const annotationTypeItems_PerProjectSearchId_Map :  Map<number, AnnotationTypeItems_PerProjectSearchId> =
             this.props.params.dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map;
@@ -466,6 +469,20 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
                             } }
                         />
 
+                        {/* PSM Peptide Position Filterable Annotation Data */}
+
+                        <Internal__PerType_PSM_Peptide_Protein__Section__Component
+                            type_HeaderLabelText="PSM Peptide Position Data"
+                            annTypeDisplay={ psmPeptidePosition_AnnTypeDisplay }
+                            filterableAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.psmPeptidePositionFilterableAnnotationTypes }
+                            descriptiveAnnotationTypes={ undefined } //  Filterable only
+                            searchProgramsPerSearchItem_Map={ searchProgramsPerSearchItem_Map }
+                            annotationNameDisplay_Prefix={ null }
+                            callbackOn_DataChanged={ () => {
+                                //  Force Rerender
+                                this.setState({ forceRerenderObject: {} });
+                            } }
+                        />
                     </div>
 
                     <div className=" top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
@@ -533,6 +550,11 @@ const _create_local_AnnTypeDisplay_ForAll_ProjectSearchId = function(props: Anno
             local_AnnTypeDisplay_Per_ProjectSearchId.bestPsm_AnnTypeDisplay = Array.from( searchDataLookupParameters_For_ProjectSearchId.bestPsm_AnnTypeDisplay );
         } else {
             local_AnnTypeDisplay_Per_ProjectSearchId.bestPsm_AnnTypeDisplay = []
+        }
+        if ( searchDataLookupParameters_For_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay ) {
+            local_AnnTypeDisplay_Per_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay = Array.from( searchDataLookupParameters_For_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay );
+        } else {
+            local_AnnTypeDisplay_Per_ProjectSearchId.psmPeptidePosition_AnnTypeDisplay = []
         }
 
         annTypeDisplay_Per_ProjectSearchId_Map_Key_ProjectSearchId.set( projectSearchId, local_AnnTypeDisplay_Per_ProjectSearchId );

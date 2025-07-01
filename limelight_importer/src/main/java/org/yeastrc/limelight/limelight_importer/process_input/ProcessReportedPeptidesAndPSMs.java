@@ -28,6 +28,7 @@ import java.util.Set;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
+import org.yeastrc.limelight.limelight_importer.annotation_data_min_max_accumulation_computation.AnnotationData_MinMax_AccumulationComputation_SingletonInstance;
 import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records;
 import org.yeastrc.limelight.limelight_importer.constants.Importer_Stats_GeneralData_Table__Label_Values_Enum;
 import org.yeastrc.limelight.limelight_importer.dao.Importer_Stats_GeneralData_DAO;
@@ -118,6 +119,8 @@ public class ProcessReportedPeptidesAndPSMs {
 				reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterablePsmAnnotationTypesOnId();
 		Map<Integer, AnnotationTypeDTO> filterable_ModificationPosition_AnnotationTypesOnId = 
 				reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterable_ModificationPosition_AnnotationTypesOnId();
+		Map<Integer, AnnotationTypeDTO> filterable_PsmPeptidePosition_AnnotationTypesOnId = 
+				reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterable_PsmPeptidePosition_AnnotationTypesOnId();
 
 		boolean anyReportedPeptideHasAnyPsmsHasDynamicModifications = false;
 		boolean anyReportedPeptideHasAnyPsmsHasReporterIons = false;
@@ -203,6 +206,7 @@ public class ProcessReportedPeptidesAndPSMs {
 								searchProgramEntryMap,
 								filterablePsmAnnotationTypesOnId,
 								filterable_ModificationPosition_AnnotationTypesOnId,
+								filterable_PsmPeptidePosition_AnnotationTypesOnId,
 								searchScanFileEntry_AllEntries,
 								uniqueReporterIonMassesForTheReportedPeptide
 								);
@@ -323,6 +327,8 @@ public class ProcessReportedPeptidesAndPSMs {
 			
 			DB_Insert_Search_ReportedPeptide_ReporterIonMass_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 			
+			
+			AnnotationData_MinMax_AccumulationComputation_SingletonInstance.getSingletonInstance().storeInDB( searchId );
 			
 			////////////////////
 			

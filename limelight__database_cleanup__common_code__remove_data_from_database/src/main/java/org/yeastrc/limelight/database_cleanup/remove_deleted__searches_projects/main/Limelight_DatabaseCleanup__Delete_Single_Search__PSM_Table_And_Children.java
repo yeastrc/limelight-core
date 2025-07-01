@@ -16,6 +16,7 @@ import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.
 import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.searcher.Limelight_DatabaseCleanup__PsmIdsForSearchId_Searcher;
 import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.searcher.Limelight_DatabaseCleanup__PsmIdsForSearchId_Searcher.Limelight_DatabaseCleanup__PsmIdsForSearchId_Searcher_Result;
 import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.searcher.Limelight_DatabaseCleanup__SearchTbl_Has_SearchSubGroupsFlag_ForSearchId_Searcher;
+import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.searcher.Limelight_DatabaseCleanup__SearchTbl_Has_any_psm_has__psm_peptide_position_annotation_Flag_ForSearchId_Searcher;
 import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterableDescriptiveAnnotationType;
 import org.yeastrc.limelight.limelight_shared.enum_classes.PsmPeptideMatchedProteinAnnotationType;
@@ -161,10 +162,41 @@ public class Limelight_DatabaseCleanup__Delete_Single_Search__PSM_Table_And_Chil
 
 				final String TABLE = "psm_search_sub_group_tbl";
 
-				delete_Psm_ChildTable_Data( TABLE, searchId, psmIdsForSearchId_Searcher_Result.getPsmId_List__has_modifications(), psmIds_DeleteAt_A_Time, callFrom );
+				delete_Psm_ChildTable_Data( TABLE, searchId, psmIdsForSearchId_Searcher_Result.getPsmId_List(), psmIds_DeleteAt_A_Time, callFrom );
 			}
 		}
-		
+
+		{
+			boolean has_any_psm_has__psm_peptide_position_annotation_Flag =
+					Limelight_DatabaseCleanup__SearchTbl_Has_any_psm_has__psm_peptide_position_annotation_Flag_ForSearchId_Searcher.getInstance()
+					.get_SearchTbl_Has_any_psm_has__psm_peptide_position_annotation_Flag_ForSearchId( searchId );
+			
+			if ( has_any_psm_has__psm_peptide_position_annotation_Flag ) {
+
+				{
+					int psmIds_DeleteAt_A_Time = DELETE_BATCH_SIZE;
+
+					final String TABLE = "psm_peptide_position_filterable_annotation_tbl";
+
+					delete_Psm_ChildTable_Data( TABLE, searchId, psmIdsForSearchId_Searcher_Result.getPsmId_List(), psmIds_DeleteAt_A_Time, callFrom );
+				}
+
+				
+				if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
+					
+					return;
+				}
+				
+				{
+					int psmIds_DeleteAt_A_Time = DELETE_BATCH_SIZE;
+
+					final String TABLE = "psm_peptide_position_worst_filterable_annotation_lookup_tbl";
+
+					delete_Psm_ChildTable_Data( TABLE, searchId, psmIdsForSearchId_Searcher_Result.getPsmId_List(), psmIds_DeleteAt_A_Time, callFrom );
+				}
+			}
+		}
+
 		if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
 			
 			return;

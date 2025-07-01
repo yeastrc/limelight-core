@@ -68,6 +68,7 @@ import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_I
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_IsIndependentDecoyTrue_SearchHas_FastaFileStatistics;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_PrecursorRetentionTime_PrecursorMZ;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_PrecursorRetentionTime_PrecursorMZ__MaxValuesAllowed;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_PsmPeptidePositionAnnotations;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_ReportedPeptideStrings_AllUnique;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_ReporterIons_OnPSMs;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_StaticModEntries_Have_Unique_AminoAcidResidueLetters;
@@ -483,6 +484,9 @@ public class ImporterCoreEntryPoint {
 
 			//   Throws LimelightImporterDataException if data error found
 			Validate_PSMs_PrecursorRetentionTime_PrecursorMZ.getInstance().validate_PSMs_PrecursorRetentionTime_PrecursorMZ(limelightInputForImport);
+
+			//   Throws LimelightImporterDataException if data error found
+			Validate_PSMs_PsmPeptidePositionAnnotations.getInstance().validate_PSMs_PsmPeptidePositionAnnotations( limelightInputForImport );
 
 			//   Throws LimelightImporterDataException if data error found
 			Validate_PSMs_PrecursorRetentionTime_PrecursorMZ__MaxValuesAllowed.getInstance().validate_PSMs_PrecursorRetentionTime_PrecursorMZ__MaxValuesAllowed(limelightInputForImport);

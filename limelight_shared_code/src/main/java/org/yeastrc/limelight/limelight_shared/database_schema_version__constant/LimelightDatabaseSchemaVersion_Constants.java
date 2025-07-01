@@ -9,7 +9,7 @@ public class LimelightDatabaseSchemaVersion_Constants {
 	/**
 	 * The CURRENT Database schema version the code in this REPO is coded to 
 	 */
-	public static final int DATABASE_SCHEMA_VERSION__CURRENT = 6;
+	public static final int DATABASE_SCHEMA_VERSION__CURRENT = 7;
 	
 	
 	/////////

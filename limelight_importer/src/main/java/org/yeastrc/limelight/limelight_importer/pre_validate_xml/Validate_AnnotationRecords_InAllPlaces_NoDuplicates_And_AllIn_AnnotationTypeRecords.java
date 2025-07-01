@@ -36,6 +36,7 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableModification
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableModificationPositionAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterablePsmAnnotation;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterablePsmAnnotationType;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterablePsmPeptidePositionAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPeptideAnnotation;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPeptideAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
@@ -441,6 +442,9 @@ public class Validate_AnnotationRecords_InAllPlaces_NoDuplicates_And_AllIn_Annot
 			}
 
 		}
+		
+		//  psm.getPsmPeptidePositionAnnotations()  is validated Elsewhere
+
 	}
 	
 	///////////////////////
@@ -475,6 +479,8 @@ public class Validate_AnnotationRecords_InAllPlaces_NoDuplicates_And_AllIn_Annot
 		
 		Set<String> filterableModificationPositionAnnotationType_Names = new HashSet<>();
 		Set<String> descriptiveModificationPositionAnnotationType_Names = new HashSet<>();
+		
+		Set<String> filterablePsmPeptidePositionAnnotationType_Names = new HashSet<>();
 		
 	}
 	
@@ -588,6 +594,20 @@ public class Validate_AnnotationRecords_InAllPlaces_NoDuplicates_And_AllIn_Annot
 						}
 					}
 				}
+			}
+
+			if ( searchProgram.getPsmPeptidePositionAnnotationTypes() != null ) {
+				
+				if ( searchProgram.getPsmPeptidePositionAnnotationTypes().getFilterablePsmPeptidePositionAnnotationTypes() != null )  {
+					for ( FilterablePsmPeptidePositionAnnotationType annotationType : searchProgram.getPsmPeptidePositionAnnotationTypes().getFilterablePsmPeptidePositionAnnotationTypes().getFilterablePsmPeptidePositionAnnotationType() ) {						
+						
+						if ( ! single_SearchProgram_AndChildren.filterablePsmPeptidePositionAnnotationType_Names.add( annotationType.getName() ) ) {
+							// Duplicates are checked in class ValidateAnnotationTypeRecords so throw internal error here
+							throw new LimelightImporterInternalException( "Duplicate FilterablePsmPeptidePositionAnnotationTypes Type Name '" + annotationType.getName() + "' under search program '" + searchProgram.getName() + "'");
+						}
+					}
+				}
+				//  NO Descriptive Types
 			}
 			
 			

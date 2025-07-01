@@ -83,6 +83,7 @@ export class DataPage_common_Flags_SingleSearch {
     anyPsmHas_DynamicModifications: boolean;
     anyPsmHas_OpenModifications: boolean;
     anyPsmHas_ReporterIons: boolean;
+    anyPsmHas_PsmPeptidePositionAnnotation: boolean
 
     anyPsmHas_IsDecoy_True: boolean;
     anyPsmHas_IsIndependentDecoy_True: boolean;
@@ -214,6 +215,11 @@ const _populateResult = function(
             searchFlagsEntry.anyPsmHas_ReporterIons = true;
         } else {
             searchFlagsEntry.anyPsmHas_ReporterIons = false;
+        }
+        if ( searchFlagsEntry.anyPsmHas_PsmPeptidePositionAnnotation ) {
+            searchFlagsEntry.anyPsmHas_PsmPeptidePositionAnnotation = true;
+        } else {
+            searchFlagsEntry.anyPsmHas_PsmPeptidePositionAnnotation = false;
         }
 
         if ( searchFlagsEntry.anyPsmHas_IsDecoy_True ) {

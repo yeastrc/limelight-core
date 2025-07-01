@@ -38,6 +38,7 @@ public class SearchDataLookupParams_For_Single_ProjectSearchId {
 	private List<Integer> reportedPeptideAnnTypeDisplay;
 	private List<Integer> matchedProteinAnnTypeDisplay;
 	private List<Integer> bestPsm_AnnTypeDisplay;
+	private List<Integer> psmPeptidePosition_AnnTypeDisplay;
 	
 	
 	public List<SearchDataLookupParams_Filter_Per_AnnotationType> getPsmFilters() {
@@ -94,5 +95,11 @@ public class SearchDataLookupParams_For_Single_ProjectSearchId {
 	}
 	public void setBestPsm_AnnTypeDisplay(List<Integer> bestPsm_AnnTypeDisplay) {
 		this.bestPsm_AnnTypeDisplay = bestPsm_AnnTypeDisplay;
+	}
+	public List<Integer> getPsmPeptidePosition_AnnTypeDisplay() {
+		return psmPeptidePosition_AnnTypeDisplay;
+	}
+	public void setPsmPeptidePosition_AnnTypeDisplay(List<Integer> psmPeptidePosition_AnnTypeDisplay) {
+		this.psmPeptidePosition_AnnTypeDisplay = psmPeptidePosition_AnnTypeDisplay;
 	}
 }

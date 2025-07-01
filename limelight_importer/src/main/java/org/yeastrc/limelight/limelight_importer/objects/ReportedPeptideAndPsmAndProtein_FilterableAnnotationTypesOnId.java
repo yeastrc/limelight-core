@@ -31,6 +31,7 @@ public class ReportedPeptideAndPsmAndProtein_FilterableAnnotationTypesOnId {
 	private Map<Integer, AnnotationTypeDTO> filterableReportedPeptideAnnotationTypesOnId;
 	private Map<Integer, AnnotationTypeDTO> filterablePsmAnnotationTypesOnId;
 	private Map<Integer, AnnotationTypeDTO> filterable_ModificationPosition_AnnotationTypesOnId;
+	private Map<Integer, AnnotationTypeDTO> filterable_PsmPeptidePosition_AnnotationTypesOnId;
 	
 	public Map<Integer, AnnotationTypeDTO> getFilterableReportedPeptideAnnotationTypesOnId() {
 		return filterableReportedPeptideAnnotationTypesOnId;
@@ -58,5 +59,12 @@ public class ReportedPeptideAndPsmAndProtein_FilterableAnnotationTypesOnId {
 	public void setFilterable_ModificationPosition_AnnotationTypesOnId(
 			Map<Integer, AnnotationTypeDTO> filterable_ModificationPosition_AnnotationTypesOnId) {
 		this.filterable_ModificationPosition_AnnotationTypesOnId = filterable_ModificationPosition_AnnotationTypesOnId;
+	}
+	public Map<Integer, AnnotationTypeDTO> getFilterable_PsmPeptidePosition_AnnotationTypesOnId() {
+		return filterable_PsmPeptidePosition_AnnotationTypesOnId;
+	}
+	public void setFilterable_PsmPeptidePosition_AnnotationTypesOnId(
+			Map<Integer, AnnotationTypeDTO> filterable_PsmPeptidePosition_AnnotationTypesOnId) {
+		this.filterable_PsmPeptidePosition_AnnotationTypesOnId = filterable_PsmPeptidePosition_AnnotationTypesOnId;
 	}
 }

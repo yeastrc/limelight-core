@@ -168,6 +168,7 @@ public class SearcherCutoffValues_Factory {
 		Map<Integer, AnnotationTypeDTO> reportedPeptideFilterableAnnotationTypeDTO = new HashMap<>();
 		Map<Integer, AnnotationTypeDTO> matchedProteinFilterableAnnotationTypeDTO = new HashMap<>();
 		Map<Integer, AnnotationTypeDTO> modificationPositionFilterableAnnotationTypeDTO = new HashMap<>();
+		Map<Integer, AnnotationTypeDTO> psmPeptidePositionFilterableAnnotationTypeDTO = new HashMap<>();
 
 		List<AnnotationTypeDTO> allAnnotationTypeDTO_ForSearchId =
 				annotationTypeListForSearchIdSearcher.getAnnotationTypeListForSearchId( searchId );
@@ -183,6 +184,8 @@ public class SearcherCutoffValues_Factory {
 					matchedProteinFilterableAnnotationTypeDTO.put( annotationTypeDTO.getId(), annotationTypeDTO );
 				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION ) {
 					modificationPositionFilterableAnnotationTypeDTO.put( annotationTypeDTO.getId(), annotationTypeDTO );
+				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.PSM_PEPTIDE_POSITION ) {
+					psmPeptidePositionFilterableAnnotationTypeDTO.put( annotationTypeDTO.getId(), annotationTypeDTO );
 				} else {
 					String msg = "Unknown value for annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType(): " + annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType();
 					log.error( msg );
@@ -204,7 +207,8 @@ public class SearcherCutoffValues_Factory {
 				psmFilterableAnnotationTypeDTO, 
 				reportedPeptideFilterableAnnotationTypeDTO,
 				matchedProteinFilterableAnnotationTypeDTO,
-				modificationPositionFilterableAnnotationTypeDTO );
+				modificationPositionFilterableAnnotationTypeDTO,
+				psmPeptidePositionFilterableAnnotationTypeDTO );
 	}
 
 	/**
@@ -217,7 +221,8 @@ public class SearcherCutoffValues_Factory {
 			Map<Integer, AnnotationTypeDTO> psmAnnotationTypeDTOMap,
 			Map<Integer, AnnotationTypeDTO> reportedPeptideAnnotationTypeDTOMap,
 			Map<Integer, AnnotationTypeDTO> matchedProteinAnnotationTypeDTOMap,
-			Map<Integer, AnnotationTypeDTO> modificationPositionFilterableAnnotationTypeDTO
+			Map<Integer, AnnotationTypeDTO> modificationPositionFilterableAnnotationTypeDTO,
+			Map<Integer, AnnotationTypeDTO> psmPeptidePositionFilterableAnnotationTypeDTO  //  NOT CURRENTLY USED: psmPeptidePosition
 			) {
 		
 		

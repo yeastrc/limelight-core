@@ -19,7 +19,9 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,6 +48,8 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.searchers.AnnotationTypeListForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchLevel_Annotation_MinMax_ForSearchId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchLevel_Annotation_MinMax_ForSearchId_Searcher.SearchLevel_Annotation_MinMax_ForSearchId_Searcher_Result;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
@@ -70,6 +74,9 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
 	
 	@Autowired
 	private AnnotationTypeListForSearchIdSearcherIF annotationTypeListForSearchIdSearcher;
+	
+	@Autowired
+	private SearchLevel_Annotation_MinMax_ForSearchId_Searcher_IF searchLevel_Annotation_MinMax_ForSearchId_Searcher;
 	
 	@Autowired
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
@@ -173,7 +180,10 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
     				continue; // EARLY CONTINUE
     			}
     			
-    			WebserviceResultPerSearch webserviceResultPerSearch = populateWebserviceResultPerSearch( annotationTypeDTOList );
+    			List<SearchLevel_Annotation_MinMax_ForSearchId_Searcher_Result> searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result_List =
+    					searchLevel_Annotation_MinMax_ForSearchId_Searcher.get_SearchLevel_Annotation_MinMax_ForSearchId( searchId );
+    			
+    			WebserviceResultPerSearch webserviceResultPerSearch = populateWebserviceResultPerSearch( annotationTypeDTOList, searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result_List );
 
     			webserviceResultPerSearch.projectSearchId = projectSearchId;
 
@@ -205,7 +215,18 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
      * @param annotationTypeDTOList
      * @return
      */
-    private WebserviceResultPerSearch populateWebserviceResultPerSearch( List<AnnotationTypeDTO> annotationTypeDTOList ) {
+    private WebserviceResultPerSearch populateWebserviceResultPerSearch( 
+    		
+    		List<AnnotationTypeDTO> annotationTypeDTOList,
+    		
+    		List<SearchLevel_Annotation_MinMax_ForSearchId_Searcher_Result> searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result_List
+    		) {
+    	
+    	Map<Integer, SearchLevel_Annotation_MinMax_ForSearchId_Searcher_Result> searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result_Map_Key_AnnotationTypeId = new HashMap<>();
+    	
+    	for ( SearchLevel_Annotation_MinMax_ForSearchId_Searcher_Result searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result : searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result_List ) {
+    		searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result_Map_Key_AnnotationTypeId.put( searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result.getAnnotationTypeId(), searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result );
+    	}
     	
     	WebserviceResultPerSearch webserviceResultPerSearch = new WebserviceResultPerSearch();
 
@@ -213,6 +234,7 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
     	List<WebserviceResultAnnotationTypeItem> reportedPeptideFilterableAnnotationTypes = new ArrayList<>();
     	List<WebserviceResultAnnotationTypeItem> matchedProteinFilterableAnnotationTypes = new ArrayList<>();
     	List<WebserviceResultAnnotationTypeItem> modificationPositionFilterableAnnotationTypes = new ArrayList<>();
+    	List<WebserviceResultAnnotationTypeItem> psmPeptidePositionFilterableAnnotationTypes = new ArrayList<>();
 
     	List<WebserviceResultAnnotationTypeItem> psmDescriptiveAnnotationTypes = new ArrayList<>();
     	List<WebserviceResultAnnotationTypeItem> reportedPeptideDescriptiveAnnotationTypes = new ArrayList<>();
@@ -222,7 +244,10 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
     	// Process Annotation Types from DB
 		for ( AnnotationTypeDTO annotationTypeDTO : annotationTypeDTOList ) {
 			
-			WebserviceResultAnnotationTypeItem webserviceResultAnnotationTypeItem = populateWebserviceResultAnnotationTypeItem( annotationTypeDTO );
+			SearchLevel_Annotation_MinMax_ForSearchId_Searcher_Result searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result =
+					searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result_Map_Key_AnnotationTypeId.get( annotationTypeDTO.getId() );
+			
+			WebserviceResultAnnotationTypeItem webserviceResultAnnotationTypeItem = populateWebserviceResultAnnotationTypeItem( annotationTypeDTO, searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result );
 			
 			if ( annotationTypeDTO.getFilterableDescriptiveAnnotationType() == FilterableDescriptiveAnnotationType.FILTERABLE ) {
 				
@@ -234,6 +259,8 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
 					matchedProteinFilterableAnnotationTypes.add( webserviceResultAnnotationTypeItem );
 				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION ) {
 					modificationPositionFilterableAnnotationTypes.add( webserviceResultAnnotationTypeItem );
+				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.PSM_PEPTIDE_POSITION ) {
+					psmPeptidePositionFilterableAnnotationTypes.add( webserviceResultAnnotationTypeItem );
 				} else {
 					String msg = "Unknow value for 'PsmPeptideMatchedProteinAnnotationType'.  Annotation type id: " 
 	    					+ annotationTypeDTO.getId()
@@ -271,6 +298,7 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
     	webserviceResultPerSearch.reportedPeptideFilterableAnnotationTypes = reportedPeptideFilterableAnnotationTypes;
     	webserviceResultPerSearch.matchedProteinFilterableAnnotationTypes = matchedProteinFilterableAnnotationTypes;
     	webserviceResultPerSearch.modificationPositionFilterableAnnotationTypes = modificationPositionFilterableAnnotationTypes;
+    	webserviceResultPerSearch.psmPeptidePositionFilterableAnnotationTypes = psmPeptidePositionFilterableAnnotationTypes;
 
     	webserviceResultPerSearch.psmDescriptiveAnnotationTypes = psmDescriptiveAnnotationTypes;
     	webserviceResultPerSearch.reportedPeptideDescriptiveAnnotationTypes = reportedPeptideDescriptiveAnnotationTypes;
@@ -284,7 +312,7 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
      * @param annotationTypeDTO
      * @return
      */
-    private WebserviceResultAnnotationTypeItem populateWebserviceResultAnnotationTypeItem( AnnotationTypeDTO annotationTypeDTO ) {
+    private WebserviceResultAnnotationTypeItem populateWebserviceResultAnnotationTypeItem( AnnotationTypeDTO annotationTypeDTO, SearchLevel_Annotation_MinMax_ForSearchId_Searcher_Result searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result ) {
     	
     	WebserviceResultAnnotationTypeItem webserviceResultAnnotationTypeItem = new WebserviceResultAnnotationTypeItem();
     	
@@ -318,6 +346,17 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
     		webserviceResultAnnotationTypeItem.defaultFilterValueString = annotationTypeFilterableDTO.getDefaultFilterValueString();
     		webserviceResultAnnotationTypeItem.sortOrder = annotationTypeFilterableDTO.getSortOrder();
     	}
+    	
+    	//   Filterable min/max/best/worst
+    	
+    	if ( searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result != null ) {
+    		
+    		webserviceResultAnnotationTypeItem.min_ValueDouble = searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result.getMin_ValueDouble();
+    		webserviceResultAnnotationTypeItem.max_ValueDouble = searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result.getMax_ValueDouble();
+    		webserviceResultAnnotationTypeItem.best_ValueDouble = searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result.getBest_ValueDouble();
+    		webserviceResultAnnotationTypeItem.worst_ValueDouble = searchLevel_Annotation_MinMax_ForSearchId_Searcher_Result.getWorst_ValueDouble();
+    	}
+    	
     	
     	return webserviceResultAnnotationTypeItem;
     }
@@ -372,6 +411,7 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
     	private List<WebserviceResultAnnotationTypeItem> reportedPeptideFilterableAnnotationTypes;
     	private List<WebserviceResultAnnotationTypeItem> matchedProteinFilterableAnnotationTypes;
     	private List<WebserviceResultAnnotationTypeItem> modificationPositionFilterableAnnotationTypes;
+    	private List<WebserviceResultAnnotationTypeItem> psmPeptidePositionFilterableAnnotationTypes;
 
     	private List<WebserviceResultAnnotationTypeItem> psmDescriptiveAnnotationTypes;
     	private List<WebserviceResultAnnotationTypeItem> reportedPeptideDescriptiveAnnotationTypes;
@@ -436,6 +476,13 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
 		public List<WebserviceResultAnnotationTypeItem> getModificationPositionFilterableAnnotationTypes() {
 			return modificationPositionFilterableAnnotationTypes;
 		}
+		public List<WebserviceResultAnnotationTypeItem> getPsmPeptidePositionFilterableAnnotationTypes() {
+			return psmPeptidePositionFilterableAnnotationTypes;
+		}
+		public void setPsmPeptidePositionFilterableAnnotationTypes(
+				List<WebserviceResultAnnotationTypeItem> psmPeptidePositionFilterableAnnotationTypes) {
+			this.psmPeptidePositionFilterableAnnotationTypes = psmPeptidePositionFilterableAnnotationTypes;
+		}
     	
     }
 
@@ -462,6 +509,27 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
     	private String defaultFilterValueString;
 
     	private Integer sortOrder;
+    	
+    	/**
+		 * value closest to negative infinity
+		 */
+    	private Double min_ValueDouble;
+		
+		/**
+		 * value closest to positive infinity
+		 */
+		private Double max_ValueDouble;
+		
+		/**
+		 * best value per annotation type
+		 */
+		private Double best_ValueDouble;
+
+		/**
+		 * worst value per annotation type
+		 */
+		private Double worst_ValueDouble;
+		
 
 		public int getAnnotationTypeId() {
 			return annotationTypeId;
@@ -557,6 +625,22 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
 
 		public void setSearchProgramsPerSearchId(int searchProgramsPerSearchId) {
 			this.searchProgramsPerSearchId = searchProgramsPerSearchId;
+		}
+
+		public Double getMin_ValueDouble() {
+			return min_ValueDouble;
+		}
+
+		public Double getMax_ValueDouble() {
+			return max_ValueDouble;
+		}
+
+		public Double getBest_ValueDouble() {
+			return best_ValueDouble;
+		}
+
+		public Double getWorst_ValueDouble() {
+			return worst_ValueDouble;
 		}
     }
     

@@ -155,6 +155,7 @@ public class SearchDAO {
 			+ " ( "
 			+ 	" id, path, directory_name, fasta_filename, "
 			+   " has_scan_filenames, has_scan_data, has_isotope_label, has_search_sub_groups, any_psm_has_open_modificaton_masses,"
+			+   " any_psm_has__psm_peptide_position_annotation, "
 			+   " any_psm_has__is_decoy_true, any_psm_has__is_independent_decoy_true, all_psms_have_precursor_retention_time, all_psms_have_precursor_m_z, "
 			+   " psm_ids_are_sequential, "
 			+   " reported_peptide_matched_protein_mapping_provided, "
@@ -162,7 +163,7 @@ public class SearchDAO {
 			+ 	" ) "
 			+ " VALUES "
 			+ " ("
-			+ 		" ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +  SearchRecordStatus.IMPORTING.value() + ", ? "
+			+ 		" ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +  SearchRecordStatus.IMPORTING.value() + ", ? "
 			+ " )";
 	/**
 	 * This will INSERT the given SearchDTO into the database... even if an id is already set.
@@ -209,6 +210,12 @@ public class SearchDAO {
 			}
 			counter++;
 			if ( item.isAnyPsmHasOpenModificationMasses() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+			counter++;
+			if ( item.isAnyPsmHas_PsmPeptidePositionAnnotation() ) {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
 			} else {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
