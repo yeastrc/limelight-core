@@ -22,34 +22,21 @@ import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages
  */
 export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder {
 
-    //  Sub Group Id for a PSM Id for a Reported Peptide
-    private _subGroupIdMap_Key_PsmId_KeyReportedPeptideId : Map<number, Map<number,number>>; // - Map<Reported Peptide Id, Map<PSM Id, Sub Group Id>>
     //  Sub Group Id for a PSM Id
     private _subGroupIdMap_Key_PsmId : Map<number,number>; // - Map<PSM Id, Sub Group Id>
 
     /**
-     * @param psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideIdMap_CurrentCutoffs
+     *
      */
     constructor(
         {
-            subGroupIdMap_Key_PsmId_KeyReportedPeptideId, subGroupIdMap_Key_PsmId
+            subGroupIdMap_Key_PsmId
         } : {
-            //  Sub Group Id for a PSM Id for a Reported Peptide
-            subGroupIdMap_Key_PsmId_KeyReportedPeptideId : Map<number, Map<number,number>>; // - Map<Reported Peptide Id, Map<PSM Id, Sub Group Id>>
             //  Sub Group Id for a PSM Id
             subGroupIdMap_Key_PsmId : Map<number,number>; // - Map<PSM Id, Sub Group Id>
         }
     ) {
-        this._subGroupIdMap_Key_PsmId_KeyReportedPeptideId = subGroupIdMap_Key_PsmId_KeyReportedPeptideId;
         this._subGroupIdMap_Key_PsmId = subGroupIdMap_Key_PsmId;
-    }
-
-    /**
-     *
-     * @param reportedPeptideId
-     */
-    get_subGroupIdMap_Key_PsmId__For_ReportedPeptideId( reportedPeptideId: number ) {
-        return this._subGroupIdMap_Key_PsmId_KeyReportedPeptideId.get(reportedPeptideId);
     }
 
     /**
@@ -326,12 +313,11 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
      */
     private _createEmpty_No_ReportedPeptideIds() {
 
-        const subGroupIdMap_Key_PsmId_KeyReportedPeptideId : Map<number, Map<number, number>> = new Map();
         //  Sub Group Id for a PSM Id
         const subGroupIdMap_Key_PsmId : Map<number,number> = new Map(); // - Map<PSM Id, Sub Group Id>
 
         const searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder = new CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder({
-            subGroupIdMap_Key_PsmId_KeyReportedPeptideId, subGroupIdMap_Key_PsmId
+            subGroupIdMap_Key_PsmId
         })
 
         this._get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder__FunctionResult = {
@@ -348,17 +334,19 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
 
         const results = responseData.results;
 
-        const subGroupIdMap_Key_PsmId_KeyReportedPeptideId : Map<number, Map<number, number>> = new Map();
         //  Sub Group Id for a PSM Id
         const subGroupIdMap_Key_PsmId : Map<number,number> = new Map(); // - Map<PSM Id, Sub Group Id>
 
         for ( const result_Entry of results ) {
 
-            if ( ! limelight__variable_is_type_number_Check( result_Entry.rPId ) ) {
-                const msg = "result_Entry.rPId not numeric: " + result_Entry.rPId;
-                console.warn( msg );
-                throw Error( msg )
-            }
+
+            //  Remove since reportedPeptideId not used so not required from web service
+            // if ( ! limelight__variable_is_type_number_Check( result_Entry.rPId ) ) {
+            //     const msg = "result_Entry.rPId not numeric: " + result_Entry.rPId;
+            //     console.warn( msg );
+            //     throw Error( msg )
+            // }
+
             if ( ! limelight__variable_is_type_number_Check( result_Entry.sSbGpId ) ) {
                 const msg = "result_Entry.rPId not numeric: " + result_Entry.sSbGpId;
                 console.warn( msg );
@@ -370,22 +358,17 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
                 throw Error( msg )
             }
 
-            const reportedPeptideId = result_Entry.rPId;
+            //  Remove since reportedPeptideId not used so not required from web service
+            // const reportedPeptideId = result_Entry.rPId;  //
+
             const searchSubGroupId = result_Entry.sSbGpId;
             const psmId = result_Entry.psmId;
-
-            let getSubMap_Key_psmId_For_ReportedPeptideId = subGroupIdMap_Key_PsmId_KeyReportedPeptideId.get( reportedPeptideId );
-            if ( ! getSubMap_Key_psmId_For_ReportedPeptideId ) {
-                getSubMap_Key_psmId_For_ReportedPeptideId = new Map();
-                subGroupIdMap_Key_PsmId_KeyReportedPeptideId.set( reportedPeptideId, getSubMap_Key_psmId_For_ReportedPeptideId );
-            }
-            getSubMap_Key_psmId_For_ReportedPeptideId.set( psmId, searchSubGroupId );
 
             subGroupIdMap_Key_PsmId.set( psmId, searchSubGroupId );
         }
 
         const searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder = new CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder({
-            subGroupIdMap_Key_PsmId_KeyReportedPeptideId, subGroupIdMap_Key_PsmId
+            subGroupIdMap_Key_PsmId
         })
 
         this._get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder__FunctionResult = {

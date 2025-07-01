@@ -1593,23 +1593,6 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         peptideItems_Map_Key_peptideSequenceDisplayString : Map<string , CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> //  UPDATED
     }) : void {
 
-    let subGroupIdMap_Key_PsmId : Map<number, number> = undefined;
-
-    if ( searchSubGroup_Ids_Selected ) {
-        if ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder ) {
-            const msg = "( searchSubGroup_Ids_Selected ) and ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder ): projectSearchId " + projectSearchId;
-            console.warn( msg )
-            throw Error( msg )
-        }
-        subGroupIdMap_Key_PsmId = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupIdMap_Key_PsmId__For_ReportedPeptideId( reportedPeptideId )
-        if ( ! subGroupIdMap_Key_PsmId ) {
-            const msg = "( searchSubGroup_Ids_Selected ) and ( ! subGroupIdMap_Key_PsmId ): reportedPeptideId: " + reportedPeptideId + ", projectSearchId " + projectSearchId;
-            console.warn( msg )
-            throw Error( msg )
-        }
-    }
-
-
     let psmIds_ToProcess_Local = psmIds_ToProcess;
     if ( ! psmIds_ToProcess_Local ) {
         if ( ! psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder ) {
@@ -1625,13 +1608,19 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
 
         if ( searchSubGroup_Ids_Selected ) {
 
+            if ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder ) {
+                const msg = "( searchSubGroup_Ids_Selected ) and ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder ): projectSearchId " + projectSearchId;
+                console.warn( msg )
+                throw Error( msg )
+            }
+
             const psmIds_ToProcess_Temp = new Set<number>();
 
             for ( const psmId of psmIdsForReportedPeptideId ) {
 
-                const subGroupId = subGroupIdMap_Key_PsmId.get( psmId );
+                const subGroupId = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psmId );
                 if ( ! subGroupId ) {
-                    const msg = "( searchSubGroup_Ids_Selected ) and subGroupIdMap_Key_PsmId.get( psmId ) not return a value: psmId: " + psmId + ", projectSearchId " + projectSearchId;
+                    const msg = "( searchSubGroup_Ids_Selected ) and searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psmId ) not return a value: psmId: " + psmId + ", projectSearchId " + projectSearchId;
                     console.warn( msg )
                     throw Error( msg )
                 }
@@ -1664,11 +1653,18 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         let psmCount_after_Include_Map_Key_SearchSubGroupId__ForChildFunctionCall : Map<number,number> = undefined;
 
         if ( searchSubGroup_Ids_Selected ) {
+
+            if ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder ) {
+                const msg = "( searchSubGroup_Ids_Selected ) and ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder ): projectSearchId " + projectSearchId;
+                console.warn( msg )
+                throw Error( msg )
+            }
+
             psmCount_after_Include_Map_Key_SearchSubGroupId__ForChildFunctionCall = new Map<number, number>();
 
-            const subGroupId = subGroupIdMap_Key_PsmId.get( psmId );
+            const subGroupId = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psmId );
             if ( ! subGroupId ) {
-                const msg = "( searchSubGroup_Ids_Selected ) and subGroupIdMap_Key_PsmId.get( psmId ) not return a value: psmId: " + psmId + ", projectSearchId " + projectSearchId;
+                const msg = "( searchSubGroup_Ids_Selected ) and searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psmId ) not return a value: psmId: " + psmId + ", projectSearchId " + projectSearchId;
                 console.warn( msg )
                 throw Error( msg )
             }

@@ -1627,18 +1627,14 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                     throw Error(msg)
                 }
 
-                const subGroupIdMap_Key_PsmId = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupIdMap_Key_PsmId__For_ReportedPeptideId( reportedPeptideId );
-                if ( ! subGroupIdMap_Key_PsmId ) {
-                    throw Error("searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupIdMap_Key_PsmId__For_ReportedPeptideId( reportedPeptideId ); not return a value. _update_reportedPeptideIds_AndTheir_PSM_IDs__For_searchSubGroup_Ids_Selected(...). reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + this._projectSearchId );
-                }
-
                 psmIds_IncludeSet_Map_Key_SearchSubGroupId = new Map();
 
                 for ( const psmId_Include of psmIds_Include__FOR__reportedPeptideIds_AndTheir_PSM_IDs_ExistingEntry ) {
 
-                    const subGroupId = subGroupIdMap_Key_PsmId.get( psmId_Include );
+                    const subGroupId = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psmId_Include )
+
                     if ( ! subGroupId === undefined ) {
-                        throw Error("subGroupIdMap_Key_PsmId.get( psmId_Include ); not return a value. _update_reportedPeptideIds_AndTheir_PSM_IDs__For_searchSubGroup_Ids_Selected(...). psmId_Include: " + psmId_Include + ", projectSearchId: " + this._projectSearchId );
+                        throw Error("searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psmId_Include ); not return a value. _update_reportedPeptideIds_AndTheir_PSM_IDs__For_searchSubGroup_Ids_Selected(...). psmId_Include: " + psmId_Include + ", projectSearchId: " + this._projectSearchId );
                     }
 
                     if ( ! searchSubGroup_Ids_Selected.has( subGroupId ) ) {
