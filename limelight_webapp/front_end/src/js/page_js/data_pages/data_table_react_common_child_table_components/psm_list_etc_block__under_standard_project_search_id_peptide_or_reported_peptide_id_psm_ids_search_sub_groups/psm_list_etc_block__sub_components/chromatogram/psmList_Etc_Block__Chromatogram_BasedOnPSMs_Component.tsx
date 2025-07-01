@@ -168,6 +168,13 @@ const _SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues = [
 
 let maxScanDataWithPeaksReturnCount__FromServer: number  // Will be retrieved at start of each get Data for SearchScanFileId
 
+enum PlotType_IonCurrent_VS_Ions_Select_Enum {
+    ION_CURRENT = "ION_CURRENT",
+    IONS = "IONS"
+}
+
+const _plotType_IonCurrent_VS_Ions_Select_DEFAULT = PlotType_IonCurrent_VS_Ions_Select_Enum.ION_CURRENT  //  Set to default of ION_CURRENT
+
 enum ScanPeakSelect_Enum {
     MAX_PEAK_INTENSITY = "MAX_PEAK_INTENSITY",
     PEAK_MZ_CENTER_OF_MZ_RANGE = "PEAK_MZ_CENTER_OF_MZ_RANGE"
@@ -285,6 +292,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
     private _scanPeakSelect: ScanPeakSelect_Enum = _scanPeakSelect_DEFAULT  //  Requires Same Default in the Scan Peak Select Component  Internal__RetentionTime_Min_Max_UserEditable_Component
 
+    private _plotType_IonCurrent_VS_Ions_Select: PlotType_IonCurrent_VS_Ions_Select_Enum = _plotType_IonCurrent_VS_Ions_Select_DEFAULT  //  Requires Same Default in the Internal Component with radio buttons
+
     private _smoothingOption_Selection: SmoothingOption_Enum = _smoothingOption_Selection_DEFAULT  //  Requires Same Default in the Smoothing Select Component  Internal__SmoothingSelection_Component
 
 
@@ -313,6 +322,7 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
     private _force_SetTo_ValueFromParent__FOR__Internal__RetentionTime_Min_Max_UserEditable_Component: object
 
+    private _show__Plot_Ion_Count_Option_Div = false
 
     private _currentSelection_ObjectReference: object
 
@@ -338,6 +348,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                     || prevProps.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results !== this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results ) {
 
                     //  Reset
+
+                    this._show__Plot_Ion_Count_Option_Div = false
 
                     this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_Map_Key_SearchScanFileId = new Map()
                     this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId = undefined
@@ -1874,6 +1886,45 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
             throw Error("_load_Chromatogram_For_Selected_SearchScanFileId__AfterGet_ScanData_RenderOnPage(...):  dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.is_Data_FullyLoaded returns FALSE for searchScanFileId_Selected_AtStartOf_LoadRequest: " + searchScanFileId_Selected_AtStartOf_LoadRequest )
         }
 
+        {
+
+            let allScans_Have__ionInjectionTime = true
+
+            for ( const scanNumber of dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.data.data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.scanNumberArray ) {
+
+                let found_ScanWithPeaks = false
+                {
+                    {
+                        const scanItem_YES_Peaks = dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.scanData_Map_Key_ScanNumber.get( scanNumber )
+                        if ( scanItem_YES_Peaks ) {
+                            if ( scanItem_YES_Peaks.ionInjectionTime === undefined || scanItem_YES_Peaks.ionInjectionTime === null ) {
+
+                                allScans_Have__ionInjectionTime = false
+                                break
+                            }
+                        }
+                    }
+                    if ( ! found_ScanWithPeaks ) {
+                        const scanItem_NO_Peaks = dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.scanData_Map_Key_ScanNumber.get( scanNumber )
+                        if ( scanItem_NO_Peaks ) {
+                            if ( scanItem_NO_Peaks.ionInjectionTime_InMilliseconds === undefined || scanItem_NO_Peaks.ionInjectionTime_InMilliseconds === null ) {
+
+                                allScans_Have__ionInjectionTime = false
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+
+            this._show__Plot_Ion_Count_Option_Div = allScans_Have__ionInjectionTime
+
+            if ( ! this._show__Plot_Ion_Count_Option_Div ) {
+                //  Reset to since not displaying the radio button options
+                this._plotType_IonCurrent_VS_Ions_Select = _plotType_IonCurrent_VS_Ions_Select_DEFAULT
+            }
+        }
+
         this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId = dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId
         this._dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId = dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId
         this._dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId = dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId
@@ -2228,8 +2279,38 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                         </div>
                                     </div>
 
+
+
+                                    { this._show__Plot_Ion_Count_Option_Div ? (
+
+                                        <div style={ { paddingTop: _PADDING_TOP_ABOVE_HELP_SYMBOL } }>
+                                            <div style={ { marginBottom: 5 } }>
+
+                                                <Internal__PlotType_IonCurrent_VS_Ions_Component
+
+                                                    onChange_Callback={ (newSelectionValue) => { try {
+
+                                                        this._plotType_IonCurrent_VS_Ions_Select = newSelectionValue
+
+                                                        this._currentSelection_ObjectReference = {}
+
+                                                        //   Only call when change scan file
+                                                        // this._displayChromatogram_For_Selected_SearchScanFileId({ currentSelection_ObjectReference_AtStartOf_Request: this._currentSelection_ObjectReference })
+
+                                                        this._triggerPlotUpdate_Object = {}
+
+                                                        this.setState({ forceRerenderObject: {} })
+
+                                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
+                                                />
+
+                                            </div>
+                                        </div>
+                                    ) : null }
+
                                     <div style={ { paddingTop: _PADDING_TOP_ABOVE_HELP_SYMBOL } }>
                                         <div style={ { marginBottom: 5 } }>
+
                                             <Internal__PeakSelection_Component
                                                 onChange_Callback={ (newSelectionValue) => { try {
 
@@ -2357,8 +2438,10 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                     <div>
                                         { this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId &&
                                             this._dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId ? (
+
                                             <Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component
                                                 triggerPlotUpdate_Object={ this._triggerPlotUpdate_Object }
+                                                plotType_IonCurrent_VS_Ions_Select={ this._plotType_IonCurrent_VS_Ions_Select }
                                                 open_modification_mass_decimal_place_rounding__10_POWER___for_user_selection={ this._open_modification_mass_decimal_place_rounding__10_POWER___for_user_selection }
                                                 projectSearchId={ this.props.projectSearchId }
                                                 selection_ReportedPeptide_OpenModMass_Charge={ this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection }
@@ -2598,6 +2681,8 @@ interface Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Componen
 
     triggerPlotUpdate_Object: object
 
+    plotType_IonCurrent_VS_Ions_Select: PlotType_IonCurrent_VS_Ions_Select_Enum
+
     open_modification_mass_decimal_place_rounding__10_POWER___for_user_selection: number
 
     projectSearchId: number
@@ -2655,11 +2740,10 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
     private _DO_NOT_CALL() { //  Test Cast of method
     }
 
-    private plot_Ion_Current_Ref :  React.RefObject<HTMLDivElement>
-    private plot_Ion_Count_Ref :  React.RefObject<HTMLDivElement>
+    private plot_div_Ref :  React.RefObject<HTMLDivElement>
 
-    private _show__Plot_Ion_Count_Div = false
-
+    // private plot_Ion_Current_Ref :  React.RefObject<HTMLDivElement>
+    // private plot_Ion_Count_Ref :  React.RefObject<HTMLDivElement>
 
     private _showCreatingMessage = true
     private _showUpdatingMessage = false
@@ -2676,25 +2760,30 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
     constructor( props: Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Props ) {
         super( props );
 
-        this.plot_Ion_Current_Ref = React.createRef();
-        this.plot_Ion_Count_Ref = React.createRef();
+        this.plot_div_Ref = React.createRef();
 
-        this._set__ClassField___show__Plot_Ion_Count_Div( props )
-
+        // this.plot_Ion_Current_Ref = React.createRef();
+        // this.plot_Ion_Count_Ref = React.createRef();
     }
 
     componentWillUnmount() {
         try {
             try {
-                Plotly.purge(this.plot_Ion_Current_Ref.current)
+                Plotly.purge(this.plot_div_Ref.current)
             } catch (e) {
                 //  Eat Exception
             }
-            try {
-                Plotly.purge(this.plot_Ion_Count_Ref.current)
-            } catch (e) {
-                //  Eat Exception
-            }
+
+            // try {
+            //     Plotly.purge(this.plot_Ion_Current_Ref.current)
+            // } catch (e) {
+            //     //  Eat Exception
+            // }
+            // try {
+            //     Plotly.purge(this.plot_Ion_Count_Ref.current)
+            // } catch (e) {
+            //     //  Eat Exception
+            // }
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
@@ -2703,9 +2792,6 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             if (
                 prevProps.triggerPlotUpdate_Object !== this.props.triggerPlotUpdate_Object
             ) {
-
-                this._set__ClassField___show__Plot_Ion_Count_Div( this.props )
-
                 this._showUpdatingMessage = true
                 this._show_NO_DATA_ForSelection_Message = false;
 
@@ -2735,44 +2821,6 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-    }
-
-    /**
-     *
-     * @param props
-     */
-    private _set__ClassField___show__Plot_Ion_Count_Div( props: Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Props ) {
-
-        let allScans_Have__ionInjectionTime = true
-
-        for ( const scanNumber of props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.data.data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.scanNumberArray ) {
-
-            let found_ScanWithPeaks = false
-            {
-                {
-                    const scanItem_YES_Peaks = props.dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.scanData_Map_Key_ScanNumber.get( scanNumber )
-                    if ( scanItem_YES_Peaks ) {
-                        if ( scanItem_YES_Peaks.ionInjectionTime === undefined || scanItem_YES_Peaks.ionInjectionTime === null ) {
-
-                            allScans_Have__ionInjectionTime = false
-                            break
-                        }
-                    }
-                }
-                if ( ! found_ScanWithPeaks ) {
-                    const scanItem_NO_Peaks = props.dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.scanData_Map_Key_ScanNumber.get( scanNumber )
-                    if ( scanItem_NO_Peaks ) {
-                        if ( scanItem_NO_Peaks.ionInjectionTime_InMilliseconds === undefined || scanItem_NO_Peaks.ionInjectionTime_InMilliseconds === null ) {
-
-                            allScans_Have__ionInjectionTime = false
-                            break
-                        }
-                    }
-                }
-            }
-        }
-
-        this._show__Plot_Ion_Count_Div = allScans_Have__ionInjectionTime
     }
 
     /**
@@ -2878,30 +2926,29 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             return 0;
         })
 
-        this._createOnMount_And_OnUpdate__SpecificChart({
+        if ( this.props.plotType_IonCurrent_VS_Ions_Select === PlotType_IonCurrent_VS_Ions_Select_Enum.ION_CURRENT ) {
 
-            chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_CURRENT,
+            this._createOnMount_And_OnUpdate__SpecificChart( {
 
-            retentionTimeSeconds_Range_ForChart_Min,
-            retentionTimeSeconds_Range_ForChart_Max,
-            psmList_LOCAL_PossiblyFiltered,
-            scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
-            psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
-        })
+                chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_CURRENT,
 
-        {
-            if ( this._show__Plot_Ion_Count_Div ) {
-                this._createOnMount_And_OnUpdate__SpecificChart( {
+                retentionTimeSeconds_Range_ForChart_Min,
+                retentionTimeSeconds_Range_ForChart_Max,
+                psmList_LOCAL_PossiblyFiltered,
+                scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
+                psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
+            } )
+        } else {
+            this._createOnMount_And_OnUpdate__SpecificChart( {
 
-                    chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT,
+                chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT,
 
-                    retentionTimeSeconds_Range_ForChart_Min,
-                    retentionTimeSeconds_Range_ForChart_Max,
-                    psmList_LOCAL_PossiblyFiltered,
-                    scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
-                    psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
-                } )
-            }
+                retentionTimeSeconds_Range_ForChart_Min,
+                retentionTimeSeconds_Range_ForChart_Max,
+                psmList_LOCAL_PossiblyFiltered,
+                scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
+                psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
+            } )
         }
     }
 
@@ -3246,18 +3293,20 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             },
             showlegend: showlegend_Local
         }
+        
 
-        let plotly_DOM_Element: HTMLDivElement
 
-        if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+        let plotly_DOM_Element: HTMLDivElement = this.plot_div_Ref.current
 
-            plotly_DOM_Element = this.plot_Ion_Count_Ref.current
-
-        } else {
-
-            plotly_DOM_Element = this.plot_Ion_Current_Ref.current
-
-        }
+        // if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+        //
+        //     plotly_DOM_Element = this.plot_Ion_Count_Ref.current
+        //
+        // } else {
+        //
+        //     plotly_DOM_Element = this.plot_Ion_Current_Ref.current
+        //
+        // }
 
         const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: plotly_DOM_Element });
 
@@ -4025,6 +4074,18 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             <div style={ { position: "relative" } }>
 
                 <div style={ { display: "flex", flexWrap: "wrap", gap: 10 } }>
+                    
+                    
+                    <div
+                        style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT, borderStyle: "solid", borderWidth: 1, borderColor: "black" } }
+                    >
+                        <div
+                            ref={this.plot_div_Ref}
+                            style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
+                        ></div>
+                    </div>
+
+                    {/* WAS
                     <div
                         style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT, borderStyle: "solid", borderWidth: 1, borderColor: "black" } }
                     >
@@ -4044,7 +4105,10 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                             style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
                         ></div>
                     </div>
+                */}
+
                 </div>
+                
 
                 {/*  Overlay for Creating or Updating  */}
                 { this._showCreatingMessage || this._showUpdatingMessage || this._show_NO_DATA_ForSelection_Message || this._psms_NOT_PutOnChart_ShowMessage || this._psms_Contain_PSM_Level_VariableModifications_ShowMessage ? (
@@ -4137,6 +4201,96 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                         ) : null }
                     </div>
                 ) : null }
+            </div>
+        );
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+
+//    Internal Component for User change the Plot Type: Ion Current Vs Ions
+
+
+/**
+ *
+ */
+interface Internal__PlotType_IonCurrent_VS_Ions_Component_Props {
+
+    onChange_Callback: (newSelectionValue: PlotType_IonCurrent_VS_Ions_Select_Enum ) => void
+}
+
+/**
+ *
+ */
+interface Internal__PlotType_IonCurrent_VS_Ions_Component_State {
+
+    forceRerenderObject?: object
+}
+
+/**
+ *
+ */
+class Internal__PlotType_IonCurrent_VS_Ions_Component extends React.Component< Internal__PlotType_IonCurrent_VS_Ions_Component_Props, Internal__PlotType_IonCurrent_VS_Ions_Component_State > {
+
+    private _plotType_IonCurrent_VS_Ions_Select: PlotType_IonCurrent_VS_Ions_Select_Enum = _plotType_IonCurrent_VS_Ions_Select_DEFAULT
+
+    /**
+     *
+     */
+    constructor( props: Internal__PlotType_IonCurrent_VS_Ions_Component_Props ) {
+        super( props );
+
+        this.state = { forceRerenderObject: {} }
+    }
+
+    render() {
+        return (
+            <div>
+                <span>Plot Using:</span>
+
+                <span>&nbsp;</span>
+
+                <label>
+                    <input
+                        type="radio"
+                        checked={ this._plotType_IonCurrent_VS_Ions_Select === PlotType_IonCurrent_VS_Ions_Select_Enum.ION_CURRENT }
+                        onChange={ event => { try {
+
+                            this._plotType_IonCurrent_VS_Ions_Select = PlotType_IonCurrent_VS_Ions_Select_Enum.ION_CURRENT
+
+                            this.setState({ forceRerenderObject: {} })
+
+                            window.setTimeout( () => { try {
+
+                                this.props.onChange_Callback(this._plotType_IonCurrent_VS_Ions_Select)
+
+                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
+
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
+                    />
+                    <span> Ion Current</span>
+                </label>
+                <span> </span>
+                <label>
+                    <input
+                        type="radio"
+                        checked={ this._plotType_IonCurrent_VS_Ions_Select === PlotType_IonCurrent_VS_Ions_Select_Enum.IONS }
+                        onChange={ event => { try {
+
+                            this._plotType_IonCurrent_VS_Ions_Select = PlotType_IonCurrent_VS_Ions_Select_Enum.IONS
+
+                            this.setState({ forceRerenderObject: {} })
+
+                            window.setTimeout( () => { try {
+
+                                this.props.onChange_Callback(this._plotType_IonCurrent_VS_Ions_Select)
+
+                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
+
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
+                    />
+                    <span> Ions</span>
+                </label>
             </div>
         );
     }
