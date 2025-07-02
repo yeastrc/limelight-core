@@ -34,19 +34,19 @@ import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
  *
  */
 @Component
-public class SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher extends Limelight_JDBC_Base implements SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher_IF   {
+public class SearchSubSearchGroupId_PsmId_ALL_For_SearchId__IncludesDecoys_Searcher extends Limelight_JDBC_Base implements SearchSubSearchGroupId_PsmId_ALL_For_SearchId__IncludesDecoys_Searcher_IF  {
 
-	private static final Logger log = LoggerFactory.getLogger( SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher.class );
+	private static final Logger log = LoggerFactory.getLogger( SearchSubSearchGroupId_PsmId_ALL_For_SearchId__IncludesDecoys_Searcher.class );
 
 	/**
 	 * 
-	 * 
+	 *
 	 */
-	public static class SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher_ResultItem {
+	public static class SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem {
 		
 		int searchSubGroupId;
 		long psmId;
-		
+
 		public int getSearchSubGroupId() {
 			return searchSubGroupId;
 		}
@@ -55,55 +55,44 @@ public class SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher extends Limelight_
 		}
 	}
 	
+	private final static String SQL = 
+			"SELECT search_sub_group_id, psm_tbl.id AS psm_id "
+					+ " FROM  " 
+					+ "  psm_tbl INNER JOIN psm_search_sub_group_tbl ON psm_tbl.id = psm_search_sub_group_tbl.psm_id "
+					+ "  WHERE psm_tbl.search_id = ?  ";
+
+
+
 	/**
-	 * @param psmIds
+	 * 
+	 * @param searchId
 	 * @return
-	 * @throws SQLException
+	 * @throws Exception
 	 */
 	@Override
-	public List<SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher_ResultItem> 
-	
-	getSearchSubSearchGroupId_PsmId_For_PsmIds(
-			
-			List<Long> psmIds ) throws Exception {
+	public List<SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem> getSearchSubSearchGroupId_PsmId_ALL_For_SearchId__IncludesDecoys( int searchId ) throws Exception {
 		
-		if ( psmIds == null || psmIds.isEmpty() ) {
-			return new ArrayList<>();
-		}
-		
-		List<SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher_ResultItem> results = new ArrayList<>( psmIds.size() );
+		List<SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem> results = new ArrayList<>();
 
-				
 		StringBuilder sqlSB = new StringBuilder( 10000 );
 		
-		sqlSB.append( "SELECT search_sub_group_id, psm_id FROM psm_search_sub_group_tbl WHERE psm_id IN ( " ); 
-		
-		for ( int counter = 1; counter <= psmIds.size(); counter++ ) {
+		sqlSB.append( SQL );
 
-			if ( counter != 1 ) {
-				sqlSB.append( "," );
-			}
-			sqlSB.append( "?" );
-		}
-		sqlSB.append( " ) " );
-
-		String sql = sqlSB.toString();
+		final String sql = sqlSB.toString();
 		
 		try ( Connection connection = super.getDBConnection();
 			     PreparedStatement preparedStatement = connection.prepareStatement( sql ) ) {
 
 			int counter = 0;
-
-			for ( Long psmId : psmIds ) {
-				counter++;
-				preparedStatement.setLong( counter, psmId );
-			}
-			
+			counter++;
+			preparedStatement.setInt( counter, searchId );
+		
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while ( rs.next() ) {
-					SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher_ResultItem result = new SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher_ResultItem();
+					SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem result = new SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem();
 					result.searchSubGroupId = rs.getInt( "search_sub_group_id" );
 					result.psmId = rs.getLong( "psm_id" );
+					
 					results.add( result );
 				}
 			}

@@ -1,7 +1,7 @@
 /**
  * commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered.ts
  *
- * For Single Project Search  -  SearchSubGroupId_ForPSM_ID
+ * For Single Project Search  -  SearchSubGroupId For PSM ID - Including Decoys if search has decoys
  *
  * Data loaded from server and code to load data from server
  *
@@ -68,11 +68,9 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
 
     //
 
-    private _searchSubGroupId_ForPSM_ID_Holder__Include_DecoyPSM: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
-    private _searchSubGroupId_ForPSM_ID_Holder__Exclude_DecoyPSM: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
+    private _searchSubGroupId_ForPSM_ID_Holder: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
 
-    private _promise_WebserviceRetrieval_InProgress__Include_DecoyPSM: Promise<void>
-    private _promise_WebserviceRetrieval_InProgress__Exclude_DecoyPSM: Promise<void>
+    private _promise_WebserviceRetrieval_InProgress: Promise<void>
 
     /**
      *
@@ -119,9 +117,9 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
      *
      * Get all for search
      */
-    get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch__Include_DecoyPSMs__ReturnPromise(): Promise<CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult> {
+    get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch__ReturnPromise(): Promise<CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult> {
         try {
-            const result = this.get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch__Include_DecoyPSMs();
+            const result = this.get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch();
 
             if (result.data) {
 
@@ -141,117 +139,41 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
     /**
      * Get all for search
      */
-    get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch__Include_DecoyPSMs():
+    get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch():
         {
             data: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult
             promise: Promise<CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult>
         } {
 
-        if (this._searchSubGroupId_ForPSM_ID_Holder__Include_DecoyPSM) {
+        if (this._searchSubGroupId_ForPSM_ID_Holder) {
 
             //  Have loaded data so just return it
             return {
                 data: {
-                    searchSubGroupId_ForPSM_ID_Holder: this._searchSubGroupId_ForPSM_ID_Holder__Include_DecoyPSM
+                    searchSubGroupId_ForPSM_ID_Holder: this._searchSubGroupId_ForPSM_ID_Holder
                 },
                 promise: undefined
             };
         }
 
-        if ( this._promise_WebserviceRetrieval_InProgress__Include_DecoyPSM ) {
+        if ( this._promise_WebserviceRetrieval_InProgress ) {
 
             const promise = new Promise<CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult>( (resolve, reject) => { try {
-                this._promise_WebserviceRetrieval_InProgress__Include_DecoyPSM.catch(reason => reject(reason))
-                this._promise_WebserviceRetrieval_InProgress__Include_DecoyPSM.then(noValue => { try {
-                    resolve({ searchSubGroupId_ForPSM_ID_Holder: this._searchSubGroupId_ForPSM_ID_Holder__Include_DecoyPSM } );
+                this._promise_WebserviceRetrieval_InProgress.catch(reason => reject(reason))
+                this._promise_WebserviceRetrieval_InProgress.then(noValue => { try {
+                    resolve({ searchSubGroupId_ForPSM_ID_Holder: this._searchSubGroupId_ForPSM_ID_Holder } );
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
             return { data: undefined, promise } // EARLY RETURN
         }
 
-        const include_DecoyPSM = true;
-
-        const promise_Loading = this._load_SearchSubGroupId_ForPSM_ID_Data({ include_DecoyPSM });
+        const promise_Loading = this._load_SearchSubGroupId_ForPSM_ID_Data();
 
         const promise = new Promise<CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult>( (resolve, reject) => { try {
             promise_Loading.catch(reason => reject(reason))
             promise_Loading.then(noValue => { try {
-                    resolve({ searchSubGroupId_ForPSM_ID_Holder: this._searchSubGroupId_ForPSM_ID_Holder__Include_DecoyPSM } );
-            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-        return {
-            data: undefined,
-            promise
-        }
-    }
-
-
-    /**
-     * !!!  Always return promise
-     *
-     * Get all for search
-     */
-    get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch__Exclude_DecoyPSMs__ReturnPromise(): Promise<CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult> {
-        try {
-            const result = this.get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch__Exclude_DecoyPSMs();
-
-            if (result.data) {
-
-                return Promise.resolve(result.data);
-            }
-
-            return result.promise;
-
-        } catch( e ) {
-            console.warn("Exception caught: ", e);
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    }
-
-
-    /**
-     * Get all for search
-     */
-    get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch__Exclude_DecoyPSMs():
-        {
-            data: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult
-            promise: Promise<CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult>
-        } {
-
-        if (this._searchSubGroupId_ForPSM_ID_Holder__Exclude_DecoyPSM) {
-
-            //  Have loaded data so just return it
-            return {
-                data: {
-                    searchSubGroupId_ForPSM_ID_Holder: this._searchSubGroupId_ForPSM_ID_Holder__Exclude_DecoyPSM
-                },
-                promise: undefined
-            };
-        }
-
-        if ( this._promise_WebserviceRetrieval_InProgress__Exclude_DecoyPSM ) {
-
-            const promise = new Promise<CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult>( (resolve, reject) => { try {
-                this._promise_WebserviceRetrieval_InProgress__Exclude_DecoyPSM.catch(reason => reject(reason))
-                this._promise_WebserviceRetrieval_InProgress__Exclude_DecoyPSM.then(noValue => { try {
-                    resolve({ searchSubGroupId_ForPSM_ID_Holder: this._searchSubGroupId_ForPSM_ID_Holder__Exclude_DecoyPSM } );
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-            return { data: undefined, promise } // EARLY RETURN
-        }
-
-        const include_DecoyPSM = false;
-
-        const promise_Loading = this._load_SearchSubGroupId_ForPSM_ID_Data({ include_DecoyPSM });
-
-        const promise = new Promise<CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult>( (resolve, reject) => { try {
-            promise_Loading.catch(reason => reject(reason))
-            promise_Loading.then(noValue => { try {
-                resolve({ searchSubGroupId_ForPSM_ID_Holder: this._searchSubGroupId_ForPSM_ID_Holder__Exclude_DecoyPSM } );
+                    resolve({ searchSubGroupId_ForPSM_ID_Holder: this._searchSubGroupId_ForPSM_ID_Holder } );
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
@@ -266,22 +188,15 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
      *
      */
 
-    private _load_SearchSubGroupId_ForPSM_ID_Data(
-        {
-            include_DecoyPSM
-        } : {
-            include_DecoyPSM: boolean
-        }
-    ) : Promise<void> {
+    private _load_SearchSubGroupId_ForPSM_ID_Data() : Promise<void> {
         try {
             const promise = new Promise<void>(
                 ( resolve, reject ) => { try {
                     const requestObject = {
-                        projectSearchId : this._projectSearchId,
-                        include_DecoyPSM
+                        projectSearchId : this._projectSearchId
                     };
 
-                    const url = "d/rws/for-page/psb/search-sub-search-group-id_psm-id__not-filtered_for-single-project-search-id-version-0003";
+                    const url = "d/rws/for-page/psb/search-sub-search-group-id_psm-id__not-filtered_for-single-project-search-id-version-0004";
 
                     console.log("AJAX Call to get d/rws/for-page/psb/search-sub-search-group-id_psm-id__not-filtered_for-single-project-search-id-version-0003 START, Now: " + new Date() );
 
@@ -291,12 +206,7 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
 
                     promise_webserviceCallStandardPost.catch( () => {
 
-                        this._promise_WebserviceRetrieval_InProgress__Exclude_DecoyPSM = undefined
-
-                        if ( include_DecoyPSM ) {
-
-                            this._promise_WebserviceRetrieval_InProgress__Include_DecoyPSM = undefined
-                        }
+                        this._promise_WebserviceRetrieval_InProgress = undefined
 
                         reject()
                     }  );
@@ -305,14 +215,9 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
                         try {
                             console.log("AJAX Call to get d/rws/for-page/psb/search-sub-search-group-id_psm-id__not-filtered_for-single-project-search-id-version-0003 END, Now: " + new Date() );
 
-                            this._process_WebserviceResponse({ responseData, include_DecoyPSM });
+                            this._process_WebserviceResponse({ responseData });
 
-                            this._promise_WebserviceRetrieval_InProgress__Exclude_DecoyPSM = undefined
-
-                            if ( include_DecoyPSM ) {
-
-                                this._promise_WebserviceRetrieval_InProgress__Include_DecoyPSM = undefined
-                            }
+                            this._promise_WebserviceRetrieval_InProgress = undefined
 
                             resolve()
 
@@ -320,12 +225,7 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
 
-            this._promise_WebserviceRetrieval_InProgress__Exclude_DecoyPSM = promise
-
-            if ( include_DecoyPSM ) {
-
-                this._promise_WebserviceRetrieval_InProgress__Include_DecoyPSM = promise
-            }
+            this._promise_WebserviceRetrieval_InProgress = promise
 
             return promise;
 
@@ -342,86 +242,92 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
      */
     private _process_WebserviceResponse(
         {
-            responseData, include_DecoyPSM
+            responseData
         }: {
             responseData: any
-            include_DecoyPSM: boolean
-        }) : void {
+        }) {
 
-        { //  Always process "Exclude Decoy" for results
 
-            const include_DecoyPSM_Process_WebserviceResponse = false;
+        const webserviceResponse = responseData as INTERNAL__WebserviceResponse_Root_Class
 
-            const searchSubGroupId_ForPSM_ID_Holder = this._process_WebserviceResponse__Include_Or_Exclude_DecoyPSM({
-                responseData, include_DecoyPSM_Process_WebserviceResponse
-            });
+        //  Separate searchSubGroupIds_Base36 into its entries
+        const searchSubGroupIds_Base36_String_Entries: Array<string> = []
 
-            this._searchSubGroupId_ForPSM_ID_Holder__Exclude_DecoyPSM = searchSubGroupId_ForPSM_ID_Holder
-        }
-
-        if ( include_DecoyPSM ) {
-
-            //  "Include Decoy" requested so process Include
-
-            const include_DecoyPSM_Process_WebserviceResponse = true;
-
-            const searchSubGroupId_ForPSM_ID_Holder = this._process_WebserviceResponse__Include_Or_Exclude_DecoyPSM({
-                responseData, include_DecoyPSM_Process_WebserviceResponse
-            });
-
-            this._searchSubGroupId_ForPSM_ID_Holder__Include_DecoyPSM = searchSubGroupId_ForPSM_ID_Holder
-        }
-    }
-
-    /**
-     *
-     * @param responseData
-     * @private
-     */
-    private _process_WebserviceResponse__Include_Or_Exclude_DecoyPSM(
         {
-            responseData, include_DecoyPSM_Process_WebserviceResponse
-        }: {
-            responseData: any
-            include_DecoyPSM_Process_WebserviceResponse: boolean
-        }) : CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder {
+            const stringLength = webserviceResponse.searchSubGroupIds_Base36_EachEntryLength
+            let stringStart = 0
 
-        const results = responseData.results;
+            while ( stringStart < webserviceResponse.searchSubGroupIds_Base36.length ) {
+
+                const searchSubGroupIds_Base36_Entry = webserviceResponse.searchSubGroupIds_Base36.substring( stringStart, stringStart + stringLength )
+
+                searchSubGroupIds_Base36_String_Entries.push( searchSubGroupIds_Base36_Entry )
+
+                stringStart += stringLength
+            }
+        }
 
         //  Sub Group Id for a PSM Id
         const subGroupIdMap_Key_PsmId : Map<number,number> = new Map(); // - Map<PSM Id, Sub Group Id>
 
-        for ( const result_Entry of results ) {
+        {
+            let prev_PsmId = undefined
 
-            if ( ! limelight__variable_is_type_number_Check( result_Entry.sSbGpId ) ) {
-                const msg = "result_Entry.rPId not numeric: " + result_Entry.sSbGpId;
-                console.warn( msg );
-                throw Error( msg )
+            for ( let index = 0; index < searchSubGroupIds_Base36_String_Entries.length; index++ ) {
+
+                const searchSubGroupIds_Base36_String_Entry = searchSubGroupIds_Base36_String_Entries[ index ]
+                const searchSubGroupId = Number.parseInt( searchSubGroupIds_Base36_String_Entry, webserviceResponse.searchSubGroupIds_Base36_Radix_Number )
+
+                let psmId: number = undefined
+
+                if ( index == 0 ) {
+                    //  First entry so always starting PSM Id
+                    psmId = webserviceResponse.startingPsmId
+
+                } else {
+                    // NOT First entry
+
+                    if ( webserviceResponse.all_PsmId_AreSequential ) {
+                        //  YES sequential so increment
+                        psmId = prev_PsmId + 1
+                    } else {
+                        //  NO sequential so compute
+                        psmId = prev_PsmId + ( webserviceResponse.psmIds_OffsetFromStartOrPrevious[ index ])
+                    }
+                }
+
+                subGroupIdMap_Key_PsmId.set( psmId, searchSubGroupId )
+
+                prev_PsmId = psmId
             }
-            if ( ! limelight__variable_is_type_number_Check( result_Entry.psmId ) ) {
-                const msg = "result_Entry.psmId not numeric: " + result_Entry.psmId;
-                console.warn( msg );
-                throw Error( msg )
-            }
-
-            const searchSubGroupId = result_Entry.sSbGpId;
-            const psmId = result_Entry.psmId;
-            const decoyPSM = result_Entry.decoyPSM as boolean;
-
-            if ( decoyPSM && ( ! include_DecoyPSM_Process_WebserviceResponse ) ) {
-                //  PSM is decoy and NOT include Decoy so skip
-
-                continue;  // EARLY CONTINUE
-            }
-
-            subGroupIdMap_Key_PsmId.set( psmId, searchSubGroupId );
         }
 
         const searchSubGroupId_ForPSM_ID_Holder = new CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder({
             subGroupIdMap_Key_PsmId
         })
 
-        return searchSubGroupId_ForPSM_ID_Holder;
+        this._searchSubGroupId_ForPSM_ID_Holder = searchSubGroupId_ForPSM_ID_Holder
     }
 
+}
+
+
+class INTERNAL__WebserviceResponse_Root_Class {
+
+    all_PsmId_AreSequential: boolean
+    startingPsmId: number
+
+    /**
+     * Populated ONLY if all_PsmId_AreSequential is false
+     *
+     * First entry is offset from startingPsmId and is always zero
+     * Following entries are offset from previous psmId
+     */
+    psmIds_OffsetFromStartOrPrevious: Array<number>
+
+    searchSubGroupIds_Base36_Radix_Number: number
+
+    searchSubGroupIds_Base36: string
+
+    searchSubGroupIds_Base36_EachEntryLength: number
 }

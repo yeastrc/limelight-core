@@ -42,7 +42,6 @@ import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_M
 import {CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters";
 import {CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters";
 import {CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters";
-import {CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters";
 import {CommonData_LoadedFromServer_SingleSearch__Num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__Num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters";
@@ -55,6 +54,9 @@ import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_F
 import {CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters";
 import {CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_common_across_searches_sub_parts__returned_objects/commonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered";
 
 ///////////////////
 
@@ -349,7 +351,7 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
 
             let psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder> = undefined;
 
-            let searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder> = undefined;
+            let searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder> = undefined;
 
             let numPSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__Num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder> = undefined;
 
@@ -387,6 +389,14 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                 const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId );
                 if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
                     throw Error( "No commonData_LoadedFromServer_PerSearch_For_ProjectSearchId for projectSearchId: " + projectSearchId );
+                }
+
+                const commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId =
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId);
+                if (!commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId) {
+                    const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
+                    console.warn(msg);
+                    throw Error(msg);
                 }
 
                 {
@@ -677,34 +687,34 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                 {  //
                     if ( searchSubGroup_Ids_Selected ) {
 
-                        {  //  searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
+                        {  //  searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId
 
-                            if ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId ) {
-                                searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId = new Map()
+                            if ( ! searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId ) {
+                                searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId = new Map()
                             }
 
-                            const get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_Result =
-                                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                                get_commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters().
-                                get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch();
+                            const get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result =
+                                commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId.
+                                get_commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered().
+                                get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch();
 
-                            if ( get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_Result.data ) {
+                            if ( get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.data ) {
 
-                                searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.set(
-                                    projectSearchId, get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_Result.data.searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder
+                                searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId.set(
+                                    projectSearchId, get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.data.searchSubGroupId_ForPSM_ID_Holder
                                 );
 
-                            } else if ( get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_Result.promise ) {
+                            } else if ( get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.promise ) {
 
                                 const promise = new Promise<void>( (resolve, reject) => {
-                                    get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_Result.promise.catch(reason => {
+                                    get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.promise.catch(reason => {
                                         reject(reason);
                                     })
-                                    get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_Result.promise.then(value => {
+                                    get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.promise.then(value => {
                                         try {
 
-                                            searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.set(
-                                                projectSearchId, value.searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder
+                                            searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId.set(
+                                                projectSearchId, value.searchSubGroupId_ForPSM_ID_Holder
                                             );
 
                                             resolve();
@@ -719,11 +729,11 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                                 promises.push(promise);
 
                             } else {
-                                throw Error("get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_Result 'data' 'promise' both NOT have value");
+                                throw Error("get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result 'data' 'promise' both NOT have value");
                             }
                         }
 
-                        {  //  searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
+                        {  //  searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId
 
                             if ( ! numPSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId ) {
                                 numPSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId = new Map()
@@ -800,7 +810,7 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
 
                     openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
                     psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId,
-                    searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+                    searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId,
                     numPSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
                 });
 
@@ -843,7 +853,7 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
 
                         openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
                         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId,
-                        searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+                        searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId,
                         numPSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
                     });
 
@@ -894,7 +904,7 @@ const _internal_TopLevel_Function_AfterDataLoad = function (
 
         openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId,
-        searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+        searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId,
         numPSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
     } : {
         forPeptidePage: boolean
@@ -923,7 +933,7 @@ const _internal_TopLevel_Function_AfterDataLoad = function (
 
         openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId : Map<number, CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters_Holder>
         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder>
-        searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder>
+        searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder>
         numPSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__Num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder>
 
     })  {
@@ -1006,9 +1016,9 @@ const _internal_TopLevel_Function_AfterDataLoad = function (
             staticModificationsForProjectSearchId_Key_ResidueLetter = staticModsForSearchMap_Map_Key_ProjectSearchId.get(projectSearchId);
         }
 
-        let searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder = undefined
-        if ( searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId ) {
-            searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get(projectSearchId)
+        let searchSubGroupId_ForPSM_ID_Holder: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder = undefined
+        if ( searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId ) {
+            searchSubGroupId_ForPSM_ID_Holder = searchSubGroupId_ForPSM_ID_Holder_Map_Key_ProjectSearchId.get(projectSearchId)
         }
 
         let psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder = undefined
@@ -1095,7 +1105,7 @@ const _internal_TopLevel_Function_AfterDataLoad = function (
                     numPsms: numPsms__ForSingleReportedPeptideId,
                     variableModificationsRoundedArray_KeyPosition,
                     staticModificationsForProjectSearchId: staticModificationsForProjectSearchId_Key_ResidueLetter,
-                    searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder,
+                    searchSubGroupId_ForPSM_ID_Holder,
                     psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
                     openModifications_On_PSM_For_MainFilters_Holder,
 
@@ -1555,7 +1565,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         projectSearchId,
         variableModificationsRoundedArray_KeyPosition,
         staticModificationsForProjectSearchId,
-        searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder,
+        searchSubGroupId_ForPSM_ID_Holder,
         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
         openModifications_On_PSM_For_MainFilters_Holder,
 
@@ -1583,7 +1593,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         numPsms : number
         variableModificationsRoundedArray_KeyPosition: Map<number, Set<number>>
         staticModificationsForProjectSearchId : Map<string, number>
-        searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder
+        searchSubGroupId_ForPSM_ID_Holder: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder
         openModifications_On_PSM_For_MainFilters_Holder : CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters_Holder
 
@@ -1608,8 +1618,8 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
 
         if ( searchSubGroup_Ids_Selected ) {
 
-            if ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder ) {
-                const msg = "( searchSubGroup_Ids_Selected ) and ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder ): projectSearchId " + projectSearchId;
+            if ( ! searchSubGroupId_ForPSM_ID_Holder ) {
+                const msg = "( searchSubGroup_Ids_Selected ) and ( ! searchSubGroupId_ForPSM_ID_Holder ): projectSearchId " + projectSearchId;
                 console.warn( msg )
                 throw Error( msg )
             }
@@ -1618,9 +1628,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
 
             for ( const psmId of psmIdsForReportedPeptideId ) {
 
-                const subGroupId = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psmId );
+                const subGroupId = searchSubGroupId_ForPSM_ID_Holder.get_subGroupId_For_PsmId( psmId );
                 if ( ! subGroupId ) {
-                    const msg = "( searchSubGroup_Ids_Selected ) and searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psmId ) not return a value: psmId: " + psmId + ", projectSearchId " + projectSearchId;
+                    const msg = "( searchSubGroup_Ids_Selected ) and searchSubGroupId_ForPSM_ID_Holder.get_subGroupId_For_PsmId( psmId ) not return a value: psmId: " + psmId + ", projectSearchId " + projectSearchId;
                     console.warn( msg )
                     throw Error( msg )
                 }
@@ -1654,17 +1664,17 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
 
         if ( searchSubGroup_Ids_Selected ) {
 
-            if ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder ) {
-                const msg = "( searchSubGroup_Ids_Selected ) and ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder ): projectSearchId " + projectSearchId;
+            if ( ! searchSubGroupId_ForPSM_ID_Holder ) {
+                const msg = "( searchSubGroup_Ids_Selected ) and ( ! searchSubGroupId_ForPSM_ID_Holder ): projectSearchId " + projectSearchId;
                 console.warn( msg )
                 throw Error( msg )
             }
 
             psmCount_after_Include_Map_Key_SearchSubGroupId__ForChildFunctionCall = new Map<number, number>();
 
-            const subGroupId = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psmId );
+            const subGroupId = searchSubGroupId_ForPSM_ID_Holder.get_subGroupId_For_PsmId( psmId );
             if ( ! subGroupId ) {
-                const msg = "( searchSubGroup_Ids_Selected ) and searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psmId ) not return a value: psmId: " + psmId + ", projectSearchId " + projectSearchId;
+                const msg = "( searchSubGroup_Ids_Selected ) and searchSubGroupId_ForPSM_ID_Holder.get_subGroupId_For_PsmId( psmId ) not return a value: psmId: " + psmId + ", projectSearchId " + projectSearchId;
                 console.warn( msg )
                 throw Error( msg )
             }

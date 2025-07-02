@@ -19,14 +19,16 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +46,8 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubSearchGroupId_PsmId_For_SearchId_Searcher.SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubSearchGroupId_PsmId_ALL_For_SearchId__IncludesDecoys_Searcher.SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubSearchGroupId_PsmId_ALL_For_SearchId__IncludesDecoys_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -61,10 +63,8 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
  * 
  * 
- * !!!  Exclude Decoy PSMs  !!!
  * 
- * 
- * Retrieve Sub Search Group Id, PSM Id for Project Search ID.  NOT filtered on Search Criteria or Reported Peptide Ids
+ * Retrieve Sub Search Group Id, PSM Id for ALL for Project Search ID.  NOT filtered on Search Criteria or Reported Peptide Ids
  */
 @RestController
 public class SearchSubSearchGroupId_PsmId_NOT_FIltered_Single_ProjSearchID_RestWebserviceController 
@@ -78,7 +78,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.SUB_SEARCH_GROUP_ID_PSM_ID__NOT_FILTERED__FOR_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0003;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.SUB_SEARCH_GROUP_ID_PSM_ID__NOT_FILTERED__FOR_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0004;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -104,7 +104,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
 
 	@Autowired
-	private SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_IF searchSubSearchGroupId_PsmId_For_SearchId_Searcher;
+	private SearchSubSearchGroupId_PsmId_ALL_For_SearchId__IncludesDecoys_Searcher_IF searchSubSearchGroupId_PsmId_ALL_For_SearchId__IncludesDecoys_Searcher;
 		
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -236,22 +236,138 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
     		    		
 			List<SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem> dbResults = 
-					searchSubSearchGroupId_PsmId_For_SearchId_Searcher
-					.getSearchSubSearchGroupId_PsmId_For_SearchId(searchId, webserviceRequest.include_DecoyPSM );
+					searchSubSearchGroupId_PsmId_ALL_For_SearchId__IncludesDecoys_Searcher
+					.getSearchSubSearchGroupId_PsmId_ALL_For_SearchId__IncludesDecoys(searchId );
+			
+			// Sort in order of PSM ID ascending
+			Collections.sort( dbResults, new Comparator<SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem>() {
+				@Override
+				public int compare(SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem o1, SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem o2) {
+					if ( o1.getPsmId() < o2.getPsmId() ) {
+						return -1;
+					}
+					if ( o1.getPsmId() > o2.getPsmId() ) {
+						return 1;
+					}
+					// Should never get here
+					return 0;
+				} } );
 
-    		List<WebserviceResultItem> webserviceResults = new ArrayList<>( dbResults.size() );
+			
+			////  Create Webservice Result
 
-			for ( SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem dbResult : dbResults ) {
-
-				WebserviceResultItem webserviceResultItem = new WebserviceResultItem();
-				webserviceResultItem.sSbGpId = dbResult.getSearchSubGroupId();
-				webserviceResultItem.psmId = dbResult.getPsmId();
-				webserviceResultItem.decoyPSM = dbResult.isDecoyPSM();
-				webserviceResults.add( webserviceResultItem );
-			}
-    		
     		WebserviceResult result = new WebserviceResult();
-    		result.results = webserviceResults;
+    		
+
+			result.all_PsmId_AreSequential = true; // Expected to be true almost all the time.  Importer was changed so that PSM Ids are sequential for a search by reserving a block of ids for a search
+			
+			{
+				final long prev_PsmId_INIT = -1;
+				long prev_PsmId = prev_PsmId_INIT;
+				
+				for ( SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem dbItem : dbResults ) {
+					if ( prev_PsmId == prev_PsmId_INIT ) {
+						// first entry so skip comparison
+					} else {
+						if ( dbItem.getPsmId() != ( prev_PsmId + 1 ) ) {
+							result.all_PsmId_AreSequential = false;
+							break;
+						}
+					}
+					prev_PsmId = dbItem.getPsmId();
+				}
+			}
+						
+    		result.startingPsmId = dbResults.get(0).getPsmId();
+    		
+    		if ( ! result.all_PsmId_AreSequential ) {
+
+    	    	/**
+    	    	 * Populated ONLY if all_PsmId_AreSequential is false
+    	    	 * 
+    	    	 * First entry is offset from startingPsmId and is always zero
+    	    	 * Following entries are offset from previous psmId
+    	    	 */
+    			result.psmIds_OffsetFromStartOrPrevious = new long[ dbResults.size() ];
+    			
+    			int index = 0;
+    			
+    			long prev_PsmId = result.startingPsmId;
+    			
+    			for ( SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem dbItem : dbResults ) {
+    				
+    				result.psmIds_OffsetFromStartOrPrevious[ index ] = dbItem.getPsmId() - prev_PsmId;
+    				
+    				prev_PsmId = dbItem.getPsmId();
+    				index++;
+    			}
+    		}
+    		
+    		//  Search Sub Groups are stored as base 36
+    		
+    		{
+    			String[] searchSubGroupIds_Base36_StringArray = new String[ dbResults.size() ];
+
+    			int maxStringLength = 0;
+    			int minStringLength = Integer.MAX_VALUE;
+    			
+    			{
+    				int index = 0;
+
+    				for ( SearchSubSearchGroupId_PsmId_For_SearchId_Searcher_ResultItem dbItem : dbResults ) {
+
+    					searchSubGroupIds_Base36_StringArray[ index ] = Integer.toString( dbItem.getSearchSubGroupId(), result.searchSubGroupIds_Base36_Radix_Number );
+
+    					if ( index == 0 ) {
+    						//  First Entry
+    						maxStringLength = searchSubGroupIds_Base36_StringArray[ index ].length();
+    					} else {
+
+    						if ( maxStringLength < searchSubGroupIds_Base36_StringArray[ index ].length() ) {
+    							maxStringLength = searchSubGroupIds_Base36_StringArray[ index ].length();
+    						}
+    						if ( minStringLength > searchSubGroupIds_Base36_StringArray[ index ].length() ) {
+    							minStringLength = searchSubGroupIds_Base36_StringArray[ index ].length();
+    						}
+    					}
+
+    					index++;
+    				}
+    			}
+    			
+				if ( minStringLength != maxStringLength ) {
+					
+					//  Zero left pad all strings to maxStringLength
+					
+					for ( int index = 0; index <  searchSubGroupIds_Base36_StringArray.length; index++ ) {
+
+						int zeroFillLength = maxStringLength - searchSubGroupIds_Base36_StringArray[ index ].length();
+
+						if ( zeroFillLength > 0  ) {
+							
+							String zeroFillString = StringUtils.repeat( '0', zeroFillLength );
+							
+							searchSubGroupIds_Base36_StringArray[ index ] = zeroFillString + searchSubGroupIds_Base36_StringArray[ index ];
+						}
+					}
+				}
+				
+				// Store in results
+				
+				
+				result.searchSubGroupIds_Base36_EachEntryLength = maxStringLength;
+				
+				
+				StringBuilder searchSubGroupIds_Base36_StringBuilder = new StringBuilder( searchSubGroupIds_Base36_StringArray.length * maxStringLength );
+				
+				for ( int index = 0; index <  searchSubGroupIds_Base36_StringArray.length; index++ ) {
+
+					searchSubGroupIds_Base36_StringBuilder.append( searchSubGroupIds_Base36_StringArray[ index ] );
+				}
+				
+				result.searchSubGroupIds_Base36 = searchSubGroupIds_Base36_StringBuilder.toString();
+    		}
+    		
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
 
@@ -298,13 +414,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     public static class WebserviceRequest {
 	    	
 		private Integer projectSearchId;
-    	private boolean include_DecoyPSM = false; //  Return PSM with 'is_decoy' true.  Default to false
 
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
-		}
-		public void setInclude_DecoyPSM(boolean include_DecoyPSM) {
-			this.include_DecoyPSM = include_DecoyPSM;
 		}
     }
     
@@ -314,34 +426,49 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
      */
     public static class WebserviceResult {
     	
-    	List<WebserviceResultItem> results;
+    	boolean all_PsmId_AreSequential;
+    	long startingPsmId;
+    	
+    	/**
+    	 * Populated ONLY if all_PsmId_AreSequential is false
+    	 * 
+    	 * First entry is offset from startingPsmId and is always zero
+    	 * Following entries are offset from previous psmId
+    	 */
+    	long[] psmIds_OffsetFromStartOrPrevious;
+    	
+    	int searchSubGroupIds_Base36_Radix_Number = 36;
+    	
+    	
+    	String searchSubGroupIds_Base36;
 
-		public List<WebserviceResultItem> getResults() {
-			return results;
+    	int searchSubGroupIds_Base36_EachEntryLength;
+
+		public boolean isAll_PsmId_AreSequential() {
+			return all_PsmId_AreSequential;
+		}
+
+		public long getStartingPsmId() {
+			return startingPsmId;
+		}
+
+		public long[] getPsmIds_OffsetFromStartOrPrevious() {
+			return psmIds_OffsetFromStartOrPrevious;
+		}
+
+		public String getSearchSubGroupIds_Base36() {
+			return searchSubGroupIds_Base36;
+		}
+
+		public int getSearchSubGroupIds_Base36_EachEntryLength() {
+			return searchSubGroupIds_Base36_EachEntryLength;
+		}
+
+		public int getSearchSubGroupIds_Base36_Radix_Number() {
+			return searchSubGroupIds_Base36_Radix_Number;
 		}
     }
     
-    /**
-     * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
-     *
-     */
-    public static class WebserviceResultItem {
-    	
-		int sSbGpId;
-    	long psmId;
-     	boolean decoyPSM;  
-     	
-		public int getsSbGpId() {
-			return sSbGpId;
-		}
-		public long getPsmId() {
-			return psmId;
-		}
-		public boolean isDecoyPSM() {
-			return decoyPSM;
-		}
-    	
-    }
 }
 
 

@@ -251,12 +251,19 @@ export class Qc_SingleSearch__SubSearches_PSM_PPM_Error_Statistics_Section exten
                 throw Error(msg);
             }
 
-            const get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result =
-                await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                get_commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters().
-                get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise();
+            const commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId =
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId);
+            if (!commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId) {
+                const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
+                console.warn(msg);
+                throw Error(msg);
+            }
 
-            const searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder = get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result.searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder;
+            const get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch__ReturnPromise_Result =
+                await commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered().
+                get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch__ReturnPromise()
+            const searchSubGroupId_ForPSM_ID_Holder = get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch__ReturnPromise_Result.searchSubGroupId_ForPSM_ID_Holder;
 
             //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
 
@@ -293,7 +300,7 @@ export class Qc_SingleSearch__SubSearches_PSM_PPM_Error_Statistics_Section exten
 
                             for ( const psm_PPM_Error_DataEntry of psmTblData_For_ReportedPeptideId.dataForPsms_For_ReportedPeptideId_Array ) {
 
-                                const searchSubgroupId_For_PSM = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psm_PPM_Error_DataEntry.psmId );
+                                const searchSubgroupId_For_PSM = searchSubGroupId_ForPSM_ID_Holder.get_subGroupId_For_PsmId( psm_PPM_Error_DataEntry.psmId );
                                 if ( ! searchSubgroupId_For_PSM ) {
                                     const msg = "searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psm_PPM_Error_DataEntry.psmId ); returned nothing: psm_PPM_Error_DataEntry.psmId: + " + psm_PPM_Error_DataEntry.psmId + ", reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
                                     console.warn(msg);

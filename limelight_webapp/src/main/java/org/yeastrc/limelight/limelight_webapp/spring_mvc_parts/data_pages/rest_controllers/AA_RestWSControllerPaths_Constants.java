@@ -652,15 +652,8 @@ public class AA_RestWSControllerPaths_Constants {
 	 * Retrieve Sub Search Group Id, PSM Id for Project Search ID - NOT Filtered on Main Filter Criteria or Reported Peptide Ids
 	 * 
 	 */
-	public static final String SUB_SEARCH_GROUP_ID_PSM_ID__NOT_FILTERED__FOR_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0003 = 
-			"d/rws/for-page/psb/search-sub-search-group-id_psm-id__not-filtered_for-single-project-search-id-version-0003";
-
-	/**
-	 * Retrieve Sub Search Group Id, PSM Id, Reported Peptide Id for Reported Peptide Ids, Project Search ID, and Search Criteria
-	 * 
-	 */
-	public static final String SUB_SEARCH_GROUP_ID_PSM_ID_REPORTED_PEPTIDE_ID____FOR_REP_PEPT_IDS_SUB_SEARCH_GROUPS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002 = 
-			"d/rws/for-page/psb/search-sub-search-group-id_psm-id_reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0002";
+	public static final String SUB_SEARCH_GROUP_ID_PSM_ID__NOT_FILTERED__FOR_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0004 = 
+			"d/rws/for-page/psb/search-sub-search-group-id_psm-id__not-filtered_for-single-project-search-id-version-0004";
 
 	public static final String PSM_IDS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002 = 
 			"d/rws/for-page/psb/psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0002";

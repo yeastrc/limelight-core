@@ -501,7 +501,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError__VS_Annota
             const get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result =
                 commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId.
                 get_commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered().
-                get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch__Exclude_DecoyPSMs();
+                get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch();
             if ( get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.data ) {
                 searchSubGroupId_ForPSM_ID_Holder = get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.data.searchSubGroupId_ForPSM_ID_Holder
             } else if ( get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.promise ) {
