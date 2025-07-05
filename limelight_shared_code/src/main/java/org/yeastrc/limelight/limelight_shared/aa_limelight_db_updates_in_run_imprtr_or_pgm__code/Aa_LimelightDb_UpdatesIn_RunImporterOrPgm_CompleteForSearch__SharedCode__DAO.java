@@ -4,6 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
@@ -75,6 +79,81 @@ public class Aa_LimelightDb_UpdatesIn_RunImporterOrPgm_CompleteForSearch__Shared
 			}
 		}
 		return item;
+	}
+
+	/**
+	 * Get on Primary Key
+	 * @param rootTableId
+	 * @param searchId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Aa_LimelightDb_UpdatesIn_RunImporterOrPgm_CompleteForSearch_DTO> getItemList_For_RootId_SearchIds( int rootTableId, Set<Integer> searchIds ) throws Exception {
+		
+		List<Aa_LimelightDb_UpdatesIn_RunImporterOrPgm_CompleteForSearch_DTO> resultList = new ArrayList<>( searchIds.size() );
+		
+		if ( searchIds.isEmpty() ) {
+			return resultList;
+		}
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		StringBuilder sqlSB = new StringBuilder( "SELECT * FROM aa_limelight_db_updates_in_run_importer_or_pgm_cmplt_fr_srch_tbl WHERE root_table_id_fk = ? AND search_id IN " );
+		
+		
+		sqlSB.append( "(" );
+		
+		for ( int counter = 0; counter < searchIds.size(); counter++ ) {
+			if ( counter > 0 ) {
+				sqlSB.append( "," );	
+			}
+			sqlSB.append( "?" );
+		}
+		
+		sqlSB.append( ")" );
+		
+		final String sql = sqlSB.toString();
+		try {
+			conn = SharedCodeOnly_DBConnectionProvider.getInstance().getConnection();
+			pstmt = conn.prepareStatement( sql );
+			
+			int counter = 0;
+			
+			counter++;
+			pstmt.setInt( counter, rootTableId );
+			
+			for ( Integer searchId : searchIds ) {
+			
+				counter++;
+				pstmt.setInt( counter, searchId );
+			}
+			
+			rs = pstmt.executeQuery();
+			while( rs.next() ) {
+				Aa_LimelightDb_UpdatesIn_RunImporterOrPgm_CompleteForSearch_DTO item = populateResultObject( rs );
+				resultList.add( item );
+			}
+		} catch ( Exception e ) {
+			log.error( "ERROR: getItem_ForRootIdSearchId(...)  sql: " + sql, e );
+			throw e;
+		} finally {
+			// be sure database handles are closed
+			if( rs != null ) {
+				try { rs.close(); } catch( Throwable t ) { ; }
+				rs = null;
+			}
+			if( pstmt != null ) {
+				try { pstmt.close(); } catch( Throwable t ) { ; }
+				pstmt = null;
+			}
+			if( conn != null ) {
+				try { conn.close(); } catch( Throwable t ) { ; }
+				conn = null;
+			}
+		}
+		return resultList;
 	}
 
 	/**

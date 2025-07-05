@@ -20,8 +20,10 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.yeastrc.limelight.db_populate_new_fields__common_code.populate_table_search_level_annotation_min_max_tbl.main.Limelight_DatabasePopulateNewFields__Table_search_level_annotation_min_max_tbl__PopulateFor_SearchIds_MAIN;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeFilterableDTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
@@ -160,7 +163,29 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
     		validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdList, httpServletRequest );
     		
     		////////////////
+    		
+    		//  First ensure all DB records have been populated
+    		
+    		{
+    			Set<Integer> searchIds_Set = new HashSet<>( projectSearchIdList.size() );
+
+        		for ( Integer projectSearchId : projectSearchIdList ) {
+        			
+        			Integer searchId =	searchIdForProjectSearchIdSearcher.getSearchListForProjectId( projectSearchId );
+        			if ( searchId == null ) {
+            			log.warn( "projectSearchId not in DB: " + projectSearchId );
+            			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+        			}
+        			
+        			searchIds_Set.add( searchId );
+        		}
+
+    			Limelight_DatabasePopulateNewFields__Table_search_level_annotation_min_max_tbl__PopulateFor_SearchIds_MAIN.getSingletonInstance()
+    			.limelight_DatabasePopulateNewFields__Table_search_level_annotation_min_max_tbl__PopulateFor_SearchIds_MAIN( searchIds_Set );
+    		}
    		
+    		
+    		//  MAIN Processing
     		
     		List<WebserviceResultPerSearch> perSearchList = new ArrayList<>( projectSearchIdList.size() );
     		

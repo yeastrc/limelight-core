@@ -191,8 +191,8 @@ public class Limelight_DatabasePopulateNewFields__Table_search_level_annotation_
 
 			// Process Search Id
 			
-			limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_SingleSearch( 
-					next_SearchId_ToProcess, aa_LimelightDb_UpdatesIn_RunImporterOrPgm_Root_DTO_FromDBGet, callFrom );
+			limelight_DatabasePopulateNewFields_SingleSearch( 
+					next_SearchId_ToProcess, aa_LimelightDb_UpdatesIn_RunImporterOrPgm_Root_DTO_FromDBGet );
 
 			//  Get Next Search Id
 			
@@ -232,14 +232,14 @@ public class Limelight_DatabasePopulateNewFields__Table_search_level_annotation_
 	}
 	
 	/**
+	 * Package Private
+	 * 
 	 * @throws Exception 
 	 * 
 	 */
-	private void limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_SingleSearch(
+	void limelight_DatabasePopulateNewFields_SingleSearch(
 			int searchId,
-			Aa_LimelightDb_UpdatesIn_RunImporterOrPgm_Root_DTO aa_LimelightDb_UpdatesIn_RunImporterOrPgm_Root_DTO,
-			Limelight_DatabasePopulateNewFields__CallFrom__RunImporter_VS_StandaloneProgram_Enum callFrom
-			) throws Exception {
+			Aa_LimelightDb_UpdatesIn_RunImporterOrPgm_Root_DTO aa_LimelightDb_UpdatesIn_RunImporterOrPgm_Root_DTO			) throws Exception {
 		
 		
 		List<Limelight_DatabasePopulateNewFields__Table_search_level_annotation_min_max_tbl__Get_Filterable_AnnotationTypeEntries_For_SearchId_Searcher.Filterable_AnnotationTypeEntries_For_SearchId_Searcher_Result> annotationTypeList =
