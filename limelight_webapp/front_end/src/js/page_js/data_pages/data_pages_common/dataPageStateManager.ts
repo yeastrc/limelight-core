@@ -682,11 +682,15 @@ class AnnotationTypeItem {
 	readonly name : string;
 
 	readonly defaultVisible : boolean;
-	readonly displayOrder : number; // may be null
+
+	/**
+	 * may be null
+	 */
+	readonly displayOrder : number;
 
 	readonly description : string;
 	
-	///  Filterable Annotation Types Only, ignore for descriptive annotation types
+	///  Populated for Filterable Annotation Types Only, ignore for descriptive annotation types
 
 	readonly filterDirectionAbove : boolean;
 	readonly filterDirectionBelow : boolean;
@@ -701,11 +705,6 @@ class AnnotationTypeItem {
 	readonly worst_ValueDouble : number
 
 	readonly sortOrder : number;
-
-	//  Added by Javascript: 
-	
-	//  Used by V1 DataTable (Non-React version)
-	readonly sorttype : string; //  Label as sort as number or string for Filterable or Descriptive
 
 	constructor({
 
@@ -735,12 +734,6 @@ class AnnotationTypeItem {
 		worst_ValueDouble,
 
 		sortOrder,
-
-		//  Added by Javascript:
-		
-		//  Used by V1 DataTable (Non-React version)
-		sorttype, //  Label as sort as number or string for Filterable or Descriptive
-
 	} : {
 
 		annotationTypeId : number;
@@ -781,12 +774,6 @@ class AnnotationTypeItem {
 		worst_ValueDouble : number
 
 		sortOrder : number;
-
-		//  Added by Javascript: 
-		
-		//  Used by V1 DataTable (Non-React version)
-		sorttype : string; //  Label as sort as number or string for Filterable or Descriptive
-
 	}) {
 
 		this.annotationTypeId = annotationTypeId;
@@ -815,12 +802,6 @@ class AnnotationTypeItem {
 		this.worst_ValueDouble = worst_ValueDouble
 
 		this.sortOrder = sortOrder;
-
-		//  Added by Javascript: 
-		
-		//  Used by V1 DataTable (Non-React version)
-		this.sorttype = sorttype; //  Label as sort as number or string for Filterable or Descriptive
-
 	}
 
 }

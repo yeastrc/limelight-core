@@ -19,7 +19,6 @@ import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorT
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
-import { _SORT_TYPE_NUMBER, _SORT_TYPE_STRING } from 'page_js/data_pages/data_pages_common/a_annotationTypesConstants';
 import { AnnotationTypeItems_PerProjectSearchId, AnnotationTypeData_Root, AnnotationTypeItem, DataPageStateManager } from './dataPageStateManager';
 import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 
@@ -29,21 +28,21 @@ import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pag
 export class AnnotationTypeDataRetrieval {
 
 	/**
-	 * 
+	 *
 	 */
 	constructor() {
-		
+
 	}
-	
+
 	/**
 	 * return Promise, if anything to load.  Otherwise return null
 	 */
-	retrieveSearchAnnotationTypeData( { 
-		
-		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, 
+	retrieveSearchAnnotationTypeData( {
+
+		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 		dataPageStateManager_DataFrom_Server
-	} :  { 
-		
+	} :  {
+
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
 		dataPageStateManager_DataFrom_Server : DataPageStateManager
 	} ) : Promise<unknown> {
@@ -56,13 +55,13 @@ export class AnnotationTypeDataRetrieval {
 		let annotationTypeDataLoaded = dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root();
 
 		if ( annotationTypeDataLoaded ) {
-			
+
 			let projectSearchIds_dataNotLoaded_Set : Set<number> = new Set();
-			
+
 				//  Some search names loaded so only load 'missing' search names
-				
+
 			for ( const projectSearchId of projectSearchIds ) {
-				
+
 				if ( ! annotationTypeDataLoaded.annotationTypeItems_PerProjectSearchId_Map.has( projectSearchId ) ) {
 					// no data for project search id, so add to loading list (object to drop dups)
 					projectSearchIds_dataNotLoaded_Set.add( projectSearchId );
@@ -71,7 +70,7 @@ export class AnnotationTypeDataRetrieval {
 
 			if ( projectSearchIds_dataNotLoaded_Set.size === 0 ) {
 				// nothing new to load so return null
-				
+
 				return null;  // EARLY RETURN
 			}
 
@@ -79,18 +78,18 @@ export class AnnotationTypeDataRetrieval {
 		}
 
 		//  Return created Promise
-		return this._retrieveSearchAnnotationTypeDataFromAJAX( 
-			projectSearchIds_dataNotLoadedArray, 
-			dataPageStateManager_DataFrom_Server 
+		return this._retrieveSearchAnnotationTypeDataFromAJAX(
+			projectSearchIds_dataNotLoadedArray,
+			dataPageStateManager_DataFrom_Server
 		);
 }
 
 	/**
 	 * return Promise
 	 */
-	_retrieveSearchAnnotationTypeDataFromAJAX( 
-		
-		projectSearchIds_dataNotLoadedArray : Array<number>, 
+	_retrieveSearchAnnotationTypeDataFromAJAX(
+
+		projectSearchIds_dataNotLoadedArray : Array<number>,
 		dataPageStateManager_DataFrom_Server  : DataPageStateManager
 	) {
 
@@ -111,10 +110,10 @@ export class AnnotationTypeDataRetrieval {
 				promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
 					try {
 						objectThis._retrieveSearchAnnotationTypeDataFromAJAXResponse( {
-							requestData, responseData, 
-							dataPageStateManager_DataFrom_Server, 
+							requestData, responseData,
+							dataPageStateManager_DataFrom_Server,
 							projectSearchIds_dataNotLoadedArray } );
-					
+
 						resolve();
 					} catch( e ) {
 						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -131,27 +130,27 @@ export class AnnotationTypeDataRetrieval {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	_retrieveSearchAnnotationTypeDataFromAJAXResponse( {
-		
-		requestData, 
-		responseData, 
-		dataPageStateManager_DataFrom_Server, 
-		projectSearchIds_dataNotLoadedArray 
+
+		requestData,
+		responseData,
+		dataPageStateManager_DataFrom_Server,
+		projectSearchIds_dataNotLoadedArray
 	} : {
 		requestData: any,
 		responseData: any,
-		dataPageStateManager_DataFrom_Server : DataPageStateManager, 
+		dataPageStateManager_DataFrom_Server : DataPageStateManager,
 		projectSearchIds_dataNotLoadedArray : Array<number>
 	} ) {
 
 		//  Create and store data in format V2 Map Based format
 		this._retrieveSearchAnnotationTypeDataFromAJAXResponse_V2_StoreDataIn_Map_BasedDataStructure( {
-			requestData, 
-			responseData, 
-			dataPageStateManager_DataFrom_Server, 
-			projectSearchIds_dataNotLoadedArray 
+			requestData,
+			responseData,
+			dataPageStateManager_DataFrom_Server,
+			projectSearchIds_dataNotLoadedArray
 		} );
 
 		//  Create and store data in format V1 Object Based format
@@ -171,63 +170,63 @@ export class AnnotationTypeDataRetrieval {
 	 * Create and store data in format V2 Map Based format
 	 */
 	_retrieveSearchAnnotationTypeDataFromAJAXResponse_V2_StoreDataIn_Map_BasedDataStructure( {
-		
-		requestData, 
-		responseData,  
-		dataPageStateManager_DataFrom_Server, 
-		projectSearchIds_dataNotLoadedArray 
+
+		requestData,
+		responseData,
+		dataPageStateManager_DataFrom_Server,
+		projectSearchIds_dataNotLoadedArray
 	} :  {
-		
+
 		requestData: any,
 		responseData: any,
 		dataPageStateManager_DataFrom_Server : DataPageStateManager
 		projectSearchIds_dataNotLoadedArray : Array<number>
-	} 
+	}
 	 ) {
-		
+
 		let perSearchList = responseData.perSearchList;
 
 		if ( ! perSearchList ) {
 			throw Error("Annotation Type List return is empty. projectSearchIds_dataNotLoadedArray: " + projectSearchIds_dataNotLoadedArray.join( '_' ));
 		}
-		
+
 		let annotationTypeData_Root : AnnotationTypeData_Root = dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root();
 
 		if ( ! annotationTypeData_Root ) {
 			annotationTypeData_Root = new  AnnotationTypeData_Root();
 		}
-		
+
 		for ( const perSearchItem of perSearchList ) {
-			
+
 			//  Convert AnnotationType lists to Maps keyed on Annotation Type Id which is then stored in local variable
-			
+
 			const psmFilterableAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchItem.psmFilterableAnnotationTypes, sorttype : _SORT_TYPE_NUMBER 
+				annotationTypeArray : perSearchItem.psmFilterableAnnotationTypes
 			});
 			const reportedPeptideFilterableAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchItem.reportedPeptideFilterableAnnotationTypes, sorttype : _SORT_TYPE_NUMBER 
+				annotationTypeArray : perSearchItem.reportedPeptideFilterableAnnotationTypes
 			});
 			const matchedProteinFilterableAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchItem.matchedProteinFilterableAnnotationTypes, sorttype : _SORT_TYPE_NUMBER 
+				annotationTypeArray : perSearchItem.matchedProteinFilterableAnnotationTypes
 			});
 			const modificationPositionFilterableAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchItem.modificationPositionFilterableAnnotationTypes, sorttype : _SORT_TYPE_NUMBER
+				annotationTypeArray : perSearchItem.modificationPositionFilterableAnnotationTypes
 			});
 			const psmPeptidePositionFilterableAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchItem.psmPeptidePositionFilterableAnnotationTypes, sorttype : _SORT_TYPE_NUMBER
+				annotationTypeArray : perSearchItem.psmPeptidePositionFilterableAnnotationTypes
 			});
 
 			const psmDescriptiveAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchItem.psmDescriptiveAnnotationTypes, sorttype : _SORT_TYPE_STRING 
+				annotationTypeArray : perSearchItem.psmDescriptiveAnnotationTypes
 			});
 			const reportedPeptideDescriptiveAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchItem.reportedPeptideDescriptiveAnnotationTypes, sorttype : _SORT_TYPE_STRING 
+				annotationTypeArray : perSearchItem.reportedPeptideDescriptiveAnnotationTypes
 			});
 			const matchedProteinDescriptiveAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchItem.matchedProteinDescriptiveAnnotationTypes, sorttype : _SORT_TYPE_STRING 
+				annotationTypeArray : perSearchItem.matchedProteinDescriptiveAnnotationTypes
 			});
 			const modificationPositionDescriptiveAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
-				annotationTypeArray : perSearchItem.modificationPositionDescriptiveAnnotationTypes, sorttype : _SORT_TYPE_STRING
+				annotationTypeArray : perSearchItem.modificationPositionDescriptiveAnnotationTypes
 			});
 
 			const  annotationTypes_PerProjectSearchId : AnnotationTypeItems_PerProjectSearchId = {
@@ -246,17 +245,17 @@ export class AnnotationTypeDataRetrieval {
 
 			//  Put in object, key projectSearchId
 			annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.set( perSearchItem.projectSearchId, annotationTypes_PerProjectSearchId );
-			
+
 		}
-		
+
 		//  Save Data to state manager
 		dataPageStateManager_DataFrom_Server.set_annotationTypeData_Root( annotationTypeData_Root );
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	_convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId( { annotationTypeArray, sorttype } : { annotationTypeArray: any, sorttype: any } ) : Map<number, AnnotationTypeItem> {
+	_convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId( { annotationTypeArray } : { annotationTypeArray: any } ) : Map<number, AnnotationTypeItem> {
 
 		let annotationTypesMap : Map<number, AnnotationTypeItem> = new Map();
 
@@ -265,11 +264,11 @@ export class AnnotationTypeDataRetrieval {
 			console.warn( msg );
 			throw Error( msg );
 		}
-		
+
 		for ( const annotationTypeItem_ServerItem of annotationTypeArray ) {
 
 			//  Validate that the expected numbers are numbers
-			
+
 			if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.annotationTypeId ) ) {
 				const msg = "if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.annotationTypeId ) ): annotationTypeItem_ServerItem.annotationTypeId: " + annotationTypeItem_ServerItem.annotationTypeId;
 				console.warn( msg );
@@ -337,16 +336,16 @@ export class AnnotationTypeDataRetrieval {
 				 //  Label as sort as number or string for Filterable or Descriptive
 
 				annotationTypeId : annotationTypeItem_ServerItem.annotationTypeId,
-					
+
 				searchProgramsPerSearchId : annotationTypeItem_ServerItem.searchProgramsPerSearchId,
-				
+
 				name : annotationTypeItem_ServerItem.name,
 
 				defaultVisible : annotationTypeItem_ServerItem.defaultVisible,
 				displayOrder : annotationTypeItem_ServerItem.displayOrder, // may be null
 
 				description : annotationTypeItem_ServerItem.description,
-				
+
 				///  Filterable Annotation Types Only, ignore for descriptive annotation types
 
 				filterDirectionAbove : annotationTypeItem_ServerItem.filterDirectionAbove,
@@ -361,163 +360,16 @@ export class AnnotationTypeDataRetrieval {
 				best_ValueDouble : annotationTypeItem_ServerItem.best_ValueDouble,
 				worst_ValueDouble : annotationTypeItem_ServerItem.worst_ValueDouble,
 
-				sortOrder : annotationTypeItem_ServerItem.sortOrder,
-
-				//  Added by Javascript:
-				
-				//  Used by V1 DataTable (Non-React version)
-				sorttype //  Label as sort as number or string for Filterable or Descriptive
-
+				sortOrder : annotationTypeItem_ServerItem.sortOrder
 			});
-			
+
 
 
 			Object.freeze( annotationTypeItem );    //  Freeze Object, no changes to properties, no add or remove properties
-			
+
 			annotationTypesMap.set( annotationTypeItem.annotationTypeId , annotationTypeItem );
 		}
-		
+
 		return annotationTypesMap;
 	}
-
-
-	////////////////////////////////////////////////////////////
-
-	///   V1 format no longer used
-
-	///   Create and store data in format V1 Object Based format
-
-	// /**
-	//  * Create and store data in format V1 Object Based format
-	//  */
-	// _retrieveSearchAnnotationTypeDataFromAJAXResponse_V1_StoreDataIn_Object_BasedDataStructure({
-		
-	// 	requestData, 
-	// 	responseData, 
-	// 	dataPageStateManager_DataFrom_Server,
-	// 	projectSearchIds_dataNotLoadedArray 
-	// } :  {
-	// 	requestData, 
-	// 	responseData, 
-	// 	dataPageStateManager_DataFrom_Server : DataPageStateManager, 
-	// 	projectSearchIds_dataNotLoadedArray : Array<number>
-	// } ) {
-		
-	// 	let perSearchList = responseData.perSearchList;
-
-	// 	if ( ! perSearchList ) {
-	// 		throw Error("Annotation Type List return is empty. projectSearchIds_dataNotLoadedArray: " + projectSearchIds_dataNotLoadedArray.join( '_' ));
-	// 	}
-		
-	// 	let annotationTypeDataLoaded = dataPageStateManager_DataFrom_Server.get_annotationTypeData(); LINE COMMENTED OUT //  V1 loading so call old get_annotationTypeData()
-
-	// 	if ( ! annotationTypeDataLoaded ) {
-	// 		annotationTypeDataLoaded = {};
-	// 	}
-		
-	// 	for ( const perSearchItem of perSearchList ) {
-			
-	// 		//  Convert AnnotationType lists to objects keyed on Annotation Type Id which is then stored in local variable
-			
-	// 		const psmFilterableAnnotationTypes = 
-	// 			this._convertAnnotationTypeArrayTo_V1_ObjectMapKeyedAnnotationTypeId(
-	// 					{ annotationTypeArray : perSearchItem.psmFilterableAnnotationTypes, 
-	// 						sorttype : _SORT_TYPE_NUMBER } );
-	// 		const reportedPeptideFilterableAnnotationTypes =
-	// 			this._convertAnnotationTypeArrayTo_V1_ObjectMapKeyedAnnotationTypeId( 
-	// 					{ annotationTypeArray : perSearchItem.reportedPeptideFilterableAnnotationTypes, 
-	// 						sorttype : _SORT_TYPE_NUMBER } );
-	// 		const matchedProteinFilterableAnnotationTypes =
-	// 			this._convertAnnotationTypeArrayTo_V1_ObjectMapKeyedAnnotationTypeId( 
-	// 					{ annotationTypeArray : perSearchItem.matchedProteinFilterableAnnotationTypes, 
-	// 						sorttype : _SORT_TYPE_NUMBER } );
-			
-	// 		const psmDescriptiveAnnotationTypes =
-	// 			this._convertAnnotationTypeArrayTo_V1_ObjectMapKeyedAnnotationTypeId( 
-	// 					{ annotationTypeArray : perSearchItem.psmDescriptiveAnnotationTypes, 
-	// 						sorttype : _SORT_TYPE_STRING } );
-	// 		const reportedPeptideDescriptiveAnnotationTypes =
-	// 			this._convertAnnotationTypeArrayTo_V1_ObjectMapKeyedAnnotationTypeId( 
-	// 					{ annotationTypeArray : perSearchItem.reportedPeptideDescriptiveAnnotationTypes, 
-	// 						sorttype : _SORT_TYPE_STRING } );
-	// 		const matchedProteinDescriptiveAnnotationTypes =
-	// 			this._convertAnnotationTypeArrayTo_V1_ObjectMapKeyedAnnotationTypeId( 
-	// 					{ annotationTypeArray : perSearchItem.matchedProteinDescriptiveAnnotationTypes, 
-	// 						sorttype : _SORT_TYPE_STRING } );
-						
-	// 		const  annotationTypesAsObjectMap = {
-	// 			psmFilterableAnnotationTypes,
-	// 			reportedPeptideFilterableAnnotationTypes,
-	// 			matchedProteinFilterableAnnotationTypes,
-	// 			psmDescriptiveAnnotationTypes,
-	// 			reportedPeptideDescriptiveAnnotationTypes,
-	// 			matchedProteinDescriptiveAnnotationTypes
-	// 		};
-			
-	// 		//  Put in object, key projectSearchId
-	// 		annotationTypeDataLoaded[ perSearchItem.projectSearchId ] = annotationTypesAsObjectMap;
-			
-	// 	}
-		
-	// 	//  Save Data to state manager
-	// 	dataPageStateManager_DataFrom_Server.set_annotationTypeData( annotationTypeDataLoaded );
-	// }
-
-	// /**
-	//  * 
-	//  */
-	// _convertAnnotationTypeArrayTo_V1_ObjectMapKeyedAnnotationTypeId( { annotationTypeArray, sorttype } ) {
-
-	// 	let annotationTypesObject = {};
-		
-	// 	for ( const annotationTypeItem of annotationTypeArray ) {
-			
-	// 		annotationTypeItem.sorttype = sorttype; //  Label as sort as number or string for Filterable or Descriptive
-	// 		Object.freeze( annotationTypeItem );    //  Freeze Object, no changes to properties, no add or remove properties
-			
-	// 		annotationTypesObject[ annotationTypeItem.annotationTypeId ] = annotationTypeItem;
-	// 	}
-		
-	// 	return annotationTypesObject;
-	// }
 }
-
-
-//  When copied into variables on page, 
-//   the lists of  WebserviceResultAnnotationTypeItem are converted into Object Maps (with the same property name), keyed on Annotation Type Id 
-
-//  AnnotationType Data  - Root object key is projectSearchId
-
-//	    	private String projectSearchId;
-//	    	private String searchId;
-//	    	
-//	    	private List<WebserviceResultAnnotationTypeItem> psmFilterableAnnotationTypes;
-//	    	private List<WebserviceResultAnnotationTypeItem> reportedPeptideFilterableAnnotationTypes;
-//	    	private List<WebserviceResultAnnotationTypeItem> matchedProteinFilterableAnnotationTypes;
-//
-//	    	private List<WebserviceResultAnnotationTypeItem> psmDescriptiveAnnotationTypes;
-//	    	private List<WebserviceResultAnnotationTypeItem> reportedPeptideDescriptiveAnnotationTypes;
-//	    	private List<WebserviceResultAnnotationTypeItem> matchedProteinDescriptiveAnnotationTypes;
-//	    	
-//	WebserviceResultAnnotationTypeItem
-//			
-//	    	private String annotationTypeId;
-//	    	
-//	    	private String name;
-//
-//	    	private boolean defaultVisible;
-//	    	private Integer displayOrder;
-//
-//	    	private String description;
-//	    	
-//	    	///  Filterable Only
-//
-//	    	private boolean filterDirectionAbove;
-//	    	private boolean filterDirectionBelow;
-//
-//	    	private boolean defaultFilter;
-//	    	private Double defaultFilterValue;
-//	    	private String defaultFilterValueString;
-//
-//	    	private Integer sortOrder;
-
