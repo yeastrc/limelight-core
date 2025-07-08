@@ -22,6 +22,11 @@ import { QcPage_ChartBorder } from "page_js/data_pages/project_search_ids_driven
 import { CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
 import { QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded";
 import { CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data";
+import { StringDownloadUtils } from "page_js/data_pages/data_pages_common/downloadStringAsFile";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -59,10 +64,14 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
 
     //  bind to 'this' for passing as parameters
 
+    private _downloadData_Clicked_BindThis = this._downloadData_Clicked.bind(this)
+
     private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
     private _scanFile_SummaryPerLevelData_Root : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root
     private _qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded()
+
+    private _tableDownloadData: Array<Array<string>>
 
     /**
      *
@@ -431,6 +440,34 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
     /**
      *
      */
+    private _downloadData_Clicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
+
+        if ( ! this._tableDownloadData ) {
+            return
+        }
+
+        // combine the columns into rows
+
+        const rows: Array<string> = []
+
+        for ( const rowInData of this._tableDownloadData ) {
+
+            const rowOutput = rowInData.join( "\t" )
+
+            rows.push( rowOutput )
+        }
+
+        rows.push( "" ) // to add \n on last line
+
+        const downloadString = rows.join( "\n" )
+
+        StringDownloadUtils.downloadStringAsFile({ stringToDownload : downloadString, filename: 'ScanFileStatistics.txt' });
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
     render() {
 
         const table_TD_Style: React.CSSProperties = { verticalAlign: "top" }
@@ -458,7 +495,12 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                 let totalIonCurrentAllLevels = 0;
 
                 const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+
+                const perLevel_TotalIonCurrent_DisplayEntries_DownloadRows: Array<Array<string>> = [];
+
                 const perLevel_Count_DisplayEntries: Array<JSX.Element> = [];
+
+                const perLevel_Count_DisplayEntries_DownloadRows: Array<Array<string>> = [];
 
                 const summaryPerLevelData_Array_Length = summaryPerLevelData_Array.length;
                 let summaryPerLevelData_Array_Counter = 0;
@@ -508,20 +550,23 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                     }
 
                     {
+                        const label = "Total MS" + summaryPerLevelData.scanLevel + " Ion Current:"
+                        const value = summaryPerLevelData.totalIonCurrent.toExponential( 3 )
+
                         const perLevel_TotalIonCurrent_DisplayEntry = (
                             <React.Fragment key={ summaryPerLevelData.scanLevel + "_main" }>
                                 <tr>
                                     <td style={ table_TD_Style }>
                                         <div style={ style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent }>
                                             <div style={ style_Label }>
-                                                Total MS{ summaryPerLevelData.scanLevel } Ion Current:
+                                                { label }
                                             </div>
                                         </div>
                                     </td>
                                     <td style={ table_TD_Style }>
                                         <div style={ style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent }>
                                             <div style={ style_Value }>
-                                                { summaryPerLevelData.totalIonCurrent.toExponential( 3 ) }
+                                                { value }
                                             </div>
                                         </div>
                                     </td>
@@ -529,6 +574,8 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                             </React.Fragment>
                         )
                         perLevel_TotalIonCurrent_DisplayEntries.push( perLevel_TotalIonCurrent_DisplayEntry );
+
+                        perLevel_TotalIonCurrent_DisplayEntries_DownloadRows.push( [ label, value ] )
                     }
                     {
                         const totalIonCurrent_ForScanLevel_FilteredScans = this.state.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.get( summaryPerLevelData.scanLevel )
@@ -537,31 +584,36 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                             && ( totalIonCurrent_ForScanLevel_FilteredScans
                                 || ( this.state.allScans_Have_TotalIonCurrent && summaryPerLevelData_Array_Counter === summaryPerLevelData_Array_Length ) ) ) {
                             //  Scan Level > 1  AND  This level has Total Ion Current that is for filtered PSMs
+
+                            let valueDisplay_totalIonCurrent_ForScanLevel_FilteredScans = "0"
+                            if ( totalIonCurrent_ForScanLevel_FilteredScans ) {
+                                valueDisplay_totalIonCurrent_ForScanLevel_FilteredScans = totalIonCurrent_ForScanLevel_FilteredScans.toExponential( 3 )
+                            }
+
+                            const valueDisplayPercent_totalIonCurrent_ForScanLevel_FilteredScans: string =
+                                ( ( ! totalIonCurrent_ForScanLevel_FilteredScans ) || ( ! summaryPerLevelData.totalIonCurrent ) ) ? "0" :
+                                    ( ( totalIonCurrent_ForScanLevel_FilteredScans / summaryPerLevelData.totalIonCurrent ) * 100 ).toFixed( 1 )
+
+                            const label = "Total MS" + summaryPerLevelData.scanLevel + " TIC with PSM:"
+                            const value = valueDisplay_totalIonCurrent_ForScanLevel_FilteredScans +
+                                " (" +
+                                valueDisplayPercent_totalIonCurrent_ForScanLevel_FilteredScans +
+                                "%)"
+
                             const perLevel_TotalIonCurrent_DisplayEntry = (
                                 <React.Fragment key={ summaryPerLevelData.scanLevel + "_filtered" }>
                                     <tr>
                                         <td style={ table_TD_Style }>
                                             <div style={ style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent }>
                                                 <div style={ style_Label }>
-                                                    MS{ summaryPerLevelData.scanLevel } TIC with PSM:
+                                                    { label }
                                                 </div>
                                             </div>
                                         </td>
                                         <td style={ table_TD_Style }>
                                             <div style={ style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent }>
                                                 <div style={ style_Value }>
-                                                    <span>
-                                                        { ( ! totalIonCurrent_ForScanLevel_FilteredScans ) ? "0" :
-                                                            totalIonCurrent_ForScanLevel_FilteredScans.toExponential( 3 ) }
-                                                    </span>
-                                                    <span> </span>
-                                                    <span>(</span>
-                                                    <span>
-                                                        { ( ( ! totalIonCurrent_ForScanLevel_FilteredScans ) || ( ! summaryPerLevelData.totalIonCurrent ) ) ? "0" :
-                                                            ( ( totalIonCurrent_ForScanLevel_FilteredScans / summaryPerLevelData.totalIonCurrent ) * 100 ).toFixed( 1 ) }
-                                                    </span>
-                                                    <span>%</span>
-                                                    <span>)</span>
+                                                    { value }
                                                 </div>
                                             </div>
                                         </td>
@@ -569,27 +621,34 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                                 </React.Fragment>
                             )
                             perLevel_TotalIonCurrent_DisplayEntries.push( perLevel_TotalIonCurrent_DisplayEntry );
+
+                            perLevel_TotalIonCurrent_DisplayEntries_DownloadRows.push( [ label, value ] )
                         }
                     }
 
                     {
+                        const label = "Number MS" + summaryPerLevelData.scanLevel + " Scans:"
+                        const value = summaryPerLevelData.numberOfScans.toLocaleString()
+
                         const perLevel_Count_DisplayEntry = (
                             <React.Fragment key={ summaryPerLevelData.scanLevel }>
                                 <tr>
                                     <td style={ table_TD_Style }>
                                         <div style={ style_Label }>
-                                            Number MS{ summaryPerLevelData.scanLevel } Scans:
+                                            { label }
                                         </div>
                                     </td>
                                     <td style={ table_TD_Style }>
                                         <div style={ style_Value }>
-                                            { summaryPerLevelData.numberOfScans.toLocaleString() }
+                                            { value }
                                         </div>
                                     </td>
                                 </tr>
                             </React.Fragment>
                         )
                         perLevel_Count_DisplayEntries.push( perLevel_Count_DisplayEntry );
+
+                        perLevel_Count_DisplayEntries_DownloadRows.push( [ label, value ] )
                     }
                 }
 
@@ -612,6 +671,23 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                     }
                 }
 
+                const totalIonCurrent_Row_Label = "Total Ion Current:"
+                const totalIonCurrent_Row_Value = totalIonCurrentAllLevels.toExponential(3)
+
+                const ScanCount_With_a_PSM_MeetingFilters_Row_Label = "Scans with a PSM meeting filters:"
+                const ScanCount_With_a_PSM_MeetingFilters_Row_Value =
+                    this.state.scanNumbersCount_For_FilteredPSMs.scanNumbersCount_For_FilteredPSMs.toLocaleString() +
+                    " (" +
+                    scanNumbersCount_For_FilteredPSMs_Percentage_String +
+                        "%)"
+
+                this._tableDownloadData = [
+                    [ totalIonCurrent_Row_Label, totalIonCurrent_Row_Value ],
+                    ...perLevel_TotalIonCurrent_DisplayEntries_DownloadRows,
+                    ...perLevel_Count_DisplayEntries_DownloadRows,
+                    [ ScanCount_With_a_PSM_MeetingFilters_Row_Label, ScanCount_With_a_PSM_MeetingFilters_Row_Value ]
+                ]
+
                 dataDisplay = (
                     <>
                         <table cellPadding={ 0 } cellSpacing={ 0 }>
@@ -621,12 +697,12 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                             <tr>
                                 <td style={ table_TD_Style }>
                                     <div style={ { paddingBottom: paddingBottom } }>
-                                        Total Ion Current:
+                                        { totalIonCurrent_Row_Label }
                                     </div>
                                 </td>
                                 <td style={ table_TD_Style }>
                                     <div style={ { textAlign: "right" } }>
-                                        { totalIonCurrentAllLevels.toExponential(3) }
+                                        { totalIonCurrent_Row_Value }
                                     </div>
                                 </td>
                             </tr>
@@ -643,10 +719,7 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                                 </td>
                                 <td style={ table_TD_Style }>
                                     <div style={ { textAlign: "right" } }>
-                                        <span>{ this.state.scanNumbersCount_For_FilteredPSMs.scanNumbersCount_For_FilteredPSMs.toLocaleString() }</span>
-                                        <span> (</span>
-                                        <span>{ scanNumbersCount_For_FilteredPSMs_Percentage_String }</span>
-                                        <span>%)</span>
+                                        { ScanCount_With_a_PSM_MeetingFilters_Row_Value }
                                     </div>
                                 </td>
                             </tr>
@@ -675,10 +748,28 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
 
                     <div style={ { padding: 15 } }  data-plot-class-name={ this.constructor ? this.constructor.name : "Unknown: No this.constructor" }>
 
-                        <div
-                            style={ { fontSize: 16, fontWeight: "bold", marginBottom: 10 } }
-                        >
-                            Scan File Statistics
+                        <div>
+                            <span
+                                style={ { fontSize: 16, fontWeight: "bold", marginBottom: 10 } }
+                            >
+                                Scan Statistics
+                            </span>
+                            { this._tableDownloadData ? (
+
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    placement={ "top" }
+                                    title={ <span>Download Scan Statistics as tab delimited table</span> }
+                                >
+                                    <span
+                                        className=" fake-link "
+                                        style={ { marginLeft: 20 } }
+                                        onClick={ this._downloadData_Clicked_BindThis }
+                                    >
+                                        download
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            ) : null }
                         </div>
                         <div style={ { position: "relative" } }>
                             { ( dataDisplay ) ? (

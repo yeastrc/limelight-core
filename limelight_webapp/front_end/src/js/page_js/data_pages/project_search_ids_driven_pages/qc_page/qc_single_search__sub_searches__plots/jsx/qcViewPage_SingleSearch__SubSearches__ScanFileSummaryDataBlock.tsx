@@ -18,6 +18,11 @@ import { QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput } from "page_
 import { QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Data";
 import { QcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded";
 import { CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data";
+import { StringDownloadUtils } from "page_js/data_pages/data_pages_common/downloadStringAsFile";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -47,11 +52,14 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
 
     //  bind to 'this' for passing as parameters
 
+    private _downloadData_Clicked_BindThis = this._downloadData_Clicked.bind(this)
+
     private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
     private _scanFile_SummaryPerLevelData_Root = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root()
     private _qcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded()
 
+    private _tableDownloadData: Array<Array<string>>
 
     /**
      *
@@ -618,6 +626,34 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
     /**
      *
      */
+    private _downloadData_Clicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
+
+        if ( ! this._tableDownloadData ) {
+            return
+        }
+
+        // combine the columns into rows
+
+        const rows: Array<string> = []
+
+        for ( const rowInData of this._tableDownloadData ) {
+
+            const rowOutput = rowInData.join( "\t" )
+
+            rows.push( rowOutput )
+        }
+
+        rows.push( "" ) // to add \n on last line
+
+        const downloadString = rows.join( "\n" )
+
+        StringDownloadUtils.downloadStringAsFile({ stringToDownload : downloadString, filename: 'ScanFileStatistics.txt' });
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
     render() {
 
         let dataDisplay: JSX.Element = null;
@@ -635,10 +671,20 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
             const dataPerSubSearchArray = this.state.dataComputed.dataPerSubSearchArray;
 
             const perSearch_HeaderRow: Array<JSX.Element> = [];
+
+            const perSearch_HeaderRow_Download: Array<string> = [];
+
             const perLevel_TotalIonCurrent_DisplayRows: Array<JSX.Element> = [];
+            const perLevel_TotalIonCurrent_DisplayRows_DownloadRows: Array<Array<string>> = [];
+
+
             const perLevel_Count_DisplayRows: Array<JSX.Element> = [];
 
+            const perLevel_Count_DisplayRows_DownloadRows: Array<Array<string>> = [];
+
             {
+                const label = "Sub Search:"
+
                 const perSearch_HeaderRow_LeftLabel = (
                     <React.Fragment
                         key={ "LeftLabel" }
@@ -647,17 +693,24 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                             <div
                                 style={ { paddingBottom: paddingBottom_SeparateSections } }
                             >
-                                Sub Search:
+                                { label }
                             </div>
                         </td>
                     </React.Fragment>
                 )
                 perSearch_HeaderRow.push( perSearch_HeaderRow_LeftLabel );
+
+                perSearch_HeaderRow_Download.push( label )
             }
 
             {
                 const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+
+                const perLevel_TotalIonCurrent_DisplayEntries_DownloadCells: Array<string> = [];
+
                 {
+                    const label = "Total Ion Current:"
+
                     const perLevel_TotalIonCurrent_LeftLabel = (
                         <React.Fragment
                             key={ "Total Ion Current" }
@@ -666,16 +719,21 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                 <div
                                     key={ "Total Ion Current" }
                                 >
-                                    Total Ion Current:
+                                    { label }
                                 </div>
                             </td>
                         </React.Fragment>
                     );
                     perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_LeftLabel);
+
+                    perLevel_TotalIonCurrent_DisplayEntries_DownloadCells.push( label )
                 }
 
                 for ( const dataPerSubSearchEntry of dataPerSubSearchArray ) {
                     { //  Sub Search Display Name
+
+                        const value = dataPerSubSearchEntry.subgroupName_Display
+
                         const perSearch_HeaderRow_Column = (
                             <React.Fragment
                                 key={ "LeftLabel" }
@@ -685,14 +743,19 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                         key={ dataPerSubSearchEntry.searchSubGroup_Id }
                                         style={{ textAlign: "right", paddingBottom: paddingBottom_SeparateSections}}
                                     >
-                                        {dataPerSubSearchEntry.subgroupName_Display}
+                                        { value }
                                     </div>
                                 </td>
                             </React.Fragment>
                         )
                         perSearch_HeaderRow.push(perSearch_HeaderRow_Column);
+
+                        perSearch_HeaderRow_Download.push( value )
                     }
                     {  //  Total ION Current per Sub search
+
+                        const value = dataPerSubSearchEntry.totalIonCurrent_ForSearch.toExponential(3)
+
                         const style_Value: React.CSSProperties = { textAlign: "right", paddingBottom: paddingBottom, paddingLeft: paddingLeft_Values };
 
                         const perLevel_TotalIonCurrent_DisplayEntry = (
@@ -704,12 +767,14 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                         key={"total_" + dataPerSubSearchEntry.searchSubGroup_Id}
                                         style={style_Value}
                                     >
-                                        { dataPerSubSearchEntry.totalIonCurrent_ForSearch.toExponential(3) }
+                                        { value }
                                     </div>
                                 </td>
                             </React.Fragment>
                         )
                         perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+
+                        perLevel_TotalIonCurrent_DisplayEntries_DownloadCells.push( value )
                     }
                 }
 
@@ -722,6 +787,8 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                         </tr>
                     </React.Fragment>
                 )
+
+                perLevel_TotalIonCurrent_DisplayRows_DownloadRows.push( perLevel_TotalIonCurrent_DisplayEntries_DownloadCells )
             }
 
             //  "Total MS{scanLevel} Ion Current"  AND  "MS{scanLevel} TIC with PSM":  Per Scan Level Data
@@ -753,7 +820,12 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
 
                 {
                     const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+
+                    const perLevel_TotalIonCurrent_DisplayEntries_DownloadCells: Array<string> = [];
+
                     {
+                        const label = "Total MS" + scanLevel + " Ion Current:"
+
                         const perLevel_TotalIonCurrent_DisplayEntry = (
                             <React.Fragment
                                 key={scanLevel + "_label"}
@@ -766,13 +838,15 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                         <div
                                             style={style_Label}
                                         >
-                                            Total MS{scanLevel} Ion Current:
+                                            { label }
                                         </div>
                                     </div>
                                 </td>
                             </React.Fragment>
                         )
                         perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+
+                        perLevel_TotalIonCurrent_DisplayEntries_DownloadCells.push( label )
                     }
 
                     for ( const dataPerSubSearchEntry of dataPerSubSearchArray ) {
@@ -803,6 +877,8 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                 </React.Fragment>
                             )
                             perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+
+                            perLevel_TotalIonCurrent_DisplayEntries_DownloadCells.push( totalIonCurrent_Value )
                         }
                     }
 
@@ -815,6 +891,8 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                             </tr>
                         </React.Fragment>
                     )
+
+                    perLevel_TotalIonCurrent_DisplayRows_DownloadRows.push( perLevel_TotalIonCurrent_DisplayEntries_DownloadCells )
                 }
 
                 if ( display__totalIonCurrent_ForScanLevel_FilteredScans__Row ) {
@@ -822,9 +900,13 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                     {
                         const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
 
+                        const perLevel_TotalIonCurrent_DisplayEntries_DownloadCells: Array<string> = [];
+
                         //  "MS{scanLevel} TIC with PSM" row
 
                         {
+                            const label = "MS" + scanLevel + " TIC with PSM:"
+
                             const perLevel_TotalIonCurrent_DisplayEntry = (
                                 <React.Fragment
                                     key={scanLevel + "_label_TIC with PSM"}
@@ -835,13 +917,15 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                             <div
                                                 style={style_Label}
                                             >
-                                                MS{scanLevel} TIC with PSM:
+                                                { label }
                                             </div>
                                         </div>
                                     </td>
                                 </React.Fragment>
                             )
                             perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+
+                            perLevel_TotalIonCurrent_DisplayEntries_DownloadCells.push( label )
                         }
 
                         for ( const dataPerSubSearchEntry of dataPerSubSearchArray ) {
@@ -881,6 +965,8 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                     </React.Fragment>
                                 )
                                 perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+
+                                perLevel_TotalIonCurrent_DisplayEntries_DownloadCells.push( value_Display )
                             }
                         }
 
@@ -893,6 +979,8 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                 </tr>
                             </React.Fragment>
                         )
+
+                        perLevel_TotalIonCurrent_DisplayRows_DownloadRows.push( perLevel_TotalIonCurrent_DisplayEntries_DownloadCells )
                     }
                 }
             }
@@ -911,7 +999,12 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
 
                 {
                     const perLevel_Count_DisplayEntries: Array<JSX.Element> = [];
+
+                    const perLevel_Count_DisplayEntries_DownloadCells: Array<string> = [];
+
                     {
+                        const label = "Number MS" + scanLevel + " Scans:"
+
                         const perLevel_Count_DisplayEntry = (
                             <React.Fragment
                                 key={scanLevel + "_label"}
@@ -925,13 +1018,15 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                         <div
                                             style={style_Label}
                                         >
-                                            Number MS{scanLevel} Scans:
+                                            { label }
                                         </div>
                                     </div>
                                 </td>
                             </React.Fragment>
                         )
                         perLevel_Count_DisplayEntries.push(perLevel_Count_DisplayEntry);
+
+                        perLevel_Count_DisplayEntries_DownloadCells.push( label )
                     }
 
                     for ( const dataPerSubSearchEntry of dataPerSubSearchArray ) {
@@ -963,6 +1058,8 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                 </React.Fragment>
                             )
                             perLevel_Count_DisplayEntries.push(perLevel_Count_DisplayEntry);
+
+                            perLevel_Count_DisplayEntries_DownloadCells.push( numberOfScans_Value )
                         }
                     }
 
@@ -975,13 +1072,31 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                             </tr>
                         </React.Fragment>
                     )
+
+                    perLevel_Count_DisplayRows_DownloadRows.push( perLevel_Count_DisplayEntries_DownloadCells )
                 }
             }
 
             let scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow: JSX.Element = undefined
 
+            let scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow_DownloadRow: Array<string> = undefined
+
             {
                 const scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells: Array<JSX.Element> = [];
+
+                const scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells_DownloadCells: Array<string> = [];
+
+                const label = "Scans with a PSM meeting filters"
+
+                const labelCell = (
+                    <td style={ table_TD_Style }>
+                        <div style={ { paddingBottom: paddingBottom, paddingRight: paddingRight_Labels } }>
+                            Scans with a <br/>PSM meeting filters
+                        </div>
+                    </td>
+                )
+
+                scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells_DownloadCells.push( label )
 
                 for ( const dataPerSubSearchEntry of dataPerSubSearchArray ) {
 
@@ -1004,6 +1119,11 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                         }
                     }
 
+                    const value = dataPerSubSearchEntry.scanCount_PSM_MeetsCutoff.toLocaleString() +
+                        " (" +
+                        scanNumbersCount_For_FilteredPSMs_Percentage_String +
+                        "%)"
+
                     const entryJSX = (
                         <React.Fragment
                             key={ dataPerSubSearchEntry.searchSubGroup_Id }
@@ -1012,34 +1132,36 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                 <div
                                     style={ { textAlign: "right", paddingBottom: paddingBottom, paddingLeft: paddingLeft_Values  } }
                                 >
-                                    <React.Fragment>
-                                        <span>{dataPerSubSearchEntry.scanCount_PSM_MeetsCutoff.toLocaleString()}</span>
-                                        <span> (</span>
-                                        <span>{scanNumbersCount_For_FilteredPSMs_Percentage_String}</span>
-                                        <span>%)</span>
-                                    </React.Fragment>
+                                    { value }
                                 </div>
                             </td>
                         </React.Fragment>
                     )
 
                     scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells.push( entryJSX );
+
+                    scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells_DownloadCells.push( value )
                 }
 
 
                 scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow = (
                     <React.Fragment>
                         <tr>
-                            <td style={ table_TD_Style }>
-                                <div style={ { paddingBottom: paddingBottom, paddingRight: paddingRight_Labels } }>
-                                    Scans with a <br/>PSM meeting filters
-                                </div>
-                            </td>
+                            { labelCell }
                             { scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells }
                         </tr>
                     </React.Fragment>
                 )
+
+                scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow_DownloadRow = scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells_DownloadCells
             }
+
+            this._tableDownloadData = [
+                perSearch_HeaderRow_Download,
+                ...perLevel_TotalIonCurrent_DisplayRows_DownloadRows,
+                ...perLevel_Count_DisplayRows_DownloadRows,
+                scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow_DownloadRow
+            ]
 
             // const gridTemplateColumns_String = " repeat( " + ( dataPerSubSearchArray.length + 1 ) + ", max-content ) ";
 
@@ -1075,14 +1197,34 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
 
         return (
             <div>
-                <h3>
-                    Scan Statistics
-                </h3>
+                <div style={ { marginTop: 16, marginBottom: 16 } }>
+                    <span
+                        style={ { fontSize: 16, fontWeight: "bold", marginBottom: 10 } }
+                    >
+                        Scan Statistics
+                    </span>
+                    { this._tableDownloadData ? (
+
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            placement={ "top" }
+                            title={ <span>Download Scan Statistics as tab delimited table</span> }
+                        >
+                            <span
+                                className=" fake-link "
+                                style={ { marginLeft: 20 } }
+                                onClick={ this._downloadData_Clicked_BindThis }
+                            >
+                                download
+                            </span>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                    ) : null }
+                </div>
                 <div style={ { position: "relative" } }>
-                { ( dataDisplay ) ? (
+                    { ( dataDisplay ) ? (
                         <React.Fragment>
-                            {dataDisplay}
-                            {( this.state.showUpdatingMessage ) ? (
+                            { dataDisplay }
+                            { ( this.state.showUpdatingMessage ) ? (
                                 <div className=" block-updating-overlay-container ">
                                     <div style={ { textAlign: "center", marginTop: 40 } }>
                                         Updating Data
@@ -1094,7 +1236,7 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                         <div>
                             LOADING DATA
                         </div>
-                    )}
+                    ) }
                 </div>
 
             </div>
