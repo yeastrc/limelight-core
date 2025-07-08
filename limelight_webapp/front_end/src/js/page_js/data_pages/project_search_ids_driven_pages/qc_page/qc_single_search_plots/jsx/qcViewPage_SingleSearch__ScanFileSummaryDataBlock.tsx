@@ -594,7 +594,7 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                                 ( ( ! totalIonCurrent_ForScanLevel_FilteredScans ) || ( ! summaryPerLevelData.totalIonCurrent ) ) ? "0" :
                                     ( ( totalIonCurrent_ForScanLevel_FilteredScans / summaryPerLevelData.totalIonCurrent ) * 100 ).toFixed( 1 )
 
-                            const label = "Total MS" + summaryPerLevelData.scanLevel + " TIC with PSM:"
+                            const label = "MS" + summaryPerLevelData.scanLevel + " TIC with PSM:"
                             const value = valueDisplay_totalIonCurrent_ForScanLevel_FilteredScans +
                                 " (" +
                                 valueDisplayPercent_totalIonCurrent_ForScanLevel_FilteredScans +
@@ -748,18 +748,18 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
 
                     <div style={ { padding: 15 } }  data-plot-class-name={ this.constructor ? this.constructor.name : "Unknown: No this.constructor" }>
 
-                        <div>
+                        <div style={ { marginBottom: 10 } }>
                             <span
                                 style={ { fontSize: 16, fontWeight: "bold", marginBottom: 10 } }
                             >
-                                Scan Statistics
+                                Scan File Statistics
                             </span>
                             { this._tableDownloadData ? (
 
                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                     { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     placement={ "top" }
-                                    title={ <span>Download Scan Statistics as tab delimited table</span> }
+                                    title={ <span>Download Scan File Statistics as tab delimited table</span> }
                                 >
                                     <span
                                         className=" fake-link "
