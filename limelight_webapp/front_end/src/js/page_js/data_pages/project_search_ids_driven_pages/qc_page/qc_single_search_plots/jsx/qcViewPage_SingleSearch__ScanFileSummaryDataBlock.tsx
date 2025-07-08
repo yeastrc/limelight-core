@@ -433,6 +433,7 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
      */
     render() {
 
+        const table_TD_Style: React.CSSProperties = { verticalAlign: "top" }
 
         let dataDisplay: JSX.Element = null;
 
@@ -492,7 +493,7 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                         paddingBottom_OuterDiv_ToNextGroup = 14;
                     }
 
-                    let willDisplay__FilteredPsmEntry = false;
+                    // let willDisplay__FilteredPsmEntry = false;
 
                     const style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent: React.CSSProperties = {}
                     const style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent: React.CSSProperties = {}
@@ -500,7 +501,7 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                     if ( this.state.allScans_Have_TotalIonCurrent
                         && ( summaryPerLevelData_Array_Counter === summaryPerLevelData_Array_Length
                             || this.state.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.has( summaryPerLevelData.scanLevel ) ) ) {
-                        willDisplay__FilteredPsmEntry = true;
+                        // willDisplay__FilteredPsmEntry = true;
                         style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent.paddingBottom = paddingBottom_OuterDiv_ToNextGroup;
                     } else {
                         style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent.paddingBottom = paddingBottom_OuterDiv_ToNextGroup;
@@ -509,16 +510,22 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                     {
                         const perLevel_TotalIonCurrent_DisplayEntry = (
                             <React.Fragment key={ summaryPerLevelData.scanLevel + "_main" }>
-                                <div style={ style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent }>
-                                    <div style={ style_Label }>
-                                        Total MS{ summaryPerLevelData.scanLevel } Ion Current:
-                                    </div>
-                                </div>
-                                <div style={ style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent }>
-                                    <div style={ style_Value }>
-                                        { summaryPerLevelData.totalIonCurrent.toExponential( 3 ) }
-                                    </div>
-                                </div>
+                                <tr>
+                                    <td style={ table_TD_Style }>
+                                        <div style={ style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent }>
+                                            <div style={ style_Label }>
+                                                Total MS{ summaryPerLevelData.scanLevel } Ion Current:
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style={ table_TD_Style }>
+                                        <div style={ style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent }>
+                                            <div style={ style_Value }>
+                                                { summaryPerLevelData.totalIonCurrent.toExponential( 3 ) }
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
                             </React.Fragment>
                         )
                         perLevel_TotalIonCurrent_DisplayEntries.push( perLevel_TotalIonCurrent_DisplayEntry );
@@ -532,27 +539,33 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                             //  Scan Level > 1  AND  This level has Total Ion Current that is for filtered PSMs
                             const perLevel_TotalIonCurrent_DisplayEntry = (
                                 <React.Fragment key={ summaryPerLevelData.scanLevel + "_filtered" }>
-                                    <div style={ style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent }>
-                                        <div style={ style_Label }>
-                                            MS{ summaryPerLevelData.scanLevel } TIC with PSM:
-                                        </div>
-                                    </div>
-                                    <div style={ style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent }>
-                                        <div style={ style_Value }>
-                                            <span>
-                                                { ( ! totalIonCurrent_ForScanLevel_FilteredScans ) ? "0" :
-                                                    totalIonCurrent_ForScanLevel_FilteredScans.toExponential( 3 ) }
-                                            </span>
-                                            <span> </span>
-                                            <span>(</span>
-                                            <span>
-                                                { ( ( ! totalIonCurrent_ForScanLevel_FilteredScans ) || ( ! summaryPerLevelData.totalIonCurrent ) ) ? "0" :
-                                                    ( ( totalIonCurrent_ForScanLevel_FilteredScans / summaryPerLevelData.totalIonCurrent ) * 100 ).toFixed( 1 ) }
-                                            </span>
-                                            <span>%</span>
-                                            <span>)</span>
-                                        </div>
-                                    </div>
+                                    <tr>
+                                        <td style={ table_TD_Style }>
+                                            <div style={ style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent }>
+                                                <div style={ style_Label }>
+                                                    MS{ summaryPerLevelData.scanLevel } TIC with PSM:
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style={ table_TD_Style }>
+                                            <div style={ style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent }>
+                                                <div style={ style_Value }>
+                                                    <span>
+                                                        { ( ! totalIonCurrent_ForScanLevel_FilteredScans ) ? "0" :
+                                                            totalIonCurrent_ForScanLevel_FilteredScans.toExponential( 3 ) }
+                                                    </span>
+                                                    <span> </span>
+                                                    <span>(</span>
+                                                    <span>
+                                                        { ( ( ! totalIonCurrent_ForScanLevel_FilteredScans ) || ( ! summaryPerLevelData.totalIonCurrent ) ) ? "0" :
+                                                            ( ( totalIonCurrent_ForScanLevel_FilteredScans / summaryPerLevelData.totalIonCurrent ) * 100 ).toFixed( 1 ) }
+                                                    </span>
+                                                    <span>%</span>
+                                                    <span>)</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </React.Fragment>
                             )
                             perLevel_TotalIonCurrent_DisplayEntries.push( perLevel_TotalIonCurrent_DisplayEntry );
@@ -562,12 +575,18 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                     {
                         const perLevel_Count_DisplayEntry = (
                             <React.Fragment key={ summaryPerLevelData.scanLevel }>
-                                <div style={ style_Label }>
-                                    Number MS{ summaryPerLevelData.scanLevel } Scans:
-                                </div>
-                                <div style={ style_Value }>
-                                    { summaryPerLevelData.numberOfScans.toLocaleString() }
-                                </div>
+                                <tr>
+                                    <td style={ table_TD_Style }>
+                                        <div style={ style_Label }>
+                                            Number MS{ summaryPerLevelData.scanLevel } Scans:
+                                        </div>
+                                    </td>
+                                    <td style={ table_TD_Style }>
+                                        <div style={ style_Value }>
+                                            { summaryPerLevelData.numberOfScans.toLocaleString() }
+                                        </div>
+                                    </td>
+                                </tr>
                             </React.Fragment>
                         )
                         perLevel_Count_DisplayEntries.push( perLevel_Count_DisplayEntry );
@@ -594,28 +613,47 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                 }
 
                 dataDisplay = (
-                    <div style={ { display: "grid", gridTemplateColumns: "max-content max-content" } }>
-                        {/* Two column Grid */}
-                        <div style={ { paddingBottom: paddingBottom } }>
-                            Total Ion Current:
-                        </div>
-                        <div style={ { textAlign: "right" } }>
-                            { totalIonCurrentAllLevels.toExponential(3) }
-                        </div>
-                        { perLevel_TotalIonCurrent_DisplayEntries }
-                        { perLevel_Count_DisplayEntries }
+                    <>
+                        <table cellPadding={ 0 } cellSpacing={ 0 }>
+                            <tbody>
+                            {/*<div style={ { display: "grid", gridTemplateColumns: "max-content max-content" } }>*/}
+                            {/* Two column Grid */}
+                            <tr>
+                                <td style={ table_TD_Style }>
+                                    <div style={ { paddingBottom: paddingBottom } }>
+                                        Total Ion Current:
+                                    </div>
+                                </td>
+                                <td style={ table_TD_Style }>
+                                    <div style={ { textAlign: "right" } }>
+                                        { totalIonCurrentAllLevels.toExponential(3) }
+                                    </div>
+                                </td>
+                            </tr>
 
-                        {/*  Remove paddingBottom: paddingBottom from both columns of last row since now in border and padding all around */}
-                        <div >
-                            Scans with a <br/>PSM meeting filters
-                        </div>
-                        <div style={ { textAlign: "right" } }>
-                            <span>{ this.state.scanNumbersCount_For_FilteredPSMs.scanNumbersCount_For_FilteredPSMs.toLocaleString() }</span>
-                            <span> (</span>
-                            <span>{ scanNumbersCount_For_FilteredPSMs_Percentage_String }</span>
-                            <span>%)</span>
-                        </div>
-                    </div>
+                            { perLevel_TotalIonCurrent_DisplayEntries }
+                            { perLevel_Count_DisplayEntries }
+
+                            {/*  Remove paddingBottom: paddingBottom from both columns of last row since now in border and padding all around */}
+                            <tr>
+                                <td style={ table_TD_Style }>
+                                    <div >
+                                        Scans with a <br/>PSM meeting filters
+                                    </div>
+                                </td>
+                                <td style={ table_TD_Style }>
+                                    <div style={ { textAlign: "right" } }>
+                                        <span>{ this.state.scanNumbersCount_For_FilteredPSMs.scanNumbersCount_For_FilteredPSMs.toLocaleString() }</span>
+                                        <span> (</span>
+                                        <span>{ scanNumbersCount_For_FilteredPSMs_Percentage_String }</span>
+                                        <span>%)</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {/*</div>*/}
+                            </tbody>
+                        </table>
+                    </>
                 )
             } else {
                 // console.warn( "else of 'if ( scanFileData_For_SearchScanFileId )'")

@@ -19,6 +19,7 @@ import { CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPepti
 import { QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Data";
 import { QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded";
 import { CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data";
+import ReactDOM from "react-dom";
 
 /**
  *
@@ -235,69 +236,69 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
 
             for ( const projectSearchId of projectSearchIds ) {
 
-                    let scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId = scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.get( projectSearchId )
-                    if ( ! scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId ) { // Will always be null.  Easy way to get correct type without setting type here
-                        scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId = new Map()
-                        scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.set( projectSearchId, scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId )
-                    }
+                let scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId = scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.get( projectSearchId )
+                if ( ! scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId ) { // Will always be null.  Easy way to get correct type without setting type here
+                    scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId = new Map()
+                    scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.set( projectSearchId, scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId )
+                }
 
-                    const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
-                        this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId)
-                    if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
-                        const msg = "this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId
-                        console.warn(msg)
-                        throw Error(msg)
-                    }
+                const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId)
+                if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+                    const msg = "this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId
+                    console.warn(msg)
+                    throw Error(msg)
+                }
 
-                    const promise = new Promise<void>((resolve, reject) => { try {
-                        const promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch =
-                            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch().
-                            get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_ReturnPromise()
+                const promise = new Promise<void>((resolve, reject) => { try {
+                    const promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch =
+                        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch().
+                        get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_ReturnPromise()
 
-                        promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch.catch(reason => reject(reason))
-                        promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch.then( value_promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch => { try {
+                    promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch.catch(reason => reject(reason))
+                    promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch.then( value_promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch => { try {
 
-                            const promises_ScanData_Array: Array<Promise<void>> = []
+                        const promises_ScanData_Array: Array<Promise<void>> = []
 
-                            for ( const scanFile_ProjectScanFileId_SearchScanFileId_Entry of value_promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch.scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_All() ) {
+                        for ( const scanFile_ProjectScanFileId_SearchScanFileId_Entry of value_promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch.scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_All() ) {
 
-                                const searchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_Entry.searchScanFileId
+                            const searchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_Entry.searchScanFileId
 
-                                const get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result =
-                                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data().
-                                    get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId({ searchScanFileId })
-                                if ( get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.data ) {
-                                    scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId.set( searchScanFileId, get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.data.scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder )
-                                } else if ( get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.promise ) {
-                                    const promise_For_Single_SearchScanFileId = new Promise<void>((resolve_For_Single_SearchScanFileId, reject_For_Single_SearchScanFileId) => { try {
-                                        get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.promise.catch( reason => reject_For_Single_SearchScanFileId(reason) )
-                                        get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.promise.then( value => { try {
-                                            scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId.set( searchScanFileId, value.scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder )
-                                            resolve_For_Single_SearchScanFileId()
-                                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                            const get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result =
+                                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data().
+                                get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId({ searchScanFileId })
+                            if ( get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.data ) {
+                                scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId.set( searchScanFileId, get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.data.scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder )
+                            } else if ( get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.promise ) {
+                                const promise_For_Single_SearchScanFileId = new Promise<void>((resolve_For_Single_SearchScanFileId, reject_For_Single_SearchScanFileId) => { try {
+                                    get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.promise.catch( reason => reject_For_Single_SearchScanFileId(reason) )
+                                    get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.promise.then( value => { try {
+                                        scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId.set( searchScanFileId, value.scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder )
+                                        resolve_For_Single_SearchScanFileId()
                                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                                    promises_ScanData_Array.push(promise_For_Single_SearchScanFileId)
-                                } else {
-                                    throw Error( "get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result NO data or promise" )
-                                }
-                            }
-
-                            if ( promises_ScanData_Array.length === 0 ) {
-
-                                resolve()
-
-                            } else {
-                                const promises_ScanData_Array_All = Promise.all( promises_ScanData_Array )
-                                promises_ScanData_Array_All.catch(reason => reject(reason))
-                                promises_ScanData_Array_All.then(novalue => { try {
-                                    resolve()
                                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                                promises_ScanData_Array.push(promise_For_Single_SearchScanFileId)
+                            } else {
+                                throw Error( "get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result NO data or promise" )
                             }
+                        }
 
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                        if ( promises_ScanData_Array.length === 0 ) {
+
+                            resolve()
+
+                        } else {
+                            const promises_ScanData_Array_All = Promise.all( promises_ScanData_Array )
+                            promises_ScanData_Array_All.catch(reason => reject(reason))
+                            promises_ScanData_Array_All.then(novalue => { try {
+                                resolve()
+                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                        }
+
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
-                    promises.push(promise)
+                promises.push(promise)
             }
         }
 
@@ -640,6 +641,8 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
 
         if ( this.state.dataComputed  ) {
 
+            const table_TD_Style: React.CSSProperties = { verticalAlign: "top", whiteSpace: "nowrap" }
+
             const paddingBottom = 5;
             const paddingBottom_SeparateSections = 14;
 
@@ -649,8 +652,8 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
             const dataPerSearchArray = this.state.dataComputed.dataPerSearchArray;
 
             const perSearch_HeaderRow: Array<JSX.Element> = [];
-            const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
-            const perLevel_Count_DisplayEntries: Array<JSX.Element> = [];
+            const perLevel_TotalIonCurrent_DisplayRows: Array<JSX.Element> = [];
+            const perLevel_Count_DisplayRows: Array<JSX.Element> = [];
 
             const qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc_Result =
                 qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc({
@@ -662,56 +665,90 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
 
             {
                 const perSearch_HeaderRow_LeftLabel = (
-                    <div
+                    <React.Fragment
                         key={ "LeftLabel" }
-                        style={ { paddingBottom: paddingBottom_SeparateSections } }
                     >
-                        { searchLabel }:
-                    </div>
+                        <td style={ table_TD_Style }>
+                            <div
+                                style={ { paddingBottom: paddingBottom_SeparateSections } }
+                            >
+                                { searchLabel }:
+                            </div>
+                        </td>
+                    </React.Fragment>
                 )
                 perSearch_HeaderRow.push( perSearch_HeaderRow_LeftLabel );
             }
+
             {
-                const perLevel_TotalIonCurrent_LeftLabel = (
-                    <div
+                const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+                {
+                    const perLevel_TotalIonCurrent_LeftLabel = (
+                        <React.Fragment
+                            key={ "Total Ion Current" }
+                        >
+                            <td style={ table_TD_Style }>
+                                <div
+                                >
+                                    Total Ion Current:
+                                </div>
+                            </td>
+                        </React.Fragment>
+                    );
+                    perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_LeftLabel);
+                }
+
+                for ( const dataPerSearchEntry of dataPerSearchArray ) {
+                    { //  Search Ids
+                        const perSearch_HeaderRow_Column = (
+                            <React.Fragment
+                                key={ dataPerSearchEntry.searchId }
+                            >
+                                <td style={ table_TD_Style }>
+                                    <div
+                                        style={{ textAlign: "right", paddingBottom: paddingBottom_SeparateSections, paddingLeft: 15 }}
+                                    >
+                                        {dataPerSearchEntry.searchLabel__SearchShortName_OR_SearchId }
+                                    </div>
+                                </td>
+                            </React.Fragment>
+                        )
+                        perSearch_HeaderRow.push(perSearch_HeaderRow_Column);
+                    }
+                    {  //  Total ION Current per search
+                        let totalIonCurrent_Value = "N/A"
+                        if (dataPerSearchEntry.searchHasScanData && dataPerSearchEntry.totalIonCurrent_ForSearch) {
+                            totalIonCurrent_Value = dataPerSearchEntry.totalIonCurrent_ForSearch.toExponential(3)
+                        }
+
+                        const style_Value: React.CSSProperties = { textAlign: "right", paddingBottom: paddingBottom, paddingLeft: paddingLeft_Values };
+
+                        const perLevel_TotalIonCurrent_DisplayEntry = (
+                            <React.Fragment
+                                key={"total_" + dataPerSearchEntry.searchId}
+                            >
+                                <td style={ table_TD_Style }>
+                                    <div
+                                        style={style_Value}
+                                    >
+                                        { totalIonCurrent_Value }
+                                    </div>
+                                </td>
+                            </React.Fragment>
+                        )
+                        perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+                    }
+                }
+
+                perLevel_TotalIonCurrent_DisplayRows.push(
+                    <React.Fragment
                         key={ "Total Ion Current" }
                     >
-                        Total Ion Current:
-                    </div>
-                );
-                perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_LeftLabel);
-            }
-
-            for ( const dataPerSearchEntry of dataPerSearchArray ) {
-                { //  Search Ids
-                    const perSearch_HeaderRow_Column = (
-                        <div
-                            key={ dataPerSearchEntry.searchId }
-                            style={{ textAlign: "right", paddingBottom: paddingBottom_SeparateSections, paddingLeft: 15 }}
-                        >
-                            {dataPerSearchEntry.searchLabel__SearchShortName_OR_SearchId }
-                        </div>
-                    )
-                    perSearch_HeaderRow.push(perSearch_HeaderRow_Column);
-                }
-                {  //  Total ION Current per search
-                    let totalIonCurrent_Value = "N/A"
-                    if (dataPerSearchEntry.searchHasScanData && dataPerSearchEntry.totalIonCurrent_ForSearch) {
-                        totalIonCurrent_Value = dataPerSearchEntry.totalIonCurrent_ForSearch.toExponential(3)
-                    }
-
-                    const style_Value: React.CSSProperties = { textAlign: "right", paddingBottom: paddingBottom, paddingLeft: paddingLeft_Values };
-
-                    const perLevel_TotalIonCurrent_DisplayEntry = (
-                        <div
-                            key={"total_" + dataPerSearchEntry.searchId}
-                            style={style_Value}
-                        >
-                            { totalIonCurrent_Value }
-                        </div>
-                    )
-                    perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
-                }
+                        <tr>
+                            { perLevel_TotalIonCurrent_DisplayEntries }
+                        </tr>
+                    </React.Fragment>
+                )
             }
 
             //  "Total MS{scanLevel} Ion Current"  AND  "MS{scanLevel} TIC with PSM":  Per Scan Level Data
@@ -748,71 +785,26 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
                 const style_Label: React.CSSProperties = { paddingRight: paddingRight_Labels, paddingBottom: paddingBottom };
                 const style_Value: React.CSSProperties = { textAlign: "right", whiteSpace: "nowrap", paddingBottom: paddingBottom, paddingLeft: paddingLeft_Values };
 
+
                 {
-                    const perLevel_TotalIonCurrent_DisplayEntry = (
-                        <div
-                            key={scanLevel + "_label"}
-                            style={ { paddingTop: paddingTop_TotalIonCurrentMain_OuterDiv_FromPrevGroup } }
-                        >
-                            <div
-                                style={style_Label}
-                            >
-                                Total MS{scanLevel} Ion Current:
-                            </div>
-                        </div>
-                    )
-                    perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
-                }
-
-                for ( const dataPerSearchEntry of dataPerSearchArray ) {
-
-                    let summaryPerScanLevelData :  DataPerSearch_PerScanLevel = undefined;
-
-                    if ( dataPerSearchEntry.searchHasScanData ) {
-                        // Find summaryPerScanLevelData for scanLevel for this search
-                        for (const summaryPerScanLevelData_ForSearch of dataPerSearchEntry.dataPerScanLevel) {
-                            if (summaryPerScanLevelData_ForSearch.scanLevel === scanLevel) {
-                                summaryPerScanLevelData = summaryPerScanLevelData_ForSearch;
-                                break;
-                            }
-                        }
-                    }
-                    {
-                        let totalIonCurrent_Value = "N/A"
-                        if (summaryPerScanLevelData) {
-                            totalIonCurrent_Value = summaryPerScanLevelData.totalIonCurrent.toExponential(3)
-                        }
-                        const perLevel_TotalIonCurrent_DisplayEntry = (
-                            <div
-                                key={scanLevel + "_" + dataPerSearchEntry.searchId}
-                                style={ { paddingTop: paddingTop_TotalIonCurrentMain_OuterDiv_FromPrevGroup } }
-                            >
-                                <div
-                                    style={style_Value}
-                                >
-                                    { totalIonCurrent_Value }
-                                </div>
-                            </div>
-                        )
-                        perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
-                    }
-                }
-
-                if ( display__totalIonCurrent_ForScanLevel_FilteredScans__Row ) {
-
-                    //  "MS{scanLevel} TIC with PSM" row
-
+                    const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
                     {
                         const perLevel_TotalIonCurrent_DisplayEntry = (
-                            <div
-                                key={scanLevel + "_label_TIC with PSM"}
+                            <React.Fragment
+                                key={scanLevel + "_label"}
                             >
-                                <div
-                                    style={style_Label}
-                                >
-                                    MS{scanLevel} TIC with PSM:
-                                </div>
-                            </div>
+                                <td style={ table_TD_Style }>
+                                    <div
+                                        style={ { paddingTop: paddingTop_TotalIonCurrentMain_OuterDiv_FromPrevGroup } }
+                                    >
+                                        <div
+                                            style={style_Label}
+                                        >
+                                            Total MS{scanLevel} Ion Current:
+                                        </div>
+                                    </div>
+                                </td>
+                            </React.Fragment>
                         )
                         perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
                     }
@@ -831,35 +823,130 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
                             }
                         }
                         {
-                            let value_Display = "N/A";
-
-                            if ( dataPerSearchEntry.allScans_Have_TotalIonCurrent__For_THIS_ProjectSearchId ) {
-                                if ( summaryPerScanLevelData && dataPerSearchEntry.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel ) {
-                                    const totalIonCurrent_ForScanLevel_FilteredScans = dataPerSearchEntry.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.get(scanLevel);
-                                    if ( totalIonCurrent_ForScanLevel_FilteredScans !== undefined && totalIonCurrent_ForScanLevel_FilteredScans !== null
-                                        && summaryPerScanLevelData.totalIonCurrent !== undefined && summaryPerScanLevelData.totalIonCurrent !== null ) {
-
-                                        value_Display = totalIonCurrent_ForScanLevel_FilteredScans.toExponential(3) +
-                                            " (" +
-                                            ( ( totalIonCurrent_ForScanLevel_FilteredScans / summaryPerScanLevelData.totalIonCurrent ) * 100 ).toFixed( 1 ) +
-                                            "%)"
-                                    }
-                                }
+                            let totalIonCurrent_Value = "N/A"
+                            if (summaryPerScanLevelData) {
+                                totalIonCurrent_Value = summaryPerScanLevelData.totalIonCurrent.toExponential(3)
                             }
-
                             const perLevel_TotalIonCurrent_DisplayEntry = (
-                                <div
-                                    key={scanLevel + "_" + dataPerSearchEntry.searchId + "_TIC with PSM"}
+                                <React.Fragment
+                                    key={scanLevel + "_" + dataPerSearchEntry.searchId}
                                 >
-                                    <div
-                                        style={style_Value}
-                                    >
-                                        { value_Display }
-                                    </div>
-                                </div>
+                                    <td style={ table_TD_Style }>
+                                        <div
+                                            style={ { paddingTop: paddingTop_TotalIonCurrentMain_OuterDiv_FromPrevGroup } }
+                                        >
+                                            <div
+                                                style={style_Value}
+                                            >
+                                                { totalIonCurrent_Value }
+                                            </div>
+                                        </div>
+                                    </td>
+                                </React.Fragment>
                             )
                             perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
                         }
+                    }
+
+                    perLevel_TotalIonCurrent_DisplayRows.push(
+                        <React.Fragment
+                            key={scanLevel + "_label"}
+                        >
+                            <tr>
+                                { perLevel_TotalIonCurrent_DisplayEntries }
+                            </tr>
+                        </React.Fragment>
+                    )
+                }
+
+
+                if ( display__totalIonCurrent_ForScanLevel_FilteredScans__Row ) {
+
+
+                    {
+                        const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+
+                        //  "MS{scanLevel} TIC with PSM" row
+
+                        {
+                            const perLevel_TotalIonCurrent_DisplayEntry = (
+                                <React.Fragment
+                                    key={scanLevel + "_label_TIC with PSM"}
+                                >
+                                    <td style={ table_TD_Style }>
+                                        <div
+                                        >
+                                            <div
+                                                style={style_Label}
+                                            >
+                                                MS{scanLevel} TIC with PSM:
+                                            </div>
+                                        </div>
+                                    </td>
+                                </React.Fragment>
+                            )
+                            perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+                        }
+
+                        for ( const dataPerSearchEntry of dataPerSearchArray ) {
+
+                            let summaryPerScanLevelData :  DataPerSearch_PerScanLevel = undefined;
+
+                            if ( dataPerSearchEntry.searchHasScanData ) {
+                                // Find summaryPerScanLevelData for scanLevel for this search
+                                for (const summaryPerScanLevelData_ForSearch of dataPerSearchEntry.dataPerScanLevel) {
+                                    if (summaryPerScanLevelData_ForSearch.scanLevel === scanLevel) {
+                                        summaryPerScanLevelData = summaryPerScanLevelData_ForSearch;
+                                        break;
+                                    }
+                                }
+                            }
+                            {
+                                let value_Display = "N/A";
+
+                                if ( dataPerSearchEntry.allScans_Have_TotalIonCurrent__For_THIS_ProjectSearchId ) {
+                                    if ( summaryPerScanLevelData && dataPerSearchEntry.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel ) {
+                                        const totalIonCurrent_ForScanLevel_FilteredScans = dataPerSearchEntry.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.get(scanLevel);
+                                        if ( totalIonCurrent_ForScanLevel_FilteredScans !== undefined && totalIonCurrent_ForScanLevel_FilteredScans !== null
+                                            && summaryPerScanLevelData.totalIonCurrent !== undefined && summaryPerScanLevelData.totalIonCurrent !== null ) {
+
+                                            value_Display = totalIonCurrent_ForScanLevel_FilteredScans.toExponential(3) +
+                                                " (" +
+                                                ( ( totalIonCurrent_ForScanLevel_FilteredScans / summaryPerScanLevelData.totalIonCurrent ) * 100 ).toFixed( 1 ) +
+                                                "%)"
+                                        }
+                                    }
+                                }
+
+                                const perLevel_TotalIonCurrent_DisplayEntry = (
+                                    <React.Fragment
+                                        key={scanLevel + "_" + dataPerSearchEntry.searchId + "_TIC with PSM"}
+                                    >
+                                        <td style={ table_TD_Style }>
+                                            <div
+                                            >
+                                                <div
+                                                    style={style_Value}
+                                                >
+                                                    { value_Display }
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </React.Fragment>
+                                )
+                                perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+                            }
+                        }
+
+                        perLevel_TotalIonCurrent_DisplayRows.push(
+                            <React.Fragment
+                                key={scanLevel + "_label_TIC with PSM"}
+                            >
+                                <tr>
+                                    { perLevel_TotalIonCurrent_DisplayEntries }
+                                </tr>
+                            </React.Fragment>
+                        )
                     }
                 }
             }
@@ -877,122 +964,176 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
                 }
 
                 {
-                    const perLevel_Count_DisplayEntry = (
-                        <div
-                            key={scanLevel + "_label"}
-                            style={ {
-                                paddingTop: scanLevel === 1 ? paddingBottom_SeparateSections : 0  //  Space from prev section
-                            } }
-                        >
-                            <div
-                                style={style_Label}
-                            >
-                                Number MS{scanLevel} Scans:
-                            </div>
-                        </div>
-                    )
-                    perLevel_Count_DisplayEntries.push(perLevel_Count_DisplayEntry);
-                }
-
-                for ( const dataPerSearchEntry of dataPerSearchArray ) {
-
-                    let summaryPerScanLevelData :  DataPerSearch_PerScanLevel = undefined;
-
-                    if ( dataPerSearchEntry.searchHasScanData ) {
-                        // Find summaryPerScanLevelData for scanLevel for this search
-                        for (const summaryPerScanLevelData_ForSearch of dataPerSearchEntry.dataPerScanLevel) {
-                            if (summaryPerScanLevelData_ForSearch.scanLevel === scanLevel) {
-                                summaryPerScanLevelData = summaryPerScanLevelData_ForSearch;
-                                break;
-                            }
-                        }
-                    }
+                    const perLevel_Count_DisplayEntries: Array<JSX.Element> = [];
                     {
-                        let numberOfScans_Value = "N/A"
-                        if (summaryPerScanLevelData) {
-                            numberOfScans_Value = summaryPerScanLevelData.scanCount.toLocaleString();
-                        }
                         const perLevel_Count_DisplayEntry = (
-                            <div
-                                key={scanLevel + "_" + dataPerSearchEntry.searchId}
-                                style={ {
-                                    paddingTop: scanLevel === 1 ? paddingBottom_SeparateSections : 0  //  Space from prev section
-                                } }
+                            <React.Fragment
+                                key={scanLevel + "_label"}
                             >
-                                <div
-                                    style={style_Value}
-                                >
-                                    { numberOfScans_Value }
-                                </div>
-                            </div>
+                                <td style={ table_TD_Style }>
+                                    <div
+                                        style={ {
+                                            paddingTop: scanLevel === 1 ? paddingBottom_SeparateSections : 0  //  Space from prev section
+                                        } }
+                                    >
+                                        <div
+                                            style={style_Label}
+                                        >
+                                            Number MS{scanLevel} Scans:
+                                        </div>
+                                    </div>
+                                </td>
+                            </React.Fragment>
                         )
                         perLevel_Count_DisplayEntries.push(perLevel_Count_DisplayEntry);
                     }
-                }
-            }
 
-            const scanNumbersCount_For_FilteredPSMs_Percentage_JSX: Array<JSX.Element> = [];
+                    for ( const dataPerSearchEntry of dataPerSearchArray ) {
 
-            for ( const dataPerSearchEntry of dataPerSearchArray ) {
+                        let summaryPerScanLevelData :  DataPerSearch_PerScanLevel = undefined;
 
-                let scanNumbersCount_For_FilteredPSMs_Percentage_String: string = undefined;
-
-                if ( dataPerSearchEntry.searchHasScanData ) {
-
-                    const percentage = ( dataPerSearchEntry.scanCount_PSM_MeetsCutoff / dataPerSearchEntry.totalScanCount_AtHighestLevelNumber ) * 100;
-
-                    let decimalPlaces = 1;
-                    if ( percentage < 1 ) {
-                        decimalPlaces = 2;
-                    }
-                    scanNumbersCount_For_FilteredPSMs_Percentage_String = percentage.toFixed( decimalPlaces );
-
-                    if ( decimalPlaces == 2 && scanNumbersCount_For_FilteredPSMs_Percentage_String.endsWith( "0" ) ) {
-                        scanNumbersCount_For_FilteredPSMs_Percentage_String = scanNumbersCount_For_FilteredPSMs_Percentage_String.substring( 0, scanNumbersCount_For_FilteredPSMs_Percentage_String.length - 1 );
-                    }
-
-                    if ( scanNumbersCount_For_FilteredPSMs_Percentage_String.endsWith( ".0" ) ) {
-                        scanNumbersCount_For_FilteredPSMs_Percentage_String = scanNumbersCount_For_FilteredPSMs_Percentage_String.substring( 0, scanNumbersCount_For_FilteredPSMs_Percentage_String.length - 2 );
-                    }
-                }
-
-                const entryJSX = (
-                    <div
-                        key={ dataPerSearchEntry.searchId }
-                        style={ { textAlign: "right", paddingBottom: paddingBottom, paddingLeft: paddingLeft_Values  } }
-                    >
-                        {(dataPerSearchEntry.searchHasScanData) ? (
-                            <React.Fragment>
-                                <span>{dataPerSearchEntry.scanCount_PSM_MeetsCutoff.toLocaleString()}</span>
-                                <span> (</span>
-                                <span>{scanNumbersCount_For_FilteredPSMs_Percentage_String}</span>
-                                <span>%)</span>
-                            </React.Fragment>
-                        ) : (
-                            <span>N/A</span>
-                        )
+                        if ( dataPerSearchEntry.searchHasScanData ) {
+                            // Find summaryPerScanLevelData for scanLevel for this search
+                            for (const summaryPerScanLevelData_ForSearch of dataPerSearchEntry.dataPerScanLevel) {
+                                if (summaryPerScanLevelData_ForSearch.scanLevel === scanLevel) {
+                                    summaryPerScanLevelData = summaryPerScanLevelData_ForSearch;
+                                    break;
+                                }
+                            }
                         }
-                    </div>
-                )
+                        {
+                            let numberOfScans_Value = "N/A"
+                            if (summaryPerScanLevelData) {
+                                numberOfScans_Value = summaryPerScanLevelData.scanCount.toLocaleString();
+                            }
+                            const perLevel_Count_DisplayEntry = (
+                                <React.Fragment
+                                    key={scanLevel + "_" + dataPerSearchEntry.searchId}
+                                >
+                                    <td style={ table_TD_Style }>
+                                        <div
+                                            style={ {
+                                                paddingTop: scanLevel === 1 ? paddingBottom_SeparateSections : 0  //  Space from prev section
+                                            } }
+                                        >
+                                            <div
+                                                style={style_Value}
+                                            >
+                                                { numberOfScans_Value }
+                                            </div>
+                                        </div>
+                                    </td>
+                                </React.Fragment>
+                            )
+                            perLevel_Count_DisplayEntries.push(perLevel_Count_DisplayEntry);
+                        }
+                    }
 
-                scanNumbersCount_For_FilteredPSMs_Percentage_JSX.push( entryJSX );
+                    perLevel_Count_DisplayRows.push(
+                        <React.Fragment
+                            key={scanLevel + "_label"}
+                        >
+                            <tr>
+                                { perLevel_Count_DisplayEntries }
+                            </tr>
+                        </React.Fragment>
+                    )
+                }
             }
 
-            const gridTemplateColumns_String = " repeat( " + ( dataPerSearchArray.length + 1 ) + ", max-content ) ";
+            let scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow: JSX.Element = undefined
+
+            {
+                const scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells: Array<JSX.Element> = [];
+
+                for ( const dataPerSearchEntry of dataPerSearchArray ) {
+
+                    let scanNumbersCount_For_FilteredPSMs_Percentage_String: string = undefined;
+
+                    if ( dataPerSearchEntry.searchHasScanData ) {
+
+                        const percentage = ( dataPerSearchEntry.scanCount_PSM_MeetsCutoff / dataPerSearchEntry.totalScanCount_AtHighestLevelNumber ) * 100;
+
+                        let decimalPlaces = 1;
+                        if ( percentage < 1 ) {
+                            decimalPlaces = 2;
+                        }
+                        scanNumbersCount_For_FilteredPSMs_Percentage_String = percentage.toFixed( decimalPlaces );
+
+                        if ( decimalPlaces == 2 && scanNumbersCount_For_FilteredPSMs_Percentage_String.endsWith( "0" ) ) {
+                            scanNumbersCount_For_FilteredPSMs_Percentage_String = scanNumbersCount_For_FilteredPSMs_Percentage_String.substring( 0, scanNumbersCount_For_FilteredPSMs_Percentage_String.length - 1 );
+                        }
+
+                        if ( scanNumbersCount_For_FilteredPSMs_Percentage_String.endsWith( ".0" ) ) {
+                            scanNumbersCount_For_FilteredPSMs_Percentage_String = scanNumbersCount_For_FilteredPSMs_Percentage_String.substring( 0, scanNumbersCount_For_FilteredPSMs_Percentage_String.length - 2 );
+                        }
+                    }
+
+                    const entryJSX = (
+                        <React.Fragment
+                            key={ dataPerSearchEntry.searchId }
+                        >
+                            <td style={ table_TD_Style }>
+                                <div
+                                    style={ {
+                                        textAlign: "right",
+                                        paddingBottom: paddingBottom,
+                                        paddingLeft: paddingLeft_Values
+                                    } }
+                                >
+                                    { ( dataPerSearchEntry.searchHasScanData ) ? (
+                                        <React.Fragment>
+                                            <span>{ dataPerSearchEntry.scanCount_PSM_MeetsCutoff.toLocaleString() }</span>
+                                            <span> (</span>
+                                            <span>{ scanNumbersCount_For_FilteredPSMs_Percentage_String }</span>
+                                            <span>%)</span>
+                                        </React.Fragment>
+                                    ) : (
+                                        <span>N/A</span>
+                                    )
+                                    }
+                                </div>
+                            </td>
+                        </React.Fragment>
+                    )
+
+                    scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells.push( entryJSX );
+                }
+
+
+                scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow = (
+                    <React.Fragment>
+                        <tr>
+                            <td style={ table_TD_Style }>
+                                <div style={ { paddingBottom: paddingBottom, paddingRight: paddingRight_Labels } }>
+                                    Scans with a <br/>PSM meeting filters
+                                </div>
+                            </td>
+                            { scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells }
+                        </tr>
+                    </React.Fragment>
+                )
+            }
+
+            // const gridTemplateColumns_String = " repeat( " + ( dataPerSearchArray.length + 1 ) + ", max-content ) ";
 
             dataDisplay = (
-                <div style={ { display: "inline-block", paddingRight: 30 } }>  {/*  Style to add some padding to right of grid  */}
+                <div style={ {
+                    display: "inline-block",
+                    paddingRight: 30
+                } }>  {/*  Style to add some padding to right of grid  */ }
 
-                    <div style={ { display: "grid", gridTemplateColumns: gridTemplateColumns_String } }>
-                        {/* Two column Grid */}
+                    <table cellPadding={ 0 } cellSpacing={ 0 }>
+                        <tbody>
+                        {/*<div style={ { display: "grid", gridTemplateColumns: gridTemplateColumns_String } }>*/}
+                        {/* Multi column Grid */ }
                         { perSearch_HeaderRow }
-                        { perLevel_TotalIonCurrent_DisplayEntries }
-                        { perLevel_Count_DisplayEntries }
-                        <div  style={ { paddingBottom: paddingBottom, paddingRight: paddingRight_Labels } }>
-                            Scans with a <br/>PSM meeting filters
-                        </div>
-                        { scanNumbersCount_For_FilteredPSMs_Percentage_JSX }
-                    </div>
+                        { perLevel_TotalIonCurrent_DisplayRows }
+                        { perLevel_Count_DisplayRows }
+                        {scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow }
+                        {/*</div>*/}
+                        </tbody>
+                    </table>
                 </div>
             );
 
