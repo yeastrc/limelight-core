@@ -514,33 +514,36 @@ class INTERNAL__SingleSearch_Component extends React.Component< INTERNAL__Single
 
         let scanFiles_ForSearch_Elements: Array<JSX.Element> = undefined
 
-        const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder =
-            this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
+        if ( this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
 
-        if ( scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
-            && scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_EntryCount() > 1 ) {
+            const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder =
+                this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
 
-            scanFiles_ForSearch_Elements = []
+            if ( scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+                && scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_EntryCount() > 1 ) {
 
-            for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename() ) {
+                scanFiles_ForSearch_Elements = []
 
-                let fileIsSelected = false
-                if ( this.props.singleSearch_CurrentSelections.searchScanFile_Ids_Selected && this.props.singleSearch_CurrentSelections.searchScanFile_Ids_Selected.has( searchScanFileData.searchScanFileId ) ) {
-                    fileIsSelected = true
+                for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename() ) {
+
+                    let fileIsSelected = false
+                    if ( this.props.singleSearch_CurrentSelections.searchScanFile_Ids_Selected && this.props.singleSearch_CurrentSelections.searchScanFile_Ids_Selected.has( searchScanFileData.searchScanFileId ) ) {
+                        fileIsSelected = true
+                    }
+
+                    const element = (
+                        <INTERNAL__SingleScanFile_UnderSearch_Component
+                            key={ searchScanFileData.searchScanFileId }
+                            searchScanFileData={ searchScanFileData }
+                            fileIsSelected={ fileIsSelected }
+                            wholeSearch_Selected={ this.props.singleSearch_CurrentSelections.wholeSearch_Selected }
+                            allSearches_Selected={ this.props.allSearches_Selected }
+                            callbackOn_Selection_Changed={ this._singleScanFile_UnderSearch_Component__Changed_Callback_BindThis }
+                        />
+                    )
+
+                    scanFiles_ForSearch_Elements.push( element )
                 }
-
-                const element = (
-                    <INTERNAL__SingleScanFile_UnderSearch_Component
-                        key={ searchScanFileData.searchScanFileId }
-                        searchScanFileData={ searchScanFileData }
-                        fileIsSelected={ fileIsSelected }
-                        wholeSearch_Selected={ this.props.singleSearch_CurrentSelections.wholeSearch_Selected }
-                        allSearches_Selected={ this.props.allSearches_Selected }
-                        callbackOn_Selection_Changed={ this._singleScanFile_UnderSearch_Component__Changed_Callback_BindThis }
-                    />
-                )
-
-                scanFiles_ForSearch_Elements.push( element )
             }
         }
 
