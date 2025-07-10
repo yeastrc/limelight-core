@@ -13,6 +13,7 @@ import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_sea
 import {reporterIonMass_CommonRounding_ReturnNumber} from "page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding";
 import {
     Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS,
+    Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingle_PsmId_Under_ReportedPeptideId__FILTERING_INTERNAL_CLASS,
     Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId__FILTERING_INTERNAL_CLASS,
     Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
@@ -339,9 +340,18 @@ export class Peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__Fo
                 continue // EARLY CONTINUE
             }
 
+            const psmEntries_Include_Map_Key_PsmId: Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingle_PsmId_Under_ReportedPeptideId__FILTERING_INTERNAL_CLASS> = new Map()
+
+            for ( const psmId of psmIds_For_SelectedReporterIonMasses ) {
+                const entry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingle_PsmId_Under_ReportedPeptideId__FILTERING_INTERNAL_CLASS({
+                    psmId
+                })
+                psmEntries_Include_Map_Key_PsmId.set( entry.psmId, entry )
+            }
+
             const resultEntry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId__FILTERING_INTERNAL_CLASS({
                 reportedPeptideId,
-                psmIds_Include: psmIds_For_SelectedReporterIonMasses
+                psmEntries_Include_Map_Key_PsmId
             })
 
             resultData.set_Entry_Using_entry_reportedPeptideId_AsKey(resultEntry);

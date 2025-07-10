@@ -12,6 +12,9 @@ import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_da
 import {
     CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
 } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
+import {
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
 
 
 
@@ -37,7 +40,9 @@ interface Internal__PsmList_ViewSpectrumCell_ExternalReactComponent_InputParams 
     openModPosition : OpenModPosition_DataType
 
     // Maybe null or undefined
-    scanPeaks_That_PassFilters_Array__For_PsmId: Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>
+    scanPeaks_That_PassFilters_Array__For_PsmId: ReadonlyArray<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>
+    // Maybe null or undefined
+    scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array: ReadonlyArray<ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY>
 }
 
 /**

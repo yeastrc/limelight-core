@@ -562,7 +562,7 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
                         projectSearchId,
                         reportedPeptideId,
                         searchSubGroupId : undefined,
-                        psmIds_Include : peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmIds_Include,
+                        psmEntries_Include_Map_Key_PsmId : peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmEntries_Include_Map_Key_PsmId,
                         openModPositionOverride: undefined,
                         searchDataLookupParamsRoot,
                         dataPageStateManager,

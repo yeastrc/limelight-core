@@ -1047,9 +1047,9 @@ const _create_AfterDataLoaded = function (
                             if (dataPerReportedPeptideId_Map_Key_reportedPeptideId) {
                                 for (const dataPerReportedPeptideId_MapEntry_Value of dataPerReportedPeptideId_Map_Key_reportedPeptideId.values()) {
                                     reportedPeptideIds.push(dataPerReportedPeptideId_MapEntry_Value.reportedPeptideId)
-                                    const psmIdsSet = dataPerReportedPeptideId_MapEntry_Value.psmIdsSet;
-                                    if (psmIdsSet) {
-                                        psmCount += psmIdsSet.size;  // add to psmCount
+                                    const psmEntries_PassFilters_Map_Key_PsmId = dataPerReportedPeptideId_MapEntry_Value.psmEntries_PassFilters_Map_Key_PsmId;
+                                    if (psmEntries_PassFilters_Map_Key_PsmId) {
+                                        psmCount += psmEntries_PassFilters_Map_Key_PsmId.size;  // add to psmCount
                                     } else {
                                         const msg = (
                                             "No Value in dataPerReportedPeptideId_MapEntry_Value.psmIdsSet: reportedPeptideId: "
@@ -1197,7 +1197,7 @@ const _create_AfterDataLoaded = function (
                                                 psmIds_For_PeptideEntry.add( psmTblData.psmId )
                                             }
                                         } else {
-                                            for ( const psmId of dataForReportedPeptideId.psmIdsSet ) {
+                                            for ( const psmId of dataForReportedPeptideId.psmEntries_PassFilters_Map_Key_PsmId.keys() ) {
                                                 psmIds_For_PeptideEntry.add( psmId )
                                             }
                                         }
@@ -1435,7 +1435,7 @@ const _create_AfterDataLoaded = function (
                                             psmIds_For_PeptideEntry.add( psmTblData.psmId )
                                         }
                                     } else {
-                                        for ( const psmId of dataForReportedPeptideId.psmIdsSet ) {
+                                        for ( const psmId of dataForReportedPeptideId.psmEntries_PassFilters_Map_Key_PsmId.keys() ) {
                                             psmIds_For_PeptideEntry.add( psmId )
                                         }
                                     }

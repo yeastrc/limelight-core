@@ -54,7 +54,8 @@ import {
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
 import {
     Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
-    Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+    Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
+    Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 import {
     limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage
@@ -175,10 +176,13 @@ class ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component extends R
 
                 psmTblData_Array_ElementCounter++
 
-                const psmIds_Include: Set<number> = new Set()
-                psmIds_Include.add( psmTblData.psmTblData.psmId )
-
-                // const psmIds_Include : ReadonlySet<number> = new Set()
+                const psmEntries_Include_Map_Key_PsmId_SingleEntry : Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId> = new Map()
+                {
+                    const psmEntry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId({
+                        psmId: psmTblData.psmTblData.psmId
+                    })
+                    psmEntries_Include_Map_Key_PsmId_SingleEntry.set( psmEntry.psmId, psmEntry )
+                }
 
                 const params_DataTableCallback: DataTable_DataRowEntry__Get_RowChildContent_CallParams = {}
 
@@ -194,7 +198,7 @@ class ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component extends R
                     openModPositionOverride : undefined,
                     searchDataLookupParamsRoot : this.props.propsValue.searchDataLookupParamsRoot,
                     dataPageStateManager : this.props.propsValue.dataPageStateManager,
-                    psmIds_Include,
+                    psmEntries_Include_Map_Key_PsmId: psmEntries_Include_Map_Key_PsmId_SingleEntry,
                     dataTable__enable_Pagination_Download_Search: false,  // Override from true to false
                     commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
                     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable: undefined
@@ -494,10 +498,8 @@ class INTERNAL_ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_ReportedPe
             const entryFor_entriesMap_KeyReportedPeptideId = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                 reportedPeptideId: reportedPeptideId,
                 psmCount_after_Include_Map_Key_SearchSubGroupId: undefined,
-                psmIds_Include: undefined,
-                psmIds_IncludeSet_Map_Key_SearchSubGroupId: undefined,
-                psmCount_after_Include: 1,
-                scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: undefined
+                psmEntries_Map_Key_PsmId: undefined,
+                psmCount_after_Include: 1
             })
 
             entriesMap_KeyReportedPeptideId.set( reportedPeptideId, entryFor_entriesMap_KeyReportedPeptideId )
@@ -505,8 +507,7 @@ class INTERNAL_ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_ReportedPe
 
             const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({
                 projectSearchId: this.props.projectSearchId,
-                entriesMap_KeyReportedPeptideId,
-                scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: undefined
+                entriesMap_KeyReportedPeptideId
             })
 
             const createReportedPeptideDisplayData_result = await createReportedPeptideDisplayData({

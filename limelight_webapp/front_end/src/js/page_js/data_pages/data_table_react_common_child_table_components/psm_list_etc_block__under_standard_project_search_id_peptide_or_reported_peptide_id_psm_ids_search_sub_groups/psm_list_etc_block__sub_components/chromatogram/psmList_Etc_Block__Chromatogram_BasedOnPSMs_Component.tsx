@@ -3353,15 +3353,19 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
                     let scanPeaks_MZ_That_PassFilters_Array__For_PsmId: Array<number> = undefined
 
-                    if ( psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable ) {
+                    if ( psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter.psmEntries_Include_Map_Key_PsmId ) {
 
-                        const scanPeaks_That_PassFilters_Array__For_PsmId =
-                            psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable.
-                            get__scanPeaks_That_PassFilters_Array__For_PsmId( psmItem_For_Associated_MS_1_ScanNumber.psmId )
-                        if ( scanPeaks_That_PassFilters_Array__For_PsmId ) {
-                            scanPeaks_MZ_That_PassFilters_Array__For_PsmId = []
-                            for ( const scanPeaks__Entry of scanPeaks_That_PassFilters_Array__For_PsmId ) {
-                                scanPeaks_MZ_That_PassFilters_Array__For_PsmId.push( scanPeaks__Entry.mz )
+                        const psmEntry =
+                            psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter.psmEntries_Include_Map_Key_PsmId.get( psmItem_For_Associated_MS_1_ScanNumber.psmId )
+                        if ( psmEntry ) {
+
+                            const scanPeaks_That_PassFilters_Array__For_PsmId = psmEntry.scanPeaks_That_PassFilters_Array
+                            if ( scanPeaks_That_PassFilters_Array__For_PsmId ) {
+
+                                scanPeaks_MZ_That_PassFilters_Array__For_PsmId = []
+                                for ( const scanPeaks__Entry of scanPeaks_That_PassFilters_Array__For_PsmId ) {
+                                    scanPeaks_MZ_That_PassFilters_Array__For_PsmId.push( scanPeaks__Entry.mz )
+                                }
                             }
                         }
                     }

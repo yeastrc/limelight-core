@@ -67,6 +67,9 @@ import {
 import {
     searchSubGroup_Get_Selected_SearchSubGroupIds
 } from "page_js/data_pages/search_sub_group/js/searchSubGroup_Get_Selected_SearchSubGroupIds";
+import {
+    Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 
 
@@ -313,10 +316,10 @@ const _getDataTableRows = async function (
 
         //  PSM Count descending then peptide string ascending
 
-        if ( a.psmIds.size > b.psmIds.size ) {
+        if ( a.psmEntries_Map_Key_PsmId.size > b.psmEntries_Map_Key_PsmId.size ) {
             return -1
         }
-        if ( a.psmIds.size < b.psmIds.size ) {
+        if ( a.psmEntries_Map_Key_PsmId.size < b.psmEntries_Map_Key_PsmId.size ) {
             return 1
         }
 
@@ -385,13 +388,13 @@ const _getDataTableRows = async function (
 
         // add psm count
         {
-            const valueDisplay = peptideData.psmIds.size.toString();
+            const valueDisplay = peptideData.psmEntries_Map_Key_PsmId.size.toString();
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
                 valueDisplay,
-                valueSort : peptideData.psmIds.size
+                valueSort : peptideData.psmEntries_Map_Key_PsmId.size
             });
             columnEntries.push( columnEntry );
 
@@ -492,10 +495,14 @@ const _getDataTableRows = async function (
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
+        //  cast as ReadonlyMap to ensure called constructor will not change it
+        const psmEntries_Include_Map_Key_PsmId__ReadonlyMap : ReadonlyMap<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId> =
+            peptideData.psmEntries_Map_Key_PsmId
+
         const subTableData = new PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter({
             dataPageStateManager: dataPageStateManager_DataFrom_Server,
             projectSearchId: projectSearchId,
-            psmIds_Include: peptideData.psmIds,
+            psmEntries_Include_Map_Key_PsmId: psmEntries_Include_Map_Key_PsmId__ReadonlyMap,
             reportedPeptideId: undefined,
             searchSubGroupId: undefined,
             searchDataLookupParamsRoot: searchDataLookupParameters_Root,
@@ -608,7 +615,7 @@ const _getPeptideDataForModProteinSearch = async function (
                     modifiedPositions: new Set(),
                     unlocalizedPositionRanges: [],
                     openModPositionOverride_ToPassTo_PsmTableCreationCode,
-                    psmIds: new Set()
+                    psmEntries_Map_Key_PsmId: new Map()
                 }
                 peptideDataForModProteinSearch_Map_Key_PeptideString.set( peptideDisplayString, peptideData_Output )
 
@@ -625,7 +632,7 @@ const _getPeptideDataForModProteinSearch = async function (
 
             }
 
-            peptideData_Output.psmIds.add( psmId )
+            peptideData_Output.psmEntries_Map_Key_PsmId.set( psm_on_SingleProtein.psmId, psm_on_SingleProtein.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_ForSingle_Psm.psmEntry )
 
             if ( generatedReportedPeptideString_Result_Entry.modification_ProteinPositions ) {
                 for ( const entry of generatedReportedPeptideString_Result_Entry.modification_ProteinPositions ) {
@@ -674,6 +681,5 @@ class INTERNAL__PeptideDataForModProteinSearch {
     readonly unlocalizedPositionRanges: Array<ModPage_Mod_Unlocalized_StartEnd_ContainerClass>
     readonly openModPositionOverride_ToPassTo_PsmTableCreationCode: OpenModPosition_DataType
 
-    readonly psmIds: Set<number>
-
+    readonly psmEntries_Map_Key_PsmId: Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId>
 }

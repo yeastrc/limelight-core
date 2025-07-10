@@ -176,7 +176,7 @@ const _getReportedPeptideIdsForDisplay_ProteinPositionsSelected__AfterLoadData =
 
         for (const reportedPeptideId of reportedPeptideIdsAtPosition) {
 
-            const entry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId__FILTERING_INTERNAL_CLASS({ reportedPeptideId, psmIds_Include: undefined });
+            const entry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId__FILTERING_INTERNAL_CLASS({ reportedPeptideId, psmEntries_Include_Map_Key_PsmId: undefined });
             resultData.set_Entry_Using_entry_reportedPeptideId_AsKey(entry);
         }
     }

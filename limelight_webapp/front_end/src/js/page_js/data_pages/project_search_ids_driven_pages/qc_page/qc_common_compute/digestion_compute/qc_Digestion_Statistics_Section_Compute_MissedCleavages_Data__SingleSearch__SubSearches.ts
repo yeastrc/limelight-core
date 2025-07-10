@@ -459,7 +459,7 @@ const _process_PsmIds_For_ReportedPeptideId = function (
         // For logging
         projectSearchId_ForErrorLogging
     } : {
-        psmIdsSet: Set<number>
+        psmIdsSet: ReadonlySet<number>
         reportedPeptideId: number
         computeDataForCharts_Result__ForSingle_ReportedPeptide: Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_ForSingle_ReportedPeptide
         psmIds_AllPSMs_YesPSMFiltering_Map_Key_ReportedPeptideId: Map<number, Set<number>>

@@ -100,6 +100,9 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 
 const _CHART_WIDTH = 800
@@ -3592,19 +3595,21 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
             const peptideSequences_For_MainFilters_Holder = get_PeptideSequencesHolder_AllForAllSearches_Result.peptideSequences_For_MainFilters_Holder
 
-            const psmId_Set: Set<number> = new Set()
+            const psmEntries_Include_Map_Key_PsmId : Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId> = new Map()
 
             for ( const psm_ToPlot_Entry of psm_ToPlot_For_ProjectSearchId_Entry.psm_ToPlot_Entry_Array ) {
 
-                psmId_Set.add( psm_ToPlot_Entry.psm_And_Its_ScanData.psmItem.psmId )
-                // psm_ToPlot_Entry.psm_And_Its_ScanData.psmItem.reportedPeptideId
+                const entry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId({
+                    psmId: psm_ToPlot_Entry.psm_And_Its_ScanData.psmItem.psmId
+                })
+                psmEntries_Include_Map_Key_PsmId.set( entry.psmId, entry )
             }
 
             const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter = new PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter({
                 projectSearchId,
                 reportedPeptideId: undefined,
                 searchSubGroupId : undefined,
-                psmIds_Include : psmId_Set,
+                psmEntries_Include_Map_Key_PsmId,
                 openModPositionOverride: undefined,
                 searchDataLookupParamsRoot: this.props.featureDetection_ViewPage__Chromatogram_Component_Params.searchDataLookupParamsRoot,
                 dataPageStateManager: this.props.featureDetection_ViewPage__Chromatogram_Component_Params.dataPageStateManager_DataFrom_Server,

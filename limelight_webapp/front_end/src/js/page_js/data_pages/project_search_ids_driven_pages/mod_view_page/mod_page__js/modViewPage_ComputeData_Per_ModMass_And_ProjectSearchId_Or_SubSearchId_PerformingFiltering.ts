@@ -62,6 +62,9 @@ import {
 import {
     CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered";
+import {
+    Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 
 ///////////////////////
@@ -379,6 +382,11 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     readonly psmId: number
     readonly psmTblData: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
 
+    /**
+     * From Filtering Code
+     */
+    readonly psmEntry: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
+
     private _psmOpen_ModificationMassPerPSM_ForPsmId_Array: Array<ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm_SinglePsmLevelOpenModification> = []
     private _psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId_Array: Array<ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm_SinglePsmLevelVariableModification> = []
 
@@ -391,11 +399,17 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     constructor(
         {
             psmTblData,
+            psmEntry,
             variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder,
             variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder,
             openModifications_On_PSM_For_MainFilters_Holder
         } : {
             psmTblData: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
+
+            /**
+             * From Filtering Code
+             */
+            psmEntry: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
 
             variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder
             variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder
@@ -404,6 +418,7 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     ) {
         this.psmId = psmTblData.psmId
         this.psmTblData = psmTblData
+        this.psmEntry = psmEntry
         this.variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder= variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder
         this.variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder = variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder
         this.openModifications_On_PSM_For_MainFilters_Holder = openModifications_On_PSM_For_MainFilters_Holder
@@ -884,9 +899,11 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
 
             const psmTblData_For_ReportedPeptideId = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_ReportedPeptideId( reportedPeptideId )
 
-            if ( reportedPeptideIds_AndTheir_PSM_IDs_Entry.psmIds_Include ) {
+            if ( reportedPeptideIds_AndTheir_PSM_IDs_Entry.psmEntries_Include_Map_Key_PsmId ) {
 
-                for ( const psmId of reportedPeptideIds_AndTheir_PSM_IDs_Entry.psmIds_Include ) {
+                for ( const psmEntry of reportedPeptideIds_AndTheir_PSM_IDs_Entry.psmEntries_Include_Map_Key_PsmId.values() ) {
+
+                    const psmId = psmEntry.psmId
 
                     const psmTblData = psmTblData_For_ReportedPeptideId.get_PsmTblData_For_PsmId( psmId )
                     if ( ! psmTblData ) {
@@ -895,6 +912,7 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
 
                     _process_SinglePsm({
                         psmTblData,
+                        psmEntry,
                         projectSearchId,
                         searchSubGroup_Ids_Selected,
                         ui_Selections_Used_ForCreation,
@@ -919,8 +937,13 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
 
                 for ( const psmTblData of psmTblData_For_ReportedPeptideId.get_PsmTblData_Entries_IterableIterator() ) {
 
+                    const psmEntry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId({
+                        psmId: psmTblData.psmId
+                    })
+
                     _process_SinglePsm({
                         psmTblData,
+                        psmEntry,
                         projectSearchId,
                         searchSubGroup_Ids_Selected,
                         ui_Selections_Used_ForCreation,
@@ -1007,6 +1030,7 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
 const _process_SinglePsm = function (
     {
         psmTblData,
+        psmEntry,
         projectSearchId,
         singleSearch_WithSubSearches,
         searchSubGroup_Ids_Selected,
@@ -1026,6 +1050,12 @@ const _process_SinglePsm = function (
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
     } : {
         psmTblData: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
+
+        /**
+         * From Filtering Code
+         */
+        readonly psmEntry: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
+
         projectSearchId: number
         singleSearch_WithSubSearches: boolean
         searchSubGroup_Ids_Selected : Set<number>
@@ -1130,6 +1160,7 @@ const _process_SinglePsm = function (
                             const dataFor_SinglePsm_For_PsmId = _get_dataFor_SinglePsm_For_PsmId( {
                                 psmId,
                                 psmTblData,
+                                psmEntry,
                                 modMass_Rounded_ForModPage_Processing,
                                 projectSearchId,
                                 singleSearch_WithSubSearches,
@@ -1205,6 +1236,7 @@ const _process_SinglePsm = function (
                         const dataFor_SinglePsm_For_PsmId = _get_dataFor_SinglePsm_For_PsmId( {
                             psmId,
                             psmTblData,
+                            psmEntry,
                             modMass_Rounded_ForModPage_Processing,
                             projectSearchId,
                             singleSearch_WithSubSearches,
@@ -1326,11 +1358,11 @@ const _process_SinglePsm = function (
 
                             const psmId = psmTblData.psmId
 
-
                             //  Does NO Filtering
                             const dataFor_SinglePsm_For_PsmId = _get_dataFor_SinglePsm_For_PsmId( {
                                 psmId,
                                 psmTblData,
+                                psmEntry,
                                 modMass_Rounded_ForModPage_Processing,
                                 projectSearchId,
                                 singleSearch_WithSubSearches,
@@ -1389,6 +1421,7 @@ const _get_dataFor_SinglePsm_For_PsmId = function(
     {
         psmId,
         psmTblData,
+        psmEntry,
         modMass_Rounded_ForModPage_Processing,
         projectSearchId,
         singleSearch_WithSubSearches,
@@ -1403,6 +1436,12 @@ const _get_dataFor_SinglePsm_For_PsmId = function(
     } : {
         psmId: number
         psmTblData: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
+
+        /**
+         * From Filtering Code
+         */
+        psmEntry: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
+
         modMass_Rounded_ForModPage_Processing: number
         projectSearchId: number
         singleSearch_WithSubSearches: boolean
@@ -1475,6 +1514,7 @@ const _get_dataFor_SinglePsm_For_PsmId = function(
     if ( ! dataFor_SinglePsm_For_PsmId ) {
         dataFor_SinglePsm_For_PsmId = new ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm({
             psmTblData,
+            psmEntry,
 
             variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder,
             variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder,

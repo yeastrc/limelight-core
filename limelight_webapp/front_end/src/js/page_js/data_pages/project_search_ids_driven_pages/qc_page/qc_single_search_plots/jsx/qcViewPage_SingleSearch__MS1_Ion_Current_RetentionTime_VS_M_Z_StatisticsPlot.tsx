@@ -1035,12 +1035,13 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                             peptideEntry_Map_Key_PSM_ID.set( psmTblData_Entry.psmId, peptideEntry );
                         }
                     } else {
-                        if ( ! dataPerReportedPeptideId_MapEntry.psmIdsSet ) {
-                            const msg = "( ! dataPerReportedPeptideId_MapEntry.psmIdsSet ) not set when else of ( dataPerReportedPeptideId_MapEntry.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ). reportedPeptideId: " + dataPerReportedPeptideId_MapEntry.reportedPeptideId + ", projectSearchId: " + projectSearchId;
+                        if ( ! dataPerReportedPeptideId_MapEntry.psmEntries_PassFilters_Map_Key_PsmId ) {
+                            const msg = "( ! dataPerReportedPeptideId_MapEntry.psmEntries_PassFilters_Map_Key_PsmId ) not set when else of ( dataPerReportedPeptideId_MapEntry.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ). reportedPeptideId: " + dataPerReportedPeptideId_MapEntry.reportedPeptideId + ", projectSearchId: " + projectSearchId;
                             console.warn(msg);
                             throw Error(msg);
                         }
-                        for ( const psmId of dataPerReportedPeptideId_MapEntry.psmIdsSet ) {
+
+                        for ( const psmId of dataPerReportedPeptideId_MapEntry.psmEntries_PassFilters_Map_Key_PsmId.keys() ) {
                             peptideEntry_Map_Key_PSM_ID.set( psmId, peptideEntry );
                         }
                     }

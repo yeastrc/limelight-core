@@ -1478,8 +1478,8 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                                 psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.delete( dataPerReportedPeptideId.reportedPeptideId );
 
                             } else {
-                                if ( ! dataPerReportedPeptideId.psmIdsSet ) {
-                                    throw Error( "( ! dataPerReportedPeptideId.psmIdsSet ) WHEN else of ( dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ). dataPerReportedPeptideId.reportedPeptideId: " + dataPerReportedPeptideId.reportedPeptideId + ", projectSearchId: " + projectSearchId );
+                                if ( ! dataPerReportedPeptideId.psmEntries_PassFilters_Map_Key_PsmId ) {
+                                    throw Error( "( ! dataPerReportedPeptideId.psmEntries_PassFilters_Map_Key_PsmId ) WHEN else of ( dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ). dataPerReportedPeptideId.reportedPeptideId: " + dataPerReportedPeptideId.reportedPeptideId + ", projectSearchId: " + projectSearchId );
                                 }
 
                                 if ( ! reportedPeptideId_NotFilterdOnPsmId_Set.has( dataPerReportedPeptideId.reportedPeptideId ) ) {
@@ -1490,7 +1490,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                                         psmIds_Set = new Set();
                                         psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.set( dataPerReportedPeptideId.reportedPeptideId, psmIds_Set );
                                     }
-                                    for ( const psmId of dataPerReportedPeptideId.psmIdsSet ) {
+                                    for ( const psmId of dataPerReportedPeptideId.psmEntries_PassFilters_Map_Key_PsmId.keys() ) {
                                         psmIds_Set.add( psmId );
                                     }
                                 }

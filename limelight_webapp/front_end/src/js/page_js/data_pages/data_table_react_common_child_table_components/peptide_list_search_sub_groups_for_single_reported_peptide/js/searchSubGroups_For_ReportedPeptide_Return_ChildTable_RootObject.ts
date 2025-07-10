@@ -478,7 +478,7 @@ const _create_dataTable_RootTableObject = function(
                 projectSearchId,
                 reportedPeptideId : reportedPeptideId_ForDisplay,
                 searchSubGroupId : searchSubGroup_Id,
-                psmIds_Include : reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmIds_Include,
+                psmEntries_Include_Map_Key_PsmId : reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmEntries_Include_Map_Key_PsmId,
                 openModPositionOverride: undefined,
                 searchDataLookupParamsRoot,
                 dataPageStateManager,

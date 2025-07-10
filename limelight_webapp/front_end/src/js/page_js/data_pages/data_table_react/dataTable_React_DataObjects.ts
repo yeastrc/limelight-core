@@ -366,7 +366,12 @@ class DataTable_Column {
             //  For Header:
 
             //  These provide 2 different options for show a tooltip on mouseover of the text in that Column Header. Only 1 is allowed to be populated.
-            columnHeader_Tooltip_HTML_TitleAttribute?: string //  Added to the HTML element that contains the 'displayName' value as the 'title' attribute.
+            /**
+             * columnHeader_Tooltip_HTML_TitleAttribute:
+             *
+             * Column Header Tooltip string.  NO Longer put in HTML title attribute so \n new lines are not recognized.
+             */
+            columnHeader_Tooltip_HTML_TitleAttribute?: string
             columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element  // Function that takes no params and returns JSX.Element
 
             //  If true, then in the first DataRow of a Group will the valueDisplay be shown in the table.  In other rows the table cell will be empty
