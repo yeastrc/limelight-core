@@ -16,7 +16,7 @@
 # It is important that these are correct, especially the centroided variable.
 instrument      =       Orbitrap        #Values are: FTICR, Orbitrap, TOF, QIT
 resolution      =       60000           #Resolution at 400 m/z
-centroided      =       0                       #0=no, 1=yes  If set to incorrect setting, Hardklor will not function properly
+centroided      =       1                       #0=no, 1=yes  If set to incorrect setting, Hardklor will not function properly
 
 # DO NOT CHANGE ms_level
 # must be set to 1 for Limelight feature detection pipeline
