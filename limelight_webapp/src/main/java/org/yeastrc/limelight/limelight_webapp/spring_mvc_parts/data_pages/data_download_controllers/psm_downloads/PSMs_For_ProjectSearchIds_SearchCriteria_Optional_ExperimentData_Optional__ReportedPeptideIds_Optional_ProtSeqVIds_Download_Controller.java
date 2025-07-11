@@ -1767,6 +1767,13 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch = writeOutputToResponse_For_SearchId.experimentDataForSearch;
 				if ( experimentDataForSearch != null ) {
 					for ( RequestJSONParsed_PerConditionGroupConditionData entry : experimentDataForSearch ) {
+						
+						if ( entry.conditionGroupLabel == null ) {
+							String msg = "( entry.conditionGroupLabel == null ) so Unable to write it." + entry.conditionLabel;
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
+						}
+						
 						writer.write( "\t" );
 						writer.write( entry.conditionGroupLabel );
 					}
@@ -2427,6 +2434,22 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			}
 			
 		} catch ( Exception e ) {
+			
+			try {
+
+				writer.write( "\n" );
+				writer.write( "\n" );
+				writer.write( "\n" );
+				
+
+				writer.write( "ERROR creating file.  Please contact the Limelight administrator." );
+
+				writer.write( "\n" );
+				
+			} catch( Throwable t ) {
+				
+				//  Eat Exception
+			}
 			
 			throw e;
 

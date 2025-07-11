@@ -1496,7 +1496,9 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                 const experimentDataForSearch: Array<DownloadPSMs_PerConditionGroupConditionData> = [];
 
                 for ( const conditionGroupLabel_and_ConditionLabel_Data_Entry of conditionGroupLabel_and_ConditionLabel_Data_FOR_ProjectSearchId ) {
+
                     const downloadPSMs_PerConditionGroupConditionData : DownloadPSMs_PerConditionGroupConditionData = {
+                        conditionGroupLabel: conditionGroupLabel_and_ConditionLabel_Data_Entry.conditionGroupLabel,
                         conditionLabel: conditionGroupLabel_and_ConditionLabel_Data_Entry.conditionLabel
                     }
                     experimentDataForSearch.push( downloadPSMs_PerConditionGroupConditionData );

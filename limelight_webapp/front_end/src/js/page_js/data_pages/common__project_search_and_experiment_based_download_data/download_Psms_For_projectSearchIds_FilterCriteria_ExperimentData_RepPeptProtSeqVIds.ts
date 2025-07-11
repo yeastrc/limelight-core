@@ -42,7 +42,7 @@ class DownloadPSMs_PerReportedPeptideId {
  */
 class DownloadPSMs_PerConditionGroupConditionData {
 
-    // conditionGroupLabel : string;
+    conditionGroupLabel : string;
     conditionLabel : string;
 }
 
