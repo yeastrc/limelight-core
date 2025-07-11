@@ -795,11 +795,9 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
      */
     componentDidUpdate(prevProps: Readonly<Internal__ScanFileBrowser_SingleScan_Plot_Component_Props>, prevState: Readonly<Internal__ScanFileBrowser_SingleScan_Plot_Component_State>, snapshot?: any) {
         try {
-            const msg = "Internal__ScanFileBrowser_SingleScan_Plot_Component::componentDidUpdate  NOT DOING ANYTHING"
-
-            console.warn( msg )
-
-
+            // const msg = "Internal__ScanFileBrowser_SingleScan_Plot_Component::componentDidUpdate  NOT DOING ANYTHING"
+            //
+            // console.warn( msg )
 
             if (
                 ( prevProps.scanData_YES_Peaks_DataForSingleScanNumber !==
@@ -811,7 +809,6 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
                 this._forceUpdateObject_StateObjectChanged__For_Internal__Zoom_Of_SingleScan_Plot_Component = {}  //  Force Zoom Component to render current StateObject
 
-
                 const binned_Entries = _bin_Entries_On_X_Y_ZoomRange__OR__min_Max_X_Y_Values( {
                     bin_Count: this.props.singleScan_Chart_Dimensions.mainContents.width,
                     scanData_YES_Peaks_DataForSingleScanNumber: this.props.scanData_YES_Peaks_DataForSingleScanNumber,
@@ -819,9 +816,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
                     scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange: this.props.scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange__MainChart
                 } )
 
-
                 this.setState( { binned_Entries } )
-
             }
         } catch (e) {
             reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
@@ -834,7 +829,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
      */
     private _main_Rect_overlay_MouseDown_Event(event: React.MouseEvent<SVGRectElement, MouseEvent>) {
 
-        console.warn("Overlying <rect> Mouse Down. event: ", event)
+        // console.warn("Overlying <rect> Mouse Down. event: ", event)
 
         if ( ! this.state.binned_Entries ) {
             // No data in state
@@ -861,7 +856,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
         this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect = { x: mouseDownPosition_X_RelativeToMainPlotArea, y: mouseDownPosition_Y_RelativeToMainPlotArea, clientX, clientY }
 
-        console.warn( "this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect: ", this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect )
+        // console.warn( "this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect: ", this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect )
     }
 
     /**
@@ -869,7 +864,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
      */
     private _add_Listener_window_MouseUp_Event() {
 
-        console.warn("Enter: _add_Listener_window_MouseUp_Event()" )
+        // console.warn("Enter: _add_Listener_window_MouseUp_Event()" )
 
         // const documentBody = document.querySelector('body');
         //
@@ -883,7 +878,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
      */
     private _remove_Listener_window_MouseUp_Event() {
 
-        console.warn("Enter: _remove_Listener_window_MouseUp_Event()" )
+        // console.warn("Enter: _remove_Listener_window_MouseUp_Event()" )
 
         // const documentBody = document.querySelector('body');
         //
@@ -897,7 +892,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
      */
     private _window_MouseUp_Event( event: MouseEvent ) {
 
-        console.warn("window Mouse Up. event: ", event)
+        // console.warn("window Mouse Up. event: ", event)
 
         this._general_mouseUp_Event(event);
     }
@@ -937,7 +932,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
      */
     private _general_mouseUp_Event(event: MouseEvent) {
 
-        console.warn("_general_mouseUp_Event called")
+        // console.warn("_general_mouseUp_Event called")
 
         this._remove_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection();
 
@@ -950,7 +945,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
         if ( ! this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect ) {
             //  No "Mouse Down" stored data
-            console.warn("General Mouse Up. Nothing in this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect")
+            // console.warn("General Mouse Up. Nothing in this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect")
 
             return; // EARLY RETURN
         }
@@ -1008,8 +1003,8 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
             return; // EARLY RETURN
         }
 
-        console.warn( "Dragged in X direction (Always Print): " + Math.abs( this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect.x - mouseUpPosition_X_RelativeToMainPlotArea )  )
-        console.warn( "Dragged in Y direction (Always Print): " + Math.abs( this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect.y - mouseUpPosition_Y_RelativeToMainPlotArea )  )
+        // console.warn( "Dragged in X direction (Always Print): " + Math.abs( this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect.x - mouseUpPosition_X_RelativeToMainPlotArea )  )
+        // console.warn( "Dragged in Y direction (Always Print): " + Math.abs( this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect.y - mouseUpPosition_Y_RelativeToMainPlotArea )  )
 
         if ( mouseUpPosition_X_RelativeToMainPlotArea < 0 ) {
             mouseUpPosition_X_RelativeToMainPlotArea = 0;
@@ -1196,7 +1191,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
      */
     private _add_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection() {
 
-        console.warn("_add_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection called")
+        // console.warn("_add_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection called")
 
         const documentBody = document.querySelector('body');
 
@@ -1211,7 +1206,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
      */
     private _remove_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection() {
 
-        console.warn("_remove_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection called")
+        // console.warn("_remove_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection called")
 
         const documentBody = document.querySelector('body');
         documentBody.removeEventListener("mousemove", this._documentBody_MouseMove_Event__UpdateMainChartSelection_BindThis )
@@ -1222,7 +1217,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
      */
     private _documentBody_MouseMove_Event__UpdateMainChartSelection(event: MouseEvent) {
 
-        console.warn("Internal__ScanFileBrowser_SingleScan_Plot_Component: _window_MouseMove_Event__UpdateMainChartSelection: window Mouse Move. event: ", event)
+        // console.warn("Internal__ScanFileBrowser_SingleScan_Plot_Component: _window_MouseMove_Event__UpdateMainChartSelection: window Mouse Move. event: ", event)
 
         if ( ! this.state.binned_Entries ) {
             // No data in state
@@ -1235,7 +1230,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
         if ( ! this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect ) {
             //  No "Mouse Down" stored data
-            console.warn("Internal__ScanFileBrowser_SingleScan_Plot_Component: _documentBody_MouseMove_Event__UpdateMainChartSelection: document <body> Mouse Move. Nothing in this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect")
+            // console.warn("Internal__ScanFileBrowser_SingleScan_Plot_Component: _documentBody_MouseMove_Event__UpdateMainChartSelection: document <body> Mouse Move. Nothing in this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect")
 
             return; // EARLY RETURN
         }
@@ -1296,10 +1291,10 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
         this._rect_SelectionCover_Ref.current.setAttribute( "y", y_String );
         this._rect_SelectionCover_Ref.current.setAttribute( "height", height_String );
 
-        console.warn("Selection rectangle Change on Mouse Move: x: " + x + ", width: " + width + ", y: " + y + ", height: " + height )
+        // console.warn("Selection rectangle Change on Mouse Move: x: " + x + ", width: " + width + ", y: " + y + ", height: " + height )
 
-        console.warn( "mouseMovePosition_X_RelativeToMainPlotArea: " + mouseMovePosition_X_RelativeToMainPlotArea )
-        console.warn( "mouseMovePosition_Y_RelativeToMainPlotArea: " + mouseMovePosition_Y_RelativeToMainPlotArea )
+        // console.warn( "mouseMovePosition_X_RelativeToMainPlotArea: " + mouseMovePosition_X_RelativeToMainPlotArea )
+        // console.warn( "mouseMovePosition_Y_RelativeToMainPlotArea: " + mouseMovePosition_Y_RelativeToMainPlotArea )
 
         // this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect = { x: mouseDownPosition_X_RelativeToMainPlotArea, y: mouseDownPosition_Y_RelativeToMainPlotArea }
 
@@ -1989,7 +1984,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
                     //  TODO  FAKE  Must remove 'console.warn' in this loop
 
-                    console.warn( "FAKE  Must remove 'console.warn' in this loop" )
+                    // console.warn( "FAKE  Must remove 'console.warn' in this loop" )
 
                     //  Validate the ranges do not overlap
 
@@ -2085,7 +2080,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
                             binEntry__Entry_UseFor_Y_Value_ForPlot_Override__And_Data__Map_BinIndex.set( binIndex_Found, { singleScanPeak: entryBinned_Found_For_MZ_Ranges, line_Color: mz_Range_To_Color_Found.line_Color, line_Label: mz_Range_To_Color_Found.line_Label } )
 
-                            console.warn( "Entry for scan peak Found mz_Range_To_Color.  binIndex_Found: " + binIndex_Found + ", entry.m_over_z: " + entryBinned_Found_For_MZ_Ranges.mz + ", entry.intensity: " + entryBinned_Found_For_MZ_Ranges.intensity )
+                            // console.warn( "Entry for scan peak Found mz_Range_To_Color.  binIndex_Found: " + binIndex_Found + ", entry.m_over_z: " + entryBinned_Found_For_MZ_Ranges.mz + ", entry.intensity: " + entryBinned_Found_For_MZ_Ranges.intensity )
 
                             //  TODO  TEMP extra code to show that other peaks in the bin have a larger intensity
 
