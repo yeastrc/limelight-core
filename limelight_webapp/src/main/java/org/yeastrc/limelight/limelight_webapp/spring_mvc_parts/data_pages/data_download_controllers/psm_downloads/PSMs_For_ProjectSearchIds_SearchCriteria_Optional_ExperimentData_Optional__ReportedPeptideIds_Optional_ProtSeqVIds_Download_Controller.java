@@ -902,20 +902,23 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		//  PSM Peptide Position Ann Type for display
 		Map<Integer, AnnotationTypeDTO> psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = new HashMap<>();
 
-		for ( Integer annTypeDisplayItem : psmPeptidePositionAnnTypeDisplay ) {
-			AnnotationTypeDTO annotationTypeDTO_ForDisplay = null;
-			for ( AnnotationTypeDTO annotationTypeDTO_AllForSearchId_Item : annotationTypeDTO_AllForSearchId ) {
-				if ( annTypeDisplayItem.intValue() == annotationTypeDTO_AllForSearchId_Item.getId() ) {
-					annotationTypeDTO_ForDisplay = annotationTypeDTO_AllForSearchId_Item;
-					break;
+		if ( psmPeptidePositionAnnTypeDisplay != null ) {
+
+			for ( Integer annTypeDisplayItem : psmPeptidePositionAnnTypeDisplay ) {
+				AnnotationTypeDTO annotationTypeDTO_ForDisplay = null;
+				for ( AnnotationTypeDTO annotationTypeDTO_AllForSearchId_Item : annotationTypeDTO_AllForSearchId ) {
+					if ( annTypeDisplayItem.intValue() == annotationTypeDTO_AllForSearchId_Item.getId() ) {
+						annotationTypeDTO_ForDisplay = annotationTypeDTO_AllForSearchId_Item;
+						break;
+					}
 				}
+				if ( annotationTypeDTO_ForDisplay == null ) {
+					String msg = "No Ann Type for id: " +  annTypeDisplayItem + " for searchId: " + searchId;
+					log.warn( msg );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.put( annotationTypeDTO_ForDisplay.getId(), annotationTypeDTO_ForDisplay );
 			}
-			if ( annotationTypeDTO_ForDisplay == null ) {
-				String msg = "No Ann Type for id: " +  annTypeDisplayItem + " for searchId: " + searchId;
-				log.warn( msg );
-				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.put( annotationTypeDTO_ForDisplay.getId(), annotationTypeDTO_ForDisplay );
 		}
 		
 
