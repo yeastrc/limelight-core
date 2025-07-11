@@ -794,24 +794,16 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                             title={
                                                 <span>
-                                                    Close
+                                                    Show entered scan number
                                                 </span>
                                             }
                                             { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                title={
-                                                    <span>
-                                                        Show entered scan number
-                                                    </span>
-                                                }
-                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                            >
-                                                <button>
-                                                    Show Scan
-                                                </button>
-                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                            <button>
+                                                Show Scan
+                                            </button>
                                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
                                         { this.state.showScanNumber_ErrorMessage ? (
                                             <>
                                                 <span> </span>

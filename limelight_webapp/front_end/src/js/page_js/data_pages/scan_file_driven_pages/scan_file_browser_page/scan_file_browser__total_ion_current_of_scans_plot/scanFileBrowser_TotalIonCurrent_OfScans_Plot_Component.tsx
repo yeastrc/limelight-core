@@ -208,7 +208,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
      */
     private _main_Rect_overlay_MouseDown_Event(event: React.MouseEvent<SVGRectElement, MouseEvent>) {
 
-        console.warn("Overlying <rect> Mouse Down. event: ", event)
+        // console.warn("Overlying <rect> Mouse Down. event: ", event)
 
         if ( ! this.state.binned_Entries ) {
             // No data in state
@@ -235,7 +235,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
 
         this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect = { x: mouseDownPosition_X_RelativeToMainPlotArea, y: mouseDownPosition_Y_RelativeToMainPlotArea, clientX, clientY }
 
-        console.warn( "this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect: ", this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect )
+        // console.warn( "this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect: ", this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect )
     }
 
     /**
@@ -243,7 +243,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
      */
     private _add_Listener_window_MouseUp_Event() {
 
-        console.warn("Enter: _add_Listener_window_MouseUp_Event()" )
+        // console.warn("Enter: _add_Listener_window_MouseUp_Event()" )
 
         // const documentBody = document.querySelector('body');
         //
@@ -257,7 +257,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
      */
     private _remove_Listener_window_MouseUp_Event() {
 
-        console.warn("Enter: _remove_Listener_window_MouseUp_Event()" )
+        // console.warn("Enter: _remove_Listener_window_MouseUp_Event()" )
 
         // const documentBody = document.querySelector('body');
         //
@@ -271,7 +271,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
      */
     private _window_MouseUp_Event(event: MouseEvent) {
 
-        console.warn("window Mouse Up. event: ", event)
+        // console.warn("window Mouse Up. event: ", event)
 
         this._general_mouseUp_Event(event);
     }
@@ -311,7 +311,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
      */
     private _general_mouseUp_Event(event: MouseEvent) {
 
-        console.warn("_general_mouseUp_Event called")
+        // console.warn("_general_mouseUp_Event called")
 
         this._remove_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection();
 
@@ -324,7 +324,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
 
         if ( ! this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect ) {
             //  No "Mouse Down" stored data
-            console.warn("General Mouse Up. Nothing in this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect")
+            // console.warn("General Mouse Up. Nothing in this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect")
 
             return; // EARLY RETURN
         }
@@ -381,8 +381,8 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
             return; // EARLY RETURN
         }
 
-        console.warn( "Dragged in X direction (Always Print): " + Math.abs( this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect.x - mouseUpPosition_X_RelativeToMainPlotArea )  )
-        console.warn( "Dragged in Y direction (Always Print): " + Math.abs( this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect.y - mouseUpPosition_Y_RelativeToMainPlotArea )  )
+        // console.warn( "Dragged in X direction (Always Print): " + Math.abs( this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect.x - mouseUpPosition_X_RelativeToMainPlotArea )  )
+        // console.warn( "Dragged in Y direction (Always Print): " + Math.abs( this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect.y - mouseUpPosition_Y_RelativeToMainPlotArea )  )
 
         if ( mouseUpPosition_X_RelativeToMainPlotArea < 0 ) {
             mouseUpPosition_X_RelativeToMainPlotArea = 0;
@@ -557,7 +557,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
             return; // EARLY RETURN
         }
 
-        console.warn("Selected entry scanNumber: " + binned_Entry_atPosition.entry_UseFor_Y_Value_ForPlot.scanNumber )
+        // console.warn("Selected entry scanNumber: " + binned_Entry_atPosition.entry_UseFor_Y_Value_ForPlot.scanNumber )
 
         this.props.scanNumber_Clicked_Callback({
             scanNumber: binned_Entry_atPosition.entry_UseFor_Y_Value_ForPlot.scanNumber,
@@ -570,7 +570,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
      */
     private _add_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection() {
 
-        console.warn("_add_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection called")
+        // console.warn("_add_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection called")
 
         const documentBody = document.querySelector('body');
 
@@ -585,7 +585,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
      */
     private _remove_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection() {
 
-        console.warn("_remove_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection called")
+        // console.warn("_remove_Listener_documentBody_MouseMove_Event__UpdateMainChartSelection called")
 
         const documentBody = document.querySelector('body');
         documentBody.removeEventListener("mousemove", this._documentBody_MouseMove_Event__UpdateMainChartSelection_BindThis )
@@ -596,7 +596,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
      */
     private _documentBody_MouseMove_Event__UpdateMainChartSelection(event: MouseEvent) {
 
-        console.warn("ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component: _window_MouseMove_Event__UpdateMainChartSelection: window Mouse Move. event: ", event)
+        // console.warn("ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component: _window_MouseMove_Event__UpdateMainChartSelection: window Mouse Move. event: ", event)
 
         if ( ! this.state.binned_Entries ) {
             // No data in state
@@ -609,7 +609,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
 
         if ( ! this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect ) {
             //  No "Mouse Down" stored data
-            console.warn("ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component: _documentBody_MouseMove_Event__UpdateMainChartSelection: document <body> Mouse Move. Nothing in this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect")
+            // console.warn("ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component: _documentBody_MouseMove_Event__UpdateMainChartSelection: document <body> Mouse Move. Nothing in this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect")
 
             return; // EARLY RETURN
         }
@@ -670,10 +670,10 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
         this._rect_SelectionCover_Ref.current.setAttribute( "y", y_String );
         this._rect_SelectionCover_Ref.current.setAttribute( "height", height_String );
 
-        console.warn("Selection rectangle Change on Mouse Move: x: " + x + ", width: " + width + ", y: " + y + ", height: " + height )
+        // console.warn("Selection rectangle Change on Mouse Move: x: " + x + ", width: " + width + ", y: " + y + ", height: " + height )
 
-        console.warn( "mouseMovePosition_X_RelativeToMainPlotArea: " + mouseMovePosition_X_RelativeToMainPlotArea )
-        console.warn( "mouseMovePosition_Y_RelativeToMainPlotArea: " + mouseMovePosition_Y_RelativeToMainPlotArea )
+        // console.warn( "mouseMovePosition_X_RelativeToMainPlotArea: " + mouseMovePosition_X_RelativeToMainPlotArea )
+        // console.warn( "mouseMovePosition_Y_RelativeToMainPlotArea: " + mouseMovePosition_Y_RelativeToMainPlotArea )
 
         // this._main_Rect_overlay_MouseDown_PositionRelativeTo_Rect = { x: mouseDownPosition_X_RelativeToMainPlotArea, y: mouseDownPosition_Y_RelativeToMainPlotArea }
 
@@ -1443,7 +1443,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
 
                     <div
 
-                        onClick={ event => { console.warn("<div> containing <svg> On Click") } }
+                        // onClick={ event => { console.warn("<div> containing <svg> On Click") } }
                     >
                         <svg width={ _CHART_WIDTH_OVERALL } height={ _CHART_HEIGHT_OVERALL } style={ { margin: 0, padding: 0 } }>
 
