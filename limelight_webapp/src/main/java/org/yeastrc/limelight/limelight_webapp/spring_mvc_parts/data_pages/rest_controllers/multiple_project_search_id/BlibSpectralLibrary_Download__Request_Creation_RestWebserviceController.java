@@ -52,6 +52,7 @@ import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDynamicModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
+import org.yeastrc.limelight.limelight_shared.dto.StaticModDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesRootLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
@@ -73,6 +74,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchScanFile_For_SearchIds_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.StaticModDTOForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
@@ -152,6 +154,9 @@ public class BlibSpectralLibrary_Download__Request_Creation_RestWebserviceContro
 
 	@Autowired
 	private DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF dynamic_Variable_ModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher;
+	
+	@Autowired
+	private StaticModDTOForSearchIdSearcherIF staticModDTOForSearchIdSearcher;
 
 	@Autowired
 	private ConfigSystemDAO_IF configSystemDAO;
@@ -838,6 +843,10 @@ public class BlibSpectralLibrary_Download__Request_Creation_RestWebserviceContro
 			log.warn( "paramsForProjectSearchIdsList does not contain projectSearchId: " + projectSearchId );
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
+		
+		//  Get all Static Mods for search
+
+		List<StaticModDTO> staticModDTO_List = staticModDTOForSearchIdSearcher.getListForSearchId( searchId );
 
 		//////////
 
@@ -917,6 +926,7 @@ public class BlibSpectralLibrary_Download__Request_Creation_RestWebserviceContro
 						searcherCutoffValuesSearchLevel,
 						searchFlagsForSearchIdSearcher_Result_Item,
 						variable_Dynamic_Modifications_ReportedPeptideLevel_Map_Key_ReportedPeptideId,
+						staticModDTO_List,
 						scanFile_Spectr_API_Key_Map_Key_SearchScanFileId, 
 						peptideSequences_Map_Key_ReportedPeptideId, 
 						request_To_BlibCreator_Webservice_Per_SpectralStorageServiceFile__Map_Key_Spectr_API_Key_Holder);
@@ -982,6 +992,7 @@ public class BlibSpectralLibrary_Download__Request_Creation_RestWebserviceContro
 						searcherCutoffValuesSearchLevel,
 						searchFlagsForSearchIdSearcher_Result_Item,
 						variable_Dynamic_Modifications_ReportedPeptideLevel_Map_Key_ReportedPeptideId,
+						staticModDTO_List,
 						scanFile_Spectr_API_Key_Map_Key_SearchScanFileId, 
 						peptideSequences_Map_Key_ReportedPeptideId, 
 						request_To_BlibCreator_Webservice_Per_SpectralStorageServiceFile__Map_Key_Spectr_API_Key_Holder);
@@ -1009,7 +1020,10 @@ public class BlibSpectralLibrary_Download__Request_Creation_RestWebserviceContro
 			
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel,
 			SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item,
+			
 			Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> variable_Dynamic_Modifications_ReportedPeptideLevel_Map_Key_ReportedPeptideId,
+			List<StaticModDTO> staticModDTO_List,
+			
 			Map<Integer, String> scanFile_Spectr_API_Key_Map_Key_SearchScanFileId,
 			Internal__PeptideSequences_Map_Key_ReportedPeptideId peptideSequences_Map_Key_ReportedPeptideId,
 
@@ -1190,6 +1204,41 @@ public class BlibSpectralLibrary_Download__Request_Creation_RestWebserviceContro
 			}
 		}
 
+		{  // static mods
+
+			for ( Map.Entry<Long, Internal__Intermediate__Psm_Holder> mapEntry : internal__Intermediate__Psm_Holder_Map_Key_PsmId.entrySet() ) {
+
+				Internal__Intermediate__Psm_Holder internal__Intermediate__Psm_Holder = mapEntry.getValue();
+
+				Map<String, Double> modifications = internal__Intermediate__Psm_Holder.request_To_BlibCreator_Webservice_Per_Psm.modifications;
+
+				
+				for ( StaticModDTO staticModDTO : staticModDTO_List ) {
+					
+					for ( int peptideSequence_SubStringStart = 0; peptideSequence_SubStringStart < peptideSequence.length(); peptideSequence_SubStringStart++ ) {
+						
+						if ( peptideSequence.contains( staticModDTO.getResidue() ) ) {
+							int z = 0;
+						}
+						String sequenceAt_SubStringStart = peptideSequence.substring( peptideSequence_SubStringStart, peptideSequence_SubStringStart + 1 );
+						if ( staticModDTO.getResidue().equals( sequenceAt_SubStringStart ) ) {
+
+							int modPosition = peptideSequence_SubStringStart + 1; // since mod position is 1 based
+							
+							String positionAsString = String.valueOf( modPosition );
+
+							Double mass_InMap = modifications.get( positionAsString );
+							if ( mass_InMap == null ) {
+								modifications.put( positionAsString, staticModDTO.getMass().doubleValue() );
+							} else {
+								modifications.put( positionAsString, staticModDTO.getMass().doubleValue() + mass_InMap.doubleValue() );
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		//  Copy Request_To_BlibCreator_Webservice_Per_Psm object to result
 		
 		for ( Map.Entry<Long, Internal__Intermediate__Psm_Holder> mapEntry : internal__Intermediate__Psm_Holder_Map_Key_PsmId.entrySet() ) {
