@@ -1151,11 +1151,14 @@ public class BlibSpectralLibrary_Download__Request_Creation_RestWebserviceContro
 
 		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_OpenModifications() ) {
 
+			List<Long> psmIdList = new ArrayList<>( psmWebDisplayList.size() );
 
-			List<Long> psmIds = psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
-
+			for ( PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult : psmWebDisplayList ) {
+				psmIdList.add( psmWebDisplayWebServiceResult.getPsmId() );
+			}
+			
 			List<PsmOpenModification_Masses_Positions_For_PsmIds_Searcher_ResultEntry>  psmOpenModificationMassesList = 
-					psmOpenModification_Masses_Positions_For_PsmIds_Searcher.getPsmOpenModificationMassesFor_PsmIds( psmIds );
+					psmOpenModification_Masses_Positions_For_PsmIds_Searcher.getPsmOpenModificationMassesFor_PsmIds( psmIdList );
 
 			for ( PsmOpenModification_Masses_Positions_For_PsmIds_Searcher_ResultEntry psmOpenModification_Entry : psmOpenModificationMassesList ) {
 
