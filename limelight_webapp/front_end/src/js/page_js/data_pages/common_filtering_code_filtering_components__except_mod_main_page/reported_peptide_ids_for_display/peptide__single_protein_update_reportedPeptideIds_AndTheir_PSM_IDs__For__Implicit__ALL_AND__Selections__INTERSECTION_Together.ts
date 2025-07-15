@@ -3853,6 +3853,11 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
 
 
                 for ( const psmTblData_For_PsmId of psmTblData_For_PsmId__Array__SingleBlock ) {
+
+                    if ( psmTblData_For_PsmId.scanNumber === 52401 ) {
+                        var z = 0
+                    }
+
                     const scanData_YES_Peaks_Data = get_SingleScanFile_ScanData_For_M_Over_Z_Ranges_Result.scanData_Single_SearchScanFileId_YES_Peaks_Data_Holder.scanData_YES_Peaks_Data_Holder.scanData.get_ScanData_YES_Peaks_For_ScanNumber( psmTblData_For_PsmId.scanNumber )
 
                     if ( scanData_YES_Peaks_Data ) {
@@ -3870,108 +3875,77 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
                             throw Error(msg)
                         }
 
-                        //  Apply Min Percentage of Max Scan Peak filter
+                        const scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_SinglePeak: Array<ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY> = []
 
                         const  scanPeak_That_PassFilters_Array: Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak> = []
 
-                        const scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_FinalForPsmId: Array<ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY> = []
+                        let scanMustPass_ALL_Filters = false
 
+                        if ( scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get_anyAll_Selection() === ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ALL ) {
+                            scanMustPass_ALL_Filters = true
+                        }
 
-                        for ( const scanPeak of scanData_YES_Peaks_Data.peaks ) {
+                        const selections_Count = scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections().length
 
-                            const scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_SinglePeak: Array<ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY> = []
-
-                            let scanMustPass_ALL_Filters = false
-
-                            if ( scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get_anyAll_Selection() === ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_ANY_ALL_Selection_Enum.ALL ) {
-                                scanMustPass_ALL_Filters = true
-                            }
-
-                            let scanPasses_all_Filters = true
-
+                        {
                             for ( const scanPeak_M_Over_Z__Intensity_Selection of scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections() ) {
 
                                 let scanPasses_Single_Filter = false
 
-                                const m_Over_Z_Mass_Base = scanPeak_M_Over_Z__Intensity_Selection.massOverCharge
+                                for ( const scanPeak of scanData_YES_Peaks_Data.peaks ) {
 
-                                const ppm_Mass_M_Over_Z_Min_PlusMinus = m_Over_Z_Mass_Base * scanPeak_M_Over_Z__Intensity_Selection.plus_Minus_MassRange_In_PPM / 1000000;  //  1000000d is for 1E6;
+                                    const m_Over_Z_Mass_Base = scanPeak_M_Over_Z__Intensity_Selection.massOverCharge
 
-                                const m_over_Z_Range_Min = m_Over_Z_Mass_Base - ppm_Mass_M_Over_Z_Min_PlusMinus
-                                const m_over_Z_Range_Max = m_Over_Z_Mass_Base + ppm_Mass_M_Over_Z_Min_PlusMinus
+                                    const ppm_Mass_M_Over_Z_Min_PlusMinus = m_Over_Z_Mass_Base * scanPeak_M_Over_Z__Intensity_Selection.plus_Minus_MassRange_In_PPM / 1000000;  //  1000000d is for 1E6;
 
-                                const min_ScanPeak_Intensity_FilterOn =
-                                    scanData_YES_Peaks_Data.peak_WithMaxIntensityInAllOfScan.intensity *
-                                    ( scanPeak_M_Over_Z__Intensity_Selection.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan / 100 )  // Percentage to Fraction so divide by 100
+                                    const m_over_Z_Range_Min = m_Over_Z_Mass_Base - ppm_Mass_M_Over_Z_Min_PlusMinus
+                                    const m_over_Z_Range_Max = m_Over_Z_Mass_Base + ppm_Mass_M_Over_Z_Min_PlusMinus
 
-                                if ( scanPeak.mz >= m_over_Z_Range_Min && scanPeak.mz <= m_over_Z_Range_Max ) {
+                                    //  Apply Min Percentage of Max Scan Peak filter
 
-                                    if ( scanPeak.intensity >= min_ScanPeak_Intensity_FilterOn ) {
+                                    const min_ScanPeak_Intensity_FilterOn =
+                                        scanData_YES_Peaks_Data.peak_WithMaxIntensityInAllOfScan.intensity *
+                                        ( scanPeak_M_Over_Z__Intensity_Selection.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan / 100 )  // Percentage to Fraction so divide by 100
 
-                                        scanPasses_Single_Filter = true
+                                    if ( scanPeak.mz >= m_over_Z_Range_Min && scanPeak.mz <= m_over_Z_Range_Max ) {
 
-                                        if ( ! scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_SinglePeak.includes( scanPeak_M_Over_Z__Intensity_Selection )  ) {
-                                            scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_SinglePeak.push( scanPeak_M_Over_Z__Intensity_Selection )
+                                        if ( scanPeak.intensity >= min_ScanPeak_Intensity_FilterOn ) {
+
+                                            scanPasses_Single_Filter = true
+
+                                            //  Save Scan filter since found matching peak
+
+                                            if ( ! scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_SinglePeak.includes( scanPeak_M_Over_Z__Intensity_Selection ) ) {
+                                                scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_SinglePeak.push( scanPeak_M_Over_Z__Intensity_Selection )
+                                            }
+
+                                            //  Save Scan Peak that matched filter
+
+                                            if ( ! scanPeak_That_PassFilters_Array.includes( scanPeak ) ) {
+                                                scanPeak_That_PassFilters_Array.push( scanPeak )
+                                            }
+
                                         }
                                     }
                                 }
 
-                                if ( scanMustPass_ALL_Filters ) {
+                                if ( ! scanPasses_Single_Filter ) {
 
-                                    if ( ! scanPasses_Single_Filter ) {
+                                    if ( scanMustPass_ALL_Filters ) {
 
-                                        scanPasses_all_Filters = false
+                                        //  Scan must pass all filters and not pass this filter so early exit
 
-                                        break
-                                    }
-
-                                } else {
-
-                                    if ( scanPasses_Single_Filter ) {
-                                        //  scanPeak meets ALL criteria so save it
-
-                                        if ( ! scanPeak_That_PassFilters_Array.includes( scanPeak ) ) {
-                                            scanPeak_That_PassFilters_Array.push( scanPeak )
-                                        }
-
-                                        //  NOT break, Store ALL peaks that found for ALL Selections
-                                        // break  // EARLY EXIT  Processing Selections
-                                    }
-                                }
-                            }
-
-
-                            if ( scanMustPass_ALL_Filters ) {
-
-                                if ( scanPasses_all_Filters ) {
-                                    //  scanPeak meets ALL criteria for all filters so save it
-
-                                    if ( ! scanPeak_That_PassFilters_Array.includes( scanPeak ) ) {
-                                        scanPeak_That_PassFilters_Array.push( scanPeak )
-                                    }
-
-                                    for ( const scanPeak_M_Over_Z__Intensity_Selection of scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_SinglePeak ) {
-
-                                        if ( ! scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_FinalForPsmId.includes( scanPeak_M_Over_Z__Intensity_Selection ) ) {
-                                            scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_FinalForPsmId.push( scanPeak_M_Over_Z__Intensity_Selection )
-                                        }
-                                    }
-
-                                    //  NOT break, Store ALL peaks that found for ALL Selections
-                                    // break  // EARLY EXIT  Processing Selections
-                                }
-                            } else {
-
-                                for ( const scanPeak_M_Over_Z__Intensity_Selection of scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_SinglePeak ) {
-
-                                    if ( ! scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_FinalForPsmId.includes( scanPeak_M_Over_Z__Intensity_Selection ) ) {
-                                        scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_FinalForPsmId.push( scanPeak_M_Over_Z__Intensity_Selection )
+                                        break // EARLY BREAK
                                     }
                                 }
                             }
                         }
 
-                        if ( scanPeak_That_PassFilters_Array.length > 0 ) {
+                        if ( ( ( ! scanMustPass_ALL_Filters ) && scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_SinglePeak.length > 0 )
+                            || ( scanMustPass_ALL_Filters && scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_SinglePeak.length === selections_Count ) ) {
+
+                            //  'ANY' Selection and found at least one filter passed
+                            //  'ALL' Selection and found ALL filters passed
 
                             {
                                 let scanPeak_That_PassFilters_Array_FromMap = scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch.get( psmTblData_For_PsmId.psmId )
@@ -3994,7 +3968,7 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
                                     throw Error( msg )
 
                                 } else {
-                                    scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_PsmId__Map_Key_PsmId__AllForSearch.set( psmTblData_For_PsmId.psmId, scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_FinalForPsmId )
+                                    scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_PsmId__Map_Key_PsmId__AllForSearch.set( psmTblData_For_PsmId.psmId, scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_SinglePeak )
                                 }
                             }
                         }
