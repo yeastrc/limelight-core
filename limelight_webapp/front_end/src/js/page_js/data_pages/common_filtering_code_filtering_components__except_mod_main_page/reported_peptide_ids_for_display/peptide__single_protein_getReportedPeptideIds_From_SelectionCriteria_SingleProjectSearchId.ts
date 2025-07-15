@@ -255,7 +255,7 @@ export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__Single
 
         let scanPeaks_That_PassFilters_Array: ReadonlyArray<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak> = undefined
 
-        let scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array: Array<ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY> = undefined
+        let scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array: ReadonlyArray<ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY> = undefined
 
         for ( const existingEntry of existingObjectsOfThisType_Array ) {
 
@@ -270,18 +270,18 @@ export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__Single
             }
 
             if ( existingEntry._scanPeaks_That_PassFilters_Array ) {
-                if ( scanPeaks_That_PassFilters_Array ) {
-                    throw Error( "( existingEntry._scanPeaks_That_PassFilters_Array ) AND already have saved value from previous existingEntry.  Assume that only one existing entry has value for _scanPeaks_That_PassFilters_Array" )
+                if ( scanPeaks_That_PassFilters_Array && ( scanPeaks_That_PassFilters_Array !== existingEntry._scanPeaks_That_PassFilters_Array ) ) {
+                    throw Error( "( existingEntry._scanPeaks_That_PassFilters_Array ) AND ( scanPeaks_That_PassFilters_Array && ( scanPeaks_That_PassFilters_Array !== existingEntry._scanPeaks_That_PassFilters_Array ) ).  Already have saved value from previous existingEntry that is NOT same as current entry.  Assume that only one existing entry has value for _scanPeaks_That_PassFilters_Array" )
                 }
 
                 scanPeaks_That_PassFilters_Array = existingEntry._scanPeaks_That_PassFilters_Array
             }
             if ( existingEntry._scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array ) {
-                if ( scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array ) {
-                    throw Error( "( existingEntry._scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array ) AND already have saved value from previous existingEntry.  Assume that only one existing entry has value for _scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array" )
+                if ( scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array && ( scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array !== existingEntry._scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array ) ) {
+                    throw Error( "( existingEntry._scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array ) AND ( scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array && ( scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array !== existingEntry._scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array ) ).  Already have saved value from previous existingEntry that is NOT same as current entry.  Assume that only one existing entry has value for _scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array" )
                 }
 
-                scanPeaks_That_PassFilters_Array = existingEntry._scanPeaks_That_PassFilters_Array
+                scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array = existingEntry.scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array
             }
 
         }

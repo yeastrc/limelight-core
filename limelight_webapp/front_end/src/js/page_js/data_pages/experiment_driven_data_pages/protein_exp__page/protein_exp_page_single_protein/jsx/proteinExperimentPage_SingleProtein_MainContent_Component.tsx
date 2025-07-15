@@ -87,7 +87,8 @@ import {
 
 import {
     DownloadPSMs_PerProjectSearchId_Entry,
-    download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds
+    download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds,
+    DownloadPSMs_PerReportedPeptideId
 } from 'page_js/data_pages/common__project_search_and_experiment_based_download_data/download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds';
 import {
     ProteinExperimentPage_SingleProtein_MainContent_Component_LinksToExternalResources,
@@ -1640,7 +1641,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
             //  Build data for serializing to JSON
 
-            const projectSearchIdsReportedPeptideIdsPsmIds = [];
+            const projectSearchIdsReportedPeptideIdsPsmIds: Array<DownloadPSMs_PerProjectSearchId_Entry> = [];
 
             for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
 
@@ -1657,24 +1658,18 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                     const reportedPeptideId = entryFor_reportedPeptideId.reportedPeptideId
 
-                    if ( entryFor_reportedPeptideId.psmIds_Include ) {
+                    if ( entryFor_reportedPeptideId.psmEntries_Include_Map_Key_PsmId ) {
 
-                        let psmIds_Include = undefined
-
-                        if ( entryFor_reportedPeptideId.psmIds_Include  ) {
-                            psmIds_Include = Array.from( entryFor_reportedPeptideId.psmIds_Include )
-                        }
-
-                        const reportedPeptideIdAndPsmIds = {
+                        const reportedPeptideIdAndPsmIds: DownloadPSMs_PerReportedPeptideId = {
                             reportedPeptideId,
-                            psmIds_Include
+                            psmEntries_Include_Map_Key_PsmId: entryFor_reportedPeptideId.psmEntries_Include_Map_Key_PsmId
                         };
 
                         reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdAndPsmIds );
 
                     } else {
 
-                        //  Not Filtered on Reporter Ion Masses so No passing PSM IDs to filter on
+                        //  Not Filtering to specific PSM Ids so No passing PSM IDs to filter on
 
                         const reportedPeptideIdsAndTheirPsmIdsEntry = { reportedPeptideId };
                         reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdsAndTheirPsmIdsEntry );
@@ -1689,7 +1684,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                     throw Error( msg );
                 }
 
-                const projectSearchIdsReportedPeptideIdsPsmIds_Entry = { projectSearchId, reportedPeptideIdsAndTheirPsmIds, experimentDataForSearch };
+                const projectSearchIdsReportedPeptideIdsPsmIds_Entry: DownloadPSMs_PerProjectSearchId_Entry = { projectSearchId, reportedPeptideIdsAndTheirPsmIds, experimentDataForSearch };
                 projectSearchIdsReportedPeptideIdsPsmIds.push( projectSearchIdsReportedPeptideIdsPsmIds_Entry );
             }
 

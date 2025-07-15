@@ -2042,8 +2042,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                             const reportedPeptideIds_For_Protein = new Set<number>();
 
-                            if ( protein_SubItem.reportedPeptideIds_AndTheirPsmIds && protein_SubItem.reportedPeptideIds_AndTheirPsmIds.size > 0 ) {
-                                for ( const reportedPeptideId of protein_SubItem.reportedPeptideIds_AndTheirPsmIds.keys() ) {
+                            if ( protein_SubItem.reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId && protein_SubItem.reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId.size > 0 ) {
+                                for ( const reportedPeptideId of protein_SubItem.reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId.keys() ) {
                                     reportedPeptideIds_For_Protein.add( reportedPeptideId );
                                 }
                             }
@@ -2101,8 +2101,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                             const reportedPeptideIds_For_Protein = new Set<number>();
 
-                            if ( protein_SubItem.reportedPeptideIds_AndTheirPsmIds && protein_SubItem.reportedPeptideIds_AndTheirPsmIds.size > 0 ) {
-                                for ( const reportedPeptideId of protein_SubItem.reportedPeptideIds_AndTheirPsmIds.keys() ) {
+                            if ( protein_SubItem.reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId && protein_SubItem.reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId.size > 0 ) {
+                                for ( const reportedPeptideId of protein_SubItem.reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId.keys() ) {
                                     reportedPeptideIds_For_Protein.add( reportedPeptideId );
                                 }
                             }
@@ -2879,6 +2879,23 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             const projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry> = proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_PSM_Download_Create_PerProjectSearchId_Data({
                 proteinDisplayData: this._proteinDisplayData_Final_ForDisplayTable
             });
+
+            //  Change all psmEntries_Include_Map_Key_PsmId to psmIds_Include for Blib Create
+
+            for ( const projectSearchIdsReportedPeptideIdsPsmIds_Entry of projectSearchIdsReportedPeptideIdsPsmIds ) {
+
+                if ( projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds ) {
+                    for ( const reportedPeptideIdsAndTheirPsmIds_Entry of projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds ) {
+                        if ( reportedPeptideIdsAndTheirPsmIds_Entry.psmEntries_Include_Map_Key_PsmId ) {
+
+                            //  Move psmEntries_Include_Map_Key_PsmId to psmIds_Include for Blib Create
+                            reportedPeptideIdsAndTheirPsmIds_Entry.psmIds_Include = Array.from( reportedPeptideIdsAndTheirPsmIds_Entry.psmEntries_Include_Map_Key_PsmId.keys() )
+
+                            reportedPeptideIdsAndTheirPsmIds_Entry.psmEntries_Include_Map_Key_PsmId = undefined
+                        }
+                    }
+                }
+            }
 
             if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
 

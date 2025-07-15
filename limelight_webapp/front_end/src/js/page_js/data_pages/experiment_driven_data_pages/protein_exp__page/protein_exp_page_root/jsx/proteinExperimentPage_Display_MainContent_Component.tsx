@@ -26,7 +26,8 @@ import {modificationMass_CommonRounding_ReturnNumber} from 'page_js/data_pages/m
 
 import {
     DownloadPSMs_PerProjectSearchId_Entry,
-    download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds
+    download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds,
+    DownloadPSMs_PerConditionGroupConditionData
 } from 'page_js/data_pages/common__project_search_and_experiment_based_download_data/download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds';
 import {
     Experiment_SingleExperiment_ConditionsGraphicRepresentation,
@@ -180,6 +181,9 @@ import {
 import {
     WebserviceCallStandardPost_RejectObject_Class
 } from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
+import {
+    experiment_getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId
+} from "page_js/data_pages/experiment_data_pages_common/experiment_Get_ConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId";
 
 
 ////
@@ -2371,11 +2375,45 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                 proteinDisplayData: this._proteinDisplayData_Final_ForDisplayTable
             });
 
+            const { conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId, conditionGroupLabels_Only_InSameOrder } =
+                experiment_getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId({
+                    conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated,
+                    conditionGroupsDataContainer : this.props.propsValue.conditionGroupsDataContainer
+                });
+
+            for ( const projectSearchIdsReportedPeptideIdsPsmIds_Entry of projectSearchIdsReportedPeptideIdsPsmIds ) {
+
+                const projectSearchId = projectSearchIdsReportedPeptideIdsPsmIds_Entry.projectSearchId
+
+                //  Build data for 'experimentDataForSearch' property
+
+                const conditionGroupLabel_and_ConditionLabel_Data_FOR_ProjectSearchId = conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId.get( projectSearchId );
+                if ( conditionGroupLabel_and_ConditionLabel_Data_FOR_ProjectSearchId === undefined ) {
+                    const msg = "No value in conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId for projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                const experimentDataForSearch: Array<DownloadPSMs_PerConditionGroupConditionData> = [];
+
+                for ( const conditionGroupLabel_and_ConditionLabel_Data_Entry of conditionGroupLabel_and_ConditionLabel_Data_FOR_ProjectSearchId ) {
+
+                    const downloadPSMs_PerConditionGroupConditionData : DownloadPSMs_PerConditionGroupConditionData = {
+                        conditionGroupLabel: conditionGroupLabel_and_ConditionLabel_Data_Entry.conditionGroupLabel,
+                        conditionLabel: conditionGroupLabel_and_ConditionLabel_Data_Entry.conditionLabel
+                    }
+                    experimentDataForSearch.push( downloadPSMs_PerConditionGroupConditionData );
+                }
+
+                projectSearchIdsReportedPeptideIdsPsmIds_Entry.experimentDataForSearch = experimentDataForSearch
+            }
+
+
             download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds( {
                 projectSearchIdsReportedPeptideIdsPsmIds,
                 searchDataLookupParamsRoot : searchDataLookupParamsRoot,
                 proteinSequenceVersionIds : undefined,
-                experimentId : undefined
+                experimentId : this.props.propsValue.experimentId
             } );
 
         } catch( e ) {
@@ -2416,6 +2454,23 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             const projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry> = proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_PSM_Download_Create_PerProjectSearchId_Data({
                 proteinDisplayData: this._proteinDisplayData_Final_ForDisplayTable
             });
+
+            //  Transform all property 'psmEntries_Include_Map_Key_PsmId' to property 'psmIds_Include' for Blib Create
+
+            for ( const projectSearchIdsReportedPeptideIdsPsmIds_Entry of projectSearchIdsReportedPeptideIdsPsmIds ) {
+
+                if ( projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds ) {
+                    for ( const reportedPeptideIdsAndTheirPsmIds_Entry of projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds ) {
+                        if ( reportedPeptideIdsAndTheirPsmIds_Entry.psmEntries_Include_Map_Key_PsmId ) {
+
+                            //  Move psmEntries_Include_Map_Key_PsmId to psmIds_Include for Blib Create
+                            reportedPeptideIdsAndTheirPsmIds_Entry.psmIds_Include = Array.from( reportedPeptideIdsAndTheirPsmIds_Entry.psmEntries_Include_Map_Key_PsmId.keys() )
+
+                            reportedPeptideIdsAndTheirPsmIds_Entry.psmEntries_Include_Map_Key_PsmId = undefined
+                        }
+                    }
+                }
+            }
 
             const blib_File_Download_Root: Blib_File_Download_Root = {
                 projectSearchIdsReportedPeptideIdsPsmIds, searchDataLookupParamsRoot

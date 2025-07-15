@@ -371,7 +371,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 					///////  Decode reportedPeptideIds and possibly their PSMs in request
 					
 					List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = new ArrayList<>();
-					internal_Request_Converted_PerProjectSearchId.reportedPeptideIdsAndTheirPsmIds = reportedPeptideIdsAndTheirPsmIds;
+					internal_Request_Converted_PerProjectSearchId.reportedPeptideIdsAndTheirPsmIds_InternalClass = reportedPeptideIdsAndTheirPsmIds;
 					
 					String[] reportedPeptideIdsAndTheirPsmIds__Encoded_Split = entry.reportedPeptideIdsAndTheirPsmIds__Encoded.split( webserviceRequest.reportedPeptideId_Block_SeparatorString );
 					
@@ -450,6 +450,189 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 					}
 				}
 				
+				List<List<BigDecimal>> scanPeak_M_Over_Z__Selections_List_Per_PSM_List = null;
+				
+				Set<Integer> scanPeak_M_Over_Z__Selections_List_Per_PSM_List_IndexesSetToNull = new HashSet<>();
+
+
+				if ( entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded != null ) {
+
+					Map<Long, Internal_Request_Converted_Per_PsmId> data_Per_PsmId_Map_Key_PsmId_InternalClass = new HashMap<>();
+					internal_Request_Converted_PerProjectSearchId.data_Per_PsmId_Map_Key_PsmId_InternalClass = data_Per_PsmId_Map_Key_PsmId_InternalClass;
+					
+
+					///////  Decode scanPeak_M_Over_Z__Selections in request
+					
+					//  Must also have these values
+					
+					if ( entry.scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array == null  ) {
+						log.warn( " Have 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded' but NOT 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array' " );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+					if ( entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix == null  ) {
+						log.warn( " Have 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded' but NOT 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix' " );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+					if ( entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength == null  ) {
+						log.warn( " Have 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded' but NOT 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength' " );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+					
+					int scanPeak_M_Over_Z__Selections_List_Per_PSM_List_NumberOfEntries_Computed = entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded.length() / entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength.intValue();
+
+					scanPeak_M_Over_Z__Selections_List_Per_PSM_List = new ArrayList<>( scanPeak_M_Over_Z__Selections_List_Per_PSM_List_NumberOfEntries_Computed );
+					
+					{
+						String totalString_IndexValues = entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded;
+						int individualEntryLength = entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength.intValue();
+						
+						int entry_IndexValue_EncodedWithRadix_RadixValue = entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix;
+
+						final String spacesEntry_ForNoIndex = StringUtils.repeat( " ", individualEntryLength );
+						
+						// Loop over totalString to get individual entries parsed to int and looked up in the unique values 
+						for ( int entryStart = 0; 
+								entryStart < totalString_IndexValues.length(); 
+								entryStart += individualEntryLength ) {
+							
+							String entry_IndexValue_EncodedWithRadixString = totalString_IndexValues.substring( entryStart, entryStart + individualEntryLength );
+														
+							if ( spacesEntry_ForNoIndex.equals( entry_IndexValue_EncodedWithRadixString ) ) {
+								
+								//  Index Value is spaces for 'No Index' and no selections for PSM ID
+								
+								//    Insert null to list
+								
+								scanPeak_M_Over_Z__Selections_List_Per_PSM_List.add( null );
+								
+								scanPeak_M_Over_Z__Selections_List_Per_PSM_List_IndexesSetToNull.add( entryStart / individualEntryLength );
+								
+								continue; // EARLY CONTINUE
+							} 
+							
+							int entry_IndexValues_Number = -1;
+							
+							try {
+								entry_IndexValues_Number = Integer.parseInt( entry_IndexValue_EncodedWithRadixString, entry_IndexValue_EncodedWithRadix_RadixValue );
+							} catch ( Exception e ) {
+								log.warn( "String extracted from 'scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded' failed to parse. String: " + entry_IndexValue_EncodedWithRadixString );
+								throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+							}
+							
+							// Actual scanPeak_M_Over_Z__Selections for this PSM ID
+							List<BigDecimal> scanPeak_M_Over_Z__Selections_UniqueValues_Array = entry.scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array.get( entry_IndexValues_Number );
+							
+							scanPeak_M_Over_Z__Selections_List_Per_PSM_List.add( scanPeak_M_Over_Z__Selections_UniqueValues_Array );
+						}
+					}
+					
+					
+					List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = new ArrayList<>();
+					internal_Request_Converted_PerProjectSearchId.reportedPeptideIdsAndTheirPsmIds_InternalClass = reportedPeptideIdsAndTheirPsmIds;
+					
+					String[] reportedPeptideIdsAndTheirPsmIds__Encoded_Split = entry.reportedPeptideIdsAndTheirPsmIds__Encoded.split( webserviceRequest.reportedPeptideId_Block_SeparatorString );
+					
+					
+					int reportedPeptideId_Prev_NOT_SET = Integer.MIN_VALUE;
+					int reportedPeptideId_Prev = reportedPeptideId_Prev_NOT_SET;
+					
+					int psm_Overall_Index = 0;
+				
+					for ( String reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry : reportedPeptideIdsAndTheirPsmIds__Encoded_Split ) {
+
+						Internal_Request_Converted_PerReportedPeptideId internal_Request_Converted_PerReportedPeptideId = new Internal_Request_Converted_PerReportedPeptideId();
+						reportedPeptideIdsAndTheirPsmIds.add(internal_Request_Converted_PerReportedPeptideId);
+						
+						String[] reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry.split( webserviceRequest.reportedPeptideId_To_PsmId_SeparatorString );
+						
+						if ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length > 2 ) {
+							log.warn( "Input Data Encoding Error: ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length > 2 ) reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry: " + reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+
+						String reportedPeptideId_String = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split[ 0 ];
+						try {
+							int reportedPeptideId = Integer.parseInt( reportedPeptideId_String, webserviceRequest.reportedPeptideId_PsmId_NumberEncoding_Radix );
+							
+							if ( reportedPeptideId_Prev != reportedPeptideId_Prev_NOT_SET ) {
+								//  NOT First so reportedPeptideId_String is an offset from previous value
+								reportedPeptideId += reportedPeptideId_Prev;
+							}
+
+							reportedPeptideId_Prev = reportedPeptideId;
+
+							internal_Request_Converted_PerReportedPeptideId.reportedPeptideId = reportedPeptideId;
+							 
+						} catch ( Exception ex ) {
+							log.warn( "Integer.parseInt( reportedPeptideId_String ) Threw Error.  reportedPeptideId_String: " + reportedPeptideId_String );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+						
+						if ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length == 2 ) {
+							//  Have PSM Ids
+							String psmIds_Encoded = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split[ 1 ];
+							String[] psmIds_Encoded_Split = psmIds_Encoded.split( webserviceRequest.psmId_SeparatorString );
+							
+							if ( entry.minimum_PSM_ID_InRequest_For_Search == null ) {
+								log.warn( "Input Data Encoding Error: reportedPeptideIdsAndTheirPsmIds__Encoded has PSM Ids and minimum_PSM_ID_InRequest_For_Search is null.  " );;
+								throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+							}
+							
+							internal_Request_Converted_PerReportedPeptideId.psmIds_Include = new ArrayList<>( psmIds_Encoded_Split.length );
+
+							long psmId_Prev_NOT_SET = Long.MIN_VALUE;
+							long psmId_Prev = psmId_Prev_NOT_SET;
+						
+							for ( String psmId_String : psmIds_Encoded_Split ) {
+								try {
+									long psmId = Long.parseLong( psmId_String, webserviceRequest.reportedPeptideId_PsmId_NumberEncoding_Radix );
+
+									if ( psmId_Prev == psmId_Prev_NOT_SET ) {
+										//  YES First so psmId_String is an offset from Minimum PSM ID for Search in request
+										psmId += entry.minimum_PSM_ID_InRequest_For_Search;
+									} else {
+										//  NOT First so psmId_String is an offset from previous value
+										psmId += psmId_Prev;
+									}
+									
+									psmId_Prev = psmId;
+
+									Internal_Request_Converted_Per_PsmId psmId_Entry_Include_Item = new Internal_Request_Converted_Per_PsmId();
+									
+									psmId_Entry_Include_Item.psmId = psmId;
+									
+									if ( psmId == 4405307 || psmId == 4405313 ) {
+										int z = 0;
+									}
+
+									if ( ! scanPeak_M_Over_Z__Selections_List_Per_PSM_List_IndexesSetToNull.contains( psm_Overall_Index ) ) {
+										
+										List<BigDecimal> scanPeak_M_Over_Z__Selections_List_For_PSM = scanPeak_M_Over_Z__Selections_List_Per_PSM_List.get( psm_Overall_Index );
+										
+										if ( scanPeak_M_Over_Z__Selections_List_For_PSM == null ) {
+											String msg = "( ! scanPeak_M_Over_Z__Selections_List_Per_PSM_List_IndexesSetToNull.contains( psm_Overall_Index ) ) AND scanPeak_M_Over_Z__Selections_List_Per_PSM_List.get( psm_Overall_Index ); returned null. psm_Overall_Index: " + psm_Overall_Index;
+											log.error( msg );
+											throw new LimelightInternalErrorException(msg);
+										}
+										
+										psmId_Entry_Include_Item.scanPeak_M_Over_Z__Selections_List_For_PSM = scanPeak_M_Over_Z__Selections_List_For_PSM;
+									}
+									
+									data_Per_PsmId_Map_Key_PsmId_InternalClass.put( psmId_Entry_Include_Item.psmId, psmId_Entry_Include_Item );
+
+									internal_Request_Converted_PerReportedPeptideId.psmIds_Include.add( psmId );
+									
+									psm_Overall_Index++;
+									
+								} catch ( Exception ex ) {
+									log.warn( " Long.parseLong( psmId_String ); Threw Error.  psmId_String: " + psmId_String );
+									throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+								}
+								
+							}
+						}
+					}
+				}
 				
 				if ( entry.searchSubGroup_Ids_Selected != null && entry.searchSubGroup_Ids_Selected.isEmpty() ) {
 					log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, entry.searchSubGroup_Ids_Selected != null && entry.searchSubGroup_Ids_Selected.isEmpty()" );
@@ -931,7 +1114,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		List<Integer> searchSubGroup_Ids_Selected = singleprojectSearchId_ReportedPeptideIdsPsmIds.searchSubGroup_Ids_Selected;
 		
 		//  Passed from client - Optional
-		List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = singleprojectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIdsAndTheirPsmIds;
+		List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = singleprojectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIdsAndTheirPsmIds_InternalClass;
 		
 		//  Process reportedPeptideIds in request, or retrieve reportedPeptideIds for cutoffs and Process
 		
@@ -977,6 +1160,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 						psmWebDisplayListForReportedPeptideIds, 
 						reportedPeptideId,
 						psmWebDisplayList,
+						singleprojectSearchId_ReportedPeptideIdsPsmIds.data_Per_PsmId_Map_Key_PsmId_InternalClass,
 						searchSubGroupData_KeyedOn_SearchSubGroupId );
 			}
 
@@ -1032,6 +1216,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							psmWebDisplayListForReportedPeptideIds, 
 							reportedPeptideId,
 							psmWebDisplayList,
+							singleprojectSearchId_ReportedPeptideIdsPsmIds.data_Per_PsmId_Map_Key_PsmId_InternalClass,
 							searchSubGroupData_KeyedOn_SearchSubGroupId );
 				}
 			}
@@ -1092,6 +1277,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds, 
 			Integer reportedPeptideId,
 			List<PsmWebDisplayWebServiceResult> psmWebDisplayList,
+			Map<Long, Internal_Request_Converted_Per_PsmId> data_Per_PsmId_Map_Key_PsmId_InternalClass,
 			Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId ) throws SQLException, LimelightWebappDataException {
 		
 		if ( psmWebDisplayList.isEmpty() ) {
@@ -1104,7 +1290,15 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		List<PsmEntry_InternalClass> psmEntry_InternalClass_List = new ArrayList<>( psmWebDisplayList.size() );
 		for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayList ) {
 			PsmEntry_InternalClass psmEntry_InternalClass = new PsmEntry_InternalClass();
+			
 			psmEntry_InternalClass.psmWebDisplayWebServiceResult = psmWebDisplay;
+		
+			psmEntry_InternalClass.data_FromRequest_For_PsmId = null;
+			
+			if ( data_Per_PsmId_Map_Key_PsmId_InternalClass != null ) {
+				psmEntry_InternalClass.data_FromRequest_For_PsmId = data_Per_PsmId_Map_Key_PsmId_InternalClass.get( psmWebDisplay.getPsmId() );
+			}
+			
 			psmEntry_InternalClass_List.add(psmEntry_InternalClass);
 		}
 		
@@ -1760,7 +1954,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			writer = new OutputStreamWriter( bos , DownloadsCharacterSetConstant.DOWNLOAD_CHARACTER_SET );
 			//  Write header line
 			writer.write( "SEARCH ID\tSEARCH NAME\tSUB GROUP NICKNAME\tSUB GROUP NAME\tSCAN NUMBER\tSPECTRUM VIEWER URLS (comma delim)\tPEPTIDE\tMODS" ); // 
-			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modification Mass\tOpen Modification Position(s)\tSCAN FILENAME\tIs Independent Decoy\tPROTEIN NAMES (comma delim)" );
+			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modification Mass\tOpen Modification Position(s)\tSCAN FILENAME\tIs Independent Decoy\tPROTEIN NAMES (comma delim)\tSPECIAL IONS (comma delim)" );
 			
 			if ( ! writeOutputToResponse_Per_SearchId_List.isEmpty() ) {
 				WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId = writeOutputToResponse_Per_SearchId_List.get( 0 );
@@ -1974,7 +2168,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 						for ( PsmEntry_InternalClass psmEntry_InternalClass : psmWebDisplayListForReportedPeptideIdsEntry.psmEntry_InternalClass_List ) {
 
 							PsmWebDisplayWebServiceResult psmWebDisplay = psmEntry_InternalClass.psmWebDisplayWebServiceResult;
-
+							
 							writer.write( String.valueOf( searchId ) );
 							writer.write( "\t" );
 							writer.write( searchNameDisplay );
@@ -2222,6 +2416,26 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 								writer.write( "\t" );
 								writer.write( proteinNames_String );
 							}
+
+							
+							
+							{  //  Output  'scanPeak_M_Over_Z__Selections_List_For_PSM' AKA Special Ion filters
+
+								if ( psmWebDisplay.getScanNumber() == 57345 ) {
+									int z = 0;
+								}
+								if ( psmWebDisplay.getPsmId() == 4405307 || psmWebDisplay.getPsmId() == 4405313 ) {
+									int z = 0;
+								}
+								
+								writer.write( "\t" );
+								if ( psmEntry_InternalClass.data_FromRequest_For_PsmId != null
+										&& psmEntry_InternalClass.data_FromRequest_For_PsmId.scanPeak_M_Over_Z__Selections_List_For_PSM != null  ) {
+
+									String scanPeak_M_Over_Z__Selections_List_CommaDelim = StringUtils.join( psmEntry_InternalClass.data_FromRequest_For_PsmId.scanPeak_M_Over_Z__Selections_List_For_PSM, "," );
+									writer.write( scanPeak_M_Over_Z__Selections_List_CommaDelim );
+								}
+							}
 							
 							List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch = writeOutputToResponse_For_SearchId.experimentDataForSearch;
 							if ( experimentDataForSearch != null ) {
@@ -2230,6 +2444,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 									writer.write( entry.conditionLabel );
 								}
 							}
+
 
 							//   TODO  Optimize this
 							{
@@ -2503,6 +2718,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		
 		private PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult;
 		
+		private Internal_Request_Converted_Per_PsmId data_FromRequest_For_PsmId;
+		
 		private String subGroup_Nickname; //  Computed or User Entered;
 		private String subGroup_Name; //  From Imported Search
 
@@ -2576,8 +2793,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		/**
 		 * Converted From Request
 		 */
-		private List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds; //  Optional
+		private List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds_InternalClass; //  Optional
 		
+		private Map<Long, Internal_Request_Converted_Per_PsmId> data_Per_PsmId_Map_Key_PsmId_InternalClass;
 	}
 	
 	/**
@@ -2587,6 +2805,12 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		
 		private Integer reportedPeptideId;
 		private List<Long> psmIds_Include;
+	}
+	
+	private static class Internal_Request_Converted_Per_PsmId {
+		
+		long psmId;
+		List<BigDecimal> scanPeak_M_Over_Z__Selections_List_For_PSM;
 	}
 
 
@@ -2668,9 +2892,32 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		
 		private String reportedPeptideIdsAndTheirPsmIds__Encoded;  //  Optional
 		
+		//  Special Ion Selections.  Unique selections on PSMs
+		
+		private List<List<BigDecimal>> scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array;
+		
+		private String scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded;
+		
+		private Integer scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength;
+		
+		private Integer scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix;
+
+        //     //  Each sub array is the unique values for m/z from scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_ArrayInOrderOfPsmIds
+        //     let scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array: Array<Array<number>> = undefined
+        //
+        // //  Pad start with zeros or if undefined then replace with spaces to max length
+        //
+        // let scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded: string = undefined
+        //
+        // scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_MaxIndividualLength: number = undefined
+
+
+		
 		private Long minimum_PSM_ID_InRequest_For_Search;
 		
 		private List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch; //  Optional
+		
+		
 		
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
@@ -2689,6 +2936,22 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		}
 		public void setMinimum_PSM_ID_InRequest_For_Search(Long minimum_PSM_ID_InRequest_For_Search) {
 			this.minimum_PSM_ID_InRequest_For_Search = minimum_PSM_ID_InRequest_For_Search;
+		}
+		public void setScanPeak_M_Over_Z__Selections_UniqueValues_Array_Array(
+				List<List<BigDecimal>> scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array) {
+			this.scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array = scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array;
+		}
+		public void setScanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix(
+				Integer scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix) {
+			this.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix = scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix;
+		}
+		public void setScanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded(
+				String scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded) {
+			this.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded = scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded;
+		}
+		public void setScanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength(
+				Integer scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength) {
+			this.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength = scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength;
 		}
 	}
 

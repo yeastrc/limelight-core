@@ -7,6 +7,9 @@
 
 import {ProteinGroup} from "page_js/data_pages/protein_inference/ProteinGroup";
 import {ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_PerReportedPeptideId_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides";
+import {
+    Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 /**
  * returned from function
@@ -328,7 +331,7 @@ export class ProteinDataDisplay_ProteinList_Sub_Item {
     constructor(
         {
             proteinSequenceVersionId, projectSearchId, proteinInfo, reportedPeptide_CommonValue_EncodedString_ForProtein_Set,
-            uniquePeptideCount, numPsms, reportedPeptideIds_NoPsmFilters, reportedPeptideIds_AndTheirPsmIds,
+            uniquePeptideCount, numPsms, reportedPeptideIds_NoPsmFilters, reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId,
         } : {
             proteinSequenceVersionId: number,
             projectSearchId: number
@@ -337,7 +340,7 @@ export class ProteinDataDisplay_ProteinList_Sub_Item {
             uniquePeptideCount?: number,
             numPsms: number,
             reportedPeptideIds_NoPsmFilters: Set<number>,
-            reportedPeptideIds_AndTheirPsmIds: Map<number, Set<number>>
+            reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId: Map<number, Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId>>
         }) {
         this.proteinSequenceVersionId = proteinSequenceVersionId;
         this.projectSearchId = projectSearchId;
@@ -346,7 +349,7 @@ export class ProteinDataDisplay_ProteinList_Sub_Item {
         this.uniquePeptideCount = uniquePeptideCount;
         this.numPsms = numPsms;
         this.reportedPeptideIds_NoPsmFilters = reportedPeptideIds_NoPsmFilters;
-        this.reportedPeptideIds_AndTheirPsmIds = reportedPeptideIds_AndTheirPsmIds;
+        this.reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId = reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId;
     }
 
     proteinSequenceVersionId: number
@@ -370,7 +373,7 @@ export class ProteinDataDisplay_ProteinList_Sub_Item {
 
     reportedPeptideIds_NoPsmFilters: Set<number>
 
-    reportedPeptideIds_AndTheirPsmIds: Map<number, Set<number>>
+    reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId: Map<number, Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId>>
 
     proteinCoverageRatio : number
     proteinCoverageRatioDisplay : string
@@ -443,7 +446,12 @@ export class ProteinDataDisplay__ReportedPeptideIds_AndTheir_PsmIds_PerSearch_Si
     reportedPeptideId : number
 
     all_PsmIds_BasedOnFilterCutoffs: boolean
-    psmIds: Set<number>  //  undefined or null if all_PsmIds_BasedOnFilterCutoffs is true
+
+    /**
+     * undefined or null if all_PsmIds_BasedOnFilterCutoffs is true
+     *
+     */
+    psmEntries_Include_Map_Key_PsmId: Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId>
 
     constructor(
         {

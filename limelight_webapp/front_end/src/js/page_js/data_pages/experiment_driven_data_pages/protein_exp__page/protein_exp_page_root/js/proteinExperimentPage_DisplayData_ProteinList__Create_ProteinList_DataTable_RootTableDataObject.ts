@@ -1031,8 +1031,8 @@ const _add_SequenceCoverage_To__experiment_SubData_PerCondition_Map_Key_Conditio
 
         const reportedPeptideIds_For_Protein = new Set<number>();
 
-        if ( protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmIds && protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmIds.size > 0 ) {
-            for ( const reportedPeptideId of protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmIds.keys() ) {
+        if ( protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId && protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId.size > 0 ) {
+            for ( const reportedPeptideId of protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmEntries__PsmEntry_Map_Key_PsmId_Map_Key_ReportedPeptideId.keys() ) {
                 reportedPeptideIds_For_Protein.add( reportedPeptideId );
             }
         }

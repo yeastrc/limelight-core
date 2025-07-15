@@ -160,6 +160,9 @@ import {
 import {
     WebserviceCallStandardPost_RejectObject_Class
 } from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
+import {
+    Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 
 ////
@@ -1503,7 +1506,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
             const reportedPeptideId_NotFilterdOnPsmId_Set__Map_Key_ProjectSearchId : Map<number, Set<number>> = new Map();
 
-            const psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId : Map<number,Map<number, Set<number>>> = new Map();
+            const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId : Map<number,Map<number, Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId>>> = new Map();
 
             if ( peptideList && peptideList.length > 0 ) {
 
@@ -1522,10 +1525,10 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             reportedPeptideId_NotFilterdOnPsmId_Set = new Set();
                             reportedPeptideId_NotFilterdOnPsmId_Set__Map_Key_ProjectSearchId.set( projectSearchId, reportedPeptideId_NotFilterdOnPsmId_Set );
                         }
-                        let psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map = psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
-                        if ( ! psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map ) {
-                            psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map = new Map();
-                            psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.set( projectSearchId, psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map );
+                        let psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
+                        if ( ! psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map ) {
+                            psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map = new Map();
+                            psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.set( projectSearchId, psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map );
                         }
 
 
@@ -1536,7 +1539,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                 reportedPeptideId_NotFilterdOnPsmId_Set.add( dataPerReportedPeptideId.reportedPeptideId );
 
                                 //  Delete since now NOT filtering on PSM Ids for this reportedPeptideId
-                                psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.delete( dataPerReportedPeptideId.reportedPeptideId );
+                                psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.delete( dataPerReportedPeptideId.reportedPeptideId );
 
                             } else {
                                 if ( ! dataPerReportedPeptideId.psmEntries_PassFilters_Map_Key_PsmId ) {
@@ -1544,15 +1547,23 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                 }
 
                                 if ( ! reportedPeptideId_NotFilterdOnPsmId_Set.has( dataPerReportedPeptideId.reportedPeptideId ) ) {
-                                    //  NO entry for reportedPeptideId NOT filtering on PSM Ids so add PSM Ids to psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map
+                                    //  NO entry for reportedPeptideId NOT filtering on PSM Ids so add PSM Ids to psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map
 
-                                    let psmIds_Set = psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.get( dataPerReportedPeptideId.reportedPeptideId );
-                                    if ( ! psmIds_Set ) {
-                                        psmIds_Set = new Set();
-                                        psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.set( dataPerReportedPeptideId.reportedPeptideId, psmIds_Set );
+                                    let psmEntries_Map_Key_PsmId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.get( dataPerReportedPeptideId.reportedPeptideId );
+                                    if ( ! psmEntries_Map_Key_PsmId ) {
+                                        psmEntries_Map_Key_PsmId = new Map();
+                                        psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.set( dataPerReportedPeptideId.reportedPeptideId, psmEntries_Map_Key_PsmId );
                                     }
-                                    for ( const psmId of dataPerReportedPeptideId.psmEntries_PassFilters_Map_Key_PsmId.keys() ) {
-                                        psmIds_Set.add( psmId );
+                                    for ( const psmEntry of dataPerReportedPeptideId.psmEntries_PassFilters_Map_Key_PsmId.values() ) {
+
+                                        const psmEntry_FromMap = psmEntries_Map_Key_PsmId.get( psmEntry.psmId )
+                                        if ( ! psmEntry_FromMap ) {
+                                            psmEntries_Map_Key_PsmId.set( psmEntry.psmId, psmEntry )
+                                        } else {
+                                            //  Need to merge entries
+                                            const mergedEntry = Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId.merge_ExistingObjectsOfThisType([ psmEntry, psmEntry_FromMap ])
+                                            psmEntries_Map_Key_PsmId.set( mergedEntry.psmId, mergedEntry )
+                                        }
                                     }
                                 }
                             }
@@ -1580,30 +1591,18 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     }
                 }
 
-                const psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId = psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
-                if ( psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId && psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId.size > 0 ) {
+                const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
+                if ( psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId && psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.size > 0 ) {
 
                     //  YES Filtered on specific PSM IDs so No passing PSM IDs to filter on
 
-                    for ( const psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry of psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId.entries() ) {
-                        const reportedPeptideId = psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[0];
-                        const psmIds_Set = psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[1];
-
-                        const psmIds_Array = Array.from( psmIds_Set )
-
-                        psmIds_Array.sort( (a, b) => {
-                            if ( a < b ) {
-                                return -1;
-                            }
-                            if ( a > b ) {
-                                return 1;
-                            }
-                            return  0;
-                        })
+                    for ( const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry of psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.entries() ) {
+                        const reportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[0];
+                        const psmEntries_Map_Key_PsmId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[1];
 
                         const reportedPeptideIdAndPsmIds : DownloadPSMs_PerReportedPeptideId = {
                             reportedPeptideId,
-                            psmIds_Include: psmIds_Array
+                            psmEntries_Include_Map_Key_PsmId: psmEntries_Map_Key_PsmId
                         };
 
                         reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdAndPsmIds );
@@ -1697,7 +1696,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
             const reportedPeptideId_NotFilterdOnPsmId_Set__Map_Key_ProjectSearchId : Map<number, Set<number>> = new Map();
 
-            const psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId : Map<number,Map<number, Set<number>>> = new Map();
+            const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId : Map<number,Map<number, Set<number>>> = new Map();
 
             if ( peptideList && peptideList.length > 0 ) {
 
@@ -1716,10 +1715,10 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             reportedPeptideId_NotFilterdOnPsmId_Set = new Set();
                             reportedPeptideId_NotFilterdOnPsmId_Set__Map_Key_ProjectSearchId.set( projectSearchId, reportedPeptideId_NotFilterdOnPsmId_Set );
                         }
-                        let psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map = psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
-                        if ( ! psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map ) {
-                            psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map = new Map();
-                            psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.set( projectSearchId, psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map );
+                        let psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
+                        if ( ! psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map ) {
+                            psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map = new Map();
+                            psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.set( projectSearchId, psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map );
                         }
 
 
@@ -1730,7 +1729,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                 reportedPeptideId_NotFilterdOnPsmId_Set.add( dataPerReportedPeptideId.reportedPeptideId );
 
                                 //  Delete since now NOT filtering on PSM Ids for this reportedPeptideId
-                                psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.delete( dataPerReportedPeptideId.reportedPeptideId );
+                                psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.delete( dataPerReportedPeptideId.reportedPeptideId );
 
                             } else {
                                 if ( ! dataPerReportedPeptideId.psmEntries_PassFilters_Map_Key_PsmId ) {
@@ -1738,15 +1737,15 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                 }
 
                                 if ( ! reportedPeptideId_NotFilterdOnPsmId_Set.has( dataPerReportedPeptideId.reportedPeptideId ) ) {
-                                    //  NO entry for reportedPeptideId NOT filtering on PSM Ids so add PSM Ids to psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map
+                                    //  NO entry for reportedPeptideId NOT filtering on PSM Ids so add PSM Ids to psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map
 
-                                    let psmIds_Set = psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.get( dataPerReportedPeptideId.reportedPeptideId );
-                                    if ( ! psmIds_Set ) {
-                                        psmIds_Set = new Set();
-                                        psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.set( dataPerReportedPeptideId.reportedPeptideId, psmIds_Set );
+                                    let psmEntries_Map_Key_PsmId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.get( dataPerReportedPeptideId.reportedPeptideId );
+                                    if ( ! psmEntries_Map_Key_PsmId ) {
+                                        psmEntries_Map_Key_PsmId = new Set();
+                                        psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map.set( dataPerReportedPeptideId.reportedPeptideId, psmEntries_Map_Key_PsmId );
                                     }
                                     for ( const psmId of dataPerReportedPeptideId.psmEntries_PassFilters_Map_Key_PsmId.keys() ) {
-                                        psmIds_Set.add( psmId );
+                                        psmEntries_Map_Key_PsmId.add( psmId );
                                     }
                                 }
                             }
@@ -1774,16 +1773,16 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     }
                 }
 
-                const psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId = psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
-                if ( psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId && psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId.size > 0 ) {
+                const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
+                if ( psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId && psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.size > 0 ) {
 
                     //  YES Filtered on specific PSM IDs so No passing PSM IDs to filter on
 
-                    for ( const psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry of psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId.entries() ) {
-                        const reportedPeptideId = psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[0];
-                        const psmIds_Set = psmIds_Set_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[1];
+                    for ( const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry of psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.entries() ) {
+                        const reportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[0];
+                        const psmEntries_Map_Key_PsmId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[1];
 
-                        const psmIds_Array = Array.from( psmIds_Set )
+                        const psmIds_Array = Array.from( psmEntries_Map_Key_PsmId )
 
                         psmIds_Array.sort( (a, b) => {
                             if ( a < b ) {

@@ -326,14 +326,14 @@ const _computePsmCountTotal = function(
 
                 //  Have PSM Ids so use count of PSM Ids
 
-                if ( ! data_Per_ReportedPeptideId.psmIds ) {
-                    const msg = "( ! data_Per_ReportedPeptideId.all_PsmIds_BasedOnFilterCutoffs ) and ( ! data_Per_ReportedPeptideId.psmIds ). projectSearchId: " + projectSearchId +
+                if ( ! data_Per_ReportedPeptideId.psmEntries_Include_Map_Key_PsmId ) {
+                    const msg = "( ! data_Per_ReportedPeptideId.all_PsmIds_BasedOnFilterCutoffs ) and ( ! data_Per_ReportedPeptideId.psmEntries_Include_Map_Key_PsmId ). projectSearchId: " + projectSearchId +
                         ", reportedPeptideId: " + data_Per_ReportedPeptideId.reportedPeptideId;
                     console.warn(msg);
                     throw Error(msg);
                 }
 
-                const numPsms = data_Per_ReportedPeptideId.psmIds.size;
+                const numPsms = data_Per_ReportedPeptideId.psmEntries_Include_Map_Key_PsmId.size;
 
                 psmCountTotal += numPsms;
 

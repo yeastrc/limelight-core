@@ -53,14 +53,14 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_P
 
             if ( ! data_Per_ReportedPeptideId.all_PsmIds_BasedOnFilterCutoffs ) {
 
-                if ( ! data_Per_ReportedPeptideId.psmIds ) {
-                    const msg = "( ! data_Per_ReportedPeptideId.all_PsmIds_BasedOnFilterCutoffs ) and ( ! data_Per_ReportedPeptideId.psmIds ). projectSearchId: " + projectSearchId +
+                if ( ! data_Per_ReportedPeptideId.psmEntries_Include_Map_Key_PsmId ) {
+                    const msg = "( ! data_Per_ReportedPeptideId.all_PsmIds_BasedOnFilterCutoffs ) and ( ! data_Per_ReportedPeptideId.psmEntries_Include_Map_Key_PsmId ). projectSearchId: " + projectSearchId +
                         ", reportedPeptideId: " + data_Per_ReportedPeptideId.reportedPeptideId;
                     console.warn(msg);
                     throw Error(msg);
                 }
 
-                result_PerReportedPeptideId.psmIds_Include = Array.from( data_Per_ReportedPeptideId.psmIds );
+                result_PerReportedPeptideId.psmEntries_Include_Map_Key_PsmId = data_Per_ReportedPeptideId.psmEntries_Include_Map_Key_PsmId
             }
         }
 
