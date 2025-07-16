@@ -20,6 +20,8 @@ import {
 import {
     ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
+import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 /**
  * 
@@ -66,7 +68,7 @@ class DownloadPSMs_PerConditionGroupConditionData {
 }
 
 /**
- * Download PSMs for Project Search Ids, Filter Critera, Experiment Data and Optional Reported Peptide Ids and/or Optional Protein Sequence Version Ids.  
+ * Download PSMs for Project Search Ids, Filter Criteria, Experiment Data and Optional Reported Peptide Ids and/or Optional Protein Sequence Version Ids.
  * 
  * Open URL in new window to download from server
  * 
@@ -74,16 +76,56 @@ class DownloadPSMs_PerConditionGroupConditionData {
  * @param searchDataLookupParamsRoot - 
  * @param proteinSequenceVersionIds - optional
  */
-const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds = function({
-	
-    searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId
-} : {
-    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
-    projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry>
-    proteinSequenceVersionIds : Array<number>
-    experimentId : number
+const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds = function(
+    {
+        searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId
+    } : {
+        searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+        projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry>
+        proteinSequenceVersionIds : Array<number>
+        experimentId : number
 
-}  ) {
+    }  ) : void {
+
+
+    let requestObj = {
+        weuonklUUUQSJDVCWvweyhizwoqy: true
+    };
+
+    const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-new-download-identifier-string";
+
+    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
+
+    const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+    promise_webserviceCallStandardPost.catch( () => {  }  );
+
+    promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+        try {
+            _doActual__download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds({
+                searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId,
+                downloadIdentifier: responseData.downloadIdentifier
+            })
+
+        } catch (e) {
+            reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+            throw e;
+        }
+    });
+}
+
+
+const _doActual__download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds = function(
+    {
+        searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId, downloadIdentifier
+    } : {
+        searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+        projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry>
+        proteinSequenceVersionIds : Array<number>
+        experimentId : number
+        downloadIdentifier: string
+
+    }  ) : void {
 
     //  Encode projectSearchIdsReportedPeptideIdsPsmIds
 
@@ -447,10 +489,11 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
         }
     }
 
-    const EXPECTED_REQUEST_VERSION = 3 // Keep in sync with server
+    const EXPECTED_REQUEST_VERSION = 4 // Keep in sync with server
 
     const requestJSONObject = {
         requestVersion: EXPECTED_REQUEST_VERSION,
+        downloadIdentifier,
         projectSearchIdsReportedPeptideIdsPsmIds: toSend__projectSearchIdsReportedPeptideIdsPsmIds,
         searchDataLookupParamsRoot,
         proteinSequenceVersionIds,
@@ -489,7 +532,102 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
         document.body.removeChild( form );
     }
 
+    _getDownloadStatus_AfterSubmitForm({ downloadIdentifier, retryCount: 0 })
 }
+
+/**
+ *
+ * @param downloadIdentifier
+ * @param retryCount
+ */
+const _getDownloadStatus_AfterSubmitForm = function (
+    {
+        downloadIdentifier, retryCount
+    } : {
+        downloadIdentifier: string
+        retryCount: number
+    }
+) {
+
+
+    let requestObj = {
+        downloadIdentifier
+    };
+
+    const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-after-status";
+
+    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
+
+    const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+    promise_webserviceCallStandardPost.catch( () => {  }  );
+
+    promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+        try {
+
+            if ( responseData.statusAboutToSubmit || responseData.statusInProgress ) {
+
+                console.log( "_getDownloadStatus_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                const _RETRY_COUNT_MAX = 20
+
+                const _MIN_DELAY_IN_SECONDS = 3
+
+                if ( retryCount > _RETRY_COUNT_MAX ) {
+
+                    console.log( "_getDownloadStatus_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url +
+                        ", downloadIdentifier: " + downloadIdentifier +
+                        ", retryCount: " + retryCount + ", 'retryCount > _RETRY_COUNT_MAX' so exit. _RETRY_COUNT_MAX: " + _RETRY_COUNT_MAX )
+
+                    return // EARLY RETURN
+                }
+
+                const timeoutDelay = ( _MIN_DELAY_IN_SECONDS + retryCount ) * 1000   // In Milliseconds
+
+                //  Retry after wait
+                window.setTimeout( () => {
+
+                    _getDownloadStatus_AfterSubmitForm({ downloadIdentifier, retryCount: ( retryCount + 1 ) })
+
+                }, timeoutDelay )
+
+                return  // EARLY RETURN
+            }
+
+            if ( responseData.statusSuccess ) {
+
+                //  Successful
+
+                console.log( "_getDownloadStatus_AfterSubmitForm(): responseData.statusSuccess: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                return  // EARLY RETURN
+            }
+
+            if ( responseData.statusFail ) {
+
+                //  Fail
+
+                console.log( "_getDownloadStatus_AfterSubmitForm(): responseData.statusFail: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                window.alert( "PSM Download processing failed on the server side.  If any data was downloaded it is likely incomplete.  Ignore this message if the download was canceled." )
+
+                return  // EARLY RETURN
+            }
+
+            //  NOT expect to get here
+
+        } catch (e) {
+            reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+            throw e;
+        }
+    });
+}
+
+
+
+
+
+///////////////////
 
 export { 
     download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds,

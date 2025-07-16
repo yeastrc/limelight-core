@@ -32,6 +32,7 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
 
 
 
@@ -558,44 +559,181 @@ class Internal__FASTA_File_Component extends React.Component<Internal__FASTA_Fil
      */
     private _fasta_Filename_Clicked_For_Download( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
         try {
-            const requestJSONObject = {
-                projectSearchId: this.props.searchDetails_ForProjectSearchId.mainPart.projectSearchId,
-                fileObjectStorageForSearch_Id : this.props.searchDetails_ForProjectSearchId.mainPart.fastaFile_FileObjectStorageId
-            }
 
-            const requestJSONString = JSON.stringify(requestJSONObject);
+            let requestObj = {
+                weuonklUUUQSJDVCWvweyhizwoqy: true
+            };
 
-            //  Create and submit form
+            const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-new-download-identifier-string";
 
-            const form = document.createElement("form");
+            console.log( "_fasta_Filename_Clicked_For_Download(): first call webservice at URL: " + url )
 
-            form.style.display = "none"
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
-            form.setAttribute("method", "post");
-            form.setAttribute("action", "d/dnld/psb/file-object-storage-entry");
-            form.setAttribute("target", "_blank");
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            const requestJSONStringField = document.createElement("textarea");
-            requestJSONStringField.setAttribute("name", "requestJSONString");
+            promise_webserviceCallStandardPost.catch( () => {  }  );
 
-            requestJSONStringField.value = requestJSONString
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+                try {
+                    console.log( "_fasta_Filename_Clicked_For_Download(): called webservice at URL: " + url + ", responseData.downloadIdentifier: " + responseData.downloadIdentifier + ", next call this._fasta_Filename_Clicked_For_Download_DoActual(...)" )
 
-            form.appendChild(requestJSONStringField);
+                    this._fasta_Filename_Clicked_For_Download_DoActual({
+                        downloadIdentifier: responseData.downloadIdentifier
+                    })
 
-            document.body.appendChild(form);    // Not entirely sure if this is necessary
-
-            try {
-                form.submit();
-            } finally {
-
-                document.body.removeChild(form);
-            }
+                } catch (e) {
+                    reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                    throw e;
+                }
+            });
 
         } catch ( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
             throw e
         }
     }
+
+    /**
+     *
+     * @private
+     */
+    private _fasta_Filename_Clicked_For_Download_DoActual(
+        {
+            downloadIdentifier
+        } : {
+            downloadIdentifier: string
+        }
+    ) {
+
+        const requestJSONObject = {
+            projectSearchId: this.props.searchDetails_ForProjectSearchId.mainPart.projectSearchId,
+            fileObjectStorageForSearch_Id : this.props.searchDetails_ForProjectSearchId.mainPart.fastaFile_FileObjectStorageId,
+            downloadIdentifier
+        }
+
+        const requestJSONString = JSON.stringify(requestJSONObject);
+
+        //  Create and submit form
+
+        const form = document.createElement("form");
+
+        form.style.display = "none"
+
+        form.setAttribute("method", "post");
+        form.setAttribute("action", "d/dnld/psb/file-object-storage-entry");
+        form.setAttribute("target", "_blank");
+
+        const requestJSONStringField = document.createElement("textarea");
+        requestJSONStringField.setAttribute("name", "requestJSONString");
+
+        requestJSONStringField.value = requestJSONString
+
+        form.appendChild(requestJSONStringField);
+
+        document.body.appendChild(form);    // Not entirely sure if this is necessary
+
+        try {
+            form.submit();
+        } finally {
+
+            document.body.removeChild(form);
+        }
+
+        this._fasta_Filename_Clicked_For_Download_AfterSubmitForm({ downloadIdentifier, retryCount: 0 })
+    }
+    /**
+     *
+     * @param downloadIdentifier
+     * @param retryCount
+     */
+    _fasta_Filename_Clicked_For_Download_AfterSubmitForm(
+        {
+            downloadIdentifier, retryCount
+        } : {
+            downloadIdentifier: string
+            retryCount: number
+        }
+    ) {
+
+        console.log( "_fasta_Filename_Clicked_For_Download_AfterSubmitForm(): downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+
+        let requestObj = {
+            downloadIdentifier
+        };
+
+        const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-after-status";
+
+        console.log( "_fasta_Filename_Clicked_For_Download_AfterSubmitForm(): downloadIdentifier: " + downloadIdentifier + ", next call webservice at url: " + url )
+
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
+
+        const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+        promise_webserviceCallStandardPost.catch( () => {  }  );
+
+        promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+            try {
+
+                if ( responseData.statusAboutToSubmit || responseData.statusInProgress ) {
+
+                    console.log( "_fasta_Filename_Clicked_For_Download_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    const _RETRY_COUNT_MAX = 20
+
+                    const _MIN_DELAY_IN_SECONDS = 3
+
+                    if ( retryCount > _RETRY_COUNT_MAX ) {
+
+                        console.log( "_fasta_Filename_Clicked_For_Download_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url +
+                            ", downloadIdentifier: " + downloadIdentifier +
+                            ", retryCount: " + retryCount + ", 'retryCount > _RETRY_COUNT_MAX' so exit. _RETRY_COUNT_MAX: " + _RETRY_COUNT_MAX )
+
+                        return // EARLY RETURN
+                    }
+
+                    const timeoutDelay = ( _MIN_DELAY_IN_SECONDS + retryCount ) * 1000   // In Milliseconds
+
+                    //  Retry after wait
+                    window.setTimeout( () => {
+
+                        this._fasta_Filename_Clicked_For_Download_AfterSubmitForm({ downloadIdentifier, retryCount: ( retryCount + 1 ) })
+
+                    }, timeoutDelay )
+
+                    return  // EARLY RETURN
+                }
+
+                if ( responseData.statusSuccess ) {
+
+                    //  Successful
+
+                    console.log( "_fasta_Filename_Clicked_For_Download_AfterSubmitForm(): responseData.statusSuccess: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    return  // EARLY RETURN
+                }
+
+                if ( responseData.statusFail ) {
+
+                    //  Fail
+
+                    console.log( "_fasta_Filename_Clicked_For_Download_AfterSubmitForm(): responseData.statusFail: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    window.alert( "FASTA Download processing failed on the server side.  If any data was downloaded it is likely incomplete.  Ignore this message if the download was canceled." )
+
+                    return  // EARLY RETURN
+                }
+
+                //  NOT expect to get here
+
+            } catch (e) {
+                reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                throw e;
+            }
+        });
+    }
+
 
     /**
      *
@@ -695,43 +833,179 @@ class Internal__Scan_File_Component extends React.Component<Internal__Scan_File_
      */
     private _filename_Clicked_For_Download( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
         try {
-            const requestJSONObject = {
-                projectSearchId: this.props.projectSearchId,
-                searchScanFile_Id : this.props.search_Scan_File_Item.id
-            }
 
-            const requestJSONString = JSON.stringify(requestJSONObject);
+            let requestObj = {
+                weuonklUUUQSJDVCWvweyhizwoqy: true
+            };
 
-            //  Create and submit form
+            const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-new-download-identifier-string";
 
-            const form = document.createElement("form");
+            console.log( "_filename_Clicked_For_Download(): first call webservice at URL: " + url )
 
-            form.style.display = "none"
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
-            form.setAttribute("method", "post");
-            form.setAttribute("action", "d/dnld/psb/scan-file-contents-from-file-object-storage-entry-using-search-scan-file-id-psid");
-            form.setAttribute("target", "_blank");
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            const requestJSONStringField = document.createElement("textarea");
-            requestJSONStringField.setAttribute("name", "requestJSONString");
+            promise_webserviceCallStandardPost.catch( () => {  }  );
 
-            requestJSONStringField.value = requestJSONString
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+                try {
+                    console.log( "_filename_Clicked_For_Download(): called webservice at URL: " + url + ", responseData.downloadIdentifier: " + responseData.downloadIdentifier + ", next call this._filename_Clicked_For_Download_DoActual(...)" )
 
-            form.appendChild(requestJSONStringField);
+                    this._filename_Clicked_For_Download_DoActual({
+                        downloadIdentifier: responseData.downloadIdentifier
+                    })
 
-            document.body.appendChild(form);    // Not entirely sure if this is necessary
-
-            try {
-                form.submit();
-            } finally {
-
-                document.body.removeChild(form);
-            }
-
+                } catch (e) {
+                    reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                    throw e;
+                }
+            });
         } catch ( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
             throw e
         }
+    }
+
+    /**
+     *
+     * @private
+     */
+    private _filename_Clicked_For_Download_DoActual(
+        {
+            downloadIdentifier
+        } : {
+            downloadIdentifier: string
+        }
+    ) {
+
+        const requestJSONObject = {
+            projectSearchId: this.props.projectSearchId,
+            searchScanFile_Id : this.props.search_Scan_File_Item.id,
+            downloadIdentifier
+        }
+
+        const requestJSONString = JSON.stringify(requestJSONObject);
+
+        //  Create and submit form
+
+        const form = document.createElement("form");
+
+        form.style.display = "none"
+
+        form.setAttribute("method", "post");
+        form.setAttribute("action", "d/dnld/psb/scan-file-contents-from-file-object-storage-entry-using-search-scan-file-id-psid");
+        form.setAttribute("target", "_blank");
+
+        const requestJSONStringField = document.createElement("textarea");
+        requestJSONStringField.setAttribute("name", "requestJSONString");
+
+        requestJSONStringField.value = requestJSONString
+
+        form.appendChild(requestJSONStringField);
+
+        document.body.appendChild(form);    // Not entirely sure if this is necessary
+
+        try {
+            form.submit();
+        } finally {
+
+            document.body.removeChild(form);
+        }
+
+        this._filename_Clicked_For_Download_AfterSubmitForm({ downloadIdentifier, retryCount: 0 })
+    }
+
+    /**
+     *
+     * @param downloadIdentifier
+     * @param retryCount
+     */
+    _filename_Clicked_For_Download_AfterSubmitForm(
+        {
+            downloadIdentifier, retryCount
+        } : {
+            downloadIdentifier: string
+            retryCount: number
+        }
+    ) {
+
+        console.log( "_filename_Clicked_For_Download_AfterSubmitForm(): downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+
+        let requestObj = {
+            downloadIdentifier
+        };
+
+        const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-after-status";
+
+        console.log( "_filename_Clicked_For_Download_AfterSubmitForm(): downloadIdentifier: " + downloadIdentifier + ", next call webservice at url: " + url )
+
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
+
+        const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+        promise_webserviceCallStandardPost.catch( () => {  }  );
+
+        promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+            try {
+
+                if ( responseData.statusAboutToSubmit || responseData.statusInProgress ) {
+
+                    console.log( "_filename_Clicked_For_Download_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    const _RETRY_COUNT_MAX = 20
+
+                    const _MIN_DELAY_IN_SECONDS = 3
+
+                    if ( retryCount > _RETRY_COUNT_MAX ) {
+
+                        console.log( "_filename_Clicked_For_Download_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url +
+                            ", downloadIdentifier: " + downloadIdentifier +
+                            ", retryCount: " + retryCount + ", 'retryCount > _RETRY_COUNT_MAX' so exit. _RETRY_COUNT_MAX: " + _RETRY_COUNT_MAX )
+
+                        return // EARLY RETURN
+                    }
+
+                    const timeoutDelay = ( _MIN_DELAY_IN_SECONDS + retryCount ) * 1000   // In Milliseconds
+
+                    //  Retry after wait
+                    window.setTimeout( () => {
+
+                        this._filename_Clicked_For_Download_AfterSubmitForm({ downloadIdentifier, retryCount: ( retryCount + 1 ) })
+
+                    }, timeoutDelay )
+
+                    return  // EARLY RETURN
+                }
+
+                if ( responseData.statusSuccess ) {
+
+                    //  Successful
+
+                    console.log( "_filename_Clicked_For_Download_AfterSubmitForm(): responseData.statusSuccess: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    return  // EARLY RETURN
+                }
+
+                if ( responseData.statusFail ) {
+
+                    //  Fail
+
+                    console.log( "_filename_Clicked_For_Download_AfterSubmitForm(): responseData.statusFail: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    window.alert( "Scan Download processing failed on the server side.  If any data was downloaded it is likely incomplete.  Ignore this message if the download was canceled." )
+
+                    return  // EARLY RETURN
+                }
+
+                //  NOT expect to get here
+
+            } catch (e) {
+                reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                throw e;
+            }
+        });
     }
 
     /**
@@ -996,11 +1270,53 @@ class Internal__SearchFile_Entry_Component extends React.Component<Internal__Sea
      */
     private _download_Entry_Is_NOT_FileObjectStorageFile() {
 
+        let requestObj = {
+            weuonklUUUQSJDVCWvweyhizwoqy: true
+        };
+
+        const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-new-download-identifier-string";
+
+        console.log( "_download_Entry_Is_NOT_FileObjectStorageFile(): first call webservice at URL: " + url )
+
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
+
+        const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+        promise_webserviceCallStandardPost.catch( () => {  }  );
+
+        promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+            try {
+                console.log( "_download_Entry_Is_NOT_FileObjectStorageFile(): called webservice at URL: " + url + ", responseData.downloadIdentifier: " + responseData.downloadIdentifier + ", next call this._download_Entry_Is_NOT_FileObjectStorageFile_DoActual(...)" )
+
+                this._download_Entry_Is_NOT_FileObjectStorageFile_DoActual({
+                    downloadIdentifier: responseData.downloadIdentifier
+                })
+
+            } catch (e) {
+                reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                throw e;
+            }
+        });
+    }
+
+    /**
+     *
+     * @private
+     */
+    private _download_Entry_Is_NOT_FileObjectStorageFile_DoActual(
+        {
+            downloadIdentifier
+        } : {
+            downloadIdentifier: string
+        }
+    ) {
+
         //  File contents stored in Limelight DB
 
         const requestJSONObject = {
             projectSearchId: this.props.projectSearchId,
-            projectSearchFileId : this.props.searchFile_Entry.id
+            projectSearchFileId : this.props.searchFile_Entry.id,
+            downloadIdentifier
         }
 
         const requestJSONString = JSON.stringify(requestJSONObject);
@@ -1030,6 +1346,100 @@ class Internal__SearchFile_Entry_Component extends React.Component<Internal__Sea
 
             document.body.removeChild(form);
         }
+
+        console.log( "at end of _download_Entry_Is_NOT_FileObjectStorageFile_DoActual(): downloadIdentifier: " + downloadIdentifier + ", next call this._download_Entry_Is_NOT_FileObjectStorageFile_AfterSubmitForm(...)" )
+
+        this._download_Entry_Is_NOT_FileObjectStorageFile_AfterSubmitForm({ downloadIdentifier, retryCount: 0 })
+    }
+
+    /**
+     *
+     * @private
+     */
+    private _download_Entry_Is_NOT_FileObjectStorageFile_AfterSubmitForm(
+        {
+            downloadIdentifier, retryCount
+        } : {
+            downloadIdentifier: string
+            retryCount: number
+        }
+    ) {
+
+        console.log( "_download_Entry_Is_NOT_FileObjectStorageFile_AfterSubmitForm(): downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+        let requestObj = {
+            downloadIdentifier
+        };
+
+        const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-after-status";
+
+        console.log( "_download_Entry_Is_NOT_FileObjectStorageFile_AfterSubmitForm(): downloadIdentifier: " + downloadIdentifier + ", next call webservice at url: " + url )
+
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
+
+        const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+        promise_webserviceCallStandardPost.catch( () => {  }  );
+
+        promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+            try {
+
+                if ( responseData.statusAboutToSubmit || responseData.statusInProgress ) {
+
+                    console.log( "_download_Entry_Is_NOT_FileObjectStorageFile_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    const _RETRY_COUNT_MAX = 20
+
+                    const _MIN_DELAY_IN_SECONDS = 3
+
+                    if ( retryCount > _RETRY_COUNT_MAX ) {
+
+                        console.log( "_download_Entry_Is_NOT_FileObjectStorageFile_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url +
+                            ", downloadIdentifier: " + downloadIdentifier +
+                            ", retryCount: " + retryCount + ", 'retryCount > _RETRY_COUNT_MAX' so exit. _RETRY_COUNT_MAX: " + _RETRY_COUNT_MAX )
+
+                        return // EARLY RETURN
+                    }
+
+                    const timeoutDelay = ( _MIN_DELAY_IN_SECONDS + retryCount ) * 1000   // In Milliseconds
+
+                    //  Retry after wait
+                    window.setTimeout( () => {
+
+                        this._download_Entry_Is_NOT_FileObjectStorageFile_AfterSubmitForm({ downloadIdentifier, retryCount: ( retryCount + 1 ) })
+
+                    }, timeoutDelay )
+
+                    return  // EARLY RETURN
+                }
+
+                if ( responseData.statusSuccess ) {
+
+                    //  Successful
+
+                    console.log( "_download_Entry_Is_NOT_FileObjectStorageFile_AfterSubmitForm(): responseData.statusSuccess: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    return  // EARLY RETURN
+                }
+
+                if ( responseData.statusFail ) {
+
+                    //  Fail
+
+                    console.log( "_download_Entry_Is_NOT_FileObjectStorageFile_AfterSubmitForm(): responseData.statusFail: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    window.alert( "File Download processing failed on the server side.  If any data was downloaded it is likely incomplete.  Ignore this message if the download was canceled." )
+
+                    return  // EARLY RETURN
+                }
+
+                //  NOT expect to get here
+
+            } catch (e) {
+                reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                throw e;
+            }
+        });
     }
 
     /**
@@ -1038,9 +1448,51 @@ class Internal__SearchFile_Entry_Component extends React.Component<Internal__Sea
      */
     private _download_Entry_Is_FileObjectStorageFile() {
 
+        let requestObj = {
+            weuonklUUUQSJDVCWvweyhizwoqy: true
+        };
+
+        const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-new-download-identifier-string";
+
+        console.log( "_download_Entry_Is_FileObjectStorageFile(): first call webservice at URL: " + url )
+
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
+
+        const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+        promise_webserviceCallStandardPost.catch( () => {  }  );
+
+        promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+            try {
+                console.log( "_download_Entry_Is_FileObjectStorageFile(): called webservice at URL: " + url + ", responseData.downloadIdentifier: " + responseData.downloadIdentifier + ", next call this._download_Entry_Is_FileObjectStorageFile_DoActual(...)" )
+
+                this._download_Entry_Is_FileObjectStorageFile_DoActual({
+                    downloadIdentifier: responseData.downloadIdentifier
+                })
+
+            } catch (e) {
+                reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                throw e;
+            }
+        });
+    }
+
+    /**
+     *
+     * @private
+     */
+    private _download_Entry_Is_FileObjectStorageFile_DoActual(
+        {
+            downloadIdentifier
+        } : {
+            downloadIdentifier: string
+        }
+    ) {
+
         const requestJSONObject = {
             projectSearchId: this.props.projectSearchId,
-            fileObjectStorageForSearch_Id : this.props.searchFile_Entry.id
+            fileObjectStorageForSearch_Id : this.props.searchFile_Entry.id,
+            downloadIdentifier
         }
 
         const requestJSONString = JSON.stringify(requestJSONObject);
@@ -1070,6 +1522,100 @@ class Internal__SearchFile_Entry_Component extends React.Component<Internal__Sea
 
             document.body.removeChild(form);
         }
+
+        console.log( "at end of _download_Entry_Is_NOT_FileObjectStorageFile_DoActual(): downloadIdentifier: " + downloadIdentifier + ", next call this._download_Entry_Is_NOT_FileObjectStorageFile_AfterSubmitForm(...)" )
+
+        this._download_Entry_Is_FileObjectStorageFile_AfterSubmitForm({ downloadIdentifier, retryCount: 0 })
+    }
+
+    /**
+     *
+     * @private
+     */
+    private _download_Entry_Is_FileObjectStorageFile_AfterSubmitForm(
+        {
+            downloadIdentifier, retryCount
+        } : {
+            downloadIdentifier: string
+            retryCount: number
+        }
+    ) {
+
+        console.log( "_download_Entry_Is_FileObjectStorageFile_AfterSubmitForm(): downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+        let requestObj = {
+            downloadIdentifier
+        };
+
+        const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-after-status";
+
+        console.log( "_download_Entry_Is_FileObjectStorageFile_AfterSubmitForm(): downloadIdentifier: " + downloadIdentifier + ", next call webservice at url: " + url )
+
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
+
+        const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+        promise_webserviceCallStandardPost.catch( () => {  }  );
+
+        promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+            try {
+
+                if ( responseData.statusAboutToSubmit || responseData.statusInProgress ) {
+
+                    console.log( "_download_Entry_Is_FileObjectStorageFile_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    const _RETRY_COUNT_MAX = 20
+
+                    const _MIN_DELAY_IN_SECONDS = 3
+
+                    if ( retryCount > _RETRY_COUNT_MAX ) {
+
+                        console.log( "_download_Entry_Is_FileObjectStorageFile_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url +
+                            ", downloadIdentifier: " + downloadIdentifier +
+                            ", retryCount: " + retryCount + ", 'retryCount > _RETRY_COUNT_MAX' so exit. _RETRY_COUNT_MAX: " + _RETRY_COUNT_MAX )
+
+                        return // EARLY RETURN
+                    }
+
+                    const timeoutDelay = ( _MIN_DELAY_IN_SECONDS + retryCount ) * 1000   // In Milliseconds
+
+                    //  Retry after wait
+                    window.setTimeout( () => {
+
+                        this._download_Entry_Is_FileObjectStorageFile_AfterSubmitForm({ downloadIdentifier, retryCount: ( retryCount + 1 ) })
+
+                    }, timeoutDelay )
+
+                    return  // EARLY RETURN
+                }
+
+                if ( responseData.statusSuccess ) {
+
+                    //  Successful
+
+                    console.log( "_download_Entry_Is_FileObjectStorageFile_AfterSubmitForm(): responseData.statusSuccess: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    return  // EARLY RETURN
+                }
+
+                if ( responseData.statusFail ) {
+
+                    //  Fail
+
+                    console.log( "_download_Entry_Is_FileObjectStorageFile_AfterSubmitForm(): responseData.statusFail: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    window.alert( "File Download processing failed on the server side.  If any data was downloaded it is likely incomplete.  Ignore this message if the download was canceled." )
+
+                    return  // EARLY RETURN
+                }
+
+                //  NOT expect to get here
+
+            } catch (e) {
+                reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                throw e;
+            }
+        });
     }
 
     /**

@@ -844,6 +844,13 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0002 =
 			"d/rws/for-page/fdb/feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0002";
+
+	///////////////////////////
 	
-			
+	//    Web services that support Data Downloads via Form Submit 
+
+	public static final String SUPPORT_DATA_DOWNLOAD_VIA_FORM_SUBMIT_GET_NEW_DOWNLOAD_IDENTIFIER_STRING_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-new-download-identifier-string";
+	
+	public static final String SUPPORT_DATA_DOWNLOAD_VIA_FORM_SUBMIT_GET_AFTER_STATUS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-after-status";
+	
 }

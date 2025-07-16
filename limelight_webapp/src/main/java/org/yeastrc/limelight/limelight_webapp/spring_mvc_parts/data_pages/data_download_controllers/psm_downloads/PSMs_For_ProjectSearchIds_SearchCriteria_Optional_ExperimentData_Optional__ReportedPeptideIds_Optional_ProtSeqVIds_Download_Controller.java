@@ -100,6 +100,8 @@ import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinSequenceV
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF;
+import org.yeastrc.limelight.limelight_webapp.services.Support_DataDownloadControllers_Service_IF;
+import org.yeastrc.limelight.limelight_webapp.services.Support_DataDownloadControllers_Service.DownloadStatus_DataDownloadControllers_Enum;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_download_controllers.AA_DataDownloadControllersPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_download_controllers.DownloadsCharacterSetConstant;
@@ -136,7 +138,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			AA_DataDownloadControllersPaths_Constants.PATH_START_ALL
 			+ AA_DataDownloadControllersPaths_Constants.PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_OPTIONAL_EXPERIMENT_DATA_DOWNLOAD_CONTROLLER;
 	
-	private static final int EXPECTED_REQUEST_VERSION  = 3;   // Keep in sync with Javascript   const EXPECTED_REQUEST_VERSION
+	private static final int EXPECTED_REQUEST_VERSION  = 4;   // Keep in sync with Javascript   const EXPECTED_REQUEST_VERSION
 	
 	private static final String SPECTRUM_VIEWER_OPEN_MOD_POSITION__N_TERM = "n";
 	private static final String SPECTRUM_VIEWER_OPEN_MOD_POSITION__C_TERM = "c";
@@ -153,6 +155,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
 
+	@Autowired
+	private Support_DataDownloadControllers_Service_IF support_DataDownloadControllers_Service;
+	
 	@Autowired
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
 	
@@ -278,6 +283,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			
 			requestURL_Base__Before__ControllerPath = requestURL.substring(0, controllerPathStart_Index );
 		}
+		
+		RequestJSONParsed webserviceRequest = null;
 
 
 		try {
@@ -285,12 +292,19 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			Internal_Request_Converted_Request_Root internal_Request_Converted_Request_Root = new Internal_Request_Converted_Request_Root(); 
 			
 			
-			RequestJSONParsed webserviceRequest = unmarshalJSON_ToObject.getObjectFromJSONString( requestJSONString, RequestJSONParsed.class );
+			webserviceRequest = unmarshalJSON_ToObject.getObjectFromJSONString( requestJSONString, RequestJSONParsed.class );
 			
 			if ( webserviceRequest.requestVersion == null || webserviceRequest.requestVersion.intValue() != EXPECTED_REQUEST_VERSION ) {
 				log.warn( " webserviceRequest.requestVersion is not Expected Version: " + EXPECTED_REQUEST_VERSION + ", webserviceRequest.requestVersion: " + webserviceRequest.requestVersion );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
+
+			if ( StringUtils.isEmpty( webserviceRequest.downloadIdentifier ) ) {
+				log.warn( "No webserviceRequest.webserviceRequest" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
+			support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.IN_PROGRESS );
 			
 			internal_Request_Converted_Request_Root.proteinSequenceVersionIds = webserviceRequest.proteinSequenceVersionIds;
 			internal_Request_Converted_Request_Root.experimentId = webserviceRequest.experimentId;
@@ -895,6 +909,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     		}
 			
     		writeOutputToResponse(
+    				webserviceRequest,
     				searcherCutoffValuesRootLevel,
     				requestURL_Base__Before__ControllerPath,
     				experimentId,
@@ -903,14 +918,28 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     				searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId,
 					httpServletResponse );
     		
+    		support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.SUCCESS );
+    		
 		} catch ( Limelight_WS_BadRequest_InvalidParameter_Exception e ) {
 
+			try {
+				support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+					
 			log.warn( "Limelight_WS_BadRequest_InvalidParameter_Exception: " + e.toString() );
 
 			throw new RuntimeException();
     		
 		} catch ( Limelight_WS_AuthError_Unauthorized_Exception e ) {
 
+			try {
+				support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+					
 			log.warn( "Limelight_WS_AuthError_Unauthorized_Exception: " + e.toString() );
 
 			//  TODO  No User session and not public project
@@ -918,13 +947,25 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			
 		} catch ( Limelight_WS_AuthError_Forbidden_Exception e ) {
 
+			try {
+				support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+					
 			log.warn( "Limelight_WS_AuthError_Forbidden_Exception: " + e.toString() );
 
 			//  TODO  User Auth Error
 			throw new RuntimeException();
 			
-		} catch ( Exception e ) {
-			
+		} catch ( Throwable e ) {
+
+			try {
+				support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+					
 			log.error( "Exception: " + e.toString(), e );
 			throw new RuntimeException();
 		}
@@ -1774,6 +1815,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	 * @throws Exception
 	 */
 	private void writeOutputToResponse(
+			RequestJSONParsed webserviceRequest,
 			SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel,
 			String requestURL_Base__Before__ControllerPath,
 			Integer experimentId,
@@ -2648,7 +2690,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				}
 			}
 			
-		} catch ( Exception e ) {
+		} catch ( Throwable e ) {
 			
 			try {
 
@@ -2674,11 +2716,25 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 					writer.close();
 				}
 			} catch ( Exception ex ) {
+
+				try {
+					support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+				} catch ( Throwable t ) {
+					//  Eat Exception
+				}
+						
 				log.error( "writer.close():Exception " + ex.toString(), ex );
 			}
 			try {
 				httpServletResponse.flushBuffer();
 			} catch ( Exception ex ) {
+
+				try {
+					support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+				} catch ( Throwable t ) {
+					//  Eat Exception
+				}
+						
 				log.error( "httpServletResponse.flushBuffer():Exception " + ex.toString(), ex );
 			}
 		}
@@ -2828,6 +2884,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	public static class RequestJSONParsed {
 		
 		private Integer requestVersion;
+		private String downloadIdentifier;
 
 		private List<RequestJSONParsed_PerProjectSearchId> projectSearchIdsReportedPeptideIdsPsmIds;
 		private SearchDataLookupParamsRoot searchDataLookupParamsRoot;
@@ -2878,6 +2935,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		}
 		public void setRequestVersion(Integer requestVersion) {
 			this.requestVersion = requestVersion;
+		}
+		public void setDownloadIdentifier(String downloadIdentifier) {
+			this.downloadIdentifier = downloadIdentifier;
 		}
 	}
 	

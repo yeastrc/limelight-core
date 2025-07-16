@@ -50,12 +50,13 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Forbidden_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
-import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_Data_FOR_FileObjectStorage_ForSearch_Id_AND_SearchId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_Data_FOR_ProjectScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_Data_FOR_SearchScanFileId_AND_SearchId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFile_For_ProjectScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFilename_For_ProjectScanFileId_Set_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.services.Support_DataDownloadControllers_Service.DownloadStatus_DataDownloadControllers_Enum;
+import org.yeastrc.limelight.limelight_webapp.services.Support_DataDownloadControllers_Service_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_Data_FOR_ProjectScanFileId_Searcher.FileObjectStorage_Data_FOR_ProjectScanFileId_Searcher_Return_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_Data_FOR_SearchScanFileId_AND_SearchId_Searcher.FileObjectStorage_Data_FOR_SearchScanFileId_AND_SearchId_Searcher_Return_Item;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
@@ -83,6 +84,9 @@ public class ScanFileContents_StoredIn_FileObjectStorage_Download_Controller {
 
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds;
+
+	@Autowired
+	private Support_DataDownloadControllers_Service_IF support_DataDownloadControllers_Service;
 	
 	@Autowired
 	private ConfigSystemDAO_IF configSystemDAO;
@@ -137,13 +141,19 @@ public class ScanFileContents_StoredIn_FileObjectStorage_Download_Controller {
 			//  TODO Maybe do something different
 			throw new LimelightInternalErrorException( "'requestJSONString' is not populated field in form POST" );
 		}
+		
+		RequestJSONParsed__DownloadFrom_SearchScanFileId_ProjectSearchId webserviceRequest = null;
 
 		try {
+			
+			webserviceRequest = unmarshalJSON_ToObject.getObjectFromJSONString( requestJSONString, RequestJSONParsed__DownloadFrom_SearchScanFileId_ProjectSearchId.class );
 			
 			{  
 				String configValue = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY );
 				if ( ! ConfigSystemsValuesSharedConstants.TRUE.equals( configValue ) ) {
-				
+
+					support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+					
 					//  TODO  do something different
 					log.error("In Download Scanfile Controller but Download scan files config is NOT TRUE" );
 					
@@ -152,12 +162,12 @@ public class ScanFileContents_StoredIn_FileObjectStorage_Download_Controller {
 				}
 			}
 			
-			
-			RequestJSONParsed__DownloadFrom_SearchScanFileId_ProjectSearchId webserviceRequest = unmarshalJSON_ToObject.getObjectFromJSONString( requestJSONString, RequestJSONParsed__DownloadFrom_SearchScanFileId_ProjectSearchId.class );
 
 			Integer projectSearchId = webserviceRequest.projectSearchId;
 
 			if ( projectSearchId == null ) {
+				support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+				
 				log.warn( "No Project Search Id" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
@@ -165,10 +175,15 @@ public class ScanFileContents_StoredIn_FileObjectStorage_Download_Controller {
 			Integer searchScanFile_Id = webserviceRequest.searchScanFile_Id;
 
 			if ( searchScanFile_Id == null ) {
+
+				support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+				
 				log.warn( "No searchScanFile_Id" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 
+			support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.IN_PROGRESS );
+			
 			List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
 			projectSearchIdsForValidate.add( projectSearchId );
 
@@ -187,6 +202,8 @@ public class ScanFileContents_StoredIn_FileObjectStorage_Download_Controller {
 
 				//  TODO  No User session and not public project
 
+				support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+				
 				//  Forward to page stating No User Session
 
     			final String mainErrorPageControllerURL =
@@ -238,9 +255,18 @@ public class ScanFileContents_StoredIn_FileObjectStorage_Download_Controller {
 
 			doActualDownload( searcher_SingleResult.getFile_object_storage_api_key(), searcher_SingleResult.getFilename_at_import(), httpServletRequest, httpServletResponse);
 			
+			support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.SUCCESS );
 
 		} catch ( Limelight_WS_AuthError_Unauthorized_Exception e ) {
 
+			try {
+				if ( webserviceRequest != null ) {
+					support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+				}
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+				
 			log.error( "Limelight_WS_AuthError_Unauthorized_Exception: " + e.toString(), e );
 
 			//  TODO  No User session and not public project
@@ -248,13 +274,29 @@ public class ScanFileContents_StoredIn_FileObjectStorage_Download_Controller {
 
 		} catch ( Limelight_WS_AuthError_Forbidden_Exception e ) {
 
+			try {
+				if ( webserviceRequest != null ) {
+					support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+				}
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+				
 			log.error( "Limelight_WS_AuthError_Forbidden_Exception: " + e.toString(), e );
 
 			//  TODO  User Auth Error
 			throw e;
 
-		} catch ( Exception e ) {
+		} catch ( Throwable e ) {
 
+			try {
+				if ( webserviceRequest != null ) {
+					support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+				}
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+				
 			log.error( "Exception: " + e.toString(), e );
 			throw new RuntimeException();
 		}
@@ -592,12 +634,16 @@ public class ScanFileContents_StoredIn_FileObjectStorage_Download_Controller {
 
 		private Integer projectSearchId;
 		private Integer searchScanFile_Id;
+		private String downloadIdentifier;
 		
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
 		}
 		public void setSearchScanFile_Id(Integer searchScanFile_Id) {
 			this.searchScanFile_Id = searchScanFile_Id;
+		}
+		public void setDownloadIdentifier(String downloadIdentifier) {
+			this.downloadIdentifier = downloadIdentifier;
 		}
 	}
 	

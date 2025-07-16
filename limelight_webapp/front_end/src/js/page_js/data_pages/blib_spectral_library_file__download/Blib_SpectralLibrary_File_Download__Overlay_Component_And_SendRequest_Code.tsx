@@ -315,9 +315,51 @@ class BlibFile_Download_Overlay_Component extends React.Component< BlibFile_Down
      */
     private _download_BlibFile() {
 
+        let requestObj = {
+            weuonklUUUQSJDVCWvweyhizwoqy: true
+        };
+
+        const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-new-download-identifier-string";
+
+        console.log( "_download_BlibFile(): first call webservice at URL: " + url )
+
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
+
+        const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+        promise_webserviceCallStandardPost.catch( () => {  }  );
+
+        promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+            try {
+                console.log( "_download_BlibFile(): called webservice at URL: " + url + ", responseData.downloadIdentifier: " + responseData.downloadIdentifier + ", next call this._download_BlibFile_DoActual(...)" )
+
+                this._download_BlibFile_DoActual({
+                    downloadIdentifier: responseData.downloadIdentifier
+                })
+
+            } catch (e) {
+                reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                throw e;
+            }
+        });
+    }
+
+    /**
+     *
+     * @private
+     */
+    private _download_BlibFile_DoActual(
+        {
+            downloadIdentifier
+        } : {
+            downloadIdentifier: string
+        }
+    ) {
+
         const requestJSONObject = {
             requestId: this._requestId,
-            projectSearchIdList: this._projectSearchIds
+            projectSearchIdList: this._projectSearchIds,
+            downloadIdentifier
         }
 
         const requestJSONString = JSON.stringify(requestJSONObject);
@@ -356,7 +398,106 @@ class BlibFile_Download_Overlay_Component extends React.Component< BlibFile_Down
 
             }
         }
+
+        console.log( "at end of _download_BlibFile_DoActual(): downloadIdentifier: " + downloadIdentifier + ", next call this._download_BlibFile_getDownloadStatus_AfterSubmitForm(...)" )
+
+        this._download_BlibFile_getDownloadStatus_AfterSubmitForm({ downloadIdentifier, retryCount: 0 })
     }
+
+
+    /**
+     *
+     * @param downloadIdentifier
+     * @param retryCount
+     */
+    _download_BlibFile_getDownloadStatus_AfterSubmitForm(
+        {
+            downloadIdentifier, retryCount
+        } : {
+            downloadIdentifier: string
+            retryCount: number
+        }
+    ) {
+
+        console.log( "_download_BlibFile_getDownloadStatus_AfterSubmitForm(): downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+
+        let requestObj = {
+            downloadIdentifier
+        };
+
+        const url = "d/rws/for-page/sddfs/support-data-download-via-form-submit-get-after-status";
+
+        console.log( "_download_BlibFile_getDownloadStatus_AfterSubmitForm(): downloadIdentifier: " + downloadIdentifier + ", next call webservice at url: " + url )
+
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
+
+        const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+        promise_webserviceCallStandardPost.catch( () => {  }  );
+
+        promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+            try {
+
+                if ( responseData.statusAboutToSubmit || responseData.statusInProgress ) {
+
+                    console.log( "_download_BlibFile_getDownloadStatus_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    const _RETRY_COUNT_MAX = 20
+
+                    const _MIN_DELAY_IN_SECONDS = 3
+
+                    if ( retryCount > _RETRY_COUNT_MAX ) {
+
+                        console.log( "_download_BlibFile_getDownloadStatus_AfterSubmitForm(): responseData.statusAboutToSubmit || responseData.statusInProgress: URL: " + url +
+                            ", downloadIdentifier: " + downloadIdentifier +
+                            ", retryCount: " + retryCount + ", 'retryCount > _RETRY_COUNT_MAX' so exit. _RETRY_COUNT_MAX: " + _RETRY_COUNT_MAX )
+
+                        return // EARLY RETURN
+                    }
+
+                    const timeoutDelay = ( _MIN_DELAY_IN_SECONDS + retryCount ) * 1000   // In Milliseconds
+
+                    //  Retry after wait
+                    window.setTimeout( () => {
+
+                        this._download_BlibFile_getDownloadStatus_AfterSubmitForm({ downloadIdentifier, retryCount: ( retryCount + 1 ) })
+
+                    }, timeoutDelay )
+
+                    return  // EARLY RETURN
+                }
+
+                if ( responseData.statusSuccess ) {
+
+                    //  Successful
+
+                    console.log( "_download_BlibFile_getDownloadStatus_AfterSubmitForm(): responseData.statusSuccess: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    return  // EARLY RETURN
+                }
+
+                if ( responseData.statusFail ) {
+
+                    //  Fail
+
+                    console.log( "_download_BlibFile_getDownloadStatus_AfterSubmitForm(): responseData.statusFail: URL: " + url + ", downloadIdentifier: " + downloadIdentifier + ", retryCount: " + retryCount )
+
+                    window.alert( "Blib Download processing failed on the server side.  If any data was downloaded it is likely incomplete.  Ignore this message if the download was canceled." )
+
+                    return  // EARLY RETURN
+                }
+
+                //  NOT expect to get here
+
+            } catch (e) {
+                reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
+                throw e;
+            }
+        });
+    }
+
+
 
     /**
      *
