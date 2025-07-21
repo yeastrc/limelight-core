@@ -147,6 +147,11 @@ input[type="radio"], input[type="checkbox"] {
   vertical-align: middle;
   margin-top: 0px;
   margin-bottom: 0px;
+  cursor: pointer;
+  &:hover {
+    outline: $site-color-dark solid 2px;
+    outline-offset: 1px;
+  }
 }
 
 input[type="checkbox"], .left-margin-same-as-checkbox {
