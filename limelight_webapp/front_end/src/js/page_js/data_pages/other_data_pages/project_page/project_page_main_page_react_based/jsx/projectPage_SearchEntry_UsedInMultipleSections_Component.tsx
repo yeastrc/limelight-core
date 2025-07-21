@@ -612,6 +612,8 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
             )
         }
 
+        const checkbox_WidthHeight = "1.3em"
+
         return (
             <React.Fragment>
                 <div
@@ -622,9 +624,14 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
                     <div>
                         { this.props.callbackOn_Search_Entry_Clicked ? (
-                            <div style={ { width: 16, marginRight: 8, position: "relative" } }>
+                            <div style={ { width: checkbox_WidthHeight, marginRight: "0.85em", position: "relative" } }>
                                 <div style={ { position: "absolute", top: -2 }}>
-                                    <input type="checkbox" checked={ this.props.selected } onChange={ this._checkboxChanged_BindThis } />
+                                    <input
+                                        type="checkbox"
+                                        style={ { width: checkbox_WidthHeight, height: checkbox_WidthHeight } }
+                                        checked={ this.props.selected }
+                                        onChange={ this._checkboxChanged_BindThis }
+                                    />
                                 </div>
                             </div>
                         ) : null }
