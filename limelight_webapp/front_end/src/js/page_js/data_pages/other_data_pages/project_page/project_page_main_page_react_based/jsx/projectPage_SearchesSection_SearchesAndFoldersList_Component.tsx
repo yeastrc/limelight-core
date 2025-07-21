@@ -129,6 +129,8 @@ export interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Pr
     //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
     force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
 
+    forceReplace_search_Selected_InProgress : ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData
+
     projectIdentifier : string
     show_SearchTag_Categories: boolean
     expand_All_Folders__ShowSearchDetailsTo_Global_Force: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
@@ -263,6 +265,13 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
             && this.state.show_UpdatingMessage ) {
 
             this.setState({ show_UpdatingMessage: false })
+        }
+
+        if ( this.props.forceReplace_search_Selected_InProgress !== prevProps.forceReplace_search_Selected_InProgress && this.props.forceReplace_search_Selected_InProgress ) {
+
+            this._search_Selected_InProgress = this.props.forceReplace_search_Selected_InProgress
+
+            this.setState({ force_Rerender: {} })
         }
     }
 

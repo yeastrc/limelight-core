@@ -13,6 +13,7 @@ import React from "react";
 
 import {
     ProjectPage_SearchesSection_SearchesAndFoldersList_Component,
+    ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData,
     ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force,
     ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Selected_Searches_Data_Object,
     ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_Selected_ProjectSearchIds,
@@ -131,6 +132,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     private _openFilterOverridesOverlay_Clicked_BindThis = this._openFilterOverridesOverlay_Clicked.bind(this);
     private _expand_All_Button_Clicked_BindThis = this._expand_All_Button_Clicked.bind(this);
     private _collapse_All_Button_Clicked_BindThis = this._collapse_All_Button_Clicked.bind(this);
+    private _selectAll_Button_Clicked_BindThis = this._selectAll_Button_Clicked.bind(this)
 
     private _callback_updateSelected_Searches_BindThis = this._callback_updateSelected_Searches.bind(this);
     private _callback_SearchChanged_BindThis = this._callback_SearchChanged.bind(this);
@@ -149,6 +151,11 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     private _searchName_SearchId_Filter_UserInput = ""
 
     private _projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet: ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet
+
+    /**
+     * Set/Change to force a change in the child component
+     */
+    private _forceUpdate_search_Selected_InProgress : ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData
 
     /**
      *
@@ -480,7 +487,8 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
         this.setState({
             selected_Searches_Data_Object: params.selected_Searches_Data_Object,
             compareButtonsDisabled,
-            copy_move_ButtonsDisabled: copy_move_organize_ButtonsDisabled
+            copy_move_ButtonsDisabled: copy_move_organize_ButtonsDisabled,
+            force_Rerender: {}
         });
     }
 
@@ -795,7 +803,6 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
         this.setState({ expand_All_Folders__ShowSearchDetailsTo_Global_Force: { expand_All_Folders__ShowSearchDetails_Global_ForceToValue: true } });
     }
 
-
     /**
      *
      */
@@ -807,7 +814,145 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     /**
      *
      */
+    private _selectAll_Button_Clicked( event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) {
+
+        //  Add all searches in project OR Add searches in project that meet filters
+
+        //     Filtering using this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering
+
+        const projectSearchIds_BeingSelected_Set: Set<number> = new Set()
+
+        const search_Selected_InProgress = new ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData()
+
+        { //  Process searches in folders
+            const allFolders_Data_InDisplayOrder = this._searchesSearchTagsFolders_Result_Root.get_allFolders_Data_InDisplayOrder()
+            if ( allFolders_Data_InDisplayOrder ) {
+                for ( const folderData of allFolders_Data_InDisplayOrder ) {
+
+                    if ( folderData.searchesInFolder_ProjectSearchIds_InDisplayOrder ) {
+                        for ( const projectSearchId of folderData.searchesInFolder_ProjectSearchIds_InDisplayOrder ) {
+                            if (
+                                ( ! this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering )
+                                || this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering.has( projectSearchId )
+                            ) {
+                                search_Selected_InProgress.add_For_ProjectSearchId_IfNotExists( projectSearchId )
+
+                                projectSearchIds_BeingSelected_Set.add( projectSearchId )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        { // Process searches
+            const projectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder = this._searchesSearchTagsFolders_Result_Root.get_searches_ProjectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder()
+            if ( projectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder ) {
+                for ( const projectSearchId of projectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder ) {
+                    if (
+                        ( ! this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering )
+                        || this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering.has( projectSearchId )
+                    ) {
+                        search_Selected_InProgress.add_For_ProjectSearchId_IfNotExists( projectSearchId )
+
+                        projectSearchIds_BeingSelected_Set.add( projectSearchId )
+                    }
+                }
+            }
+        }
+
+        const _SEARCH_SELECT_ALL_SEARCH_COUNT_ASK_USER_TO_CONFIRM = 20
+
+        if ( projectSearchIds_BeingSelected_Set.size < _SEARCH_SELECT_ALL_SEARCH_COUNT_ASK_USER_TO_CONFIRM ) {
+
+            this._selectAll_Button_PerformUpdate( { search_Selected_InProgress } )
+
+            return
+        }
+
+        if ( window.confirm( "Select " + projectSearchIds_BeingSelected_Set.size + " Searches?" ) ) {
+
+            this._selectAll_Button_PerformUpdate( { search_Selected_InProgress } )
+        }
+    }
+
+    /**
+     *
+     */
+    private _selectAll_Button_PerformUpdate(
+        {
+            search_Selected_InProgress
+        } : {
+            search_Selected_InProgress: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData
+        }
+    ) {
+
+
+        this._forceUpdate_search_Selected_InProgress = search_Selected_InProgress
+
+        const selected_Searches_Data_Object = new ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Selected_Searches_Data_Object({
+            search_Selected_InProgress: search_Selected_InProgress,
+            searchesSearchTagsFolders_Result_Root: this._searchesSearchTagsFolders_Result_Root
+        })
+
+        this._callback_updateSelected_Searches({ selected_Searches_Data_Object });
+
+        this.setState({ force_Rerender: {} })
+    }
+
+    /////////////////
+
+    /**
+     *
+     */
     render() {
+
+        let searchCount_TotalOrFiltered: number = undefined
+
+        if ( this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering ) {
+
+            searchCount_TotalOrFiltered = this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering.size
+        } else {
+
+            const projectSearchIds_Set: Set<number> = new Set()
+
+            if ( this._searchesSearchTagsFolders_Result_Root ) {
+
+                { //  Process searches in folders
+
+                    const allFolders_Data_InDisplayOrder = this._searchesSearchTagsFolders_Result_Root.get_allFolders_Data_InDisplayOrder()
+                    if ( allFolders_Data_InDisplayOrder ) {
+                        for ( const folderData of allFolders_Data_InDisplayOrder ) {
+
+                            if ( folderData.searchesInFolder_ProjectSearchIds_InDisplayOrder ) {
+                                for ( const projectSearchId of folderData.searchesInFolder_ProjectSearchIds_InDisplayOrder ) {
+                                    if (
+                                        ( ! this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering )
+                                        || this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering.has( projectSearchId )
+                                    ) {
+                                        projectSearchIds_Set.add( projectSearchId )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                { // Process searches
+                    const projectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder = this._searchesSearchTagsFolders_Result_Root.get_searches_ProjectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder()
+                    if ( projectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder ) {
+                        for ( const projectSearchId of projectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder ) {
+                            if (
+                                ( ! this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering )
+                                || this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering.has( projectSearchId )
+                            ) {
+                                projectSearchIds_Set.add( projectSearchId )
+                            }
+                        }
+                    }
+                }
+            }
+
+            searchCount_TotalOrFiltered = projectSearchIds_Set.size
+        }
 
         return (
             ( ! this._searchesSearchTagsFolders_Result_Root ) ? (
@@ -819,7 +964,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                         <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
 
-                            {/*  Expand All and Collapse All Buttons  */}
+                            {/*  Expand All and Collapse All Buttons  */ }
 
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                 title={
@@ -849,8 +994,56 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                        onClick={ this._collapse_All_Button_Clicked_BindThis }
                                 />
                             </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            <span> </span>
 
-                            {/*  Only For Logged In User  */}
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+
+                                    ( ! this._searchName_SearchId_Filter_UserInput ) ? (
+                                            <div style={ { padding: 6 } }>
+                                                <div>
+                                                    Select all the searches in the project.
+                                                </div>
+                                                <div style={ { marginTop: 5 } }>
+                                                    Selecting { searchCount_TotalOrFiltered } searches.
+                                                </div>
+                                            </div>
+                                    ) : (
+                                        <div style={ { padding: 6 } }>
+                                            <div>
+                                                Select the filtered searches in the project.
+                                            </div>
+                                            <div style={ { marginTop: 5 } }>
+                                                Selecting { searchCount_TotalOrFiltered } searches.
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <button
+                                    className="submit-button "
+                                    onClick={ this._selectAll_Button_Clicked_BindThis }
+                                >
+                                    {
+                                        this.props.projectPage_SearchesAdmin ? ( // Shorten button text when have buttons for Admin
+                                            ( ! this._searchName_SearchId_Filter_UserInput ) ? (
+                                                "Select All"
+                                            ) : (
+                                                "Select Filtered"
+                                            ) ) : (
+                                                // NOT Search Admin buttons so have longer button names here
+                                            ( ! this._searchName_SearchId_Filter_UserInput ) ? (
+                                                "Select All Searches"
+                                            ) : (
+                                                "Select Filtered Searches"
+                                            )
+                                        )
+                                    }
+                                </button>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                            {/*  Only For Logged In User  */ }
                             { ( this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails ) ? (
 
                                 <>
@@ -862,7 +1055,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                                             <span> </span>
 
-                                            {/*  Copy Searches */}
+                                            {/*  Copy Searches */ }
 
                                             <div style={ { position: "relative", display: "inline-block" } }>
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -883,16 +1076,23 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                                         title={
                                                             <span>
-                                                                Click here to copy the selected searches to another project.
+                                                                Click here to copy the selected searches to another
+                                                                project.
                                                             </span>
                                                         }
                                                         { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                                     >
                                                         <div
-                                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                            style={ {
+                                                                position: "absolute",
+                                                                left: 0,
+                                                                right: 0,
+                                                                top: 0,
+                                                                bottom: 0
+                                                            } }
                                                         ></div>
                                                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                                ): null }
+                                                ) : null }
                                             </div>
 
                                             { ( ! this.props.projectIsLocked ) ? (
@@ -902,7 +1102,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                 <>
                                                     <span> </span>
 
-                                                    {/*  Delete Searches */}
+                                                    {/*  Delete Searches */ }
 
                                                     <div style={ { position: "relative", display: "inline-block" } }>
                                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -929,21 +1129,28 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                                 { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                                             >
                                                                 <div
-                                                                    style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                                    style={ {
+                                                                        position: "absolute",
+                                                                        left: 0,
+                                                                        right: 0,
+                                                                        top: 0,
+                                                                        bottom: 0
+                                                                    } }
                                                                 ></div>
                                                             </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                                        ): null }
+                                                        ) : null }
                                                     </div>
 
                                                     <span> </span>
 
-                                                    {/*  Bulk set/update tags on Searches */}
+                                                    {/*  Bulk set/update tags on Searches */ }
 
                                                     <div style={ { position: "relative", display: "inline-block" } }>
                                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                                             title={
                                                                 <span>
-                                                                    Click here to add/remove tags on the selected searches.
+                                                                    Click here to add/remove tags on the selected
+                                                                    searches.
                                                                 </span>
                                                             }
                                                             { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
@@ -955,24 +1162,31 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                         { ( this.state.copy_move_ButtonsDisabled ) ? (
                                                             // overlay when button is disabled to show tooltip
-                                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                                    title={
-                                                                        <span>
-                                                                            Click here to add/remove tags on the selected searches.
-                                                                        </span>
-                                                                    }
-                                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                                                >
-                                                            <div
-                                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                                            ></div>
-                                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                                        ): null }
+                                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                                title={
+                                                                    <span>
+                                                                        Click here to add/remove tags on the selected
+                                                                        searches.
+                                                                    </span>
+                                                                }
+                                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                            >
+                                                                <div
+                                                                    style={ {
+                                                                        position: "absolute",
+                                                                        left: 0,
+                                                                        right: 0,
+                                                                        top: 0,
+                                                                        bottom: 0
+                                                                    } }
+                                                                ></div>
+                                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                                        ) : null }
                                                     </div>
 
                                                     <span> </span>
 
-                                                    {/*  Manage ALL Tags in Project  */}
+                                                    {/*  Manage ALL Tags in Project  */ }
 
                                                     <div style={ { position: "relative", display: "inline-block" } }>
                                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -983,15 +1197,15 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                             }
                                                             { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                                         >
-                                                        <input type="button" value="Manage Tags"
-                                                               onClick={ this._manageTagsInProject_BindThis }
-                                                        />
+                                                            <input type="button" value="Manage Tags"
+                                                                   onClick={ this._manageTagsInProject_BindThis }
+                                                            />
                                                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                     </div>
 
                                                     <span> </span>
 
-                                                    {/*  Move Searches */}
+                                                    {/*  Move Searches */ }
                                                     {/*
 
                                                         NO Longer support "Move Searches
@@ -1013,9 +1227,9 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                                                     <span> </span>
 
-                                                    */}
+                                                    */ }
 
-                                                    {/*  Organize Searches */}
+                                                    {/*  Organize Searches */ }
                                                     <div style={ { position: "relative", display: "inline-block" } }>
                                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                                             title={
@@ -1033,7 +1247,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                                                     <span> </span>
 
-                                                    {/*  Open Set Filter Overrides Overlay  */}
+                                                    {/*  Open Set Filter Overrides Overlay  */ }
                                                     <div style={ { position: "relative", display: "inline-block" } }>
                                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                                             title={
@@ -1051,29 +1265,29 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                 </>
                                             ) : null }
                                         </React.Fragment>
-                                    ): null }
+                                    ) : null }
                                 </>
 
-                            ): null }
+                            ) : null }
                         </div>
 
-                    ): null }
+                    ) : null }
 
-                    {/*  Filter Searches on User Input */}
+                    {/*  Filter Searches on User Input */ }
 
                     <div style={ { marginBottom: 10 } }>
 
                         { ( ! this.state.showNoSearchesMessage_NoSearchesLoadedFromServer ) ? (
 
-                                <div style={ { marginBottom: 10 } }>
-                                     <span
-                                         style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }
-                                     >Verbose view: </span>
-                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                        title={
-                                            tooltip__green_question_mark_in_circle__tooltip_on_hover__COMMON_MESSAGE_Search_Tags_VerboseView_Checkbox_react_component()
-                                        }
-                                    />
+                            <div style={ { marginBottom: 10 } }>
+                                <span
+                                    style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }
+                                >Verbose view: </span>
+                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                    title={
+                                        tooltip__green_question_mark_in_circle__tooltip_on_hover__COMMON_MESSAGE_Search_Tags_VerboseView_Checkbox_react_component()
+                                    }
+                                />
                                     <span> </span>
                                     <span>
                                         <input
@@ -1301,6 +1515,8 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                 projectIdentifier={ this.props.projectIdentifier }
                                 force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
                                 force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
+                                forceReplace_search_Selected_InProgress={ this._forceUpdate_search_Selected_InProgress }
 
                                 show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
                                 searchesSearchTagsFolders_Result_Root={ this._searchesSearchTagsFolders_Result_Root }
