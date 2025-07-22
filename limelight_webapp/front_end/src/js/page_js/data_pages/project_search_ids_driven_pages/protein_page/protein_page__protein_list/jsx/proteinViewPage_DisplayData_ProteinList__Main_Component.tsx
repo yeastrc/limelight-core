@@ -1947,10 +1947,11 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                 });
 
             } else {
-                proteinDisplayData = proteinPage_ProteinList__GroupProteins({
-                    projectSearchIds, proteinDisplayData,
-                    proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass
-                });
+                proteinDisplayData =
+                    await proteinPage_ProteinList__GroupProteins({
+                        projectSearchIds, proteinDisplayData,
+                        proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass
+                    });
 
                 //  If put following '...Compute_UniquePeptideCounts_For_...' after '...Remove_NotPassesFilter...'
                 //    Also have to recompute UniquePeptideCounts for Overall and for Single Search (Single Search Uses Overall as well)

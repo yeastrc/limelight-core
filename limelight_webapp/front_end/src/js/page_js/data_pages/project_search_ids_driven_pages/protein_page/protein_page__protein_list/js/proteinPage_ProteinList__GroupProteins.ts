@@ -26,7 +26,7 @@ import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compar
  * @returns ProteinDisplayData_From_createProteinDisplayData_ProteinList - May be same object or may be new object
  *
  */
-export const proteinPage_ProteinList__GroupProteins = function(
+export const proteinPage_ProteinList__GroupProteins = async function(
     {
         projectSearchIds,
         proteinDisplayData,
@@ -36,7 +36,7 @@ export const proteinPage_ProteinList__GroupProteins = function(
         proteinDisplayData: ProteinDisplayData_From_createProteinDisplayData_ProteinList
         proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass
 
-    }): ProteinDisplayData_From_createProteinDisplayData_ProteinList {
+    }): Promise<ProteinDisplayData_From_createProteinDisplayData_ProteinList> {
 
     if (proteinDisplayData.proteinList.length === 0) {
         //  No data so exit
@@ -44,7 +44,7 @@ export const proteinPage_ProteinList__GroupProteins = function(
     }
 
     //  Populate the Protein Groups List
-    proteinDisplayData = _populate_ProteinGroupsList({ projectSearchIds, proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass });
+    proteinDisplayData = await _populate_ProteinGroupsList({ projectSearchIds, proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass });
 
     //  Update Overall Unique Peptide counts
     _process_Data_Overall({ proteinDisplayData })
@@ -61,7 +61,7 @@ export const proteinPage_ProteinList__GroupProteins = function(
  * @param proteinGrouping_CentralStateManagerObjectClass
  * @returns ProteinDisplayData_From_createProteinDisplayData_ProteinList
  */
-const _populate_ProteinGroupsList = function (
+const _populate_ProteinGroupsList = async function (
     {
         projectSearchIds, // For Error Message
         proteinDisplayData,
@@ -71,7 +71,7 @@ const _populate_ProteinGroupsList = function (
         proteinDisplayData: ProteinDisplayData_From_createProteinDisplayData_ProteinList
         proteinGrouping_CentralStateManagerObjectClass: ProteinGrouping_CentralStateManagerObjectClass
 
-    }) : ProteinDisplayData_From_createProteinDisplayData_ProteinList {
+    }) : Promise<ProteinDisplayData_From_createProteinDisplayData_ProteinList> {
 
     const proteinPeptideMap: Map<number, Set<string>> = new Map(); // Map<proteinSequenceVersionId, Set<reportedPeptide_CommonValue_EncodedString>>
 
@@ -92,15 +92,15 @@ const _populate_ProteinGroupsList = function (
 
     if ( proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_All_Groups()) {
 
-        proteinGroups_ArrayOf_ProteinGroup = ProteinInferenceUtils.getProteinGroups({proteinPeptideMap});
+        proteinGroups_ArrayOf_ProteinGroup = await ProteinInferenceUtils.getProteinGroups({proteinPeptideMap});
 
     } else if ( proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_NonSubset_Groups() ) {
 
-        proteinGroups_ArrayOf_ProteinGroup = ProteinInferenceUtils.getNonSubsetProteinGroupsFromProteinPeptideMap({proteinPeptideMap});
+        proteinGroups_ArrayOf_ProteinGroup = await ProteinInferenceUtils.getNonSubsetProteinGroupsFromProteinPeptideMap({proteinPeptideMap});
 
     } else if ( proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_Parsimonious_Groups() ) {
 
-        proteinGroups_ArrayOf_ProteinGroup = ProteinInferenceUtils.getParsimoniousProteinGroupsFromProteinPeptideMap({proteinPeptideMap});
+        proteinGroups_ArrayOf_ProteinGroup = await ProteinInferenceUtils.getParsimoniousProteinGroupsFromProteinPeptideMap({proteinPeptideMap});
 
     } else {
 

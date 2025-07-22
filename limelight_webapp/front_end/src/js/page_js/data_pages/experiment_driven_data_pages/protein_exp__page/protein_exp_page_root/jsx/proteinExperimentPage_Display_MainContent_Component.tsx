@@ -2112,9 +2112,10 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                 });
 
             } else {
-                proteinDisplayData = proteinPage_ProteinList__GroupProteins({
-                    projectSearchIds, proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass
-                });
+                proteinDisplayData =
+                    await proteinPage_ProteinList__GroupProteins({
+                        projectSearchIds, proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass
+                    });
 
                 proteinDisplayData = proteinPage_ProteinList__GroupProteins_Compute_DistinctPeptideCounts_UniquePeptideCounts_For_ExperimentConditions({ proteinDisplayData });
             }
