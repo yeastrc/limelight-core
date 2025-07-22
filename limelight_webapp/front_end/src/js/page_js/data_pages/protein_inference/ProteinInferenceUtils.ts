@@ -3,6 +3,10 @@
  */
 
 import {ProteinGroup} from './ProteinGroup';
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+
+
+//  Uncomment 'window.setTimeout( () => { try {' and associated closing code when want to make page interactive while this code is processing
 
 /**
  *
@@ -105,6 +109,37 @@ const _getProteinGroups_Main = async function (
         console.log('Just after ENTER: _getProteinGroups_Main({ proteinPeptideMap }): proteinPeptideMap.size: ' + proteinPeptideMap.size + ", total size of all all Map Value Sets: " + total_proteinPeptideMap_ValuesSize + ", Now: " + new Date() );
     }
 
+    // {  //  Compute if all peptides under all proteins are unique
+    //
+    //     const performanceNow_Start = performance.now()
+    //
+    //     const peptideSet_Overall: Set<string | number> = new Set()
+    //     let peptidesIn_proteinPeptideMap_MapEntry_AllUnique = true
+    //
+    //     for ( const proteinPeptideMap_MapEntry of proteinPeptideMap.entries() ) {
+    //         const protein = proteinPeptideMap_MapEntry[ 0 ]
+    //         const peptideSet_ForMapEntry = proteinPeptideMap_MapEntry[ 1 ]
+    //
+    //         for ( const peptide_ForMapEntry of peptideSet_ForMapEntry ) {
+    //             if ( peptideSet_Overall.has( peptide_ForMapEntry ) ) {
+    //                 peptidesIn_proteinPeptideMap_MapEntry_AllUnique = false
+    //                 break
+    //             }
+    //             peptideSet_Overall.add( peptide_ForMapEntry )
+    //         }
+    //         if ( ! peptidesIn_proteinPeptideMap_MapEntry_AllUnique ) {
+    //             break
+    //         }
+    //     }
+    //
+    //     const performanceNow_End = performance.now()
+    //
+    //     console.log('Just after ENTER: _getProteinGroups_Main({ proteinPeptideMap }): after compute peptidesIn_proteinPeptideMap_MapEntry_AllUnique: ' + peptidesIn_proteinPeptideMap_MapEntry_AllUnique
+    //         + ",  peptideSet_Overall.size (NOT full size if ...Unique is false): " + peptideSet_Overall.size
+    //         + ", execution in milliseconds using performance.now(): " + ( performanceNow_End - performanceNow_Start )
+    //         + ", Now: " + new Date() );
+    // }
+
     const proteinGroupArray_FunctionResult: Array<ProteinGroup> = []
 
     const proteinPeptideMap_InputParam_AsArray = Array.from( proteinPeptideMap.entries() )
@@ -137,7 +172,7 @@ const _getProteinGroups_Main = async function (
  * @param innerMost_Loop_Counter
  * @param proteinGroupArray_FunctionResult
  */
-const _getProteinGroups_ProcessEachBlock = async function (
+const _getProteinGroups_ProcessEachBlock = function (
     {
         proteinPeptideMap_InputParam_AsArray_Index_Start, proteinPeptideMap_InputParam_AsArray, innerMost_Loop_Counter, proteinGroupArray_FunctionResult
     } : {
@@ -153,52 +188,65 @@ const _getProteinGroups_ProcessEachBlock = async function (
             proteinPeptideMap_InputParam_AsArray_Index_Start_Next: number
         }> {
 
-    console.log( "ENTER _getProteinGroups_ProcessEachBlock(...): proteinPeptideMap_InputParam_AsArray_Index_Start: " + proteinPeptideMap_InputParam_AsArray_Index_Start + ", proteinPeptideMap_InputParam_AsArray.length: " + proteinPeptideMap_InputParam_AsArray.length )
+    return new Promise<{
+        moreToProcess: boolean
+        proteinPeptideMap_InputParam_AsArray_Index_Start_Next: number
+    }>((resolve, reject) => { try {
 
-    for ( let proteinPeptideMap_InputParam_AsArray_Index = proteinPeptideMap_InputParam_AsArray_Index_Start; proteinPeptideMap_InputParam_AsArray_Index < proteinPeptideMap_InputParam_AsArray.length; proteinPeptideMap_InputParam_AsArray_Index++ ) {
+        // window.setTimeout( () => { try {           //  Comment out for now so the web page stays locked while this code is running.
 
-        if ( innerMost_Loop_Counter.isTime_For_CheckUI() ) {
+            console.log( "ENTER _getProteinGroups_ProcessEachBlock(...): proteinPeptideMap_InputParam_AsArray_Index_Start: " + proteinPeptideMap_InputParam_AsArray_Index_Start + ", proteinPeptideMap_InputParam_AsArray.length: " + proteinPeptideMap_InputParam_AsArray.length )
 
-            console.log( "EXIT _getProteinGroups_ProcessEachBlock(...): innerMost_Loop_Counter.isTime_For_CheckUI() returned true. proteinPeptideMap_InputParam_AsArray_Index: " + proteinPeptideMap_InputParam_AsArray_Index
-                + ", returning { moreToProcess: true, proteinPeptideMap_InputParam_AsArray_Index_Start_Next: proteinPeptideMap_InputParam_AsArray_Index } " )
+            for ( let proteinPeptideMap_InputParam_AsArray_Index = proteinPeptideMap_InputParam_AsArray_Index_Start; proteinPeptideMap_InputParam_AsArray_Index < proteinPeptideMap_InputParam_AsArray.length; proteinPeptideMap_InputParam_AsArray_Index++ ) {
 
-            return {
-                moreToProcess: true,
-                proteinPeptideMap_InputParam_AsArray_Index_Start_Next: proteinPeptideMap_InputParam_AsArray_Index
-            } //  EARLY RETURN
-        }
+                if ( innerMost_Loop_Counter.isTime_For_CheckUI() ) {
 
-        const [ proteinId_FromInputParamMap, peptideSet_FromInputParamMap ] = proteinPeptideMap_InputParam_AsArray[ proteinPeptideMap_InputParam_AsArray_Index ]
+                    console.log( "EXIT _getProteinGroups_ProcessEachBlock(...): innerMost_Loop_Counter.isTime_For_CheckUI() returned true. proteinPeptideMap_InputParam_AsArray_Index: " + proteinPeptideMap_InputParam_AsArray_Index
+                        + ", returning { moreToProcess: true, proteinPeptideMap_InputParam_AsArray_Index_Start_Next: proteinPeptideMap_InputParam_AsArray_Index } " )
 
-        let newProteinGroup = true;
+                    resolve({
+                        moreToProcess: true,
+                        proteinPeptideMap_InputParam_AsArray_Index_Start_Next: proteinPeptideMap_InputParam_AsArray_Index
+                    })
 
-        for ( const proteinGroup_InFunctionResult of proteinGroupArray_FunctionResult ) {
+                    return  // EARLY RETURN
+                }
 
-            if ( _setsAreEqual( peptideSet_FromInputParamMap, proteinGroup_InFunctionResult.peptides, innerMost_Loop_Counter ) ) {
+                const [ proteinId_FromInputParamMap, peptideSet_FromInputParamMap ] = proteinPeptideMap_InputParam_AsArray[ proteinPeptideMap_InputParam_AsArray_Index ]
 
-                proteinGroup_InFunctionResult.addProtein( proteinId_FromInputParamMap );
-                newProteinGroup = false;
-                break;
+                let newProteinGroup = true;
+
+                for ( const proteinGroup_InFunctionResult of proteinGroupArray_FunctionResult ) {
+
+                    if ( _setsAreEqual( peptideSet_FromInputParamMap, proteinGroup_InFunctionResult.peptides, innerMost_Loop_Counter ) ) {
+
+                        proteinGroup_InFunctionResult.addProtein( proteinId_FromInputParamMap );
+                        newProteinGroup = false;
+                        break;
+                    }
+                }
+
+                if ( newProteinGroup ) {
+
+                    const proteinGroup = new ProteinGroup();
+                    proteinGroup.addProtein( proteinId_FromInputParamMap );
+                    proteinGroup.peptides = peptideSet_FromInputParamMap;
+                    proteinGroup.passesFilter = true;
+
+                    proteinGroupArray_FunctionResult.push( proteinGroup );
+                }
             }
-        }
 
-        if ( newProteinGroup ) {
+            console.log( "EXIT _getProteinGroups_ProcessEachBlock(...): Exit at end of function. returning { moreToProcess: false, proteinPeptideMap_InputParam_AsArray_Index_Start_Next: undefined } " )
 
-            const proteinGroup = new ProteinGroup();
-            proteinGroup.addProtein( proteinId_FromInputParamMap );
-            proteinGroup.peptides = peptideSet_FromInputParamMap;
-            proteinGroup.passesFilter = true;
+            resolve({
+                moreToProcess: false,
+                proteinPeptideMap_InputParam_AsArray_Index_Start_Next: undefined
+            })
 
-            proteinGroupArray_FunctionResult.push( proteinGroup );
-        }
-    }
+        // } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )       //  Comment out for now so the web page stays locked while this code is running.
 
-    console.log( "EXIT _getProteinGroups_ProcessEachBlock(...): Exit at end of function. returning { moreToProcess: false, proteinPeptideMap_InputParam_AsArray_Index_Start_Next: undefined } " )
-
-    return {
-        moreToProcess: false,
-        proteinPeptideMap_InputParam_AsArray_Index_Start_Next: undefined
-    } //  EARLY RETURN
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 }
 
 
@@ -275,7 +323,7 @@ const _getNonSubsetProteinGroupsFromProteinGroupMap = async function (
  *
  * @param proteinGroups
  */
-const _getNonSubsetProteinGroupsFromProteinGroupMap_EachBlock = async function (
+const _getNonSubsetProteinGroupsFromProteinGroupMap_EachBlock = function (
     {
         proteinGroups_Index_Start, proteinGroups, innerMost_Loop_Counter, noSubsetProteinGroups_FunctionResult, noSubsetCount_Object
     }:{
@@ -292,42 +340,46 @@ const _getNonSubsetProteinGroupsFromProteinGroupMap_EachBlock = async function (
         proteinGroups_Index_Start_Next: number
     }>  {
 
+    return new Promise<{
+        moreToProcess: boolean
+        proteinGroups_Index_Start_Next: number
+    }>((resolve, reject) => { try {
 
-    for ( let proteinGroups_Index = proteinGroups_Index_Start; proteinGroups_Index < proteinGroups.length; proteinGroups_Index++ ) {
+        // window.setTimeout( () => { try {           //  Comment out for now so the web page stays locked while this code is running.
 
-        const proteinGroup = proteinGroups[ proteinGroups_Index ]
+            for ( let proteinGroups_Index = proteinGroups_Index_Start; proteinGroups_Index < proteinGroups.length; proteinGroups_Index++ ) {
 
+                if ( innerMost_Loop_Counter.isTime_For_CheckUI() ) {
 
-        if ( innerMost_Loop_Counter.isTime_For_CheckUI() ) {
+                    console.log( "EXIT _getNonSubsetProteinGroupsFromProteinGroupMap_EachBlock(...): innerMost_Loop_Counter.isTime_For_CheckUI() returned true. proteinGroups_Index: " + proteinGroups_Index
+                        + ", returning { moreToProcess: true, proteinGroups_Index_Start_Next: proteinGroups_Index } " )
 
-            console.log( "EXIT _getNonSubsetProteinGroupsFromProteinGroupMap_EachBlock(...): innerMost_Loop_Counter.isTime_For_CheckUI() returned true. proteinGroups_Index: " + proteinGroups_Index
-                + ", returning { moreToProcess: true, proteinGroups_Index_Start_Next: proteinGroups_Index } " )
+                    resolve({ moreToProcess: true,  proteinGroups_Index_Start_Next: proteinGroups_Index })
 
-            return {
-                moreToProcess: true,
-                proteinGroups_Index_Start_Next: proteinGroups_Index
-            } //  EARLY RETURN
-        }
+                    return  // EARLY RETURN
+                }
 
+                const proteinGroup = proteinGroups[ proteinGroups_Index ]
 
-        const newProteinGroup_passesFilter = ! ( _proteinGroupIsSubset({ proteinGroup, proteinGroups, innerMost_Loop_Counter }) );
+                const newProteinGroup_passesFilter = ! ( _proteinGroupIsSubset({ proteinGroup, proteinGroups, innerMost_Loop_Counter }) );
 
-        const newProteinGroup = new ProteinGroup();
-        newProteinGroup.proteins =  proteinGroup.proteins;
-        newProteinGroup.peptides =  proteinGroup.peptides;
-        newProteinGroup.passesFilter =  newProteinGroup_passesFilter
+                const newProteinGroup = new ProteinGroup();
+                newProteinGroup.proteins =  proteinGroup.proteins;
+                newProteinGroup.peptides =  proteinGroup.peptides;
+                newProteinGroup.passesFilter =  newProteinGroup_passesFilter
 
-        if ( newProteinGroup.passesFilter ) {
-            noSubsetCount_Object.noSubsetCount++;
-        }
+                if ( newProteinGroup.passesFilter ) {
+                    noSubsetCount_Object.noSubsetCount++;
+                }
 
-        noSubsetProteinGroups_FunctionResult.push(newProteinGroup)
-    }
+                noSubsetProteinGroups_FunctionResult.push(newProteinGroup)
+            }
 
-    return {
-        moreToProcess: false,
-        proteinGroups_Index_Start_Next: undefined
-    }
+            resolve({ moreToProcess: false,  proteinGroups_Index_Start_Next: undefined })
+
+        // } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )     //  Comment out for now so the web page stays locked while this code is running.
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 }
 
 //////////////
@@ -379,8 +431,6 @@ const _getParsimoniousGroupsFromProteinGroupMap = async function (
 
     console.log('ENTER _getParsimoniousGroupsFromProteinGroupMap({ proteinGroups }): proteinGroups.length: ' + proteinGroups.length + ", Now: " + new Date() );
 
-    innerMost_Loop_Counter.isTime_For_CheckUI()
-
     // sort proteinGroups from largest peptide set to smallest
     proteinGroups.sort( (a, b) => (a.peptides.size === b.peptides.size) ? 0 : (a.peptides.size > b.peptides.size) ? -1 : 1);
 
@@ -415,7 +465,7 @@ const _getParsimoniousGroupsFromProteinGroupMap = async function (
 
 
 
-const _getParsimoniousGroupsFromProteinGroupMap_ProcessEachBlock = async function (
+const _getParsimoniousGroupsFromProteinGroupMap_ProcessEachBlock =  function (
     {
          proteinGroups, innerMost_Loop_Counter, explainedPeptides, nonParsimoniousGroupIndices
     } : {
@@ -431,36 +481,47 @@ const _getParsimoniousGroupsFromProteinGroupMap_ProcessEachBlock = async functio
             moreToProcess: boolean
         }> {
 
+    return new Promise<{
+        moreToProcess: boolean
+    }>((resolve, reject) => { try {
 
-    // do the analysis
-    let currentGroupIndex = _getProteinIndexExplainingMostPeptides({
-        proteinGroups, explainedPeptides, unexplainedGroupIndices: nonParsimoniousGroupIndices, innerMost_Loop_Counter
-    });
-    while ( currentGroupIndex !== -1 ) {
+        // window.setTimeout( () => { try {           //  Comment out for now so the web page stays locked while this code is running.
 
-        const proteinGroup = proteinGroups[currentGroupIndex];
+            // do the analysis
+            let currentGroupIndex = _getProteinIndexExplainingMostPeptides({
+                proteinGroups, explainedPeptides, unexplainedGroupIndices: nonParsimoniousGroupIndices, innerMost_Loop_Counter
+            });
+            while ( currentGroupIndex !== -1 ) {
 
-        nonParsimoniousGroupIndices.delete(currentGroupIndex);
+                const proteinGroup = proteinGroups[currentGroupIndex];
 
-        for ( const peptide of proteinGroup.peptides ) {
-            explainedPeptides.add( peptide );
-        }
+                nonParsimoniousGroupIndices.delete(currentGroupIndex);
 
-        currentGroupIndex = _getProteinIndexExplainingMostPeptides({
-            proteinGroups, explainedPeptides, unexplainedGroupIndices: nonParsimoniousGroupIndices, innerMost_Loop_Counter
-        });
+                for ( const peptide of proteinGroup.peptides ) {
+                    explainedPeptides.add( peptide );
+                }
 
-        if ( innerMost_Loop_Counter.isTime_For_CheckUI() ) {
+                currentGroupIndex = _getProteinIndexExplainingMostPeptides({
+                    proteinGroups, explainedPeptides, unexplainedGroupIndices: nonParsimoniousGroupIndices, innerMost_Loop_Counter
+                });
 
-            console.log( "EXIT _getParsimoniousGroupsFromProteinGroupMap_ProcessEachBlock(...): innerMost_Loop_Counter.isTime_For_CheckUI() returned true. returning { moreToProcess: true } " )
+                if ( innerMost_Loop_Counter.isTime_For_CheckUI() ) {
 
-            return { moreToProcess: true }  // EARLY RETURN
-        }
-    }
+                    console.log( "EXIT _getParsimoniousGroupsFromProteinGroupMap_ProcessEachBlock(...): innerMost_Loop_Counter.isTime_For_CheckUI() returned true. returning { moreToProcess: true } " )
 
-    console.log( "EXIT _getParsimoniousGroupsFromProteinGroupMap_ProcessEachBlock(...): Exit at end of function. returning { moreToProcess: false } " )
+                    resolve({ moreToProcess: true })
 
-    return { moreToProcess: false }
+                    return  // EARLY RETURN
+                }
+            }
+
+            console.log( "EXIT _getParsimoniousGroupsFromProteinGroupMap_ProcessEachBlock(...): Exit at end of function. returning { moreToProcess: false } " )
+
+            resolve({ moreToProcess: false })
+
+        // } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )       //  Comment out for now so the web page stays locked while this code is running.
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 }
 
 
@@ -638,7 +699,7 @@ class INTERNAL__InnerMost_Loop_Counter {
 }
 
 
-const _INNER_MOST_LOOP_COUNTER__COUNT_CHECK_TIME = 500000
+const _INNER_MOST_LOOP_COUNTER__COUNT_CHECK_TIME = 1000000
 
 
 // const _INNER_MOST_LOOP_COUNTER__COUNT_FOR_TARGET_ELAPSED_TIME_INITIAL_SETTING = 1000000
