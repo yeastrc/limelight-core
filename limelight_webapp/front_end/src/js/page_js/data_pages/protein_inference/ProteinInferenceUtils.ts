@@ -27,6 +27,13 @@ export class ProteinInferenceUtils {
 
         }): Promise<Array<ProteinGroup>> {
 
+        {
+            const proteinGroups_IF_EachProteinInSeparateGroup = _getProteinGroups_IF_EachProteinInSeparateGroup({ proteinPeptideMap })
+            if ( proteinGroups_IF_EachProteinInSeparateGroup ) {
+                return Promise.resolve( proteinGroups_IF_EachProteinInSeparateGroup )
+            }
+        }
+
         const innerMost_Loop_Counter = new INTERNAL__InnerMost_Loop_Counter()
 
         return _getProteinGroups_Main({ proteinPeptideMap, innerMost_Loop_Counter });
@@ -46,6 +53,13 @@ export class ProteinInferenceUtils {
             proteinPeptideMap: Map<number, Set<number|string>>
 
         }): Promise<Array<ProteinGroup>> {
+
+        {
+            const proteinGroups_IF_EachProteinInSeparateGroup = _getProteinGroups_IF_EachProteinInSeparateGroup({ proteinPeptideMap })
+            if ( proteinGroups_IF_EachProteinInSeparateGroup ) {
+                return Promise.resolve( proteinGroups_IF_EachProteinInSeparateGroup )
+            }
+        }
 
         const innerMost_Loop_Counter = new INTERNAL__InnerMost_Loop_Counter()
 
@@ -72,6 +86,13 @@ export class ProteinInferenceUtils {
 
         }): Promise<Array<ProteinGroup>> {
 
+        {
+            const proteinGroups_IF_EachProteinInSeparateGroup = _getProteinGroups_IF_EachProteinInSeparateGroup({ proteinPeptideMap })
+            if ( proteinGroups_IF_EachProteinInSeparateGroup ) {
+                return Promise.resolve( proteinGroups_IF_EachProteinInSeparateGroup )
+            }
+        }
+
         const innerMost_Loop_Counter = new INTERNAL__InnerMost_Loop_Counter()
 
         const proteinGroups_FromMain = await _getProteinGroups_Main({ proteinPeptideMap, innerMost_Loop_Counter })
@@ -80,6 +101,75 @@ export class ProteinInferenceUtils {
             proteinGroups: proteinGroups_FromMain, innerMost_Loop_Counter
         });
     }
+}
+
+/**
+ *
+ * @param proteinPeptideMap
+ */
+const _getProteinGroups_IF_EachProteinInSeparateGroup = function (
+    {
+        proteinPeptideMap
+    }:{
+        proteinPeptideMap: Map<number, Set<number|string>>
+
+    }): Array<ProteinGroup> {
+
+    let peptidesIn_proteinPeptideMap_MapEntry_AllUnique = true
+
+    {  //  Compute if all peptides under all proteins are unique
+
+        const performanceNow_Start = performance.now()
+
+        const peptideSet_Overall: Set<string | number> = new Set()
+
+        for ( const proteinPeptideMap_MapEntry of proteinPeptideMap.entries() ) {
+            const protein = proteinPeptideMap_MapEntry[ 0 ]
+            const peptideSet_ForMapEntry = proteinPeptideMap_MapEntry[ 1 ]
+
+            for ( const peptide_ForMapEntry of peptideSet_ForMapEntry ) {
+                if ( peptideSet_Overall.has( peptide_ForMapEntry ) ) {
+                    peptidesIn_proteinPeptideMap_MapEntry_AllUnique = false
+                    break
+                }
+                peptideSet_Overall.add( peptide_ForMapEntry )
+            }
+            if ( ! peptidesIn_proteinPeptideMap_MapEntry_AllUnique ) {
+                break
+            }
+        }
+
+        const performanceNow_End = performance.now()
+
+        console.log('Just after ENTER: _getProteinGroups_IF_EachProteinInSeparateGroup({ proteinPeptideMap }): after compute peptidesIn_proteinPeptideMap_MapEntry_AllUnique: ' + peptidesIn_proteinPeptideMap_MapEntry_AllUnique
+            + ",  peptideSet_Overall.size (NOT full size if ...Unique is false): " + peptideSet_Overall.size
+            + ", execution in milliseconds using performance.now(): " + ( performanceNow_End - performanceNow_Start )
+            + ", Now: " + new Date() );
+    }
+
+    if ( ! peptidesIn_proteinPeptideMap_MapEntry_AllUnique ) {
+
+        //  NOT Each Protein in Separate Group so return undefined
+
+        return undefined  // EARLY RETURN
+    }
+
+    const proteinGroupArray_FunctionResult: Array<ProteinGroup> = []
+
+    for ( const proteinPeptideMap_MapEntry of proteinPeptideMap.entries() ) {
+
+        const proteinId_FromInputParamMap = proteinPeptideMap_MapEntry[ 0 ]
+        const peptideSet_FromInputParamMap = proteinPeptideMap_MapEntry[ 1 ]
+
+        const proteinGroup = new ProteinGroup();
+        proteinGroup.addProtein( proteinId_FromInputParamMap );
+        proteinGroup.peptides = peptideSet_FromInputParamMap;
+        proteinGroup.passesFilter = true;
+
+        proteinGroupArray_FunctionResult.push( proteinGroup );
+    }
+
+    return proteinGroupArray_FunctionResult
 }
 
 /**
@@ -108,37 +198,6 @@ const _getProteinGroups_Main = async function (
 
         console.log('Just after ENTER: _getProteinGroups_Main({ proteinPeptideMap }): proteinPeptideMap.size: ' + proteinPeptideMap.size + ", total size of all all Map Value Sets: " + total_proteinPeptideMap_ValuesSize + ", Now: " + new Date() );
     }
-
-    // {  //  Compute if all peptides under all proteins are unique
-    //
-    //     const performanceNow_Start = performance.now()
-    //
-    //     const peptideSet_Overall: Set<string | number> = new Set()
-    //     let peptidesIn_proteinPeptideMap_MapEntry_AllUnique = true
-    //
-    //     for ( const proteinPeptideMap_MapEntry of proteinPeptideMap.entries() ) {
-    //         const protein = proteinPeptideMap_MapEntry[ 0 ]
-    //         const peptideSet_ForMapEntry = proteinPeptideMap_MapEntry[ 1 ]
-    //
-    //         for ( const peptide_ForMapEntry of peptideSet_ForMapEntry ) {
-    //             if ( peptideSet_Overall.has( peptide_ForMapEntry ) ) {
-    //                 peptidesIn_proteinPeptideMap_MapEntry_AllUnique = false
-    //                 break
-    //             }
-    //             peptideSet_Overall.add( peptide_ForMapEntry )
-    //         }
-    //         if ( ! peptidesIn_proteinPeptideMap_MapEntry_AllUnique ) {
-    //             break
-    //         }
-    //     }
-    //
-    //     const performanceNow_End = performance.now()
-    //
-    //     console.log('Just after ENTER: _getProteinGroups_Main({ proteinPeptideMap }): after compute peptidesIn_proteinPeptideMap_MapEntry_AllUnique: ' + peptidesIn_proteinPeptideMap_MapEntry_AllUnique
-    //         + ",  peptideSet_Overall.size (NOT full size if ...Unique is false): " + peptideSet_Overall.size
-    //         + ", execution in milliseconds using performance.now(): " + ( performanceNow_End - performanceNow_Start )
-    //         + ", Now: " + new Date() );
-    // }
 
     const proteinGroupArray_FunctionResult: Array<ProteinGroup> = []
 
