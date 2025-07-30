@@ -40,7 +40,7 @@
     <c:forEach var="project" items="${ projectList }">
     
     <%
-    	System.out.println("Project: " + pageContext.getAttribute("project") );
+    	// System.out.println("Project: " + pageContext.getAttribute("project") );
     
     %>
     
