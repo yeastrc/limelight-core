@@ -258,9 +258,9 @@ export class CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilter
                             reportedPeptideIds : reportedPeptideIds,
                         };
 
-                        console.log("AJAX Call to get d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids START, Now: " + new Date() );
+                        console.log("AJAX Call to get d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids-version-0001 START, Now: " + new Date() );
 
-                        const url = "d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids";
+                        const url = "d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids-version-0001";
 
                         const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
@@ -269,7 +269,7 @@ export class CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilter
                         promise_webserviceCallStandardPost.catch( () => { reject() }  );
 
                         promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => { try {
-                            console.log("AJAX Call to get d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids END, Now: " + new Date() );
+                            console.log("AJAX Call to get d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids-version-0001 END, Now: " + new Date() );
 
                             this._process_WebserviceResponse({ responseData });
                             resolve( this._get_PeptideIdsHolder__FunctionResult );

@@ -684,9 +684,9 @@ export class CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_
                     reportedPeptideIds,
                 };
 
-                console.log("AJAX Call to get d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids START, Now: " + new Date() );
+                console.log("AJAX Call to get d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids-version-0001 START, Now: " + new Date() );
 
-                const url = "d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids";
+                const url = "d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids-version-0001";
 
                 const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
@@ -701,7 +701,7 @@ export class CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_
                 }  );
 
                 promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => { try {
-                    console.log("AJAX Call to get d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids END, Now: " + new Date() );
+                    console.log("AJAX Call to get d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids-version-0001 END, Now: " + new Date() );
 
                     //  Remove this promise
 

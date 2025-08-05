@@ -692,9 +692,9 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PSM_PEPTIDE_LIST_DISPLAY_WITH_SPECTRUM_VIEWER_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/psm-peptide-list-display-with-spectrum-viewer";
 
-	public static final String PEPTIDE_IDS_FOR_REPORTED_PEPTIDES_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids";
+	public static final String PEPTIDE_IDS_FOR_REPORTED_PEPTIDES_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = "d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids-version-0001";
 
-	public static final String PEPTIDE_SEQUENCE_STRINGS_FOR_REPORTED_PEPTIDES_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids";
+	public static final String PEPTIDE_SEQUENCE_STRINGS_FOR_REPORTED_PEPTIDES_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = "d/rws/for-page/psb/peptide-sequences-for-reported-peptide-ids-version-0001";
 
 	public static final String REPORTED_PEPTIDE_STRINGS_FOR_REPORTED_PEPTIDES_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/reported-peptide-strings-for-reported-peptide-ids";
 
