@@ -1239,7 +1239,9 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
                         <tbody>
                         {/*<div style={ { display: "grid", gridTemplateColumns: gridTemplateColumns_String } }>*/}
                         {/* Multi column Grid */ }
-                        { perSearch_HeaderRow }
+                        <tr>
+                            { perSearch_HeaderRow }
+                        </tr>
                         { perLevel_TotalIonCurrent_DisplayRows }
                         { perLevel_Count_DisplayRows }
                         {scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow }

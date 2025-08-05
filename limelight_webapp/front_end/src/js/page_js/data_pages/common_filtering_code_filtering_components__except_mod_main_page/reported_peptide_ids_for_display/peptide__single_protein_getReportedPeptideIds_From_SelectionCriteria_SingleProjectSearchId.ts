@@ -207,7 +207,9 @@ export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__Single
 }
 
 
-
+/**
+ * From Filtering Code - Filters in block "Click to Show Filters and Options" - for Single PSM
+ */
 export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId {
 
     readonly psmId: number

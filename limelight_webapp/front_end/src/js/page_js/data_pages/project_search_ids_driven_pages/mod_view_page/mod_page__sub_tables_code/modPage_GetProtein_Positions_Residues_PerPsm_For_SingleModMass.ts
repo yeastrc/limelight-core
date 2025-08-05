@@ -1,14 +1,13 @@
 /**
  * modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass.ts
  */
+
+
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder,
     CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder__ProteinCoverage_Entry
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters";
-import {
-    ProteinPositionFilter_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
 import {
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_Psm
@@ -16,7 +15,6 @@ import {
 import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
-import { DataPageStateManager } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     ModPage_Mod_Unlocalized_StartEnd_ContainerClass
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModPage_Mod_Unlocalized_StartEnd_ContainerClass";
@@ -27,12 +25,6 @@ import {
     CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_common_across_searches_sub_parts__returned_objects/commonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters";
 import {
-    GeneratedPeptideContents_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
-import {
-    ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
-import {
     modPage_Create_GeneratedReportedPeptideEntries_String_Etc,
     ModPage_Create_GeneratedReportedPeptideEntries_String_Etc_InputParameters,
     ModPage_Create_GeneratedReportedPeptideEntries_String_Etc_Result
@@ -41,8 +33,8 @@ import {
     OpenModPosition_DataType
 } from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 import {
-    ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
+    ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
 
 ////////////////
 
@@ -66,7 +58,13 @@ export class ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Resu
 
 }
 
-
+/**
+ * Passed to modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerator.ts
+ *
+ * which calls method 'get_GeneratedPeptide_Entries_For_PsmData' on this class
+ *
+ * while making the peptide list under:  mod mass bin / protein / (optional search or sub search)
+ */
 export class ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_For_SinglePsm {
 
     readonly dataFor_SinglePsm: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_Psm
@@ -223,20 +221,12 @@ export class ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Resu
 export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = async function (
     {
         data_For_ModMass,
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-        proteinPositionFilter_UserSelections_StateObject,
-        generatedPeptideContents_UserSelections_StateObject,
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-        dataPageStateManager_DataFrom_Server
     }:{
         data_For_ModMass: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject  //  To limit which proteins are displayed when expand mod mass table row
-        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject //  To limit which proteins are displayed when expand mod mass table row
-        generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-        dataPageStateManager_DataFrom_Server: DataPageStateManager
     }
 )  : Promise<ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_Root>
 { try {
@@ -262,9 +252,8 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         })
 
-    const getProteinCoverage_For_ReportedPeptideId_ProjectSearchId = new INTERNAL__CachingResults_PerCallToTopLevelFunctionInThisFile__GetProteinCoverage_For_ReportedPeptideId_ProjectSearchId_FilteringOn_ProteinPositionFilter_UserSelections_StateObject__CachingResults_Per_ProjectSearchId_ReportedPeptideId({
-        proteinPositionFilter_UserSelections_StateObject,
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
+    const getProteinCoverage_For_ReportedPeptideId_ProjectSearchId__ObjectOfInternalClass__CachesResult = new INTERNAL__CachingResults_PerCallToTopLevelFunctionInThisFile__GetProteinCoverage_For_ReportedPeptideId_ProjectSearchId_FilteringOn_ProteinPositionFilter_UserSelections_StateObject__CachingResults_Per_ProjectSearchId_ReportedPeptideId({
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId
     })
 
@@ -294,12 +283,16 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
                 }
             }
 
-            const proteinCoverage_For_ReportedPeptideId = getProteinCoverage_For_ReportedPeptideId_ProjectSearchId.get_ProteinCoverageEntries({ reportedPeptideId: reportedPeptideId_ForPSM, projectSearchId })
+            const proteinCoverage_For_ReportedPeptideId = getProteinCoverage_For_ReportedPeptideId_ProjectSearchId__ObjectOfInternalClass__CachesResult.get_ProteinCoverageEntries_FilteredOn__proteinPositionFilter_UserSelections_StateObject({ reportedPeptideId: reportedPeptideId_ForPSM, projectSearchId })
             if ( ! proteinCoverage_For_ReportedPeptideId ) {
-                throw Error("getProteinCoverage_For_ReportedPeptideId_ProjectSearchId.get_ProteinCoverageEntries({ reportedPeptideId: reportedPeptideId_ForPSM, projectSearchId }) returned NOTHING for reportedPeptideId_ForPSM: " + reportedPeptideId_ForPSM + ", psmId: " + dataFor_SinglePsm.psmId )
+                throw Error("getProteinCoverage_For_ReportedPeptideId_ProjectSearchId__ObjectOfInternalClass__CachesResult.get_ProteinCoverageEntries({ reportedPeptideId: reportedPeptideId_ForPSM, projectSearchId }) returned NOTHING for reportedPeptideId_ForPSM: " + reportedPeptideId_ForPSM + ", psmId: " + dataFor_SinglePsm.psmId )
             }
 
             const data_PerProtein_Map_Key_ProteinSequenceVersionId: Map<number, ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_For_SinglePsm_SingleProtein> = new Map()
+
+
+            //  Process Modifications on PSM that round to the Parent Mod Mass in top level table
+
 
             //  Process OPEN Modifications on PSM
 
@@ -313,11 +306,11 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
 
                     for ( const proteinCoverage_Entry of proteinCoverage_For_ReportedPeptideId ) {
 
-                        if ( proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
+                        if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
 
                             //  Filter using proteinPosition_Of_Modification_Filter_UserSelections_StateObject
 
-                            const selections_Ranges_For_proteinSequenceVersionId = proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
+                            const selections_Ranges_For_proteinSequenceVersionId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
 
                             if ( ! selections_Ranges_For_proteinSequenceVersionId ) {
                                 //  NO selection ranges for this proteinSequenceVersionId so SKIP
@@ -360,13 +353,13 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
                             }
                         }
 
-                        if ( proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
+                        if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
 
                             //  Filter using proteinPositionFilter_UserSelections_StateObject
 
                             //  Validate that the peptide overlaps the Protein Position to ensure only selected Proteins and Positions are displayed
 
-                            const selections_Ranges_For_proteinSequenceVersionId = proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
+                            const selections_Ranges_For_proteinSequenceVersionId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
 
                             if ( ! selections_Ranges_For_proteinSequenceVersionId ) {
                                 //  NO selection ranges for this proteinSequenceVersionId so SKIP
@@ -471,11 +464,11 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
                                 const modificationPosition_On_Protein = modificationPosition_On_Peptide + proteinCoverage_Entry.proteinStartPosition - 1
 
 
-                                if ( proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
+                                if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
 
                                     //  Filter using proteinPosition_Of_Modification_Filter_UserSelections_StateObject
 
-                                    const selections_Ranges_For_proteinSequenceVersionId = proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
+                                    const selections_Ranges_For_proteinSequenceVersionId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
 
                                     if ( ! selections_Ranges_For_proteinSequenceVersionId ) {
                                         //  NO selection ranges for this proteinSequenceVersionId so SKIP
@@ -512,13 +505,13 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
                                     }
                                 }
 
-                                if ( proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
+                                if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
 
                                     //  Filter using proteinPositionFilter_UserSelections_StateObject
 
                                     //  Validate that the peptide overlaps the Protein Position to ensure only selected Proteins and Positions are displayed
 
-                                    const selections_Ranges_For_proteinSequenceVersionId = proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
+                                    const selections_Ranges_For_proteinSequenceVersionId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
 
                                     if ( ! selections_Ranges_For_proteinSequenceVersionId ) {
                                         //  NO selection ranges for this proteinSequenceVersionId so SKIP
@@ -620,11 +613,11 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
                     const modificationPosition_On_Protein = modificationPosition_On_Peptide + proteinCoverage_Entry.proteinStartPosition - 1
 
 
-                    if ( proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
+                    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
 
                         //  Filter using proteinPosition_Of_Modification_Filter_UserSelections_StateObject
 
-                        const selections_Ranges_For_proteinSequenceVersionId = proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
+                        const selections_Ranges_For_proteinSequenceVersionId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
 
                         if ( ! selections_Ranges_For_proteinSequenceVersionId ) {
                             //  NO selection ranges for this proteinSequenceVersionId so SKIP
@@ -661,11 +654,11 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
                     }
 
 
-                    if ( proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
+                    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
 
                         //  Filter using proteinPositionFilter_UserSelections_StateObject
 
-                        const selections_Ranges_For_proteinSequenceVersionId = proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
+                        const selections_Ranges_For_proteinSequenceVersionId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
 
                         if ( ! selections_Ranges_For_proteinSequenceVersionId ) {
                             //  NO selection ranges for this proteinSequenceVersionId so SKIP
@@ -752,11 +745,13 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
 
                     const modificationPosition_On_Protein = modificationPosition_On_Peptide + proteinCoverage_Entry.proteinStartPosition - 1
 
-                    if ( proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
+                    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
 
                         //  Filter using proteinPosition_Of_Modification_Filter_UserSelections_StateObject
 
-                        const selections_Ranges_For_proteinSequenceVersionId = proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
+                        const selections_Ranges_For_proteinSequenceVersionId =
+                            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.
+                            getSelections_Ranges().entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
 
                         if ( ! selections_Ranges_For_proteinSequenceVersionId ) {
                             //  NO selection ranges for this proteinSequenceVersionId so SKIP
@@ -792,11 +787,13 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
                         }
                     }
 
-                    if ( proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
+                    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
 
                         //  Filter using proteinPositionFilter_UserSelections_StateObject
 
-                        const selections_Ranges_For_proteinSequenceVersionId = proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
+                        const selections_Ranges_For_proteinSequenceVersionId =
+                            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.
+                            getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
 
                         if ( ! selections_Ranges_For_proteinSequenceVersionId ) {
                             //  NO selection ranges for this proteinSequenceVersionId so SKIP
@@ -874,14 +871,9 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
                 dataFor_SinglePsm,
                 data_For_ModMass,
 
-                generatedPeptideContents_UserSelections_StateObject,
-                modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
-                proteinPosition_Of_Modification_Filter_UserSelections_StateObject, // : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject  //  To limit which peptides are displayed
-                proteinPositionFilter_UserSelections_StateObject, // : ProteinPositionFilter_UserSelections_StateObject //  To limit which peptides are displayed when expand mod mass table row
-
-                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-                dataPageStateManager_DataFrom_Server
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
             }
 
             //  Add to Root Result object
@@ -1048,28 +1040,30 @@ const _getProtein_Coverage_ETC_GetDataFromServer = function (
 class INTERNAL__CachingResults_PerCallToTopLevelFunctionInThisFile__GetProteinCoverage_For_ReportedPeptideId_ProjectSearchId_FilteringOn_ProteinPositionFilter_UserSelections_StateObject__CachingResults_Per_ProjectSearchId_ReportedPeptideId {
 
     private _proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder>
-    private _proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject  //  To limit which proteins are displayed when expand mod mass table row
-    private _proteinPositionFilter_UserSelections_StateObject: ProteinPositionFilter_UserSelections_StateObject
+    private _all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
     private _cachedResults__ProteinCoverage_FilteredData_Map_Key_ReportedPeptideId_Map_Key_ProjectSearchId: Map<number, Map<number, Array<CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder__ProteinCoverage_Entry>>> = new Map()
 
     constructor(
         {
             proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId,
-            proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-            proteinPositionFilter_UserSelections_StateObject
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
         }: {
             proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder>
-            proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject  //  To limit which proteins are displayed when expand mod mass table row
-            proteinPositionFilter_UserSelections_StateObject: ProteinPositionFilter_UserSelections_StateObject
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
         }
     ) {
         this._proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId = proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId
-        this._proteinPosition_Of_Modification_Filter_UserSelections_StateObject = proteinPosition_Of_Modification_Filter_UserSelections_StateObject
-        this._proteinPositionFilter_UserSelections_StateObject = proteinPositionFilter_UserSelections_StateObject
+        this._all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     }
 
-    get_ProteinCoverageEntries(
+    /**
+     * Get Protein Coverage Entries - Filter on
+     *
+     * @param reportedPeptideId
+     * @param projectSearchId
+     */
+    get_ProteinCoverageEntries_FilteredOn__proteinPositionFilter_UserSelections_StateObject(
         {
             reportedPeptideId, projectSearchId
         }: {
@@ -1105,7 +1099,7 @@ class INTERNAL__CachingResults_PerCallToTopLevelFunctionInThisFile__GetProteinCo
 
         let proteinCoverage_For_ReportedPeptideId_Result = proteinCoverage_For_ReportedPeptideId_UnFiltered
 
-        if (  this._proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
+        if (  this._all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
 
             //  YES Selections create Filtered Array and Overlay "Result"
 
@@ -1113,7 +1107,7 @@ class INTERNAL__CachingResults_PerCallToTopLevelFunctionInThisFile__GetProteinCo
 
             for ( const proteinCoverage_Entry of proteinCoverage_For_ReportedPeptideId_UnFiltered ) {
 
-                const rangeEntries_For_proteinSequenceVersionId = this._proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
+                const rangeEntries_For_proteinSequenceVersionId = this._all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId.get( proteinCoverage_Entry.proteinSequenceVersionId )
                 if ( rangeEntries_For_proteinSequenceVersionId ) {
                     if ( rangeEntries_For_proteinSequenceVersionId.fullProteinSelected ) {
 

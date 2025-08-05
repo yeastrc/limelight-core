@@ -197,6 +197,7 @@ export class CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Re
 
     readonly searchHasSubgroups: boolean
     readonly searchHasScanDataFlag: boolean
+    readonly searchNotContainProteins: boolean
 
     readonly searchTagIds_Set: ReadonlySet<number>
 }
@@ -593,6 +594,7 @@ const _getSearchList_FromServerResponseData = function ( responseData: any ) : C
 
             searchHasSubgroups: searchItem.searchHasSubgroups,
             searchHasScanDataFlag: searchItem.searchHasScanDataFlag,
+            searchNotContainProteins: searchItem.searchNotContainProteins,
 
             searchTagIds_Set
         }

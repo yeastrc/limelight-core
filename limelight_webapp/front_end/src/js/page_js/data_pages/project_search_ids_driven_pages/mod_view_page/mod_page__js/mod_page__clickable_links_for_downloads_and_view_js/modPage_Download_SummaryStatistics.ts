@@ -39,6 +39,9 @@ import {
 import {
     CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered";
+import {
+    ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
 
 
 /**
@@ -54,23 +57,18 @@ export const modPage_Download_SummaryStatistics = function (
         projectSearchIds,
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
-        searchSubGroup_CentralStateManagerObjectClass,
-        dataPageStateManager,
-        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
-        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
     } : {
         projectSearchIds : Array<number>
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-        searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
-        dataPageStateManager : DataPageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
-        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     }
 ) {
 
     let computeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
-    let searchSubGroupId_ForPSM_ID_Holder: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
 
 
     const promises: Array<Promise<void>> = []
@@ -80,7 +78,7 @@ export const modPage_Download_SummaryStatistics = function (
             override_UserInput_For_PsmQuant_ToUse_Counts_Boolean: false,
             override_UserInput_For_DataTransformation_ToUse_NONE_Boolean: false,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager,
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
         } )
 
@@ -101,47 +99,6 @@ export const modPage_Download_SummaryStatistics = function (
             throw Error( "modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result no 'data' or 'promise" )
         }
     }
-    {
-        if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.projectSearchId_Or_SubSearchId_Enum
-            === ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
-
-            if ( projectSearchIds.length !== 1 ) {
-                const msg = "if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND if ( projectSearchIds.length !== 1 ) {"
-                console.warn(msg)
-                throw Error(msg)
-            }
-
-            const projectSearchId = projectSearchIds[ 0 ]
-
-            const commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId =
-                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId);
-            if (!commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId) {
-                const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
-                console.warn(msg);
-                throw Error(msg);
-            }
-
-            const get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result =
-                commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId.
-                get_commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered().
-                get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch();
-            if ( get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.data ) {
-                searchSubGroupId_ForPSM_ID_Holder = get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.data.searchSubGroupId_ForPSM_ID_Holder
-            } else if ( get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.promise ) {
-                const promise = new Promise<void>((resolve, reject) => { try {
-                    get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.promise.catch( reason => reject(reason) )
-                    get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result.promise.then( value => { try {
-                        searchSubGroupId_ForPSM_ID_Holder = value.searchSubGroupId_ForPSM_ID_Holder
-                        resolve()
-                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                promises.push(promise)
-            } else {
-                throw Error("get_SearchSubGroupId_ForPSM_IDHolder_AllForSearch_Result No data or promise")
-            }
-
-        }
-    }
 
     if ( promises.length === 0 ) {
 
@@ -149,10 +106,8 @@ export const modPage_Download_SummaryStatistics = function (
             projectSearchIds,
             computeData_For_ModMassViz_And_TopLevelTable_Result_Root,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
-            searchSubGroupId_ForPSM_ID_Holder,
             modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            searchSubGroup_CentralStateManagerObjectClass,
-            dataPageStateManager
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
         })
 
         return  // EARLY RETURN
@@ -166,10 +121,8 @@ export const modPage_Download_SummaryStatistics = function (
             projectSearchIds,
             computeData_For_ModMassViz_And_TopLevelTable_Result_Root,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
-            searchSubGroupId_ForPSM_ID_Holder,
             modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            searchSubGroup_CentralStateManagerObjectClass,
-            dataPageStateManager
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
         })
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 }
@@ -180,18 +133,14 @@ const _modPage_Download_SummaryStatistics_After_GetData = function (
         projectSearchIds,
         computeData_For_ModMassViz_And_TopLevelTable_Result_Root,
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
-        searchSubGroupId_ForPSM_ID_Holder,
         modViewPage_DataVizOptions_VizSelections_PageStateManager,
-        searchSubGroup_CentralStateManagerObjectClass,
-        dataPageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
     } : {
         projectSearchIds : Array<number>
         computeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
-        searchSubGroupId_ForPSM_ID_Holder: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
         modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-        searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
-        dataPageStateManager: DataPageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     }
 ) {
 
@@ -217,7 +166,7 @@ const _modPage_Download_SummaryStatistics_After_GetData = function (
 
         projectSearchId_WhenHaveSingleSearchSubGroups = projectSearchId
 
-        const searchSubGroups_Root = dataPageStateManager.get_SearchSubGroups_Root()
+        const searchSubGroups_Root = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
         if ( ! searchSubGroups_Root ) {
             const msg = "if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND dataPageStateManager.get_SearchSubGroups_Root() returned NOTHING"
             console.warn(msg)
@@ -233,12 +182,12 @@ const _modPage_Download_SummaryStatistics_After_GetData = function (
 
         for ( const searchSubGroup of searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
 
-            if ( searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
+            if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
                 //  Specifically track if NO sub groups were selected
                 continue // EARLY CONTINUE
             }
             {
-                const selectedSearchSubGroupIds = searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds()
+                const selectedSearchSubGroupIds = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds()
                 //  selectedSearchSubGroupIds is undefined if ALL sub groups are selected
 
                 if ( selectedSearchSubGroupIds && ( ! selectedSearchSubGroupIds.has( searchSubGroup.searchSubGroup_Id ) ) ) {
@@ -254,10 +203,10 @@ const _modPage_Download_SummaryStatistics_After_GetData = function (
         for ( const projectSearchId of projectSearchIds ) {
 
             const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
-                projectSearchId, dataPageStateManager_DataFrom_Server: dataPageStateManager
+                projectSearchId, dataPageStateManager_DataFrom_Server: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
             } )
 
-            const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+            const searchData_For_ProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
             if ( ! searchData_For_ProjectSearchId ) {
                 throw Error( "dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
             }

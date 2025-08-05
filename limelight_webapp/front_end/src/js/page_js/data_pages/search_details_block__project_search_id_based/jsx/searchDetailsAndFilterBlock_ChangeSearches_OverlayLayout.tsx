@@ -49,11 +49,13 @@ export const get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout = fun
     {
         projectIdentifier,
         projectSearchIds_Selected,
+        isProteinPage,
         callbackOn_Cancel_Close_Clicked,
         callback_updateSelected_Searches
     } : {
         projectIdentifier : string
         projectSearchIds_Selected : Array<number>
+        isProteinPage: boolean
         callbackOn_Cancel_Close_Clicked : () => void;
         callback_updateSelected_Searches : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches
 
@@ -63,6 +65,7 @@ export const get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout = fun
         <SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component
             projectIdentifier={ projectIdentifier }
             projectSearchIds_Selected={ projectSearchIds_Selected }
+            isProteinPage={ isProteinPage }
             callbackOn_Cancel_Close_Clicked={ callbackOn_Cancel_Close_Clicked }
             callback_updateSelected_Searches={ callback_updateSelected_Searches }
         />
@@ -80,6 +83,7 @@ export const get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout = fun
 interface SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component_Props {
     projectIdentifier : string
     projectSearchIds_Selected : Array<number>
+    isProteinPage: boolean
     callbackOn_Cancel_Close_Clicked : () => void;
     callback_updateSelected_Searches : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches
 }
@@ -188,6 +192,8 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
                     <SearchSelection_DisplayedNestedInFolders_Component
 
                         select_ONLY_ONE_Search={ false }
+
+                        notAllow_Selection_SearchesWithoutProteins={ this.props.isProteinPage } // more or less equivalent so use it
 
                         projectIdentifier={ this.props.projectIdentifier }
                         searchesSearchTagsFolders_Result_Root={ null } //  The component will load it since NOT passed in

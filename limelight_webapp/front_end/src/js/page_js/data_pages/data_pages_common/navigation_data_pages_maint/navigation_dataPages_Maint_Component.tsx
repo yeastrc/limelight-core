@@ -52,13 +52,33 @@ interface Navigation_dataPages_Maint_Root_Component_State {
     component_SubTree_Has_Error? : boolean
 }
 
+
+class INTERNAL__navigation_Entries_From_DOM__Root {
+    single_search : { // <%-- Also used for multiple search  --%>
+        nav_entries: Array<INTERNAL__navigation_Entries_From_DOM__SingleNavEntry>
+    }
+    experiment: {
+        nav_entries: Array<INTERNAL__navigation_Entries_From_DOM__SingleNavEntry>
+    }
+}
+
+class INTERNAL__navigation_Entries_From_DOM__SingleNavEntry {
+
+    label: string
+    nav_link_base_url: string
+    proteinPageLink: boolean
+}
+
 /**
  *
  */
 export class Navigation_dataPages_Maint_Root_Component extends React.Component< Navigation_dataPages_Maint_Root_Component_Props, Navigation_dataPages_Maint_Root_Component_State > {
 
-    private _navigation_Entries_From_DOM: any //  Load in Constructor
+    private _navigation_Entries_For_NavigationType_From_DOM: Array<INTERNAL__navigation_Entries_From_DOM__SingleNavEntry> //  Load in Constructor
+
     private _controllerPath_forCurrentPage: string //  Load in Constructor
+
+    private _searches_all_contain_proteins: boolean //  Load in Constructor
 
     /**
      *
@@ -67,7 +87,7 @@ export class Navigation_dataPages_Maint_Root_Component extends React.Component< 
         super(props);
 
         try {
-            let page_navigation_links_data: any;
+            let page_navigation_links_data: INTERNAL__navigation_Entries_From_DOM__Root  //  the object from the Parsed JSON
             {
                 const page_navigation_links_data_jsonDOM = document.getElementById("page_navigation_links_data_json")
                 if ( ! page_navigation_links_data_jsonDOM ) {
@@ -89,7 +109,7 @@ export class Navigation_dataPages_Maint_Root_Component extends React.Component< 
 
             this._controllerPath_forCurrentPage = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
 
-            let perSearchExperimentType; // per single search, multiple search, or experiment type
+            let perSearchExperimentType:  { nav_entries: Array<INTERNAL__navigation_Entries_From_DOM__SingleNavEntry> } // per single search, multiple search, or experiment type
 
             if ( props.propsValue.navigationType == Navigation_dataPages_Maint__NavigationType_Enum.SINGLE_SEARCH
                 || props.propsValue.navigationType === Navigation_dataPages_Maint__NavigationType_Enum.MULTIPLE_SEARCHES ) {
@@ -106,7 +126,15 @@ export class Navigation_dataPages_Maint_Root_Component extends React.Component< 
                 throw Error( msg )
             }
 
-            this._navigation_Entries_From_DOM = perSearchExperimentType.nav_entries; // entries per single search, multiple search, or experiment
+            this._navigation_Entries_For_NavigationType_From_DOM = perSearchExperimentType.nav_entries; // entries per single search, multiple search, or experiment
+
+            {
+                const searches_all_contain_proteins_DOM = document.getElementById( "searches_all_contain_proteins" )
+
+                if ( searches_all_contain_proteins_DOM ) {
+                    this._searches_all_contain_proteins = true
+                }
+            }
 
         this.state = {};
 
@@ -157,12 +185,13 @@ export class Navigation_dataPages_Maint_Root_Component extends React.Component< 
 
             const navEntries : Array<JSX.Element> = [];
 
-            for ( const navEntryObj of this._navigation_Entries_From_DOM ) {
+            for ( const navEntryObj of this._navigation_Entries_For_NavigationType_From_DOM ) {
                 const navEntry = (
                     <Navigation_dataPages_SingleNavItem
                         key={ navEntryObj.label }
                         navigation_Entry_From_DOM={ navEntryObj }
                         controllerPath_forCurrentPage={ this._controllerPath_forCurrentPage }
+                        searches_all_contain_proteins={ this._searches_all_contain_proteins }
                     />
                 )
                 navEntries.push( navEntry )
@@ -195,8 +224,9 @@ export class Navigation_dataPages_Maint_Root_Component extends React.Component< 
  */
 interface Navigation_dataPages_SingleNavItem_Props {
 
-    navigation_Entry_From_DOM: any
+    navigation_Entry_From_DOM: INTERNAL__navigation_Entries_From_DOM__SingleNavEntry
     controllerPath_forCurrentPage: string
+    searches_all_contain_proteins: boolean
 }
 
 /**
@@ -266,24 +296,31 @@ class Navigation_dataPages_SingleNavItem extends React.Component< Navigation_dat
      */
     render() {
 
-        if ( this.props.navigation_Entry_From_DOM.nav_link_base_url !== this.props.controllerPath_forCurrentPage ) {
+        const isCurrentPage = this.props.navigation_Entry_From_DOM.nav_link_base_url === this.props.controllerPath_forCurrentPage
 
-            //  Not current page so render as link
+        const isProteinPage_WhenNotAllContainProteins = this.props.navigation_Entry_From_DOM.proteinPageLink && ( ! this.props.searches_all_contain_proteins )
+
+        if ( isCurrentPage || isProteinPage_WhenNotAllContainProteins ) {
+
+            //  Render as greyed out disabled
+
+            //  Current page or protein page and not all searches have protein
 
             return (
                 <React.Fragment>
                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                         title={
-                            limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                            isCurrentPage ?
+                                "Current page"
+                                :
+                                "Not enabled since not all searches have protein data"
                         }
                         { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                     >
-                        <span>
+                        <span className=" gray-text ">
                             [
-                            <span className=" fake-link "
-                                onClick={ this._navLinkClicked_BindThis }
-                            >
-                                {this.props.navigation_Entry_From_DOM.label}
+                            <span>
+                                { this.props.navigation_Entry_From_DOM.label }
                             </span>
                             ]
                         </span>
@@ -293,30 +330,28 @@ class Navigation_dataPages_SingleNavItem extends React.Component< Navigation_dat
             )
         }
 
-        //  NOT have href so render as greyed out disabled
+        //  Render as link
 
         return (
             <React.Fragment>
                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                     title={
-                        <span>
-                            Current page
-                        </span>
+                        limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
                     }
                     { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    <span className=" gray-text ">
+                    <span>
                         [
-                        <span>
-                            { this.props.navigation_Entry_From_DOM.label }
+                        <span className=" fake-link "
+                              onClick={ this._navLinkClicked_BindThis }
+                        >
+                            {this.props.navigation_Entry_From_DOM.label}
                         </span>
                         ]
                     </span>
                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                <span > </span>
+                <span> </span>
             </React.Fragment>
         )
-
     }
-
 }

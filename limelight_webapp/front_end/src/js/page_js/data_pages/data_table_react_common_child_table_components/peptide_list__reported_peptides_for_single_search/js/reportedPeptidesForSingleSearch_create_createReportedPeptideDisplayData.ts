@@ -27,6 +27,9 @@ import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_M
 import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptide_Descriptive_AnnotationValues_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ReportedPeptide_Descriptive_AnnotationValues";
 import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptide_Filterable_AnnotationValues_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ReportedPeptide_Filterable_AnnotationValues";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters";
 
 //  Returned Data classes
 
@@ -194,11 +197,16 @@ export const createReportedPeptideDisplayData = async function(
             reportedPeptide_Descriptive_AnnotationValues_Holder = get_ReportedPeptide_Descriptive_AnnotationValues_ReturnPromise_Result.reportedPeptide_Descriptive_AnnotationValues_Holder;
         }
 
-        const get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result =
-            await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-            get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters().
-            get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise();
-        const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder = get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
+        let proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder = undefined
+
+        if ( ! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search() ) {
+
+            const get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result =
+                await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters().
+                get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise();
+            proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder = get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
+        }
 
         const get_ReportedPeptideSequences_ReturnPromise_Result =
             await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_ParentObject().get__commonData_LoadedFromServer__CommonAcrossSearches().
@@ -291,7 +299,11 @@ export const createReportedPeptideDisplayData = async function(
 
             //  Is this Reported Peptide Unique?
             let peptideUnique = true;
-            {
+
+            if ( ! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search() ) {
+
+                //  All Searches have Proteins
+
                 // proteinSequenceVersionIds array of proteinSequenceVersionIds for this reported peptide id
                 const proteinSequenceVersionIds = proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_proteinSequenceVersionIds_For_ReportedPeptideId( reportedPeptideId );
                 if ( ! proteinSequenceVersionIds ) {

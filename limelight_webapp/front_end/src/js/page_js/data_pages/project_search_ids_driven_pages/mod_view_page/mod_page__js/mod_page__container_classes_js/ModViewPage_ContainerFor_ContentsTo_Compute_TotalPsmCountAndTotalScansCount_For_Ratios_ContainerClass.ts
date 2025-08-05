@@ -6,7 +6,6 @@ import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
@@ -19,20 +18,18 @@ import {
     CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
 import {
-    SearchSubGroup_CentralStateManagerObjectClass
-} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
-import {
     CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered";
+import {
+    ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
 
 /**
  *
  */
 export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass {
 
-    private _modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-
-    private _searchSubGroup_CentralStateManagerObjectClass: SearchSubGroup_CentralStateManagerObjectClass
+    private _all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
     private _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
 
@@ -42,19 +39,16 @@ export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalSc
 
     constructor(
         {
-            modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            searchSubGroup_CentralStateManagerObjectClass,
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         } : {
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-            searchSubGroup_CentralStateManagerObjectClass: SearchSubGroup_CentralStateManagerObjectClass
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         }
     ) {
-        this._modViewPage_DataVizOptions_VizSelections_PageStateManager = modViewPage_DataVizOptions_VizSelections_PageStateManager
-        this._searchSubGroup_CentralStateManagerObjectClass = searchSubGroup_CentralStateManagerObjectClass
+        this._all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
         this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root = modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
         this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     }
@@ -68,7 +62,7 @@ export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalSc
         data: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_or_SubSearchIds_Result
         promise: Promise<ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_or_SubSearchIds_Result>
     } {
-        if ( this._modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator() ) {
+        if ( this._all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator() ) {
 
             //  EARLY RETURN
             return { promise: undefined, data: this._getPsmCount_ForRatiosDenominator_For_ProjectSearchIds__After_SecondaryFiltering(projectSearchIds) }
@@ -229,12 +223,12 @@ export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalSc
 
             let searchSubGroupId_PassesFilter = false
 
-            if ( this._searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
+            if ( this._all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
 
                 searchSubGroupId_PassesFilter = false
             } else {
 
-                const selectedSearchSubGroupIds = this._searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds() // Undefined if all are selected, to minimize storage needs
+                const selectedSearchSubGroupIds = this._all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds() // Undefined if all are selected, to minimize storage needs
                 if ( ( ! selectedSearchSubGroupIds ) || selectedSearchSubGroupIds.has( searchSubGroupId ) ) {
 
                     searchSubGroupId_PassesFilter = true
@@ -371,7 +365,7 @@ export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalSc
         data: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_or_SubSearchIds_Result
         promise: Promise<ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_or_SubSearchIds_Result>
     } {
-         if ( this._modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator() ) {
+         if ( this._all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator() ) {
 
             //  EARLY RETURN
             return this._get_ScanNumber_SearchScanFileId_Pair_Unique_Count__ForRatiosDenominator__Map_Key_ProjectSearchId_For_ProjectSearchIds__YES__After_SecondaryFiltering( projectSearchIds )
@@ -534,12 +528,12 @@ export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalSc
 
             let searchSubGroupId_PassesFilter = false
 
-            if ( this._searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
+            if ( this._all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
 
                 searchSubGroupId_PassesFilter = false
             } else {
 
-                const selectedSearchSubGroupIds = this._searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds() // Undefined if all are selected, to minimize storage needs
+                const selectedSearchSubGroupIds = this._all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds() // Undefined if all are selected, to minimize storage needs
                 if ( ( ! selectedSearchSubGroupIds ) || selectedSearchSubGroupIds.has( searchSubGroupId ) ) {
 
                     searchSubGroupId_PassesFilter = true
@@ -757,7 +751,7 @@ export class ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalSc
         let projectSearchId_For_SubSearchProcessing_GetFromPsmHolder: number = undefined
 
         {
-            const searchGroups = this._modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+            const searchGroups = this._all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
             if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 

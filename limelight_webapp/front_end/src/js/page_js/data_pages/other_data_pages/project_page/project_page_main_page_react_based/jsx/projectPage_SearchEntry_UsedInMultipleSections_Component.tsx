@@ -753,19 +753,34 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                                     </span>
                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 <span> </span>
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                    title={
-                                        limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
-                                    }
-                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                >
-                                    <span
-                                        className=" fake-link "
-                                        onClick={ this._protein_Page_FakeLink_Clicked_BindThis }
+                                { ! searchDisplayListItem.searchNotContainProteins ? (
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        [Proteins]
-                                    </span>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        <span
+                                            className=" fake-link "
+                                            onClick={ this._protein_Page_FakeLink_Clicked_BindThis }
+                                        >
+                                            [Proteins]
+                                        </span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                ) : (
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            "Protein page is not available since the search does not have proteins"
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <span
+                                            className=" gray-text "
+                                        >
+                                            [Proteins]
+                                        </span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                ) }
                                 <span> </span>
                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                     title={

@@ -60,6 +60,9 @@ import {
 import {
     qcPage_StandardChartConfig
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartConfig";
+import {
+    ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
 
 //////
 
@@ -77,8 +80,9 @@ interface ModPage_ZScore_ReplicateReport_DataTable_Component_Props {
     group_2_ProjectSearchIds_OR_SubSearchIds: Array<number>
 
     modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
-    modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-    dataPageStateManager : DataPageStateManager
+
+    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+
     modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 }
@@ -118,7 +122,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
         this._volcanoPlot_1_Div_Ref = React.createRef();
         this._volcanoPlot_2_Div_Ref = React.createRef();
 
-        const searchGroups = props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+        const searchGroups = props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
         this._group_1_ProjectSearchIds_Or_SubSearchIds_PrevRendered = searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set
         this._group_2_ProjectSearchIds_Or_SubSearchIds_PrevRendered = searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set
@@ -163,7 +167,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
         let searchGroupsDifferent = false
 
-        const searchGroups = this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+        const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
         if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set !== this._group_1_ProjectSearchIds_Or_SubSearchIds_PrevRendered
             || searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set !== this._group_2_ProjectSearchIds_Or_SubSearchIds_PrevRendered ) {
@@ -203,8 +207,8 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
         if ( searchGroupsDifferent
             || prevProps.forceUpdate_Object !== this.props.forceUpdate_Object
             ||  prevProps.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root !== this.props.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root
-            ||  prevProps.modViewPage_DataVizOptions_VizSelections_PageStateManager !== this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager
-            ||  prevProps.dataPageStateManager !== this.props.dataPageStateManager
+            ||  prevProps.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager !== this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager
+            ||  prevProps.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server !== this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
             ||  prevProps.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass !== this.props.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
             ||  prevProps.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root !== this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         ) {
@@ -231,8 +235,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
             group_1_ProjectSearchIds_Or_SubSearchIds: this.props.group_1_ProjectSearchIds_OR_SubSearchIds,
             group_2_ProjectSearchIds_Or_SubSearchIds: this.props.group_2_ProjectSearchIds_OR_SubSearchIds,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this.props.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            dataPageStateManager: this.props.dataPageStateManager,
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this.props.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
         })
 
@@ -247,9 +250,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
                     tableRows: result.data.tableRows,
                     group_1_ProjectSearchIds_Or_SubSearchIds: this.props.group_1_ProjectSearchIds_OR_SubSearchIds,
                     group_2_ProjectSearchIds_Or_SubSearchIds: this.props.group_2_ProjectSearchIds_OR_SubSearchIds,
-                    modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                    dataPageStateManager: this.props.dataPageStateManager,
-                    projectSearchIds_AllForPage: this.props.projectSearchIds_AllForPage
+                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                 })
 
             this._show_UpdatingMessage = false
@@ -269,9 +270,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
                         tableRows: value.tableRows,
                         group_1_ProjectSearchIds_Or_SubSearchIds: this.props.group_1_ProjectSearchIds_OR_SubSearchIds,
                         group_2_ProjectSearchIds_Or_SubSearchIds: this.props.group_2_ProjectSearchIds_OR_SubSearchIds,
-                        modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                        dataPageStateManager: this.props.dataPageStateManager,
-                        projectSearchIds_AllForPage: this.props.projectSearchIds_AllForPage
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
                     })
 
                 this._show_UpdatingMessage = false
@@ -369,7 +368,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
             let pvalue_For_Chart_Y_Calculation: number = undefined
 
-            if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
+            if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
 
                 tooltipText_Part = "p-value: " + tableRow.pvalue.toExponential( 2 ) + "<br>"
 
@@ -498,7 +497,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
         for ( const chart_Entry of chart_Entries ) {
 
-            if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
+            if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
 
                 if ( chart_Entry.pvalue_For_Chart_Y_Calculation < _P_VALUE_SIGNIFICANT_LINE ) {
 
@@ -536,7 +535,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
         let chart_Data__AboveLine_PlotlyTrace_TraceName = "Significant"
         let chart_Data__AboveLine_PlotlyTrace_Color = "red"
 
-        if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE ) {
+        if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE ) {
 
             chart_Data__AboveLine_PlotlyTrace_TraceName = "Mod Masses"
         }
@@ -619,7 +618,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
         const chart_Data: Array<any> = []
 
 
-        if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
+        if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
 
             chart_Data.push( chart_Data__BelowLine_PlotlyTrace )
         }
@@ -636,7 +635,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
         let chartTitle_PValue_ZScore_Label = "P-value"
 
-        if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE ) {
+        if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE ) {
             chartTitle_PValue_ZScore_Label = "Z-score"
         }
 
@@ -656,7 +655,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
         let chart_Y_Axis_Label = "-log10(p-value)"
 
-        if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE ) {
+        if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE ) {
 
             chart_Y_Axis_Label = "abs(z-score)"
         }
@@ -692,7 +691,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
         }
 
 
-        if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
+        if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE ) {
 
             chart_Layout.shapes = [ {
                 name: _P_VALUE_SIGNIFICANT_LINE,    //  Shown in legend
@@ -767,10 +766,10 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
                         <input
                             type="radio"
                             name="ModPage_ZScore_ReplicateReport_DataTable_Component__p-value-zscore-radio-button"
-                            checked={ this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE }
+                            checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE }
                             onChange={ ( event: React.ChangeEvent<HTMLElement> ) => {
                                 try {
-                                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_significance_metric_chart_type( ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE )
+                                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_significance_metric_chart_type( ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE )
 
                                     this._create_VolcanoPlot()
 
@@ -788,10 +787,10 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
                         <input
                             type="radio"
                             name="ModPage_ZScore_ReplicateReport_DataTable_Component__p-value-zscore-radio-button"
-                            checked={ this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE }
+                            checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_significance_metric_chart_type() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE }
                             onChange={ ( event: React.ChangeEvent<HTMLElement> ) => {
                                 try {
-                                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_significance_metric_chart_type( ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE )
+                                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_significance_metric_chart_type( ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.PVALUE )
 
                                     this._create_VolcanoPlot()
 
@@ -859,18 +858,14 @@ const _create_DataTable_Data = function (
         tableRows,
         group_1_ProjectSearchIds_Or_SubSearchIds,
         group_2_ProjectSearchIds_Or_SubSearchIds,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
-        dataPageStateManager,
-        projectSearchIds_AllForPage
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
     } : {
         tableRows: INTERNAL_TableRow[]
 
         group_1_ProjectSearchIds_Or_SubSearchIds : Array<number>
         group_2_ProjectSearchIds_Or_SubSearchIds : Array<number>
 
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-        dataPageStateManager : DataPageStateManager
-        projectSearchIds_AllForPage: Array<number>
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
     }): DataTable_RootTableObject {
 
@@ -878,18 +873,18 @@ const _create_DataTable_Data = function (
 
     let searchSubGroups_ForProjectSearchId: SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry = undefined
     {
-        const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+        const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
         if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
             processing_SubSearches = true
 
-            if ( projectSearchIds_AllForPage.length !== 1 ) {
+            if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length !== 1 ) {
                 throw Error("if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) { AND if ( projectSearchIds_AllForPage.length !== 1 ) {")
             }
 
-            const projectSearchId = projectSearchIds_AllForPage[ 0 ]
+            const projectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
 
-            const searchSubGroups_Root = dataPageStateManager.get_SearchSubGroups_Root()
+            const searchSubGroups_Root = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
             if ( ! searchSubGroups_Root ) {
                 throw Error( "if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) { AND dataPageStateManager.get_SearchSubGroups_Root() returned NOTHING" )
             }
@@ -906,8 +901,8 @@ const _create_DataTable_Data = function (
     const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
     const psmQuantType = (
-        modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === undefined ||
-        modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === undefined ||
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms
     )
     const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
 
@@ -918,21 +913,21 @@ const _create_DataTable_Data = function (
 
         //  Both groups have ONE search or sub search
 
-        const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+        const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
         if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
             //  Put the sub search label in the column header
 
-            if ( projectSearchIds_AllForPage.length !== 1 ) {
+            if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length !== 1 ) {
                 const msg = "if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) { AND ( projectSearchIds_AllForPage.length !== 1 )"
                 console.warn(msg)
                 throw Error(msg)
             }
 
-            const projectSearchId = projectSearchIds_AllForPage[ 0 ]
+            const projectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
 
-            const searchSubGroups_Root = dataPageStateManager.get_SearchSubGroups_Root()
+            const searchSubGroups_Root = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
             if ( ! searchSubGroups_Root ) {
                 const msg = "if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) { AND dataPageStateManager.get_SearchSubGroups_Root() returned NOTHING"
                 console.warn(msg)
@@ -968,7 +963,7 @@ const _create_DataTable_Data = function (
             {
                 const projectSearchId = group_1_ProjectSearchIds_Or_SubSearchIds[ 0 ]
 
-                const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+                const searchData_For_ProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
 
                 group_1_ColumnHeader_Addition = " (" + searchData_For_ProjectSearchId.searchId + ")"
             }
@@ -976,7 +971,7 @@ const _create_DataTable_Data = function (
             {
                 const projectSearchId = group_2_ProjectSearchIds_Or_SubSearchIds[ 0 ]
 
-                const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+                const searchData_For_ProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
 
                 group_2_ColumnHeader_Addition = " (" + searchData_For_ProjectSearchId.searchId + ")"
             }
@@ -1030,7 +1025,7 @@ const _create_DataTable_Data = function (
 
             for ( const projectSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {
 
-                const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+                const searchData_For_ProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
 
                 searchName_Or_SubSearchLabels.push(
                     <li
@@ -1104,7 +1099,7 @@ const _create_DataTable_Data = function (
 
             for ( const projectSearchId of group_2_ProjectSearchIds_Or_SubSearchIds ) {
 
-                const searchData_For_ProjectSearchId = dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+                const searchData_For_ProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
 
                 searchName_Or_SubSearchLabels.push(
                     <li
@@ -1351,7 +1346,7 @@ const _create_DataTable_Data = function (
                 for ( const projectSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {
                     const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
                         projectSearchId,
-                        dataPageStateManager_DataFrom_Server: dataPageStateManager
+                        dataPageStateManager_DataFrom_Server: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
                     } )
                     dataTable_Download_Content_PrefixLines.push( "#" + searchName_IndentSpaces + searchNameForProjectSearchId )
                 }
@@ -1363,7 +1358,7 @@ const _create_DataTable_Data = function (
                 for ( const projectSearchId of group_2_ProjectSearchIds_Or_SubSearchIds ) {
                     const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
                         projectSearchId,
-                        dataPageStateManager_DataFrom_Server: dataPageStateManager
+                        dataPageStateManager_DataFrom_Server: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
                     } )
                     dataTable_Download_Content_PrefixLines.push( "#" + searchName_IndentSpaces + searchNameForProjectSearchId )
                 }
@@ -1407,16 +1402,15 @@ const _compute_SignificantMods_CombineReps = function (
         group_1_ProjectSearchIds_Or_SubSearchIds,
         group_2_ProjectSearchIds_Or_SubSearchIds,
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
-        dataPageStateManager,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
     } : {
         group_1_ProjectSearchIds_Or_SubSearchIds: Array<number>
         group_2_ProjectSearchIds_Or_SubSearchIds: Array<number>
 
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-        dataPageStateManager : DataPageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
     }
 ) : {
@@ -1443,7 +1437,7 @@ const _compute_SignificantMods_CombineReps = function (
             override_UserInput_For_PsmQuant_ToUse_Counts_Boolean: true,
             override_UserInput_For_DataTransformation_ToUse_NONE_Boolean: true,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager,
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
         } )
 
@@ -1464,9 +1458,9 @@ const _compute_SignificantMods_CombineReps = function (
         throw Error( "modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ExecutedWith_OverrideUserInputs no 'data' or 'promise" )
     }
 
-    if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
+    if ( ! all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
 
-        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms ) {
+        if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms ) {
 
             //  PSM Quant is Ratio AND QuantType is PSMs.  Need Total PSM Count per Project SearchId
 
@@ -1492,7 +1486,7 @@ const _compute_SignificantMods_CombineReps = function (
                 }
             }
 
-        } else if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans ) {
+        } else if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans ) {
 
             //  PSM Quant is Ratio AND QuantType is Scans.  Need Total Scan Count per Project SearchId for computing Total Count of: Scan Number / Search Scan File Id Pair Count
 
@@ -1527,8 +1521,7 @@ const _compute_SignificantMods_CombineReps = function (
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            dataPageStateManager
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
         })
 
         return {                    // EARLY RETURN
@@ -1553,8 +1546,7 @@ const _compute_SignificantMods_CombineReps = function (
                     modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
                     modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
                     modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result,
-                    modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                    dataPageStateManager
+                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
                 })
 
                 resolve(result)
@@ -1578,8 +1570,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
-        dataPageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     } : {
         group_1_ProjectSearchIds_Or_SubSearchIds : Array<number>
         group_2_ProjectSearchIds_Or_SubSearchIds : Array<number>
@@ -1587,16 +1578,15 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_or_SubSearchIds_Result
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_or_SubSearchIds_Result
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-        dataPageStateManager: DataPageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     }
 ): {
     tableRows: Array<INTERNAL_TableRow>
 } {
 
     const psmQuantType = (
-        modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === undefined ||
-        modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === undefined ||
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms
     )
 
 
@@ -1604,9 +1594,9 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
 
     let filtered_Psm_Or_Scan_Count_Map_Key_ProjectSearchId_Or_SubSearchId: Map<number, number> = undefined
 
-    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
 
-        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType()
+        if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType()
             === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms ) {
 
             //  PSMs  quantType
@@ -1616,7 +1606,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
             const resultRoot =
                 modPage_Compute_Total_PsmId_Counts_Per_ProjectSearchId_Or_SubSearchId_From_ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root({
                     computeData_For_ModMassViz_And_TopLevelTable_Result_Root: computeData_For_ModMassViz_And_TopLevelTable_Result_Root__Special_Override_PsmQuant_ToUse_Counts_NotRatio,
-                    modViewPage_DataVizOptions_VizSelections_PageStateManager
+                    modViewPage_DataVizOptions_VizSelections_PageStateManager: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager
                 })
             for ( const result_Single_ProjectSearchId_Or_SubSearchId of resultRoot.result_Total_PsmId_Counts_For_Single_ProjectSearchId_Or_SubSearchId_Map_Key_ProjectSearchId_Or_SubSearchId.values() ) {
 
@@ -1632,7 +1622,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
                 )
             }
 
-        } else if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType()
+        } else if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType()
             === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans ) {
 
             //  Scans  quantType
@@ -1642,7 +1632,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
             const resultRoot =
                 modPage_Compute_Total_Scan_Counts_Per_ProjectSearchId_Or_SubSearchId_From_ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root({
                     computeData_For_ModMassViz_And_TopLevelTable_Result_Root: computeData_For_ModMassViz_And_TopLevelTable_Result_Root__Special_Override_PsmQuant_ToUse_Counts_NotRatio,
-                    modViewPage_DataVizOptions_VizSelections_PageStateManager
+                    modViewPage_DataVizOptions_VizSelections_PageStateManager: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager
                 })
             for ( const result_Single_ProjectSearchId_Or_SubSearchId of resultRoot.result_Total_Scan_Counts_For_Single_ProjectSearchId_Or_SubSearchId_Map_Key_ProjectSearchId_Or_SubSearchId.values() ) {
 
@@ -1711,7 +1701,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
     let psm_Or_Scan_Count_Group_1: number = undefined
     let psm_Or_Scan_Count_Group_2: number = undefined
 
-    if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
+    if ( ! all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
 
         psm_Or_Scan_Count_Group_1 = 0;
         psm_Or_Scan_Count_Group_2 = 0;
@@ -1727,7 +1717,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
                 countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
 
-                    const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
                     if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
                         //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero
@@ -1743,7 +1733,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
                 countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
 
-                    const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
                     if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
                         //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero
@@ -1768,7 +1758,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
                 countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
 
-                    const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
                     if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
                         //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero
@@ -1784,7 +1774,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
                 countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
 
-                    const searchGroups = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
                     if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
                         //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero
@@ -1803,7 +1793,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
     let filtered_Psm_Or_Scan_Count_1 = undefined
     let filtered_Psm_Or_Scan_Count_2 = undefined
 
-    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
 
         if ( ! filtered_Psm_Or_Scan_Count_Map_Key_ProjectSearchId_Or_SubSearchId ) {
             throw Error("if ( ! filtered_Psm_Or_Scan_Count_Map_Key_ProjectSearchId_Or_SubSearchId ) {   AFTER 'let filtered_Psm_Or_Scan_Count_2 = undefined'")
@@ -1868,7 +1858,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
         let groupRatio_1: number = undefined
         let groupRatio_2: number = undefined
 
-        if ( ! modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
+        if ( ! all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
 
             if ( psm_Or_Scan_Count_Group_1 === undefined || psm_Or_Scan_Count_Group_2 === undefined ) {
                 throw Error("if ( psm_Or_Scan_Count_Group_1 === undefined || psm_Or_Scan_Count_Group_2 === undefined ) {")
@@ -2007,7 +1997,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
         //     TESTING__DataToLog_Lines.push( TESTING__DataToLog_Line )
         // }
 
-        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
+        if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() ) {
 
             zscore = filteredZscore
             pvalue = filteredPvalue

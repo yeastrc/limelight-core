@@ -266,17 +266,20 @@ public class ProcessReportedPeptidesAndPSMs {
 						dto.setIs_N_Terminal( entry.isIs_N_Terminal() );
 						dto.setIs_C_Terminal( entry.isIs_C_Terminal() );
 						dto.setPeptideResidueLetter( peptideResidueLetter );
+						
+						if ( proteinResidueLetters_AllProteins_Map_Key_PeptidePosition != null ) {  //  null if NO Matched Proteins
 
-						//							Map<Integer,Set<String>> proteinResidueLetters_AllProteins_Map_Key_PeptidePosition
-						Set<String> proteinResidueLetters_AllProteins = proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( entry.getPosition() );
-						if ( proteinResidueLetters_AllProteins == null ) {
-							String msg = "proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( position ) returned null processing PsmOpenModification_UniquePosition_InReportedPeptide_Entry entry.  reported peptide: " + reportedPeptide.getReportedPeptideString();
-							log.error(msg);
-							throw new LimelightImporterDataException( msg );
-						}
-						if ( proteinResidueLetters_AllProteins.size() == 1 ) {
-							String proteinResidueLetter_Only = proteinResidueLetters_AllProteins.iterator().next();
-							dto.setProteinResidueLetterIfAllSame( proteinResidueLetter_Only );
+							//							Map<Integer,Set<String>> proteinResidueLetters_AllProteins_Map_Key_PeptidePosition
+							Set<String> proteinResidueLetters_AllProteins = proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( entry.getPosition() );
+							if ( proteinResidueLetters_AllProteins == null ) {
+								String msg = "proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( position ) returned null processing PsmOpenModification_UniquePosition_InReportedPeptide_Entry entry.  reported peptide: " + reportedPeptide.getReportedPeptideString();
+								log.error(msg);
+								throw new LimelightImporterDataException( msg );
+							}
+							if ( proteinResidueLetters_AllProteins.size() == 1 ) {
+								String proteinResidueLetter_Only = proteinResidueLetters_AllProteins.iterator().next();
+								dto.setProteinResidueLetterIfAllSame( proteinResidueLetter_Only );
+							}
 						}
 
 						db_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_BatchInserter_DAO.insert_Batching_Object( dto );
@@ -285,6 +288,12 @@ public class ProcessReportedPeptidesAndPSMs {
 
 				//  Add to unique values per search
 				uniqueReporterIonMassesForTheSearch.addAll( uniqueReporterIonMassesForTheReportedPeptide );
+				
+				int proteinVersionIdsForReportedPeptideCount = 0;
+				
+				if ( internalHolder_ReportedPeptide_Object.getProteinVersionIdsForReportedPeptide() != null ) {  //  null if NO Matched Proteins
+					proteinVersionIdsForReportedPeptideCount = internalHolder_ReportedPeptide_Object.getProteinVersionIdsForReportedPeptide().size();
+				}
 				
 				LookupRecordsCreate_Main.getInstance()
 				.reportedPeptide_Lookup_MainProcessing( 
@@ -295,7 +304,7 @@ public class ProcessReportedPeptidesAndPSMs {
 						processSave_SingleReportedPeptide_Results.getSearchReportedPeptideFilterableAnnotationDTOList(),
 						psmStatisticsAndBestValues, 
 						filterableReportedPeptideAnnotationTypesOnId,
-						internalHolder_ReportedPeptide_Object.getProteinVersionIdsForReportedPeptide().size(),
+						proteinVersionIdsForReportedPeptideCount,
 						searchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records );
 
 				

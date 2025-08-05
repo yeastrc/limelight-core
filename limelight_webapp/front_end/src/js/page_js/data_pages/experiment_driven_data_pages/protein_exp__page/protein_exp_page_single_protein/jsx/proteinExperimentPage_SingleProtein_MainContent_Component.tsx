@@ -724,7 +724,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 psm_Charge_Filter_UserSelection_StateObject:  this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
                 scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
-                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
+                peptideUnique_UserSelection_StateObject: undefined
             });
 
             const {

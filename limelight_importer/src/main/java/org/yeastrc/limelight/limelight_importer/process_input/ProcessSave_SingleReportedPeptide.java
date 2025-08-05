@@ -369,15 +369,18 @@ public class ProcessSave_SingleReportedPeptide {
 		
 		dto.setPeptideResidueLetter( peptideResidueLetter );
 		
-		Set<String> proteinResidueLetters_AllProteins = proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( dto.getPosition() );
-		if ( proteinResidueLetters_AllProteins == null ) {
-			String msg = "proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( position ) returned null.  reported peptide: " + reportedPeptideString;
-			log.error(msg);
-			throw new LimelightImporterDataException( msg );
-		}
-		if ( proteinResidueLetters_AllProteins.size() == 1 ) {
-			String proteinResidueLetters_OnlyEntry = proteinResidueLetters_AllProteins.iterator().next();
-			dto.setProteinResidueLetterIfAllSame(proteinResidueLetters_OnlyEntry);
+		if ( proteinResidueLetters_AllProteins_Map_Key_PeptidePosition != null ) {  //  null if NO Matched Proteins
+
+			Set<String> proteinResidueLetters_AllProteins = proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( dto.getPosition() );
+			if ( proteinResidueLetters_AllProteins == null ) {
+				String msg = "proteinResidueLetters_AllProteins_Map_Key_PeptidePosition.get( position ) returned null.  reported peptide: " + reportedPeptideString;
+				log.error(msg);
+				throw new LimelightImporterDataException( msg );
+			}
+			if ( proteinResidueLetters_AllProteins.size() == 1 ) {
+				String proteinResidueLetters_OnlyEntry = proteinResidueLetters_AllProteins.iterator().next();
+				dto.setProteinResidueLetterIfAllSame(proteinResidueLetters_OnlyEntry);
+			}
 		}
 	}
 	

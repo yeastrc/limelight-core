@@ -385,6 +385,8 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
 
     //  Flags Set to true/false in constructor
 
+    private _someSearches_Have_NO_Proteins: boolean
+
     private _searchesContains_VariableModifications = false;
     private _searchesContains_OpenModifications = false;
 
@@ -408,10 +410,30 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
     /**
      *
      */
-    constructor(props: ProteinExperimentPage_Display_MainContent_Component_Props) {
+    constructor(props: ProteinExperimentPage_Display_MainContent_Component_Props) { try {
         super(props);
 
         const projectSearchIds = props.propsValue.projectSearchIds;
+
+        {
+            const common_Searches_Flags = props.propsValue.dataPageStateManager.get_DataPage_common_Searches_Flags()
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                const common_Flags_SingleSearch_ForProjectSearchId = common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId )
+                if ( ! common_Flags_SingleSearch_ForProjectSearchId ) {
+                    const msg = "props.propsValue.dataPageStateManager.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                if ( common_Flags_SingleSearch_ForProjectSearchId.searchNotContainProteins ) {
+                    this._someSearches_Have_NO_Proteins = true
+
+                    break
+                }
+            }
+        }
 
         this._conditionGroupsContainer_Local_PossiblyUpdated = props.propsValue.conditionGroupsContainer
 
@@ -629,13 +651,25 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             saveView_Component_React,
             saveView_Component_Props_Prop
         }
-    }
+    } catch( e ) {
+        console.warn("Exception caught in componentDidMount");
+        console.warn( e );
+        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        throw e;
+    }}
 
     /**
      *
      */
     componentDidMount() {
         try {
+            if ( this._someSearches_Have_NO_Proteins ) {
+
+                //  Some searches have NO Proteins so no additional work is needed
+
+                return // EARLY RETURN
+            }
+
             window.setTimeout( () => {
                 try {
                     this._runOnPageLoad();
@@ -803,7 +837,8 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                 psm_Charge_Filter_UserSelection_StateObject:  this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
                 scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
-                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
+                peptideUnique_UserSelection_StateObject: undefined
             });
 
             promises.push( promise );
@@ -2112,10 +2147,9 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                 });
 
             } else {
-                proteinDisplayData =
-                    await proteinPage_ProteinList__GroupProteins({
-                        projectSearchIds, proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass
-                    });
+                proteinDisplayData = await proteinPage_ProteinList__GroupProteins({
+                    projectSearchIds, proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass
+                });
 
                 proteinDisplayData = proteinPage_ProteinList__GroupProteins_Compute_DistinctPeptideCounts_UniquePeptideCounts_For_ExperimentConditions({ proteinDisplayData });
             }
@@ -3004,120 +3038,150 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
 
                 </div>  {/* Close display of data above Protein List */}
 
-                {  options_Filter_Block  }
+                { this._someSearches_Have_NO_Proteins ? (
+
+                    this._render_Show_someSearches_Have_NO_Proteins_Message()
+
+                ) : (
+
+                    <React.Fragment>
+
+                        {  options_Filter_Block  }
 
 
-                {/* ***   Display of Protein List   *** */}
+                        {/* ***   Display of Protein List   *** */}
 
-                <h3> Protein List:</h3>
+                        <h3> Protein List:</h3>
 
-                { ( this.state.show_InitialLoadingData_Message ) ? (
+                        { ( this.state.show_InitialLoadingData_Message ) ? (
 
-                    <div >
-                        <div style={ { fontSize: 24, fontWeight: "bold" } }>
-                            Loading Data
-                        </div>
-                        <div style={ { paddingTop: 40, paddingBottom: 80 } }>
-                            <Spinner_Limelight_Component/>
-                        </div>
-                    </div>
+                            <div >
+                                <div style={ { fontSize: 24, fontWeight: "bold" } }>
+                                    Loading Data
+                                </div>
+                                <div style={ { paddingTop: 40, paddingBottom: 80 } }>
+                                    <Spinner_Limelight_Component/>
+                                </div>
+                            </div>
 
-                ) : null }
+                        ) : null }
 
 
-                {/*  Outer Container for "Updating List" overlay  */}
-                <div style={ { position: "relative", display: "inline-block" } }> {/*    display: inline-block; so overlay doesn't extend right past the table right edge */}
+                        {/*  Outer Container for "Updating List" overlay  */}
+                        <div style={ { position: "relative", display: "inline-block" } }> {/*    display: inline-block; so overlay doesn't extend right past the table right edge */}
 
-                    <div style={ { position: "relative" } }>
+                            <div style={ { position: "relative" } }>
 
-                        { ( this.state.proteinList_DataCounts ) ? (
+                                { ( this.state.proteinList_DataCounts ) ? (
 
-                            <div style={ { marginBottom: 10 } }>
+                                    <div style={ { marginBottom: 10 } }>
 
-                                { ( this.state.proteinList_DataCounts.proteinGroupCount !== null && this.state.proteinList_DataCounts.proteinGroupCount !== undefined ) ? (
+                                        { ( this.state.proteinList_DataCounts.proteinGroupCount !== null && this.state.proteinList_DataCounts.proteinGroupCount !== undefined ) ? (
 
-                                    <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
+                                            <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
+                                                <span>
+                                                    Protein Group Count:
+                                                </span>
+                                                <span> </span>
+                                                <span>{ this.state.proteinList_DataCounts.proteinGroupCount.toLocaleString() }</span>
+                                            </span>
+                                        ): null }
+
+                                        <span style={ { whiteSpace: "nowrap"  } }>
                                             <span>
-                                                Protein Group Count:
+                                                Protein Count:
                                             </span>
                                             <span> </span>
-                                            <span>{ this.state.proteinList_DataCounts.proteinGroupCount.toLocaleString() }</span>
+                                            <span>{ this.state.proteinList_DataCounts.proteinCount.toLocaleString() }</span>
                                         </span>
+
+                                        <span  style={ { paddingLeft: 10, whiteSpace: "nowrap" } }>
+                                            <span>
+                                                Peptide Count:
+                                            </span>
+                                            <span> </span>
+                                            <span>{ this.state.proteinList_DataCounts.peptideCount.toLocaleString() }</span>
+                                        </span>
+
+                                        <span  style={ { paddingLeft: 10, whiteSpace: "nowrap" } }>
+                                            <span>
+                                                PSM Count:
+                                            </span>
+                                            <span> </span>
+                                            <span>{ this.state.proteinList_DataCounts.psmCount.toLocaleString() }</span>
+                                        </span>
+
+                                        <span style={ { paddingLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
+                                              onClick={ this._downloadProteinsClickHandler_BindThis }
+                                        >
+                                            Download Proteins
+                                        </span>
+
+                                        <span style={ { paddingLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
+                                              onClick={ this._downloadPSMsClickHandler_BindThis }
+                                        >
+                                            Download PSMs
+                                        </span>
+
+                                        <Blib_SpectralLibrary_File_Download__MainPage_Link_Component
+                                            dataPageStateManager={ this.props.propsValue.dataPageStateManager }
+                                            download_Blib_Spectral_Library_Callback={ this._download_Blib_Spectral_Library_BindThis }
+                                        />
+
+                                    </div>
                                 ): null }
 
-                                <span style={ { whiteSpace: "nowrap"  } }>
-                                        <span>
-                                            Protein Count:
-                                        </span>
-                                        <span> </span>
-                                        <span>{ this.state.proteinList_DataCounts.proteinCount.toLocaleString() }</span>
-                                    </span>
-
-                                <span  style={ { paddingLeft: 10, whiteSpace: "nowrap" } }>
-                                        <span>
-                                            Peptide Count:
-                                        </span>
-                                        <span> </span>
-                                        <span>{ this.state.proteinList_DataCounts.peptideCount.toLocaleString() }</span>
-                                    </span>
-
-                                <span  style={ { paddingLeft: 10, whiteSpace: "nowrap" } }>
-                                        <span>
-                                            PSM Count:
-                                        </span>
-                                        <span> </span>
-                                        <span>{ this.state.proteinList_DataCounts.psmCount.toLocaleString() }</span>
-                                    </span>
-
-                                <span style={ { paddingLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
-                                      onClick={ this._downloadProteinsClickHandler_BindThis }
-                                >
-                                    Download Proteins
-                                </span>
-
-                                <span style={ { paddingLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
-                                      onClick={ this._downloadPSMsClickHandler_BindThis }
-                                >
-                                    Download PSMs
-                                </span>
-
-                                <Blib_SpectralLibrary_File_Download__MainPage_Link_Component
-                                    dataPageStateManager={ this.props.propsValue.dataPageStateManager }
-                                    download_Blib_Spectral_Library_Callback={ this._download_Blib_Spectral_Library_BindThis }
-                                />
-
                             </div>
-                        ): null }
 
-                    </div>
+                            {/*  Protein List is displayed here */}
 
-                    {/*  Protein List is displayed here */}
+                            <div>
 
-                    <div>
-
-                        { ( this.state.tableObject_CurrentlyRendered_ProteinList ) ? (
-                            <DataTable_TableRoot
-                                tableObject={ this.state.tableObject_CurrentlyRendered_ProteinList }
-                            />
-                        ): null }
-                    </div>
-
-                    {/*    Cover over protein list when updating */}
-                    { ( this.state.show_UpdatingProteinList_Message && ( ! this.state.show_InitialLoadingData_Message ) ) ? (
-                        <div className=" block-updating-overlay-container ">
-                            <div style={ {  marginTop: 4, textAlign: "center" } }>
-                                Updating Protein List
+                                { ( this.state.tableObject_CurrentlyRendered_ProteinList ) ? (
+                                    <DataTable_TableRoot
+                                        tableObject={ this.state.tableObject_CurrentlyRendered_ProteinList }
+                                    />
+                                ): null }
                             </div>
-                        </div>
-                    ) : null }
+
+                            {/*    Cover over protein list when updating */}
+                            { ( this.state.show_UpdatingProteinList_Message && ( ! this.state.show_InitialLoadingData_Message ) ) ? (
+                                <div className=" block-updating-overlay-container ">
+                                    <div style={ {  marginTop: 4, textAlign: "center" } }>
+                                        Updating Protein List
+                                    </div>
+                                </div>
+                            ) : null }
 
 
-                </div>   {/*   Close:   everything main after <h3> Protein List:</h3>  */}
+                        </div>   {/*   Close:   everything main after <h3> Protein List:</h3>  */}
+
+                    </React.Fragment>
+                ) }
 
             </React.Fragment>
         )
     }
 
+    /**
+     *
+     */
+    private _render_Show_someSearches_Have_NO_Proteins_Message() {
+
+        return (
+            <div>
+                <div style={ { fontSize: 18, fontWeight: "bold", marginTop: 30 } }>
+                    Some of the searches do not contain proteins so unable to display this page
+                </div>
+                <div style={ { marginTop: 30 } }>
+                    No option to remove the searches without proteins since need to change the experiment
+                </div>
+                <div style={ { marginTop: 30 } }>
+                    Could list the searches without proteins here
+                </div>
+            </div>
+        )
+    }
 }
 
 ////////////////////////

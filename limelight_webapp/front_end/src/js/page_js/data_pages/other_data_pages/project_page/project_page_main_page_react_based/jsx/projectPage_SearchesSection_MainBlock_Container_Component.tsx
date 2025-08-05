@@ -94,6 +94,7 @@ interface ProjectPage_SearchesSection_MainBlock_Component_State {
     selected_Searches_Data_Object?: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Selected_Searches_Data_Object;  // Pushed up on change from child component
 
     compareButtonsDisabled? : boolean;
+    allSearches_InSelection_ContainProteins?: boolean
     copy_move_ButtonsDisabled?: boolean
 
     projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering?: Set<number>   //  null if no filtering
@@ -484,9 +485,29 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
         if ( params.selected_Searches_Data_Object.is_ANY_Search_Selected() ) {
             copy_move_organize_ButtonsDisabled = false;
         }
+
+        let allSearches_InSelection_ContainProteins = true
+
+        for ( const projectSearchId of params.selected_Searches_Data_Object.get_ProjectSearchIds_Selected_In_SelectionOrder_IterableIterator() ) {
+
+            const searchData_For_ProjectSearchId = this._searchesSearchTagsFolders_Result_Root.get_SearchData_For_ProjectSearchId( projectSearchId )
+            if ( ! searchData_For_ProjectSearchId ) {
+                const msg = "this._searchesSearchTagsFolders_Result_Root.get_SearchData_For_ProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId FROM params.selected_Searches_Data_Object.get_ProjectSearchIds_Selected_In_SelectionOrder_IterableIterator()"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            if ( searchData_For_ProjectSearchId.searchNotContainProteins ) {
+                allSearches_InSelection_ContainProteins = false
+                break
+            }
+        }
+
+
         this.setState({
             selected_Searches_Data_Object: params.selected_Searches_Data_Object,
             compareButtonsDisabled,
+            allSearches_InSelection_ContainProteins,
             copy_move_ButtonsDisabled: copy_move_organize_ButtonsDisabled,
             force_Rerender: {}
         });
@@ -1643,11 +1664,25 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                         { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
                                         <input type="button" value="Compare Protein View"
-                                               disabled={ this.state.compareButtonsDisabled }
+                                               disabled={ this.state.compareButtonsDisabled || ( ! this.state.allSearches_InSelection_ContainProteins ) }
                                                onClick={ this._compare_Proteins_Clicked_BindThis }
                                         />
                                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                    { ( this.state.compareButtonsDisabled ) ? (
+                                    { ! this.state.allSearches_InSelection_ContainProteins ? (
+                                            // overlay when button is disabled to show tooltip
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    <span>
+                                                        Compare proteins is not available since one or more selected searches does not have proteins
+                                                    </span>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                            >
+                                                <div
+                                                    style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                ></div>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                    ) : ( this.state.compareButtonsDisabled ) ? (
                                         // overlay when button is disabled to show tooltip
                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                             title={
@@ -1661,7 +1696,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                 style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
                                             ></div>
                                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                    ): null }
+                                    ) : null }
                                 </div>
 
                                 <span > </span>

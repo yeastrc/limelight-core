@@ -12,7 +12,6 @@
 
 import React from "react";
 
-import { DataPageStateManager } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
@@ -23,7 +22,6 @@ import {
     ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/ModView_DataViz_Compute_ColorScale_WidthHeight_Etc";
 import {
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum
@@ -44,18 +42,6 @@ import {
     ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering";
 import {
-    ProteinPositionFilter_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
-import {
-    SearchDataLookupParameters_Root
-} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
-import {
-    GeneratedPeptideContents_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
-import {
-    ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
-import {
     modPage_Download_SummaryStatistics
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__clickable_links_for_downloads_and_view_js/modPage_Download_SummaryStatistics";
 import {
@@ -64,9 +50,6 @@ import {
 import {
     ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass";
-import {
-    ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
 import {
     ModPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_Display_MainContent_Component";
@@ -84,10 +67,10 @@ import {
 import {
     open_ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividually_Overlay
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/modPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividually_Overlay";
-import {
-    SearchSubGroup_CentralStateManagerObjectClass
-} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 import { StringDownloadUtils } from "page_js/data_pages/data_pages_common/downloadStringAsFile";
+import {
+    ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
 
 
 //  Default and Min Width for the block for the search names and Color Legend Bar label to the left of the SVG with the Mod Mass Heat Map
@@ -101,18 +84,8 @@ export interface ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAn
 
     modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass : ModViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass
 
-    projectSearchIds_AllForPage: Array<number>
-    searchDataLookupParameters_Root : SearchDataLookupParameters_Root
+    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
-    generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
-    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-    modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-
-    proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject //  To limit which proteins are displayed when expand mod mass table row
-    proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject //  To limit which proteins are displayed when expand mod mass table row
-    searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
-
-    dataPageStateManager: DataPageStateManager
     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 
     modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function: ModPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
@@ -327,13 +300,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
         const result = modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering( {
             modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass: this.props.modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass,
-            projectSearchIds: this.props.projectSearchIds_AllForPage,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            proteinPosition_Of_Modification_Filter_UserSelections_StateObject: this.props.proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-            proteinPositionFilter_UserSelections_StateObject: this.props.proteinPositionFilter_UserSelections_StateObject,
-            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-            searchSubGroup_CentralStateManagerObjectClass: this.props.searchSubGroup_CentralStateManagerObjectClass,
-            dataPageStateManager: this.props.dataPageStateManager,
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         } )
 
@@ -354,6 +321,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
             result.promise.then( value => {
                 try {
                     this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root = value
+
                     if ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.is_ContainsAnyData() ) {
 
                         this.setState({ forceReRender_Object: {} })
@@ -380,8 +348,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
         this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass =
             new ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass({
-                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                searchSubGroup_CentralStateManagerObjectClass: this.props.searchSubGroup_CentralStateManagerObjectClass,
+                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                 modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
             })
@@ -391,7 +358,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                 override_UserInput_For_PsmQuant_ToUse_Counts_Boolean: false,
                 override_UserInput_For_DataTransformation_ToUse_NONE_Boolean: false,
                 modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                 modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
             } )
 
@@ -449,7 +416,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
             modView_DataViz_Compute_ColorScale_WidthHeight_Etc( {
                 modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
                 projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
-                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager
+                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager
             } )
 
         {
@@ -472,8 +439,8 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                 projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
                 projectSearchId_WhenHaveSingleSearchSubGroups,
                 modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
-                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                dataPageStateManager_DataFrom_Server: this.props.dataPageStateManager,
+                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server,
 
                 updated_modViewPage_DataVizOptions_VizSelections_PageStateManager: () => {
 
@@ -516,17 +483,17 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
         if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum
             === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
 
-            if ( this.props.projectSearchIds_AllForPage.length !== 1 ) {
+            if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length !== 1 ) {
                 const msg = "if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND if ( this.props.projectSearchIds_AllForPage.length !== 1 ) {"
                 console.warn(msg)
                 throw Error(msg)
             }
 
-            const projectSearchId = this.props.projectSearchIds_AllForPage[ 0 ]
+            const projectSearchId = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
 
             projectSearchId_WhenHaveSingleSearchSubGroups = projectSearchId
 
-            const searchSubGroups_Root = this.props.dataPageStateManager.get_SearchSubGroups_Root()
+            const searchSubGroups_Root = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
             if ( ! searchSubGroups_Root ) {
                 const msg = "if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND this.props.dataPageStateManager.get_SearchSubGroups_Root() returned NOTHING"
                 console.warn(msg)
@@ -544,12 +511,12 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
             for ( const searchSubGroup of searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
 
-                if ( this.props.searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
+                if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds() ) {
                     //  Specifically track if NO sub groups were selected
                     continue // EARLY CONTINUE
                 }
                 {
-                    const selectedSearchSubGroupIds = this.props.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds()
+                    const selectedSearchSubGroupIds = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds()
                     //  selectedSearchSubGroupIds is undefined if ALL sub groups are selected
 
                     if ( selectedSearchSubGroupIds && ( ! selectedSearchSubGroupIds.has( searchSubGroup.searchSubGroup_Id ) ) ) {
@@ -563,10 +530,10 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
         } else {
 
-            projectSearchIds_Or_SubSearchIds_For_DisplayOrder = this.props.projectSearchIds_AllForPage
+            projectSearchIds_Or_SubSearchIds_For_DisplayOrder = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage
 
             {  //  Allow for projectSearchIds_OrderOverride_Deprecated ( OLD Functionality but since stored in URL needs to be supported )
-                const projectSearchIds_OrderOverride_Deprecated = this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_projectSearchIds_OrderOverride_Deprecated()
+                const projectSearchIds_OrderOverride_Deprecated = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_projectSearchIds_OrderOverride_Deprecated()
 
                 if ( projectSearchIds_OrderOverride_Deprecated ) {
                     projectSearchIds_Or_SubSearchIds_For_DisplayOrder = projectSearchIds_OrderOverride_Deprecated
@@ -618,8 +585,8 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
             projectSearchIds_Or_SubSearchIds_For_DisplayOrder,
             projectSearchId_WhenHaveSingleSearchSubGroups,
             modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            dataPageStateManager_DataFrom_Server: this.props.dataPageStateManager,
+            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+            dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server,
 
             updated_modViewPage_DataVizOptions_VizSelections_PageStateManager: undefined
 
@@ -766,13 +733,11 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
     private _download_Data_Table_Clicked( event: React.MouseEvent<HTMLSpanElement, globalThis.MouseEvent> ) { try {
 
         modPage_Download_SummaryStatistics({
-            projectSearchIds: this.props.projectSearchIds_AllForPage,
+            projectSearchIds: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            searchSubGroup_CentralStateManagerObjectClass: this.props.searchSubGroup_CentralStateManagerObjectClass,
-            dataPageStateManager: this.props.dataPageStateManager,
-            modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
-            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+            modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
         })
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
@@ -783,14 +748,9 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
     private _download_PSM_Localization_Report_Clicked( event: React.MouseEvent<HTMLSpanElement, globalThis.MouseEvent> ) { try {
 
         open_ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividually_Overlay({
-            projectSearchIds: this.props.projectSearchIds_AllForPage,
+            projectSearchIds: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            proteinPosition_Of_Modification_Filter_UserSelections_StateObject: this.props.proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-            proteinPositionFilter_UserSelections_StateObject: this.props.proteinPositionFilter_UserSelections_StateObject,
-            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-            searchSubGroup_CentralStateManagerObjectClass: this.props.searchSubGroup_CentralStateManagerObjectClass,
-            dataPageStateManager: this.props.dataPageStateManager,
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         })
@@ -807,22 +767,22 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
             {
                 const psmQuantType =
-                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === undefined ||
-                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms
+                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === undefined ||
+                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms
 
                 const quantType = psmQuantType ? 'PSM' : 'Scan';
 
                 let labelText = quantType;
                 labelText += (
-                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
+                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
                         ? ' Count' : ' Ratio'
                 )
 
-                if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== undefined
-                    && this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
+                if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== undefined
+                    && this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
 
                     const labelText_Addition = modPage_Get_DataTransformationType_DisplayLabel( {
-                        modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager
+                        modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager
                     } )
 
                     labelText += " (" + labelText_Addition + ")";
@@ -841,15 +801,15 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                 if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum
                     === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
 
-                    if ( this.props.projectSearchIds_AllForPage.length !== 1 ) {
+                    if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length !== 1 ) {
                         const msg = "if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND if ( this.props.projectSearchIds_AllForPage.length !== 1 ) {"
                         console.warn(msg)
                         throw Error(msg)
                     }
 
-                    const projectSearchId = this.props.projectSearchIds_AllForPage[ 0 ]
+                    const projectSearchId = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
 
-                    const searchSubGroups_Root = this.props.dataPageStateManager.get_SearchSubGroups_Root()
+                    const searchSubGroups_Root = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
                     if ( ! searchSubGroups_Root ) {
                         const msg = "if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND this.props.dataPageStateManager.get_SearchSubGroups_Root() returned NOTHING"
                         console.warn(msg)
@@ -867,9 +827,9 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
                     for ( const searchSubGroup of searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
 
-                        if ( this.props.searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds()
-                            || ( this.props.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds()
-                                && ( ! this.props.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds().has(  searchSubGroup.searchSubGroup_Id ) ) ) ) {
+                        if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass.get_no_selectedSearchSubGroupIds()
+                            || ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds()
+                                && ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds().has(  searchSubGroup.searchSubGroup_Id ) ) ) ) {
 
                             continue // EARLY CONTINUE
                         }
@@ -928,15 +888,15 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                     )
                 } else {
 
-                    numberOf_Searches_Or_Subsearches = this.props.projectSearchIds_AllForPage.length
+                    numberOf_Searches_Or_Subsearches = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length
 
                     searchNames_Or_SearchSubGroupNames_Block = (
                         <>
-                            { this.props.projectSearchIds_AllForPage.map( projectSearchId => {
+                            { this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.map( projectSearchId => {
 
                                 //  Display the Search Names
 
-                                const searchData_For_ProjectSearchId = this.props.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+                                const searchData_For_ProjectSearchId = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
 
                                 let shortNameDisplay = ""
 
@@ -1005,7 +965,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
                     <ModPage_OptionsSection_UserInput_Display_MainContent_Component
                         propsValue={ {
-                            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
                             valueChanged_Callback: this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback_BindThis
                         } }
                     />
@@ -1206,22 +1166,13 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
                             <ModPage_Tabs_Select__ModificationList_OR_ZScoreData__Component
 
-                                projectSearchIds_AllForPage={ this.props.projectSearchIds_AllForPage }
+                                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root }
 
                                 modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root={ this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root }
                                 modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass={ this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass }
                                 modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root={ this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root }
                                 modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result={ this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result }
 
-                                searchDataLookupParameters_Root={ this.props.searchDataLookupParameters_Root }
-
-                                searchSubGroup_CentralStateManagerObjectClass={ this.props.searchSubGroup_CentralStateManagerObjectClass  }
-                                generatedPeptideContents_UserSelections_StateObject={ this.props.generatedPeptideContents_UserSelections_StateObject }
-                                modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass }
-                                modViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager }
-                                proteinPosition_Of_Modification_Filter_UserSelections_StateObject={ this.props.proteinPosition_Of_Modification_Filter_UserSelections_StateObject }
-                                proteinPositionFilter_UserSelections_StateObject={ this.props.proteinPositionFilter_UserSelections_StateObject }
-                                dataPageStateManager_DataFrom_Server={ this.props.dataPageStateManager }
                                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
                                 modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function={ this.props.modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function }
                                 modViewPage_DataVizOptions_VizSelections_PageStateManager__get_modMasses_ProjectSearchIds_Visualization_Selections_Root__clear_All_Called_Callback_Function={

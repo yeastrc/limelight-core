@@ -36,10 +36,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result;
-import org.yeastrc.limelight.limelight_webapp.db_dto.ExperimentDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.experiment.searchers.ExperimentList_ForProject_Searcher.ExperimentList_ForProject_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.experiment.searchers.ExperimentList_ForProject_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -177,11 +177,11 @@ public class Experiment_List_Drafts_RestWebservice {
 //				userIdRestriction = userSession.getUserId();
 //			}
     		
-    		List<ExperimentDTO> dbResultList = 
+    		List<ExperimentList_ForProject_Searcher_ResultItem> dbResultList = 
     				experimentList_ForProject_Searcher.getExperimentList_ForProjectId( projectId, true /* draft  */, userIdRestriction );
     		
     		List<WebserviceResult_Experiment> experiments = new ArrayList<>( dbResultList.size() );
-    		for ( ExperimentDTO dbResult : dbResultList ) {
+    		for ( ExperimentList_ForProject_Searcher_ResultItem dbResult : dbResultList ) {
     			WebserviceResult_Experiment experiment = new WebserviceResult_Experiment();
     			experiment.id = dbResult.getId();
     			experiment.name = dbResult.getName();

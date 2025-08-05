@@ -63,6 +63,9 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchTags_InProject_ForProjectIdSearcher.SearchTags_InProject_ForProjectIdSearcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchTagCategories_ForProjectId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchListForProjectIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchTagId_ProjectSearchId_Mapping_InProject_ForProjectIdSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchTags_InProject_ForProjectIdSearcher_IF;
@@ -101,6 +104,9 @@ public class ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceContro
 
 	@Autowired
 	private SearchListForProjectIdSearcherIF searchListForProjectIdSearcher;
+	
+	@Autowired
+	private SearchFlagsForSearchIdSearcherIF searchFlagsForSearchIdSearcher;
 
 	@Autowired
 	private FolderForProjectDAO_IF folderForProjectDAO;
@@ -531,6 +537,21 @@ public class ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceContro
 			for ( ProjectSearchIdCodeDTO projectSearchIdCodeDTO : projectSearchIdCodeDTOList ) {
 				projectSearchIdCodeDTOMap_Key_projectSearchId.put( projectSearchIdCodeDTO.getProjectSearchId(), projectSearchIdCodeDTO );
 			}
+			
+			
+			Map<Integer, SearchFlagsForSearchIdSearcher_Result_Item> searchFlagsForSearchIdSearcher_Result_Item_Map_Key_SearchId = new HashMap<>( searchListDB.size() );
+
+			{
+				List<Integer> searchIds = new ArrayList<>( searchListDB.size() );
+				
+				for ( SearchItemMinimal searchListDBItem : searchListDB ) {
+					searchIds.add( searchListDBItem.getSearchId() );
+				}
+				SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result = searchFlagsForSearchIdSearcher.getSearchFlags_ForSearchIds( searchIds );
+				for ( SearchFlagsForSearchIdSearcher_Result_Item resultItem : searchFlagsForSearchIdSearcher_Result.getResultItems() ) {
+					searchFlagsForSearchIdSearcher_Result_Item_Map_Key_SearchId.put( resultItem.getSearchId(), resultItem );
+				}
+			}
 
 			List<WebserviceResult_SingleSearch> searchList = new ArrayList<>( searchListDB.size() );
 			
@@ -539,6 +560,13 @@ public class ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceContro
 				ProjectSearchIdCodeDTO projectSearchIdCodeDTO = projectSearchIdCodeDTOMap_Key_projectSearchId.get( searchListDBItem.getProjectSearchId() );
 				if ( projectSearchIdCodeDTO == null ) {
 					projectSearchIdCodeDTO = _create_Insert_projectSearchIdCodeDTO( searchListDBItem );
+				}
+				
+				SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSearchIdSearcher_Result_Item_Map_Key_SearchId.get( searchListDBItem.getSearchId() );
+				if ( searchFlagsForSearchIdSearcher_Result_Item == null ) {
+					String msg = "searchFlagsForSearchIdSearcher_Result_Item_Map_Key_SearchId.get( searchListDBItem.getSearchId() ); returned null for searchListDBItem.getSearchId(): " + searchListDBItem.getSearchId();
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
 				}
 
 				WebserviceResult_SingleSearch resultItem = new WebserviceResult_SingleSearch();
@@ -550,6 +578,8 @@ public class ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceContro
 				resultItem.searchShortName = searchListDBItem.getSearchShortName();
 				resultItem.searchHasSubgroups = searchListDBItem.isSearchHasSubgroups();
 				resultItem.searchHasScanDataFlag = searchListDBItem.isSearchHasScanDataFlag();
+				resultItem.searchNotContainProteins = searchFlagsForSearchIdSearcher_Result_Item.isSearchNotContainProteins();
+				
 				searchList.add( resultItem );
 			}
 
@@ -817,6 +847,7 @@ public class ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceContro
     	private String searchShortName;
     	private boolean searchHasSubgroups;
     	private boolean searchHasScanDataFlag;
+    	private boolean searchNotContainProteins;
 		public int getProjectSearchId() {
 			return projectSearchId;
 		}
@@ -840,6 +871,9 @@ public class ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceContro
 		}
 		public boolean isSearchHasScanDataFlag() {
 			return searchHasScanDataFlag;
+		}
+		public boolean isSearchNotContainProteins() {
+			return searchNotContainProteins;
 		}
     }
 

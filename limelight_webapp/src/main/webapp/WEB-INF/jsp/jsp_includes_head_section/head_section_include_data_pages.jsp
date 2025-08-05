@@ -24,6 +24,17 @@
 
 <script type="text/text" id="search_data_lookup_parameters_at_page_load_code"><html><body><c:out value="${ searchDataLookupParametersCode }"/></body><html></script>
 
+
+<c:if test="${ searches_All_ContainProteins }">
+  <script type="text/text" id="searches_all_contain_proteins">x</script>
+</c:if>
+
+<c:if test="${ searches_All_NOT_ContainProteins }">
+  <script type="text/text" id="searches_all_not_contain_proteins">x</script>
+</c:if>
+
+
+
 	<%-- Searches - From Java class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor --%>
 	
 <c:if test="${ singleSearchHasSubGroups }">
@@ -81,7 +92,8 @@
 		},
 		{
 		"label" : "Proteins View",
-		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.PROTEIN_VIEW_PAGE_CONTROLLER %>"
+		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.PROTEIN_VIEW_PAGE_CONTROLLER %>",
+		"proteinPageLink": true
 		},
 		{
 		"label" : "Modifications View",
@@ -98,7 +110,8 @@
 		},
 		{
 		"label" : "Proteins View",
-		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.EXPERIMENT___PROTEIN_VIEW_PAGE_CONTROLLER %>"
+		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.EXPERIMENT___PROTEIN_VIEW_PAGE_CONTROLLER %>",
+		"proteinPageLink": true
 		}
 	]
 	}

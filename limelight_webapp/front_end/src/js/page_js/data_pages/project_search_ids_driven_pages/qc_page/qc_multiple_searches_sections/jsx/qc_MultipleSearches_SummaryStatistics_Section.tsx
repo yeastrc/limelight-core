@@ -155,11 +155,14 @@ export class Qc_MultipleSearches_SummaryStatistics_Section extends React.Compone
                                     qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                 />
                             </div>
-                            <div className=" chart-container-multiple-on-same-row ">
-                                <QcViewPage_MultipleSearches__SummaryCounts_Protein_Counts_MainPageContainer
-                                    qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
-                                />
-                            </div>
+
+                            { this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.allSearches_HaveProteins ? ( // Only when have proteins
+                                <div className=" chart-container-multiple-on-same-row ">
+                                    <QcViewPage_MultipleSearches__SummaryCounts_Protein_Counts_MainPageContainer
+                                        qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                                    />
+                                </div>
+                            ) : null }
 
                             <div className=" chart-container-multiple-on-same-row-stop-float "></div>
 

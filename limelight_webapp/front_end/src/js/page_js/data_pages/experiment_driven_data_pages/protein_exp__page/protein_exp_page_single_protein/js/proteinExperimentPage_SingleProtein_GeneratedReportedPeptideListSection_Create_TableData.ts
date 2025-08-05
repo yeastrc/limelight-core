@@ -142,6 +142,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
 
         const show_Protein_Pre_Post_Residues = _compute_show_Protein_Pre_Post_Residues({ peptideList });
 
+        const show_Peptide_Unique = ! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search()
+
         let internal__get_DataFromServer__For_If_ShowProteins_Result: Internal__get_DataFromServer__For_If_ShowProteins_Result = undefined;
 
         if ( showProteins ) {
@@ -178,7 +180,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
             dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
 
-        {
+        if ( show_Peptide_Unique ) {
+
             const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
                 return proteinExperimentPage_Display_SingleProtein_GeneratedReportedPeptideListSection_Components_Other.uniqueColumnHeader_Tooltip_Create();
             }
@@ -297,7 +300,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                     const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
                     dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                 }
-                { // Unique
+
+                if ( show_Peptide_Unique ) { // Unique
+
                     let value = "";
                     let valueSort = 1;
                     if (peptideEntry.peptideUnique) {

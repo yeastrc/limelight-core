@@ -12,7 +12,6 @@ import {
     ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering";
 import {
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum
@@ -33,8 +32,8 @@ import {
     CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
 import {
-    SearchSubGroup_CentralStateManagerObjectClass
-} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
+    ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
 
 ///////////////////
 
@@ -148,16 +147,19 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Roo
 export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass {
 
     readonly modMass: number
+    readonly modifiedResidues: Set<string>
     private _dataEntry_SingleProjectSearchId_Or_SubSearchId__Map_Key_ProjectSearchId_Or_SubSearchId: Map<number, ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId>
 
     constructor(
         {
-            modMass
+            modMass, modifiedResidues
         } : {
             modMass: number
+            modifiedResidues: Set<string>
         }
     ) {
         this.modMass = modMass
+        this.modifiedResidues = modifiedResidues
         this._dataEntry_SingleProjectSearchId_Or_SubSearchId__Map_Key_ProjectSearchId_Or_SubSearchId = new Map()
     }
 
@@ -311,7 +313,8 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
         override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,  // Ignore UserInput  For DataTransformation and use None
 
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
+
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass  // Used for Ratios
     } : {
@@ -326,7 +329,8 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
         override_UserInput_For_DataTransformation_ToUse_NONE_Boolean: boolean
 
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
     }
@@ -336,10 +340,10 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
 } {
 
     if ( ( ! override_UserInput_For_PsmQuant_ToUse_Counts_Boolean )
-        && ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant()
+        && ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant()
             === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios ) ) {
 
-        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms ) {
+        if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms ) {
 
             //  PSM Quant is Ratio AND QuantType is PSMs.  Need Total PSM Count per Project SearchId
 
@@ -376,7 +380,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
                         override_UserInput_For_PsmQuant_ToUse_Counts_Boolean,
                         override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,
                         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-                        modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
                         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: undefined
                     })}
@@ -392,7 +396,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
                             override_UserInput_For_PsmQuant_ToUse_Counts_Boolean,
                             override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,
                             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-                            modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
                             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: undefined
                         })
@@ -401,7 +405,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})}
 
-        } else if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans ) {
+        } else if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans ) {
 
             //  PSM Quant is Ratio AND QuantType is Scans.  Need Total Scan Count per Project SearchId for computing Total Count of: Scan Number / Search Scan File Id Pair Count
 
@@ -438,7 +442,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
                         override_UserInput_For_PsmQuant_ToUse_Counts_Boolean,
                         override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,
                         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-                        modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result,
                         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: undefined
                     })}
@@ -454,7 +458,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
                             override_UserInput_For_PsmQuant_ToUse_Counts_Boolean,
                             override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,
                             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-                            modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result,
                             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: undefined
                         })
@@ -470,7 +474,7 @@ export const modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable = function
                 override_UserInput_For_PsmQuant_ToUse_Counts_Boolean,
                 override_UserInput_For_DataTransformation_ToUse_NONE_Boolean,
                 modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-                modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                 modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: undefined,  //  NOT 'PSM Quant is Ratio'
                 modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: undefined  //  NOT 'PSM Quant is Ratio'
             })}
@@ -486,7 +490,7 @@ const _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData = 
         override_UserInput_For_DataTransformation_ToUse_NONE_Boolean, // Ignore UserInput  For DataTransformation and use None
 
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,  //  undefined if NOT ( 'QuantType is Ratio' and 'scans'
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result  //  undefined if NOT ( 'QuantType is Ratio' and 'scans'
@@ -503,7 +507,7 @@ const _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData = 
 
 
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_or_SubSearchIds_Result
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_or_SubSearchIds_Result
@@ -523,14 +527,14 @@ const _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData = 
     _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root({
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
 
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
         projectSearchId_Or_SubSearchId_Enum,
 
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root  // Updated
     })
 
-    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans ) {
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans ) {
 
         //  Scans Quant Type
 
@@ -538,7 +542,7 @@ const _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData = 
     }
 
     if ( ( ! override_UserInput_For_PsmQuant_ToUse_Counts_Boolean )
-        && ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant()
+        && ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant()
             === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios ) ) {
 
         //  PSM Quant is Ratio
@@ -546,14 +550,14 @@ const _modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_AfterLoadData = 
         _set_To_Ratio_OfTotal_For_SearchOrSubSearch_In_ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root({
             modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager,
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result
         })
     }
 
     {
-        const dataTransformation_UserSelection = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation()
+        const dataTransformation_UserSelection = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation()
 
         if ( ( ! override_UserInput_For_DataTransformation_ToUse_NONE_Boolean )
             && dataTransformation_UserSelection !== undefined && dataTransformation_UserSelection !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
@@ -596,7 +600,7 @@ const _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root = function (
     {
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
 
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
         projectSearchId_Or_SubSearchId_Enum,
 
@@ -604,7 +608,7 @@ const _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root = function (
     } : {
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
 
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
         projectSearchId_Or_SubSearchId_Enum: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum
 
@@ -616,7 +620,21 @@ const _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root = function (
 
         const modMass = dataEntry_SingleModMass.modMass
 
-        const output_dataEntry_SingleModMass = new ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass({ modMass })
+        const modifiedResidues: Set<string> = new Set()
+
+
+        for ( const singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId of dataEntry_SingleModMass.get_All() ) {
+
+            for ( const dataFor_SinglePsm of singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.get_DataFor_SinglePsm_All() ) {
+                if ( dataFor_SinglePsm.get__allMods_PeptideResidueLetters_At_ModificationPositions() ) {
+                    for ( const peptideResidueLetter of dataFor_SinglePsm.get__allMods_PeptideResidueLetters_At_ModificationPositions() ) {
+                        modifiedResidues.add( peptideResidueLetter )
+                    }
+                }
+            }
+        }
+
+        const output_dataEntry_SingleModMass = new ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass({ modMass, modifiedResidues })
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.INTERNAL_ONLY__AddEntry( output_dataEntry_SingleModMass )
 
         for ( const singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId of dataEntry_SingleModMass.get_All() ) {
@@ -697,7 +715,7 @@ const _set_To_Ratio_OfTotal_For_SearchOrSubSearch_In_ModViewPage_ComputeData_For
     {
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result, //  Used for Ratios
 
@@ -705,7 +723,7 @@ const _set_To_Ratio_OfTotal_For_SearchOrSubSearch_In_ModViewPage_ComputeData_For
     } : {
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_or_SubSearchIds_Result
 
@@ -724,7 +742,7 @@ const _set_To_Ratio_OfTotal_For_SearchOrSubSearch_In_ModViewPage_ComputeData_For
     const totalSummed_PsmCount_Or_ScanCount__Map_Key_ProjectSearchId_Or_SubSearchId: Map<number, number> = new Map()
 
 
-    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms ) {
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms ) {
 
         //  PSM Quant Type
 
@@ -765,7 +783,7 @@ const _set_To_Ratio_OfTotal_For_SearchOrSubSearch_In_ModViewPage_ComputeData_For
             }
         }
 
-    } else if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans ) {
+    } else if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans ) {
 
         //  Scans Quant Type
 

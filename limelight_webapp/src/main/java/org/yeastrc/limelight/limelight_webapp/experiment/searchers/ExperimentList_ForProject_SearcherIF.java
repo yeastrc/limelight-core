@@ -20,7 +20,7 @@ package org.yeastrc.limelight.limelight_webapp.experiment.searchers;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.yeastrc.limelight.limelight_webapp.db_dto.ExperimentDTO;
+import org.yeastrc.limelight.limelight_webapp.experiment.searchers.ExperimentList_ForProject_Searcher.ExperimentList_ForProject_Searcher_ResultItem;
 
 /**
  * 
@@ -36,6 +36,6 @@ public interface ExperimentList_ForProject_SearcherIF {
 	 * @throws SQLException
 	 */
 	
-	List<ExperimentDTO> getExperimentList_ForProjectId(int projectId, Boolean draft, Integer userId) throws SQLException;
+	List<ExperimentList_ForProject_Searcher_ResultItem> getExperimentList_ForProjectId(int projectId, Boolean draft, Integer userId) throws SQLException;
 
 }

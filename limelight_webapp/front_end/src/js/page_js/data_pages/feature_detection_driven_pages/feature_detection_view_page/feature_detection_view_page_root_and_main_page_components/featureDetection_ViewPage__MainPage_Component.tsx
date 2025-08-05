@@ -208,6 +208,8 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
     private _qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot = new QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot()  //  Common across all Plotly Plots
 
+    private _allSearches_HaveProteins: boolean
+
 
     private _dataLoaded_For_Either_MainTable = false
 
@@ -226,6 +228,8 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
             if ( props.propsValue.searchDataLookupParametersFromPage ) {
 
                 //   Have a Search
+
+                this._allSearches_HaveProteins = ! props.propsValue.dataPageStateManager_DataFrom_Server.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search()
 
                 this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.getNewInstance( {
                     projectSearchIds: props.propsValue.searchDataLookupParametersFromPage.projectSearchIds,
@@ -421,6 +425,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback: new QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback(),
                         qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput: new QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput(),
                         projectSearchIds: this.props.propsValue.searchDataLookupParametersFromPage.projectSearchIds,
+                        allSearches_HaveProteins: this._allSearches_HaveProteins,
                         currentProjectId_FromDOM: qcViewPage_DisplayData__Main_Component_Props_Prop.currentProjectId_FromDOM,
                         searchSubGroup_Ids_Selected: undefined,
                         propsValue: peptidePage_Display_MainContent_Component_Props_Prop,
@@ -1407,6 +1412,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
                 searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue =  {
                     displayOnly : false,
+                    isProteinPage: false,
                     dataPages_LoggedInUser_CommonObjectsFactory : null,
                     dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: this.props.propsValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
                     dataPageStateManager_DataFrom_Server: this.props.propsValue.dataPageStateManager_DataFrom_Server,

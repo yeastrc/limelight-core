@@ -736,11 +736,10 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
 
                         const perSearch_HeaderRow_Column = (
                             <React.Fragment
-                                key={ "LeftLabel" }
+                                key={ dataPerSubSearchEntry.searchSubGroup_Id }
                             >
                                 <td style={ table_TD_Style }>
                                     <div
-                                        key={ dataPerSubSearchEntry.searchSubGroup_Id }
                                         style={{ textAlign: "right", paddingBottom: paddingBottom_SeparateSections}}
                                     >
                                         { value }
@@ -760,11 +759,10 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
 
                         const perLevel_TotalIonCurrent_DisplayEntry = (
                             <React.Fragment
-                                key={ "LeftLabel" }
+                                key={"total_" + dataPerSubSearchEntry.searchSubGroup_Id}
                             >
                                 <td style={ table_TD_Style }>
                                     <div
-                                        key={"total_" + dataPerSubSearchEntry.searchSubGroup_Id}
                                         style={style_Value}
                                     >
                                         { value }
@@ -1174,7 +1172,9 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                             <tbody>
                             {/*<div style={ { display: "grid", gridTemplateColumns: gridTemplateColumns_String } }>*/ }
                             {/* Multi column Grid */ }
-                            { perSearch_HeaderRow }
+                            <tr>
+                                { perSearch_HeaderRow }
+                            </tr>
                             { perLevel_TotalIonCurrent_DisplayRows }
                             { perLevel_Count_DisplayRows }
                             { scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow }

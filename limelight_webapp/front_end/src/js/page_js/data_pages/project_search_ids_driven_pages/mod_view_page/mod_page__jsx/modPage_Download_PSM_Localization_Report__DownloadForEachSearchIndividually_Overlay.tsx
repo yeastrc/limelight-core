@@ -49,6 +49,9 @@ import {
 import {
     SearchSubGroup_CentralStateManagerObjectClass
 } from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
+import {
+    ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
 
 /////
 
@@ -68,12 +71,7 @@ const _Overlay_Height_Max_AbsoluteMax = 1000;
 export class ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividually_Overlay_Params {
     projectSearchIds : Array<number>
     modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
-    modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-    proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
-    proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject //  To limit which proteins are included
-    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-    searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
-    dataPageStateManager : DataPageStateManager
+    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 }
@@ -180,12 +178,7 @@ class ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividuall
         modPage_Download_PSM_Localization_Report({
             projectSearchIds: projectSearchIds__OnlyForClickedSearch,
             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this.props.props_value.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.props_value.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            proteinPosition_Of_Modification_Filter_UserSelections_StateObject: this.props.props_value.proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-            proteinPositionFilter_UserSelections_StateObject: this.props.props_value.proteinPositionFilter_UserSelections_StateObject,
-            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.props_value.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-            searchSubGroup_CentralStateManagerObjectClass: this.props.props_value.searchSubGroup_CentralStateManagerObjectClass,
-            dataPageStateManager: this.props.props_value.dataPageStateManager,
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.props_value.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
             modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this.props.props_value.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.props_value.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         })
@@ -202,16 +195,15 @@ class ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividuall
         for ( const projectSearchId of this.props.props_value.projectSearchIds ) {
 
             const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
-                projectSearchId, dataPageStateManager_DataFrom_Server: this.props.props_value.dataPageStateManager
+                projectSearchId, dataPageStateManager_DataFrom_Server: this.props.props_value.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
             } )
 
             const element = (
-                <>
+                <React.Fragment key={ projectSearchId }>
                     {/*<div>*/}
 
                     {/*</div>*/}
                     <div
-                        key={ projectSearchId }
                         style={ { marginBottom: 20 } }
                     >
                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -233,7 +225,7 @@ class ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividuall
                             </span>
                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </div>
-                </>
+                </React.Fragment>
             )
 
             searchNames_Elements.push( element )

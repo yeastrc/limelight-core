@@ -27,31 +27,14 @@ import {
     ModPage_get_ProteinList_SubTable__SingleProteinData_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_get_ProteinList_SubTable";
 import {
-    ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass,
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable";
 import {
-    SearchDataLookupParameters_Root
-} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
-import {
-    GeneratedPeptideContents_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
-import {
-    ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
-import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
-import {
-    ProteinPositionFilter_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
-import {
-    DataPageStateManager, SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry,
-    SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
+    SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_Root
@@ -66,8 +49,8 @@ import {
     modPage_CompressUnlocalizedRanges
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_CompressUnlocalizedRanges";
 import {
-    searchSubGroup_Get_Selected_SearchSubGroupIds
-} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Get_Selected_SearchSubGroupIds";
+    ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
 
 
 //////////////////////
@@ -87,13 +70,10 @@ export const modPage_Get_ProteinData_By_SubSearch_List_SubTableGenerator  = asyn
         modPage_get_ProteinList_SubTable__SingleProteinData_Root,
 
         projectSearchIds,
-        searchDataLookupParameters_Root,
-        generatedPeptideContents_UserSelections_StateObject,
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
-        proteinPositionFilter_UserSelections_StateObject,
-        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-        dataPageStateManager_DataFrom_Server
+
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     } : {
         data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId: Map<number, ModPage_get_ProteinList_SubTable__SingleProteinData_Per_ProjectSearchId_Or_SubSearch>
 
@@ -104,14 +84,10 @@ export const modPage_Get_ProteinData_By_SubSearch_List_SubTableGenerator  = asyn
         modPage_get_ProteinList_SubTable__SingleProteinData_Root: ModPage_get_ProteinList_SubTable__SingleProteinData_Root
 
         projectSearchIds: Array<number>
-        searchDataLookupParameters_Root : SearchDataLookupParameters_Root
 
-        generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject //  To limit which proteins are displayed when expand mod mass table row
-        dataPageStateManager_DataFrom_Server : DataPageStateManager
 
     }):Promise<DataTable_RootTableObject> { try {
 
@@ -125,10 +101,9 @@ export const modPage_Get_ProteinData_By_SubSearch_List_SubTableGenerator  = asyn
         data_For_ModMass,
         modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
 
-        searchDataLookupParameters_Root,
-        generatedPeptideContents_UserSelections_StateObject,
-        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-        dataPageStateManager_DataFrom_Server
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     });
 
     // assemble the table
@@ -234,10 +209,9 @@ const _getDataTableRows = async function (
         data_For_ModMass,
         modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
 
-        searchDataLookupParameters_Root,
-        generatedPeptideContents_UserSelections_StateObject,
-        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-        dataPageStateManager_DataFrom_Server
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     } : {
         data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId: Map<number, ModPage_get_ProteinList_SubTable__SingleProteinData_Per_ProjectSearchId_Or_SubSearch>
 
@@ -246,12 +220,9 @@ const _getDataTableRows = async function (
 
         modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result: ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_Root
 
-        searchDataLookupParameters_Root : SearchDataLookupParameters_Root
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
-        generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-        dataPageStateManager_DataFrom_Server : DataPageStateManager
-
     }
 ) : Promise<Array<DataTable_DataRowEntry>> { try {
 
@@ -287,7 +258,7 @@ const _getDataTableRows = async function (
 
                 if ( populate__searchSubGroups_ForProjectSearchId ) {
                     projectSearchId__searchSubGroups_ForProjectSearchId = proteinData.projectSearchId_ForUseWhereRequire_projectSearchId
-                    searchSubGroups_ForProjectSearchId = dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId__searchSubGroups_ForProjectSearchId );
+                    searchSubGroups_ForProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId__searchSubGroups_ForProjectSearchId );
 
                     if ( ! searchSubGroups_ForProjectSearchId ) {
                         const msg = "returned nothing: dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId__searchSubGroups_ForProjectSearchId ), projectSearchId__searchSubGroups_ForProjectSearchId: " + projectSearchId__searchSubGroups_ForProjectSearchId;
@@ -340,14 +311,14 @@ const _getDataTableRows = async function (
 
         // add modded positions
         {
-            const positions:Array<ModPage_Mod_Unlocalized_StartEnd_ContainerClass> = new Array();
+            const positions: Array<ModPage_Mod_Unlocalized_StartEnd_ContainerClass> = new Array();
 
-            for ( const loc of modPage_CompressUnlocalizedRanges(proteinData.unlocalizedPositionRanges) ) {
+            for ( const loc of modPage_CompressUnlocalizedRanges( proteinData.unlocalizedPositionRanges ) ) {
                 positions.push(loc);
             }
 
             for ( const loc of proteinData.modifiedPositions ) {
-                positions.push(new ModPage_Mod_Unlocalized_StartEnd_ContainerClass({start:loc, end:loc}));
+                positions.push(new ModPage_Mod_Unlocalized_StartEnd_ContainerClass({ start:loc, end:loc }));
             }
 
             positions.sort( function(a, b):number {
@@ -382,7 +353,7 @@ const _getDataTableRows = async function (
 
         // add modded residues
         {
-            const valueDisplay = Array.from(proteinData.modifiedResidues).sort().join(', ');
+            const valueDisplay = Array.from( proteinData.modifiedResidues ).sort().join(', ');
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
@@ -404,10 +375,8 @@ const _getDataTableRows = async function (
                         modPage_get_ProteinList_SubTable__SingleProteinData_Root,
                         modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
                         data_For_ModMass,
-                        searchDataLookupParameters_Root,
-                        generatedPeptideContents_UserSelections_StateObject,
-                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-                        dataPageStateManager_DataFrom_Server
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
                     })
                 };
 

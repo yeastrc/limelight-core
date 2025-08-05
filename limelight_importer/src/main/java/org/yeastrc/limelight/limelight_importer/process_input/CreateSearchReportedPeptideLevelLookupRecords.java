@@ -147,11 +147,13 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 			anyPsmHasReporterIons = true;
 		}
 		
-		if ( proteinVersionIdsForReportedPeptideCount < 1 ) {
-			final String msg = "ERROR: proteinVersionIdsForReportedPeptideCount < 1. proteinVersionIdsForReportedPeptideCount: " + proteinVersionIdsForReportedPeptideCount;
-			log.error( msg );
-			throw new LimelightImporterInternalException(msg);
-		}
+		//  Remove next 'if' since now can have NO matched proteins
+		
+//		if ( proteinVersionIdsForReportedPeptideCount < 1 ) {
+//			final String msg = "ERROR: proteinVersionIdsForReportedPeptideCount < 1. proteinVersionIdsForReportedPeptideCount: " + proteinVersionIdsForReportedPeptideCount;
+//			log.error( msg );
+//			throw new LimelightImporterInternalException(msg);
+//		}
 		
 		if ( proteinVersionIdsForReportedPeptideCount > 1 ) {
 			

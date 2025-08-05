@@ -38,14 +38,22 @@ import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ExperimentDTO;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.experiment.searchers.ExperimentList_ForProject_Searcher.ExperimentList_ForProject_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.experiment.searchers.ExperimentList_ForProject_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchIds_For_ProjectSearchIdList_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchIds_For_ProjectSearchIdList_Searcher.SearchIdForProjectSearchIdListSearcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
+import org.yeastrc.limelight.limelight_webapp.web_utils.UnmarshalJSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
 /**
@@ -66,11 +74,20 @@ public class Experiment_List_RestWebservice {
 	@Autowired
 	private ExperimentList_ForProject_SearcherIF experimentList_ForProject_Searcher;
 	
+	@Autowired
+	private SearchIds_For_ProjectSearchIdList_Searcher_IF searchIds_For_ProjectSearchIdList_Searcher;
+	
+	@Autowired
+	private SearchFlagsForSearchIdSearcherIF searchFlagsForSearchIdSearcher;
+	
 //	@Autowired
 //	private SearchDataLookupParams_MainProcessingIF searchDataLookupParams_MainProcessing;
 //	
 //	@Autowired
 //	private SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIdsIF searchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds;
+
+	@Autowired
+	private UnmarshalJSON_ToObject unmarshalJSON_ToObject;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -176,14 +193,17 @@ public class Experiment_List_RestWebservice {
 				userIdRestriction_EditDelete = userSession.getUserId();
 			}
     		
-    		List<ExperimentDTO> dbResultList = 
+    		List<ExperimentList_ForProject_Searcher_ResultItem> dbResultList = 
     				experimentList_ForProject_Searcher.getExperimentList_ForProjectId( projectId, false /* draft  */, null /* userIdRestriction */ );
     		
     		List<WebserviceResult_Experiment> experiments = new ArrayList<>( dbResultList.size() );
-    		for ( ExperimentDTO dbResult : dbResultList ) {
+    		
+    		for ( ExperimentList_ForProject_Searcher_ResultItem dbResultItem : dbResultList ) {
+    			
     			WebserviceResult_Experiment experiment = new WebserviceResult_Experiment();
-    			experiment.id = dbResult.getId();
-    			experiment.name = dbResult.getName();
+    			experiment.id = dbResultItem.getId();
+    			experiment.name = dbResultItem.getName();
+    			experiment.allSearches_InExperiment_ContainProteins = true;  //  Can be set to false below  
     			
     			//  experiment.canEdit, experiment.canClone and experiment.canDelete for Published Experiments.  Draft Experiments are a different Webservice.
     			
@@ -195,7 +215,7 @@ public class Experiment_List_RestWebservice {
     			//   Uncommented  3/13/2024:   Comment out since only Project Owner can edit or delete published Experiments
     			
     			if ( userIdRestriction_EditDelete != null ) {
-    				if ( dbResult.getCreatedByUserId().intValue() == userIdRestriction_EditDelete ) {
+    				if ( dbResultItem.getCreatedByUserId().intValue() == userIdRestriction_EditDelete ) {
 
     	    			//  If the user requests to change an experiment, we will provide a way to copy the experiment
     					
@@ -213,6 +233,47 @@ public class Experiment_List_RestWebservice {
 						experiment.canDelete = true;
     				}
     			}
+    			
+
+    			int[] projectSearchIds_In_Experiment = null; // Parsing to int[] will convert floating point numbers to integers with truncation
+
+    			try {
+    				projectSearchIds_In_Experiment = 
+    						unmarshalJSON_ToObject.getObjectFromJSONString(
+    								dbResultItem.getProjectSearchIdsOnlyJSON(), 
+    								int[].class );
+    			} catch ( Exception e ) {
+    				String msg = "Failed to unmarshal experimentDTO.getProjectSearchIdsOnlyJSON() JSON for experimentId: "
+    						+ dbResultItem.getId();
+    				log.error( msg );
+    				throw new LimelightInternalErrorException(  e );
+    			}
+    			
+    			List<Integer> projectSearchIdList = new ArrayList<>( projectSearchIds_In_Experiment.length );
+    			
+    			for ( int projectSearchId : projectSearchIds_In_Experiment ) {
+    				projectSearchIdList.add( projectSearchId );
+    			}
+    			
+    			List<SearchIdForProjectSearchIdListSearcher_ResultItem> searchIds_For_ProjectSearchIdList_ResultItem_List =
+    					searchIds_For_ProjectSearchIdList_Searcher.get_SearchIds_For_ProjectSearchIdList( projectSearchIdList );
+    			
+    			List<Integer> searchIdList = new ArrayList<>( searchIds_For_ProjectSearchIdList_ResultItem_List.size() );
+    			for ( SearchIdForProjectSearchIdListSearcher_ResultItem searchIds_For_ProjectSearchIdList_ResultItem : searchIds_For_ProjectSearchIdList_ResultItem_List ) {
+    				searchIdList.add( searchIds_For_ProjectSearchIdList_ResultItem.getSearchId() );
+    			}
+    			
+    			SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result = searchFlagsForSearchIdSearcher.getSearchFlags_ForSearchIds( searchIdList );
+				for ( SearchFlagsForSearchIdSearcher_Result_Item resultItem : searchFlagsForSearchIdSearcher_Result.getResultItems() ) {
+				
+					if ( resultItem.isSearchNotContainProteins() ) {
+						
+						experiment.allSearches_InExperiment_ContainProteins = false;
+						
+						break;  // EARLY break
+					}
+				}
+
     				
     			experiments.add( experiment );
     		}
@@ -277,6 +338,7 @@ public class Experiment_List_RestWebservice {
     	
     	private int id;
     	private String name;
+    	private boolean allSearches_InExperiment_ContainProteins;
     	private boolean canEdit;
     	private boolean canClone;
     	private boolean canDelete;
@@ -295,6 +357,9 @@ public class Experiment_List_RestWebservice {
 		}
 		public boolean isCanClone() {
 			return canClone;
+		}
+		public boolean isAllSearches_InExperiment_ContainProteins() {
+			return allSearches_InExperiment_ContainProteins;
 		}
     }
     

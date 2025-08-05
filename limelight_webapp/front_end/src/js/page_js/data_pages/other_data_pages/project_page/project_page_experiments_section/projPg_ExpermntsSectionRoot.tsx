@@ -40,13 +40,26 @@ interface ProjectPage_ExperimentsSectionRoot_State {
 
     draftExperiments?: any
     experiments_drafts_initialLoading? : boolean
-    experiments?: any
+    experiments?: Array<INTERNAL__ProjectPage_ExperimentsSectionRoot__SingleExperiment_NonDraft_Root>
     experiments_initialLoading? : boolean
 
     createExperimentButton_Disabled? : boolean
 
     show_LoadingMessage_InitialLoad?: boolean
     show_UpdatingMessage?: boolean
+}
+
+/**
+ * From webservice
+ */
+class INTERNAL__ProjectPage_ExperimentsSectionRoot__SingleExperiment_NonDraft_Root {
+
+    id: number
+    name: string
+    allSearches_InExperiment_ContainProteins: boolean
+    canEdit: boolean
+    canClone: boolean
+    canDelete: boolean
 }
 
 
@@ -843,7 +856,7 @@ class ExperimentList extends React.Component< ExperimentList_Props, ExperimentLi
 
 interface Experiment_Props {
     
-    experiment: any
+    experiment: INTERNAL__ProjectPage_ExperimentsSectionRoot__SingleExperiment_NonDraft_Root
     experimentNameClicked: any
     experimentEditClicked: any
     experimentCloneClicked: any
@@ -1109,26 +1122,41 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
                                 </span>
                             </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             <span>&nbsp;</span>
-                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                title={
-                                    limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
-                                }
-                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                            >
-                                <span
-                                    className=" fake-link "
-                                    onClick={ (event => {
-                                        event.stopPropagation();
-                                        if ( event.ctrlKey || event.metaKey ) {
-                                            window.open( proteinLink, "_blank", "noopener" )
-                                        } else {
-                                            window.location.href = proteinLink
-                                        }
-                                    })}
+                            { this.props.experiment.allSearches_InExperiment_ContainProteins ? (
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    [Proteins]
-                                </span>
-                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ (event => {
+                                            event.stopPropagation();
+                                            if ( event.ctrlKey || event.metaKey ) {
+                                                window.open( proteinLink, "_blank", "noopener" )
+                                            } else {
+                                                window.location.href = proteinLink
+                                            }
+                                        })}
+                                    >
+                                        [Proteins]
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            ) : (
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Protein page is not available since not all the searches in the experiment have proteins"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <span
+                                        className=" gray-text "
+                                    >
+                                        [Proteins]
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            ) }
 
                             {/*
                             <span>&nbsp;</span>

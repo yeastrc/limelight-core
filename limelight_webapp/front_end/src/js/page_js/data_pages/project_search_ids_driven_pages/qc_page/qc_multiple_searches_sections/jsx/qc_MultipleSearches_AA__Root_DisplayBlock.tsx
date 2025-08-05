@@ -146,12 +146,15 @@ export class Qc_MultipleSearches_AA__Root_DisplayBlock extends React.Component< 
                         qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent={ this._qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent }
                     />
                 </div>
-                <div style={ { clear: "both" } }>
-                    <Qc_MultipleSearches_Protein_Level_Statistics_Section
-                        qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
-                        qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent={ this._qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent }
-                    />
-                </div>
+
+                { this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.allSearches_HaveProteins ? ( // Only when have proteins
+                    <div style={ { clear: "both" } }>
+                        <Qc_MultipleSearches_Protein_Level_Statistics_Section
+                            qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                            qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent={ this._qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent }
+                        />
+                    </div>
+                ) : null }
 
             </React.Fragment>
         );

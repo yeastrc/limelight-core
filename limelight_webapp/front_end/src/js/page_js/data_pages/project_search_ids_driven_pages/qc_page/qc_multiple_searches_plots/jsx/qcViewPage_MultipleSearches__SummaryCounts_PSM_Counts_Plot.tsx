@@ -327,18 +327,11 @@ export class QcViewPage_MultipleSearches__SummaryCounts_PSM_Counts_Plot
 
             //  Get Data
 
-            const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId : Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder> = new Map();
             const numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId : Map<number, CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_Num_PSMs_For_reportedPeptideIds_ResultDataType> = new Map();
 
             for ( const projectSearchId of projectSearchIds ) {
                 const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
                     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId)
-                {
-                    const get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result =
-                        await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters().get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise()
-                    proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId.set(projectSearchId,
-                        get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder)
-                }
                 {
                     const get_numPsmsForReportedPeptideIdMap_ReturnPromise_Result =
                         await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters().get_numPsmsForReportedPeptideIdMap_ReturnPromise();
@@ -359,20 +352,12 @@ export class QcViewPage_MultipleSearches__SummaryCounts_PSM_Counts_Plot
             //  Accumulate all PSM Ids for each reportedPeptideId where o_SubFiltering_On_PsmIds_... is FALSE within each ProjectSearchId
             const psmIds_Map_Key_ReportedPeptideId_Map_Key_ProjectSearchId : Map<number,Map<number,Set<number>>> = new Map();
 
-            const proteinSequenceVersionId_DistinctValues = new Set<number>();
-
             for ( const peptideDistinct_Entry of peptideDistinct_Array ) {
 
                 for (const projectSearchId of projectSearchIds) {
 
                     const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideDistinct_Entry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get(projectSearchId);
                     if (!dataPerReportedPeptideId_Map_Key_reportedPeptideId) {
-
-                        continue; // EARLY CONTINUE
-                    }
-
-                    const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder = proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId.get(projectSearchId);
-                    if (!proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder) {
 
                         continue; // EARLY CONTINUE
                     }
@@ -393,16 +378,6 @@ export class QcViewPage_MultipleSearches__SummaryCounts_PSM_Counts_Plot
 
                         const dataPerReportedPeptideId_Value = dataPerReportedPeptideId_Map_Key_reportedPeptideId_MapEntry[1];
                         const reportedPeptideId = dataPerReportedPeptideId_Value.reportedPeptideId;
-
-                        const proteinSequenceVersionIds = proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_proteinSequenceVersionIds_For_ReportedPeptideId(reportedPeptideId);
-                        if (!proteinSequenceVersionIds) {
-
-                            continue; // EARLY CONTINUE
-                        }
-
-                        for (const proteinSequenceVersionId of proteinSequenceVersionIds) {
-                            proteinSequenceVersionId_DistinctValues.add(proteinSequenceVersionId);
-                        }
 
                         if (dataPerReportedPeptideId_Value.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId) {
 

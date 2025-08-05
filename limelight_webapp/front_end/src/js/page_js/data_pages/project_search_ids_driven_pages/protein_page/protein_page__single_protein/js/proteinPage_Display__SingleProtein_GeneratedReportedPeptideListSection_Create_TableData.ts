@@ -316,7 +316,15 @@ const _create_AfterDataLoaded = function (
     try {
         const peptideList = create_GeneratedReportedPeptideListData_Result.peptideList
 
-        const show_Protein_Pre_Post_Residues = _compute_show_Protein_Pre_Post_Residues({ peptideList });
+        let show_Protein_Pre_Post_Residues = false
+
+        let show_Peptide_Unique = true
+
+        if ( showProteins ) {
+            show_Protein_Pre_Post_Residues = _compute_show_Protein_Pre_Post_Residues( { peptideList } );
+        } else {
+            show_Peptide_Unique = false
+        }
 
         const searchData_SearchName_Etc_Root = dataPageStateManager.get_searchData_SearchName_Etc_Root();
 
@@ -344,7 +352,9 @@ const _create_AfterDataLoaded = function (
             const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
             dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
-        {
+
+        if ( show_Peptide_Unique ) {
+
             const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
                 return proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___uniqueColumnHeader_Tooltip_Create();
             }
@@ -720,7 +730,9 @@ const _create_AfterDataLoaded = function (
                     const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
                     dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                 }
-                { // Unique
+
+                if ( show_Peptide_Unique ) { // Unique
+
                     let valueDisplay = "";
                     let valueSort = 1;
                     if (peptideEntry.peptideUnique) {

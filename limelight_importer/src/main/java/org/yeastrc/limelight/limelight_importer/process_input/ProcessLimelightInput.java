@@ -35,6 +35,7 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptides;
 import org.yeastrc.limelight.limelight_importer.dao.ProjectSearchDAO;
 import org.yeastrc.limelight.limelight_importer.dao.SearchDAO;
+import org.yeastrc.limelight.limelight_importer.dao.SearchFlagsMainDAO;
 import org.yeastrc.limelight.limelight_importer.dto.ProjectSearchDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
@@ -53,6 +54,7 @@ import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.
 import org.yeastrc.limelight.limelight_importer.search_sub_group_processing_validating.PreprocessValidate_SearchSubGroups;
 import org.yeastrc.limelight.limelight_importer.search_sub_group_processing_validating.Process_SearchSubGroups_SaveAtSearchLevel;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchFlagsMainDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterableDescriptiveAnnotationType;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
@@ -206,6 +208,20 @@ public class ProcessLimelightInput {
 			
 			Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().saveOrUpdate_ForSearchId(searchId);
 			
+			{
+				//  Add Search Flags Main since have all data.  May need to change where this is inserted when do not have all data
+				
+				SearchFlagsMainDTO searchFlagsMainDTO = new SearchFlagsMainDTO();
+				
+				searchFlagsMainDTO.setSearchId( searchId );
+				
+				if ( limelightInput.getNoMatchedProteins() != null ) {
+					searchFlagsMainDTO.setSearchNotContainProteins( true );
+				}
+				
+				SearchFlagsMainDAO.getInstance().save( searchFlagsMainDTO );
+			}
+			
 			//
 			
 			//  Compute # PSMs and initialize PSM Insert object
@@ -290,14 +306,17 @@ public class ProcessLimelightInput {
 				
 				Process_ReportedPeptideString_PeptideString_Query_InsertIfNeeded__All_ReportedPeptideObjects.getInstance().
 				reportedPeptideString_PeptideString_Query_InsertIfNeeded__All_ReportedPeptideObjects(input_LimelightXMLFile_InternalHolder_Root_Object, searchDTO);
-
-				//  Perform Peptides to Proteins Mapping (Protein Interference).  Insert Proteins and Proteins to Peptide Mapping records
 				
-				Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins.getInstance().
-				process_PeptidesToProteinsMapping_ProteinInference_InsertProteins( 
-						input_LimelightXMLFile_InternalHolder_Root_Object, searchDTO,
-						searchProgramEntryMap, reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId, searchScanFileEntry_AllEntries
-						);
+				if ( input_LimelightXMLFile_InternalHolder_Root_Object.getLimelightInput().getMatchedProteins() != null ) {
+
+					//  Perform Peptides to Proteins Mapping (Protein Interference).  Insert Proteins and Proteins to Peptide Mapping records
+
+					Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins.getInstance().
+					process_PeptidesToProteinsMapping_ProteinInference_InsertProteins( 
+							input_LimelightXMLFile_InternalHolder_Root_Object, searchDTO,
+							searchProgramEntryMap, reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId, searchScanFileEntry_AllEntries
+							);
+				}
 
 				// Process Reported Peptides and their children PSMs etc and insert to DB
 

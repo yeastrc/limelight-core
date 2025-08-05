@@ -142,6 +142,8 @@ interface SearchSelection_DisplayedNestedInFolders_Component_Props {
     hide_SearchFilters?: boolean
     hide_SearchTag_VerboseView_Checkbox?: boolean
 
+    notAllow_Selection_SearchesWithoutProteins?: boolean
+
     defaultView_ExpandFoldersOnInitialView?: boolean
 
     //   MUST populate projectIdentifier or searchesSearchTagsFolders_Result_Root
@@ -559,7 +561,7 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                     <Internal_Component__FolderEntry
                         key={folderEntry.folderId}
 
-                        select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
+                        rootComponent_Props={ this.props }
 
                         defaultView_ExpandFoldersOnInitialView={ this.props.defaultView_ExpandFoldersOnInitialView }
 
@@ -608,7 +610,7 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                 <Internal_Component__SearchEntry
                     key={searchData.projectSearchId}
 
-                    select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
+                    rootComponent_Props={ this.props }
 
                     searchDisplayListItem={searchData}
                     folderId={ undefined }
@@ -861,7 +863,7 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
  */
 interface SearchEntry_Props {
 
-    select_ONLY_ONE_Search: boolean  //  If true, User can select only ONE Search.  Make the search name a fake link instead of using check boxes.
+    rootComponent_Props: SearchSelection_DisplayedNestedInFolders_Component_Props  // Props to the root component at the top of this file
 
     searchDisplayListItem : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
     folderId: number   //  Null or Undefined if not in folder
@@ -926,6 +928,11 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
         if ( this.props.projectSearchIds_ContainedInAllOtherExperimentCells && this.props.projectSearchIds_ContainedInAllOtherExperimentCells.has(this.props.searchDisplayListItem.projectSearchId) ) {
 
             search_selectedInOtherCell = true
+        }
+
+        let notAllow_Selection_of_THIS_Search_SinceItHas_NO_Proteins
+        if ( this.props.searchDisplayListItem.searchNotContainProteins && this.props.rootComponent_Props.notAllow_Selection_SearchesWithoutProteins ) {
+            notAllow_Selection_of_THIS_Search_SinceItHas_NO_Proteins = true
         }
 
         let selectedOtherCellClass = ""
@@ -1007,13 +1014,16 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
         if ( this.props.selected ) {
             searchName_SPAN_CSS_Classes = " search-entry-container-selected "
         }
+        if ( notAllow_Selection_of_THIS_Search_SinceItHas_NO_Proteins ) {
+            searchName_SPAN_CSS_Classes += " gray-text  "
+        }
 
         let row_Div_ClickHandler = this._searchRowClicked_BindThis
         let row_Div_CSS_Class_Clickable = " clickable "
 
         let searchName_OnClick = undefined;
 
-        if ( this.props.select_ONLY_ONE_Search ) {
+        if ( this.props.rootComponent_Props.select_ONLY_ONE_Search ) {
 
             row_Div_ClickHandler = undefined
             row_Div_CSS_Class_Clickable = ""
@@ -1021,6 +1031,12 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
             // searchName_SPAN_CSS_Classes += " fake-link "
 
             // searchName_OnClick = this._searchName_Clicked_BindThis
+        }
+
+        if ( notAllow_Selection_of_THIS_Search_SinceItHas_NO_Proteins ) {
+
+            row_Div_ClickHandler = undefined
+            row_Div_CSS_Class_Clickable = ""
         }
 
         const topLevelDiv_CSS_Classes = " search-entry-container " + row_Div_CSS_Class_Clickable + searchName_SPAN_CSS_Classes + selectedOtherCellClass;
@@ -1044,7 +1060,7 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
                         style={ style_TopLevelDiv }
                     >
 
-                        { this.props.select_ONLY_ONE_Search ? (
+                        { this.props.rootComponent_Props.select_ONLY_ONE_Search ? (
                             //  YES select_ONLY_ONE_Search
                             <>
                                 {/*  2 Column Grid  */}
@@ -1069,8 +1085,28 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
                             //  NO select_ONLY_ONE_Search
                             <>
                                 {/*  2 Column Grid  */}
-                                <div style={ { marginRight: 8 } }>
-                                    <input type="checkbox" checked={ this.props.selected } onChange={ () => { /* nothing since have click handler on containing row div */ } } />
+
+                                <div style={ { marginRight: 8, position: "relative" } }>
+                                    <input
+                                        type="checkbox"
+                                        checked={ this.props.selected }
+                                        onChange={ () => { /* nothing since have click handler on containing row div */ } }
+                                        disabled={ notAllow_Selection_of_THIS_Search_SinceItHas_NO_Proteins ? true : false }
+                                    />
+                                    { notAllow_Selection_of_THIS_Search_SinceItHas_NO_Proteins ? (
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <div>
+                                                    This search is unavailable for selection since it contains no proteins.
+                                                </div>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <div style={ { position: "absolute", inset: 0 } }>
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                                    ) : null }
                                 </div>
                             </>
                         ) }
@@ -1078,13 +1114,24 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
                         {/*  Second Column or only Div */}
                         <div >
                             <div style={ { marginBottom: 2 } }>
-                                <span
-                                    className={ searchName_SPAN_CSS_Classes }
-                                    style={ { overflowWrap : "break-word"}}
-                                    onClick={ searchName_OnClick }
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        notAllow_Selection_of_THIS_Search_SinceItHas_NO_Proteins ? (
+                                            <div>
+                                                This search is unavailable for selection since it contains no proteins.
+                                            </div>
+                                        ) : undefined
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    { searchNameDisplay }
-                                </span>
+                                    <span
+                                        className={ searchName_SPAN_CSS_Classes }
+                                        style={ { overflowWrap : "break-word"}}
+                                        onClick={ notAllow_Selection_of_THIS_Search_SinceItHas_NO_Proteins ? undefined : searchName_OnClick }
+                                    >
+                                        { searchNameDisplay }
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
 
                             {/*  Search Tags  */}
@@ -1116,7 +1163,7 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
  */
 interface FolderEntry_Props {
 
-    select_ONLY_ONE_Search: boolean  //  If true, User can select only ONE Search.  Make the search name a fake link instead of using check boxes.
+    rootComponent_Props: SearchSelection_DisplayedNestedInFolders_Component_Props  // Props to the root component at the top of this file
 
     defaultView_ExpandFoldersOnInitialView: boolean  //  If true, show folder as expanded as default
 
@@ -1227,7 +1274,7 @@ class Internal_Component__FolderEntry extends React.Component< FolderEntry_Props
                     <Internal_Component__SearchEntry
                         key={projectSearchId}
 
-                        select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
+                        rootComponent_Props={ this.props.rootComponent_Props }
 
                         searchDisplayListItem={searchEntry}
                         folderId={ this.props.folderEntry.folderId }

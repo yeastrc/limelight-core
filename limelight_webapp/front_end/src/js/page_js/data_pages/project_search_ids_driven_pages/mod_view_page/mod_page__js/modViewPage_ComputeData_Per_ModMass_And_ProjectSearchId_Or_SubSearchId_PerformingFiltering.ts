@@ -6,7 +6,6 @@
  */
 
 
-import { DataPageStateManager } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
@@ -24,7 +23,8 @@ import {
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters";
 import {
     CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters_Holder,
-    CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId
+    CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId,
+    CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId_SinglePositionEntry
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters";
 import {
     DataPage_common_Flags_SingleSearch
@@ -33,38 +33,33 @@ import {
     limelight__Sort_ArrayOfNumbers_SortArrayInPlace
 } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 import {
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
-import {
     modPage_ModMass_Rounding_UTIL
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_mod_mass_rounding_UTIL/modPage_ModMass_Rounding_UTIL";
 import {
     ModViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass";
 import {
-    ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
-import {
-    ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
-import {
-    CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder
+    CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder,
+    CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder__ProteinCoverage_Entry
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters";
-import {
-    ProteinPositionFilter_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
 import {
     searchSubGroup_Get_Selected_SearchSubGroupIds
 } from "page_js/data_pages/search_sub_group/js/searchSubGroup_Get_Selected_SearchSubGroupIds";
-import {
-    SearchSubGroup_CentralStateManagerObjectClass
-} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 import {
     CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered";
 import {
     Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
+import {
+    ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
+import {
+    CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters";
+import {
+    CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_common_across_searches_sub_parts__returned_objects/commonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters";
 
 
 ///////////////////////
@@ -72,12 +67,17 @@ import {
 
 ///  Search this file for the string:   MAIN exported function
 
-
+/**
+ *
+ */
 export enum ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum {
     ProjectSearchId = "ProjectSearchId",
     SubSearchId = "SubSearchId"
 }
 
+/**
+ *
+ */
 export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_UI_Selections_UsedForCreation {
 
     /**
@@ -96,6 +96,9 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     readonly modMassCutoffMax: number
 }
 
+/**
+ *
+ */
 export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root {
 
     /**
@@ -110,7 +113,6 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     /**
      * A place to save "Unmodified" PSM IDs since need them in the denominator for "Filtered ZScore" and "Filtered P-Value";
      *
-     * TODO  Update for SubSearchId when split on that
      */
     private _psmTblData_With_NO_Modifications_Map_Key_PsmId_Map_Key_ProjectSearchId_Or_SubSearchId: Map<number, Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>> = new Map()
 
@@ -284,6 +286,9 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
 
 }
 
+/**
+ * Result for Single Mod Mass
+ */
 export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_ModMass {
 
     readonly modMass: number
@@ -324,6 +329,9 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     }
 }
 
+/**
+ * Result for Single ProjectSearchId_Or_SubSearchId UNDER Single Mod Mass
+ */
 export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_ProjectSearchId_Or_SubSearchId {
 
     readonly projectSearchId_Or_SubSearchId: number
@@ -377,13 +385,16 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     }
 }
 
+/**
+ * Result for Single PSM UNDER Single ProjectSearchId_Or_SubSearchId UNDER Single Mod Mass
+ */
 export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm {
 
     readonly psmId: number
     readonly psmTblData: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
 
     /**
-     * From Filtering Code
+     * From Filtering Code - Filters in block "Click to Show Filters and Options"
      */
     readonly psmEntry: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
 
@@ -391,6 +402,12 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     private _psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId_Array: Array<ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm_SinglePsmLevelVariableModification> = []
 
     private _variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry: Array<ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm_Single_ReportedPeptideLevelVariableModification> = []
+
+    private _allMods_PeptidePositions: Set<number>
+
+    private _allMods_PeptideResidueLetters_At_ModificationPositions: Set<string>
+
+    private _parent_ForSingle_ProjectSearchId_Or_SubSearchId: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_ProjectSearchId_Or_SubSearchId
 
     readonly variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder
     readonly variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder
@@ -400,6 +417,7 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
         {
             psmTblData,
             psmEntry,
+            parent_ForSingle_ProjectSearchId_Or_SubSearchId,
             variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder,
             variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder,
             openModifications_On_PSM_For_MainFilters_Holder
@@ -411,6 +429,8 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
              */
             psmEntry: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
 
+            parent_ForSingle_ProjectSearchId_Or_SubSearchId: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_ProjectSearchId_Or_SubSearchId
+
             variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder
             variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder
             openModifications_On_PSM_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters_Holder
@@ -419,15 +439,16 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
         this.psmId = psmTblData.psmId
         this.psmTblData = psmTblData
         this.psmEntry = psmEntry
+        this._parent_ForSingle_ProjectSearchId_Or_SubSearchId = parent_ForSingle_ProjectSearchId_Or_SubSearchId
         this.variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder= variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder
         this.variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder = variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder
         this.openModifications_On_PSM_For_MainFilters_Holder = openModifications_On_PSM_For_MainFilters_Holder
     }
 
 
-    get__psmOpen_ModificationMassPerPSM_ForPsmId_Array_Length() {
-        return this._psmOpen_ModificationMassPerPSM_ForPsmId_Array.length
-    }
+    // get__psmOpen_ModificationMassPerPSM_ForPsmId_Array_Length() {
+    //     return this._psmOpen_ModificationMassPerPSM_ForPsmId_Array.length
+    // }
     get__psmOpen_ModificationMassPerPSM_ForPsmId_Array_Entries() {
         return this._psmOpen_ModificationMassPerPSM_ForPsmId_Array.values()
     }
@@ -439,14 +460,20 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
         return this._psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId_Array.values()
     }
 
-    get__variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry__Array_Length() {
-        return this._variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.length
-    }
+    // get__variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry__Array_Length() {
+    //     return this._variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.length
+    // }
     get__variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry__Array_Entries() {
         return this._variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.values()
     }
 
+    get__allMods_PeptidePositions() : ReadonlySet<number> {
+        return this._allMods_PeptidePositions
+    }
 
+    get__allMods_PeptideResidueLetters_At_ModificationPositions() : ReadonlySet<string> {
+        return this._allMods_PeptideResidueLetters_At_ModificationPositions
+    }
     /**
      * !!  INTERNAL ONLY to the code file for this class
      *
@@ -466,6 +493,7 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
 
         this._psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId_Array.push(entry)
     }
+
     /**
      * !!  INTERNAL ONLY to the code file for this class
      *
@@ -475,8 +503,31 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
 
         this._variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.push(entry)
     }
+
+    /**
+     * !!  INTERNAL ONLY to the code file for this class
+     *
+     * @param allMods_PeptidePositions
+     */
+    INTERNAL_ONLY__Add_AllMods_PeptidePositions( allMods_PeptidePositions: Set<number> ) {
+
+        this._allMods_PeptidePositions = allMods_PeptidePositions
+    }
+
+    /**
+     * !!  INTERNAL ONLY to the code file for this class
+     *
+     * @param allMods_PeptideResidueLetters_At_ModificationPositions
+     */
+    INTERNAL_ONLY__Add_AllMods__PeptideResidueLetters_At_ModificationPositions( allMods_PeptideResidueLetters_At_ModificationPositions: Set<string> ) {
+
+        this._allMods_PeptideResidueLetters_At_ModificationPositions = allMods_PeptideResidueLetters_At_ModificationPositions
+    }
 }
 
+/**
+ * OpenModifications_On_PSM
+ */
 export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm_SinglePsmLevelOpenModification {
 
     /**
@@ -488,6 +539,9 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     readonly psmOpenModificationForPsmId: CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId
 }
 
+/**
+ * Variable_Dynamic_Modifications_On_PSM
+ */
 export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm_SinglePsmLevelVariableModification {
 
     /**
@@ -499,7 +553,9 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     readonly psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId: CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_PsmId_SingleEntry
 }
 
-
+/**
+ * Single_ReportedPeptideLevelVariableModification
+ */
 export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm_Single_ReportedPeptideLevelVariableModification {
 
     /**
@@ -523,23 +579,13 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
 export const modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering = function (
     {
         modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass,
-        projectSearchIds,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-        proteinPositionFilter_UserSelections_StateObject,
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-        searchSubGroup_CentralStateManagerObjectClass,
-        dataPageStateManager,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     } : {
         modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass : ModViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass
-        projectSearchIds : Array<number>
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
-        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-        searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
-        dataPageStateManager : DataPageStateManager
+
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     }
 ): {
@@ -553,20 +599,23 @@ export const modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     let searchSubGroupId_ForPSM_ID_Holder: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder = undefined
 
     const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder> = new Map()
+    const peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder> = new Map()
     const variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder> = new Map()
     const variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder> = new Map()
     const openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters_Holder> = new Map()
     const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder> = new Map()
 
+    let peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder = undefined
+
     const promises: Array<Promise<void>> = []
 
     // console.warn( "NOT processing Sub Searches Yet")
 
-    if ( projectSearchIds.length === 1 ) {
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length === 1 ) {
 
-        const projectSearchId = projectSearchIds[ 0 ]
+        const projectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
 
-        const searchSubGroups_Root = dataPageStateManager.get_SearchSubGroups_Root()
+        const searchSubGroups_Root = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
 
         if ( searchSubGroups_Root ) {
 
@@ -606,9 +655,9 @@ export const modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
         }
     }
 
-    for ( const projectSearchId of projectSearchIds ) {
+    for ( const projectSearchId of all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage ) {
 
-        const dataPage_common_Flags_SingleSearch_ForProjectSearchId = dataPageStateManager.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId)
+        const dataPage_common_Flags_SingleSearch_ForProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId)
         if ( ! dataPage_common_Flags_SingleSearch_ForProjectSearchId ) {
             throw Error("dataPageStateManager.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId )
         }
@@ -636,6 +685,26 @@ export const modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
                 promises.push(promise)
             } else {
                 throw Error("get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result No data or promise")
+            }
+        }
+        {
+            const get_PeptideIdsHolder_AllForSearch_Result =
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters().
+                get_PeptideIdsHolder_AllForSearch()
+            if ( get_PeptideIdsHolder_AllForSearch_Result.data ) {
+                peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.set( projectSearchId, get_PeptideIdsHolder_AllForSearch_Result.data.peptideIds_For_MainFilters_Holder )
+            } else if ( get_PeptideIdsHolder_AllForSearch_Result.promise ) {
+                const promise = new Promise<void>((resolve, reject) => { try {
+                    get_PeptideIdsHolder_AllForSearch_Result.promise.catch( reason => reject(reason) )
+                    get_PeptideIdsHolder_AllForSearch_Result.promise.then( value => { try {
+                        peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.set( projectSearchId, value.peptideIds_For_MainFilters_Holder )
+                        resolve()
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                promises.push(promise)
+            } else {
+                throw Error("get_PeptideIdsHolder_AllForSearch_Result No data or promise")
             }
         }
 
@@ -702,15 +771,14 @@ export const modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
             }
         }
 
-        if ( proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections()
-            || proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
+        if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections()
+            || all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
 
             const get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result =
                 commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
                 get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters().
                 get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch()
             if ( get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.data ) {
-                get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.data.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
                 proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId.set( projectSearchId, get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.data.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder )
             } else if ( get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.promise ) {
                 const promise = new Promise<void>((resolve, reject) => { try {
@@ -725,28 +793,45 @@ export const modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
                 throw Error("get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result No data or promise")
             }
         }
+    }
 
+    {
+        const get_PeptideSequencesHolder_AllForAllSearches_Result =
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+            get__commonData_LoadedFromServer__CommonAcrossSearches().
+            get_commonData_LoadedFromServer_SingleSearch__PeptideSequences_For_MainFilters().
+            get_PeptideSequencesHolder_AllForAllSearches()
+        if ( get_PeptideSequencesHolder_AllForAllSearches_Result.data ) {
+            peptideSequences_For_MainFilters_Holder = get_PeptideSequencesHolder_AllForAllSearches_Result.data.peptideSequences_For_MainFilters_Holder
+        } else if ( get_PeptideSequencesHolder_AllForAllSearches_Result.promise ) {
+            const promise = new Promise<void>((resolve, reject) => { try {
+                get_PeptideSequencesHolder_AllForAllSearches_Result.promise.catch( reason => reject(reason) )
+                get_PeptideSequencesHolder_AllForAllSearches_Result.promise.then( value => { try {
+                    peptideSequences_For_MainFilters_Holder = value.peptideSequences_For_MainFilters_Holder
+                    resolve()
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            promises.push(promise)
+        } else {
+            throw Error("get_PeptideSequencesHolder_AllForAllSearches_Result No data or promise")
+        }
     }
 
     if ( promises.length === 0 ) {
 
         const result = _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering__AfterLoadData({
             modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass,
-            projectSearchIds,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-            proteinPositionFilter_UserSelections_StateObject,
-            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-            searchSubGroup_CentralStateManagerObjectClass,
-            dataPageStateManager,
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
             singleSearch_WithSubSearches,
             searchSubGroupId_ForPSM_ID_Holder,
             psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+            peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId,
             variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
             variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId,
             openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
-            proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId
+            proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+            peptideSequences_For_MainFilters_Holder
         })
 
         return { promise: undefined, data: result }
@@ -761,21 +846,17 @@ export const modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
 
                 const result = _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering__AfterLoadData({
                     modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass,
-                    projectSearchIds,
-                    modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-                    proteinPositionFilter_UserSelections_StateObject,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-                    searchSubGroup_CentralStateManagerObjectClass,
-                    dataPageStateManager,
+                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
                     singleSearch_WithSubSearches,
                     searchSubGroupId_ForPSM_ID_Holder,
                     psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+                    peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId,
                     variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
                     variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId,
                     openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
-                    proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId
+                    proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+                    peptideSequences_For_MainFilters_Holder
                 })
                 resolve( result )
 
@@ -790,45 +871,38 @@ export const modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
 const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering__AfterLoadData = function (
     {
         modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-        proteinPositionFilter_UserSelections_StateObject,
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-        searchSubGroup_CentralStateManagerObjectClass,
-        projectSearchIds,
-        dataPageStateManager,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
         singleSearch_WithSubSearches,
         searchSubGroupId_ForPSM_ID_Holder,
         psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+        peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId,
         variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
         variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId,
         openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
-        proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId
+        proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+        peptideSequences_For_MainFilters_Holder
     } : {
         modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass : ModViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass
-        projectSearchIds : Array<number>
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
-        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-        searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
-        dataPageStateManager : DataPageStateManager
+
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
         singleSearch_WithSubSearches: boolean
         searchSubGroupId_ForPSM_ID_Holder: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
         psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder>
+        peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder>
         variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder>
         variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder>
         openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters_Holder>
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder>
+        peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
     }
 ): ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
 {
     const ui_Selections_Used_ForCreation : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_UI_Selections_UsedForCreation = {
-        excludeUnlocalizedOpenMods_UI_Selection: modViewPage_DataVizOptions_VizSelections_PageStateManager.get_excludeUnlocalizedOpenMods(),
-        modMassCutoffMin: modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin(),
-        modMassCutoffMax: modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax()
+        excludeUnlocalizedOpenMods_UI_Selection: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_excludeUnlocalizedOpenMods(),
+        modMassCutoffMin: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin(),
+        modMassCutoffMax: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax()
     }
 
 
@@ -841,9 +915,9 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
 
         //  Only display for 1 search
 
-        const projectSearchId = projectSearchIds[ 0 ];
+        const projectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ];
 
-        const searchSubGroups_ForProjectSearchId = dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
+        const searchSubGroups_ForProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
         if ( ! searchSubGroups_ForProjectSearchId ) {
             const msg = "returned nothing: dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
             console.warn( msg )
@@ -851,13 +925,14 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
         }
 
         searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
-            searchSubGroup_CentralStateManagerObjectClass : searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
+            searchSubGroup_CentralStateManagerObjectClass : all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass,
+            searchSubGroups_ForProjectSearchId
         })
     }
 
     let projectSearchId_Or_SubSearchId_Enum = ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.ProjectSearchId
     if ( singleSearch_WithSubSearches ) {
-        //  TODO  Single Search with Sub Searches: Process the Sub Searches
+        //  Single Search with Sub Searches: Process the Sub Searches
         projectSearchId_Or_SubSearchId_Enum = ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId
     }
 
@@ -866,7 +941,7 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
         projectSearchId_Or_SubSearchId_Enum
     })
 
-    for ( const projectSearchId of projectSearchIds ) {
+    for ( const projectSearchId of all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage ) {
 
         const reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId = modViewPage_ContainerFor_ResultsFrom_FiltersAndOptionsCollapsibleBlock_ContainerClass.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId(projectSearchId)
         if ( ! reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId ) {
@@ -874,14 +949,19 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
             continue // EARLY CONTINUE
         }
 
-        const dataPage_common_Flags_SingleSearch_ForProjectSearchId = dataPageStateManager.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId )
+        const dataPage_common_Flags_SingleSearch_ForProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId )
         if ( ! dataPage_common_Flags_SingleSearch_ForProjectSearchId ) {
-            throw Error( "dataPageStateManager.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId )
+            throw Error( "all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId )
         }
 
         const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
         if ( ! psmTblData_For_ReportedPeptideId_For_MainFilters_Holder ) {
             throw Error("psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId)
+        }
+
+        const peptideIds_For_MainFilters_Holder = peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
+        if ( ! peptideIds_For_MainFilters_Holder ) {
+            throw Error("peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId)
         }
 
         const variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder = variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
@@ -901,6 +981,8 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
 
             if ( reportedPeptideIds_AndTheir_PSM_IDs_Entry.psmEntries_Include_Map_Key_PsmId ) {
 
+                //  Have psm entries that have passed filters (up to this point) so process them
+
                 for ( const psmEntry of reportedPeptideIds_AndTheir_PSM_IDs_Entry.psmEntries_Include_Map_Key_PsmId.values() ) {
 
                     const psmId = psmEntry.psmId
@@ -916,23 +998,27 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
                         projectSearchId,
                         searchSubGroup_Ids_Selected,
                         ui_Selections_Used_ForCreation,
-                        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-                        proteinPositionFilter_UserSelections_StateObject,
-                        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
                         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root,  //  Updated
 
-                        singleSearch_WithSubSearches,
+                        singleSearch_WithSubSearches_Flag: singleSearch_WithSubSearches,
                         searchSubGroupId_ForPSM_ID_Holder,
                         dataPage_common_Flags_SingleSearch_ForProjectSearchId,
                         variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder,
                         variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder,
                         openModifications_On_PSM_For_MainFilters_Holder,
-                        proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
+                        proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
+
+                        peptideIds_For_MainFilters_Holder,
+                        peptideSequences_For_MainFilters_Holder
                     })
                 }
 
             } else {
+
+                //  NOT Have psm entries that have passed filters (up to this point) so process ALL PSMs for reportedPeptideId (that pass top level filters: PSM / Reported Peptide / ...)
+
                 const psmTblData_For_ReportedPeptideId = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_ReportedPeptideId( reportedPeptideId )
 
                 for ( const psmTblData of psmTblData_For_ReportedPeptideId.get_PsmTblData_Entries_IterableIterator() ) {
@@ -947,19 +1033,20 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
                         projectSearchId,
                         searchSubGroup_Ids_Selected,
                         ui_Selections_Used_ForCreation,
-                        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-                        proteinPositionFilter_UserSelections_StateObject,
-                        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
                         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root,  //  Updated
 
-                        singleSearch_WithSubSearches,
+                        singleSearch_WithSubSearches_Flag: singleSearch_WithSubSearches,
                         searchSubGroupId_ForPSM_ID_Holder,
                         dataPage_common_Flags_SingleSearch_ForProjectSearchId,
                         variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder,
                         variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder,
                         openModifications_On_PSM_For_MainFilters_Holder,
-                        proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
+                        proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
+
+                        peptideIds_For_MainFilters_Holder,
+                        peptideSequences_For_MainFilters_Holder
                     })
                 }
             }
@@ -987,13 +1074,13 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
 
             if ( projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
 
-                if ( projectSearchIds.length !== 1 ) {
+                if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length !== 1 ) {
                     const msg = "if ( projectSearchId_Or_SubSearchId_Enum ) { AND if ( projectSearchIds.length !== 0 ) {"
                     console.warn(msg)
                     throw Error(msg)
                 }
 
-                const projectSearchId = projectSearchIds[ 0 ]
+                const projectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
 
                 for ( const  searchSubGroup_Id of searchSubGroup_Ids_Selected ) {
 
@@ -1008,7 +1095,7 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
 
             } else {
 
-                for ( const projectSearchId of projectSearchIds ) {
+                for ( const projectSearchId of all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage ) {
 
                     let data_For__ProjectSearchId_Or_SubSearchId = data_ForSingle_ModMass.get_For__ProjectSearchId_Or_SubSearchId( projectSearchId )
                     if ( ! data_For__ProjectSearchId_Or_SubSearchId ) {
@@ -1027,18 +1114,37 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
 
 //////
 
+/**
+ * Process a Single PSM.
+ *
+ * Updates input param modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root
+ *
+ *
+ * @param psmTblData
+ * @param psmEntry
+ * @param projectSearchId
+ * @param singleSearch_WithSubSearches
+ * @param searchSubGroup_Ids_Selected
+ * @param ui_Selections_Used_ForCreation
+ * @param all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+ * @param modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root
+ * @param searchSubGroupId_ForPSM_ID_Holder
+ * @param dataPage_common_Flags_SingleSearch_ForProjectSearchId
+ * @param variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder
+ * @param variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder
+ * @param openModifications_On_PSM_For_MainFilters_Holder
+ * @param proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
+ */
 const _process_SinglePsm = function (
     {
         psmTblData,
         psmEntry,
         projectSearchId,
-        singleSearch_WithSubSearches,
+        singleSearch_WithSubSearches_Flag,
         searchSubGroup_Ids_Selected,
         ui_Selections_Used_ForCreation,
 
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-        proteinPositionFilter_UserSelections_StateObject,
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root,  //  Updated
 
@@ -1047,7 +1153,9 @@ const _process_SinglePsm = function (
         variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder,
         variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder,
         openModifications_On_PSM_For_MainFilters_Holder,
-        proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
+        proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
+        peptideIds_For_MainFilters_Holder,
+        peptideSequences_For_MainFilters_Holder
     } : {
         psmTblData: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
 
@@ -1057,13 +1165,11 @@ const _process_SinglePsm = function (
         readonly psmEntry: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
 
         projectSearchId: number
-        singleSearch_WithSubSearches: boolean
+        singleSearch_WithSubSearches_Flag: boolean
         searchSubGroup_Ids_Selected : Set<number>
         ui_Selections_Used_ForCreation : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_UI_Selections_UsedForCreation
 
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
-        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
 
@@ -1074,6 +1180,9 @@ const _process_SinglePsm = function (
         variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder
         openModifications_On_PSM_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters_Holder
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder
+
+        peptideIds_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder
+        peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
     }
 ) {
 
@@ -1144,11 +1253,10 @@ const _process_SinglePsm = function (
                         const modificationPositions_OnPeptide = [ psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId.position ]
 
                         const filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result =
-                            _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter( {
+                            _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_ModificationPositions_OnPeptide_ThatPassFilters( {
                                 modificationPositions_OnPeptide,
                                 psmTblData,
-                                proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-                                proteinPositionFilter_UserSelections_StateObject,
+                                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                                 proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
                             } )
 
@@ -1163,7 +1271,7 @@ const _process_SinglePsm = function (
                                 psmEntry,
                                 modMass_Rounded_ForModPage_Processing,
                                 projectSearchId,
-                                singleSearch_WithSubSearches,
+                                singleSearch_WithSubSearches_Flag,
                                 searchSubGroup_Ids_Selected,
 
                                 modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root, // Updated
@@ -1179,6 +1287,15 @@ const _process_SinglePsm = function (
                                 modMass_Rounded_ForModPage_Processing,
                                 psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId
                             } )
+
+                            _update__dataFor_SinglePsm_For_PsmId__For__modificationPositions_OnPeptide_ThatPassFilters__AND__ModifiedResidueLetters({
+                                dataFor_SinglePsm_For_PsmId,  //  UPDATED
+
+                                modificationPositions_OnPeptide_ThatPassFilters: filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.modificationPositions_OnPeptide_ThatPassFilters,
+
+                                peptideIds_For_MainFilters_Holder,
+                                peptideSequences_For_MainFilters_Holder
+                            })
 
                             psm_Any_ModMassEntry_ForPSM_Passed_Filters = true
                         }
@@ -1219,11 +1336,10 @@ const _process_SinglePsm = function (
                     const modificationPositions_OnPeptide = [ variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.position ]
 
                     const filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result =
-                        _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter( {
+                        _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_ModificationPositions_OnPeptide_ThatPassFilters( {
                             modificationPositions_OnPeptide,
                             psmTblData,
-                            proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-                            proteinPositionFilter_UserSelections_StateObject,
+                            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                             proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
                         } )
 
@@ -1239,7 +1355,7 @@ const _process_SinglePsm = function (
                             psmEntry,
                             modMass_Rounded_ForModPage_Processing,
                             projectSearchId,
-                            singleSearch_WithSubSearches,
+                            singleSearch_WithSubSearches_Flag: singleSearch_WithSubSearches_Flag,
                             searchSubGroup_Ids_Selected,
 
                             modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root, // Updated
@@ -1255,6 +1371,15 @@ const _process_SinglePsm = function (
                             modMass_Rounded_ForModPage_Processing,
                             variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry
                         } )
+
+                        _update__dataFor_SinglePsm_For_PsmId__For__modificationPositions_OnPeptide_ThatPassFilters__AND__ModifiedResidueLetters({
+                            dataFor_SinglePsm_For_PsmId,  //  UPDATED
+
+                            modificationPositions_OnPeptide_ThatPassFilters: filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.modificationPositions_OnPeptide_ThatPassFilters,
+
+                            peptideIds_For_MainFilters_Holder,
+                            peptideSequences_For_MainFilters_Holder
+                        })
 
                         psm_Any_ModMassEntry_ForPSM_Passed_Filters = true
                     }
@@ -1280,7 +1405,7 @@ const _process_SinglePsm = function (
                 //  Only for Open Mod
                 let skipModificationEntry_Since_RoundedToZero_And_TreatingZeroAsUnmodified = false
                 {
-                    if ( modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+                    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
 
                         const modificationMass_Rounded = Math.round( psmOpenModificationMassForPsmId.openModificationMass )
                         if ( modificationMass_Rounded === 0 ) {
@@ -1312,6 +1437,8 @@ const _process_SinglePsm = function (
 
                         let psm_PassesFilters = false
 
+                        let modificationPositions_OnPeptide_ThatPassFilters: Set<number> = undefined
+
                         if ( psmOpenModificationMassForPsmId.positionsMap_KeyPosition ) {
 
                             const modificationPositions_OnPeptide: Array<number> = []
@@ -1323,18 +1450,18 @@ const _process_SinglePsm = function (
                             }
 
                             const filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result =
-                                _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter( {
+                                _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_ModificationPositions_OnPeptide_ThatPassFilters( {
                                     modificationPositions_OnPeptide,
                                     psmTblData,
-                                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-                                    proteinPositionFilter_UserSelections_StateObject,
+                                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                                     proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
                                 } )
-
 
                             if ( filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.passesFilter ) {
 
                                 psm_PassesFilters = true
+
+                                modificationPositions_OnPeptide_ThatPassFilters = filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.modificationPositions_OnPeptide_ThatPassFilters
                             }
 
                         } else {
@@ -1342,8 +1469,7 @@ const _process_SinglePsm = function (
                             const filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result =
                                 _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter({
                                     psmTblData,
-                                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-                                    proteinPositionFilter_UserSelections_StateObject,
+                                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
                                     proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
                                 })
@@ -1365,7 +1491,7 @@ const _process_SinglePsm = function (
                                 psmEntry,
                                 modMass_Rounded_ForModPage_Processing,
                                 projectSearchId,
-                                singleSearch_WithSubSearches,
+                                singleSearch_WithSubSearches_Flag: singleSearch_WithSubSearches_Flag,
                                 searchSubGroup_Ids_Selected,
 
                                 modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root, // Updated
@@ -1382,6 +1508,17 @@ const _process_SinglePsm = function (
                                 psmOpenModificationForPsmId: psmOpenModificationMassForPsmId
                             } )
 
+                            if ( modificationPositions_OnPeptide_ThatPassFilters ) {
+                                _update__dataFor_SinglePsm_For_PsmId__For__modificationPositions_OnPeptide_ThatPassFilters__AND__ModifiedResidueLetters({
+                                    dataFor_SinglePsm_For_PsmId,  //  UPDATED
+
+                                    modificationPositions_OnPeptide_ThatPassFilters,
+
+                                    peptideIds_For_MainFilters_Holder,
+                                    peptideSequences_For_MainFilters_Holder
+                                })
+                            }
+
                             psm_Any_ModMassEntry_ForPSM_Passed_Filters = true
                         }
                     }
@@ -1392,7 +1529,11 @@ const _process_SinglePsm = function (
 
     if ( ( ! psm_Any_ModMassEntry_ForPSM_Passed_Filters ) && ( ! psm_has_Any_ModMassEntries___Includes_ModificationsThat_NOT_PassesFilters___EXCLUDES__OpenModMassRoundsToZero_AND_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Checked ) ) {
 
-        if ( singleSearch_WithSubSearches ) {
+        //  PSM NOT pass any filters so will NOT be displayed under this Top level Mod Mass / ( ProjectSearchId OR SubSearchId )
+
+        //  Store here since needed for fraction and statistics calculations
+
+        if ( singleSearch_WithSubSearches_Flag ) {
 
             const subGroupId = searchSubGroupId_ForPSM_ID_Holder.get_subGroupId_For_PsmId( psmTblData.psmId )
             if ( subGroupId === undefined ) {
@@ -1411,11 +1552,53 @@ const _process_SinglePsm = function (
     }
 }
 
+const _update__dataFor_SinglePsm_For_PsmId__For__modificationPositions_OnPeptide_ThatPassFilters__AND__ModifiedResidueLetters = function (
+    {
+        dataFor_SinglePsm_For_PsmId,  //  UPDATED
+
+        modificationPositions_OnPeptide_ThatPassFilters,
+
+        peptideIds_For_MainFilters_Holder,
+        peptideSequences_For_MainFilters_Holder
+    } : {
+        dataFor_SinglePsm_For_PsmId: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm  //  UPDATED
+
+        modificationPositions_OnPeptide_ThatPassFilters: Set<number>
+
+        peptideIds_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder
+        peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
+
+    }) {
+
+    dataFor_SinglePsm_For_PsmId.INTERNAL_ONLY__Add_AllMods_PeptidePositions( modificationPositions_OnPeptide_ThatPassFilters )
+
+    const peptideId_For_ReportedPeptideId = peptideIds_For_MainFilters_Holder.get_PeptideId_For_ReportedPeptideId( dataFor_SinglePsm_For_PsmId.psmTblData.reportedPeptideId )
+    if ( ! peptideId_For_ReportedPeptideId ) {
+        throw Error("peptideIds_For_MainFilters_Holder.get_PeptideId_For_ReportedPeptideId( dataFor_SinglePsm_For_PsmId.psmTblData.reportedPeptideId ) returned NOTHING for dataFor_SinglePsm_For_PsmId.psmTblData.reportedPeptideId: " + dataFor_SinglePsm_For_PsmId.psmTblData.reportedPeptideId )
+    }
+
+    const peptideSequence_For_PeptideId = peptideSequences_For_MainFilters_Holder.get_PeptideSequence_For_PeptideId( peptideId_For_ReportedPeptideId )
+    if ( ! peptideSequence_For_PeptideId ) {
+        throw Error("peptideSequences_For_MainFilters_Holder.get_PeptideSequence_For_PeptideId( peptideId_For_ReportedPeptideId ) returned NOTHING for peptideId_For_ReportedPeptideId: " + peptideId_For_ReportedPeptideId + ", dataFor_SinglePsm_For_PsmId.psmTblData.reportedPeptideId: " + dataFor_SinglePsm_For_PsmId.psmTblData.reportedPeptideId )
+    }
+
+    const peptideResidueLetters_At_ModificationPositions: Set<string> = new Set()
+
+    for ( const position of modificationPositions_OnPeptide_ThatPassFilters ) {
+
+        const peptideResidueLetter = peptideSequence_For_PeptideId.substring( position - 1, position ) //  Start at 'position - 1' since position is 1 based
+
+        peptideResidueLetters_At_ModificationPositions.add( peptideResidueLetter )
+    }
+
+    dataFor_SinglePsm_For_PsmId.INTERNAL_ONLY__Add_AllMods__PeptideResidueLetters_At_ModificationPositions( peptideResidueLetters_At_ModificationPositions )
+}
+
 /**
  *
  * NO Filtering.
  *
- * Populates objects down from modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root down to the returned dataFor_SinglePsm_For_PsmId
+ * Populates objects down from 'Root' (modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root) down to the returned dataFor_SinglePsm_For_PsmId
  */
 const _get_dataFor_SinglePsm_For_PsmId = function(
     {
@@ -1424,7 +1607,7 @@ const _get_dataFor_SinglePsm_For_PsmId = function(
         psmEntry,
         modMass_Rounded_ForModPage_Processing,
         projectSearchId,
-        singleSearch_WithSubSearches,
+        singleSearch_WithSubSearches_Flag,
         searchSubGroup_Ids_Selected,
         searchSubGroupId_ForPSM_ID_Holder,
 
@@ -1443,8 +1626,17 @@ const _get_dataFor_SinglePsm_For_PsmId = function(
         psmEntry: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
 
         modMass_Rounded_ForModPage_Processing: number
+
+        /**
+         * projectSearchId is always stored.  Used for ProjectSearchId_Or_SubSearchId IF singleSearch_WithSubSearches_Flag is false
+         */
         projectSearchId: number
-        singleSearch_WithSubSearches: boolean
+
+        /**
+         * If true, code gets subGroupId_For_PsmId and uses that for ProjectSearchId_Or_SubSearchId
+         */
+        singleSearch_WithSubSearches_Flag: boolean
+
         searchSubGroup_Ids_Selected : Set<number>
         searchSubGroupId_ForPSM_ID_Holder: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
 
@@ -1458,7 +1650,7 @@ const _get_dataFor_SinglePsm_For_PsmId = function(
 
     let subGroupId_For_PsmId: number = undefined
 
-    if ( singleSearch_WithSubSearches ) {
+    if ( singleSearch_WithSubSearches_Flag ) {
 
         subGroupId_For_PsmId = searchSubGroupId_ForPSM_ID_Holder.get_subGroupId_For_PsmId( psmId )
         if ( subGroupId_For_PsmId === undefined || subGroupId_For_PsmId === null ) {
@@ -1482,7 +1674,7 @@ const _get_dataFor_SinglePsm_For_PsmId = function(
 
     let data_For_ProjectSearchId_Or_SubSearchId: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_ProjectSearchId_Or_SubSearchId
 
-    if ( singleSearch_WithSubSearches ) {
+    if ( singleSearch_WithSubSearches_Flag ) {
 
         if ( subGroupId_For_PsmId === undefined ) {
             throw Error("if ( singleSearch_WithSubSearches ) { AND if ( subGroupId_For_PsmId === undefined ) {" )
@@ -1515,6 +1707,7 @@ const _get_dataFor_SinglePsm_For_PsmId = function(
         dataFor_SinglePsm_For_PsmId = new ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm({
             psmTblData,
             psmEntry,
+            parent_ForSingle_ProjectSearchId_Or_SubSearchId: data_For_ProjectSearchId_Or_SubSearchId,
 
             variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder,
             variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder,
@@ -1532,12 +1725,11 @@ const _get_dataFor_SinglePsm_For_PsmId = function(
 
 ////////////////////
 
-const _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter = function (
+const _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_ModificationPositions_OnPeptide_ThatPassFilters = function (
     {
         modificationPositions_OnPeptide,
         psmTblData,
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-        proteinPositionFilter_UserSelections_StateObject,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
     } : {
@@ -1545,35 +1737,58 @@ const _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPos
 
         psmTblData: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
 
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
-        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder
     }
 ) : {
     passesFilter: boolean
+    modificationPositions_OnPeptide_ThatPassFilters: Set<number>
 } {
 
-    if ( ( ! proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() )
-        && ( ! proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) ) {
+    // How can I populate "modificationPositions_OnPeptide_ThatPassFilters" here or does this need to happen elsewhere???????
+    //
+    //     "modificationPositions_OnPeptide_ThatPassFilters" is needed to populate the modified residue letters on the top level table per mod mass
 
-        //  NO Filtering so passesFilter: true
+    if ( ( ! all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() )
+        && ( ! all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) ) {
 
-        return { passesFilter: true }  // EARLY RETURN
+        //  NO Filtering so noFilteringPerformed: true
+
+        const modificationPositions_OnPeptide_ThatPassFilters: Set<number> = new Set()
+        for ( const modificationPosition_OnPeptide of modificationPositions_OnPeptide ) {
+            modificationPositions_OnPeptide_ThatPassFilters.add( modificationPosition_OnPeptide )
+        }
+
+        return { passesFilter: true, modificationPositions_OnPeptide_ThatPassFilters }  // EARLY RETURN
     }
+
+    ////////
+
+    //  Return WHICH modificationPositions OnPeptide That Pass Filters
+
+    //  Create Final Result which is intersection of modificationPositions_OnPeptide_ for each filter since Implicit "AND" between the 2 filters.
+
+    //   Start with all positions and then later remove positions NOT in the results of either filter.
+
+    const modificationPositions_OnPeptide_ThatPassFilters: Set<number> = new Set()
+    for ( const modificationPosition_OnPeptide of modificationPositions_OnPeptide ) {
+        modificationPositions_OnPeptide_ThatPassFilters.add( modificationPosition_OnPeptide )
+    }
+
 
     const proteinCoverage_Entries_For_ReportedPeptideId = proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_proteinCoverage_For_ReportedPeptideId( psmTblData.reportedPeptideId );
     if ( ! proteinCoverage_Entries_For_ReportedPeptideId ) {
         throw Error( "_getFor__is_proteinPosition_Of_Modification_Filter_PeptidePage_AfterGetData(...): proteinCoverage_KeyReportedPeptideId.get( psmTblData.reportedPeptideId ); returned nothing.  psmTblData.reportedPeptideId: " + psmTblData.reportedPeptideId )
     }
 
-    if ( proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
 
         // Have values so require pass at least one filter entry
 
-        let foundValueForAtLeast_OneFilterEntry = false
+        let modificationPositions_OnPeptide_ThatPass_ProteinPosition_Of_Modification_Filter: Set<number> = new Set()
 
-        const proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId = proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId;
+        const proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId;
         if ( ( ! proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId ) || proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId.size === 0 ) {
             throw Error( "( proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) AND ( ( ! proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId ) || proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId.size === 0 )" )
         }
@@ -1589,11 +1804,12 @@ const _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPos
             }
 
             if ( proteinPosition_Of_Modification_Filter_UserSelectionsEntry_For_proteinSequenceVersionId.fullProteinSelected ) {
-                // Filter selection is Full Protein
 
-                //  Have at least 1 Mod at Reported Peptide level so this proteinCoverageEntry passes the filter
+                // Filter selection is Full Protein so ALL Mod positions are found
 
-                foundValueForAtLeast_OneFilterEntry = true;
+                for ( const modificationPosition_OnPeptide of modificationPositions_OnPeptide ) {
+                    modificationPositions_OnPeptide_ThatPass_ProteinPosition_Of_Modification_Filter.add( modificationPosition_OnPeptide )
+                }
 
                 break;  // EARLY LOOP LOOP
             }
@@ -1610,27 +1826,34 @@ const _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPos
 
                     if ( proteinRange_UserSelectionsEntry.proteinPosition_Start <= modificationPosition_OnProtein && modificationPosition_OnProtein <= proteinRange_UserSelectionsEntry.proteinPosition_End ) {
 
-                        foundValueForAtLeast_OneFilterEntry = true;
-
-                        break;  // EARLY LOOP BREAK
+                        //  modificationPosition_OnProtein is found in proteinRange_UserSelectionsEntry so add to result
+                        modificationPositions_OnPeptide_ThatPass_ProteinPosition_Of_Modification_Filter.add( modificationPosition_OnPeptide )
                     }
                 }
             }
         }
 
-        if ( ! foundValueForAtLeast_OneFilterEntry ) {
+        if ( modificationPositions_OnPeptide_ThatPass_ProteinPosition_Of_Modification_Filter.size === 0 ) {
 
-            return { passesFilter: false } // EARLY RETURN
+            return { passesFilter: false, modificationPositions_OnPeptide_ThatPassFilters: modificationPositions_OnPeptide_ThatPass_ProteinPosition_Of_Modification_Filter } // EARLY RETURN
+        }
+
+        //  Remove Mod Positions From Input that are NOT found in this filter
+
+        for ( const modificationPosition_OnPeptide of modificationPositions_OnPeptide ) {
+            if ( ! modificationPositions_OnPeptide_ThatPass_ProteinPosition_Of_Modification_Filter.has( modificationPosition_OnPeptide ) ) {
+                modificationPositions_OnPeptide_ThatPassFilters.delete( modificationPosition_OnPeptide )
+            }
         }
     }
 
-    if ( proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
 
         // Have values so require pass at least one filter entry
 
-        let foundValueForAtLeast_OneFilterEntry = false
+        let modificationPositions_OnPeptide_ThatPass_ProteinPositionFilter: Set<number> = new Set()
 
-        const proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId = proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId;
+        const proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId;
         if ( ( ! proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId ) || proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId.size === 0 ) {
             throw Error( "( proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) AND ( ( ! proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId ) || proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId.size === 0 )" )
         }
@@ -1646,11 +1869,12 @@ const _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPos
             }
 
             if ( proteinPositionFilter_UserSelectionsEntry_For_proteinSequenceVersionId.fullProteinSelected ) {
-                // Filter selection is Full Protein
 
-                //  Have at least 1 Mod at Reported Peptide level so this proteinCoverageEntry passes the filter
+                // Filter selection is Full Protein so ALL Mod positions are found
 
-                foundValueForAtLeast_OneFilterEntry = true;
+                for ( const modificationPosition_OnPeptide of modificationPositions_OnPeptide ) {
+                    modificationPositions_OnPeptide_ThatPass_ProteinPositionFilter.add( modificationPosition_OnPeptide )
+                }
 
                 break;  // EARLY LOOP LOOP
             }
@@ -1665,22 +1889,39 @@ const _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPos
                 //  x1 <= y2 && y1 <= x2
                 if ( proteinRange_UserSelectionsEntry.proteinPosition_Start <= proteinCoverage_Entry.proteinEndPosition && proteinCoverage_Entry.proteinStartPosition <= proteinRange_UserSelectionsEntry.proteinPosition_End ) { // coverage entry overlaps select range
 
-                    foundValueForAtLeast_OneFilterEntry = true;
+                    // proteinCoverage_Entry Found in Filter selection so ALL Mod positions are found
+
+                    for ( const modificationPosition_OnPeptide of modificationPositions_OnPeptide ) {
+                        modificationPositions_OnPeptide_ThatPass_ProteinPositionFilter.add( modificationPosition_OnPeptide )
+                    }
 
                     break;  // EARLY LOOP BREAK
                 }
             }
         }
 
-        if ( ! foundValueForAtLeast_OneFilterEntry ) {
+        if ( modificationPositions_OnPeptide_ThatPass_ProteinPositionFilter.size === 0 ) {
 
-            return { passesFilter: false } // EARLY RETURN
+            return { passesFilter: false, modificationPositions_OnPeptide_ThatPassFilters: modificationPositions_OnPeptide_ThatPass_ProteinPositionFilter } // EARLY RETURN
+        }
+
+        //  Remove Mod Positions From Input that are NOT found in this filter
+
+        for ( const modificationPosition_OnPeptide of modificationPositions_OnPeptide ) {
+            if ( ! modificationPositions_OnPeptide_ThatPass_ProteinPositionFilter.has( modificationPosition_OnPeptide ) ) {
+                modificationPositions_OnPeptide_ThatPassFilters.delete( modificationPosition_OnPeptide )
+            }
         }
     }
 
-    //  Made it through all filters so Passes Filters
+    if ( modificationPositions_OnPeptide_ThatPassFilters.size === 0 ) {
 
-    return { passesFilter: true }
+        return { passesFilter: false, modificationPositions_OnPeptide_ThatPassFilters }  // EARLY RETURN
+    }
+
+    //  Made it through all filters AND modificationPositions_OnPeptide_ThatPassFilters.size !== 0 so return true
+
+    return { passesFilter: true, modificationPositions_OnPeptide_ThatPassFilters }
 }
 
 ///////////
@@ -1692,15 +1933,13 @@ const _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPos
 const _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter = function (
     {
         psmTblData,
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-        proteinPositionFilter_UserSelections_StateObject,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
     } : {
         psmTblData: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
 
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
-        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder
     }
@@ -1708,8 +1947,8 @@ const _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePosition
     passesFilter: boolean
 } {
 
-    if ( ( ! proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() )
-        && ( ! proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) ) {
+    if ( ( ! all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() )
+        && ( ! all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) ) {
 
         //  NO Filtering so passesFilter: true
 
@@ -1721,13 +1960,13 @@ const _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePosition
         throw Error( "_getFor__is_proteinPosition_Of_Modification_Filter_PeptidePage_AfterGetData(...): proteinCoverage_KeyReportedPeptideId.get( psmTblData.reportedPeptideId ); returned nothing.  psmTblData.reportedPeptideId: " + psmTblData.reportedPeptideId )
     }
 
-    if ( proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) {
 
         // Have values so require pass at least one filter entry
 
         let foundValueForAtLeast_OneFilterEntry = false
 
-        const proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId = proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId;
+        const proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId;
         if ( ( ! proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId ) || proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId.size === 0 ) {
             throw Error( "( proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() ) AND ( ( ! proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId ) || proteinPosition_Of_Modification_Filter_UserSelectionsMap_Key_proteinSequenceVersionId.size === 0 )" )
         }
@@ -1774,13 +2013,13 @@ const _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePosition
         }
     }
 
-    if ( proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
 
         // Have values so require pass at least one filter entry
 
         let foundValueForAtLeast_OneFilterEntry = false
 
-        const proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId = proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId;
+        const proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges()?.entriesMap_Key_proteinSequenceVersionId;
         if ( ( ! proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId ) || proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId.size === 0 ) {
             throw Error( "( proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) AND ( ( ! proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId ) || proteinPositionFilter_UserSelectionsMap_Key_proteinSequenceVersionId.size === 0 )" )
         }

@@ -18,6 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,7 +59,12 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectIdsForProjectSearchIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFile_For_ProjectScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchIdList_For_ProjectScanFileId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchIds_For_ProjectSearchIdList_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.Search_Has_SearchSubGroups_ForProjectSearchIdSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchIds_For_ProjectSearchIdList_Searcher.SearchIdForProjectSearchIdListSearcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.services.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service_IF;
 import org.yeastrc.limelight.limelight_webapp.services.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service__Result;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants;
@@ -128,6 +134,12 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 	
 	@Autowired
 	private Search_Has_SearchSubGroups_ForProjectSearchIdSearcher_IF search_Has_SearchSubGroups_ForProjectSearchIdSearcher;
+	
+	@Autowired
+	private SearchIds_For_ProjectSearchIdList_Searcher_IF searchIds_For_ProjectSearchIdList_Searcher;
+	
+	@Autowired
+	private SearchFlagsForSearchIdSearcherIF searchFlagsForSearchIdSearcher;
 
 	@Autowired
 	private ProjectScanFile_For_ProjectScanFileId_Searcher_IF projectScanFile_For_ProjectScanFileId_Searcher;
@@ -496,6 +508,8 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 			projectSearchIds.add( entry.getProjectSearchId() );
 		}
 		
+		this._process_ProjectSearchIds_PopulateOnPage_AnyAll_Searches_NOT_HaveProteins( projectSearchIds, httpServletRequest );
+		
 		{
 			Internal_UserAccessCheckResult internal_UserAccessCheckResult =
 					this._performUserAccessCheck_UpdateRequest_FromUserSession_ForPageHeader(projectSearchIds, requestURI, httpServletRequest, httpServletResponse);
@@ -670,6 +684,8 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 			}
 		}
 		
+		this._process_ProjectSearchIds_PopulateOnPage_AnyAll_Searches_NOT_HaveProteins( projectSearchIds_InOrderOf_ProjectSearchIdCodes, httpServletRequest );
+		
 		Integer projectId = null;
 		Integer userId = null;
 
@@ -734,6 +750,55 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 		return result;	
     }
     
+    //////
+    
+    /**
+     * 
+     * @param projectSearchIdList
+     * @param httpServletRequest
+     * @throws SQLException
+     */
+    private void _process_ProjectSearchIds_PopulateOnPage_AnyAll_Searches_NOT_HaveProteins( List<Integer> projectSearchIdList, HttpServletRequest httpServletRequest ) throws SQLException {
+    	
+    	List<SearchIdForProjectSearchIdListSearcher_ResultItem> searchIds_For_ProjectSearchIdList_ResultList = 
+    			searchIds_For_ProjectSearchIdList_Searcher.get_SearchIds_For_ProjectSearchIdList(projectSearchIdList);
+    	
+    	List<Integer> searchIds = new ArrayList<>( projectSearchIdList.size() );
+    	
+    	{
+    		Set<Integer> projectSearchId_Set_Delete_ToValidateAllFound = new HashSet<>( projectSearchIdList );
+    		
+    		for ( SearchIdForProjectSearchIdListSearcher_ResultItem searchIds_ResultItem : searchIds_For_ProjectSearchIdList_ResultList ) {
+    			
+    			searchIds.add( searchIds_ResultItem.getSearchId() );
+    			
+    			if ( ! projectSearchId_Set_Delete_ToValidateAllFound.remove( searchIds_ResultItem.getProjectSearchId() ) ) {
+    				String msg = "NO Search ID Found for Project Search Id: " + searchIds_ResultItem.getProjectSearchId();
+    				log.error(msg);
+    				throw new LimelightInternalErrorException(msg);
+    			}
+    		}
+    	}
+    	
+    	SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result =
+    			searchFlagsForSearchIdSearcher.getSearchFlags_ForSearchIds(searchIds);
+    	
+    	boolean all_Searches_HaveProteins = true;
+    	boolean all_Searches_NOT_HaveProteins = true;
+    	
+    	for ( SearchFlagsForSearchIdSearcher_Result_Item flagItem : searchFlagsForSearchIdSearcher_Result.getResultItems() ) {
+    		
+    		if ( flagItem.isSearchNotContainProteins() ) {
+    			all_Searches_HaveProteins = false;
+    		} else {
+    			all_Searches_NOT_HaveProteins = false;
+    		}
+    	}
+    	
+
+		httpServletRequest.setAttribute( WebConstants.REQUEST_SEARCHES_ALL_CONTAIN_PROTEINS, all_Searches_HaveProteins );
+		httpServletRequest.setAttribute( WebConstants.REQUEST_SEARCHES_ALL_NOT_CONTAIN_PROTEINS, all_Searches_NOT_HaveProteins );
+    }
     
 
 

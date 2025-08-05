@@ -214,6 +214,8 @@ public class Get_SearchFlags_From_ProjectSearchIds_RestWebserviceController {
 				item.allPsmHave_Precursor_M_Over_Z_PossiblyNull = searchFlagsForSearchIdSearcher_Result_Item.getAllPsmHave_Precursor_M_Over_Z();
 				
 				item.psmIds_AreSequential_PossiblyNull = searchFlagsForSearchIdSearcher_Result_Item.getPsmIds_AreSequential();
+				
+				item.searchNotContainProteins = searchFlagsForSearchIdSearcher_Result_Item.isSearchNotContainProteins();
 			}
 			
 			if ( ! projectSearchId_Map_Key_searchId.isEmpty() ) {
@@ -291,6 +293,8 @@ public class Get_SearchFlags_From_ProjectSearchIds_RestWebserviceController {
 		private Boolean allPsmHave_Precursor_M_Over_Z_PossiblyNull;			//  null if not populated	//  NOT Populated Yet for Existing Searches
 		
 		private Boolean psmIds_AreSequential_PossiblyNull; //  null if not populated  // All PSM Ids for the search are sequential - can use PSM Id ranges  	//  NOT Populated Yet for Existing Searches
+
+		private boolean searchNotContainProteins;
 		
 		public int getProjectSearchId() {
 			return projectSearchId;
@@ -333,6 +337,9 @@ public class Get_SearchFlags_From_ProjectSearchIds_RestWebserviceController {
 		}
 		public boolean isAnyPsmHas_PsmPeptidePositionAnnotation() {
 			return anyPsmHas_PsmPeptidePositionAnnotation;
+		}
+		public boolean isSearchNotContainProteins() {
+			return searchNotContainProteins;
 		}
 	
     	

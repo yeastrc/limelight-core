@@ -392,6 +392,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
     //  Flags Set to true/false in constructor
 
+    private _allSearches_HaveProteins: boolean
+
     private _allSearches_Have_ScanFilenames: boolean
     private _allSearches_Have_ScanData: boolean
     private _allSearches_Have_PSM_RetentionTime_Precursor_MZ: boolean
@@ -406,10 +408,12 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
     /**
      *
      */
-    constructor(props: ProteinViewPage_DisplayData_ProteinList_Integrated_SingleMultipleSearchSubGroups__Main_Component_Props) {
+    constructor(props: ProteinViewPage_DisplayData_ProteinList_Integrated_SingleMultipleSearchSubGroups__Main_Component_Props) { try {
         super(props);
 
         const projectSearchIds = props.propsValue.projectSearchIds;
+
+        this._allSearches_HaveProteins = ! props.propsValue.dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search()
 
         let show_proteinPageSearchesSummarySectionData_Root_Link = false;
         if ( props.propsValue.projectSearchIds.length > 1 ){
@@ -581,13 +585,25 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             peptideSequence_MissedCleavageCount_UserSelections_Object_Force_ResetToStateObject: {},
             psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject: {}
         }
-    }
+    } catch( e ) {
+        console.warn("Exception caught in componentDidMount");
+        console.warn( e );
+        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        throw e;
+    }}
 
     /**
      *
      */
     componentDidMount() {
         try {
+            if ( ! this._allSearches_HaveProteins ) {
+
+                //  Some searches have NO Proteins so no additional work is needed
+
+                return // EARLY RETURN
+            }
+
             window.setTimeout( () => {
                 try {
                     this._runOnPageLoad();
@@ -754,7 +770,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                 psm_Charge_Filter_UserSelection_StateObject:  this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
                 scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
-                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
+                peptideUnique_UserSelection_StateObject: undefined
             });
 
             promises.push( promise );
@@ -1947,11 +1964,10 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                 });
 
             } else {
-                proteinDisplayData =
-                    await proteinPage_ProteinList__GroupProteins({
-                        projectSearchIds, proteinDisplayData,
-                        proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass
-                    });
+                proteinDisplayData = await proteinPage_ProteinList__GroupProteins({
+                    projectSearchIds, proteinDisplayData,
+                    proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass
+                });
 
                 //  If put following '...Compute_UniquePeptideCounts_For_...' after '...Remove_NotPassesFilter...'
                 //    Also have to recompute UniquePeptideCounts for Overall and for Single Search (Single Search Uses Overall as well)
@@ -3476,167 +3492,177 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                     </div>  {/* Close display of data above Protein List */}
 
-                    {  options_Filter_Block  }
+                    { ! this._allSearches_HaveProteins ? (
+
+                        this._render_Show_someSearches_Have_NO_Proteins_Message()
+
+                    ) : (
+
+                        <React.Fragment>
+
+                            {  options_Filter_Block  }
 
 
-                    { ( this.state.psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc
-                        && this.state.proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result ) ? (
+                            { ( this.state.psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc
+                                && this.state.proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result ) ? (
 
-                        <EstimatedError_Using_IndependentDecoy_FastaFileStatistics__DisplayComponent
-                            projectSearchIds={ this.props.propsValue.projectSearchIds }
-                            searchSubGroup_Ids_Selected={
-                                this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass ?
-                                    this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds() : null
-                            }
-                            dataPageStateManager={ this.props.propsValue.dataPageStateManager }
-                            psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject={ this.props.propsValue.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject }
-                            psm_Exclude_IndependentDecoy_PSMs_UserSelection_Object_Force_ResetToStateObject={ this.state.psm_Exclude_IndependentDecoy_PSMs_UserSelection_Object_Force_ResetToStateObject }
-                            psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc={
-                                this.state.psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc
-                            }
-                            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
-                            reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds={ this.state.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds }
-                            proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result={ this.state.proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result }
-                            create_GeneratedReportedPeptideListData_Result={ undefined }  // On Peptide Page
-                            show_UpdatingMessage={ this.state.show_UpdatingProteinList_Message }
-                        />
+                                <EstimatedError_Using_IndependentDecoy_FastaFileStatistics__DisplayComponent
+                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                    searchSubGroup_Ids_Selected={
+                                        this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass ?
+                                            this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass.get_selectedSearchSubGroupIds() : null
+                                    }
+                                    dataPageStateManager={ this.props.propsValue.dataPageStateManager }
+                                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject={ this.props.propsValue.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject }
+                                    psm_Exclude_IndependentDecoy_PSMs_UserSelection_Object_Force_ResetToStateObject={ this.state.psm_Exclude_IndependentDecoy_PSMs_UserSelection_Object_Force_ResetToStateObject }
+                                    psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc={
+                                        this.state.psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc
+                                    }
+                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+                                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds={ this.state.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds }
+                                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result={ this.state.proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result }
+                                    create_GeneratedReportedPeptideListData_Result={ undefined }  // On Peptide Page
+                                    show_UpdatingMessage={ this.state.show_UpdatingProteinList_Message }
+                                />
 
-                    ) : null }
+                            ) : null }
 
-                    {/* ***   Display of Protein List   *** */}
+                            {/* ***   Display of Protein List   *** */}
 
-                    <h3> Protein List:</h3>
+                            <h3> Protein List:</h3>
 
-                    { ( this.state.searchDataLookupParamsRoot ) ? (
-                        <div >
-                            <AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component
-                                projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                searchDataLookupParameters_Root={ this.state.searchDataLookupParamsRoot }
-                                dataPageStateManager_DataFrom_Server={ this.props.propsValue.dataPageStateManager }
-                            />
-                        </div>
-                    ) : null }
+                            { ( this.state.searchDataLookupParamsRoot ) ? (
+                                <div >
+                                    <AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component
+                                        projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                        searchDataLookupParameters_Root={ this.state.searchDataLookupParamsRoot }
+                                        dataPageStateManager_DataFrom_Server={ this.props.propsValue.dataPageStateManager }
+                                    />
+                                </div>
+                            ) : null }
 
-                    { ( this.state.show_InitialLoadingData_Message ) ? (
+                            { ( this.state.show_InitialLoadingData_Message ) ? (
 
-                        <div >
-                            <div style={ { marginTop: 20, fontSize: 24, fontWeight: "bold"} }>
-                                Loading Data...
-                            </div>
-                            <div style={ { paddingTop: 40, paddingBottom: 80 } }>
-                                <Spinner_Limelight_Component/>
-                            </div>
-                        </div>
+                                <div >
+                                    <div style={ { marginTop: 20, fontSize: 24, fontWeight: "bold"} }>
+                                        Loading Data...
+                                    </div>
+                                    <div style={ { paddingTop: 40, paddingBottom: 80 } }>
+                                        <Spinner_Limelight_Component/>
+                                    </div>
+                                </div>
 
-                    ) : null }
+                            ) : null }
 
-                    {/*  Outer Container for "Updating List" overlay  */}
-                    <div style={ { position: "relative", display: "inline-block" } }> {/*    display: inline-block; so overlay doesn't extend right past the table right edge */}
+                            {/*  Outer Container for "Updating List" overlay  */}
+                            <div style={ { position: "relative", display: "inline-block" } }> {/*    display: inline-block; so overlay doesn't extend right past the table right edge */}
 
-                        <div style={ { position: "relative" } }>
+                                <div style={ { position: "relative" } }>
 
-                            { ( this.state.proteinList_DataCounts ) ? (
+                                    { ( this.state.proteinList_DataCounts ) ? (
 
-                                <div style={ { marginBottom: 10 } }>
+                                        <div style={ { marginBottom: 10 } }>
 
-                                    { ( this.state.proteinList_DataCounts.proteinGroupCount !== null && this.state.proteinList_DataCounts.proteinGroupCount !== undefined ) ? (
+                                            { ( this.state.proteinList_DataCounts.proteinGroupCount !== null && this.state.proteinList_DataCounts.proteinGroupCount !== undefined ) ? (
 
-                                        <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
-                                            <span>
-                                                Protein Group Count:
+                                                <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
+                                                    <span>
+                                                        Protein Group Count:
+                                                    </span>
+                                                    <span> </span>
+                                                    <span>{ this.state.proteinList_DataCounts.proteinGroupCount.toLocaleString() }</span>
+                                                </span>
+                                            ): null }
+
+                                            <span style={ { whiteSpace: "nowrap"  } }>
+                                                <span>
+                                                    Protein Count:
+                                                </span>
+                                                <span> </span>
+                                                <span>{ this.state.proteinList_DataCounts.proteinCount.toLocaleString() }</span>
                                             </span>
-                                            <span> </span>
-                                            <span>{ this.state.proteinList_DataCounts.proteinGroupCount.toLocaleString() }</span>
-                                        </span>
+
+                                            <span  style={ { marginLeft: 10, whiteSpace: "nowrap" } }>
+                                                <span>
+                                                    Distinct Peptide Count:
+                                                </span>
+                                                <span> </span>
+                                                <span>{ this.state.proteinList_DataCounts.peptideCount.toLocaleString() }</span>
+                                            </span>
+
+                                            <span  style={ { marginLeft: 10, whiteSpace: "nowrap" } }>
+                                                <span>
+                                                    PSM Count:
+                                                </span>
+                                                <span> </span>
+                                                <span>{ this.state.proteinList_DataCounts.psmCount.toLocaleString() }</span>
+                                            </span>
+
+                                            <span style={ { marginLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
+                                                  onClick={ this._downloadProteinsClickHandler_BindThis }
+                                            >
+                                                Download Proteins
+                                            </span>
+
+                                            <span style={ { marginLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
+                                                  onClick={ this._downloadPSMsClickHandler_BindThis }
+                                            >
+                                                Download PSMs
+                                            </span>
+
+                                            <Blib_SpectralLibrary_File_Download__MainPage_Link_Component
+                                                dataPageStateManager={ this.props.propsValue.dataPageStateManager }
+                                                download_Blib_Spectral_Library_Callback={ this._download_Blib_Spectral_Library_BindThis }
+                                            />
+
+                                            {/*  Combined/Merged Searches Only */}
+                                            { ( this.state.show_proteinPageSearchesSummarySectionData_Root_Link ) ? (
+                                                <span style={ { marginLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
+                                                      onClick={ this._show_proteinPageSearchesSummarySectionData_ClickHandler_BindThis }
+                                                >
+                                                    Show Summary Data Per Search
+                                                </span>
+                                            ) : null }
+
+                                        </div>
                                     ): null }
 
-                                    <span style={ { whiteSpace: "nowrap"  } }>
-                                        <span>
-                                            Protein Count:
-                                        </span>
-                                        <span> </span>
-                                        <span>{ this.state.proteinList_DataCounts.proteinCount.toLocaleString() }</span>
-                                    </span>
-
-                                    <span  style={ { marginLeft: 10, whiteSpace: "nowrap" } }>
-                                        <span>
-                                            Distinct Peptide Count:
-                                        </span>
-                                        <span> </span>
-                                        <span>{ this.state.proteinList_DataCounts.peptideCount.toLocaleString() }</span>
-                                    </span>
-
-                                    <span  style={ { marginLeft: 10, whiteSpace: "nowrap" } }>
-                                        <span>
-                                            PSM Count:
-                                        </span>
-                                        <span> </span>
-                                        <span>{ this.state.proteinList_DataCounts.psmCount.toLocaleString() }</span>
-                                    </span>
-
-                                    <span style={ { marginLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
-                                          onClick={ this._downloadProteinsClickHandler_BindThis }
-                                    >
-                                        Download Proteins
-                                    </span>
-
-                                    <span style={ { marginLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
-                                          onClick={ this._downloadPSMsClickHandler_BindThis }
-                                    >
-                                        Download PSMs
-                                    </span>
-
-                                    <Blib_SpectralLibrary_File_Download__MainPage_Link_Component
-                                        dataPageStateManager={ this.props.propsValue.dataPageStateManager }
-                                        download_Blib_Spectral_Library_Callback={ this._download_Blib_Spectral_Library_BindThis }
-                                    />
-
-                                    {/*  Combined/Merged Searches Only */}
-                                    { ( this.state.show_proteinPageSearchesSummarySectionData_Root_Link ) ? (
-                                        <span style={ { marginLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
-                                              onClick={ this._show_proteinPageSearchesSummarySectionData_ClickHandler_BindThis }
-                                        >
-                                            Show Summary Data Per Search
-                                        </span>
+                                    {/*  Container for PSM Counts Per Search Only displayed for Combined/Merged Searches  */}
+                                    { ( this.state.show_proteinPageSearchesSummarySectionData_Root ) ? (
+                                        <ProteinPageSearchesSummarySectionData_Component
+                                            proteinDisplayData={ this.state.proteinDisplayData }
+                                            projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                            dataPageStateManager={ this.props.propsValue.dataPageStateManager }
+                                            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+                                        />
                                     ) : null }
 
                                 </div>
-                            ): null }
 
-                            {/*  Container for PSM Counts Per Search Only displayed for Combined/Merged Searches  */}
-                            { ( this.state.show_proteinPageSearchesSummarySectionData_Root ) ? (
-                                <ProteinPageSearchesSummarySectionData_Component
-                                    proteinDisplayData={ this.state.proteinDisplayData }
-                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                    dataPageStateManager={ this.props.propsValue.dataPageStateManager }
-                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
-                                />
-                            ) : null }
+                                {/*  Protein List is displayed here */}
 
-                        </div>
+                                <div>
 
-                        {/*  Protein List is displayed here */}
-
-                        <div>
-
-                            { ( this.state.tableObject_CurrentlyRendered_ProteinList ) ? (
-                                <DataTable_TableRoot
-                                    tableObject={ this.state.tableObject_CurrentlyRendered_ProteinList }
-                                />
-                            ): null }
-                        </div>
-
-                        {/*    Cover over protein list when updating */}
-                        { ( this.state.show_UpdatingProteinList_Message && ( ! this.state.show_InitialLoadingData_Message ) ) ? (
-                            <div className=" block-updating-overlay-container ">
-                                <div style={ {  marginTop: 4, textAlign: "center" } }>
-                                    Updating Protein List
+                                    { ( this.state.tableObject_CurrentlyRendered_ProteinList ) ? (
+                                        <DataTable_TableRoot
+                                            tableObject={ this.state.tableObject_CurrentlyRendered_ProteinList }
+                                        />
+                                    ): null }
                                 </div>
-                            </div>
-                        ) : null }
 
+                                {/*    Cover over protein list when updating */}
+                                { ( this.state.show_UpdatingProteinList_Message && ( ! this.state.show_InitialLoadingData_Message ) ) ? (
+                                    <div className=" block-updating-overlay-container ">
+                                        <div style={ {  marginTop: 4, textAlign: "center" } }>
+                                            Updating Protein List
+                                        </div>
+                                    </div>
+                                ) : null }
 
-                    </div>   {/*   Close:   everything main after <h3> Protein List:</h3>  */}
+                            </div>   {/*   Close:   everything main after <h3> Protein List:</h3>  */}
+
+                        </React.Fragment>
+                    ) }
 
                 </div>
 
@@ -3650,6 +3676,25 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
         }
     }
 
+    /**
+     *
+     */
+    private _render_Show_someSearches_Have_NO_Proteins_Message() {
+
+        return (
+            <div>
+                <div style={ { fontSize: 18, fontWeight: "bold", marginTop: 30 } }>
+                    Some of the searches do not contain proteins so unable to display this page
+                </div>
+                <div style={ { marginTop: 30 } }>
+                    Could provide link or button to remove the searches without proteins
+                </div>
+                <div style={ { marginTop: 30 } }>
+                    Could list the searches without proteins here
+                </div>
+            </div>
+        )
+    }
 }
 
 ////////////////////////

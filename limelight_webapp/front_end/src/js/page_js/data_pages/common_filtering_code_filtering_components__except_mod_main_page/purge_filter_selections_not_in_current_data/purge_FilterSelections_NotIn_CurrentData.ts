@@ -55,6 +55,9 @@ import {
 import {
     CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
+import {
+    PeptideUnique_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 
 
 /**
@@ -72,7 +75,8 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
         psm_Charge_Filter_UserSelection_StateObject,
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
         scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
-        scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+        scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
+        peptideUnique_UserSelection_StateObject
     } : {
         projectSearchIds : Array<number>
         dataPageStateManager: DataPageStateManager
@@ -86,6 +90,7 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
         scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
         scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+        peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject
 
     }  ) : Promise<void> {
 
@@ -111,6 +116,22 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
             }
             if ( ! allSearches_Have_ScanData ) {
                 scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.clearAll()
+            }
+        }
+    }
+    {  //  proteinPositionFilter_UserSelections_StateObject AND peptideUnique_UserSelection_StateObject
+
+        const allSearches_HaveProteins = ! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search()
+
+        if ( ! allSearches_HaveProteins ) {
+            if ( proteinPositionFilter_UserSelections_StateObject ) {
+                proteinPositionFilter_UserSelections_StateObject.clearSelections()
+            }
+            if ( proteinPosition_Of_Modification_Filter_UserSelections_StateObject ) {
+                proteinPosition_Of_Modification_Filter_UserSelections_StateObject.clearSelections()
+            }
+            if ( peptideUnique_UserSelection_StateObject ) {
+                peptideUnique_UserSelection_StateObject.clearPeptideUnique()
             }
         }
     }

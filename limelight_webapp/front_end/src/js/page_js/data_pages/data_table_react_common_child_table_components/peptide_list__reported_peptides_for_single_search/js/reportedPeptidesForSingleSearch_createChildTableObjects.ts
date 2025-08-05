@@ -119,24 +119,14 @@ export class ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter {
  *
  * @returns ReportedPeptidesForSingleSearch_createChildTableObjects_Result
  */
-export const reportedPeptidesForSingleSearch_createChildTableObjects = async function({
+export const reportedPeptidesForSingleSearch_createChildTableObjects = async function(
+    {
+        reportedPeptidesForSingleSearch_createChildTableObjects_Parameter
+    } : {
+        reportedPeptidesForSingleSearch_createChildTableObjects_Parameter : ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter
 
-                                                                                          reportedPeptidesForSingleSearch_createChildTableObjects_Parameter
-                                                                                      } : {
-    reportedPeptidesForSingleSearch_createChildTableObjects_Parameter : ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter
-
-}) : Promise<DataTable_RootTableObject> /* return a promise */ {
+    }) : Promise<DataTable_RootTableObject> /* return a promise */ {
     try {
-
-        let show_Protein_Pre_Post_Residues = false;
-
-        //  reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.dataPageStateManager.get_projectSearchIds()  returns undefined so do not use
-
-        if ( reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.for_MultipleSearches_Overall
-            && ( ! reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.for_SingleProtein ) ) {
-
-            show_Protein_Pre_Post_Residues = true;  // Hard code to true
-        }
 
         const searchSubGroup_Ids_Selected : Set<number> = //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
             reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.searchSubGroup_Ids_Selected;
@@ -150,6 +140,24 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
         const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId =
             reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId;
         const dataPageStateManager : DataPageStateManager = reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.dataPageStateManager;
+
+
+        const allSearches_HaveProteins = ! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search()
+
+
+        let show_Protein_Pre_Post_Residues = false;
+
+        //  reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.dataPageStateManager.get_projectSearchIds()  returns undefined so do not use
+
+        if ( reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.for_MultipleSearches_Overall
+            && ( ! reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.for_SingleProtein ) ) {
+
+            show_Protein_Pre_Post_Residues = true;  // Hard code to true
+        }
+        if ( ! allSearches_HaveProteins ) {
+
+            show_Protein_Pre_Post_Residues = false  //  Not all searches have proteins so set to false
+        }
 
         let reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId : Array<number> = undefined;  //  Reported Peptide Ann Type Ids To Display
 
@@ -218,7 +226,9 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
                 const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
                 dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
             }
-            {
+
+            if ( allSearches_HaveProteins ) {
+
                 const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
                     return reportedPeptidesForSingleSearch_ChildReactComponents_Other.uniqueColumnHeader_Tooltip_Create();
                 }
@@ -389,7 +399,11 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
                         dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                     }
 
-                    { // Unique
+
+                    if ( allSearches_HaveProteins ) {
+
+                        // Unique
+
                         let value = "";
                         let valueSort = 1;
                         if (  peptideEntry.peptideUnique ) {

@@ -1,5 +1,5 @@
 /**
- * modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerator.ts
+ * modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator.ts
  */
 
 
@@ -35,9 +35,6 @@ import {
     PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component";
 import {
-    ModPage_Mod_Unlocalized_StartEnd_ContainerClass
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModPage_Mod_Unlocalized_StartEnd_ContainerClass";
-import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {
@@ -45,45 +42,40 @@ import {
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable";
 import {
-    ModPage_get_ProteinList_SubTable__SingleProteinData_Root
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_get_ProteinList_SubTable";
-import {
-    ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_Root
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass";
-import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
-import {
-    modPage_DataTable_Display_Positions_Cell_ReturnComponent
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_DataTable_Display_Positions_Cell_Component";
-import {
-    modPage_CompressUnlocalizedRanges
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_CompressUnlocalizedRanges";
 import {
     Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 import {
     ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
+import {
+    modPage_Create_GeneratedReportedPeptideEntries_String_Etc,
+    ModPage_Create_GeneratedReportedPeptideEntries_String_Etc_InputParameters
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_Create_GeneratedReportedPeptideEntries_String_Etc";
+import {
+    CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters";
+import {
+    CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_common_across_searches_sub_parts__returned_objects/commonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters";
 
 
-const dataTableId_ThisTable = "Mod View Protein List By Search Sub Table";
+const dataTableId_ThisTable = "Mod View Peptide List By Search - NO Proteins Sub Table";
 
 
-export const modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerator = async function (
+export const modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator = async function (
     {
         projectSearchId_Or_SubSearchId,
         projectSearchId_ForUseWhereRequire_projectSearchId,
-        modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
-        modPage_get_ProteinList_SubTable__SingleProteinData_Root,
         data_For_ModMass,
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     } : {
         projectSearchId_Or_SubSearchId: number
         projectSearchId_ForUseWhereRequire_projectSearchId: number
-        modPage_get_ProteinList_SubTable__SingleProteinData_Root: ModPage_get_ProteinList_SubTable__SingleProteinData_Root
-        modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result: ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_Root
+
         data_For_ModMass: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass
 
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
@@ -108,12 +100,11 @@ export const modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerato
 
     // create the rows for the table
     const dataTableRows : Array<DataTable_DataRowEntry> = await _getDataTableRows({
-        modPage_get_ProteinList_SubTable__SingleProteinData_Root,
-        modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
         data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId,
         data_For_ModMass,
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
-        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     });
 
     // assemble the table
@@ -159,77 +150,13 @@ const  _getDataTableColumns = function () : DataTable_RootTableDataObject_Both_C
     }
 
     {
-        const displayName = "Pre";
-
-        const dataTableColumn = new DataTable_Column({
-            id : "pre-residue", // Used for tracking sort order. Keep short
-            displayName,
-            width : 40,
-            sortable : true,
-            columnHeader_Tooltip_HTML_TitleAttribute:'Residue immediately to the n-terminus of this peptide in the protein sequence.'
-        });
-        dataTableColumns.push( dataTableColumn );
-
-        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
-        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
-    }
-
-    {
-        const displayName = "Post";
-
-        const dataTableColumn = new DataTable_Column({
-            id : "post-residue", // Used for tracking sort order. Keep short
-            displayName,
-            width : 40,
-            sortable : true,
-            columnHeader_Tooltip_HTML_TitleAttribute:'Residue immediately to the c-terminus of this peptide in the protein sequence.'
-        });
-        dataTableColumns.push( dataTableColumn );
-
-        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
-        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
-    }
-
-
-    {
         const displayName = "PSMs";
 
         const dataTableColumn = new DataTable_Column({
-            id : "searchProteinPSMCount", // Used for tracking sort order. Keep short
+            id : "psmCount", // Used for tracking sort order. Keep short
             displayName,
             width : 100,
             sortable : true
-        });
-        dataTableColumns.push( dataTableColumn );
-
-        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
-        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
-    }
-
-    {
-
-        const sortFunction = function(param : DataTable_Column_sortFunction_Param ): number {
-
-            const arrayA = param.sortValue_A as Array<number>;
-            const arrayB = param.sortValue_B as Array<number>
-
-            // handle blanks
-            if ( arrayA.length === 0 && arrayB.length === 0 ) { return 0; }
-            if ( arrayA.length === 0 && arrayB.length !== 0 ) { return -1; }
-            if ( arrayA.length !== 0 && arrayB.length === 0 ) { return 1; }
-
-            return arrayA[0] - arrayB[0];
-        }
-
-        const displayName = "Positions";
-
-        const dataTableColumn = new DataTable_Column({
-
-            id : "searchProteinModPos", // Used for tracking sort order. Keep short
-            displayName,
-            width : 100,
-            sortable : true,
-            sortFunction:sortFunction
         });
         dataTableColumns.push( dataTableColumn );
 
@@ -242,7 +169,7 @@ const  _getDataTableColumns = function () : DataTable_RootTableDataObject_Both_C
 
         const dataTableColumn = new DataTable_Column({
 
-            id : "searchProteinModRes", // Used for tracking sort order. Keep short
+            id : "ModRes", // Used for tracking sort order. Keep short
             displayName,
             width : 100,
             sortable : true
@@ -264,23 +191,21 @@ const  _getDataTableColumns = function () : DataTable_RootTableDataObject_Both_C
 
 const _getDataTableRows = async function (
     {
-        modPage_get_ProteinList_SubTable__SingleProteinData_Root,
-        modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
         data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId,
         data_For_ModMass,
 
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
-        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     } : {
-        modPage_get_ProteinList_SubTable__SingleProteinData_Root: ModPage_get_ProteinList_SubTable__SingleProteinData_Root
-        modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result: ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_Root
         data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId
         data_For_ModMass: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass
 
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
         commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     }
 ) : Promise<Array<DataTable_DataRowEntry>> { try {
 
@@ -288,13 +213,14 @@ const _getDataTableRows = async function (
 
     const dataTableRows : Array<DataTable_DataRowEntry> = [];
 
-    const allPeptideData_For_ProteinAndModMass:Array<INTERNAL__PeptideDataForModProteinSearch> = await _getPeptideDataForModProteinSearch({
-        modPage_get_ProteinList_SubTable__SingleProteinData_Root,
-        modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
-        data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId
+    const allPeptideData_For_SearchAndModMass:Array<INTERNAL__PeptideDataForModSearch> = await _getPeptideData({
+        data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId,
+        data_For_ModMass,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     });
 
-    allPeptideData_For_ProteinAndModMass.sort( (a,b) => {
+    allPeptideData_For_SearchAndModMass.sort( (a,b) => {
 
         //  PSM Count descending then peptide string ascending
 
@@ -315,7 +241,7 @@ const _getDataTableRows = async function (
         return 0
     })
 
-    for ( const peptideData of allPeptideData_For_ProteinAndModMass ) {
+    for ( const peptideData of allPeptideData_For_SearchAndModMass ) {
 
         const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
         const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
@@ -329,38 +255,6 @@ const _getDataTableRows = async function (
                 searchTableData,
                 valueDisplay,
                 valueSort : peptideData.peptideDisplayString
-            });
-            columnEntries.push( columnEntry );
-
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
-            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
-        }
-
-        // add the pre residue
-        {
-            const valueDisplay = Array.from( peptideData.peptide_Pre_Residues ).sort().join(", ")
-            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
-            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                searchTableData,
-                valueDisplay,
-                valueSort : valueDisplay
-            });
-            columnEntries.push( columnEntry );
-
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
-            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
-        }
-
-        // add the post residue
-        {
-            const valueDisplay = Array.from( peptideData.peptide_Post_Residues ).sort().join(", ")
-            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
-            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                searchTableData,
-                valueDisplay,
-                valueSort : valueDisplay
             });
             columnEntries.push( columnEntry );
 
@@ -384,84 +278,9 @@ const _getDataTableRows = async function (
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
-        // add modded positions
-        {
-            let valueString: string
-            let valueSort_FOR_DataTable_Column_sortFunction: unknown
-
-            const positions: Array<ModPage_Mod_Unlocalized_StartEnd_ContainerClass> = []
-
-            if ( peptideData.modifiedPositions && peptideData.modifiedPositions.size > 0 ) {
-
-                valueString = Array.from( peptideData.modifiedPositions ).sort((a, b) => a - b).join(', ');
-                valueSort_FOR_DataTable_Column_sortFunction = Array.from( peptideData.modifiedPositions ).sort((a, b) => a - b);
-
-                const modifiedPositions = Array.from( peptideData.modifiedPositions )
-                modifiedPositions.sort( (a, b) => a - b )
-
-                for ( const modifiedPosition of modifiedPositions ) {
-                    const position = new ModPage_Mod_Unlocalized_StartEnd_ContainerClass({
-                        start: modifiedPosition, end: modifiedPosition
-                    })
-                    positions.push( position )
-                }
-
-            } else if ( peptideData.unlocalizedPositionRanges && peptideData.unlocalizedPositionRanges.length > 0 ) {
-
-                const ranges = new Array<string>();
-                const sorts = new Array<number>();
-
-                peptideData.unlocalizedPositionRanges.sort( (a, b) => a.start - b.start);
-
-                const unlocalizedPositionRanges_Compressed = modPage_CompressUnlocalizedRanges( peptideData.unlocalizedPositionRanges )
-
-                for ( const unlocPos of unlocalizedPositionRanges_Compressed ) {
-                    sorts.push(unlocPos.start);
-                    ranges.push("[" + unlocPos.start + "-" + unlocPos.end + "]");
-                }
-
-                valueString = ranges.join(', ');
-                valueSort_FOR_DataTable_Column_sortFunction = sorts;
-
-                for ( const unlocalizedPositionRange of unlocalizedPositionRanges_Compressed ) {
-                    const position = new ModPage_Mod_Unlocalized_StartEnd_ContainerClass({
-                        start: unlocalizedPositionRange.start, end: unlocalizedPositionRange.end
-                    })
-                    positions.push( position )
-                }
-
-            } else {
-                valueString = '';
-                valueSort_FOR_DataTable_Column_sortFunction = [];
-            }
-
-            const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => { try {
-
-                    return modPage_DataTable_Display_Positions_Cell_ReturnComponent({ positions })
-
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
-
-
-            const valueDisplay = valueString;
-
-            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
-            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                searchTableData,
-                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
-                valueSort_FOR_DataTable_Column_sortFunction : valueSort_FOR_DataTable_Column_sortFunction
-            });
-
-            columnEntries.push( columnEntry );
-
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
-            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
-        }
-
         // add modded residues
         {
-            const valueString: string = (!(peptideData.unlocalizedPositionRanges) || peptideData.unlocalizedPositionRanges.length === 0) ? Array.from(peptideData.modifiedResidues).sort().join(', ') : 'unlocalized';
+            const valueString: string = ( peptideData.modifiedResidues && peptideData.modifiedResidues.size > 0 ) ? Array.from( peptideData.modifiedResidues ).sort().join(', ') : 'unlocalized';
 
             const valueDisplay = valueString;
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
@@ -527,69 +346,84 @@ const _getDataTableRows = async function (
 
 ///////////////////
 
-const _getPeptideDataForModProteinSearch = async function (
+const _getPeptideData = async function (
     {
-        modPage_get_ProteinList_SubTable__SingleProteinData_Root,
         data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId,
-        modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result
+        data_For_ModMass,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     } : {
-        modPage_get_ProteinList_SubTable__SingleProteinData_Root: ModPage_get_ProteinList_SubTable__SingleProteinData_Root
-        modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result: ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_Root
         data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId
+        data_For_ModMass: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass
+
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     }
-) : Promise<Array<INTERNAL__PeptideDataForModProteinSearch>> { try {
+) : Promise<Array<INTERNAL__PeptideDataForModSearch>> { try {
 
     const projectSearchId_Or_SubSearchId = data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId.projectSearchId_Or_SubSearchId
 
     const projectSearchId_ForUseWhereRequire_projectSearchId = data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId.projectSearchId_ForUseWhereRequire_projectSearchId
 
-    const singleProteinData_For_ProjectSearchId_Or_SubSearchId = modPage_get_ProteinList_SubTable__SingleProteinData_Root.data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId.get( projectSearchId_Or_SubSearchId )
-    if ( ! singleProteinData_For_ProjectSearchId_Or_SubSearchId ) {
-        throw Error("modPage_get_ProteinList_SubTable__SingleProteinData_Root.data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId.get( projectSearchId_Or_SubSearchId ) returned NOTHING for projectSearchId_Or_SubSearchId: " + projectSearchId_Or_SubSearchId )
-    }
+    const peptideIds_PeptideSequences_Holders = await _get_PeptideIds_PeptideSequences_FromServer({
+        projectSearchId_ForUseWhereRequire_projectSearchId, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    })
 
-    const peptideDataForModProteinSearch_Map_Key_PeptideString: Map<string, INTERNAL__PeptideDataForModProteinSearch> = new Map()
+    const peptideDataForModSearch_Map_Key_PeptideString: Map<string, INTERNAL__PeptideDataForModSearch> = new Map()
 
-    for ( const psm_on_SingleProtein of singleProteinData_For_ProjectSearchId_Or_SubSearchId.dataFor_SinglePsm_Map_Key_PsmId.values() ) {
+    for ( const dataFor_SinglePsm of data_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId.get_DataFor_SinglePsm_All() ) {
 
-        const psmId = psm_on_SingleProtein.psmId
+        const psmId = dataFor_SinglePsm.psmId
 
-        // const psm_ComputeData = psm_on_SingleProtein.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_ForSingle_Psm
+        const reportedPeptideId = dataFor_SinglePsm.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_ForSingle_Psm.psmTblData.reportedPeptideId
 
-        const modPage_GetProtein_Positions_Residues_ForPsm = modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result.get_data_For_SinglePsm_For_PsmId( psmId )
-        if ( ! modPage_GetProtein_Positions_Residues_ForPsm ) {
-            throw Error("modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result.get_data_For_SinglePsm_For_PsmId( psmId ) returned NOTHING for psmId: " + psmId )
+        const peptideId_For_ReportedPeptideId = peptideIds_PeptideSequences_Holders.peptideIds_For_MainFilters_Holder.get_PeptideId_For_ReportedPeptideId( reportedPeptideId )
+        if ( ! peptideId_For_ReportedPeptideId ) {
+            throw Error("peptideIds_PeptideSequences_Holders.peptideIds_For_MainFilters_Holder.get_PeptideId_For_ReportedPeptideId( reportedPeptideId ) returned NOTHING for reportedPeptideId: " + reportedPeptideId )
         }
 
-        const modPage_GetProtein_Positions_Residues_ForPsm_For_proteinId =
-            modPage_GetProtein_Positions_Residues_ForPsm.get_data_PerProtein_For_ProteinSequenceVersionId( modPage_get_ProteinList_SubTable__SingleProteinData_Root.proteinId )
-        if ( ! modPage_GetProtein_Positions_Residues_ForPsm_For_proteinId ) {
-            throw Error("modPage_GetProtein_Positions_Residues_ForPsm.get_data_PerProtein_For_ProteinSequenceVersionId( modPage_get_ProteinList_SubTable__SingleProteinData_Root.proteinId ) returned NOTHING for modPage_get_ProteinList_SubTable__SingleProteinData_Root.proteinId: " + modPage_get_ProteinList_SubTable__SingleProteinData_Root.proteinId )
+        const peptideSequence = peptideIds_PeptideSequences_Holders.peptideSequences_For_MainFilters_Holder.get_PeptideSequence_For_PeptideId( peptideId_For_ReportedPeptideId )
+        if ( ! peptideSequence ) {
+            throw Error("peptideIds_PeptideSequences_Holders.peptideSequences_For_MainFilters_Holder.get_PeptideSequence_For_PeptideId( peptideId_For_ReportedPeptideId ) returned NOTHING for peptideId_For_ReportedPeptideId: " + peptideId_For_ReportedPeptideId )
         }
 
-        const get_GeneratedPeptide_Entries_For_PsmData_Result  = modPage_GetProtein_Positions_Residues_ForPsm.get_GeneratedPeptide_Entries_For_PsmData({ proteinSequenceVersionId: modPage_get_ProteinList_SubTable__SingleProteinData_Root.proteinId})
+        const commonInputParameters: ModPage_Create_GeneratedReportedPeptideEntries_String_Etc_InputParameters = {
 
-        for ( const generatedReportedPeptideString_Result_Entry of get_GeneratedPeptide_Entries_For_PsmData_Result.generatedReportedPeptideString_Result_Entries ) {
+            peptideSequence,
+            reportedPeptideId,
+            dataFor_SinglePsm,
+            data_For_ModMass,
 
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+        }
+
+        const modPage_Create_GeneratedReportedPeptideEntries_String_Etc_Result =
+            modPage_Create_GeneratedReportedPeptideEntries_String_Etc({
+                proteinSequenceVersionId: undefined,
+                data_ForProtein_ForSinglePsm: undefined,
+                data_For_ModMass,
+                commonInputParameters,
+                projectSearchId_ForUseWhereRequire_projectSearchId
+            } )
+
+        for ( const generatedReportedPeptideString_Result_Entry of modPage_Create_GeneratedReportedPeptideEntries_String_Etc_Result.generatedReportedPeptideString_Result_Entries ) {
 
             const peptideDisplayString = generatedReportedPeptideString_Result_Entry.peptideDisplayString
             const openModPositionOverride_ToPassTo_PsmTableCreationCode = generatedReportedPeptideString_Result_Entry.openModPositionOverride_ToPassTo_PsmTableCreationCode
 
-            let peptideData_Output = peptideDataForModProteinSearch_Map_Key_PeptideString.get( peptideDisplayString )
+            let peptideData_Output = peptideDataForModSearch_Map_Key_PeptideString.get( peptideDisplayString )
             if ( ! peptideData_Output ) {
 
                 peptideData_Output = {
                     peptideDisplayString: peptideDisplayString,
-                    peptide_Pre_Residues: new Set(),
-                    peptide_Post_Residues: new Set(),
                     modifiedResidues: new Set(),
-                    modifiedPositions: new Set(),
-                    unlocalizedPositionRanges: [],
                     openModPositionOverride_ToPassTo_PsmTableCreationCode,
                     psmEntries_Map_Key_PsmId: new Map()
                 }
-                peptideDataForModProteinSearch_Map_Key_PeptideString.set( peptideDisplayString, peptideData_Output )
+                peptideDataForModSearch_Map_Key_PeptideString.set( peptideDisplayString, peptideData_Output )
 
             } else {
                 if ( peptideData_Output.openModPositionOverride_ToPassTo_PsmTableCreationCode !== openModPositionOverride_ToPassTo_PsmTableCreationCode ) {
@@ -604,53 +438,121 @@ const _getPeptideDataForModProteinSearch = async function (
 
             }
 
-            peptideData_Output.psmEntries_Map_Key_PsmId.set( psm_on_SingleProtein.psmId, psm_on_SingleProtein.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_ForSingle_Psm.psmEntry )
+            peptideData_Output.psmEntries_Map_Key_PsmId.set( dataFor_SinglePsm.psmId, dataFor_SinglePsm.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_ForSingle_Psm.psmEntry )
 
-            if ( generatedReportedPeptideString_Result_Entry.modification_ProteinPositions ) {
-                for ( const entry of generatedReportedPeptideString_Result_Entry.modification_ProteinPositions ) {
-                    peptideData_Output.modifiedPositions.add( entry )
-                }
-            }
             if ( generatedReportedPeptideString_Result_Entry.modification_Residues ) {
                 for ( const entry of generatedReportedPeptideString_Result_Entry.modification_Residues ) {
                     peptideData_Output.modifiedResidues.add( entry )
                 }
             }
-            if ( generatedReportedPeptideString_Result_Entry.unlocalized_Protein_PositionRanges ) {
-                for ( const entry of generatedReportedPeptideString_Result_Entry.unlocalized_Protein_PositionRanges ) {
-                    peptideData_Output.unlocalizedPositionRanges.push( entry )
-                }
-            }
-
-            for ( const residue of modPage_GetProtein_Positions_Residues_ForPsm_For_proteinId.peptide_Pre_Residues ) {
-                peptideData_Output.peptide_Pre_Residues.add( residue )
-            }
-            for ( const residue of modPage_GetProtein_Positions_Residues_ForPsm_For_proteinId.peptide_Post_Residues ) {
-                peptideData_Output.peptide_Post_Residues.add( residue )
-            }
         }
     }
 
-    return Array.from( peptideDataForModProteinSearch_Map_Key_PeptideString.values() )
+    return Array.from( peptideDataForModSearch_Map_Key_PeptideString.values() )
 
 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
+/**
+ *
+ * @param projectSearchId_ForUseWhereRequire_projectSearchId
+ * @param commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+ */
+const _get_PeptideIds_PeptideSequences_FromServer = function (
+    {
+        projectSearchId_ForUseWhereRequire_projectSearchId, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    } : {
+        projectSearchId_ForUseWhereRequire_projectSearchId: number
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    }
+): Promise<{
+    peptideIds_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder
+    peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
+}> {
+
+    let peptideIds_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder
+    let peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
+
+
+    const promises: Array<Promise<void>> = []
+
+    const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId_ForUseWhereRequire_projectSearchId)
+    if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+        throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId_ForUseWhereRequire_projectSearchId) returned NOTHING for projectSearchId_ForUseWhereRequire_projectSearchId: " + projectSearchId_ForUseWhereRequire_projectSearchId )
+    }
+
+    const get_PeptideIdsHolder_AllForSearch_Result =
+        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+        get_commonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters().
+        get_PeptideIdsHolder_AllForSearch()
+    if ( get_PeptideIdsHolder_AllForSearch_Result.data ) {
+        peptideIds_For_MainFilters_Holder = get_PeptideIdsHolder_AllForSearch_Result.data.peptideIds_For_MainFilters_Holder
+    } else if ( get_PeptideIdsHolder_AllForSearch_Result.promise ) {
+        const promise = new Promise<void>((resolve, reject) => { try {
+            get_PeptideIdsHolder_AllForSearch_Result.promise.catch( reason => reject(reason) )
+            get_PeptideIdsHolder_AllForSearch_Result.promise.then( value => { try {
+                peptideIds_For_MainFilters_Holder = value.peptideIds_For_MainFilters_Holder
+                resolve()
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+        promises.push(promise)
+    } else {
+        throw Error("get_PeptideIdsHolder_AllForSearch_Result No data or promise")
+    }
+
+    {
+        const get_PeptideSequencesHolder_AllForAllSearches_Result =
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+            get__commonData_LoadedFromServer__CommonAcrossSearches().
+            get_commonData_LoadedFromServer_SingleSearch__PeptideSequences_For_MainFilters().
+            get_PeptideSequencesHolder_AllForAllSearches()
+        if ( get_PeptideSequencesHolder_AllForAllSearches_Result.data ) {
+            peptideSequences_For_MainFilters_Holder = get_PeptideSequencesHolder_AllForAllSearches_Result.data.peptideSequences_For_MainFilters_Holder
+        } else if ( get_PeptideSequencesHolder_AllForAllSearches_Result.promise ) {
+            const promise = new Promise<void>((resolve, reject) => { try {
+                get_PeptideSequencesHolder_AllForAllSearches_Result.promise.catch( reason => reject(reason) )
+                get_PeptideSequencesHolder_AllForAllSearches_Result.promise.then( value => { try {
+                    peptideSequences_For_MainFilters_Holder = value.peptideSequences_For_MainFilters_Holder
+                    resolve()
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            promises.push(promise)
+        } else {
+            throw Error("get_PeptideSequencesHolder_AllForAllSearches_Result No data or promise")
+        }
+    }
+
+    if ( promises.length === 0 ) {
+
+        //  EARLY RETURN
+        return Promise.resolve({ peptideIds_For_MainFilters_Holder, peptideSequences_For_MainFilters_Holder })
+    }
+
+    const promisesAll = Promise.all( promises )
+
+    return new Promise<{
+            peptideIds_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder
+            peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
+        }>( ( resolve, reject) => { try {
+
+            promisesAll.catch( reason => reject(reason) )
+            promisesAll.then( noVlue => { try {
+
+                resolve({ peptideIds_For_MainFilters_Holder, peptideSequences_For_MainFilters_Holder })
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+}
 
 ///////////////////
 
 
-class INTERNAL__PeptideDataForModProteinSearch {
+class INTERNAL__PeptideDataForModSearch {
 
     readonly peptideDisplayString: string
 
-    readonly peptide_Pre_Residues: Set<string>
-    readonly peptide_Post_Residues: Set<string>
-
     readonly modifiedResidues: Set<string>
 
-    readonly modifiedPositions: Set<number>
-    readonly unlocalizedPositionRanges: Array<ModPage_Mod_Unlocalized_StartEnd_ContainerClass>
     readonly openModPositionOverride_ToPassTo_PsmTableCreationCode: OpenModPosition_DataType
 
     readonly psmEntries_Map_Key_PsmId: Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId>

@@ -419,8 +419,8 @@ public class ImporterCoreEntryPoint {
 		
 		
 		LimelightInput limelightInputForImport = limelightInputObjectContainer.getLimelightInput();
-		if ( limelightInputForImport.getMatchedProteins() == null ) {
-			String msg = "<matched_proteins> is not populated in Limelight XML File.";
+		if ( limelightInputForImport.getMatchedProteins() == null && limelightInputForImport.getNoMatchedProteins() == null ) {
+			String msg = "<matched_proteins> AND <no_matched_proteins/> are not populated in Limelight XML File.";
 			log.error( msg );
 			throw new LimelightImporterDataException( msg );
 		}

@@ -386,6 +386,8 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
     //  Flags Set to true/false in constructor
 
+    private _allSearches_HaveProteins: boolean
+
     private _allSearches_Have_ScanFilenames: boolean
     private _allSearches_Have_ScanData: boolean
     private _allSearches_Have_PSM_RetentionTime_Precursor_MZ: boolean
@@ -413,10 +415,12 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
     /**
      * 
      */    
-    constructor(props : ScanFileToSearchesPage_Display_MainContent_Component_Props) {
+    constructor(props : ScanFileToSearchesPage_Display_MainContent_Component_Props) { try {
         super(props);
 
         const projectSearchIds = props.propsValue.projectSearchIds;
+
+        this._allSearches_HaveProteins = ! props.propsValue.dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search()
 
         this._div_MainGridAtTop_Ref = React.createRef<HTMLDivElement>();
         this._div_MainContent_LeftGridEntry_AtTop_Ref = React.createRef<HTMLDivElement>();
@@ -580,7 +584,12 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject: {},
             scanPeak_M_Over_Z__Intensity_Filter_UserSelection_Object_Force_ResetToStateObject: {}
         };
-    }
+    } catch( e ) {
+        console.warn("Exception caught in componentDidMount");
+        console.warn( e );
+        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        throw e;
+    }}
 
     /**
      * 
@@ -1532,7 +1541,8 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                 psm_Charge_Filter_UserSelection_StateObject:  this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
                 scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
-                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
+                peptideUnique_UserSelection_StateObject: this.props.propsValue.peptideUnique_UserSelection_StateObject
             });
 
             promises.push( promise );
@@ -3904,11 +3914,14 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                             <div className=" section-label " style={ { gridColumn: "1/-1" } }>Peptide and Protein Filters
                             </div>
 
-                            <PeptideUnique_UserSelection
-                                peptideUnique_UserSelection_ComponentData={ this.state.peptideUnique_UserSelection_ComponentData }
-                                peptideUnique_UserSelection_StateObject={ this.props.propsValue.peptideUnique_UserSelection_StateObject }
-                                updateMadeTo_peptideUnique_UserSelection_StateObject_Callback={ this._updateMadeTo_peptideUnique_UserSelection_StateObject_Callback_BindThis }
-                            />
+                            { this._allSearches_HaveProteins ? (
+
+                                <PeptideUnique_UserSelection
+                                    peptideUnique_UserSelection_ComponentData={ this.state.peptideUnique_UserSelection_ComponentData }
+                                    peptideUnique_UserSelection_StateObject={ this.props.propsValue.peptideUnique_UserSelection_StateObject }
+                                    updateMadeTo_peptideUnique_UserSelection_StateObject_Callback={ this._updateMadeTo_peptideUnique_UserSelection_StateObject_Callback_BindThis }
+                                />
+                            ) : null }
 
                             <PeptideSequence_UserSelections
                                 peptideSequence_UserSelections_ComponentData={ this.state.peptideSequence_UserSelections_ComponentData }
@@ -3931,13 +3944,16 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                                 updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_Callback={ this._updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_StateObject_Callback_BindThis }
                             />
 
-                            <ProteinPositionFilter_UserSelections__GetsProteinData
-                                proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ this.state.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object }
-                                proteinPositionFilter_UserSelections_StateObject={ this.props.propsValue.proteinPositionFilter_UserSelections_StateObject }
-                                updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis }
-                                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
-                                projectSearchIds={ this.props.propsValue.projectSearchIds }
-                            />
+                            { this._allSearches_HaveProteins ? (
+
+                                <ProteinPositionFilter_UserSelections__GetsProteinData
+                                    proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ this.state.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object }
+                                    proteinPositionFilter_UserSelections_StateObject={ this.props.propsValue.proteinPositionFilter_UserSelections_StateObject }
+                                    updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis }
+                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                />
+                            ) : null }
 
                             <GeneratedPeptideContents_UserSelections_Root_Component
                                 generatedPeptideContents_UserSelections_StateObject={ this.props.propsValue.generatedPeptideContents_UserSelections_StateObject }

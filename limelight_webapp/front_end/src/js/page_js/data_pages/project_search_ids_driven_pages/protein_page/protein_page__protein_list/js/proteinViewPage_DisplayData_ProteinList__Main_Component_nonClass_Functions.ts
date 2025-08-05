@@ -107,6 +107,7 @@ const compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = functi
 
     const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue =  {
         displayOnly : false,
+        isProteinPage: true,
         dataPages_LoggedInUser_CommonObjectsFactory : propsValue.dataPages_LoggedInUser_CommonObjectsFactory,
         dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : propsValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
         dataPageStateManager_DataFrom_Server : propsValue.dataPageStateManager,

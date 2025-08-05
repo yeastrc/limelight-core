@@ -99,6 +99,8 @@ public class Validate_Access_Page_ExperimentDataPage implements Validate_Access_
 		private Integer projectId;
 		private List<Integer> projectIds;
 		
+		private int[] projectSearchIds_In_Experiment;
+		
 		/**
 		 * Only populated if was passed into this class 
 		 */
@@ -150,6 +152,10 @@ public class Validate_Access_Page_ExperimentDataPage implements Validate_Access_
 
 		public ExperimentDTO getExperimentDTO() {
 			return experimentDTO;
+		}
+
+		public int[] getProjectSearchIds_In_Experiment() {
+			return projectSearchIds_In_Experiment;
 		}
 
 	}
@@ -642,6 +648,7 @@ public class Validate_Access_Page_ExperimentDataPage implements Validate_Access_
 		
 		result.projectId = projectId;
 		result.projectIds = projectIds;
+		result.projectSearchIds_In_Experiment = projectSearchIds_In_Experiment;
 		result.experimentDTO = experimentDTO;
 		result.searchDataLookupParametersLookupDTO = searchDataLookupParametersLookupDTO;
 		return result;

@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
-import org.yeastrc.limelight.limelight_webapp.db_dto.ExperimentDTO;
 
 /**
  * 
@@ -39,10 +38,31 @@ import org.yeastrc.limelight.limelight_webapp.db_dto.ExperimentDTO;
 public class ExperimentList_ForProject_Searcher extends Limelight_JDBC_Base implements ExperimentList_ForProject_SearcherIF {
 
 	private static final Logger log = LoggerFactory.getLogger( ExperimentList_ForProject_Searcher.class );
+	
+	public static class ExperimentList_ForProject_Searcher_ResultItem {
+		
+		private int id;
+		private String name;
+		private String projectSearchIdsOnlyJSON;
+		private Integer createdByUserId;
+
+		public int getId() {
+			return id;
+		}
+		public String getName() {
+			return name;
+		}
+		public Integer getCreatedByUserId() {
+			return createdByUserId;
+		}
+		public String getProjectSearchIdsOnlyJSON() {
+			return projectSearchIdsOnlyJSON;
+		}
+	}
 		
 	private static final String QUERY_SQL = 
 			"SELECT "
-			+ " id, name, created_by_user_id "
+			+ " id, name, project_search_ids_only_json, created_by_user_id "
 			+ " FROM "
 			+ " experiment_tbl "
 			+ " WHERE project_id = ? ";
@@ -56,9 +76,9 @@ public class ExperimentList_ForProject_Searcher extends Limelight_JDBC_Base impl
 	 */
 	
 	@Override
-	public List<ExperimentDTO>  getExperimentList_ForProjectId( int projectId, Boolean draft, Integer userId ) throws SQLException {
+	public List<ExperimentList_ForProject_Searcher_ResultItem>  getExperimentList_ForProjectId( int projectId, Boolean draft, Integer userId ) throws SQLException {
 
-		List<ExperimentDTO> resultList = new ArrayList<>();
+		List<ExperimentList_ForProject_Searcher_ResultItem> resultList = new ArrayList<>();
 
 		String querySQL = QUERY_SQL;
 		
@@ -91,12 +111,13 @@ public class ExperimentList_ForProject_Searcher extends Limelight_JDBC_Base impl
 			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while ( rs.next() ) {
-					ExperimentDTO item = new ExperimentDTO();
-					item.setId( rs.getInt( "id" ) );
-					item.setName( rs.getString( "name" ) );
+					ExperimentList_ForProject_Searcher_ResultItem item = new ExperimentList_ForProject_Searcher_ResultItem();
+					item.id = rs.getInt( "id" );
+					item.name = rs.getString( "name" );
+					item.projectSearchIdsOnlyJSON = rs.getString( "project_search_ids_only_json" );
 					int createdByUserId = rs.getInt( "created_by_user_id" );
 					if ( ! rs.wasNull() ) {
-						item.setCreatedByUserId( createdByUserId );
+						item.createdByUserId = createdByUserId;
 					}
 					resultList.add( item );
 				}

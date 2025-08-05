@@ -78,6 +78,8 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 		
 		private boolean reportedPeptideMatchedProteinMappingProvided;
 		
+		private boolean searchNotContainProteins;
+		
 		
 		public boolean isHasScanFilenames() {
 			return hasScanFilenames;
@@ -127,6 +129,9 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 		public boolean isAnyPsmHas_PsmPeptidePositionAnnotation() {
 			return anyPsmHas_PsmPeptidePositionAnnotation;
 		}
+		public boolean isSearchNotContainProteins() {
+			return searchNotContainProteins;
+		}
 		
 	}
 		
@@ -144,9 +149,14 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 			+ " all_psms_have_precursor_retention_time,"	//  NOT Populated Yet for Existing Searches
 			+ " all_psms_have_precursor_m_z,"				//  NOT Populated Yet for Existing Searches
 			+ " psm_ids_are_sequential,"					//  NOT Populated Yet for Existing Searches
-			+ " reported_peptide_matched_protein_mapping_provided "
+			+ " reported_peptide_matched_protein_mapping_provided, "
+			
+			//     these fields from search__flags_main_tbl
+			+ " search__flags_main_tbl.search_not_contain_proteins "
+			
 			+ " FROM "
-			+ " search_tbl  "
+			+ " search_tbl "
+			+ " LEFT OUTER JOIN search__flags_main_tbl ON search_tbl.id = search__flags_main_tbl.search_id "
 			+ " WHERE id IN ( ";
 
 	/* (non-Javadoc)
@@ -265,6 +275,12 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 							} else {
 								resultItem.psmIds_AreSequential = false;
 							}
+						}
+					}
+					{
+						int fieldIntValue = rs.getInt( "search_not_contain_proteins" );
+						if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							resultItem.searchNotContainProteins = true;
 						}
 					}
 					

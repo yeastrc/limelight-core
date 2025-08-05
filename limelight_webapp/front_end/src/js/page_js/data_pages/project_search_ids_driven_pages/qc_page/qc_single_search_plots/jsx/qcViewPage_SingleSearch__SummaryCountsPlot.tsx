@@ -369,7 +369,9 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot
                     throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned nothing for projectSearchId:" + projectSearchId)
                 }
 
-                {
+
+                if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.allSearches_HaveProteins ) {
+
                     const get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result =
                         await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
                         get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters().
@@ -454,10 +456,17 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot
                         continue; // EARLY CONTINUE
                     }
 
-                    const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder = proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId.get(projectSearchId);
-                    if (!proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder) {
+                    let proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder = undefined
 
-                        continue; // EARLY CONTINUE
+                    if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.allSearches_HaveProteins ) {
+
+                        proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder = proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId );
+                        if ( ! proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder ) {
+
+                            //  TODO  Should this throw Error?
+
+                            continue; // EARLY CONTINUE
+                        }
                     }
 
                     let reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map = reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map_Key_ProjectSearchId.get( projectSearchId );
@@ -477,14 +486,19 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot
                         const dataPerReportedPeptideId_Value = dataPerReportedPeptideId_Map_Key_reportedPeptideId_MapEntry[1];
                         const reportedPeptideId = dataPerReportedPeptideId_Value.reportedPeptideId;
 
-                        const proteinSequenceVersionIds = proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_proteinSequenceVersionIds_For_ReportedPeptideId(reportedPeptideId);
-                        if (!proteinSequenceVersionIds) {
+                        if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.allSearches_HaveProteins ) {
 
-                            continue; // EARLY CONTINUE
-                        }
+                            const proteinSequenceVersionIds = proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_proteinSequenceVersionIds_For_ReportedPeptideId( reportedPeptideId );
+                            if ( ! proteinSequenceVersionIds ) {
 
-                        for (const proteinSequenceVersionId of proteinSequenceVersionIds) {
-                            proteinSequenceVersionId_DistinctValues.add(proteinSequenceVersionId);
+                                //  TODO  Should this throw Error?
+
+                                continue; // EARLY CONTINUE
+                            }
+
+                            for ( const proteinSequenceVersionId of proteinSequenceVersionIds ) {
+                                proteinSequenceVersionId_DistinctValues.add( proteinSequenceVersionId );
+                            }
                         }
 
                         if (dataPerReportedPeptideId_Value.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId) {
@@ -689,7 +703,9 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot
                 const colorEntry = qcViewPage__ComputeColorsForCategories.get_Color_By_Index( 2 );
                 chart_Colors.push('rgb(' + colorEntry.rgb_Color.red + "," + colorEntry.rgb_Color.green + "," + colorEntry.rgb_Color.blue + ')');
             }
-            {
+
+            if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.allSearches_HaveProteins ) {
+
                 const x_Label = "Protein Count";
                 chart_X.push(x_Label);
                 chart_Y.push(proteinSequenceVersionId_DistinctValues.size);

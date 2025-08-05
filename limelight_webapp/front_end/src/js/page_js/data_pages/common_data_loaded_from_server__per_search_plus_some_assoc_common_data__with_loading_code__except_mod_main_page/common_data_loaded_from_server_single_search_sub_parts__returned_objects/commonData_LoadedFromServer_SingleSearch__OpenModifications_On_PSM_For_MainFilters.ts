@@ -32,7 +32,9 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_
     psmId : number
     openModificationMass : number
     openModificationMass_Rounded : number
-    // - positionsMap_KeyPosition has Map values of Array to handle entry position 1 and entry n-term true that has position of 1
+    /**
+     * positionsMap_KeyPosition has Map values of Array to handle entry position 1 and entry n-term true that has position of 1
+     */
     positionsMap_KeyPosition: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId_SinglePositionEntry>>
 }
 

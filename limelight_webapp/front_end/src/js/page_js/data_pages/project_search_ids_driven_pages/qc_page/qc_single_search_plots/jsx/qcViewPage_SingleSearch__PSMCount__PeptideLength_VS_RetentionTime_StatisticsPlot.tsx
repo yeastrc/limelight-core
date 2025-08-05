@@ -27,6 +27,12 @@ import { QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_C
 import { QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
 import { CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
 import { CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data";
+import {
+    QcPage_ChartFiller_NoData
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
+import {
+    QcPage_ChartBorder
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
 
 
 const chartTitle = "Peptide Length vs/ Retention Time";
@@ -79,7 +85,7 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
 
     private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
-    private _renderChart: boolean = true;
+    private _noChartData: boolean = true;
 
     private _componentMounted = false;
 
@@ -97,9 +103,9 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
 
 
         if ( ! ( props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Flags_SingleSearch_ForProjectSearchId.hasScanData ||
-            props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_m_z__NotNull ) ) {
+            props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_retention_time__NotNull ) ) {
             // No Data for chart so NOT render it
-                this._renderChart = false;
+                this._noChartData = false;
         } else {
 
             const qcPage_Searches_Info_SingleSearch_ForProjectSearchId = props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId;
@@ -175,7 +181,7 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
         }
 
         try {
-            if ( this._renderChart ) {
+            if ( this._noChartData ) {
                 this._removeChart();
             }
 
@@ -193,7 +199,7 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
         try {
             this._componentMounted = true;
 
-              if ( this._renderChart ) {
+              if ( this._noChartData ) {
 
                 window.setTimeout(() => {
                     try {
@@ -242,7 +248,7 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
      */
     componentDidUpdate(prevProps: Readonly<QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_StatisticsPlot_Props>, prevState: Readonly<QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_StatisticsPlot_State>, snapshot?: any) {
         try {
-            if ( this._renderChart ) {
+            if ( this._noChartData ) {
 
                 //  ALWAYS remove check of state properties in 'componentDidUpdate'
 
@@ -761,6 +767,21 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
      *
      */
     render() {
+
+        if ( ! this._noChartData ) {
+            //
+            return ( // EARLY RETURN
+
+                <QcPage_ChartBorder>
+                    <QcPage_ChartFiller_NoData
+                        chartTitle={ chartTitle }
+                        displayMessages_Replace_NoData_Message={
+                            [ "This search does not have retention time so unable to display this chart." ]
+                        }
+                    />
+                </QcPage_ChartBorder>
+            )
+        }
 
         return (
 

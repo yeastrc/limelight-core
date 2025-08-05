@@ -117,6 +117,9 @@ public class WebConstants {
 	public static final String REQUEST_SEARCH_DATA_LOOKUP_PARAMETERS_JSON = "searchDataLookupParametersJSON";
 	public static final String REQUEST_SEARCH_DATA_LOOKUP_PARAMETERS_ROOT_IDS_JSON = "searchDataLookupParametersRootIdsJSON";
 	
+	public static final String REQUEST_SEARCHES_ALL_CONTAIN_PROTEINS = "searches_All_ContainProteins";
+	public static final String REQUEST_SEARCHES_ALL_NOT_CONTAIN_PROTEINS = "searches_All_NOT_ContainProteins";
+
 	//  Searches Only
 	
 	//  From DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor

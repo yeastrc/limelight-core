@@ -108,6 +108,12 @@ import {
 import {
 	ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
+import {
+	ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
+import {
+	SearchDataLookupParameters_Root
+} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 //  From data_pages_common
 
@@ -596,14 +602,36 @@ export class ModViewPage_RootClass_Common {
 
 		//  Have all data in page variables to render the page
 
-		const propsValue : ModViewPage_Display_MainContent_Component_Props_Prop = {
+		let allSearches_HaveProteins = true
 
-			projectSearchIds,
-			dataPageStateManager: this._dataPageStateManager_DataFrom_Server,
+		{
+			for ( const projectSearchId of projectSearchIds ) {
+
+				const common_Flags_SingleSearch = this._dataPageStateManager_DataFrom_Server.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId)
+
+				if ( common_Flags_SingleSearch.searchNotContainProteins ) {
+
+					allSearches_HaveProteins = false
+					break
+				}
+			}
+		}
+
+		const searchDataLookupParamsRoot =
+			this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
+
+
+		const modViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root = {
+
+			projectSearchIds_AllForPage: projectSearchIds,
+
+			allSearches_HaveProteins,
+
+			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			searchDetailsBlockDataMgmtProcessing: this._searchDetailsBlockDataMgmtProcessing,
+			searchDataLookupParameters_Root: searchDataLookupParamsRoot,
 
-			centralPageStateManager: this._centralPageStateManager,
 			searchSubGroup_CentralStateManagerObjectClass: this._searchSubGroup_CentralStateManagerObjectClass,
 			modPageRoot_CentralStateManagerObjectClass: this._modPageRoot_CentralStateManagerObjectClass,
 			modificationMass_UserSelections_StateObject: this._modificationMass_UserSelections_StateObject,
@@ -626,6 +654,14 @@ export class ModViewPage_RootClass_Common {
 			generatedPeptideContents_UserSelections_StateObject: this._generatedPeptideContents_UserSelections_StateObject,
 
 			modViewPage_DataVizOptions_VizSelections_PageStateManager: this._modViewPage_DataVizOptions_VizSelections_PageStateManager,
+
+		}
+
+		const propsValue : ModViewPage_Display_MainContent_Component_Props_Prop = {
+
+			all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: modViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+
+			centralPageStateManager: this._centralPageStateManager,
 
 			singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,
 

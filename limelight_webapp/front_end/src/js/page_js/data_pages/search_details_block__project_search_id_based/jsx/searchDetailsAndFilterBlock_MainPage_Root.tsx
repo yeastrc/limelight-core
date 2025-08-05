@@ -100,6 +100,7 @@ type OpenUserChangeFiltersOverlay_Callback = ( params : SearchDetailsAndFilterBl
 export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
 
     displayOnly : boolean // No Click Handlers for changing Filters (PSM, Peptide, Protein)
+    isProteinPage: boolean
     do_NOT_Display_ChangeSearches_Link? : boolean
     do_NOT_Display_Re_Order_Searches_Link? : boolean
     dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
@@ -247,6 +248,8 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
             return // EARLY RETURN
         }
 
+        // this.props.propValue.isProteinPage
+
         const dataUpdated_Callback = () => {
 
             //  Currently, this will not be called.  The browser will be taken to a new href in searchDetailsAndFilterBlock_ChangeSearches.changeSearches();
@@ -259,6 +262,7 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
         }
 
         const searchDetailsAndFilterBlock_ChangeSearches = new SearchDetailsAndFilterBlock_ChangeSearches({
+            isProteinPage: this.props.propValue.isProteinPage,
             dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this.props.propValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
             searchDetailsBlockDataMgmtProcessing : this.props.propValue.searchDetailsBlockDataMgmtProcessing,
             dataUpdated_Callback

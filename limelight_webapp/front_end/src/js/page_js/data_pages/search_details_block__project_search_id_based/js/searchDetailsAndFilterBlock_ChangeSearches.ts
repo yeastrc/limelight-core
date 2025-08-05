@@ -42,6 +42,7 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
     private _callbackOn_Cancel_Close_Clicked_BindThis = this._callbackOn_Cancel_Close_Clicked.bind(this)
     private _callback_updateSelected_Searches_BindThis = this._callback_updateSelected_Searches.bind(this)
 
+    private _isProteinPage: boolean
     private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
     private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
     private _dataUpdated_Callback: () => void
@@ -51,12 +52,14 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
     /**
      *
      */
-    constructor({ dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, searchDetailsBlockDataMgmtProcessing, dataUpdated_Callback } : {
+    constructor({ isProteinPage, dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay, searchDetailsBlockDataMgmtProcessing, dataUpdated_Callback } : {
 
+        isProteinPage: boolean
         dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager
         searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
         dataUpdated_Callback: () => void
     }) {
+        this._isProteinPage = isProteinPage
         this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay;
         this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
         this._dataUpdated_Callback = dataUpdated_Callback;
@@ -74,6 +77,7 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
         const overlayComponent = get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout({
             projectIdentifier,
             projectSearchIds_Selected,
+            isProteinPage: this._isProteinPage,
             callback_updateSelected_Searches: this._callback_updateSelected_Searches_BindThis,
             callbackOn_Cancel_Close_Clicked : this._callbackOn_Cancel_Close_Clicked_BindThis
         })

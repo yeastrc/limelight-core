@@ -11,27 +11,26 @@ import {
     ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/ModView_DataViz_Compute_ColorScale_WidthHeight_Etc";
 import {
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 import {
-    DataPageStateManager,
     SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
-    DataTable_Column, DataTable_Column_DownloadTable,
+    DataTable_Column,
+    DataTable_Column_DownloadTable,
     DataTable_DataRow_ColumnEntry,
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
     DataTable_DataRow_ColumnEntry_SearchTableData,
     DataTable_DataRowEntry,
     DataTable_DataRowEntry__GetChildTableData_CallbackParams,
+    DataTable_DataRowEntry__GetChildTableData_Return_Promise_DataTable_RootTableObject,
     DataTable_DataRowEntry_DownloadTable,
     DataTable_DataRowEntry_DownloadTable_SingleColumn,
     DataTable_RootTableDataObject,
-    DataTable_RootTableDataObject_Both_ColumnArrays,
     DataTable_RootTableObject,
     DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
@@ -50,26 +49,11 @@ import {
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable";
 import {
-    ProteinPositionFilter_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
-import {
     modPage_get_ProteinList_SubTable
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_get_ProteinList_SubTable";
 import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
-import {
-    SearchDataLookupParameters_Root
-} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
-import {
-    GeneratedPeptideContents_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
-import {
-    ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
-import {
-    ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
 import {
     ModPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_Display_MainContent_Component";
@@ -80,8 +64,17 @@ import {
     searchSubGroup_Get_Selected_SearchSubGroupIds
 } from "page_js/data_pages/search_sub_group/js/searchSubGroup_Get_Selected_SearchSubGroupIds";
 import {
-    SearchSubGroup_CentralStateManagerObjectClass
-} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
+    ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
+import {
+    modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator";
+import {
+    modPage_Get_Single_ModMass_BySearch_List_When_NO_Proteins_SubTableGenerator
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_Get_Single_ModMass_BySearch_List_When_NO_Proteins_SubTableGenerator";
+import {
+    modPage_Get_Single_ModMass_By_SubSearch_List_When_NO_Proteins_SubTableGenerator
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_Get_Single_ModMass_By_SubSearch_List_When_NO_Proteins_SubTableGenerator";
 
 /**
  *
@@ -89,19 +82,13 @@ import {
 export interface ModPage_TopLevel_ModificationList_DataTable_Component_Props {
 
     force_RecomputeTableData_Object: object
+
+    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+
     modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
-    projectSearchIds: Array<number>
 
     modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
-    searchDataLookupParameters_Root : SearchDataLookupParameters_Root
 
-    searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
-    generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
-    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-    modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-    proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject  //  To limit which proteins are displayed when expand mod mass table row
-    proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject //  To limit which proteins are displayed when expand mod mass table row
-    dataPageStateManager_DataFrom_Server : DataPageStateManager
     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 
     modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function: ModPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
@@ -136,10 +123,10 @@ export class ModPage_TopLevel_ModificationList_DataTable_Component extends React
     constructor( props: ModPage_TopLevel_ModificationList_DataTable_Component_Props ) { try {
         super( props );
 
-        this._projectSearchIds_For_DisplayOrder = props.projectSearchIds
+        this._projectSearchIds_For_DisplayOrder = props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage
 
         {  //  Allow for projectSearchIds_OrderOverride_Deprecated ( OLD Functionality but since stored in URL needs to be supported )
-            const projectSearchIds_OrderOverride_Deprecated = props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_projectSearchIds_OrderOverride_Deprecated()
+            const projectSearchIds_OrderOverride_Deprecated = props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_projectSearchIds_OrderOverride_Deprecated()
 
             if ( projectSearchIds_OrderOverride_Deprecated ) {
                 this._projectSearchIds_For_DisplayOrder = projectSearchIds_OrderOverride_Deprecated
@@ -192,21 +179,13 @@ export class ModPage_TopLevel_ModificationList_DataTable_Component extends React
 
         this._dataTable_RootTableObject =
             _generateDataTable({
-                dataPageStateManager_DataFrom_Server: this.props.dataPageStateManager_DataFrom_Server,
+                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                 modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: this.props.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
-                searchDataLookupParameters_Root: this.props.searchDataLookupParameters_Root,
-                searchSubGroup_CentralStateManagerObjectClass: this.props.searchSubGroup_CentralStateManagerObjectClass,
-                generatedPeptideContents_UserSelections_StateObject: this.props.generatedPeptideContents_UserSelections_StateObject,
-                modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                proteinPosition_Of_Modification_Filter_UserSelections_StateObject: this.props.proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-                proteinPositionFilter_UserSelections_StateObject: this.props.proteinPositionFilter_UserSelections_StateObject,
                 modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this.props.modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
                 projectSearchIds: this._projectSearchIds_For_DisplayOrder,
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
                 modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function: this.props.modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
             })
-
 
         this._show_FullComponent_UpdatingMessage = false
 
@@ -254,34 +233,22 @@ export class ModPage_TopLevel_ModificationList_DataTable_Component extends React
  */
 const _generateDataTable = function (
     {
-        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
-        dataPageStateManager_DataFrom_Server,
-        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
-        searchDataLookupParameters_Root,
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
-        searchSubGroup_CentralStateManagerObjectClass,
-        generatedPeptideContents_UserSelections_StateObject,
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-        modViewPage_DataVizOptions_VizSelections_PageStateManager,
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-        proteinPositionFilter_UserSelections_StateObject,
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result,
+
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
 
         projectSearchIds,
 
         modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
     } : {
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
         modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
-        searchDataLookupParameters_Root : SearchDataLookupParameters_Root
 
-        searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
-        generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
-        modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-        proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject  //  To limit which proteins are displayed when expand mod mass table row
-        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject //  To limit which proteins are displayed when expand mod mass table row
-        dataPageStateManager_DataFrom_Server : DataPageStateManager
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 
         projectSearchIds: Array<number>
@@ -293,7 +260,7 @@ const _generateDataTable = function (
     const dataTableId_ThisTable = "Mod View Show Mods Table";
 
 
-    const projectSearchIdsToDisplay = _getProjectSearchIdsToDisplay({projectSearchIds, modViewPage_DataVizOptions_VizSelections_PageStateManager});
+    const projectSearchIdsToDisplay = _getProjectSearchIdsToDisplay({ projectSearchIds, all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root });
 
     let searchSubGroups_DisplayOrder_Filtered: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>
 
@@ -310,7 +277,7 @@ const _generateDataTable = function (
 
         const projectSearchId = projectSearchIds[ 0 ];
 
-        const searchSubGroups_ForProjectSearchId = dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
+        const searchSubGroups_ForProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
         if ( ! searchSubGroups_ForProjectSearchId ) {
             const msg = "returned nothing: dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
             console.warn( msg )
@@ -318,12 +285,12 @@ const _generateDataTable = function (
         }
 
         const searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
-            searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
+            searchSubGroup_CentralStateManagerObjectClass: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
         })
 
         searchSubGroups_DisplayOrder_Filtered = []
 
-        const searchSubGroups = dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId(projectSearchId);
+        const searchSubGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId(projectSearchId);
         for ( const searchSubGroup of searchSubGroups.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
 
             if ( searchSubGroup_Ids_Selected.has( searchSubGroup.searchSubGroup_Id ) ) {
@@ -334,7 +301,7 @@ const _generateDataTable = function (
     }
 
     const sortedModMasses = modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result.sortedModMasses
-    const sortedModsToDisplay = _getSortedModsToDisplay({ sortedModMasses, modViewPage_DataVizOptions_VizSelections_PageStateManager });
+    const sortedModsToDisplay = _getSortedModsToDisplay({ sortedModMasses, all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root });
 
 
     const dataTableColumns : Array<DataTable_Column> = [];
@@ -369,6 +336,18 @@ const _generateDataTable = function (
 
     }
 
+    {
+        const displayName = "Residues";
+
+        const dataTableColumn = new DataTable_Column({
+            id : "Residues", // Used for tracking sort order. Keep short
+            displayName,
+            width : 100,
+            sortable : false
+        });
+        dataTableColumns.push( dataTableColumn );
+    }
+
     if ( searchSubGroups_DisplayOrder_Filtered ) {
 
         // add a column for each project search id
@@ -377,7 +356,7 @@ const _generateDataTable = function (
 
             const displayName = _getDisplayNameFor_SubSearch_Column( {
                 searchSubGroup,
-                modViewPage_DataVizOptions_VizSelections_PageStateManager
+                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
             } );
 
             const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
@@ -417,13 +396,12 @@ const _generateDataTable = function (
 
             const displayName = _getDisplayNameFor_Search_Column( {
                 projectSearchId,
-                dataPageStateManager_DataFrom_Server,
-                modViewPage_DataVizOptions_VizSelections_PageStateManager
+                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
             } );
 
             const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
 
-                const searchData = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
+                const searchData = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
                 if ( ! searchData ) {
                     const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
                     console.warn( msg );
@@ -510,11 +488,24 @@ const _generateDataTable = function (
                 valueSort : modMass
             });
             columnEntries.push( columnEntry );
-
         }
 
-
         const data_For_ModMass = modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.get_Data_For_ModMass( modMass )
+
+        {  // add modded residues
+
+            const valueDisplay = Array.from( data_For_ModMass.modifiedResidues ).sort().join(', ');
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay
+            });
+            columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
 
         if ( searchSubGroups_DisplayOrder_Filtered ) {
 
@@ -522,9 +513,9 @@ const _generateDataTable = function (
             for ( const searchSubGroup of searchSubGroups_DisplayOrder_Filtered ) {
 
                 const showInt =
-                    ( ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === undefined
-                            || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none )
-                        && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
+                    ( ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === undefined
+                            || all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none )
+                        && all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
                     ) ? true : false;
 
                 let value_ForDisplay_For_ModMass_ProjectSearchId: number = undefined
@@ -596,9 +587,9 @@ const _generateDataTable = function (
             for ( const projectSearchId of projectSearchIdsToDisplay) {
 
                 const showInt =
-                    ( ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === undefined
-                            || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none )
-                        && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
+                    ( ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === undefined
+                            || all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none )
+                        && all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
                     ) ? true : false;
 
                 let value_ForDisplay_For_ModMass_ProjectSearchId: number = undefined
@@ -631,7 +622,7 @@ const _generateDataTable = function (
 
                 const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = () => {
 
-                    const searchData = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
+                    const searchData = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
                     if ( ! searchData ) {
                         const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
                         console.warn( msg );
@@ -679,27 +670,95 @@ const _generateDataTable = function (
             }
         }
 
-        const dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
-            ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+        let dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject : DataTable_DataRowEntry__GetChildTableData_Return_Promise_DataTable_RootTableObject = undefined
 
-                return modPage_get_ProteinList_SubTable({
-                    data_For_ModMass,
-                    modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+        if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.allSearches_HaveProteins ) {
+            dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
+                ( params: DataTable_DataRowEntry__GetChildTableData_CallbackParams ): Promise<DataTable_RootTableObject> => {
 
-                    projectSearchIds,
-                    searchDataLookupParameters_Root,
+                    return modPage_get_ProteinList_SubTable( {
+                        data_For_ModMass,
+                        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
 
-                    searchSubGroup_CentralStateManagerObjectClass,
-                    generatedPeptideContents_UserSelections_StateObject,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-                    modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-                    proteinPositionFilter_UserSelections_StateObject,
-                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-                    dataPageStateManager_DataFrom_Server,
-                    modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
-                })
-            };
+                        projectSearchIds,
+
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+
+                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+
+                        modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
+                    } )
+                };
+        } else {
+
+            if ( searchSubGroups_DisplayOrder_Filtered ) {
+
+                if ( searchSubGroups_DisplayOrder_Filtered.length !== 1 ) {
+
+                    dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
+                        ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+
+                            return modPage_Get_Single_ModMass_By_SubSearch_List_When_NO_Proteins_SubTableGenerator({
+                                data_For_ModMass,
+                                modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+
+                                searchSubGroups_DisplayOrder_Filtered,
+                                projectSearchId: projectSearchIds[ 0 ],
+                                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+                            })
+                        }
+                } else {
+
+                    dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
+                        ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+
+                        return modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator({
+                                projectSearchId_Or_SubSearchId: searchSubGroups_DisplayOrder_Filtered[ 0 ].searchSubGroup_Id,
+                                projectSearchId_ForUseWhereRequire_projectSearchId: projectSearchIds[ 0 ],
+                                data_For_ModMass,
+                                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+                            })
+                        };
+                }
+
+            } else {
+
+                if ( projectSearchIds.length !== 1 ) {
+
+                    dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
+                        ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+
+                            return modPage_Get_Single_ModMass_BySearch_List_When_NO_Proteins_SubTableGenerator({
+
+                                data_For_ModMass,
+                                modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+
+                                projectSearchIds,
+                                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+                            })
+                        }
+                } else {
+
+                    dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
+                        ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+
+                            return modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator({
+                                projectSearchId_Or_SubSearchId: projectSearchIds[ 0 ],
+                                projectSearchId_ForUseWhereRequire_projectSearchId: projectSearchIds[ 0 ],
+                                data_For_ModMass,
+                                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+                            })
+                        };
+                }
+            }
+
+            //  Get Peptide Table or maybe per Search table which then child table is peptide table.
+            //    This Peptide Table is different.  See Trello card
+        }
 
         const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
 
@@ -738,13 +797,13 @@ const _generateDataTable = function (
 
 const _getDisplayNameFor_SubSearch_Column = function (
     {
-        searchSubGroup, modViewPage_DataVizOptions_VizSelections_PageStateManager
+        searchSubGroup, all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     } : {
         searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     }) : string  {
 
-    const column_LabelStart = _getDisplayName_Start_For_Search_Or_SubSearch_Column({ modViewPage_DataVizOptions_VizSelections_PageStateManager })
+    const column_LabelStart = _getDisplayName_Start_For_Search_Or_SubSearch_Column({ all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root })
 
     const columnLabel = column_LabelStart + " (" + searchSubGroup.subgroupName_Display + ")";
 
@@ -753,16 +812,15 @@ const _getDisplayNameFor_SubSearch_Column = function (
 
 const _getDisplayNameFor_Search_Column = function (
     {
-        projectSearchId, modViewPage_DataVizOptions_VizSelections_PageStateManager, dataPageStateManager_DataFrom_Server
+        projectSearchId, all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     } : {
         projectSearchId:number
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-        dataPageStateManager_DataFrom_Server : DataPageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     }) : string  {
 
-    const searchIdXorShortName = modPage_Get_SearchLabel__SearchShortName_OR_SearchId_ForProjectSearchId({projectSearchId, dataPageStateManager_DataFrom_Server});
+    const searchIdXorShortName = modPage_Get_SearchLabel__SearchShortName_OR_SearchId_ForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server });
 
-    const column_LabelStart = _getDisplayName_Start_For_Search_Or_SubSearch_Column({ modViewPage_DataVizOptions_VizSelections_PageStateManager })
+    const column_LabelStart = _getDisplayName_Start_For_Search_Or_SubSearch_Column({ all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root })
 
     const columnLabel = column_LabelStart + " (" + searchIdXorShortName + ")";
 
@@ -771,37 +829,37 @@ const _getDisplayNameFor_Search_Column = function (
 
 const _getDisplayName_Start_For_Search_Or_SubSearch_Column = function (
     {
-        modViewPage_DataVizOptions_VizSelections_PageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     } : {
-        modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     }
 ) {
     let column_LabelStart: string = undefined;
 
-    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== undefined
-        && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== undefined
+        && all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
 
-        column_LabelStart = modPage_Get_DataTransformationType_DisplayLabel({ modViewPage_DataVizOptions_VizSelections_PageStateManager });
+        column_LabelStart = modPage_Get_DataTransformationType_DisplayLabel({ modViewPage_DataVizOptions_VizSelections_PageStateManager: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager });
     } else {
-        const psmQuantType = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === undefined ||
-            modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms
+        const psmQuantType = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === undefined ||
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
 
         column_LabelStart = quantTypeString + ' ' +
-            (modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
+            (all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
                 ? "count" : "ratio");
     }
 
     return column_LabelStart
 }
 
-const _getSortedModsToDisplay = function ({ sortedModMasses, modViewPage_DataVizOptions_VizSelections_PageStateManager } : {
+const _getSortedModsToDisplay = function ({ sortedModMasses, all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root } : {
 
     sortedModMasses: ReadonlyArray<number>
-    modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 }) : ReadonlyArray<number> {
 
-    const modMasses_ProjectSearchIds_Visualization_Selections_Root = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root()
+    const modMasses_ProjectSearchIds_Visualization_Selections_Root = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root()
 
     // console.log('called getSortedModsToDisplay()');
     // console.log('sortedModMasses', sortedModMasses);
@@ -827,12 +885,12 @@ const _getSortedModsToDisplay = function ({ sortedModMasses, modViewPage_DataViz
     return sortedModsToDisplay;
 }
 
-const _getProjectSearchIdsToDisplay = function ({ projectSearchIds, modViewPage_DataVizOptions_VizSelections_PageStateManager } : {
+const _getProjectSearchIdsToDisplay = function ({ projectSearchIds, all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root } : {
     projectSearchIds: Array<number>,
-    modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
+    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 }) : Array<number> {
 
-    const modMasses_ProjectSearchIds_Visualization_Selections_Root = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root()
+    const modMasses_ProjectSearchIds_Visualization_Selections_Root = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root()
 
     if ( ( ! modMasses_ProjectSearchIds_Visualization_Selections_Root )
         || ( ! modMasses_ProjectSearchIds_Visualization_Selections_Root.is_AnySelections() ) ) {

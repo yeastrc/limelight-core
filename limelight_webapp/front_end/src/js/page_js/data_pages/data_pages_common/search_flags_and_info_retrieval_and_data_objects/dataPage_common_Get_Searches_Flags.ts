@@ -25,6 +25,41 @@ export class DataPage_common_Searches_Flags {
         return this._dataPage_common_Flags_SingleSearch_Map_Key_ProjectSearchId.get( projectSearchId );
     }
 
+    get_DataPage_common_Flags_AllEntries() {
+        return this._dataPage_common_Flags_SingleSearch_Map_Key_ProjectSearchId.values()
+    }
+
+    /**
+     * @returns - true if dataPage_common_Flags_SingleSearch.searchNotContainProteins is true for ALL searches
+     */
+    is__searchNotContainProteins_True__TrueFor_All_Searches() : boolean {
+
+        let true_ForAllSearches = true
+
+        for ( const dataPage_common_Flags_SingleSearch of this._dataPage_common_Flags_SingleSearch_Map_Key_ProjectSearchId.values() ) {
+            if ( ! dataPage_common_Flags_SingleSearch.searchNotContainProteins ) {
+
+                true_ForAllSearches = false
+            }
+        }
+
+        return true_ForAllSearches;
+    }
+
+    /**
+     * @returns - true if dataPage_common_Flags_SingleSearch.searchNotContainProteins is true for any search
+     */
+    is__searchNotContainProteins_True__TrueFor_Any_Search() : boolean {
+        for ( const dataPage_common_Flags_SingleSearch of this._dataPage_common_Flags_SingleSearch_Map_Key_ProjectSearchId.values() ) {
+            if ( dataPage_common_Flags_SingleSearch.searchNotContainProteins ) {
+
+                return true; // EARLY RETURN
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @returns - true if dataPage_common_Flags_SingleSearch.anyPsmHas_IsIndependentDecoy_True is true for any search
      */
@@ -92,6 +127,8 @@ export class DataPage_common_Flags_SingleSearch {
     allPsmHave_Precursor_M_Over_Z_PossiblyNull: boolean;			//  null if not populated	//  NOT Populated Yet for Existing Searches
 
     psmIds_AreSequential_PossiblyNull: boolean; //  null if not populated  // All PSM Ids for the search are sequential - can use PSM Id ranges  	//  NOT Populated Yet for Existing Searches
+
+    searchNotContainProteins: boolean
 }
 
 /**

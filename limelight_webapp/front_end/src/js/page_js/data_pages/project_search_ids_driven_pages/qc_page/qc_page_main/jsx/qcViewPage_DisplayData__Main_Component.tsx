@@ -124,6 +124,8 @@ export class QcViewPage_CommonData_To_AllComponents_From_MainComponent {
 
     projectSearchIds : Array<number>
 
+    allSearches_HaveProteins: boolean
+
     currentProjectId_FromDOM: string
 
     searchSubGroup_Ids_Selected : Set<number>
@@ -314,6 +316,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
     //  Flags Set to true/false in constructor
 
+    private _allSearches_HaveProteins: boolean
+
     private _allSearches_Have_ScanFilenames: boolean
     private _allSearches_Have_ScanData: boolean
     private _allSearches_Have_PSM_RetentionTime_Precursor_MZ: boolean
@@ -329,12 +333,14 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
     /**
      *
      */
-    constructor(props : QcViewPage_DisplayData__Main_Component_Props) {
+    constructor(props : QcViewPage_DisplayData__Main_Component_Props) { try {
         super(props);
 
         this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback = new QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback()
 
         const projectSearchIds = props.propsValue.projectSearchIds;
+
+        this._allSearches_HaveProteins = ! props.propsValue.dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search()
 
         this._div_MainGridAtTop_Ref = React.createRef<HTMLDivElement>();
         this._div_MainContent_LeftGridEntry_AtTop_Ref = React.createRef<HTMLDivElement>();
@@ -558,7 +564,12 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject: {},
             scanPeak_M_Over_Z__Intensity_Filter_UserSelection_Object_Force_ResetToStateObject: {}
         };
-    }
+    } catch( e ) {
+        console.warn("Exception caught in componentDidMount");
+        console.warn( e );
+        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        throw e;
+    }}
 
     /**
      *
@@ -721,7 +732,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 psm_Charge_Filter_UserSelection_StateObject:  this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
                 scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
-                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
+                peptideUnique_UserSelection_StateObject: this.props.propsValue.peptideUnique_UserSelection_StateObject
             });
 
             promises.push( promise );
@@ -1033,6 +1045,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback: this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback,
                 qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput: new QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput(),
                 projectSearchIds: this.props.propsValue.projectSearchIds,
+                allSearches_HaveProteins: this._allSearches_HaveProteins,
                 currentProjectId_FromDOM: this.props.propsValue_QC.currentProjectId_FromDOM,
                 searchSubGroup_Ids_Selected,
                 propsValue : this.props.propsValue,
@@ -2121,6 +2134,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback: this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback,
                 qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput,
                 projectSearchIds: this.props.propsValue.projectSearchIds,
+                allSearches_HaveProteins: this._allSearches_HaveProteins,
                 currentProjectId_FromDOM: this.props.propsValue_QC.currentProjectId_FromDOM,
                 searchSubGroup_Ids_Selected,
                 propsValue : this.props.propsValue,
@@ -2622,11 +2636,15 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                             <div className=" section-label " style={ { gridColumn: "1/-1" } }>Peptide and Protein Filters
                             </div>
 
-                            <PeptideUnique_UserSelection
-                                peptideUnique_UserSelection_ComponentData={ this.state.peptideUnique_UserSelection_ComponentData }
-                                peptideUnique_UserSelection_StateObject={ this.props.propsValue.peptideUnique_UserSelection_StateObject }
-                                updateMadeTo_peptideUnique_UserSelection_StateObject_Callback={ this._updateMadeTo_peptideUnique_UserSelection_StateObject_Callback_BindThis }
-                            />
+
+                            { this._allSearches_HaveProteins ? (
+
+                                <PeptideUnique_UserSelection
+                                    peptideUnique_UserSelection_ComponentData={ this.state.peptideUnique_UserSelection_ComponentData }
+                                    peptideUnique_UserSelection_StateObject={ this.props.propsValue.peptideUnique_UserSelection_StateObject }
+                                    updateMadeTo_peptideUnique_UserSelection_StateObject_Callback={ this._updateMadeTo_peptideUnique_UserSelection_StateObject_Callback_BindThis }
+                                />
+                            ) : null }
 
                             <PeptideSequence_UserSelections
                                 peptideSequence_UserSelections_ComponentData={ this.state.peptideSequence_UserSelections_ComponentData }
@@ -2649,13 +2667,16 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                                 updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_Callback={ this._updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_StateObject_Callback_BindThis }
                             />
 
-                            <ProteinPositionFilter_UserSelections__GetsProteinData
-                                proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ this.state.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object }
-                                proteinPositionFilter_UserSelections_StateObject={ this.props.propsValue.proteinPositionFilter_UserSelections_StateObject }
-                                updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis }
-                                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
-                                projectSearchIds={ this.props.propsValue.projectSearchIds }
-                            />
+                            { this._allSearches_HaveProteins ? (
+
+                                <ProteinPositionFilter_UserSelections__GetsProteinData
+                                    proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ this.state.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object }
+                                    proteinPositionFilter_UserSelections_StateObject={ this.props.propsValue.proteinPositionFilter_UserSelections_StateObject }
+                                    updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis }
+                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                />
+                            ) : null }
 
                             <ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_Root_Component
                                 proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject={ this.props.propsValue_QC.proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject }

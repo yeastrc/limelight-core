@@ -59,6 +59,9 @@ import {
 import {
     open_ModPage_ZScore_SubSearchSelection_Overlay
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/modPage_ZScore_SubSearchSelection_Overlay";
+import {
+    ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
 
 /**
  *
@@ -66,20 +69,14 @@ import {
 interface ModPage_ZScore_ReplicateReport_Root_Component_Props {
 
     force_RecomputeTableData_Object: object
-    projectSearchIds_AllForPage: Array<number>
 
     modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
     modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
     modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
     modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result: ModView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result
-    searchDataLookupParameters_Root : SearchDataLookupParameters_Root
 
-    generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
-    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-    modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager
-    proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject  //  To limit which proteins are displayed when expand mod mass table row
-    proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject //  To limit which proteins are displayed when expand mod mass table row
-    dataPageStateManager_DataFrom_Server : DataPageStateManager
+    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+
     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 }
 
@@ -112,17 +109,17 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
     constructor( props: ModPage_ZScore_ReplicateReport_Root_Component_Props ) { try {
         super( props );
 
-        if ( this.props.projectSearchIds_AllForPage.length === 0 ) {
+        if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length === 0 ) {
 
             this._display_NO_Searches_Message = true
 
-        } else if ( this.props.projectSearchIds_AllForPage.length === 1 ) {
+        } else if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length === 1 ) {
 
-            const searchSubGroups_Root= this.props.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
+            const searchSubGroups_Root= this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
 
             if ( searchSubGroups_Root ) {
 
-                const projectSearchId = this.props.projectSearchIds_AllForPage[ 0 ]
+                const projectSearchId = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
 
                 const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId )
                 if ( ! searchSubGroups_ForProjectSearchId ) {
@@ -142,11 +139,11 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
         if ( ( ! this._display_NO_Searches_Message ) && ( ! this._display_OnlyOneSearch_Message ) ) {
 
-            if ( this.props.projectSearchIds_AllForPage.length === 1 ) {
+            if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length === 1 ) {
 
                 //  Single Search with Sub Groups so putting the sub groups into ZScore Groups
 
-                const searchSubGroups_Root= this.props.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
+                const searchSubGroups_Root= this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
 
                 if ( ! searchSubGroups_Root ) {
                     const msg = "IN 'if ( ( ! this._display_NO_Searches_Message ) && ( ! this._display_OnlyOneSearch_Message ) ) {' AND 'if ( ! searchSubGroups_Root ) {'"
@@ -154,7 +151,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
                     throw Error(msg)
                 }
 
-                const searchGroups = this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
                 if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 &&
                     searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 &&
@@ -162,7 +159,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
                     //  NO Sub Searches set so compute from searches
 
-                    const projectSearchId = this.props.projectSearchIds_AllForPage[ 0 ]
+                    const projectSearchId = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
 
                     const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId )
                     if ( ! searchSubGroups_ForProjectSearchId ) {
@@ -183,7 +180,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
                         group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.add( searchSubGroup.searchSubGroup_Id )
                     }
 
-                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().set_SearchGroups({
+                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().set_SearchGroups({
                         group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
                         group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
                         searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set: new Set(),
@@ -202,7 +199,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
             } else {
 
-                const searchGroups = this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
                 if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 &&
                     searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 &&
@@ -210,12 +207,12 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
                     //  NO searches set so compute from searches
 
-                    const projectSearchIdsLength_Half_Ceil = Math.ceil( this.props.projectSearchIds_AllForPage.length / 2 )
+                    const projectSearchIdsLength_Half_Ceil = Math.ceil( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length / 2 )
 
-                    const group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( this.props.projectSearchIds_AllForPage.slice( 0, projectSearchIdsLength_Half_Ceil ) )
-                    const group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( this.props.projectSearchIds_AllForPage.slice( projectSearchIdsLength_Half_Ceil, this.props.projectSearchIds_AllForPage.length ) )
+                    const group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.slice( 0, projectSearchIdsLength_Half_Ceil ) )
+                    const group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.slice( projectSearchIdsLength_Half_Ceil, this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length ) )
 
-                    this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().set_SearchGroups({
+                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().set_SearchGroups({
                         group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
                         group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
                         searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set: new Set(),
@@ -247,13 +244,13 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
     componentDidUpdate( prevProps: Readonly<ModPage_ZScore_ReplicateReport_Root_Component_Props>, prevState: Readonly<ModPage_ZScore_ReplicateReport_Root_Component_State>, snapshot?: any ) { try {
 
 
-        if ( this.props.projectSearchIds_AllForPage.length === 0 ) {
+        if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length === 0 ) {
 
             this._display_NO_Searches_Message = true
 
-        } else if ( this.props.projectSearchIds_AllForPage.length === 1 ) {
+        } else if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length === 1 ) {
 
-            const searchGroups = this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+            const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
             if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
@@ -273,11 +270,11 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
             let projectSearchIds_Changed = false
 
-            if ( prevProps.projectSearchIds_AllForPage.length !== this.props.projectSearchIds_AllForPage.length ) {
+            if ( prevProps.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length !== this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length ) {
                 projectSearchIds_Changed = true
             } else {
-                for ( let index = 0; index < prevProps.projectSearchIds_AllForPage.length; index++ ) {
-                    if ( prevProps.projectSearchIds_AllForPage[ index ] !== this.props.projectSearchIds_AllForPage[ index ] ) {
+                for ( let index = 0; index < prevProps.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length; index++ ) {
+                    if ( prevProps.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ index ] !== this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ index ] ) {
                         projectSearchIds_Changed = true
                         break
                     }
@@ -294,12 +291,12 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
                 console.warn(msg)
                 throw Error(msg)
 
-                //  The following code is WRONG.  NEEDS to change if need to handle change to this.props.projectSearchIds_AllForPage
+                //  The following code is WRONG.  NEEDS to change if need to handle change to this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage
 
-                // const projectSearchIdsLength_Half_Ceil = Math.ceil( this.props.projectSearchIds_AllForPage.length / 2 )
+                // const projectSearchIdsLength_Half_Ceil = Math.ceil( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length / 2 )
                 //
-                // this._group_1_ProjectSearchIds = this.props.projectSearchIds_AllForPage.slice( 0, projectSearchIdsLength_Half_Ceil )
-                // this._group_2_ProjectSearchIds = this.props.projectSearchIds_AllForPage.slice( projectSearchIdsLength_Half_Ceil, this.props.projectSearchIds_AllForPage.length )
+                // this._group_1_ProjectSearchIds = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.slice( 0, projectSearchIdsLength_Half_Ceil )
+                // this._group_2_ProjectSearchIds = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.slice( projectSearchIdsLength_Half_Ceil, this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length )
                 //
                 // this.setState( { forceReRender_Object: {} } )
             }
@@ -319,9 +316,9 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
         }
 
         open_ModPage_ZScore_SearchSelection_Overlay({
-            projectSearchIds_All : this.props.projectSearchIds_AllForPage,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            dataPageStateManager_DataFrom_Server : this.props.dataPageStateManager_DataFrom_Server,
+            projectSearchIds_All : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
+            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+            dataPageStateManager_DataFrom_Server : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server,
             callback_updateSelected_Searches
         })
     } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
@@ -339,9 +336,9 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
         }
 
         open_ModPage_ZScore_SubSearchSelection_Overlay({
-            projectSearchIds_All : this.props.projectSearchIds_AllForPage,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            dataPageStateManager_DataFrom_Server : this.props.dataPageStateManager_DataFrom_Server,
+            projectSearchIds_All : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
+            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+            dataPageStateManager_DataFrom_Server : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server,
             callback_updateSelected_Searches
         })
     } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
@@ -351,7 +348,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
      */
     private _zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData_Checkbox_Changed_Handler( event: React.ChangeEvent<HTMLInputElement> ){ try {
 
-        this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData( event.target.checked )
+        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData( event.target.checked )
 
         this.setState({ forceReRender_Object: {} })
 
@@ -363,7 +360,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
      */
     render() { try {
 
-        const searchGroups = this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+        const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
 
         let processing_SubSearches = false
 
@@ -456,9 +453,9 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
         if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
-            const projectSearchId = this.props.projectSearchIds_AllForPage[ 0 ]
+            const projectSearchId = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
 
-            const searchSubGroups_Root= this.props.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
+            const searchSubGroups_Root= this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
 
             const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId )
             if ( ! searchSubGroups_ForProjectSearchId ) {
@@ -470,7 +467,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
             for ( const searchSubGroup of searchSubGroups_Array ) {
 
-                if ( ! this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id ) ) {
+                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id ) ) {
                     //  NOT in group 1 so skip
                     continue  // EARLY CONTINUE
                 }
@@ -491,7 +488,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
             for ( const searchSubGroup of searchSubGroups_Array ) {
 
-                if ( ! this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id ) ) {
+                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id ) ) {
                     //  NOT in group 1 so skip
                     continue  // EARLY CONTINUE
                 }
@@ -513,8 +510,8 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
             for ( const searchSubGroup of searchSubGroups_Array ) {
 
-                if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id )
-                    || this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id ) ) {
+                if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id )
+                    || this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id ) ) {
                     // In a group so skip
                     continue  // EARLY CONTINUE
                 }
@@ -547,16 +544,16 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
         } else if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.PROJECT_SEARCH_IDS ) {
 
-            for ( const projectSearchId of this.props.projectSearchIds_AllForPage ) {
+            for ( const projectSearchId of this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage ) {
 
-                if ( ! this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId ) ) {
+                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId ) ) {
                     //  NOT in group 1 so skip
                     continue  // EARLY CONTINUE
                 }
 
                 const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
                     projectSearchId,
-                    dataPageStateManager_DataFrom_Server: this.props.dataPageStateManager_DataFrom_Server
+                    dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
                 } )
 
                 const element = (
@@ -573,16 +570,16 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
                 group_1_ProjectSearchIds_OR_SubSearchIds.push( projectSearchId )
             }
 
-            for ( const projectSearchId of this.props.projectSearchIds_AllForPage ) {
+            for ( const projectSearchId of this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage ) {
 
-                if ( ! this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId ) ) {
+                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId ) ) {
                     //  NOT in group 1 so skip
                     continue  // EARLY CONTINUE
                 }
 
                 const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
                     projectSearchId,
-                    dataPageStateManager_DataFrom_Server: this.props.dataPageStateManager_DataFrom_Server
+                    dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
                 } )
 
                 const element = (
@@ -600,17 +597,17 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
             }
 
             {
-                for ( const projectSearchId of this.props.projectSearchIds_AllForPage ) {
+                for ( const projectSearchId of this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage ) {
 
-                    if ( this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId )
-                        || this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId ) ) {
+                    if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId )
+                        || this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId ) ) {
                         // In a group so skip
                         continue  // EARLY CONTINUE
                     }
 
                     const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
                         projectSearchId,
-                        dataPageStateManager_DataFrom_Server: this.props.dataPageStateManager_DataFrom_Server
+                        dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
                     } )
 
                     const element = (
@@ -712,7 +709,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
                     <label>
                         <input
                             type="checkbox"
-                            checked={ this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() }
+                            checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData() }
                             onChange={ this._zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData_Checkbox_Changed_Handler_BindThis }
                         />
                         <span> </span>
@@ -738,13 +735,12 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
                         forceUpdate_Object={ this.state.forceReRender_Object }
 
-                        projectSearchIds_AllForPage={ this.props.projectSearchIds_AllForPage }
+                        projectSearchIds_AllForPage={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage }
                         group_1_ProjectSearchIds_OR_SubSearchIds={ group_1_ProjectSearchIds_OR_SubSearchIds }
                         group_2_ProjectSearchIds_OR_SubSearchIds={ group_2_ProjectSearchIds_OR_SubSearchIds }
 
                         modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root={ this.props.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root }
-                        modViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.modViewPage_DataVizOptions_VizSelections_PageStateManager }
-                        dataPageStateManager={ this.props.dataPageStateManager_DataFrom_Server }
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root }
                         modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass={ this.props.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass }
                         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
                     />
