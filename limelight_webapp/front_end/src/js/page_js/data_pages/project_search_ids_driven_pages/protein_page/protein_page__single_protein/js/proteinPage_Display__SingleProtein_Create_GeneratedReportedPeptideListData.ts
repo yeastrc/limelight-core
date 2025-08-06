@@ -459,7 +459,7 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                         throw Error("get_numPsmsForReportedPeptideIdMap_Result 'data' 'promise' both NOT have value");
                     }
                 }
-                if ( ! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_All_Searches() ) {
+                if ( ! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search() ) {
 
                     // All searches have Proteins
 
@@ -1013,7 +1013,7 @@ const _internal_TopLevel_Function_AfterDataLoad = function (
 
         let  proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder = undefined
 
-        if ( ! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_All_Searches() ) {
+        if ( ! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search() ) {
             proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder = proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId );
             if ( ! proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder ) {
                 throw Error( "No proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId for projectSearchId: " + projectSearchId );
@@ -2069,7 +2069,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
     }
 
 
-    if ( ! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_All_Searches() ) {
+    if ( ! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search() ) {
 
         // All searches have Proteins
 
