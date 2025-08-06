@@ -3684,13 +3684,11 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
         return (
             <div>
                 <div style={ { fontSize: 18, fontWeight: "bold", marginTop: 30 } }>
-                    Some of the searches do not contain proteins so unable to display this page
+                    Some of the searches do not contain proteins so unable to display data on this protein page.
                 </div>
-                <div style={ { marginTop: 30 } }>
-                    Could provide link or button to remove the searches without proteins
-                </div>
-                <div style={ { marginTop: 30 } }>
-                    Could list the searches without proteins here
+                <div style={ { fontSize: 18, fontWeight: "bold", marginTop: 15 } }>
+                    Click a navigation link above to go to a different page<br/>
+                    or click the project name at the top to return to the project.
                 </div>
             </div>
         )
