@@ -100,7 +100,8 @@ public class SearchIds_For_ProjectSearchIdList_Searcher extends Limelight_JDBC_B
 			}
 			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
-				if ( rs.next() ) {
+				
+				while ( rs.next() ) {
 					
 					SearchIdForProjectSearchIdListSearcher_ResultItem resultItem = new SearchIdForProjectSearchIdListSearcher_ResultItem();
 					resultItem.searchId = rs.getInt( "search_id" );
