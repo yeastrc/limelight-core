@@ -424,17 +424,25 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                         <span style={ { fontWeight: "bold" } }>Total Found: </span>
                         <span >{ numberOfPeptidesShown }</span>
                         <span > peptides </span>
-                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                            title={
-                                <span>
-                                    A unique peptide maps to a single protein
-                                </span>
-                            }
-                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                        >
-                            <span>({ numberOfUniquePeptides } unique)</span>
-                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                        <span> </span>
+
+                        { this.props.showProteins ? (
+                            <>
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            A unique peptide maps to a single protein
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <span>({ numberOfUniquePeptides } unique)</span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                <span> </span>
+                            </>
+                        ) : (
+                            <span>&nbsp;</span>
+                        ) }
+
                         <span >{ numberOfPSMsForReportedPeptidesShown } PSMs</span>
 
                         { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && ( this.props.downloadPeptides_Shown_ClickHandler || this.props.downloadPsms_Shown_ClickHandler ) ) ? (
