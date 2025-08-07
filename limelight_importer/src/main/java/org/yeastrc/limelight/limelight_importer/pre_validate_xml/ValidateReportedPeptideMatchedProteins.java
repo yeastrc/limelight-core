@@ -175,6 +175,13 @@ public class ValidateReportedPeptideMatchedProteins {
 	private void validateAll_MatchedProteinForPeptide_IDs_In_MatchedProteins( Set<BigInteger> matchedProteinForPeptide_IDs_InAllReportedPeptides, LimelightInput limelightInput ) throws LimelightImporterDataException {
 
 
+		if ( limelightInput.getNoMatchedProteins() != null ) {
+			
+			//  Found element <no_matched_proteins/> so NO Matched Proteins in Limelight XML file 
+			
+			return; // EARLY RETURN
+		}
+		
 		//  Validate that all matchedProteinForPeptide_IDs_InAllReportedPeptides are found in matched proteins
 		
 		MatchedProteins matchedProteins = limelightInput.getMatchedProteins();
