@@ -368,7 +368,10 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
         const promisesAll = Promise.all( promises );
 
         promisesAll.catch( (reason) => { try {
-            throw Error("Webservice call rejected")
+
+            console.warn("Webservice call rejected")
+
+            throw Error(reason)
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -401,7 +404,10 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
                 genericPauseRequested: params.genericPauseRequested
             })
             promise.catch( (reason) => { try {
-                throw Error("Webservice call rejected")
+
+                console.warn("Webservice call rejected")
+
+                throw Error(reason)
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                 throw e;
