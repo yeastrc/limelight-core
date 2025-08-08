@@ -53,7 +53,7 @@ export class SearchDetailsAndOtherFiltersOuterBlock_Layout extends React.Compone
 
         if ( this.props.projectSearchIds.length === 1 ) {
 
-            divStyle.gridTemplateColumns = "max-content min-content auto"
+            divStyle.gridTemplateColumns = "max-content minmax(min-content, 0) auto"
         } else {
 
             divStyle.gridTemplateColumns = "max-content auto"
