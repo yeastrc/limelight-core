@@ -633,6 +633,8 @@ const _modPage_Download_PSM_Localization_Report_After_GetData = function (
                                     const searchSubGroup = searchSubGroups_Map_Key_SearchSubGroupId.get( projectSearchId_Or_SubSearchId_Entry )
                                     if ( ! searchSubGroup ) {
                                         const msg = "if ( modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND searchSubGroups_Map_Key_SearchSubGroupId.get( projectSearchId_Or_SubSearchId_Entry ) returned NOTHING"
+                                        console.warn(msg)
+                                        throw Error(msg)
                                     }
 
                                     reportLine_Fields.push( searchSubGroup.subgroupName_Display, searchSubGroup.searchSubgroupName_fromImportFile )
