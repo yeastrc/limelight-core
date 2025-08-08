@@ -383,6 +383,16 @@ const __for_Next_WebserviceCallStandardPost = function(
 
                 console.warn("response.text() reject: ", reason)
 
+                handleAJAXError({
+                    fetch_Results: {
+                        fetch_Results_statusCode: response.status,
+                        fetch_Results_statusText: "Failed to get response from server. Reject Reason: " + reason,
+                        fetch_Results_ResponseText: ""
+                    },
+                    url,
+                    requestData: dataToSend
+                });  //  Sometimes throws exception so rest of processing won't always happen
+
                 // reportWebErrorToServer.reportErrorObjectToServer( { errorException : e, webserviceURL: url } );
 
                 const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
