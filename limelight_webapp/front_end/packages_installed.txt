@@ -45,3 +45,32 @@ Ran
 npm install plotly.js-dist-min@latest
 npm install @types/plotly.js-dist-min@latest --save-dev
 
+
+2025-08-08:
+
+Upgrade eslint to address 
+
+npm remove eslint-plugin-standard
+npm remove eslint-plugin-react
+npm remove eslint-plugin-promise
+npm remove eslint-plugin-node
+npm remove eslint-plugin-import
+npm remove eslint-config-standard
+npm remove eslint
+
+   
+npm install eslint@latest --save-dev
+
+npm install eslint-plugin-import@latest --save-dev
+npm install eslint-plugin-node@latest --save-dev
+npm install eslint-plugin-promise@latest --save-dev
+npm install eslint-plugin-react@latest --save-dev
+
+npm install eslint-plugin-standard@latest --save-dev
+	npm warn deprecated eslint-plugin-standard@5.0.0: standard 16.0.0 and eslint-config-standard 16.0.0 no longer require the eslint-plugin-standard package. You can remove it from your dependencies with 'npm rm eslint-plugin-standard'. More info here: https://github.com/standard/standard/issues/1316
+
+
+	Failed to install:
+		npm install eslint-config-standard@latest --save-dev
+
+
