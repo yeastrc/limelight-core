@@ -2,6 +2,8 @@ package org.yeastrc.limelight.limelight_importer.pre_validate_xml;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
@@ -61,6 +63,13 @@ public class Validate_FastaFilename_Matches_Submitted_FastaFile_Filename {
 		}
 
 		FileObjectStorage_FileContainer  fasta_File_Entry = fasta_File_AllEntries.get(0);
+		
+		if ( StringUtils.isEmpty( limelightInput.getFastaFilename() ) ) {
+			
+			//  FASTA filename in Limelight XML file is empty string or null so skip validation
+			
+			return;  // EARLY RETURN
+		}
 		
 		if ( ! fasta_File_Entry.getFilename().equals( limelightInput.getFastaFilename() ) ) {
 			String msg = "FASTA file in Limelight XML file MUST MATCH filename of FASTA file submitted for search.  FASTA file in Limelight XML file '"

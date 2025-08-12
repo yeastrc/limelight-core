@@ -17,6 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_importer.process_input;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterData
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_objects.Input_LimelightXMLFile_InternalHolder_Root_Object;
 import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchStatistics_General_SavedToDB;
+import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmAndProtein_FilterableAnnotationTypesOnId;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
@@ -56,6 +58,7 @@ import org.yeastrc.limelight.limelight_importer.search_sub_group_processing_vali
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchFlagsMainDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchSubGroupDTO;
+import org.yeastrc.limelight.limelight_shared.enum_classes.FileObjectStore_FileType_Enum;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterableDescriptiveAnnotationType;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter;
@@ -138,7 +141,44 @@ public class ProcessLimelightInput {
 			SearchDTO_Importer searchDTO = new SearchDTO_Importer();
 			
 			searchDTO.setCreatedByUserId( userIdInsertingSearch );
-			searchDTO.setFastaFilename( limelightInput.getFastaFilename() );
+			
+			
+			{
+				String fastaFilename_For_searchDTO = limelightInput.getFastaFilename();
+			
+				if ( StringUtils.isEmpty( fastaFilename_For_searchDTO ) ) {
+					
+					//  limelightInput.getFastaFilename() is empty string or null so get from uploaded fasta file if uploaded fasta file
+
+					List<FileObjectStorage_FileContainer> fasta_File_AllEntries = new ArrayList<>( fileObjectStorage_FileContainer_AllEntries.getSize() );
+
+					for ( FileObjectStorage_FileContainer entry : fileObjectStorage_FileContainer_AllEntries.get_FileObjectStorage_FileContainer_List() ) {
+
+						if ( entry.getFileType_FileObjectStore_FileType() == FileObjectStore_FileType_Enum.FASTA_FILE_TYPE ) {
+							fasta_File_AllEntries.add(entry);
+						}
+					}
+
+					if ( ! fasta_File_AllEntries.isEmpty() ) {
+
+						if ( fasta_File_AllEntries.size() > 1 ) {
+							String msg = "More than 1 FASTA file submitted for search.";
+							log.error( msg );
+							throw new LimelightImporterDataException( msg );
+						}
+
+						FileObjectStorage_FileContainer  fasta_File_Entry = fasta_File_AllEntries.get(0);
+
+						fastaFilename_For_searchDTO = fasta_File_Entry.getFilename();
+					}
+				}
+				
+				if ( fastaFilename_For_searchDTO == null ) {
+					fastaFilename_For_searchDTO = "";  // Database field is "NOT NULL" and not changing it at this time
+				}
+
+				searchDTO.setFastaFilename( fastaFilename_For_searchDTO );
+			}
 			
 
 			if ( StringUtils.isNotEmpty( limelightInput.getDataPath() ) ) {

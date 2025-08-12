@@ -769,9 +769,17 @@ class Internal__FASTA_File_Component extends React.Component<Internal__FASTA_Fil
                             </span>
                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     ) : (
-                        <span>
-                            { this.props.searchDetails_ForProjectSearchId.mainPart.fastaFilename }
-                        </span>
+                        ( this.props.searchDetails_ForProjectSearchId.mainPart.fastaFilename === ""
+                            || this.props.searchDetails_ForProjectSearchId.mainPart.fastaFilename === undefined
+                            || this.props.searchDetails_ForProjectSearchId.mainPart.fastaFilename === null ) ? (
+                            <span>
+                                Not Applicable
+                            </span>
+                        ) : (
+                            <span>
+                                { this.props.searchDetails_ForProjectSearchId.mainPart.fastaFilename }
+                            </span>
+                        )
                     ) }
                     { this.props.searchDetails_ForProjectSearchId.mainPart.fastaFilename_IfLimelightXMLHasDifferentFilename ? (
                         <>
