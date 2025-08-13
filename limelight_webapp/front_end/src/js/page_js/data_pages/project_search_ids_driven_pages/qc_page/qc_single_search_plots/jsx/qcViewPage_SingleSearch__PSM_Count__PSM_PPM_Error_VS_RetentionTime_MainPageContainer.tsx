@@ -12,6 +12,9 @@ import {QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_Stati
 import { Qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch__Result__Single_PSM } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__psm__ppm_error/qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch";
 import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
 import {QcPage_ChartFiller_NoData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
+import {
+    QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_OverlayContainer_ChartTypeChoice
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_OverlayContainer";
 
 /**
  *
@@ -80,6 +83,7 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_
                             psm_PPM_Error_List_Filtered={ this.props.psm_PPM_Error_List_Filtered }
                             qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                             qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                            chartType={ QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_OverlayContainer_ChartTypeChoice.SCATTER_PLOT }
                             isInSingleChartOverlay={ false }
                         />
                     )}

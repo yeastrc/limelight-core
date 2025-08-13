@@ -29,6 +29,12 @@ const _Overlay_Width_Max = qcPage_ChartOverlayDimensions_Value.max_Width;
 const _Overlay_Height_Min = qcPage_ChartOverlayDimensions_Value.min_Height;
 const _Overlay_Height_Max = qcPage_ChartOverlayDimensions_Value.max_Height;
 
+
+export enum QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice {
+    SCATTER_PLOT = "SCATTER_PLOT",
+    DENSITY_PLOT = "DENSITY_PLOT"
+}
+
 /**
  *
  */
@@ -92,6 +98,8 @@ class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer 
 
     //  bind to 'this' for passing as parameters
 
+    private _chartTypeChoice = QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice.SCATTER_PLOT
+
     /**
      *
      */
@@ -105,7 +113,7 @@ class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer 
         }
 
         this.state = {
-
+            forceRerender: {}
         };
     }
 
@@ -144,13 +152,64 @@ class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer 
                         <div style={ { height: "100%", display: "grid", gridTemplateRows: "min-content auto" } } >
 
                             {/*  For any content above the chart  */}
-                            <div ></div>
+                            <div style={ { marginBottom: 3 } }>
+
+                                <span>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice"
+                                            checked={
+                                                this._chartTypeChoice ===
+                                                QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice.SCATTER_PLOT
+                                            }
+                                            onChange={ event => {
+                                                window.setTimeout( () => {
+                                                    this._chartTypeChoice =
+                                                        QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice.SCATTER_PLOT
+                                                    this.setState( {
+                                                        forceRerender: {}
+                                                    } );
+                                                }, 10 );
+                                            } }
+                                        />
+                                        <span>
+                                            Scatter Plot
+                                        </span>
+                                    </label>
+                                </span>
+                                <span>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice"
+                                            checked={
+                                                this._chartTypeChoice ===
+                                                QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice.DENSITY_PLOT
+                                            }
+                                            onChange={ event => {
+                                                window.setTimeout( () => {
+                                                    this._chartTypeChoice =
+                                                        QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice.DENSITY_PLOT
+                                                    this.setState( {
+                                                        forceRerender: {}
+                                                    } );
+                                                }, 10 );
+                                            } }
+                                        />
+                                        <span>
+                                            Density Plot
+                                        </span>
+                                    </label>
+                                </span>
+                            </div>
 
                             <div style={ { height: "100%" } }>
                                 <QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_StatisticsPlot
                                     psm_PPM_Error_List_Filtered={ this.props.params.psm_PPM_Error_List_Filtered }
                                     qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.params.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                                    chartType={ this._chartTypeChoice }
                                     isInSingleChartOverlay={ true }
                                 />
                             </div>

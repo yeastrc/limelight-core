@@ -14,6 +14,12 @@ import {QcViewPage_SingleSearch__MS1_Ion_Current_VS_RetentionTime_MainPageContai
 import {QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer";
 import {QcViewPage_SingleSearch__ScanCount_VS_RetentionTime_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__ScanCount_VS_RetentionTime_MainPageContainer";
 import { CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
+import {
+    QcViewPage_SingleSearch__Scan_RetentionTime_VS_IonInjectionTime_MainPageContainer
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__Scan_RetentionTime_VS_IonInjectionTime_MainPageContainer";
+import {
+    QcViewPage_SingleSearch__ScanCount_VS_IonInjectionTime_MainPageContainer
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__ScanCount_VS_IonInjectionTime_MainPageContainer";
 
 /**
  *
@@ -305,6 +311,24 @@ export class Qc_SingleSearch_ScanFile_Statistics_Section extends React.Component
                                             </div>
                                             <div className=" chart-container-multiple-on-same-row ">
                                                 <QcViewPage_SingleSearch__ScanCount_VS_RetentionTime_MainPageContainer
+                                                    qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                                                    qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                                                    searchScanFileId_Selected={ this.state.searchScanFileId_Selection }
+                                                    searchScanFileName_Selected={ this.state.searchScanFileName_Selection }
+                                                />
+                                            </div>
+
+                                            <div className=" chart-container-multiple-on-same-row ">
+                                                <QcViewPage_SingleSearch__Scan_RetentionTime_VS_IonInjectionTime_MainPageContainer
+                                                    qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                                                    qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                                                    searchScanFileId_Selected={ this.state.searchScanFileId_Selection }
+                                                    searchScanFileName_Selected={ this.state.searchScanFileName_Selection }
+                                                />
+                                            </div>
+
+                                            <div className=" chart-container-multiple-on-same-row ">
+                                                <QcViewPage_SingleSearch__ScanCount_VS_IonInjectionTime_MainPageContainer
                                                     qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                                     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                                                     searchScanFileId_Selected={ this.state.searchScanFileId_Selection }

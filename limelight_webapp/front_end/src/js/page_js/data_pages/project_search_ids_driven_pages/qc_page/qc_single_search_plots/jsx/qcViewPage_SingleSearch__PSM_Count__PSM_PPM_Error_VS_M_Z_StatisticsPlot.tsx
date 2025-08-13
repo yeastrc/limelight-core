@@ -7,6 +7,7 @@
 
 
 import React from "react";
+import Plotly from "plotly.js-dist-min";
 
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {qcPage_StandardChartLayout} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
@@ -15,7 +16,10 @@ import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import { Qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch__Result__Single_PSM } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__psm__ppm_error/qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
-import {open_PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer";
+import {
+    open_PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer,
+    QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer";
 import {QcPage_CreatingPlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_CreatingPlot_BlockCover";
 import {QcPage_ClickPlot_ForInteractivePlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ClickPlot_ForInteractivePlot_BlockCover";
 import {
@@ -24,6 +28,12 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import {
+    QcViewPage__ComputeColorsForCategories
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
+import {
+    QcViewPage_CommonAll_Constants
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
 
 
 const chartTitle = "PPM Error vs/ m/z";
@@ -39,6 +49,8 @@ export interface QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statis
 
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent: QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
+
+    chartType: QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice
 
     isInSingleChartOverlay: boolean
 }
@@ -225,6 +237,7 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
             nextProps.psm_PPM_Error_List_Filtered !== this.props.psm_PPM_Error_List_Filtered
             || nextProps.qcViewPage_CommonData_To_AllComponents_From_MainComponent !== this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
             || nextProps.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent !== this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
+            || nextProps.chartType !== this.props.chartType
             || this.state.showCreatingMessage !== nextState.showCreatingMessage
             || nextState.showUpdatingMessage !== this.state.showUpdatingMessage
         ) {
@@ -248,6 +261,7 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
                     prevProps.psm_PPM_Error_List_Filtered !== this.props.psm_PPM_Error_List_Filtered
                     || prevProps.qcViewPage_CommonData_To_AllComponents_From_MainComponent !== this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
                     || prevProps.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent !== this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
+                    || prevProps.chartType !== this.props.chartType
                     // || this.state.showCreatingMessage !== prevState.showCreatingMessage  //  ALWAYS remove check of state properties in 'componentDidUpdate'
                     // || prevState.showUpdatingMessage !== this.state.showUpdatingMessage
                 ) {
@@ -383,8 +397,38 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
             chart_Y.push( psm_PPM_Error_List_Filtered_Entry.ppmError );
         }
 
-        const chart_Data = [
-            {
+        const chart_Data:  Plotly.Data[] = []
+        if ( this.props.chartType === QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice.SCATTER_PLOT ) {
+
+            //  Colors for Bars
+            const qcViewPage__ComputeColorsForCategories = new QcViewPage__ComputeColorsForCategories({ categoryCount: 1 });
+
+            const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index(0);
+
+            //  Marker Size
+            let marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__MAIN_PAGE;
+            if ( this.props.isInSingleChartOverlay ) {
+                marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__OVERLAY;
+            }
+
+            chart_Data.push({
+                name: '',
+                x: chart_X,
+                y: chart_Y,
+
+                type: 'scattergl',
+                // hoverinfo: "text", //  Hover contents
+                // hovertext: chart_Bars_Tooltips,  //  Hover contents per bar
+                mode: 'markers',
+                marker: {
+                    size: marker_Size,  //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
+                    color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
+                }
+            })
+
+        } else {
+
+            chart_Data.push({
                 name: '',
                 x: chart_X,
                 y: chart_Y,
@@ -397,8 +441,8 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
                 reversescale: true,
                 showscale: true,
                 type: 'histogram2dcontour'  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'histogram2dcontour'
-            }
-        ];
+            })
+        }
 
         const chart_Layout = qcPage_StandardChartLayout({
             chartTitle,
@@ -407,6 +451,11 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
             chart_Y_Axis_Label: "PPM Error",
             showlegend: false
         });
+
+        if ( this.props.chartType === QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_OverlayContainer_ChartTypeChoice.SCATTER_PLOT ) {
+
+            chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
+        }
 
         ////////////
 
