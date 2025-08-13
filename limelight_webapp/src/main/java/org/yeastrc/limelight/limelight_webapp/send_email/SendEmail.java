@@ -173,7 +173,7 @@ public class SendEmail implements SendEmailIF {
 						properties.put("mail.smtp.starttls.enable", "true");
 						properties.put("mail.smtp.starttls.required", "true");
 						
-						log.info( "smtpAuthUsername and smtpAuthPassword have values. YES using smtpAuthUsername or smtpAuthPassword when calling 'connect( smtpAuthUsername, smtpAuthPassword )' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
+						log.info( "smtpAuthUsername and smtpAuthPassword have values. YES using smtpAuthUsername and smtpAuthPassword when calling 'connect( smtpAuthUsername, smtpAuthPassword )' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
 						
 						mailTransport.connect( smtpAuthUsername, smtpAuthPassword );
 						
