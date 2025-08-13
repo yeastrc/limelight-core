@@ -163,6 +163,8 @@ public class SendEmail implements SendEmailIF {
 					if ( StringUtils.isNotEmpty(smtpAuthUsername) && StringUtils.isNotEmpty(smtpAuthPassword) ) {
 						
 						//  YES SMTP Username/Password
+						
+						log.info( "smtpAuthUsername and smtpAuthPassword have values. setting specific values for 'mail.smtp.ssl.protocols' 'mail.smtp.auth' 'mail.smtp.starttls.enable' 'mail.smtp.starttls.required'.  smtpAuthUsername: " + smtpAuthUsername );
 
 						// Force modern TLS for older JVMs / strict servers
 						properties.put("mail.smtp.ssl.protocols", "TLSv1.2");    // or "TLSv1.3 TLSv1.2"
@@ -171,9 +173,17 @@ public class SendEmail implements SendEmailIF {
 						properties.put("mail.smtp.starttls.enable", "true");
 						properties.put("mail.smtp.starttls.required", "true");
 						
+						log.info( "smtpAuthUsername and smtpAuthPassword have values. YES using smtpAuthUsername or smtpAuthPassword when calling 'connect( smtpAuthUsername, smtpAuthPassword )' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
+						
 						mailTransport.connect( smtpAuthUsername, smtpAuthPassword );
+						
 					} else {
 						//  NO SMTP Username/Password
+						
+						log.info( "smtpAuthUsername or smtpAuthPassword NOT have values. NOT setting specific values for 'mail.smtp.ssl.protocols' 'mail.smtp.auth' 'mail.smtp.starttls.enable' 'mail.smtp.starttls.required'.  smtpAuthUsername: " + smtpAuthUsername );
+
+						log.info( "smtpAuthUsername or smtpAuthPassword NOT have values. Not using smtpAuthUsername or smtpAuthPassword when calling 'connect()' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
+						
 						mailTransport.connect();	
 					}
 					

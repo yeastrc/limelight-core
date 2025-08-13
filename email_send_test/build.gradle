@@ -47,11 +47,11 @@ dependencies {
 	//  Mail
 	
 	// https://mvnrepository.com/artifact/javax.mail/mail
-//	implementation group: 'javax.mail', name: 'mail', version: '1.4.1'
+	implementation group: 'javax.mail', name: 'mail', version: '1.4.1'
 	
 	//  Later versions like this have license CDDL and GPL
 	// https://mvnrepository.com/artifact/javax.mail/javax.mail-api
-	implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.1'
+	// implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.1'
 	
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
