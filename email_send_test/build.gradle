@@ -1,0 +1,182 @@
+/*
+ * run importer for submitted imports 
+ 
+ 	Build Runnable Jar for Run Importer
+ 
+ 		defaultTasks 'shadowJar'
+ *
+ */
+
+/*
+    Build executable jar file with gradle shadowJar
+    More info at: https://imperceptiblethoughts.com/shadow/
+    
+    Requires Gradle 5+
+ */
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+}
+
+plugins {
+	id 'com.github.johnrengelman.shadow' version '8.1.1'
+	id 'org.ajoberstar.grgit' version '4.1.1'
+}
+
+apply plugin: 'java'
+
+java {
+	sourceCompatibility = 1.8      //    defaults to currently installed JVM
+	// targetCompatibility  = 1.8  //    defaults to sourceCompatibility
+}
+
+repositories {
+    mavenCentral()
+}
+
+//  Set default task for this build.gradle file
+defaultTasks 'shadowJar'
+
+
+dependencies {
+		
+	//  Mail
+	
+	// https://mvnrepository.com/artifact/javax.mail/mail
+//	implementation group: 'javax.mail', name: 'mail', version: '1.4.1'
+	
+	//  Later versions like this have license CDDL and GPL
+	// https://mvnrepository.com/artifact/javax.mail/javax.mail-api
+	implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.1'
+	
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+	
+	// https://mvnrepository.com/artifact/commons-io/commons-io
+	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+	
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2
+	implementation group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.9.0'
+	
+	//  Logging
+	
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.2'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'	
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.17.2' //  Needed for Web app
+	
+	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.17.2'
+	
+	//  Jakarta Commons Logging to SLF4J
+	implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.36'
+	
+	//  Log4j 1 to 2 bridge
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '2.17.2'
+		
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.15.2'
+	
+	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.2'
+	
+	
+	
+	// JAXB dependencies (Required for Java 11+)
+	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
+	implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
+	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.6'
+	
+	
+	//  NOT FOUND in mavenCentral()
+	
+	//     Took Gradle listing from https://mvnrepository.com/artifact/jargs/jargs/1.0
+    // https://mvnrepository.com/artifact/jargs/jargs
+//	compile group: 'jargs', name: 'jargs', version: '1.0'
+
+	//////////////////////////////
+	
+	//  Jars copied and placed here	
+	implementation fileTree(dir: '../lib_other', include: ['*.jar'])
+
+//  Specify dependency on Limelight Shared Code
+	
+}
+
+//  Assign to grgit, created by plugin
+def gitRepo = grgit
+
+
+// def gitRepo = Grgit.open({
+//  dir = ".."  //  Use parent directory since that is root of GIT repo
+//  currentDir = <path>
+//  credentials = <credentals>
+// })
+
+def gitHeadId = gitRepo.head().id
+def gitCommit = gitRepo.head().getAbbreviatedId(8)
+def gitBranch = gitRepo.branch.getCurrent().getName()
+
+//  Get tag at GIT HEAD: like git tag --points-at HEAD
+def repoHead = gitRepo.head()
+def repoHeadTag = gitRepo.tag.list().find {
+	it.commit == repoHead
+}
+def repoTagName = "NO GIT Tag at HEAD"
+
+if ( repoHeadTag ) {
+	println("GIT Tag at HEAD found")
+	repoTagName = repoHeadTag.getName()
+}
+
+
+println("gitHeadId: " + gitHeadId )
+println("gitCommit: " + gitCommit )
+println("gitBranch: " + gitBranch )
+println("GIT Tag at HEAD: " + repoTagName )
+
+jar {
+    manifest {
+        attributes([ 'Main-Class': 'org.yeastrc.limelight.email_send_test_limelight.EmailSendProgram',
+               		"Multi-Release": true,
+        			'Project-Title': project.name,
+					'Build-Timestamp': new Date().format("yyyy-MM-dd HH:mm:ssZ"),
+					'Git-Commit': gitCommit,
+					'GIT-Full-HASH': gitHeadId,
+					'GIT-Tag-at-HEAD': repoTagName,
+					'Git-Branch': gitBranch ])
+    }
+}
+
+
+//  NOT NEEDED:  files from 'src/main/resources' copied to resulting jar without this.
+
+//  For creating runnable jar
+//  processResources {
+//    from ('src/main/resources') {
+//        include '**/*'
+//    }
+// }
+
+
+//   https://imperceptiblethoughts.com/shadow/configuration/#configuring-output-name
+
+shadowJar {
+
+    archiveBaseName = 'emailSendTest_Limelight'
+    
+    // Required to output same as previous filename. 
+    //		Default is 'all' which will add '-all' to output filename before '.jar'
+    
+    archiveClassifier = '' 
+    
+    //  Default is empty string 
+    archiveVersion = ''
+    
+    //  For Log4J2
+    transform(com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer)
+}

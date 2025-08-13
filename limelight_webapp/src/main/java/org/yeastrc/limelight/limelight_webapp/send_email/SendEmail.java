@@ -129,6 +129,13 @@ public class SendEmail implements SendEmailIF {
 
 				// set the SMTP host property value
 				Properties properties = System.getProperties();
+
+				// Force modern TLS for older JVMs / strict servers
+				properties.put("mail.smtp.ssl.protocols", "TLSv1.2");    // or "TLSv1.3 TLSv1.2"
+				
+				properties.put("mail.smtp.auth", "true");
+				properties.put("mail.smtp.starttls.enable", "true");
+				properties.put("mail.smtp.starttls.required", "true");
 				
 				final String SMTP_TIMEOUT = "3000";  // in Milliseconds.  String since put in Properties object
 				

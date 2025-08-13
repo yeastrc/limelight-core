@@ -1,0 +1,25 @@
+
+#  Sample File for emailSendProgram_InputFile.properties
+
+#  Copy to filename emailSendProgram_InputFile.properties
+
+#  Pass as command line parameter to program emailSendTest_Limelight.jar
+
+
+smtp.host = 
+
+smtp.port = 
+
+smtp.auth.username = 
+
+smtp.auth.password = 
+
+email.from.address =
+
+email.to.address =
+
+email.subject = 
+
+email.body = 
+
+  
