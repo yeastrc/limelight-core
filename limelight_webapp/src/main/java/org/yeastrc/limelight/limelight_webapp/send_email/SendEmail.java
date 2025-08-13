@@ -191,25 +191,38 @@ public class SendEmail implements SendEmailIF {
 			catch (AddressException e) {
 				// Invalid email address format
 				//				errors.add("email", new ActionMessage("error.resetpassword.sendmailerror"));
-				log.warn( "Error sending email to Smtp Server.  AddressException: smtpServerHost: '" + smtpServerHost + "', sendEmailItem: " + sendEmailItem, e );
+				log.warn( "Error sending email to Smtp Server.  AddressException: smtpServerHost: '"
+				+ smtpServerHost + "', sendEmailItem: " + sendEmailItem
+				+ ", smtpServerPort: " + smtpServerPort
+				+ ", smtpAuthUsername: " + smtpAuthUsername
+				+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
 				throw e; 
 			}
 			catch (SendFailedException e) {
 				// Invalid email address format
 				log.error( "Error sending email to Smtp Server.  SendFailedException: smtpServerHost: '" + smtpServerHost + "', sendEmailItem: " + sendEmailItem
-						+ ", Smtp Server Host: " + smtpServerHost, e );
+						+ ", Smtp Server Host: " + smtpServerHost
+						+ ", smtpServerPort: " + smtpServerPort
+						+ ", smtpAuthUsername: " + smtpAuthUsername
+						+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
 				throw e; 
 			}
 			catch (MessagingException e) {
 				// Invalid email address format
 				log.error( "Error sending email to Smtp Server.  MessagingException: smtpServerHost: '" + smtpServerHost + "', sendEmailItem: " + sendEmailItem
-						+ ", Smtp Server Host: " + smtpServerHost, e );
+						+ ", Smtp Server Host: " + smtpServerHost
+						+ ", smtpServerPort: " + smtpServerPort
+						+ ", smtpAuthUsername: " + smtpAuthUsername
+						+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
 				throw e; 
 			}
 			catch (Exception e) {
 				// Invalid email address format
 				log.error( "Error sending email to Smtp Server.  Exception: smtpServerHost: '" + smtpServerHost + "', sendEmailItem: " + sendEmailItem
-						+ ", Smtp Server Host: " + smtpServerHost, e );
+						+ ", Smtp Server Host: " + smtpServerHost
+						+ ", smtpServerPort: " + smtpServerPort
+						+ ", smtpAuthUsername: " + smtpAuthUsername
+						+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
 				throw e; 
 			}
 		}
