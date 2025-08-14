@@ -81,6 +81,10 @@ public class SendEmail implements SendEmailIF {
 		if ( useEmailWebservice ) {
 		
 			//  Send via email service
+
+			if ( log.isInfoEnabled() ) {
+				log.info( "useEmailWebservice is true so send email using SendMailFacade. sendEmailItem : " + sendEmailItem );
+			}
 			
 			SendMailFacade sendMailFacade = SendMailFacade.getSingtonInstance();
 			sendMailFacade.send( 
@@ -97,13 +101,21 @@ public class SendEmail implements SendEmailIF {
 			String smtpAuthPassword = null;
 			
 			if ( StringUtils.isNotEmpty(sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET() ) ) {
-
+				
 				smtpServerHost = sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET();
 				smtpServerPort = sendEmailItem.getSmtpServerPort_Override_NORMALLY_NOT_SET();
 				smtpAuthUsername = sendEmailItem.getSmtpAuthUsername_Override_NORMALLY_NOT_SET();
 				smtpAuthPassword = sendEmailItem.getSmtpAuthPassword_Override_NORMALLY_NOT_SET();
+
+				if ( log.isInfoEnabled() ) {
+					log.info( "sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET() is NOT empty so send email using ..._Override_NORMALLY_NOT_SET() properties. sendEmailItem : " + sendEmailItem );
+				}
 				
 			} else {
+
+				if ( log.isInfoEnabled() ) {
+					log.info( "sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET() IS empty so NOT send email using ..._Override_NORMALLY_NOT_SET() properties.  Send using values from Config DB table.  sendEmailItem : " + sendEmailItem );
+				}
 			
 				smtpServerHost = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_HOST_KEY );
 				smtpServerPort = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_PORT_KEY );
@@ -121,7 +133,15 @@ public class SendEmail implements SendEmailIF {
 				smtpAuthUsername = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_USERNAME_KEY );
 				smtpAuthPassword = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_PASSWORD_KEY );
 			}
-			
+
+			if ( log.isInfoEnabled() ) {
+				log.info( "SMTP values used for connect. smtpServerHost: " + smtpServerHost 
+						+ ", smtpServerPort: " + smtpServerPort
+						+ ", smtpAuthUsername: " + smtpAuthUsername
+						+ ", smtpAuthPassword has value: " + ( StringUtils.isNotEmpty( smtpAuthPassword ) ? "true" : "false" )
+						+ ", sendEmailItem : " + sendEmailItem );
+			}
+		
 			// Generate and send the email to the user.
 			try {
 				
@@ -140,12 +160,52 @@ public class SendEmail implements SendEmailIF {
 				if ( StringUtils.isNotEmpty(smtpServerPort) ) {
 					properties.put( "mail.smtp.port", smtpServerPort );
 				}
+
+				if ( StringUtils.isNotEmpty(smtpAuthUsername) && StringUtils.isNotEmpty(smtpAuthPassword) ) {
+					
+					//  YES SMTP Username/Password
+					
+					if ( log.isInfoEnabled() ) {
+						log.info( "smtpAuthUsername and smtpAuthPassword have values. setting specific values for 'mail.smtp.ssl.protocols' 'mail.smtp.auth' 'mail.smtp.starttls.enable' 'mail.smtp.starttls.required'.  smtpAuthUsername: " + smtpAuthUsername );
+					}
+
+					// Force modern TLS for older JVMs / strict servers
+					properties.put("mail.smtp.ssl.protocols", "TLSv1.2");    // or "TLSv1.3 TLSv1.2"
+					
+					properties.put("mail.smtp.auth", "true");
+					properties.put("mail.smtp.starttls.enable", "true");
+					properties.put("mail.smtp.starttls.required", "true");
+					
+				} else {
+
+					//  NO SMTP Username/Password
+					
+					if ( log.isInfoEnabled() ) {
+						log.info( "smtpAuthUsername or smtpAuthPassword NOT have values. NOT setting specific values for 'mail.smtp.ssl.protocols''mail.smtp.starttls.required'. Set 'mail.smtp.auth' 'false' 'mail.smtp.starttls.enable' 'false'.  smtpAuthUsername: " + smtpAuthUsername );
+					}
+
+					properties.put("mail.smtp.auth", "false"); // Explicitly disable authentication
+					properties.put("mail.smtp.starttls.enable", "false"); // Disable TLS (if not required)
+				}
 				
 				
 				// create a JavaMail session
 				javax.mail.Session mailSession = javax.mail.Session.getInstance(properties, null);
 				// create a new MIME message
-				MimeMessage message = new MimeMessage(mailSession);
+				
+				MimeMessage message = null;
+				try {
+					message = new MimeMessage(mailSession);
+
+				} catch ( Exception e ) {
+					log.error( "Error in 'new MimeMessage' to sending email to Smtp Server.  Exception: smtpServerHost: '"
+							+ smtpServerHost + "', sendEmailItem: " + sendEmailItem
+							+ ", smtpServerPort: " + smtpServerPort
+							+ ", smtpAuthUsername: " + smtpAuthUsername
+							+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
+					throw e; 
+				}
+				
 				// set the from address
 				Address fromAddress = new InternetAddress( fromEmailAddress );
 				message.setFrom(fromAddress);
@@ -158,38 +218,40 @@ public class SendEmail implements SendEmailIF {
 				
 				Transport mailTransport = null;
 				try {
-					mailTransport = mailSession.getTransport("smtp");
+					
+					log.info( "Send Email: Prep for connect then connect" );
 					
 					if ( StringUtils.isNotEmpty(smtpAuthUsername) && StringUtils.isNotEmpty(smtpAuthPassword) ) {
 						
 						//  YES SMTP Username/Password
-						
-						log.info( "smtpAuthUsername and smtpAuthPassword have values. setting specific values for 'mail.smtp.ssl.protocols' 'mail.smtp.auth' 'mail.smtp.starttls.enable' 'mail.smtp.starttls.required'.  smtpAuthUsername: " + smtpAuthUsername );
 
-						// Force modern TLS for older JVMs / strict servers
-						properties.put("mail.smtp.ssl.protocols", "TLSv1.2");    // or "TLSv1.3 TLSv1.2"
-						
-						properties.put("mail.smtp.auth", "true");
-						properties.put("mail.smtp.starttls.enable", "true");
-						properties.put("mail.smtp.starttls.required", "true");
-						
-						log.info( "smtpAuthUsername and smtpAuthPassword have values. YES using smtpAuthUsername and smtpAuthPassword when calling 'connect( smtpAuthUsername, smtpAuthPassword )' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
+						if ( log.isInfoEnabled() ) {
+							log.info( "smtpAuthUsername and smtpAuthPassword have values. YES using smtpAuthUsername and smtpAuthPassword when calling 'connect( smtpAuthUsername, smtpAuthPassword )' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
+						}
+
+						mailTransport = mailSession.getTransport("smtp");
 						
 						mailTransport.connect( smtpAuthUsername, smtpAuthPassword );
 						
 					} else {
 						//  NO SMTP Username/Password
-						
-						log.info( "smtpAuthUsername or smtpAuthPassword NOT have values. NOT setting specific values for 'mail.smtp.ssl.protocols' 'mail.smtp.auth' 'mail.smtp.starttls.enable' 'mail.smtp.starttls.required'.  smtpAuthUsername: " + smtpAuthUsername );
 
-						log.info( "smtpAuthUsername or smtpAuthPassword NOT have values. Not using smtpAuthUsername or smtpAuthPassword when calling 'connect()' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
+						if ( log.isInfoEnabled() ) {
+							log.info( "smtpAuthUsername or smtpAuthPassword NOT have values. Not using smtpAuthUsername or smtpAuthPassword when calling 'connect()' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
+						}
+
+						mailTransport = mailSession.getTransport("smtp");
 						
 						mailTransport.connect();	
 					}
 					
 					message.saveChanges();      // don't forget this
+
+					log.info( "Send Email: Send Message" );
 					
 					mailTransport.sendMessage(message, message.getAllRecipients());
+
+					log.info( "Send Email: After Send Message if no exception in send message" );
 					
 				} finally {
 					if ( mailTransport != null ) {
