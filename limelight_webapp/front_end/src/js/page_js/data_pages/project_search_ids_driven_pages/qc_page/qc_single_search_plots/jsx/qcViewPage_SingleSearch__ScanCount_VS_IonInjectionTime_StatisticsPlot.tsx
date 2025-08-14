@@ -359,20 +359,6 @@ export class QcViewPage_SingleSearch__ScanCount_VS_IonInjectionTime_StatisticsPl
             return; // EARLY RETURN
         }
 
-        const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
-
-        const projectSearchId = projectSearchIds[0];
-
-        //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
-
-        const peptideDistinct_Array =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
-
-
-        // const qcPage_Searches_Info_SingleSearch_ForProjectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId;
-        // const qcPage_Flags_SingleSearch_ForProjectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Flags_SingleSearch_ForProjectSearchId
-
         let scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder: CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_NO_Peaks_Data_Holder
 
         const promises: Array<Promise<void>> = []
@@ -398,7 +384,6 @@ export class QcViewPage_SingleSearch__ScanCount_VS_IonInjectionTime_StatisticsPl
         }
 
         const promisesAll = Promise.all(promises)
-
 
         promisesAll.catch( reason => {
             try {

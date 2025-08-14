@@ -358,32 +358,13 @@ export class QcViewPage_SingleSearch__Scan_RetentionTime_VS_IonInjectionTime_Sta
             return; // EARLY RETURN
         }
 
-        const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
-
-        const projectSearchId = projectSearchIds[0];
-
-        //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
-
-        // const peptideDistinct_Array =
-        //     this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-        //         proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
-
-
         const searchScanFileId = this.props.searchScanFileId_Selection;
-
-        const qcPage_Searches_Info_SingleSearch_ForProjectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId;
 
         let scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder: CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_NO_Peaks_Data_Holder = undefined
 
         const promises: Array<Promise<void>> = []
 
-        const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId)
-        if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
-            const msg = "this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId
-            console.warn(msg)
-            throw Error(msg)
-        }
+        const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
 
         const get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result =
             commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data().
