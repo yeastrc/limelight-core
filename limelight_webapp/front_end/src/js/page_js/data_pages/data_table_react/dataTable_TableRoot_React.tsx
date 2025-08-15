@@ -1156,7 +1156,8 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
                     ) : null }
 
-                    { header }
+                    { header }   {/* Header  */}
+
                     { ( ! dataRows ) ? (
                         ( this.state.searchInputValue_CurrentValue ) ? (
                             <div style={ { marginLeft: 10, marginTop: 10, marginBottom: 20, fontWeight: "bold" } }>
@@ -1168,7 +1169,102 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                             </div>
                         )
                     ) : (
-                        dataRows
+                        <>
+                            { dataRows }
+
+                            { ( this.state.tableDataObject_INTERNAL.getPageCount() !== 1 && this.props.tableObject.tableOptions.enable_Pagination_Download_Search  ) ? (
+
+                                //  Above the table conditional is: { ( this.props.tableObject.tableOptions.enable_Pagination_Download_Search || this.props.tableObject.tableOptions.enable_Download ) ? (
+
+                                // Only Display when Pagination, Download, Search enabled
+
+                                // Show at end of the table: the "Currently Showing:" line and next line so user can go to next page and know there are pages
+
+                                <div>
+                                    <div style={ { marginBottom: 5 } }>
+
+                                        { ( this.props.tableObject.tableOptions.enable_Pagination_Download_Search ) ? (
+                                            <>
+                                                <span style={ { fontWeight: "bold" } }>Currently Showing:&nbsp;</span>
+
+                                                {(showingStart) ? (
+                                                    (showingEnd === 1) ? (
+                                                        <span>1</span>
+                                                    ) : (
+                                                        <span>{showingStart.toLocaleString()}-{showingEnd.toLocaleString()}</span>
+                                                    )
+                                                ) : (
+                                                    <span>0</span>
+                                                )}
+                                                <span>&nbsp;of&nbsp;</span>
+                                                <span>{ this.state.tableDataObject_INTERNAL.getTotalCount_ForCurrentlyShowing().toLocaleString() }</span>
+
+                                                { ( this.state.searchInputValue_CurrentValue ) ? (
+                                                    <span >
+                                                        &nbsp;(filtered)
+                                                    </span>
+                                                ) : null }
+
+                                                { ( this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y !== undefined
+                                                    &&  this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y !== null ) ? (
+                                                    <>
+                                                        <span >
+                                                            &nbsp;{ this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y }
+                                                        </span>
+                                                    </>
+                                                ) : null }
+                                            </>
+                                        ): null }
+
+                                        <span className=" fake-link " style={ { marginLeft: ( this.props.tableObject.tableOptions.enable_Pagination_Download_Search ) ?  15 : 0 } }
+                                              onClick={ this._downloadTableContents_All_Clicked_BindThis }
+                                        >
+                                            Download All Table Data
+                                        </span>
+
+                                        { ( this.state.searchInputValue_CurrentValue ) ? (
+                                            <span className=" fake-link " style={ { marginLeft: 15 } }
+                                                  onClick={ this._downloadTableContents_Filtered_Clicked_BindThis }
+                                            >
+                                                Download Filtered Table Data
+                                            </span>
+                                        ) : null }
+                                    </div>
+
+                                    { ( this.props.tableObject.tableOptions.enable_Pagination_Download_Search ) ? (
+
+                                        <>
+                                            { ( this.state.tableDataObject_INTERNAL.getTotalCount_ForAll() >= _showItemsPerPage_SelectValue_Minimum_Value && this.state.tableDataObject_INTERNAL.getPageCount() > 0 ) ? (
+
+                                                // Show this line if:  Have more items than for 1 page.  Page Count is > 0 (Page Count is Zero if user search finds NO rows)
+
+                                                <div style={ { marginBottom: 5 } }>
+
+                                                    {/*  Select Page to Display  */}
+                                                    <DataTable_TableRoot_React_Table_PageNavigation_Component
+                                                        pageNavigation_SelectValue_Prop={ this.state.currentPage_CurrentValue }
+                                                        pageNavigation_TotalPagesCount={ this.state.tableDataObject_INTERNAL.getPageCount() }
+                                                        tableDataObject_INTERNAL={ this.state.tableDataObject_INTERNAL }
+                                                        pageNavigation_NewValueEntered_Callback={ this._currentPage_CurrentValue_Update_Callback_BindThis }
+                                                    />
+
+                                                    {/*  Select number of rows per page */}
+                                                    <DataTable_TableRoot__ShowItemsPerPage_Select_Component
+                                                        showItemsPerPage_SelectValue_Prop={ this.state.showItemsPerPage_SelectValue }
+                                                        showItemsPerPage_SelectValue_Options={ _showItemsPerPage_SelectValue_OPTIONS }
+                                                        showItemsPerPage_NewValueEntered_Callback={ this._showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback_BindThis }
+                                                    />
+
+                                                </div>
+                                            ) : null }
+                                        </>
+                                    ) : null }
+
+                                </div>
+
+                            ) : null }
+
+                        </>
                     )}
 
                     { ( this.state.show_updatingTableOrder_Message ) ? (
