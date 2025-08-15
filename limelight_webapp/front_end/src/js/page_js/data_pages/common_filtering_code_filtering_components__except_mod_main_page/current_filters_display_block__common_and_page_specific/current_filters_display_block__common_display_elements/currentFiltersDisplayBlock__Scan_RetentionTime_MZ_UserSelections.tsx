@@ -139,7 +139,7 @@ const CurrentFiltersDisplayBlock__Scan_RetentionTime_MZ_UserSelections = functio
     } else if ( mz__To__Filter !== undefined && mz__To__Filter !== null ) {
 
         const filterEntry = (
-            <div key="RetentionTime__To">
+            <div key="mz__To">
                 <span>Only showing data with m/z </span>
                 <span>{ mz__To__Filter }</span>
                 <span> or less</span>
