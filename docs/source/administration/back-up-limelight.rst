@@ -92,6 +92,7 @@ The output should be similar to:
     ]
 
 The directory is the one labeled with ``Mountpoint``. In this case, the data directory is: ``/var/lib/docker/volumes/limelight_spectr_storage/_data``.
+If you do not find ``Mountpoint`` look for ``Mounts``.
 
 Customized Data Location
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -128,6 +129,70 @@ directory or filename you prefer to use for your backup. For example:
    sudo tar -C /var/lib/docker/volumes/limelight_spectr_storage/_data -czf /mnt/d/limelight-backups/limelight-spectra-20210501.tgz .
 
 Would save the backup in the ``limelight-backups`` directory of the ``D:\`` drive with the filename ``limelight-spectra-20210501.tgz``.
+
+.. note::
+
+    If you are on a different operating system or want to back up the data in a different way, any method for backing
+    up the above directory should suffice.
+
+Back Up File Object Data
+--------------------
+The file object data are files on disk, and so can be easily backed up using standard archiving and compression programs,
+like tar, gzip, or zip.  To do this the files must first be located.
+
+Docker-Managed Data Location
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+If Docker is managing where files are store (the default behavior in our tutorial), type the following into your
+Linux terminal (including Windows users running Docker on WSL2 as per our :doc:`/tutorials/install-docker` tutorial).
+
+.. code-block:: bash
+
+   sudo docker inspect limelight-file-object-store
+
+The output should be similar to:
+
+.. code-block:: json
+
+            "Mountpoint": "/var/lib/docker/volumes/docker-compose-files_file_object_store_dir/_data"
+
+The directory is the one labeled with ``Mountpoint``. In this case, the data directory is: ``/var/lib/docker/volumes/docker-compose-files_file_object_store_dir/_data``.
+If you do not find ``Mountpoint`` look for ``Mounts``.
+
+Customized Data Location
+^^^^^^^^^^^^^^^^^^^^^^^^
+If you have customized the data storage locations, as per our :doc:`install-limelight-custom-data-location` tutorial,
+this will be the directory you have assigned to the ``FILE_OBJECT_STORE_DIR`` in your ``.env`` file. For example,
+if the line in your ``.env`` file reads:
+
+.. code-block:: none
+
+   FILE_OBJECT_STORE_DIR=/data/limelight-data/file-object-storage
+
+Your directory is ``/data/limelight-data/file-object-storage``.
+
+
+Back Up the Data
+^^^^^^^^^^^^^^^^^^^^
+Using the directory you found above, type the following into a Linux terminal to back up the file object data:
+
+.. code-block:: bash
+
+   # replace DIRECTORY_PATH with the directory you found above
+   sudo tar -C DIRECTORY_PATH -czf /path/to/limelight-file-object-backup.tgz .
+
+   # for example:
+   sudo tar -C /var/lib/docker/volumes/docker-compose-files_file_object_store_dir/_data -czf ~/limelight-file-object-backup.tgz .
+
+This will create a file named ``limelight-file-object-backup.tgz`` in your home directory that contains the
+file object data. The ``~/limelight-file-object-backup.tgz`` part of the command may be replaced with any
+directory or filename you prefer to use for your backup. For example:
+
+.. code-block:: bash
+
+   # for example:
+   sudo tar -C /var/lib/docker/volumes/docker-compose-files_file_object_store_dir/_data -czf /mnt/d/limelight-backups/limelight-file-object-20210501.tgz .
+
+Would save the backup in the ``limelight-backups`` directory of the ``D:\`` drive with the filename ``limelight-file-object-20210501.tgz``.
 
 .. note::
 
@@ -203,6 +268,30 @@ the directory ``/var/lib/docker/volumes/limelight_spectr_storage/_data`` type th
 .. code-block:: bash
 
    sudo tar -xzf /mnt/d/limelight-backups/limelight-spectra-20210501.tgz -C /var/lib/docker/volumes/limelight_spectr_storage/_data
+
+Restore File Object Data
+---------------------
+.. important::
+
+    Shut down the Limelight app before restoring file object data! :ref:`Review how to start and stop Limelight<5. Starting and Stopping Limelight>`.
+
+To restore file object data, determine the directory in which the file object data should be found by :ref:`following the directions above<Back Up File Object Data>`.
+
+Type the following into a Linux terminal to restore a file object data backup:
+
+.. code-block:: bash
+
+   sudo tar -xzf /path/to/backup.tgz -C /path/to/file_object/data
+
+``/path/to/backup.tgz`` is the location of your backup file made with the instructions above. ``/path/to/file_object/data``
+is the location where the file object data should go, determined by following the instructions above.
+
+For example, to restore a backup file named ``limelight-file-object-20210501.tgz`` found in ``D:\limelight-backups`` to
+the directory ``/var/lib/docker/volumes/limelight_file_object_storage/_data`` type the following:
+
+.. code-block:: bash
+
+   sudo tar -xzf /mnt/d/limelight-backups/limelight-file_object-20210501.tgz -C /var/lib/docker/volumes/limelight_file_object_storage/_data
 
 You can now start Limelight. :ref:`Review how to start and stop Limelight<5. Starting and Stopping Limelight>`.
 

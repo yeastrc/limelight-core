@@ -41,6 +41,7 @@ the following:
         sudo mkdir /data/limelight-data/mysql
         sudo mkdir /data/limelight-data/spectr-upload
         sudo mkdir /data/limelight-data/spectr-storage
+        sudo mkdir /data/limelight-data/file-object-storage
         sudo mkdir /data/limelight-data/limelight-upload
         sudo mkdir /data/limelight-data/blib-workdir
         sudo mkdir /data/limelight-data/blib-download
@@ -68,6 +69,7 @@ you chose above. This example uses the example directory names:
        MYSQL_DATA_DIRECTORY=/data/limelight-data/mysql
        SPECTR_UPLOAD_DIRECTORY=/data/limelight-data/spectr-upload
        SPECTR_STORAGE_DIRECTORY=/data/limelight-data/spectr-storage
+       FILE_OBJECT_STORE_DIR=/data/limelight-data/file-object-storage
        LIMELIGHT_UPLOAD_DIRECTORY=/data/limelight-data/limelight-upload
        BLIB_WORK_DIR=/data/limelight-data/blib-workdir
        BLIB_DESTINATION_DIR=/data/limelight-data/blib-download
