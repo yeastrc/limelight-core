@@ -167,5 +167,10 @@ head_section_include_every_page.jsp
 <script id="webservice_sync_tracking_code" type="text/text" >${ webserviceSyncTracking }</script>
 
 
+<script id="releaseString_FromFile" type="text/text" ><c:out value="${ releaseString_FromFile }"></c:out></script>
+
+
+
+
    <link rel="stylesheet" href="static/css_generated/global.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />
    

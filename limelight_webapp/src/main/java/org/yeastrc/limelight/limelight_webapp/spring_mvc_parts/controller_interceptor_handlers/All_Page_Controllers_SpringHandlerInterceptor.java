@@ -32,6 +32,7 @@ import org.yeastrc.limelight.limelight_webapp.database_version_info_retrieval_co
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.error_pages_controllers.AA_ErrorPageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.rest_controllers.AA_UserAccount_RestWSControllerPaths_Constants;
+import org.yeastrc.limelight.limelight_webapp.web_app_version_and_git_info_from_build.Webapp_VersionAndGitInfo_FromBuild_IF;
 
 /**
  * This is called before all Page Controllers, including user pages, by excluding static and rest webservices
@@ -48,6 +49,9 @@ public class All_Page_Controllers_SpringHandlerInterceptor implements HandlerInt
 	
 	@Autowired
 	private Webapp__Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode_IF webapp__Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode;
+	
+	@Autowired
+	private Webapp_VersionAndGitInfo_FromBuild_IF webapp_VersionAndGitInfo_FromBuild;
 	
 	/**
 	 * Used in class LimelightWebAppConfig
@@ -69,6 +73,11 @@ public class All_Page_Controllers_SpringHandlerInterceptor implements HandlerInt
     @Override
     public boolean preHandle( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler ) throws Exception {
     	
+    	{
+    		String releaseString_FromFile = webapp_VersionAndGitInfo_FromBuild.get_Webapp_VersionAndGitInfo_FromBuild_Results().getLimelightRelease_EnvironmentVariableValue_OrDefault();
+    	
+    		httpServletRequest.setAttribute( "releaseString_FromFile", releaseString_FromFile );
+    	}
     	
     	String requestURI = httpServletRequest.getRequestURI();
     	

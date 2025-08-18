@@ -18,6 +18,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      LIMELIGHT_RELEASE_TAG: ${{ github.event.release.tag_name }}
+      
     steps:
     - name: Checkout
       uses: actions/checkout@v2
