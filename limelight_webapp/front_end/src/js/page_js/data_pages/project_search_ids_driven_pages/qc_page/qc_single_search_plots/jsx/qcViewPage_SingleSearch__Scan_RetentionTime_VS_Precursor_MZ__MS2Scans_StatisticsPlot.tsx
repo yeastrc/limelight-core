@@ -29,7 +29,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__Scan_RetentionTime_VS_Precursor_MZ__MS2Scans_OverlayContainer";
 
 
-const chartTitle = "Retention Time vs/ MS2 Precursor m/z";
+const chartTitle = "MS2 Precursor m/z vs/ Retention Time";
 
 /**
  *

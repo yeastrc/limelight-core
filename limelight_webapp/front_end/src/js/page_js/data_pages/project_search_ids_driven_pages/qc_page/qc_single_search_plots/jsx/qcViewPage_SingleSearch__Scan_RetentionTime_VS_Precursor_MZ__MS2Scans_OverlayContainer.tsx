@@ -17,7 +17,7 @@ import {qcPage_ChartOverlayDimensions} from "page_js/data_pages/project_search_i
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {QcViewPage_SingleSearch__Scan_RetentionTime_VS_Precursor_MZ__MS2Scans_StatisticsPlot} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__Scan_RetentionTime_VS_Precursor_MZ__MS2Scans_StatisticsPlot";
 
-const _Overlay_Title = "QC Plot: Retention Time vs/ MS2 Precursor m/z"
+const _Overlay_Title = "QC Plot: MS2 Precursor m/z vs/ Retention Time"
 
 
 const qcPage_ChartOverlayDimensions_Value = qcPage_ChartOverlayDimensions();
