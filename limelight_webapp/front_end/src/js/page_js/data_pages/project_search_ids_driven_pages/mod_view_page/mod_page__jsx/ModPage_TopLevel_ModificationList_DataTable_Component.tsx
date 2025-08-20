@@ -346,6 +346,9 @@ const _generateDataTable = function (
             sortable : false
         });
         dataTableColumns.push( dataTableColumn );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     if ( searchSubGroups_DisplayOrder_Filtered ) {
