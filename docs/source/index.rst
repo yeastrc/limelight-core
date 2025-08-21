@@ -9,8 +9,7 @@ Citing
 If you use Limelight in your work, please cite:
 
   .. epigraph::
-   `Discovery and Visualization of Uncharacterized Drug-Protein Adducts Using Mass Spectrometry. Riffle M, Hoopmann MR, Jaschob D, Zhong G, Moritz RL, MacCoss MJ, Davis TN, Isoherranen N, Zelter A. Anal Chem. 2022 Mar 1;94(8):3501-3509. doi: 10.1021/acs.analchem.1c04101 <https://pubmed.ncbi.nlm.nih.gov/35184559/>`_
-
+   `Limelight: An Open, Web-Based Tool for Visualizing, Sharing, and Analyzing Mass Spectrometry Data from DDA Pipelines. Riffle M, Zelter A, Jaschob D, Hoopmann MR, Faivre DA, Moritz RL, Davis TN, MacCoss MJ, Isoherranen N. J Proteome Res. 2025 Apr 4;24(4):1895-1906. doi: 10.1021/acs.jproteome.4c00968. <https://pubmed.ncbi.nlm.nih.gov/40036265/>`_
 
 Getting Help, Providing Feedback, or Reporting Problems
 =======================================================
