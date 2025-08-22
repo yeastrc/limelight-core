@@ -200,6 +200,8 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_For
 
     readonly projectSearchId_ForUseWhereRequire_projectSearchId: number
 
+    readonly modifiedResidues: ReadonlySet<string>
+
     /**
      * Display Value for Mod Page Top Level table showing Mod Masses as chosen by user based on "Transform"
      */
@@ -212,12 +214,14 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_For
             projectSearchId_Or_SubSearchId,
             projectSearchId_Or_SubSearchId_Enum,
             projectSearchId_ForUseWhereRequire_projectSearchId,
+            modifiedResidues,
             topLevelTable_DisplayValue,
             psmData_Entries_Iterator
         } : {
             projectSearchId_Or_SubSearchId: number
             projectSearchId_Or_SubSearchId_Enum: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum
             projectSearchId_ForUseWhereRequire_projectSearchId: number
+            modifiedResidues: Set<string>
 
             topLevelTable_DisplayValue: number
             psmData_Entries_Iterator: IterableIterator<ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm>
@@ -226,6 +230,7 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_For
         this.projectSearchId_Or_SubSearchId = projectSearchId_Or_SubSearchId
         this.projectSearchId_Or_SubSearchId_Enum = projectSearchId_Or_SubSearchId_Enum
         this.projectSearchId_ForUseWhereRequire_projectSearchId = projectSearchId_ForUseWhereRequire_projectSearchId
+        this.modifiedResidues = modifiedResidues
 
         this._topLevelTable_DisplayValue = topLevelTable_DisplayValue
 
@@ -622,7 +627,6 @@ const _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root = function (
 
         const modifiedResidues: Set<string> = new Set()
 
-
         for ( const singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId of dataEntry_SingleModMass.get_All() ) {
 
             for ( const dataFor_SinglePsm of singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.get_DataFor_SinglePsm_All() ) {
@@ -639,12 +643,23 @@ const _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root = function (
 
         for ( const singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId of dataEntry_SingleModMass.get_All() ) {
 
+            const modifiedResidues: Set<string> = new Set()  // Computed for projectSearchId_Or_SubSearchId
+
+            for ( const dataFor_SinglePsm of singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.get_DataFor_SinglePsm_All() ) {
+                if ( dataFor_SinglePsm.get__allMods_PeptideResidueLetters_At_ModificationPositions() ) {
+                    for ( const peptideResidueLetter of dataFor_SinglePsm.get__allMods_PeptideResidueLetters_At_ModificationPositions() ) {
+                        modifiedResidues.add( peptideResidueLetter )
+                    }
+                }
+            }
+
             // topLevelTable_DisplayValue Initially set to PsmCount
 
             const output_Data_ForSingle_ProjectSearchId_Or_SubSearchId = new ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId({
                 projectSearchId_Or_SubSearchId: singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.projectSearchId_Or_SubSearchId,
                 projectSearchId_Or_SubSearchId_Enum,
                 projectSearchId_ForUseWhereRequire_projectSearchId: singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.projectSearchId_ForUseWhereRequire_projectSearchId,
+                modifiedResidues,
                 topLevelTable_DisplayValue: singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.get_PsmCount(),
                 psmData_Entries_Iterator: singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.get_DataFor_SinglePsm_All()
             })

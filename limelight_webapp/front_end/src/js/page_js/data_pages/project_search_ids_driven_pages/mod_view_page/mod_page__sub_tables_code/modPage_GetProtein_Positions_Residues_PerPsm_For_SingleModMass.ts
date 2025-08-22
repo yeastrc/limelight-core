@@ -220,10 +220,13 @@ export class ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Resu
 
 export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = async function (
     {
+        projectSearchId_Or_SubSearchId_Set_PossiblyFiltered,
         data_For_ModMass,
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
     }:{
+        projectSearchId_Or_SubSearchId_Set_PossiblyFiltered: Set<number>
+
         data_For_ModMass: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
@@ -233,12 +236,10 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
 
     const data_For_SinglePsm_Map_Key_PsmId: Map<number, ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_For_SinglePsm> = new Map()
 
-    const projectSearchId_Or_SubSearchId_ALL_Set: Set<number> = new Set()
     const projectSearchId_ForUseWhereRequire_projectSearchId_ALL_Set: Set<number> = new Set()
 
     for ( const data_ForSingle_ProjectSearchId_Or_SubSearchIds of data_For_ModMass.get_Data_AllValues() ) {
 
-        projectSearchId_Or_SubSearchId_ALL_Set.add( data_ForSingle_ProjectSearchId_Or_SubSearchIds.projectSearchId_Or_SubSearchId )
         projectSearchId_ForUseWhereRequire_projectSearchId_ALL_Set.add( data_ForSingle_ProjectSearchId_Or_SubSearchIds.projectSearchId_ForUseWhereRequire_projectSearchId )
     }
 
@@ -259,7 +260,13 @@ export const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass = as
 
     for ( const data_ForSingle_ProjectSearchId_Or_SubSearchIds of data_For_ModMass.get_Data_AllValues() ) {
 
-        // const projectSearchId_Or_SubSearchId = data_ForSingle_ProjectSearchId_Or_SubSearchIds.projectSearchId_Or_SubSearchId
+        const projectSearchId_Or_SubSearchId = data_ForSingle_ProjectSearchId_Or_SubSearchIds.projectSearchId_Or_SubSearchId
+
+        if ( ! projectSearchId_Or_SubSearchId_Set_PossiblyFiltered.has( projectSearchId_Or_SubSearchId ) ) {
+            //  Skip since not being included
+            continue  // EARLY CONTINUE
+        }
+
         const projectSearchId = data_ForSingle_ProjectSearchId_Or_SubSearchIds.projectSearchId_ForUseWhereRequire_projectSearchId
 
         for ( const dataFor_SinglePsm of  data_ForSingle_ProjectSearchId_Or_SubSearchIds.get_DataFor_SinglePsm_All() ) {

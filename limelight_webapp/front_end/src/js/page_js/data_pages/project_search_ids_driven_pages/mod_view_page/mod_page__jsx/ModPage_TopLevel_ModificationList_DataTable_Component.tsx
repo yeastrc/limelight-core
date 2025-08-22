@@ -680,6 +680,7 @@ const _generateDataTable = function (
                 ( params: DataTable_DataRowEntry__GetChildTableData_CallbackParams ): Promise<DataTable_RootTableObject> => {
 
                     return modPage_get_ProteinList_SubTable( {
+                        force_AlwaysShow_Search_SubSearch_SubTable: false,
                         data_For_ModMass,
                         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
 

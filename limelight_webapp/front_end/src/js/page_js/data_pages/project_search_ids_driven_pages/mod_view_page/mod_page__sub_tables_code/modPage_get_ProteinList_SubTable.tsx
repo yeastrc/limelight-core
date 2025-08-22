@@ -25,7 +25,9 @@ import {
 import {
     ModPage_Mod_Unlocalized_StartEnd_ContainerClass
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModPage_Mod_Unlocalized_StartEnd_ContainerClass";
-import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
+import {
+    limelight__variable_is_type_number_Check
+} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {
     modPage_ProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents,
     ModPage_ProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents_Click_Callback_Params
@@ -81,10 +83,13 @@ import {
 
 export const modPage_get_ProteinList_SubTable = async function (
     {
+        force_AlwaysShow_Search_SubSearch_SubTable,
         data_For_ModMass,
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
 
         projectSearchIds,
+
+        searchSubGroup_Ids_Override,
 
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
@@ -92,11 +97,15 @@ export const modPage_get_ProteinList_SubTable = async function (
 
         modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
     } : {
+        force_AlwaysShow_Search_SubSearch_SubTable: boolean
+
         data_For_ModMass: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass
 
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 
         projectSearchIds: Array<number>
+
+        searchSubGroup_Ids_Override?: Array<number>
 
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
@@ -109,12 +118,18 @@ export const modPage_get_ProteinList_SubTable = async function (
     const dataTableId_ThisTable = "Mod View Protein List Sub Table";
 
 
+    let projectSearchId_Or_SubSearchId_Set_PossiblyFiltered: Set<number> = undefined
     let searchSubGroups_DisplayOrder_Filtered: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>
 
     if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum
+        === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.ProjectSearchId ) {
+
+        projectSearchId_Or_SubSearchId_Set_PossiblyFiltered = new Set( projectSearchIds )
+
+    } else if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum
         === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
 
-        //  Only display for 1 search
+        //  Only display Sub Searches for 1 search
 
         if ( projectSearchIds.length !== 1 ) {
             const msg = "if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) { AND if ( projectSearchIds.length !== 1 ) {"
@@ -131,20 +146,34 @@ export const modPage_get_ProteinList_SubTable = async function (
             throw Error( msg )
         }
 
-        const searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
-            searchSubGroup_CentralStateManagerObjectClass: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
-        })
+        if ( searchSubGroup_Ids_Override ) {
+
+            projectSearchId_Or_SubSearchId_Set_PossiblyFiltered = new Set( searchSubGroup_Ids_Override )
+
+
+        } else {
+
+            const searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
+                searchSubGroup_CentralStateManagerObjectClass: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
+            })
+
+            projectSearchId_Or_SubSearchId_Set_PossiblyFiltered = new Set( searchSubGroup_Ids_Selected )
+        }
 
         searchSubGroups_DisplayOrder_Filtered = []
 
         for ( const searchSubGroup of searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
 
-            if ( searchSubGroup_Ids_Selected.has( searchSubGroup.searchSubGroup_Id ) ) {
+            if ( projectSearchId_Or_SubSearchId_Set_PossiblyFiltered.has( searchSubGroup.searchSubGroup_Id ) ) {
 
                 searchSubGroups_DisplayOrder_Filtered.push( searchSubGroup )
             }
         }
+
+    } else {
+        throw Error("Unexpected value for modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum: " + modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum )
     }
+
 
 
     // create the columns for the table
@@ -156,8 +185,10 @@ export const modPage_get_ProteinList_SubTable = async function (
 
     // create the rows for the table
     const dataTableRows : Array<DataTable_DataRowEntry> = await _getDataTableRows({
+        force_AlwaysShow_Search_SubSearch_SubTable,
         data_For_ModMass,
         projectSearchIds,
+        projectSearchId_Or_SubSearchId_Set_PossiblyFiltered,
         searchSubGroups_DisplayOrder_Filtered,
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
 
@@ -189,6 +220,12 @@ export const modPage_get_ProteinList_SubTable = async function (
 
 ///////
 
+/**
+ *
+ * @param projectSearchIds
+ * @param searchSubGroups_DisplayOrder_Filtered
+ * @param all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+ */
 const _getDataTableColumns = function (
     {
         projectSearchIds,
@@ -355,10 +392,22 @@ const _getDataTableColumns = function (
 
 /////////////
 
+/**
+ *
+ * @param data_For_ModMass
+ * @param projectSearchIds
+ * @param searchSubGroups_DisplayOrder_Filtered
+ * @param modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
+ * @param all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+ * @param commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+ * @param modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
+ */
 const _getDataTableRows =  async function (
     {
+        force_AlwaysShow_Search_SubSearch_SubTable,
         data_For_ModMass,
         projectSearchIds,
+        projectSearchId_Or_SubSearchId_Set_PossiblyFiltered,
         searchSubGroups_DisplayOrder_Filtered,
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
 
@@ -368,8 +417,10 @@ const _getDataTableRows =  async function (
 
         modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
     } : {
+        force_AlwaysShow_Search_SubSearch_SubTable: boolean
         data_For_ModMass: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass
         projectSearchIds: Array<number>
+        projectSearchId_Or_SubSearchId_Set_PossiblyFiltered: Set<number>
         searchSubGroups_DisplayOrder_Filtered: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 
@@ -383,9 +434,9 @@ const _getDataTableRows =  async function (
 
     const dataTableRows : Array<DataTable_DataRowEntry> = [];
 
-
     const modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result =
         await modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass({
+            projectSearchId_Or_SubSearchId_Set_PossiblyFiltered,
             data_For_ModMass,
             all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
@@ -395,6 +446,7 @@ const _getDataTableRows =  async function (
         data_For_ModMass,
         modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
         projectSearchIds,
+        projectSearchId_Or_SubSearchId_Set_PossiblyFiltered,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     });
 
@@ -582,7 +634,7 @@ const _getDataTableRows =  async function (
 
         if ( searchSubGroups_DisplayOrder_Filtered ) {
 
-            if ( searchSubGroups_DisplayOrder_Filtered.length !== 1 ) {
+            if ( force_AlwaysShow_Search_SubSearch_SubTable || searchSubGroups_DisplayOrder_Filtered.length !== 1 ) {
 
                 dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
                     ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
@@ -620,7 +672,7 @@ const _getDataTableRows =  async function (
 
         } else {
 
-            if ( projectSearchIds.length !== 1 ) {
+            if ( force_AlwaysShow_Search_SubSearch_SubTable || projectSearchIds.length !== 1 ) {
 
                 dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
                     ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
@@ -741,11 +793,13 @@ const _getProteinDataForModMass = async function (
         data_For_ModMass,
         modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result,
         projectSearchIds,
+        projectSearchId_Or_SubSearchId_Set_PossiblyFiltered,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     }:{
         data_For_ModMass: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass
         modPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result: ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Result_Root
         projectSearchIds: Array<number>
+        projectSearchId_Or_SubSearchId_Set_PossiblyFiltered: Set<number>
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     }
 ) : Promise<{
@@ -764,6 +818,12 @@ const _getProteinDataForModMass = async function (
     for ( const data_ForSingle_ProjectSearchId_Or_SubSearchId of data_For_ModMass.get_Data_AllValues() ) {
 
         const projectSearchId_Or_SubSearchId = data_ForSingle_ProjectSearchId_Or_SubSearchId.projectSearchId_Or_SubSearchId
+
+        if ( ! projectSearchId_Or_SubSearchId_Set_PossiblyFiltered.has( projectSearchId_Or_SubSearchId ) ) {
+            //  Skip since not being included
+            continue  // EARLY CONTINUE
+        }
+
         const projectSearchId_ForUseWhereRequire_projectSearchId = data_ForSingle_ProjectSearchId_Or_SubSearchId.projectSearchId_ForUseWhereRequire_projectSearchId
 
         for ( const dataFor_SinglePsm of data_ForSingle_ProjectSearchId_Or_SubSearchId.get_DataFor_SinglePsm_All() ) {
@@ -839,6 +899,12 @@ const _getProteinDataForModMass = async function (
         for ( const data_For_ProjectSearchId_Or_SubSearch of proteinDataEntry.data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId.values() ) {
 
             const projectSearchId = data_For_ProjectSearchId_Or_SubSearch.projectSearchId_ForUseWhereRequire_projectSearchId
+
+            if ( ! projectSearchId_ForUseWhereRequire_projectSearchId_ALL_Set.has( projectSearchId ) ) {
+
+                //  Skip since not in requested projectSearchIds
+                continue  // EARLY CONTINUE
+            }
 
             const proteinInfo_For_MainFilters_Holder = data_FromServer.proteinInfo_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
             if ( ! proteinInfo_For_MainFilters_Holder ) {

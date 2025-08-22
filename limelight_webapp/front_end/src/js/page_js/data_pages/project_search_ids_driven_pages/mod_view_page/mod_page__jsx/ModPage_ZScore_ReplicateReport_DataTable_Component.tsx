@@ -14,13 +14,11 @@ import {
     ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering";
 import {
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 import {
-    DataPageStateManager,
     SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
@@ -48,10 +46,18 @@ import {
 import {
     DataTable_Column,
     DataTable_Column_DownloadTable,
-    DataTable_DataRow_ColumnEntry, DataTable_DataRow_ColumnEntry_SearchTableData,
-    DataTable_DataRowEntry, DataTable_DataRowEntry_DownloadTable,
-    DataTable_DataRowEntry_DownloadTable_SingleColumn, DataTable_RootTableDataObject,
-    DataTable_RootTableObject, DataTable_TableOptions
+    DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
+    DataTable_DataRowEntry,
+    DataTable_DataRowEntry__GetChildTableData_CallbackParams,
+    DataTable_DataRowEntry__GetChildTableData_Return_Promise_DataTable_RootTableObject,
+    DataTable_DataRowEntry_DownloadTable,
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
+    DataTable_RootTableDataObject,
+    DataTable_RootTableObject,
+    DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import { DataTable_TableRoot } from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
 import {
@@ -63,6 +69,15 @@ import {
 import {
     ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
+import {
+    modViewDataTableRenderer_MultiSearch_Subcomponents__Cell_ExternalModLinks_Contents
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/modViewDataTableRenderer_MultiSearch_Subcomponents";
+import {
+    ModPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_Display_MainContent_Component";
+import {
+    modPage_get_ZScore_Tab_GroupsFor_SingleModMass_SubTable
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_get_ZScore_Tab_GroupsFor_SingleModMass_SubTable";
 
 //////
 
@@ -83,8 +98,12 @@ interface ModPage_ZScore_ReplicateReport_DataTable_Component_Props {
 
     all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
+    modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
+
     modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+
+    modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function: ModPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
 }
 
 /**
@@ -250,7 +269,10 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
                     tableRows: result.data.tableRows,
                     group_1_ProjectSearchIds_Or_SubSearchIds: this.props.group_1_ProjectSearchIds_OR_SubSearchIds,
                     group_2_ProjectSearchIds_Or_SubSearchIds: this.props.group_2_ProjectSearchIds_OR_SubSearchIds,
+                    modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this.props.modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
                     all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+                    modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function: this.props.modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
                 })
 
             this._show_UpdatingMessage = false
@@ -270,7 +292,10 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
                         tableRows: value.tableRows,
                         group_1_ProjectSearchIds_Or_SubSearchIds: this.props.group_1_ProjectSearchIds_OR_SubSearchIds,
                         group_2_ProjectSearchIds_Or_SubSearchIds: this.props.group_2_ProjectSearchIds_OR_SubSearchIds,
-                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+                        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this.props.modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+                        modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function: this.props.modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
                     })
 
                 this._show_UpdatingMessage = false
@@ -858,14 +883,23 @@ const _create_DataTable_Data = function (
         tableRows,
         group_1_ProjectSearchIds_Or_SubSearchIds,
         group_2_ProjectSearchIds_Or_SubSearchIds,
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+        modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
     } : {
         tableRows: INTERNAL_TableRow[]
 
         group_1_ProjectSearchIds_Or_SubSearchIds : Array<number>
         group_2_ProjectSearchIds_Or_SubSearchIds : Array<number>
 
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
+
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+
+        modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function: ModPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
 
     }): DataTable_RootTableObject {
 
@@ -994,7 +1028,37 @@ const _create_DataTable_Data = function (
     }
 
     {
-        const displayName = quantTypeString + " Count " + group_1_ColumnHeader_Addition;
+        const displayName = "Info";
+
+        const dataTableColumn = new DataTable_Column({
+            id : "info", // Used for tracking sort order. Keep short
+            displayName,
+            width : 85,
+            sortable : false,
+            columnHeader_Tooltip_HTML_TitleAttribute : "Links to annotations for this modification mass in external sites."
+        });
+        dataTableColumns.push( dataTableColumn );
+    }
+
+    {
+        const displayName = "Residues";
+
+        const dataTableColumn = new DataTable_Column({
+            id : "Residues", // Used for tracking sort order. Keep short
+            displayName,
+            width : 100,
+            sortable : false
+        });
+        dataTableColumns.push( dataTableColumn );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+    }
+
+    const quantTypeString_With_Count_String = quantTypeString + " Count"
+
+    {
+        const displayName = quantTypeString_With_Count_String + " " + group_1_ColumnHeader_Addition;
 
         let searchesOrSubSearches_Label_String = "Searches"
 
@@ -1041,7 +1105,7 @@ const _create_DataTable_Data = function (
         const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
             <div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
-                    { quantTypeString + " Count " }
+                    { quantTypeString_With_Count_String }
                 </div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     Group 1 { searchesOrSubSearches_Label_String }:
@@ -1068,7 +1132,7 @@ const _create_DataTable_Data = function (
     }
 
     {
-        const displayName = quantTypeString + " Count " + group_2_ColumnHeader_Addition;
+        const displayName = quantTypeString_With_Count_String + " " + group_2_ColumnHeader_Addition;
 
         let searchesOrSubSearches_Label_String = "Searches"
 
@@ -1214,6 +1278,46 @@ const _create_DataTable_Data = function (
         }
 
         {
+            const modMass = tableRow.modMass
+
+            const searchTableData_SearchContent = '';		// not searchable
+
+            const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+
+                    return modViewDataTableRenderer_MultiSearch_Subcomponents__Cell_ExternalModLinks_Contents({ modMass });
+                };
+
+            const searchEntriesForColumn : Array<string> = [ searchTableData_SearchContent ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+                valueSort : modMass
+            });
+            columnEntries.push( columnEntry );
+        }
+
+        const modMass = tableRow.modMass
+
+        const data_For_ModMass = modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.get_Data_For_ModMass( modMass )
+
+        {  // add modded residues
+
+            const valueDisplay = Array.from( data_For_ModMass.modifiedResidues ).sort().join(', ');
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay
+            });
+            columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+
+        {
             const valueDisplay = tableRow.count_1.toLocaleString()
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
@@ -1293,6 +1397,30 @@ const _create_DataTable_Data = function (
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
+
+        const dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject : DataTable_DataRowEntry__GetChildTableData_Return_Promise_DataTable_RootTableObject =
+            ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+
+                return modPage_get_ZScore_Tab_GroupsFor_SingleModMass_SubTable({
+                    data_For_ModMass,
+                    modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+
+                    quantTypeString_With_Count_String,
+
+                    group_1_ProjectSearchIds_Or_SubSearchIds,
+                    group_2_ProjectSearchIds_Or_SubSearchIds,
+
+                    group_1_CountValue: tableRow.count_1,
+                    group_2_CountValue: tableRow.count_2,
+
+                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+
+                    modPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
+                })
+            };
+
         const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
 
         // add this row to the rows
@@ -1300,7 +1428,8 @@ const _create_DataTable_Data = function (
             uniqueId : tableRow.modMass,
             sortOrder_OnEquals : tableRow.modMass,
             columnEntries,
-            dataTable_DataRowEntry_DownloadTable
+            dataTable_DataRowEntry_DownloadTable,
+            dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject
         })
 
         dataTableRows.push( dataTable_DataRowEntry );
