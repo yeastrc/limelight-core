@@ -147,7 +147,7 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Roo
 export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass {
 
     readonly modMass: number
-    readonly modifiedResidues: Set<string>
+    readonly modifiedResidues: ReadonlySet<string>
     private _dataEntry_SingleProjectSearchId_Or_SubSearchId__Map_Key_ProjectSearchId_Or_SubSearchId: Map<number, ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId>
 
     constructor(
