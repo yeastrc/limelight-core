@@ -4,8 +4,7 @@
  */
 
 //  Plotly ONLY imports successfully for a Build using this import
-import Plotly from "plotly.js-dist-min";
-import { Layout } from "plotly.js-dist-min";
+import Plotly, { Legend, Layout } from "plotly.js-dist-min";
 
 const _Search_SubSearch_Category_Each_MinWidth = 30;
 
@@ -138,7 +137,25 @@ export const qcPage_StandardChartLayout = function (
         }
     }
 
-    return {
+    let legend: Partial<Legend> = undefined
+
+    if ( showlegend_Local ) {
+
+        legend = {
+
+            // https://plotly.com/javascript/reference/#layout-legend-itemsizing
+
+            itemsizing : 'constant',   // Legend marker size will be constant
+
+            //  Maybe not add 'bordercolor' and 'borderwidth' since it makes the legend larger and at least in the 'Feature Detection Statistics' plot with the scale on the right it makes the legend cover more of the scale.
+
+            // bordercolor: 'Black', // Sets the color of the legend border
+            // borderwidth: 2        // Sets the width of the legend border in pixels
+        }
+
+    }
+
+    const result: Partial<Layout> = {
         title:{
             text: chartTitle,
             //        Remove since does not appear to always place the title properly above the chart but the title sometimes ends up in the chart.
@@ -171,6 +188,9 @@ export const qcPage_StandardChartLayout = function (
             },
             exponentformat: 'e'
         },
-        showlegend: showlegend_Local
+        showlegend: showlegend_Local,
+        legend
     }
+
+    return result
 }
