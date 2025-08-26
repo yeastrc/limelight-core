@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,9 +50,12 @@ import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_object
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
@@ -145,6 +150,13 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	@Autowired
 	private MarshalObjectToJSON marshalObjectToJSON;
 
+	@Autowired
+	private ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup;
+
+	private boolean parallelStream_DefaultThreadPool_Java_Processing_Enabled_True;
+
+	
+	
     /**
 	 * 
 	 */
@@ -163,6 +175,20 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	public void afterPropertiesSet() throws Exception {
 		try {
 			cached_WebserviceResponse_Management.registerControllerPathForCachedResponse_RequiredToCallAtWebappStartup( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, this );
+			
+		} catch (Exception e) {
+			String msg = "In afterPropertiesSet(): Exception in processing";
+			log.error(msg);
+			throw e;
+		}
+
+		try {
+			{
+				ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response response = 
+						parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.get_ParallelStream_Java_Processing_Enable_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup();
+				
+				this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True = response.isParallelStream_DefaultThreadPool_Java_Processing_Enabled_True();
+			}
 			
 		} catch (Exception e) {
 			String msg = "In afterPropertiesSet(): Exception in processing";
@@ -335,23 +361,188 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		
    			Collections.sort( reportedPeptideIds );
    			
+    		//////////////////
+    		
+    		//   Start Retrieve ALL PSM Ids for all reportedPeptideIds
+    		
+   			ConcurrentHashMap<Integer, List<Long>> psmIdsList_Map_Key_ReportedPeptideId = new ConcurrentHashMap<>( reportedPeptideIds.size() );
+   			
+
+        	{
+        		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
+        		
+        		List<Throwable> thrownInsideStream_List = Collections.synchronizedList(new ArrayList<>());
+
+	    		if ( this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True ) {
+	
+	    			//  YES execute in parallel
+	
+	    			reportedPeptideIds.parallelStream().forEach( reportedPeptideId -> { 
+
+        				try {
+
+        	    			List<Long> psmIds =
+        	    					psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+        	    			
+        	    			psmIdsList_Map_Key_ReportedPeptideId.put( reportedPeptideId, psmIds );
+
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing reportedPeptideIds: reportedPeptideId" + reportedPeptideId, t);
+
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        				}
+        			});
+        			
+        		} else {
+        			
+        			//  NOT execute in parallel
+
+        			reportedPeptideIds.forEach( reportedPeptideId -> {
+        			
+        				try {
+
+        	    			List<Long> psmIds =
+        	    					psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+        	    			
+        	    			psmIdsList_Map_Key_ReportedPeptideId.put( reportedPeptideId, psmIds );
+
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing reportedPeptideIds.  Rethrow in class LimelightInternalErrorException: reportedPeptideId" + reportedPeptideId, t);
+        					
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        					
+        					throw new LimelightInternalErrorException( t );
+        				}
+        			});
+        		}
+
+        		if ( anyThrownInsideStreamProcessing.get() ) {
+        			
+        			throw new LimelightInternalErrorException( "At least 1 exception processing reportedPeptideIds 'Retrieve ALL PSM Ids for all reportedPeptideIds' " );
+        		}
+        	}
+    		
+
+    		//////////////////
+    		
+    		//   Retrieve ALL PSM data for all PSM Ids
+    		
+   			ConcurrentHashMap<Integer, Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB> internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Map_Key_ReportedPeptideId = new ConcurrentHashMap<>( reportedPeptideIds.size() );
+   			
+
+        	{
+        		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
+        		
+        		List<Throwable> thrownInsideStream_List = Collections.synchronizedList(new ArrayList<>());
+
+	    		if ( this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True ) {
+	
+	    			//  YES execute in parallel
+	
+	    			reportedPeptideIds.parallelStream().forEach( reportedPeptideId -> { 
+
+        				try {
+        					List<Long> psmIds = psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId );
+        					
+        					if ( psmIds == null ) {
+        						String msg = "psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId ); returned null. reportedPeptideId: " + reportedPeptideId;
+        						log.error(msg);
+        						throw new LimelightInternalErrorException(msg);
+        					}
+        							
+        	    			List<PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry> psmTblData_List = 
+        	    					psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmTblData_Exclude_is_decoy_For_PsmIds( psmIds );
+
+        	    			Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB internal_Single_ReportedPeptide_AndIts_PSMs_FromDB = new Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB();
+        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.reportedPeptideId = reportedPeptideId;
+        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.psmTblData_List = psmTblData_List;
+        	    			
+        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Map_Key_ReportedPeptideId.put( reportedPeptideId, internal_Single_ReportedPeptide_AndIts_PSMs_FromDB );
+
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing reportedPeptideIds: reportedPeptideId" + reportedPeptideId, t);
+
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        				}
+        			});
+        			
+        		} else {
+        			
+        			//  NOT execute in parallel
+
+        			reportedPeptideIds.forEach( reportedPeptideId -> {
+        			
+        				try {
+        					List<Long> psmIds = psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId );
+        					
+        					if ( psmIds == null ) {
+        						String msg = "psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId ); returned null. reportedPeptideId: " + reportedPeptideId;
+        						log.error(msg);
+        						throw new LimelightInternalErrorException(msg);
+        					}
+        							
+        	    			List<PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry> psmTblData_List = 
+        	    					psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmTblData_Exclude_is_decoy_For_PsmIds( psmIds );
+
+        	    			Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB internal_Single_ReportedPeptide_AndIts_PSMs_FromDB = new Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB();
+        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.reportedPeptideId = reportedPeptideId;
+        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.psmTblData_List = psmTblData_List;
+        	    			
+        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Map_Key_ReportedPeptideId.put( reportedPeptideId, internal_Single_ReportedPeptide_AndIts_PSMs_FromDB );
+
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing reportedPeptideIds.  Rethrow in class LimelightInternalErrorException: reportedPeptideId" + reportedPeptideId, t);
+        					
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        					
+        					throw new LimelightInternalErrorException( t );
+        				}
+        			});
+        		}
+
+        		if ( anyThrownInsideStreamProcessing.get() ) {
+        			
+        			throw new LimelightInternalErrorException( "At least 1 exception processing reportedPeptideIds 'Retrieve ALL PSM data for all PSM Ids' " );
+        		}
+        	}
+    		
+   			
+    		//////////////////
+    		
+    		//   Start Retrieve ALL PSM data for all PSM Ids
+    		
     		
     		List<Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB> reportedPeptideId_psmTblDataList_List = new ArrayList<>( reportedPeptideIds.size() );
     		
     		for ( Integer reportedPeptideId : reportedPeptideIds ) {
   			
-    			List<Long> psmIds =
-    					psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+    			Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB internal_Single_ReportedPeptide_AndIts_PSMs_FromDB = 
+    					internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Map_Key_ReportedPeptideId.get( reportedPeptideId );
     			
-    			List<PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry> psmTblData_List = 
-    					psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmTblData_Exclude_is_decoy_For_PsmIds( psmIds );
-
-    			Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB internal_Single_ReportedPeptide_AndIts_PSMs_FromDB = new Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB();
-    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.reportedPeptideId = reportedPeptideId;
-    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.psmTblData_List = psmTblData_List;
-    			
-    			reportedPeptideId_psmTblDataList_List.add( internal_Single_ReportedPeptide_AndIts_PSMs_FromDB );
+    			if ( internal_Single_ReportedPeptide_AndIts_PSMs_FromDB != null ) {
+    				reportedPeptideId_psmTblDataList_List.add( internal_Single_ReportedPeptide_AndIts_PSMs_FromDB );
+    			}
     		}
+    		
+    		
+    		
+    		
+    		//////////////////
+    		
+    		//   AFTER Retrieve ALL PSM data for all PSM Ids
+    		
     		
     		//  Initial analysis of values
     		
