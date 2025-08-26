@@ -2589,8 +2589,6 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
             chart_Y_Axis_Label = "Ions"
         }
 
-        const showlegend_Local = true
-
         const chart_Layout: Partial<Layout> = {
             title:{
                 text: chartTitle
@@ -2612,7 +2610,11 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                 },
                 exponentformat: 'e'
             },
-            showlegend: showlegend_Local
+            showlegend: true,
+            legend: {
+                // https://plotly.com/javascript/reference/#layout-legend-itemsizing
+                itemsizing: 'constant' // Legend marker size will be constant
+            }
         }
 
         //   Add grey rectangle with Persistent Feature Start and End:  +/- 30 seconds or 0.5 minutes

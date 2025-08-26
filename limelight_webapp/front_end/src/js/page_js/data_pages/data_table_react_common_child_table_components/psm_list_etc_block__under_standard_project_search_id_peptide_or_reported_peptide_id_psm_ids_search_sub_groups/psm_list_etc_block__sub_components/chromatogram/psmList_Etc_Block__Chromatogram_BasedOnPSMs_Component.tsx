@@ -10,16 +10,13 @@
 
 import React from 'react'
 
+import Plotly from "plotly.js-dist-min";
+import { Layout } from "plotly.js-dist-min";
+
+
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { Spinner_Limelight_Component } from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 import { qcPage_StandardChartConfig } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartConfig";
-
-//  Use to get Typescript typings, but then switch since it does NOT build with this import
-// import Plotly from "plotly.js"
-
-//  Plotly ONLY imports successfully for a Build using this import
-import Plotly from "plotly.js-dist-min";
-import { Layout } from "plotly.js-dist-min";
 
 import {
     DataTable_DataRowEntry
@@ -60,7 +57,6 @@ import {
 } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
 import { CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Scan_Summary_Data";
 import {
-    commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId,
     commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_ReturnPromise
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId";
 import {
@@ -3268,8 +3264,6 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             chart_Y_Axis_Label = " Ions"
         }
 
-        const showlegend_Local = true
-
         const chart_Layout: Partial<Layout> = {
             title:{
                 text: chartTitle
@@ -3291,7 +3285,11 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                 },
                 exponentformat: 'e'
             },
-            showlegend: showlegend_Local
+            showlegend: true,
+            legend: {
+                // https://plotly.com/javascript/reference/#layout-legend-itemsizing
+                itemsizing: 'constant' // Legend marker size will be constant
+            }
         }
         
 
