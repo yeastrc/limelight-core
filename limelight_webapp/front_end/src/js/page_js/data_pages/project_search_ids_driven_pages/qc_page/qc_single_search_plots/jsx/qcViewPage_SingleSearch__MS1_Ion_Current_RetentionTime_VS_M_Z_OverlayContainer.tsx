@@ -26,7 +26,7 @@ import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_Reac
 
 ////////////////////////////////
 
-const _Overlay_Title = "QC Plot: MS1 Ion Current:  Retention Time VS m/z  Statistics"
+const _Overlay_Title = "QC Plot: MS1 Ion Current: Retention Time VS m/z  Statistics"
 
 
 const qcPage_ChartOverlayDimensions_Value = qcPage_ChartOverlayDimensions();

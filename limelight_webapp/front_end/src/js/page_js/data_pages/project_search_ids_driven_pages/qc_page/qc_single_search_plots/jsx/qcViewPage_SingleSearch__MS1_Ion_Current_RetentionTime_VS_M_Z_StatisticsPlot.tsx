@@ -7,7 +7,7 @@
 
 import React from "react";
 
-import { Shape, ShapeLine } from "plotly.js-dist-min";
+import { Legend, Shape, ShapeLine } from "plotly.js-dist-min";
 
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { qcPage_StandardChartLayout } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
@@ -49,6 +49,10 @@ import { CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFil
 import {
     Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition
 } from "page_js/common_all_pages/Plotly_PlottingLibrary_CommonCode/Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 const _MainPage_Chart_Width = 1000; // + 200 for y axis label, tick marks
@@ -56,6 +60,15 @@ const _MainPage_Chart_Height = 600; // + 200 for x axis label, tick marks
 
 
 const _CHART_TITLE = "MS1 Binned Ion Current: m/z vs/ Retention Time<br><sup>Note: MS1 scan data in plot are not filtered.</sup>";
+
+
+const _FEATURE_DETECTION_CHART_COLOR = "#009E73"  // Currently Green
+
+const _CHART_COLORS = {
+    MS_X_FILTERED: "#E69F00",  //   Currently Orange:   MS 2, 3, etc
+    FEATURE_DETECTION__PERSISTENT_FEATURES: "black",
+    FEATURE_DETECTION__INDIVIDUAL_MS1_FEATURES: _FEATURE_DETECTION_CHART_COLOR,
+} as const
 
 
 /**
@@ -718,14 +731,25 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             notMoveTitle: true
         });
 
-        // https://plotly.com/javascript/reference/#layout-legend-traceorder
+        {
+            let legend: Partial<Legend> = {}
 
-        if ( chart_Layout.legend ) {
-            chart_Layout.legend.traceorder = "normal";
-        } else {
-            chart_Layout.legend = {
-                traceorder: "normal"
-            };
+            if ( chart_Layout.legend ) {
+
+                legend = chart_Layout.legend
+            } else {
+                chart_Layout.legend = legend
+            }
+
+            // https://plotly.com/javascript/reference/#layout-legend-traceorder
+
+            legend.traceorder = "normal"
+
+            //  Moved to qcPage_StandardChartLayout
+
+            // // https://plotly.com/javascript/reference/#layout-legend-itemsizing
+            //
+            // legend.itemsizing = 'constant' // Legend marker size will be constant
         }
 
         // console.warn("QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot:  Hard Coded width/height")
@@ -803,17 +827,40 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
             let heatmap_Colorbar_Length =  0.92;  // Make room for "MS# Filtered" trace in legend
 
-            if ( this.props.show_Individual_MS_1_Features ) {
+            if ( this.props.show_Persistent_FeatureBoundaries && this.props.show_Individual_MS_1_Features ) {
 
-                heatmap_Colorbar_Length =  0.85;  // Make room for "MS# Filtered" AND "Int MS1 Feat" trace in legend
+                heatmap_Colorbar_Length = 0.78;  // Make room for "MS# Filtered" AND "Int MS1 Feat" trace in legend
+
+            } else {
+                if ( this.props.show_Individual_MS_1_Features ) {
+
+                    heatmap_Colorbar_Length = 0.85;  // Make room for "MS# Filtered" AND "Int MS1 Feat" trace in legend
+                }
+
+                if ( this.props.show_Persistent_FeatureBoundaries ) {
+
+                    heatmap_Colorbar_Length = 0.82;  // Make room for "MS# Filtered" AND "Int MS1 Feat" trace in legend
+                }
             }
+
 
             //  Can set colorbar length by pixels if needs to be more exact:  https://plotly.com/javascript/reference/layout/coloraxis/#layout-coloraxis-colorbar-lenmode
 
             chart_Data.push({
                 name: "",  // So tooltip does not show "trace0"
                 type: 'heatmap',
-                colorscale: "OrRd",
+
+                colorscale: [   //  The numbers on left are from zero to one
+                    ['0', '#CCCCCC'], // grey
+                    ['1', '#0072B2'], // blue
+                ],
+
+                // https://plotly.com/javascript/colorscales/
+
+                // colorscale: "blues",
+
+                // colorscale: "OrRd",  OLD VALUE until 2025 08 25
+
                 // colorscale: [   //  The numbers on left are from zero to one
                 //     ['0', 'rgb(255,255,255)'], // white
                 //     ['1', 'rgb(255,0,0)'], // red
@@ -863,81 +910,6 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
         ///////////////////
 
-        if ( this.props.show_Persistent_FeatureBoundaries ) {
-
-            //  Add Feature Detection Persistent Entries
-
-            chart_Layout.shapes = []
-
-            for ( const featureDetection_PersistentFeature_Entry of featureDetection_PersistentFeature_Entries_Holder.get_FeatureDetection_PersistentFeature_Entries() ) {
-
-                //  Retention time is in minutes in the variable and the chart.  0.5 minutes is 30 seconds
-                const x0 = featureDetection_PersistentFeature_Entry.retentionTimeRange_Start - 0.5
-                const x1 = featureDetection_PersistentFeature_Entry.retentionTimeRange_End + 0.5
-
-                let y0: number
-                let y1: number
-
-                {
-                    const monoisotopicMass = featureDetection_PersistentFeature_Entry.monoisotopicMass;
-                    const charge = featureDetection_PersistentFeature_Entry.charge;
-
-                    const _10_ppm_error = monoisotopicMass * 10 / 1000000
-
-                    const monoisotopic_upper_end = monoisotopicMass + _10_ppm_error; // mu
-                    const monoisotopic_lower_end = monoisotopicMass - _10_ppm_error; // ml
-
-                    //  Convert mu and ml to m/z using:    (x + z * proton_mass) / z
-                    // where:
-                    //     x is mu for upper end of range, and ml for lower end of range
-                    // z is the charge
-                    // proton_mass = 1.007276466621
-
-                    const proton_mass = 1.007276466621;
-
-                    const mz_upperRange = ( monoisotopic_upper_end + charge * proton_mass ) / charge
-                    const mz_lowerRange = ( monoisotopic_lower_end + charge * proton_mass ) / charge
-
-                    y0 = mz_lowerRange;
-                    y1 = mz_upperRange;
-                }
-
-                const shapeLine: Partial<ShapeLine> = {
-                    width: 1
-                }
-
-                //  Replaced with call to 'plotly_Set_shapeLine_opacity' below:
-
-                //   Setting property 'opacity' is not in the Types for Plotly.
-                //        ALSO: appears to not change the resulting SVG.  Cannot find any elements with opacity of 0.1 (any other than opacity 1) when choose 'Show persistent feature boundaries' and change code to not render the heatmap or scatter traces above.
-                // @ts-ignore
-                // shapeLine.opacity = 0.1  // Forced to separate assignment since not part of types.  Unsure it os doing anything.
-
-                Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.plotly_Set_shapeLine_opacity({ shapeLine, opacity: 0.1 })
-
-                //////
-
-                const shape:  Partial<Shape> = {
-                    type: 'rect',
-                    // x-reference is assigned to the x-values
-                    xref: 'x',
-                    // y-reference is assigned to the y-values
-                    yref: 'y',
-                    x0,
-                    y0,
-                    x1,
-                    y1,
-                    // fillcolor: 'black',
-                    // opacity: 0.2,
-                    line: shapeLine
-                }
-
-                chart_Layout.shapes.push( shape );
-            }
-        }
-
-        ///////////////////
-
         if ( this.props.show_Individual_MS_1_Features ) {
 
             //  Add Feature Detection Singular Entries
@@ -982,7 +954,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     mode: 'markers',
                     marker: {
                         size: 2, //  2,  4 in overlay //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
-                        color: "black",
+                        color: _CHART_COLORS.FEATURE_DETECTION__INDIVIDUAL_MS1_FEATURES,
                         // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
                     },
                     xaxis: {
@@ -1212,8 +1184,6 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
         //     ms2_Marker_Size = 4;
         // }
 
-
-
         chart_Data.push(
             {
                 name: "MS" + MS_2_Plus_PrecursorData_ScanLevel_String + " Filtered",
@@ -1221,7 +1191,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                 mode: 'markers',
                 marker: {
                     size: ms2_Marker_Size, //   https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
-                    color: "green",
+                    color: _CHART_COLORS.MS_X_FILTERED,
                     // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
                 },
                 xaxis: {
@@ -1240,6 +1210,114 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                 //     '<br><b>Retention Time</b>: %{x}<extra></extra>'
             });
 
+        ///////////////////
+
+        if ( this.props.show_Persistent_FeatureBoundaries ) {
+
+            //  Add Feature Detection Persistent Entries
+
+            chart_Layout.shapes = []
+
+            for ( const featureDetection_PersistentFeature_Entry of featureDetection_PersistentFeature_Entries_Holder.get_FeatureDetection_PersistentFeature_Entries() ) {
+
+                //  Retention time is in minutes in the variable and the chart.  0.5 minutes is 30 seconds
+                const x0 = featureDetection_PersistentFeature_Entry.retentionTimeRange_Start - 0.5
+                const x1 = featureDetection_PersistentFeature_Entry.retentionTimeRange_End + 0.5
+
+                let y0: number
+                let y1: number
+
+                {
+                    const monoisotopicMass = featureDetection_PersistentFeature_Entry.monoisotopicMass;
+                    const charge = featureDetection_PersistentFeature_Entry.charge;
+
+                    const _10_ppm_error = monoisotopicMass * 10 / 1000000
+
+                    const monoisotopic_upper_end = monoisotopicMass + _10_ppm_error; // mu
+                    const monoisotopic_lower_end = monoisotopicMass - _10_ppm_error; // ml
+
+                    //  Convert mu and ml to m/z using:    (x + z * proton_mass) / z
+                    // where:
+                    //     x is mu for upper end of range, and ml for lower end of range
+                    // z is the charge
+                    // proton_mass = 1.007276466621
+
+                    const proton_mass = 1.007276466621;
+
+                    const mz_upperRange = ( monoisotopic_upper_end + charge * proton_mass ) / charge
+                    const mz_lowerRange = ( monoisotopic_lower_end + charge * proton_mass ) / charge
+
+                    y0 = mz_lowerRange;
+                    y1 = mz_upperRange;
+                }
+
+                //  Define the line that is the border of the 'rect'
+
+                const shapeLine: Partial<ShapeLine> = {
+                    width: 3,
+                    color: _CHART_COLORS.FEATURE_DETECTION__PERSISTENT_FEATURES
+                }
+
+                //  Replaced with call to 'plotly_Set_shapeLine_opacity' below:
+
+                //   Setting property 'opacity' is not in the Types for Plotly.
+                //        ALSO: appears to not change the resulting SVG.  Cannot find any elements with opacity of 0.1 (any other than opacity 1) when choose 'Show persistent feature boundaries' and change code to not render the heatmap or scatter traces above.
+                // @ts-ignore
+                // shapeLine.opacity = 0.1  // Forced to separate assignment since not part of types.  Unsure it os doing anything.
+
+                //  Comment out since does not appear to do anything
+                // Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.plotly_Set_shapeLine_opacity({ shapeLine, opacity: 0.1 })
+
+                //////
+
+                //  Define the 'rect' shape, uses the 'shapeLine' from above
+
+                const shape:  Partial<Shape> = {
+                    type: 'rect',
+                    // x-reference is assigned to the x-values
+                    xref: 'x',
+                    // y-reference is assigned to the y-values
+                    yref: 'y',
+                    x0,
+                    y0,
+                    x1,
+                    y1,
+                    // fillcolor: 'black',
+                    line: shapeLine
+                }
+
+                chart_Layout.shapes.push( shape );
+            }
+
+            //  FAKE chart Trace to add a legend for the Persistent Features
+
+            chart_Data.push(
+                {
+                    name: 'Feature<br>Boundaries',
+                    // visible: 'legendonly', // This is the key property
+
+                    //  Fake line from top left to top left.  Line is not shown on the plot.  This point is also used above for fake plot of top left and bottom right of plot.
+                    x: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Min ],
+                    y: [ ms1_ChartData.chart_Y_Max, ms1_ChartData.chart_Y_Max ],
+                    type: 'scatter',
+                    mode: 'lines',
+                    // mode: 'markers', // Or any other mode, it won't be visible
+                    // opacity: 0,
+                    line: {
+                        color: _CHART_COLORS.FEATURE_DETECTION__PERSISTENT_FEATURES,
+                        // dash: 'dot'
+                    }
+                    // marker: {
+                    //     // size: 2, //  2,  4 in overlay //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
+                    //     color: _CHART_COLORS.FEATURE_DETECTION__PERSISTENT_FEATURES,
+                    //     symbol: 'square'
+                    //     // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
+                    // }
+                })
+
+        }
+
+        //////////////////
 
         const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
 
@@ -1745,34 +1823,74 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                         <div style={ { position: "relative"} }>
                             <div ref={this.linksUnderPlot_Container_Ref} style={ linksUnderPlot_Container_Style } >
                                 <div>
-                                    <span
-                                        className=" fake-link "
-                                        onClick={ event =>  {
-                                            this._update_ThisPage_WithSelection();
-                                        }}
-                                        title={ ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) ? (
-                                            "Clicking this link will update this page's filters to the shown m/z range, retention time range, and scan file"
-                                        ) : (
-                                            "Clicking this link will update this page's filters to the shown m/z range and retention time range"
-                                        )}
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) ? (
+                                                <div>
+                                                    <div>
+                                                        Clicking this link will update this page's filters
+                                                    </div>
+                                                    <div>
+                                                        to the shown m/z range, retention time range, and scan file
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    <div>
+                                                        Clicking this link will update this page's filters
+                                                    </div>
+                                                    <div>
+                                                        to the shown m/z range and retention time range
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        Add Displayed Ranges to Page Filters
-                                    </span>
+                                        <span
+                                            className=" fake-link "
+                                            onClick={ event =>  {
+                                                this._update_ThisPage_WithSelection();
+                                            }}
+                                        >
+                                            Add Displayed Ranges to Page Filters
+                                        </span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </div>
                                 <div>
-                                    <span
-                                        className=" fake-link "
-                                        onClick={ event =>  {
-                                            this._open_Peptide_Page_WithSelection();
-                                        }}
-                                        title={ ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) ? (
-                                            "Open the peptide view page using the selected scan file, m/z range, and retention time range currently visible in this plot."
-                                        ) : (
-                                            "Open the peptide view page using the m/z range and retention time range currently visible in this plot."
-                                        )}
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) ? (
+                                                <div>
+                                                    <div>
+                                                        Open the peptide view page using the selected scan file, m/z range,
+                                                    </div>
+                                                    <div>
+                                                        and retention time range currently visible in this plot.
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    <div>
+                                                        Open the peptide view page using the m/z range and retention time range
+                                                    </div>
+                                                    <div>
+                                                        currently visible in this plot.
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        Show Peptide Page for Selection
-                                    </span>
+                                        <span
+                                            className=" fake-link "
+                                            onClick={ event =>  {
+                                                this._open_Peptide_Page_WithSelection();
+                                            }}
+                                        >
+                                            Show Peptide Page for Selection
+                                        </span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </div>
                             </div>
                         </div>
