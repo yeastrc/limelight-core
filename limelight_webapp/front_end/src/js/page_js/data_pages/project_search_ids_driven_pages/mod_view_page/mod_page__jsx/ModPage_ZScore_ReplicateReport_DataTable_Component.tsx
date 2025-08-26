@@ -713,7 +713,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
                 traceorder: "reversed",  // reverse so "Above" is shown first in the legend.  "Below" trace is first in chart data so that overlapping dots will have "Above on top.
 
 
-                bordercolor: 'Black', // Sets the color of the legend border
+                bordercolor: 'gray', // Sets the color of the legend border
                 borderwidth: 1        // Sets the width of the legend border in pixels
             }
 
