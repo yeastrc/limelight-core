@@ -126,7 +126,7 @@ export class QcViewPage_Common__FeatureDetection_Statistics_Section__ShownItem_D
                         //  No Callback so display without selection change option
 
                         <React.Fragment>
-                            <div style={ { display: "grid", gridTemplateColumns: "min-content 1fr " } }>
+                            <div style={ { display: "grid", gridTemplateColumns: "min-content 1fr ", alignItems: "baseline" } }>
                                 {/*  Column 1  */}
                                 <div
                                     style={ { fontSize: 18, fontWeight: "bold", whiteSpace: "nowrap", marginRight: 6 } }
