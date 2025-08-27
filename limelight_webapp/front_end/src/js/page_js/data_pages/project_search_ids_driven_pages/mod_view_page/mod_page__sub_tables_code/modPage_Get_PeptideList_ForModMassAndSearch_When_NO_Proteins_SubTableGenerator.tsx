@@ -1,5 +1,5 @@
 /**
- * modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator.ts
+ * modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator.tsx
  */
 
 

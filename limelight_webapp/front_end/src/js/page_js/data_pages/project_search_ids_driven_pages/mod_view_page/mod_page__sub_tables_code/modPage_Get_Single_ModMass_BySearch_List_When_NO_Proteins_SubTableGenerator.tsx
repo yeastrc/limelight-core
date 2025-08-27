@@ -1,5 +1,5 @@
 /**
- * modPage_Get_Single_ModMass_By_SubSearch_List_When_NO_Proteins_SubTableGenerator.ts
+ * modPage_Get_Single_ModMass_BySearch_List_When_NO_Proteins_SubTableGenerator.tsx
  */
 
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
@@ -32,26 +32,22 @@ import {
 import {
     modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator";
-import {
-    SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
-} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 
 //////////////////////
 
 
-const dataTableId_ThisTable = "Mod View Single Mod Mass By Sub Search Sub Table";
+const dataTableId_ThisTable = "Mod View Single Mod Mass By Search Sub Table";
 
 
 
 
-export const modPage_Get_Single_ModMass_By_SubSearch_List_When_NO_Proteins_SubTableGenerator  = async function (
+export const modPage_Get_Single_ModMass_BySearch_List_When_NO_Proteins_SubTableGenerator  = async function (
     {
         data_For_ModMass,
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
 
-        searchSubGroups_DisplayOrder_Filtered,
-        projectSearchId,
+        projectSearchIds,
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     } : {
@@ -59,8 +55,7 @@ export const modPage_Get_Single_ModMass_By_SubSearch_List_When_NO_Proteins_SubTa
 
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 
-        searchSubGroups_DisplayOrder_Filtered: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>
-        projectSearchId: number
+        projectSearchIds: Array<number>
 
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
@@ -73,11 +68,11 @@ export const modPage_Get_Single_ModMass_By_SubSearch_List_When_NO_Proteins_SubTa
 
     // create the rows for the table
     const dataTableRows : Array<DataTable_DataRowEntry> = await _getDataTableRows({
-
         data_For_ModMass,
 
-        searchSubGroups_DisplayOrder_Filtered,
-        projectSearchId,
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+
+        projectSearchIds,
 
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
@@ -111,10 +106,10 @@ const _getDataTableColumns = function () : DataTable_RootTableDataObject_Both_Co
     const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
     {
-        const displayName = "Sub Search";
+        const displayName = "Search";
 
         const dataTableColumn = new DataTable_Column({
-            id : "sub search", // Used for tracking sort order. Keep short
+            id : "searchName", // Used for tracking sort order. Keep short
             displayName,
             width : 500,
             sortable : true
@@ -169,17 +164,20 @@ const _getDataTableRows = async function (
     {
         data_For_ModMass,
 
-        searchSubGroups_DisplayOrder_Filtered,
-        projectSearchId,
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
+
+        projectSearchIds,
 
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+
     } : {
         data_For_ModMass: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass
 
-        searchSubGroups_DisplayOrder_Filtered: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>
-        projectSearchId: number
+        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
+
+        projectSearchIds: Array<number>
 
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 
@@ -191,7 +189,7 @@ const _getDataTableRows = async function (
     const dataTableRows : Array<DataTable_DataRowEntry> = [];
 
     const allData_ForSearches_ForModMass = await _getData_PerSearch_ForModMass({
-        data_For_ModMass, searchSubGroups_DisplayOrder_Filtered, projectSearchId
+        data_For_ModMass, projectSearchIds
     });
 
     for ( const allData_ForSearches_For_Single_ModMass of allData_ForSearches_ForModMass ) {
@@ -201,22 +199,22 @@ const _getDataTableRows = async function (
 
         // add the name
         {
-            const searchSubGroups_ForProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
-
-            if ( ! searchSubGroups_ForProjectSearchId ) {
-                const msg = "returned nothing: dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
-                console.warn( msg )
-                throw Error( msg )
+            const searchData_For_ProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( allData_ForSearches_For_Single_ModMass.projectSearchId )
+            if ( ! searchData_For_ProjectSearchId ) {
+                throw Error("dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( allData_ForSearches_For_Single_ModMass.projectSearchId ) returned NOTHING for allData_ForSearches_For_Single_ModMass.projectSearchId_ForUseWhereRequire_projectSearchId: " + allData_ForSearches_For_Single_ModMass.projectSearchId )
             }
 
-            const searchSubGroup_For_SearchSubGroup_Id = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( allData_ForSearches_For_Single_ModMass.subSearchId )
-            if ( ! searchSubGroup_For_SearchSubGroup_Id ) {
-                const msg = "returned nothing: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( allData_ForSearches_For_Single_ModMass.subSearchId ), allData_ForSearches_For_Single_ModMass.subSearchId: " + allData_ForSearches_For_Single_ModMass.subSearchId;
-                console.warn( msg )
-                throw Error( msg )
-            }
+            const searchId = searchData_For_ProjectSearchId.searchId
 
-            let displayString = searchSubGroup_For_SearchSubGroup_Id.subgroupName_Display;
+            const searchName = searchData_For_ProjectSearchId.name
+
+            const searchShortName = searchData_For_ProjectSearchId.searchShortName
+
+            let displayString = searchName;
+            if ( searchShortName && searchShortName.length > 0 ) {
+                displayString += " (" + searchShortName + ")";
+            }
+            displayString += " (" + searchId + ")";
 
             const valueDisplay = displayString;
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
@@ -269,8 +267,8 @@ const _getDataTableRows = async function (
                 ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
 
                     return modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator({
-                        projectSearchId_Or_SubSearchId: allData_ForSearches_For_Single_ModMass.subSearchId,
-                        projectSearchId_ForUseWhereRequire_projectSearchId: projectSearchId,
+                        projectSearchId_Or_SubSearchId: allData_ForSearches_For_Single_ModMass.projectSearchId,
+                        projectSearchId_ForUseWhereRequire_projectSearchId: allData_ForSearches_For_Single_ModMass.projectSearchId,
                         data_For_ModMass,
                         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
                         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
@@ -281,8 +279,8 @@ const _getDataTableRows = async function (
 
         // add this row to the rows
         const dataTable_DataRowEntry = new DataTable_DataRowEntry({
-            uniqueId : allData_ForSearches_For_Single_ModMass.subSearchId,
-            sortOrder_OnEquals : allData_ForSearches_For_Single_ModMass.subSearchId,
+            uniqueId : allData_ForSearches_For_Single_ModMass.projectSearchId,
+            sortOrder_OnEquals : allData_ForSearches_For_Single_ModMass.projectSearchId,
             columnEntries,
             dataTable_DataRowEntry_DownloadTable,
             dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject
@@ -302,42 +300,40 @@ const _getDataTableRows = async function (
 const _getData_PerSearch_ForModMass = async function (
     {
         data_For_ModMass,
-        searchSubGroups_DisplayOrder_Filtered,
-        projectSearchId
+        projectSearchIds
     } : {
         data_For_ModMass: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass
 
-        searchSubGroups_DisplayOrder_Filtered: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry>
-        projectSearchId: number
+        projectSearchIds: Array<number>
     }
-) : Promise<Array<INTERNAL__OutputData_ForSingleSubSearch>> { try {
+) : Promise<Array<INTERNAL__OutputData_ForSingleSearch>> { try {
 
-    const data_Output_Map_Key_SubSearchId :Map<number, INTERNAL__OutputData_ForSingleSubSearch> = new Map()
+    const data_Output_Map_Key_ProjectSearchId :Map<number, INTERNAL__OutputData_ForSingleSearch> = new Map()
 
-    for ( const searchSubGroup of searchSubGroups_DisplayOrder_Filtered ) {
+    for ( const projectSearchId of projectSearchIds ) {
 
-        const data_For_ModMass_For__SearchSubGroup_Id = data_For_ModMass.get_For__ProjectSearchId_Or_SubSearchId( searchSubGroup.searchSubGroup_Id )
+        const data_For_ModMass_For__ProjectSearchId = data_For_ModMass.get_For__ProjectSearchId_Or_SubSearchId( projectSearchId )
 
-        if ( ! data_For_ModMass_For__SearchSubGroup_Id ) {
+        if ( ! data_For_ModMass_For__ProjectSearchId ) {
             //  NO data so skip
             continue // EARLY CONTINUE
         }
 
-        for ( const dataFor_SinglePsm of data_For_ModMass_For__SearchSubGroup_Id.get_DataFor_SinglePsm_All() ) {
+        for ( const dataFor_SinglePsm of data_For_ModMass_For__ProjectSearchId.get_DataFor_SinglePsm_All() ) {
 
-            let outputData_Output = data_Output_Map_Key_SubSearchId.get( searchSubGroup.searchSubGroup_Id )
+            let outputData_Output = data_Output_Map_Key_ProjectSearchId.get( projectSearchId )
             if ( ! outputData_Output ) {
 
                 outputData_Output = {
 
-                    subSearchId: searchSubGroup.searchSubGroup_Id,
+                    projectSearchId,
 
                     modifiedResidues: new Set(),
 
                     psmIds_All_ForSearch_Set: new Set()
                 }
 
-                data_Output_Map_Key_SubSearchId.set( searchSubGroup.searchSubGroup_Id, outputData_Output )
+                data_Output_Map_Key_ProjectSearchId.set( projectSearchId, outputData_Output )
             }
 
             outputData_Output.psmIds_All_ForSearch_Set.add( dataFor_SinglePsm.psmId )
@@ -351,7 +347,7 @@ const _getData_PerSearch_ForModMass = async function (
     }
 
 
-    const data_ForSearchForModMass = Array.from( data_Output_Map_Key_SubSearchId.values() );
+    const data_ForSearchForModMass = Array.from( data_Output_Map_Key_ProjectSearchId.values() );
 
     return data_ForSearchForModMass;
 
@@ -361,9 +357,9 @@ const _getData_PerSearch_ForModMass = async function (
 
 
 
-class INTERNAL__OutputData_ForSingleSubSearch {
+class INTERNAL__OutputData_ForSingleSearch {
 
-    readonly subSearchId: number
+    readonly projectSearchId: number
     readonly modifiedResidues: Set<string>
 
     readonly psmIds_All_ForSearch_Set: Set<number>

@@ -1,5 +1,5 @@
 /**
- * modPage_Get_ProteinData_BySearch_List_SubTableGenerator.ts
+ * modPage_Get_ProteinData_BySearch_List_SubTableGenerator.tsx
  */
 
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";

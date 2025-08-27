@@ -59,7 +59,7 @@ export class ModPage_GetProtein_Positions_Residues_PerPsm_For_SingleModMass_Resu
 }
 
 /**
- * Passed to modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerator.ts
+ * Passed to modPage_Get_PeptideList_ForModMassProteinAndSearch_SubTableGenerator.tsx
  *
  * which calls method 'get_GeneratedPeptide_Entries_For_PsmData' on this class
  *
