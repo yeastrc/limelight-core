@@ -289,11 +289,11 @@ export class ModPage_Tabs_Select__ModificationList_OR_ZScoreData__Component exte
                     >
 
                         <Tab
-                            label="Modification Mass List"
+                            label="MODIFICATION MASS LIST"
                             value={ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DISPLAY_TAB_Values_Enum.modListTab } // Passed to <Tabs onChange newValue
                         />
                         <Tab
-                            label="ZScore Data"
+                            label="ENRICHMENT ANALYSIS"
                             value={ ModViewPage_DataVizOptions_VizSelections_PageStateManager__DISPLAY_TAB_Values_Enum.zScoreTab }// Passed to <Tabs onChange newValue
                         />
                     </Tabs>

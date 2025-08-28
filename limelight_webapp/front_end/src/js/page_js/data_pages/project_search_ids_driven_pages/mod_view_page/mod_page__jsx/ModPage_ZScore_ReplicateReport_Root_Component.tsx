@@ -374,7 +374,14 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
             return (
                 <div style={ { marginTop: 20 } }>
-                    ZScore Requires more than one { subSearchesLabel_NotCapitol } search.
+                    <div>
+                        Enrichment analysis requires more than one { subSearchesLabel_NotCapitol } search to be loaded.
+                    </div>
+                    { ! processing_SubSearches ? (
+                        <div>
+                            Click "Change searches" near the top of the page to add searches.
+                        </div>
+                    ) : null }
                 </div>
             )
         }
