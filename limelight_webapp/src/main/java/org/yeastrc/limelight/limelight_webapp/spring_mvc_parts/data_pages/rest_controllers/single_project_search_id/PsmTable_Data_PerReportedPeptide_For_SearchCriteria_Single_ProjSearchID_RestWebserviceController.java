@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -367,6 +368,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		
    			ConcurrentHashMap<Integer, List<Long>> psmIdsList_Map_Key_ReportedPeptideId = new ConcurrentHashMap<>( reportedPeptideIds.size() );
    			
+   			AtomicInteger totalPsmCount = new AtomicInteger();
+   			
 
         	{
         		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
@@ -385,6 +388,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         	    					psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
         	    			
         	    			psmIdsList_Map_Key_ReportedPeptideId.put( reportedPeptideId, psmIds );
+        	    			
+        	    			totalPsmCount.addAndGet( psmIds.size() );
 
         				} catch (Throwable t) {
         					
@@ -409,6 +414,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         	    			
         	    			psmIdsList_Map_Key_ReportedPeptideId.put( reportedPeptideId, psmIds );
 
+        	    			totalPsmCount.addAndGet( psmIds.size() );
+        	    			
         				} catch (Throwable t) {
         					
         					log.error( "Fail processing reportedPeptideIds.  Rethrow in class LimelightInternalErrorException: reportedPeptideId" + reportedPeptideId, t);
@@ -427,15 +434,61 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         			throw new LimelightInternalErrorException( "At least 1 exception processing reportedPeptideIds 'Retrieve ALL PSM Ids for all reportedPeptideIds' " );
         		}
         	}
+
+    		//////////////////
     		
+    		//   Put all PSM Ids in single list for sort
+        	
+        	
+    		List<Long> psmIds_All_List = new ArrayList<>( totalPsmCount.get() );
+    		
+    		for ( Integer reportedPeptideId : reportedPeptideIds ) {
+
+				List<Long> psmIds = psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId );
+				
+				if ( psmIds == null ) {
+					String msg = "psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId ); returned null. reportedPeptideId: " + reportedPeptideId;
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+				
+				psmIds_All_List.addAll( psmIds );
+    		}
+    		
+    		
+    		Collections.sort( psmIds_All_List );
+
+    		//////////////////
+    		
+    		//   Put all PSM Ids in blocks
+        	
+        	final int _PSM_ID_BLOCK_SIZE = 4000;
+    		
+        	int numberOfBlocks = (int) Math.ceil( ( ( (float) psmIds_All_List.size() ) / _PSM_ID_BLOCK_SIZE ) );
+    		
+    		List<List<Long>> psmIdList_List = new ArrayList<>( numberOfBlocks );
+    		
+    		List<Long> psmIdList_Current = new ArrayList<>( _PSM_ID_BLOCK_SIZE );
+    		psmIdList_List.add( psmIdList_Current );
+
+    		for ( Long psmId : psmIds_All_List ) {
+
+    			if ( psmIdList_Current.size() >= _PSM_ID_BLOCK_SIZE ) {
+    				//  Start new block
+    				psmIdList_Current = new ArrayList<>( _PSM_ID_BLOCK_SIZE );
+    				psmIdList_List.add( psmIdList_Current );
+    			}
+
+    			psmIdList_Current.add( psmId );
+    		}
+
 
     		//////////////////
     		
     		//   Retrieve ALL PSM data for all PSM Ids
     		
-   			ConcurrentHashMap<Integer, Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB> internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Map_Key_ReportedPeptideId = new ConcurrentHashMap<>( reportedPeptideIds.size() );
-   			
-
+    		ConcurrentHashMap<Long, PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry> psmTblData_Map_Key_PsmId = new ConcurrentHashMap<>( totalPsmCount.get() );
+    		
         	{
         		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
         		
@@ -445,29 +498,19 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	
 	    			//  YES execute in parallel
 	
-	    			reportedPeptideIds.parallelStream().forEach( reportedPeptideId -> { 
+	    			psmIdList_List.parallelStream().forEach( psmIdList -> { 
 
-        				try {
-        					List<Long> psmIds = psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId );
-        					
-        					if ( psmIds == null ) {
-        						String msg = "psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId ); returned null. reportedPeptideId: " + reportedPeptideId;
-        						log.error(msg);
-        						throw new LimelightInternalErrorException(msg);
-        					}
-        							
+        				try {        							
         	    			List<PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry> psmTblData_List = 
-        	    					psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmTblData_Exclude_is_decoy_For_PsmIds( psmIds );
+        	    					psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmTblData_Exclude_is_decoy_For_PsmIds( psmIdList );
 
-        	    			Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB internal_Single_ReportedPeptide_AndIts_PSMs_FromDB = new Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB();
-        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.reportedPeptideId = reportedPeptideId;
-        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.psmTblData_List = psmTblData_List;
+        	    			for ( PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry psmTblData : psmTblData_List ) {
+        	    				psmTblData_Map_Key_PsmId.put( psmTblData.getPsmId(), psmTblData );
+        	    			}
         	    			
-        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Map_Key_ReportedPeptideId.put( reportedPeptideId, internal_Single_ReportedPeptide_AndIts_PSMs_FromDB );
-
         				} catch (Throwable t) {
         					
-        					log.error( "Fail processing reportedPeptideIds: reportedPeptideId" + reportedPeptideId, t);
+        					log.error( "Fail processing psmIdList: psmIdList.get(0): " + psmIdList.get(0), t);
 
         					anyThrownInsideStreamProcessing.set(true);
         					
@@ -479,30 +522,20 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         			
         			//  NOT execute in parallel
 
-        			reportedPeptideIds.forEach( reportedPeptideId -> {
-        			
-        				try {
-        					List<Long> psmIds = psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId );
-        					
-        					if ( psmIds == null ) {
-        						String msg = "psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId ); returned null. reportedPeptideId: " + reportedPeptideId;
-        						log.error(msg);
-        						throw new LimelightInternalErrorException(msg);
-        					}
-        							
+        			psmIdList_List.forEach( psmIdList -> {
+
+        				try {        							
         	    			List<PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry> psmTblData_List = 
-        	    					psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmTblData_Exclude_is_decoy_For_PsmIds( psmIds );
+        	    					psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmTblData_Exclude_is_decoy_For_PsmIds( psmIdList );
 
-        	    			Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB internal_Single_ReportedPeptide_AndIts_PSMs_FromDB = new Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB();
-        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.reportedPeptideId = reportedPeptideId;
-        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.psmTblData_List = psmTblData_List;
+        	    			for ( PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry psmTblData : psmTblData_List ) {
+        	    				psmTblData_Map_Key_PsmId.put( psmTblData.getPsmId(), psmTblData );
+        	    			}
         	    			
-        	    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Map_Key_ReportedPeptideId.put( reportedPeptideId, internal_Single_ReportedPeptide_AndIts_PSMs_FromDB );
-
         				} catch (Throwable t) {
         					
-        					log.error( "Fail processing reportedPeptideIds.  Rethrow in class LimelightInternalErrorException: reportedPeptideId" + reportedPeptideId, t);
-        					
+        					log.error( "Fail processing psmIdList: psmIdList.get(0): " + psmIdList.get(0), t);
+
         					anyThrownInsideStreamProcessing.set(true);
         					
         					thrownInsideStream_List.add(t);
@@ -518,6 +551,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         		}
         	}
     		
+
+   			ConcurrentHashMap<Integer, Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB> internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Map_Key_ReportedPeptideId = new ConcurrentHashMap<>( reportedPeptideIds.size() );
+   			
+
    			
     		//////////////////
     		
@@ -527,13 +564,36 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		List<Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB> reportedPeptideId_psmTblDataList_List = new ArrayList<>( reportedPeptideIds.size() );
     		
     		for ( Integer reportedPeptideId : reportedPeptideIds ) {
-  			
-    			Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB internal_Single_ReportedPeptide_AndIts_PSMs_FromDB = 
-    					internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Map_Key_ReportedPeptideId.get( reportedPeptideId );
+
+				List<Long> psmIds = psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId );
+				
+				if ( psmIds == null ) {
+					String msg = "psmIdsList_Map_Key_ReportedPeptideId.get( reportedPeptideId ); returned null. reportedPeptideId: " + reportedPeptideId;
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+				
+				List<PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry> psmTblData_List = new ArrayList<>( psmIds.size() );
+				
+				for ( Long psmId : psmIds ) {
+					
+					PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry psmTblData = psmTblData_Map_Key_PsmId.get( psmId );
+
+					if ( psmTblData == null ) {
+						String msg = "psmTblData_Map_Key_PsmId.get( psmId ); returned null. psmId: " + psmId;
+						log.error(msg);
+						throw new LimelightInternalErrorException(msg);
+					}
+					
+					psmTblData_List.add( psmTblData );
+				}
+						
+				Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB internal_Single_ReportedPeptide_AndIts_PSMs_FromDB = new Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB();
+    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.reportedPeptideId = reportedPeptideId;
+    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.psmTblData_List = psmTblData_List;
     			
-    			if ( internal_Single_ReportedPeptide_AndIts_PSMs_FromDB != null ) {
-    				reportedPeptideId_psmTblDataList_List.add( internal_Single_ReportedPeptide_AndIts_PSMs_FromDB );
-    			}
+    			reportedPeptideId_psmTblDataList_List.add( internal_Single_ReportedPeptide_AndIts_PSMs_FromDB );
+    			
     		}
     		
     		
