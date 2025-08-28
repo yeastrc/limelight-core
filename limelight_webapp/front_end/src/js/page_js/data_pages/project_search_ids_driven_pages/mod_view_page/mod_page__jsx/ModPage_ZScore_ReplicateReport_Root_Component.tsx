@@ -48,6 +48,9 @@ import {
 import {
     ModPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_Display_MainContent_Component";
+import {
+    SearchDetailsAndFilterBlock_ChangeSearches
+} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_ChangeSearches";
 
 /**
  *
@@ -377,9 +380,38 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
                     <div>
                         Enrichment analysis requires more than one { subSearchesLabel_NotCapitol } search to be loaded.
                     </div>
+
                     { ! processing_SubSearches ? (
-                        <div>
-                            Click "Change searches" near the top of the page to add searches.
+                        <div style={ { marginTop: 10 } }>
+                            <span
+                                className=" fake-link "
+                                onClick={ event => {
+
+                                    const dataUpdated_Callback = () => {
+
+                                        //  Currently, this will not be called.  The browser will be taken to a new href in searchDetailsAndFilterBlock_ChangeSearches.changeSearches();
+
+                                        throw Error("No Call to 'dataUpdated_Callback()' Expected.  Inside private _openUserChangeSearches_Overlay_Callback()")
+
+                                        // const params = new SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param();
+                                        //
+                                        // this.props.propValue.filterValuesChanged_Callback( params );
+                                    }
+
+                                    const searchDetailsAndFilterBlock_ChangeSearches = new SearchDetailsAndFilterBlock_ChangeSearches({
+                                        isProteinPage: false,
+                                        dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+                                        searchDetailsBlockDataMgmtProcessing : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchDetailsBlockDataMgmtProcessing,
+                                        dataUpdated_Callback
+                                    })
+
+                                    searchDetailsAndFilterBlock_ChangeSearches.open_ChangeSearches_Overlay();
+
+                                }}
+
+                            >
+                                Click here to add loaded searches
+                            </span>
                         </div>
                     ) : null }
                 </div>
