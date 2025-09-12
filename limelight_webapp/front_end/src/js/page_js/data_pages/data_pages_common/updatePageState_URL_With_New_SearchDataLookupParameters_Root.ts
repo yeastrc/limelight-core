@@ -138,9 +138,9 @@ const _getSearchDataLookupParamsCode_ForUpdated_SearchDataLookupParameters_Root 
 
 	const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-	promise_webserviceCallStandardPost.catch( () => {
+	promise_webserviceCallStandardPost.catch( (reason) => {
 		try { 
-			reject();
+			reject(reason);
 		} catch (e) {
 			reportWebErrorToServer.reportErrorObjectToServer({ errorException : e });
 			throw e;

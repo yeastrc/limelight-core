@@ -417,7 +417,9 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                 throw e;
             }
-        }, function( reason ) { // // onRejected: reject called
+        })
+
+        updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise.catch( function( reason ) { // // onRejected: reject called
             try {
                 if ( reason instanceof WebserviceCallStandardPost_RejectObject_Class ) {
 
@@ -434,10 +436,6 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                 throw e;
             }
-        });
-
-        updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise.catch( function( reason ) { // onRejected
-            throw Error("updatePageState_URL_With_NewFilterCutoffs_FromUser_Promise Fail: Reason: " + reason );
         });
     }
 
