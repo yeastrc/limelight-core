@@ -39,7 +39,7 @@ repositories {
     
     //  For Limelight Import API
     maven {
-       url 'https://raw.github.com/yeastrc/limelight-import-api/repository/'
+       url 'https://raw.githubusercontent.com/yeastrc/limelight-import-api/repository/'
    }
 }
 
@@ -75,7 +75,7 @@ dependencies {
 
 	//  Limelight Import API Jar - Need to Update Version as needed
 	
-	//      Pulled from REPO (entered above): url 'https://raw.github.com/yeastrc/limelight-import-api/repository/'
+	//      Pulled from REPO (entered above): url 'https://raw.githubusercontent.com/yeastrc/limelight-import-api/repository/'
 	
 	implementation limelight_import
 
