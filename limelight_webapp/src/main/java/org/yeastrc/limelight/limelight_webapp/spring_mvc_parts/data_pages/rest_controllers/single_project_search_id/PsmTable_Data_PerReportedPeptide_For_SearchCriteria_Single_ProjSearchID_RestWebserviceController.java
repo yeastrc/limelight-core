@@ -699,15 +699,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
     		//   TODO  FAKE Force to true to generate the array
 
-    		anyPsmHas_RetentionTimeSeconds_NotNull = true;
-    		anyPsmHas_Precursor_M_Over_Z_NotNull = true;
-    		
-    		anyPsmHas_HasModifications_True = true;
-    		anyPsmHas_HasOpenModifications_True = true;
-    		anyPsmHas_HasReporterIons_True = true;
-    		anyPsmHas_IndependentDecoyPSM_True = true;
-    		
-    		anyPsmHas_SearchScanFileId_NotNull = true;
+//    		anyPsmHas_RetentionTimeSeconds_NotNull = true;
+//    		anyPsmHas_Precursor_M_Over_Z_NotNull = true;
+//    		
+//    		anyPsmHas_HasModifications_True = true;
+//    		anyPsmHas_HasOpenModifications_True = true;
+//    		anyPsmHas_HasReporterIons_True = true;
+//    		anyPsmHas_IndependentDecoyPSM_True = true;
+//    		
+//    		anyPsmHas_SearchScanFileId_NotNull = true;
     		
     		///////////////
     		
