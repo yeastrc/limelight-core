@@ -658,10 +658,10 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
 		//  use filenamesSet to find duplicate filenames
-		Set<String> filenamesSet = new HashSet<>();
+		Set<String> scan_FilenamesSet = new HashSet<>();
 		
 		//  use filenames_NoSuffixes_Set to find duplicate filenames (without their suffixes)
-		Set<String> filenames_NoSuffixes_Set = new HashSet<>();
+		Set<String> scan_Filenames_NoSuffixes_Set = new HashSet<>();
 		
 		boolean foundLimelightXMLFile = false;
 		
@@ -722,14 +722,22 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 					log.warn( msg );
 					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 				}
-				if ( ! filenamesSet.add( requestFileItem.getUploadedFilename() ) ) {
-					String msg = "Duplicate filename: " + requestFileItem.getUploadedFilename();
-					log.warn( msg );
-					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-				}
-				{
+				
+
+				if ( requestFileItem.getFileType().intValue() == FileImportFileType.SCAN_FILE.value() ) {
+
+					//  For Scan Files, ensure no duplicate filenames since would cause issues processing scan filename in <psm> element in Limelight XML file 
+					
+					//  TODO:  Change these to return a response instead of throw BadRequest exception so can produce an error message on the submitter side.
+					
+					if ( ! scan_FilenamesSet.add( requestFileItem.getUploadedFilename() ) ) {
+						String msg = "Duplicate filename: " + requestFileItem.getUploadedFilename();
+						log.warn( msg );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+
 					String filename_NoSuffix = FilenameUtils.removeExtension( requestFileItem.getUploadedFilename() );
-					if ( ! filenames_NoSuffixes_Set.add( filename_NoSuffix ) ) {
+					if ( ! scan_Filenames_NoSuffixes_Set.add( filename_NoSuffix ) ) {
 						String msg = "Duplicate filename (checking without filename suffix): " 
 								+ requestFileItem.getUploadedFilename()
 								+ ", filename without suffix: "
