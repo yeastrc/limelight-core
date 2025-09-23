@@ -279,13 +279,13 @@ class ModPage_ModifiedResidue__Overlay_Component extends React.Component< ModPag
 
                                                         <ol>
                                                             <li style={ { marginTop: 5 } }>
-                                                                Single Position: If a modification occurs at one position, 1 is added to the residue that position.
+                                                                Single Position: If a modification occurs at one position in a PSM, 1 is added to the residue that position.
                                                             </li>
                                                             <li style={ { marginTop: 5 } }>
-                                                                Multiple Positions: If a modification has multiple positions, 1 divided by the number of positions is added to the residue at each position.
+                                                                Multiple Positions: If a modification has multiple positions in a PSM, 1 divided by the number of positions is added to the residue at each position.
                                                             </li>
                                                             <li style={ { marginTop: 5 } }>
-                                                                Unlocalized: If a modification has no positions, 1 divided by the peptide's length is added to the residue at each position of the peptide.
+                                                                If a modification has no positions in a PSM (unlocalized), 1 divided by the peptide's length is added to the residue at each position of the peptide.
                                                             </li>
                                                             <li style={ { marginTop: 5 } }>
                                                                 Filtered Positions: When the “Filter on Modifications at Protein Position” is applied, only positions passing the filter are counted.
