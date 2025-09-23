@@ -353,7 +353,12 @@ body.data-page {
                             word-break: break-all; // Backup in case break-word is not supported
                             word-break: break-word; //  Keep this here as long as it works since not all cells will have the <span> with the class name 'table-data-cell-property-value'
 
-                            span.table-data-cell-property-value {
+                          &.data-table-data-cell-align-bottom {
+                            vertical-align: bottom;  // Override above vertical alignment
+
+                          }
+
+                          span.table-data-cell-property-value {
                                 overflow-wrap: break-word;
                             }
                         }

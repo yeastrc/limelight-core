@@ -447,3 +447,29 @@ button {
 
 
 //////////////////
+
+
+.standard-on-hover-show-cover-div-contents--root-element {
+
+  position: relative;
+
+  .standard-on-hover-show-cover-div-contents--shown-cover-root-element {
+
+    position: absolute;
+    inset: 0;
+    visibility: hidden;
+
+    &.standard-black-background-point-5-opacity {
+
+      opacity: .5;
+      background-color: black;
+    }
+  }
+
+  &:hover {
+
+    .standard-on-hover-show-cover-div-contents--shown-cover-root-element {
+      visibility: visible;
+    }
+  }
+}

@@ -385,7 +385,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
                         <div style={ { marginTop: 10 } }>
                             <span
                                 className=" fake-link "
-                                onClick={ event => {
+                                onClick={ event => { try {
 
                                     const dataUpdated_Callback = () => {
 
@@ -407,6 +407,10 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
                                     searchDetailsAndFilterBlock_ChangeSearches.open_ChangeSearches_Overlay();
 
+                                } catch ( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                    throw e
+                                }
                                 }}
 
                             >

@@ -34,6 +34,9 @@ import {
 import {
     ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
+import {
+    ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator";
 
 ///////////////////
 
@@ -147,19 +150,19 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Roo
 export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass {
 
     readonly modMass: number
-    readonly modifiedResidues: ReadonlySet<string>
+    readonly modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
     private _dataEntry_SingleProjectSearchId_Or_SubSearchId__Map_Key_ProjectSearchId_Or_SubSearchId: Map<number, ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ProjectSearchId_Or_SubSearchId>
 
     constructor(
         {
-            modMass, modifiedResidues
+            modMass, modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
         } : {
             modMass: number
-            modifiedResidues: Set<string>
+            modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
         }
     ) {
         this.modMass = modMass
-        this.modifiedResidues = modifiedResidues
+        this.modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator = modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
         this._dataEntry_SingleProjectSearchId_Or_SubSearchId__Map_Key_ProjectSearchId_Or_SubSearchId = new Map()
     }
 
@@ -200,7 +203,7 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_For
 
     readonly projectSearchId_ForUseWhereRequire_projectSearchId: number
 
-    readonly modifiedResidues: ReadonlySet<string>
+    readonly modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
 
     /**
      * Display Value for Mod Page Top Level table showing Mod Masses as chosen by user based on "Transform"
@@ -214,14 +217,14 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_For
             projectSearchId_Or_SubSearchId,
             projectSearchId_Or_SubSearchId_Enum,
             projectSearchId_ForUseWhereRequire_projectSearchId,
-            modifiedResidues,
+            modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator,
             topLevelTable_DisplayValue,
             psmData_Entries_Iterator
         } : {
             projectSearchId_Or_SubSearchId: number
             projectSearchId_Or_SubSearchId_Enum: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum
             projectSearchId_ForUseWhereRequire_projectSearchId: number
-            modifiedResidues: Set<string>
+            modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
 
             topLevelTable_DisplayValue: number
             psmData_Entries_Iterator: IterableIterator<ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_Psm>
@@ -230,7 +233,7 @@ export class ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_For
         this.projectSearchId_Or_SubSearchId = projectSearchId_Or_SubSearchId
         this.projectSearchId_Or_SubSearchId_Enum = projectSearchId_Or_SubSearchId_Enum
         this.projectSearchId_ForUseWhereRequire_projectSearchId = projectSearchId_ForUseWhereRequire_projectSearchId
-        this.modifiedResidues = modifiedResidues
+        this.modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator = modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
 
         this._topLevelTable_DisplayValue = topLevelTable_DisplayValue
 
@@ -625,32 +628,28 @@ const _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root = function (
 
         const modMass = dataEntry_SingleModMass.modMass
 
-        const modifiedResidues: Set<string> = new Set()
+        const modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator = new ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator()
 
         for ( const singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId of dataEntry_SingleModMass.get_All() ) {
 
             for ( const dataFor_SinglePsm of singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.get_DataFor_SinglePsm_All() ) {
-                if ( dataFor_SinglePsm.get__allMods_PeptideResidueLetters_At_ModificationPositions() ) {
-                    for ( const peptideResidueLetter of dataFor_SinglePsm.get__allMods_PeptideResidueLetters_At_ModificationPositions() ) {
-                        modifiedResidues.add( peptideResidueLetter )
-                    }
-                }
+                modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.add__dataFor_SinglePsm__modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm({
+                    modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm: dataFor_SinglePsm.get_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm()
+                })
             }
         }
 
-        const output_dataEntry_SingleModMass = new ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass({ modMass, modifiedResidues })
+        const output_dataEntry_SingleModMass = new ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_ForSingle_ModMass({ modMass, modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator })
         modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.INTERNAL_ONLY__AddEntry( output_dataEntry_SingleModMass )
 
         for ( const singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId of dataEntry_SingleModMass.get_All() ) {
 
-            const modifiedResidues: Set<string> = new Set()  // Computed for projectSearchId_Or_SubSearchId
+            const modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator = new ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator()   // Computed for projectSearchId_Or_SubSearchId
 
             for ( const dataFor_SinglePsm of singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.get_DataFor_SinglePsm_All() ) {
-                if ( dataFor_SinglePsm.get__allMods_PeptideResidueLetters_At_ModificationPositions() ) {
-                    for ( const peptideResidueLetter of dataFor_SinglePsm.get__allMods_PeptideResidueLetters_At_ModificationPositions() ) {
-                        modifiedResidues.add( peptideResidueLetter )
-                    }
-                }
+                modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.add__dataFor_SinglePsm__modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm({
+                    modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm: dataFor_SinglePsm.get_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm()
+                })
             }
 
             // topLevelTable_DisplayValue Initially set to PsmCount
@@ -659,7 +658,7 @@ const _create_MainDisplayValues_BasedOn_PSM_Count_For_Input_Root = function (
                 projectSearchId_Or_SubSearchId: singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.projectSearchId_Or_SubSearchId,
                 projectSearchId_Or_SubSearchId_Enum,
                 projectSearchId_ForUseWhereRequire_projectSearchId: singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.projectSearchId_ForUseWhereRequire_projectSearchId,
-                modifiedResidues,
+                modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator,
                 topLevelTable_DisplayValue: singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.get_PsmCount(),
                 psmData_Entries_Iterator: singleEntry_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId.get_DataFor_SinglePsm_All()
             })

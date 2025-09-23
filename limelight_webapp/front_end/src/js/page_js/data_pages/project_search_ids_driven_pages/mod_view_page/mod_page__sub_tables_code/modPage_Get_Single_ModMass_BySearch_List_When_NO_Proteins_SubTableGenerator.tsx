@@ -32,6 +32,12 @@ import {
 import {
     modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_Get_PeptideList_ForModMassAndSearch_When_NO_Proteins_SubTableGenerator";
+import {
+    ModPage_ModifiedResidue__DataTable_ColumnDisplay
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__modified_residue__table_column_display/ModPage_ModifiedResidue__DataTable_ColumnDisplay";
+import {
+    ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator";
 
 
 //////////////////////
@@ -136,12 +142,12 @@ const _getDataTableColumns = function () : DataTable_RootTableDataObject_Both_Co
     }
 
     {
-        const displayName = "Residues";
+        const displayName = "Modified Residues";
 
         const dataTableColumn = new DataTable_Column({
             id : "modRes", // Used for tracking sort order. Keep short
             displayName,
-            width : 100,
+            width : ModPage_ModifiedResidue__DataTable_ColumnDisplay.columnWidth,
             sortable : false
         });
         dataTableColumns.push( dataTableColumn );
@@ -250,16 +256,25 @@ const _getDataTableRows = async function (
 
         // add modded residues
         {
-            const valueDisplay = allData_ForSearches_For_Single_ModMass.modifiedResidues ? Array.from(allData_ForSearches_For_Single_ModMass.modifiedResidues).sort().join(', ') : ""
-            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator = allData_ForSearches_For_Single_ModMass.modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
+
+            const valueDisplay_Search_and_Download = Array.from( modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.get_ResidueLetters() ).sort().join(', ');
+
+            const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+
+                    return ModPage_ModifiedResidue__DataTable_ColumnDisplay.get_DataTable_ModifiedResidues_Column_Contents({ modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator })
+                }
+
+            const searchEntriesForColumn : Array<string> = [ valueDisplay_Search_and_Download ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
-                valueDisplay
+                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
             });
             columnEntries.push( columnEntry );
 
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay_Search_and_Download })
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
@@ -328,9 +343,9 @@ const _getData_PerSearch_ForModMass = async function (
 
                     projectSearchId,
 
-                    modifiedResidues: new Set(),
+                    psmIds_All_ForSearch_Set: new Set(),
 
-                    psmIds_All_ForSearch_Set: new Set()
+                    modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: new ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator()
                 }
 
                 data_Output_Map_Key_ProjectSearchId.set( projectSearchId, outputData_Output )
@@ -338,11 +353,9 @@ const _getData_PerSearch_ForModMass = async function (
 
             outputData_Output.psmIds_All_ForSearch_Set.add( dataFor_SinglePsm.psmId )
 
-            if ( dataFor_SinglePsm.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_ForSingle_Psm.get__allMods_PeptideResidueLetters_At_ModificationPositions() ) {
-                for ( const residue of dataFor_SinglePsm.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_ForSingle_Psm.get__allMods_PeptideResidueLetters_At_ModificationPositions() ) {
-                    outputData_Output.modifiedResidues.add( residue )
-                }
-            }
+            outputData_Output.modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.add__dataFor_SinglePsm__modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm({
+                modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm: dataFor_SinglePsm.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_ForSingle_Psm.get_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm()
+            })
         }
     }
 
@@ -360,7 +373,8 @@ const _getData_PerSearch_ForModMass = async function (
 class INTERNAL__OutputData_ForSingleSearch {
 
     readonly projectSearchId: number
-    readonly modifiedResidues: Set<string>
 
     readonly psmIds_All_ForSearch_Set: Set<number>
+
+    modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
 }

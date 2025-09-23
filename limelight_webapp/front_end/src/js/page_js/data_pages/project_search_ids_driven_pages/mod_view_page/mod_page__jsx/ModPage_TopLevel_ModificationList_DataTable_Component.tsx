@@ -75,6 +75,9 @@ import {
 import {
     modPage_Get_Single_ModMass_By_SubSearch_List_When_NO_Proteins_SubTableGenerator
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__sub_tables_code/modPage_Get_Single_ModMass_By_SubSearch_List_When_NO_Proteins_SubTableGenerator";
+import {
+    ModPage_ModifiedResidue__DataTable_ColumnDisplay
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__modified_residue__table_column_display/ModPage_ModifiedResidue__DataTable_ColumnDisplay";
 
 /**
  *
@@ -337,12 +340,12 @@ const _generateDataTable = function (
     }
 
     {
-        const displayName = "Residues";
+        const displayName = "Modified Residues";
 
         const dataTableColumn = new DataTable_Column({
             id : "Residues", // Used for tracking sort order. Keep short
             displayName,
-            width : 100,
+            width : ModPage_ModifiedResidue__DataTable_ColumnDisplay.columnWidth,
             sortable : false
         });
         dataTableColumns.push( dataTableColumn );
@@ -497,16 +500,25 @@ const _generateDataTable = function (
 
         {  // add modded residues
 
-            const valueDisplay = Array.from( data_For_ModMass.modifiedResidues ).sort().join(', ');
-            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator = data_For_ModMass.modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
+
+            const valueDisplay_Search_and_Download = Array.from( modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.get_ResidueLetters() ).sort().join(', ');
+
+            const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+
+                return ModPage_ModifiedResidue__DataTable_ColumnDisplay.get_DataTable_ModifiedResidues_Column_Contents({ modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator })
+            }
+
+            const searchEntriesForColumn : Array<string> = [ valueDisplay_Search_and_Download ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
-                valueDisplay
+                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
             });
             columnEntries.push( columnEntry );
 
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay_Search_and_Download })
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 

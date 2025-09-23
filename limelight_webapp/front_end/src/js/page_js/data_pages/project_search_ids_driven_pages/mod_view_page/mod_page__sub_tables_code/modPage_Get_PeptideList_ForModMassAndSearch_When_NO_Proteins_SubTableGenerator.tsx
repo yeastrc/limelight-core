@@ -165,7 +165,7 @@ const  _getDataTableColumns = function () : DataTable_RootTableDataObject_Both_C
     }
 
     {
-        const displayName = "Residues";
+        const displayName = "Modified Residues";
 
         const dataTableColumn = new DataTable_Column({
 

@@ -77,6 +77,12 @@ import {
 import {
     ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
+import {
+    ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator";
+import {
+    ModPage_ModifiedResidue__DataTable_ColumnDisplay
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__modified_residue__table_column_display/ModPage_ModifiedResidue__DataTable_ColumnDisplay";
 
 
 //   Classes past to child tables are at the bottom of this file
@@ -283,12 +289,12 @@ const _getDataTableColumns = function (
     }
 
     {
-        const displayName = "Residues";
+        const displayName = "Modified Residues";
 
         const dataTableColumn = new DataTable_Column({
             id : "modRes", // Used for tracking sort order. Keep short
             displayName,
-            width : 100,
+            width : ModPage_ModifiedResidue__DataTable_ColumnDisplay.columnWidth,
             sortable : false
         });
         dataTableColumns.push( dataTableColumn );
@@ -334,6 +340,7 @@ const _getDataTableColumns = function (
     } else {
 
         for ( const projectSearchId of projectSearchIds ) {
+
             const searchIdXorShortName = modPage_Get_SearchLabel__SearchShortName_OR_SearchId_ForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server });
 
             const displayName = "PSM Count (" + searchIdXorShortName + ")";
@@ -521,7 +528,7 @@ const _getDataTableRows =  async function (
             }
 
             positions.sort( function(a, b):number {
-                if(a.start === b.start) {
+                if (a.start === b.start) {
                     return a.end - b.end;
                 }
 
@@ -548,18 +555,27 @@ const _getDataTableRows =  async function (
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
-        // add modded residues
-        {
-            const valueDisplay = Array.from(proteinData.modifiedResidues).sort().join(', ');
-            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+        { // add modded residues
+
+            const modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator = proteinData.modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
+
+            const valueDisplay_Search_and_Download = Array.from( modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.get_ResidueLetters() ).sort().join(', ');
+
+            const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+
+                    return ModPage_ModifiedResidue__DataTable_ColumnDisplay.get_DataTable_ModifiedResidues_Column_Contents({ modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator })
+                }
+
+            const searchEntriesForColumn : Array<string> = [ valueDisplay_Search_and_Download ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
-                valueDisplay
+                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
             });
             columnEntries.push( columnEntry );
 
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay_Search_and_Download })
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
@@ -848,6 +864,8 @@ const _getProteinDataForModMass = async function (
 
                         modifiedResidues: new Set(),
 
+                        modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: new ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator(),
+
                         data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId: new Map()
                     }
 
@@ -882,6 +900,38 @@ const _getProteinDataForModMass = async function (
                 }
 
                 data_Output_for_ProjectSearchId_Or_SubSearch.dataFor_SinglePsm_Map_Key_PsmId.set( dataFor_SinglePsm.psmId, dataFor_SinglePsm )
+            }
+
+            for ( const modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__ForSingle__ProteinSequenceVersionId
+                of dataFor_SinglePsm.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_ForSingle_Psm.get_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__FOR__ALL__ProteinSequenceVersionId() ) {
+
+
+                let proteinData_Output = proteinData_Output_Map_Key_ProteinSequenceVersionId.get( modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__ForSingle__ProteinSequenceVersionId.proteinSequenceVersionId__WhenForSpecificProtein )
+                if ( ! proteinData_Output ) {
+
+                    proteinData_Output = {
+                        proteinId: modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__ForSingle__ProteinSequenceVersionId.proteinSequenceVersionId__WhenForSpecificProtein,
+                        proteinName: "Protein Name: " + modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__ForSingle__ProteinSequenceVersionId.proteinSequenceVersionId__WhenForSpecificProtein,
+                        proteinDescription: "Protein Desc: " + modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__ForSingle__ProteinSequenceVersionId.proteinSequenceVersionId__WhenForSpecificProtein,
+
+                        modifiedPositions: new Set(),
+                        unlocalizedPositionRanges: [],
+
+                        modifiedResidues: new Set(),
+
+                        modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: new ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator(),
+
+                        data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId: new Map()
+                    }
+
+                    proteinData_Output_Map_Key_ProteinSequenceVersionId.set( modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__ForSingle__ProteinSequenceVersionId.proteinSequenceVersionId__WhenForSpecificProtein, proteinData_Output )
+                }
+
+                proteinData_Output.
+                modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.
+                add__dataFor_SinglePsm__modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm({
+                    modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm: modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__ForSingle__ProteinSequenceVersionId
+                })
             }
         }
     }
@@ -1031,6 +1081,8 @@ export class ModPage_get_ProteinList_SubTable__SingleProteinData_Root {
     unlocalizedPositionRanges: Array<ModPage_Mod_Unlocalized_StartEnd_ContainerClass>
 
     modifiedResidues: Set<string>
+
+    modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
 
     data_Per_ProjectSearchId_Or_SubSearchId_Map_Key__ProjectSearchId_Or_SubSearchId: Map<number, ModPage_get_ProteinList_SubTable__SingleProteinData_Per_ProjectSearchId_Or_SubSearch>
 }
