@@ -280,9 +280,19 @@ export class ModPage_Tabs_Select__ModificationList_OR_ZScoreData__Component exte
     render() { try {
 
         return (
-            <div style={ { marginTop: 20, marginBottom: 20 } }>
+            <div
+                style={ { marginTop: 20, marginBottom: 20 } }
+            >
 
-                <div style={ { marginTop: 20 } }>
+                <div
+                    //  Add border on top to make the tabs stand out
+                    style={ {
+                        width: "fit-content",
+                        borderTopStyle: "solid",
+                        borderTopWidth: 10
+                    } }
+                    className=" standard-border-color-very-dark "
+                >
                     <Tabs
                         value={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_displayTab() }
                         onChange={ this._tabs_OnChange_EventHandler_BindThis }
