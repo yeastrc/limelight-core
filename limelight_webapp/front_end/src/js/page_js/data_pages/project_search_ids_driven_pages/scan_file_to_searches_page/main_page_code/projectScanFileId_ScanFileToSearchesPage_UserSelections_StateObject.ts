@@ -23,7 +23,7 @@ const _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION = 1;
 
 const _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 
-const _ENCODED_DATA__PROJECT_SCAN_FILE_ID_ENCODING_PROPERTY_NAME = 'b';
+// const _ENCODED_DATA__PROJECT_SCAN_FILE_ID_ENCODING_PROPERTY_NAME = 'b';
 const _ENCODED_DATA__SEARCH_SCAN_FILE_IDS_ENCODING_PROPERTY_NAME = 'c';
 
 
@@ -36,8 +36,8 @@ export class ProjectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject
 
 	// private _initializeCalled : boolean = false;
 
-    private _projectScanFileIdSelection : number = undefined; //  Set to undefined if no selections
-	private _searchScanFileIdSelections_Set: Set<number> = undefined; //  Set to undefined if no selections
+    // private _projectScanFileIdSelection : number = undefined; //  Set to undefined if no selections
+	private _searchScanFileId_Selections_Set: Set<number> = new Set(); //  Set to new Set() if no selections
 
 	private _valueChangedCallback: () => void;
 
@@ -54,58 +54,88 @@ export class ProjectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject
 		this._valueChangedCallback = valueChangedCallback;
 	}
 
-	/**
-	 */
-	get_projectScanFileIdSelection() {
+	// /**
+	//  */
+	// get_projectScanFileIdSelection() {
+	//
+    //     return this._projectScanFileIdSelection;
+	// }
 
-        return this._projectScanFileIdSelection;
+	/**
+	 *
+	 */
+	get_searchScanFileId_Selections_Set() {
+
+		return this._searchScanFileId_Selections_Set;
 	}
 
 	/**
 	 *
 	 */
-	get_searchScanFileIdSelections() {
-
-		return this._searchScanFileIdSelections_Set;
-	}
-
-	/**
-	 *
-	 */
-	set_projectScanFileIdSelection_searchScanFileIdSelections(
+	set_searchScanFileId_Selections_Set(
 		{
-			projectScanFileIdSelection, searchScanFileIdSelections_Set
+			searchScanFileId_Selections_Set
 		} : {
-			projectScanFileIdSelection : number
-			searchScanFileIdSelections_Set: Set<number>
+			searchScanFileId_Selections_Set: Set<number>
 		}) : void {
 
-        this._projectScanFileIdSelection = projectScanFileIdSelection
-		this._searchScanFileIdSelections_Set = searchScanFileIdSelections_Set
+		this._searchScanFileId_Selections_Set = searchScanFileId_Selections_Set
+		if ( ! this._searchScanFileId_Selections_Set ) {
+			this._searchScanFileId_Selections_Set = new Set()
+		}
 
 		if ( ! this._valueChangedCallback ) {
-			throw Error("set_projectScanFileIdSelection_searchScanFileIdSelections::( ! this._valueChangedCallback )")
+			throw Error("set_searchScanFileId_Selections_Set::( ! this._valueChangedCallback )")
 		}
 
 		this._valueChangedCallback();
-    }
+	}
 
 	/**
-	 * 
-	 * 
+	 *
 	 */
-	clearPeptideSearchStrings() {
+	add_searchScanFileIdSelection(
+		{
+			searchScanFileIdSelection
+		} : {
+			searchScanFileIdSelection: number
+		}) : void {
 
-        this._projectScanFileIdSelection = undefined;
-		this._searchScanFileIdSelections_Set = undefined
+		if ( ! searchScanFileIdSelection ) {
+			throw Error("add_searchScanFileIdSelection::( ! searchScanFileIdSelection )")
+		}
+
+		this._searchScanFileId_Selections_Set.add( searchScanFileIdSelection )
 
 		if ( ! this._valueChangedCallback ) {
-			throw Error("clearPeptideSearchStrings::( ! this._valueChangedCallback )")
+			throw Error("add_searchScanFileIdSelection::( ! this._valueChangedCallback )")
 		}
 
 		this._valueChangedCallback();
-    }
+	}
 
+	/**
+	 *
+	 */
+	remove_searchScanFileIdSelection(
+		{
+			searchScanFileIdSelection
+		} : {
+			searchScanFileIdSelection: number
+		}) : void {
+
+		if ( ! searchScanFileIdSelection ) {
+			throw Error("remove_searchScanFileIdSelection::( ! searchScanFileIdSelection )")
+		}
+
+		this._searchScanFileId_Selections_Set.delete( searchScanFileIdSelection )
+
+		if ( ! this._valueChangedCallback ) {
+			throw Error("remove_searchScanFileIdSelection::( ! this._valueChangedCallback )")
+		}
+
+		this._valueChangedCallback();
+	}
 
     //////////////////////////////////////
 
@@ -119,13 +149,22 @@ export class ProjectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject
 	getEncodedStateData() : any {
 
 		const result: { [key: string]: any } = {}
-		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION
-        result[ _ENCODED_DATA__PROJECT_SCAN_FILE_ID_ENCODING_PROPERTY_NAME ] = this._projectScanFileIdSelection
 
-		if ( this._searchScanFileIdSelections_Set && this._searchScanFileIdSelections_Set.size > 0 ) {
-			const searchScanFileIdSelections_Array = Array.from( this._searchScanFileIdSelections_Set )
+		// result[ _ENCODED_DATA__PROJECT_SCAN_FILE_ID_ENCODING_PROPERTY_NAME ] = this._projectScanFileIdSelection
+
+		if ( this._searchScanFileId_Selections_Set && this._searchScanFileId_Selections_Set.size > 0 ) {
+			const searchScanFileIdSelections_Array = Array.from( this._searchScanFileId_Selections_Set )
 			result[ _ENCODED_DATA__SEARCH_SCAN_FILE_IDS_ENCODING_PROPERTY_NAME ] = searchScanFileIdSelections_Array
 		}
+
+		if ( Object.keys( result ).length === 0 ) {
+
+			//  NOTHING to return so return undefined
+			return undefined  // EARLY RETURN
+		}
+
+		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION
+
 		return result
 	}
 	
@@ -149,11 +188,13 @@ export class ProjectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject
 			throw Error( msg );
 		}
 
-		this._projectScanFileIdSelection = encodedStateData[ _ENCODED_DATA__PROJECT_SCAN_FILE_ID_ENCODING_PROPERTY_NAME ];
+		// this._projectScanFileIdSelection = encodedStateData[ _ENCODED_DATA__PROJECT_SCAN_FILE_ID_ENCODING_PROPERTY_NAME ];
 
 		const searchScanFileIdSelections_Array = encodedStateData[ _ENCODED_DATA__SEARCH_SCAN_FILE_IDS_ENCODING_PROPERTY_NAME ];
 		if ( searchScanFileIdSelections_Array && ( searchScanFileIdSelections_Array instanceof Array ) ) {
-			this._searchScanFileIdSelections_Set = new Set( searchScanFileIdSelections_Array )
+			this._searchScanFileId_Selections_Set = new Set( searchScanFileIdSelections_Array )
+		} else {
+			this._searchScanFileId_Selections_Set = new Set()
 		}
 	}
 }

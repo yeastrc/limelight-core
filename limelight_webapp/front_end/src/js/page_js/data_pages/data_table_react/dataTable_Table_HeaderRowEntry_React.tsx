@@ -211,7 +211,11 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
 
           <div style={ styleDisplayNameDiv } className={ className_InnermostDiv_Column_DisplayName }>
 
+            { column.columnHeader_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element ? (
+                column.columnHeader_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element()
+            ) : (
                   <span className=" display-name-value ">{ column.displayName }</span>
+            )}
           </div>
       )
 

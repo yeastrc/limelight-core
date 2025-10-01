@@ -226,16 +226,18 @@ const _openDataPage = function ( params : ProjectPage_SearchesSection_Open_DataP
 
     if ( ctrlKeyOrMetaKey ) {
 
+        //  Open url in new tab
+
+        console.log( "Open in new tab url: " + url )
+
         window.open(url, "_blank", "noopener");
 
         return;  // EARLY RETURN
     }
 
-    //  NO ctrlKeyOrMetaKey
+    //  NO ctrlKeyOrMetaKey.  Open url in current tab
 
-    window.location.href = url;
-
-    return;  // EARLY RETURN
+    window.location.href = url
 };
 
 /**

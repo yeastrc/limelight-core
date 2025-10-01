@@ -263,6 +263,8 @@ class DataTable_Column_sortFunction_Param {
     sortValue_B : unknown  //  From DataTable_DataRow_ColumnEntry.valueSort
 }
 
+type DataTable_Column_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element = () => JSX.Element;
+
 type DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element = () => JSX.Element;
 
 /**
@@ -296,6 +298,7 @@ class DataTable_Column {
     id: DataTable_ColumnId
 
     displayName: string
+    columnHeader_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element: DataTable_Column_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element
 
     //  These provide 2 different options for show a tooltip on mouseover of the text in that Column Header. Only 1 is allowed to be populated.
 
@@ -325,7 +328,14 @@ class DataTable_Column {
      */
     constructor(
         {
-            id, displayName, width, heightInitial,
+            id,
+
+            //   Exactly one of these 2 parameters are required
+            displayName,
+            columnHeader_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element,
+
+            width,
+            heightInitial,
 
             //  If want graph in the cell
             showHorizontalGraph,  //  Show single horizontal rectangle where the value from valueSort is a fraction of graphMaxValue
@@ -344,7 +354,11 @@ class DataTable_Column {
             sortable, sort_Null_BeforeValues_AfterValues_Enum, sortFunction, hideColumnHeader, style_override_HeaderRowCell_React
         }: {
             id: DataTable_ColumnId,
+
+            //   columnHeader_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element is displayed on page if populated, else displayName.  
             displayName: string
+            columnHeader_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element
+
             width: number
 
             heightInitial?: number;  //  Optional: height (set as height but NOT max-height on DOM element style property) of column
@@ -399,6 +413,7 @@ class DataTable_Column {
         }) {
         this.id = id;
         this.displayName = displayName;
+        this.columnHeader_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element = columnHeader_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element
         this.width = width;
 
         this.heightInitial = heightInitial;
@@ -1219,6 +1234,7 @@ export {
     DataTable_TableOptions,
 
     DataTable_Column,
+    DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element,
     DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum,
     DataTable_Column_sortFunction_Param,
     DataTable_Column_DownloadTable,

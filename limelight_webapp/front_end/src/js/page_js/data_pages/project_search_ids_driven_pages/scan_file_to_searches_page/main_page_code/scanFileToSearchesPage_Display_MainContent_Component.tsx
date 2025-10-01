@@ -11,7 +11,10 @@ import React from 'react'
 
 import {reportWebErrorToServer} from 'page_js/common_all_pages/reportWebErrorToServer';
 
-import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
+import {
+    DataPageStateManager,
+    SearchData_SearchName_Etc_SingleSearchEntry__DataPageStateManagerEntry
+} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 import {DataPages_LoggedInUser_CommonObjectsFactory} from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
 
 import {
@@ -91,6 +94,7 @@ import {Scan_RetentionTime_MZ_UserSelections_Component} from "page_js/data_pages
 import {ScanFilenameId_On_PSM_Filter_UserSelection_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/jsx/scanFilenameId_On_PSM_Filter_UserSelection_Component";
 import {
     CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder,
+    CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_Entry,
     CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
 import {FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__show_hide__expand_collapse_container_component/filterSection_DataPage_ShowHide_ExpandCollapse_Container_Component";
@@ -127,7 +131,8 @@ import {
     ScanFileToSearchesPage_Display_MainContent_Component_nonClass_Functions
 } from "page_js/data_pages/project_search_ids_driven_pages/scan_file_to_searches_page/main_page_code/scanFileToSearchesPage_Display_MainContent_Component_nonClass_Functions";
 import {
-    CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder
+    CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder,
+    CommonData_LoadedFromServer_SingleSearch_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch__Single_SearchScanFileId_ProjectScanFileId_Pair
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch";
 import {
     CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder,
@@ -167,6 +172,8 @@ import {
 import {
     DataTable_Column,
     DataTable_Column_DownloadTable,
+    DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum,
+    DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element,
     DataTable_DataRow_ColumnEntry,
     DataTable_DataRow_ColumnEntry_SearchTableData,
     DataTable_DataRowEntry,
@@ -194,6 +201,30 @@ import {
 import {
     WebserviceCallStandardPost_RejectObject_Class
 } from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    open_ScanFileToSearchesPage_SelectScanFileOnSearch_Overlay_Component
+} from "page_js/data_pages/project_search_ids_driven_pages/scan_file_to_searches_page/main_page_code/scanFileToSearchesPage_SelectScanFileOnSearch_Overlay_Component";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import {
+    limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam
+} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
+import {
+    annotationName_Prefix_BestOfPsmValues_TextLabel
+} from "page_js/constants_across_webapp/annotation_constants/annotationName_Prefix_BestOfPsmValues";
+import {
+    CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData";
+import {
+    limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage
+} from "page_js/common_all_pages/annotation_data_display_common_formatting/limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage";
 
 
 ////
@@ -204,6 +235,9 @@ import {
 //  Constants
 
 //////////////////////////////////
+
+
+const _SCAN_FILENAME_DISPLAY_STRING__SEARCH_HAS_NO_SEARCH_SCAN_FILE_RECORDS = "No Scan Filename"
 
 
 /**
@@ -305,7 +339,7 @@ interface ScanFileToSearchesPage_Display_MainContent_Component_State {
     saveView_Component_Props_Prop?: any //  Object passed to saveView_Component_React as property propsValue
 
 
-    scanFile_Selected_ScanFilenames_CommaDelim?: string
+    scanFile_currentlySelected_ScanFilenames_Array_Sorted?: Array<string>
 
     mainDisplay_DataTable_RootTableObject?: DataTable_RootTableObject
 }
@@ -403,14 +437,8 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
     private _searchesContains_OpenModifications = false;
     private _searchesContains_StaticModifications = false;
 
-    private _projectSearchId_Count_GreaterThan_One = false
 
-    private _searches_NOT_ContainScanFile_ProjectSearchId_Set: Set<number> = new Set()
-
-    private _show_ScanFileSelectionBlock = false
-
-    private _show_NoScanFileData_In_AnySearches = false
-
+    private _show_UpdatingMessage: boolean = false
 
     /**
      * 
@@ -623,21 +651,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
         const promises: Array<Promise<void>> = [];
 
-        let retrieved_ScanFileData_ForAnySearch = false
-
         for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-
-            const common_Flags_SingleSearch_ForProjectSearchId = this.props.propsValue.dataPageStateManager.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId )
-            if ( ! common_Flags_SingleSearch_ForProjectSearchId ) {
-                throw new Error( "No value from this.props.propsValue.dataPageStateManager.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
-            }
-
-            if ( ! common_Flags_SingleSearch_ForProjectSearchId.hasScanData ) {
-                //  No Scan Data for Search so skip the search.  Later add coding elsewhere to skip searches without scan data
-                continue  //  EARLY CONTINUE
-            }
-
-            retrieved_ScanFileData_ForAnySearch = true
 
             const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =  // state object populated in constructor
                 this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
@@ -688,45 +702,42 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
             }
         }
 
-        if ( retrieved_ScanFileData_ForAnySearch ) {
+        const get_ScanFileDataHolder_Result =
+            this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+            get__commonData_LoadedFromServer__Multiple_ProjectSearchIds().
+            get_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId().get_ScanFileDataHolder()
 
-            const get_ScanFileDataHolder_Result =
-                this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
-                get__commonData_LoadedFromServer__Multiple_ProjectSearchIds().
-                get_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId().get_ScanFileDataHolder()
+        if ( get_ScanFileDataHolder_Result.data ) {
 
-            if ( get_ScanFileDataHolder_Result.data ) {
+            this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = get_ScanFileDataHolder_Result.data.scanFileData_Holder
 
-                this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = get_ScanFileDataHolder_Result.data.scanFileData_Holder
+        } else if ( get_ScanFileDataHolder_Result.promise ) {
+            const promise = new Promise<void>( (resolve, reject) => {
+                try {
+                    get_ScanFileDataHolder_Result.promise.catch( reason => {
+                        try {
+                            reject( reason )
 
-            } else if ( get_ScanFileDataHolder_Result.promise ) {
-                const promise = new Promise<void>( (resolve, reject) => {
-                    try {
-                        get_ScanFileDataHolder_Result.promise.catch( reason => {
-                            try {
-                                reject( reason )
+                        } catch ( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                            throw e;
+                        }
+                    } );
+                    get_ScanFileDataHolder_Result.promise.then( value => {
 
-                            } catch ( e ) {
-                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                throw e;
-                            }
-                        } );
-                        get_ScanFileDataHolder_Result.promise.then( value => {
+                        this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = value.scanFileData_Holder;
 
-                            this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = value.scanFileData_Holder;
+                        resolve();
+                    } )
 
-                            resolve();
-                        } )
-
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                })
-                promises.push(promise);
-            } else {
-                throw Error("get_ScanFileDataHolder_Result no data or promise")
-            }
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            })
+            promises.push(promise);
+        } else {
+            throw Error("get_ScanFileDataHolder_Result no data or promise")
         }
 
         if ( promises.length === 0 ) {
@@ -768,413 +779,17 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
      */
     private _runOnPageLoad_AfterInitialLoad() {
 
-        if ( this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.size === 0 ) {
+        _onPageLoad__Update__projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject__Selections(
+            {
+                projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject: this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject,   //  Updated
 
-            //  No Scan Files for current searches so
+                projectSearchIds: this.props.propsValue.projectSearchIds,
 
-            //   Display a message on the page of no scan file names found in the searches
-
-            this._show_NoScanFileData_In_AnySearches = true
-
-            this.setState({ force_Rerender: {} })
-
-            return // EARLY RETURN
-        }
-
-
-        {  //  Get ProjectScanFileId Unique Value Count
-
-            const projectScanFileId_Set = new Set<number>()
-
-            for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-                const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
-                if ( ! scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder ) {
-                    continue // EARLY CONTINUE
-                }
-                const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
-                if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
-                    continue // EARLY CONTINUE
-                    // throw new Error("No value from commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
-                }
-                for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
-                    const scanFile_ProjectScanFileId_SearchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileData.searchScanFileId )
-                    if ( ! scanFile_ProjectScanFileId_SearchScanFileId ) {
-                        throw new Error( "No value from scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId(searchScanFileData.searchScanFileId) for searchScanFileData.searchScanFileId: " + searchScanFileData.searchScanFileId + ", projectSearchId: " + projectSearchId );
-                    }
-                    const projectScanFileId = scanFile_ProjectScanFileId_SearchScanFileId.projectScanFileId
-                    projectScanFileId_Set.add( projectScanFileId )
-                }
-            }
-
-            if ( projectScanFileId_Set.size === 0 ) {
-            }
-            if ( projectScanFileId_Set.size > 1) {
-
-                this._projectSearchId_Count_GreaterThan_One = true
-            }
-        }
-
-        let populated_projectScanFileId_etc = true
-
-        const result__is_URL_ProjectScanFileId_etc =  this._runOnPageLoad_Is_URL_StateObject_ProjectScanFileId_SearchScanFileIds_In_CurrentSearches__Populate_this_searches_NOT_ContainScanFile_ProjectSearchId_Set()
-
-        if ( ! result__is_URL_ProjectScanFileId_etc.yes__URL_ProjectScanFileId_SearchScanFileIds_In_CurrentSearches ) {
-
-            //  No URL Page State has ProjectScanFileId, SearchScanFileIds OR they are not found in current
-
-            //  Try to get ProjectScanFileId from DOM passed from Project Page
-
-            const result__Is_URL_ProjectScanFileId_Populated = this._runOnPageLoad_Is_URL_ProjectScanFileId_From_ProjectPage_Populated__Populate_this_searches_NOT_ContainScanFile_ProjectSearchId_Set()
-
-
-            if ( result__Is_URL_ProjectScanFileId_Populated.yes__URL_Has_ProjectScanFileId_FromProjectPage__NO_ProjectScanFileId_FoundInAnySearches ) {
-
-                //  No Scan Files in current searches for passed in
-
-                //  Display a message on the page of no scan file names found in the searches
-
-                return // EARLY RETURN
-
-            }
-
-            if ( result__Is_URL_ProjectScanFileId_Populated.yes__URL_Has_ProjectScanFileId_FromProjectPage__Yes_ProjectScanFileId_FoundInAnySearches ) {
-
-                //  Have data so continue
-
-            } else if ( result__Is_URL_ProjectScanFileId_Populated.no__URL_Has_ProjectScanFileId_FromProjectPage ) {
-
-                //  Compute ProjectScanFileId from current searches
-
-                const result__Set_StateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches =
-                    this._runOnPageLoad_Set_URL_PageStateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches__Populate_this_searches_NOT_ContainScanFile_ProjectSearchId_Set()
-
-                if ( ! result__Set_StateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches.yes__Set_StateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches ) {
-
-                    //  No projectScanFileId
-
-                    //  TODO  Display a message on the page of no scan file names found in the searches
-
-                    window.alert( "no scan file names found in the searches.  No projectScanFileId Computed for Searches." )
-
-                    populated_projectScanFileId_etc = false
-                }
-
-            } else {
-                throw Error("Unexpected values in 'result__Is_URL_ProjectScanFileId_Populated")
-            }
-        }
-
-        if ( ! populated_projectScanFileId_etc ) {
-
-            return // EARY RETURN
-        }
+                scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId: this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId,
+                commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+            })
 
         this._runOnPageLoad_MainLoad()
-    }
-
-    /**
-     *  Run on Page Load.
-     */
-    private _runOnPageLoad_Is_URL_StateObject_ProjectScanFileId_SearchScanFileIds_In_CurrentSearches__Populate_this_searches_NOT_ContainScanFile_ProjectSearchId_Set () :
-        {
-            yes__URL_ProjectScanFileId_SearchScanFileIds_In_CurrentSearches: boolean
-        } {
-
-
-        const projectScanFileIdSelection = this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_projectScanFileIdSelection()
-        const searchScanFileIdSelections = this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileIdSelections()
-
-        if ( ( ! projectScanFileIdSelection ) || ( ! searchScanFileIdSelections ) || searchScanFileIdSelections.size === 0 ) {
-
-            //  NO projectScanFileIdSelection or searchScanFileIdSelections so return not
-
-            return {  //  EARLY RETURN
-                yes__URL_ProjectScanFileId_SearchScanFileIds_In_CurrentSearches: false
-            }
-        }
-
-        //  Validate all searchScanFileIdSelections in current searches
-
-        const searchScanFileIdSelections_NewEntries: Set<number> = new Set() //  Recompute since Searches Changed
-
-        const searches_YES_ContainScanFile_ProjectSearchId_Set: Set<number> = new Set()
-
-        for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-            const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
-            if ( ! scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder ) {
-                continue // EARLY CONTINUE
-            }
-            const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
-            if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
-                continue // EARLY CONTINUE
-                // throw new Error("No value from commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
-            }
-            for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
-                const scanFile_ProjectScanFileId_SearchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileData.searchScanFileId )
-                if ( ! scanFile_ProjectScanFileId_SearchScanFileId ) {
-                    throw new Error( "No value from scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId(searchScanFileData.searchScanFileId) for searchScanFileData.searchScanFileId: " + searchScanFileData.searchScanFileId + ", projectSearchId: " + projectSearchId );
-                }
-
-                if ( projectScanFileIdSelection === scanFile_ProjectScanFileId_SearchScanFileId.projectScanFileId ) {
-
-                    searchScanFileIdSelections_NewEntries.add( scanFile_ProjectScanFileId_SearchScanFileId.searchScanFileId )
-
-                    searches_YES_ContainScanFile_ProjectSearchId_Set.add( projectSearchId )
-                }
-            }
-        }
-
-        if ( searches_YES_ContainScanFile_ProjectSearchId_Set.size === 0 ) {
-
-            //  projectScanFileIdSelection NOT FOUND in ANY Searches
-
-            return {  //  EARLY RETURN
-                yes__URL_ProjectScanFileId_SearchScanFileIds_In_CurrentSearches: false
-            }
-        }
-
-        this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.set_projectScanFileIdSelection_searchScanFileIdSelections({
-            projectScanFileIdSelection, searchScanFileIdSelections_Set: searchScanFileIdSelections_NewEntries
-        })
-
-        for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-
-            if ( ! searches_YES_ContainScanFile_ProjectSearchId_Set.has( projectSearchId ) ) {
-                this._searches_NOT_ContainScanFile_ProjectSearchId_Set.add( projectSearchId )
-            }
-        }
-
-        return {
-            yes__URL_ProjectScanFileId_SearchScanFileIds_In_CurrentSearches: true
-        }
-    }
-
-
-    /**
-     *  Run on Page Load.   ProjectScanFileId passed in from Project Page and put in DOM
-     */
-    private _runOnPageLoad_Is_URL_ProjectScanFileId_From_ProjectPage_Populated__Populate_this_searches_NOT_ContainScanFile_ProjectSearchId_Set() : {
-        no__URL_Has_ProjectScanFileId_FromProjectPage: boolean
-        yes__URL_Has_ProjectScanFileId_FromProjectPage__Yes_ProjectScanFileId_FoundInAnySearches: boolean
-        yes__URL_Has_ProjectScanFileId_FromProjectPage__NO_ProjectScanFileId_FoundInAnySearches: boolean
-    } {
-
-        const projectScanFileId_NOT_SET: number = undefined
-
-        let projectScanFileId_FromURL: number = projectScanFileId_NOT_SET
-        {
-            /**
-             * DOM <script> tag has the project_scan_file_id From the Project Page: special "B"..."B" URL value
-             */
-            let element = document.getElementById("project_scan_file_id_from_url");
-            if (!element) {
-                throw Error("No DOM element for id 'project_scan_file_id_from_url'");
-            }
-
-            const elementString = element.innerHTML
-
-            if ( elementString !== "" ) {
-
-                //  Have a String so process it
-                const domparser = new DOMParser()
-
-                try {
-                    const doc = domparser.parseFromString(elementString, "text/html")
-
-                    const body = doc.body;
-
-                    const elementString_AsHTML_InnerText = body.innerText;
-
-                    if ( elementString_AsHTML_InnerText !== "" ) {
-
-                        projectScanFileId_FromURL = Number.parseInt(elementString_AsHTML_InnerText)
-
-                        if ( Number.isNaN( projectScanFileId_FromURL ) ) {
-                            throw Error( "Value DOM element for id 'project_scan_file_id_from_url' is NOT parsable as Integer." );
-                        }
-                    }
-
-                } catch (e) {
-                    // Not parsable Value so exit
-
-                }
-            }
-        }
-
-        if ( projectScanFileId_FromURL === projectScanFileId_NOT_SET ) {
-
-            return {  //  EARLY RETURN
-                no__URL_Has_ProjectScanFileId_FromProjectPage: true,
-                yes__URL_Has_ProjectScanFileId_FromProjectPage__Yes_ProjectScanFileId_FoundInAnySearches: false,
-                yes__URL_Has_ProjectScanFileId_FromProjectPage__NO_ProjectScanFileId_FoundInAnySearches: false
-            }
-        }
-
-        let searchScanFileIdSelections_Set: Set<number> = new Set()
-
-        const searches_YES_ContainScanFile_ProjectSearchId_Set: Set<number> = new Set()
-
-            //  YES Passed in projectScanFileId so use it.
-            //  Populate this._selected_projectScanFileId, this._selected_searchScanFileId_Set, searches_YES_ContainScanFile_ProjectSearchId_Set
-
-        for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-            const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
-            if ( ! scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder ) {
-                continue // EARLY CONTINUE
-            }
-            const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
-            if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
-                continue // EARLY CONTINUE
-                // throw new Error("No value from commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
-            }
-            for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
-                const scanFile_ProjectScanFileId_SearchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileData.searchScanFileId )
-                if ( ! scanFile_ProjectScanFileId_SearchScanFileId ) {
-                    throw new Error( "No value from scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId(searchScanFileData.searchScanFileId) for searchScanFileData.searchScanFileId: " + searchScanFileData.searchScanFileId + ", projectSearchId: " + projectSearchId );
-                }
-
-                if ( projectScanFileId_FromURL === scanFile_ProjectScanFileId_SearchScanFileId.projectScanFileId ) {
-
-                    searchScanFileIdSelections_Set.add( scanFile_ProjectScanFileId_SearchScanFileId.searchScanFileId )
-
-                    searches_YES_ContainScanFile_ProjectSearchId_Set.add( projectSearchId )
-                }
-            }
-        }
-
-        if ( searchScanFileIdSelections_Set.size === 0 ) {
-
-            //  projectScanFileId_FromURL NOT FOUND in any searches
-
-            return {  //  EARLY RETURN
-                yes__URL_Has_ProjectScanFileId_FromProjectPage__NO_ProjectScanFileId_FoundInAnySearches: true,
-                yes__URL_Has_ProjectScanFileId_FromProjectPage__Yes_ProjectScanFileId_FoundInAnySearches: false,
-                no__URL_Has_ProjectScanFileId_FromProjectPage: true
-            }
-        }
-
-        for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-
-            if ( ! searches_YES_ContainScanFile_ProjectSearchId_Set.has( projectSearchId ) ) {
-                this._searches_NOT_ContainScanFile_ProjectSearchId_Set.add( projectSearchId )
-            }
-        }
-
-        this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.set_projectScanFileIdSelection_searchScanFileIdSelections({
-            projectScanFileIdSelection: projectScanFileId_FromURL,
-            searchScanFileIdSelections_Set
-        })
-
-        //  projectScanFileId_FromURL YES FOUND in any searches
-
-        return {  //  EARLY RETURN
-            yes__URL_Has_ProjectScanFileId_FromProjectPage__Yes_ProjectScanFileId_FoundInAnySearches: true,
-            yes__URL_Has_ProjectScanFileId_FromProjectPage__NO_ProjectScanFileId_FoundInAnySearches: false,
-            no__URL_Has_ProjectScanFileId_FromProjectPage: true
-        }
-    }
-
-
-    /**
-     *  Run on Page Load.  Compute ProjectScanFileId_SearchScanFileIds_From_CurrentSearches
-     */
-    private _runOnPageLoad_Set_URL_PageStateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches__Populate_this_searches_NOT_ContainScanFile_ProjectSearchId_Set() : {
-        yes__Set_StateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches: boolean
-    } {
-        const searchScanFileData_Map_SearchScanFileId__Map_Key_ProjectScanFileId: Map<number, Map<number, CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry>> = new Map()
-
-        const projectScanFileId_Array_In_FoundValuesOrder: Array<number> = []
-
-        if ( this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.size > 0 ) {
-            for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-                const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
-                if ( ! scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder ) {
-                    continue // EARLY CONTINUE
-                }
-                const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
-                if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
-                    continue // EARLY CONTINUE
-                    // throw new Error("No value from commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
-                }
-                for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
-                    const scanFile_ProjectScanFileId_SearchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileData.searchScanFileId )
-                    if ( ! scanFile_ProjectScanFileId_SearchScanFileId ) {
-                        throw new Error( "No value from scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId(searchScanFileData.searchScanFileId) for searchScanFileData.searchScanFileId: " + searchScanFileData.searchScanFileId + ", projectSearchId: " + projectSearchId );
-                    }
-
-                    const projectScanFileId = scanFile_ProjectScanFileId_SearchScanFileId.projectScanFileId
-
-                    let searchScanFileData_Map_SearchScanFileId = searchScanFileData_Map_SearchScanFileId__Map_Key_ProjectScanFileId.get( projectScanFileId )
-                    if ( ! searchScanFileData_Map_SearchScanFileId ) {
-                        searchScanFileData_Map_SearchScanFileId = new Map()
-                        searchScanFileData_Map_SearchScanFileId__Map_Key_ProjectScanFileId.set( projectScanFileId, searchScanFileData_Map_SearchScanFileId )
-                        projectScanFileId_Array_In_FoundValuesOrder.push( projectScanFileId )
-                    }
-                    searchScanFileData_Map_SearchScanFileId.set( searchScanFileData.searchScanFileId, searchScanFileData )
-                }
-            }
-        }
-
-        if ( searchScanFileData_Map_SearchScanFileId__Map_Key_ProjectScanFileId.size === 0 ) {
-
-            //  NO searchScanFileIdSelection for ANY Searches
-            return {  // EARLY RETURN
-                yes__Set_StateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches: false
-            }
-        }
-
-        //  Get ProjectScanFileId and SearchScanData for ProjectScanFileId with most SearchScanData entries, keeping the first entry when count is tied
-
-
-        let projectScanFileId_FOR_SearchScanFileData_Map_SearchScanFileId__WithMost_Entries: number = undefined
-        let searchScanFileData_Map_SearchScanFileId__WithMost_Entries :Map<number, CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry> = undefined
-
-        for ( const projectScanFileId_Entry_In_FoundValuesOrder of projectScanFileId_Array_In_FoundValuesOrder ) {
-
-            const  searchScanFileData_Map_SearchScanFileId__Map_For_ProjectScanFileId = searchScanFileData_Map_SearchScanFileId__Map_Key_ProjectScanFileId.get( projectScanFileId_Entry_In_FoundValuesOrder )
-            if ( ! searchScanFileData_Map_SearchScanFileId__Map_For_ProjectScanFileId ) {
-                throw Error("searchScanFileData_Map_SearchScanFileId__Map_Key_ProjectScanFileId.get( projectScanFileId_Entry_In_FoundValuesOrder ) returned NOTHING for projectScanFileId_Entry_In_FoundValuesOrder" )
-            }
-
-            if ( ! searchScanFileData_Map_SearchScanFileId__WithMost_Entries ) {
-                projectScanFileId_FOR_SearchScanFileData_Map_SearchScanFileId__WithMost_Entries = projectScanFileId_Entry_In_FoundValuesOrder
-                searchScanFileData_Map_SearchScanFileId__WithMost_Entries = searchScanFileData_Map_SearchScanFileId__Map_For_ProjectScanFileId
-
-            } else if ( searchScanFileData_Map_SearchScanFileId__WithMost_Entries.size < searchScanFileData_Map_SearchScanFileId__Map_For_ProjectScanFileId.size ) {
-                projectScanFileId_FOR_SearchScanFileData_Map_SearchScanFileId__WithMost_Entries = projectScanFileId_Entry_In_FoundValuesOrder
-                searchScanFileData_Map_SearchScanFileId__WithMost_Entries = searchScanFileData_Map_SearchScanFileId__Map_For_ProjectScanFileId
-            }
-        }
-        if ( ! searchScanFileData_Map_SearchScanFileId__WithMost_Entries ) {
-            throw Error("NO Value found for searchScanFileData_Map_SearchScanFileId__WithMost_Entries" )
-        }
-
-        let selected_projectScanFileId: number = undefined
-        const searchScanFileIdSelections_Set: Set<number> = new Set()
-        const searches_YES_ContainScanFile_ProjectSearchId_Set: Set<number> = new Set()
-
-        for ( const searchScanFileData of searchScanFileData_Map_SearchScanFileId__WithMost_Entries.values() ) {
-
-            selected_projectScanFileId = projectScanFileId_FOR_SearchScanFileData_Map_SearchScanFileId__WithMost_Entries
-            searchScanFileIdSelections_Set.add( searchScanFileData.searchScanFileId )
-            searches_YES_ContainScanFile_ProjectSearchId_Set.add( searchScanFileData.projectSearchId )
-        }
-
-        for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-
-            if ( ! searches_YES_ContainScanFile_ProjectSearchId_Set.has( projectSearchId ) ) {
-                this._searches_NOT_ContainScanFile_ProjectSearchId_Set.add( projectSearchId )
-            }
-        }
-
-        this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.set_projectScanFileIdSelection_searchScanFileIdSelections({
-            projectScanFileIdSelection: selected_projectScanFileId,
-            searchScanFileIdSelections_Set
-        })
-
-        return {
-            yes__Set_StateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches: true
-        }
     }
 
     /**
@@ -1698,38 +1313,63 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
         }
     ) : Promise<void> {
         try {
-            const scanFilenames_Set: Set<string> = new Set()
 
-            const searchScanFileData_For_ProjectScanFileId_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry> = new Map()
+            //  Get Data for Scan File that is currently selected
 
-            for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-                const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
-                if ( ! scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder ) {
-                    continue // EARLY CONTINUE
-                }
-                const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
-                if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
-                    continue // EARLY CONTINUE
-                    // throw new Error("No value from commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
-                }
-                for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
-                    const scanFile_ProjectScanFileId_SearchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileData.searchScanFileId )
-                    if ( ! scanFile_ProjectScanFileId_SearchScanFileId ) {
-                        throw new Error( "No value from scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId(searchScanFileData.searchScanFileId) for searchScanFileData.searchScanFileId: " + searchScanFileData.searchScanFileId + ", projectSearchId: " + projectSearchId );
+            const scanFile_currentlySelected_ScanFilenames_Set: Set<string> = new Set()
+
+            const projectSearchIds_HAVE_NO_searchScanFileId: Set<number> = new Set()
+
+            {
+                for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
+
+                    const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
+                    if ( ( ! scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder ) || scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_All().length === 0 ) {
+
+                        projectSearchIds_HAVE_NO_searchScanFileId.add( projectSearchId )
+
+                        continue // EARLY CONTINUE
                     }
-                    if ( this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileIdSelections().has( scanFile_ProjectScanFileId_SearchScanFileId.searchScanFileId ) ) {
+                    const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
+                    if ( ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) || scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_EntryCount() === 0 ) {
 
-                        searchScanFileData_For_ProjectScanFileId_Map_Key_ProjectSearchId.set( projectSearchId, searchScanFileData )
+                        projectSearchIds_HAVE_NO_searchScanFileId.add( projectSearchId )
 
-                        scanFilenames_Set.add( searchScanFileData.filename )
+                        continue // EARLY CONTINUE
+                        // throw new Error("No value from commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
+                    }
+                    for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
+                        const scanFile_ProjectScanFileId_SearchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileData.searchScanFileId )
+                        if ( ! scanFile_ProjectScanFileId_SearchScanFileId ) {
+
+                            continue // EARLY CONTINUE
+                            // throw new Error( "No value from scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId(searchScanFileData.searchScanFileId) for searchScanFileData.searchScanFileId: " + searchScanFileData.searchScanFileId + ", projectSearchId: " + projectSearchId );
+                        }
+
+                        {
+                            const searchScanFileIdSelections = this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileId_Selections_Set()
+                            if ( searchScanFileIdSelections && searchScanFileIdSelections.has( scanFile_ProjectScanFileId_SearchScanFileId.searchScanFileId ) ) {
+
+                                scanFile_currentlySelected_ScanFilenames_Set.add( searchScanFileData.filename )
+                            }
+                        }
                     }
                 }
             }
 
-            const scanFilenames_Array_Sorted = Array.from( scanFilenames_Set )
-            scanFilenames_Array_Sorted.sort()
+            const scanFile_currentlySelected_ScanFilenames_Array_Sorted = Array.from( scanFile_currentlySelected_ScanFilenames_Set )
 
-            const scanFile_Selected_ScanFilenames_CommaDelim = scanFilenames_Array_Sorted.join(", ")
+            //  Get PSM Filterable Annotation Data if needed
+
+            const { psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId } =
+                await _get_PsmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId(
+                    {
+                        projectSearchIds: this.props.propsValue.projectSearchIds,
+                        searchDataLookupParamsRoot: this.state.searchDataLookupParamsRoot,
+                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+                    })
+
+                //  Get Main Data ( call 'compute_FullPage_Except_SearchDetails' )
 
             const {
                 searchSubGroup_Ids_Selected,
@@ -1788,10 +1428,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
             for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
 
-                if ( this._searches_NOT_ContainScanFile_ProjectSearchId_Set.has( projectSearchId ) ) {
-                    //  Search does not have this scan file so skip
-                    continue // EARLY CONTINUE
-                }
+                //  ONLY processing projectSearchId that process result for
 
                 const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = this._psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get(projectSearchId)
                 if ( ! psmTblData_For_ReportedPeptideId_For_MainFilters_Holder ) {
@@ -1800,6 +1437,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
                 const reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId = reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId )
                 if ( ! reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId ) {
+
                     continue // EARLY CONTINUE
                 }
 
@@ -1821,7 +1459,10 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                                 throw Error("psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_PsmId( psmId ) returned NOTHING for psmId: " + psmId )
                             }
 
-                            if ( this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileIdSelections().has( psmTblData.searchScanFileId ) ) {
+                            if (
+                                this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileId_Selections_Set().has( psmTblData.searchScanFileId ) ||
+                                projectSearchIds_HAVE_NO_searchScanFileId.has( projectSearchId ) ) {
+
                                 let psmTblData_Array = psmTblData_Array_Map_Key_ScanNumber.get( psmTblData.scanNumber )
                                 if ( ! psmTblData_Array ) {
                                     psmTblData_Array = []
@@ -1846,7 +1487,9 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                         }
                         for ( const psmTblData of psmTblData_For_ReportedPeptideId.get_PsmTblData_Entries_IterableIterator() ) {
 
-                            if ( this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileIdSelections().has( psmTblData.searchScanFileId ) ) {
+                            if (
+                                this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileId_Selections_Set().has( psmTblData.searchScanFileId ) ||
+                                projectSearchIds_HAVE_NO_searchScanFileId.has( projectSearchId ) ) {
 
                                 let psmTblData_Array = psmTblData_Array_Map_Key_ScanNumber.get( psmTblData.scanNumber )
                                 if ( ! psmTblData_Array ) {
@@ -1913,19 +1556,37 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                     dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
                 }
 
-
                 for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
 
-                    if ( this._searches_NOT_ContainScanFile_ProjectSearchId_Set.has( projectSearchId ) ) {
-                        //  Search does not have this scan file so skip
-                        continue // EARLY CONTINUE
-                    }
+                    // if ( ! projectSearchIds_YES__searchScanFileIdSelections_OR_projectSearchId_FullSearch_Selections.has( projectSearchId ) ) {
+                    //     //  Search does not have this scan file so skip
+                    //     continue // EARLY CONTINUE
+                    // }
 
                     const searchData_For_ProjectSearchId = this.props.propsValue.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
 
-                    {  // Generated Peptide sequence, including variable mods, etc
+                    let scanFilename: string = undefined // _SCAN_FILENAME_DISPLAY_STRING__SEARCH_HAS_NO_SEARCH_SCAN_FILE_RECORDS
 
-                        const searchName_MaxCharacterCount = 50
+                    if ( ! projectSearchIds_HAVE_NO_searchScanFileId.has( projectSearchId ) ) {
+
+                        const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
+
+                        if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
+
+                            // NO entries for search so keep constant assigned above
+
+                        } else {
+
+                            for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename() ) {
+
+                                if ( this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileId_Selections_Set().has( searchScanFileData.searchScanFileId ) ) {
+
+                                    scanFilename = searchScanFileData.filename
+                                }
+                            }
+                        }
+                    }
+                    {
 
                         let searchName_OrShortName = searchData_For_ProjectSearchId.searchShortName
 
@@ -1934,22 +1595,174 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                             searchName_OrShortName = searchData_For_ProjectSearchId.name
                         }
 
-                        const displayName = "(" + searchData_For_ProjectSearchId.searchId + ") " + searchName_OrShortName;
+                        const searchName_OrShortName_Line = "(" + searchData_For_ProjectSearchId.searchId + ") " + searchName_OrShortName
+
+                        const displayName = (
+                            searchName_OrShortName_Line
+                            // + " " + scanFilename
+                        )
+
+                        // const columnHeader_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element = () => {
+                        //     return (
+                        //         <div>
+                        //             <div
+                        //                 style={ { whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis" } }
+                        //             >
+                        //                 { searchName_OrShortName_Line }
+                        //             </div>
+                        //             { scanFilename ? (
+                        //                 <>
+                        //                     <div
+                        //                         style={ {
+                        //                             whiteSpace: "nowrap",
+                        //                             overflowX: "hidden",
+                        //                             textOverflow: "ellipsis"
+                        //                         } }
+                        //                     >
+                        //                         { scanFilename }
+                        //                     </div>
+                        //                 </>
+                        //             ) : null }
+                        //         </div>
+                        //     )
+                        // }
+
+                        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+                            return (
+                                <div>
+                                    <div>
+                                        Search:
+                                    </div>
+                                    <div
+                                        style={ { whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis" } }
+                                    >
+                                        { searchName_OrShortName_Line }
+                                    </div>
+                                    { scanFilename ? (
+                                        <>
+                                            <div style={ { marginTop: 6 } }>
+                                                Scan Filename:
+                                            </div>
+                                            <div
+                                                style={ {
+                                                    whiteSpace: "nowrap",
+                                                    overflowX: "hidden",
+                                                    textOverflow: "ellipsis"
+                                                } }
+                                            >
+                                                { scanFilename }
+                                            </div>
+                                        </>
+                                    ) : null }
+                                </div>
+                            )
+                        }
 
                         const dataTable_Column = new DataTable_Column( {
-                            id: "Peptide_Sequence_" + searchData_For_ProjectSearchId.searchId, // Used for tracking sort order. Keep short
+                            id: "Search_" + searchData_For_ProjectSearchId.searchId, // Used for tracking sort order. Keep short
                             displayName,
+                            // columnHeader_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element,
                             width: 500,
                             sortable: true,
                             // Table cell Style has overflow-x: hidden; text-overflow: ellipsis;  so the nowrap will cause search name to display in table header on single line with ellipsis at end
                             style_override_HeaderRowCell_React: { whiteSpace: "nowrap" },
 
-                            columnHeader_Tooltip_HTML_TitleAttribute: "Search: (" + searchData_For_ProjectSearchId.searchId + ") " + searchData_For_ProjectSearchId.name
+
+
+                            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
                         } );
                         dataTable_Columns.push( dataTable_Column );
 
                         const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
                         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+                    }
+
+                    {    //  Best PSM Values for Search
+
+                        let bestPsm_FilterableAnnotationTypeIdsArray: Array<number> = undefined;
+
+                        {
+                            for ( const searchDataLookupParams_For_ProjectSearchId of this.state.searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
+                                if ( searchDataLookupParams_For_ProjectSearchId.projectSearchId === projectSearchId ) {
+                                    if ( searchDataLookupParams_For_ProjectSearchId.bestPsm_AnnTypeDisplay && searchDataLookupParams_For_ProjectSearchId.bestPsm_AnnTypeDisplay.length > 0 ) {
+                                        bestPsm_FilterableAnnotationTypeIdsArray = searchDataLookupParams_For_ProjectSearchId.bestPsm_AnnTypeDisplay
+                                    }
+                                    break
+                                }
+                            }
+                        }
+
+                        if ( ! bestPsm_FilterableAnnotationTypeIdsArray ) {
+                            //  No ann type ids so skip project search id
+                            continue  // EARLY CONTINUE
+                        }
+
+                        //  searchNames // Object with property name is projectSearchId as number
+
+                        const searchData_SearchName_Etc_Root = this.props.propsValue.dataPageStateManager.get_searchData_SearchName_Etc_Root();
+
+                        const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                        if ( ! searchNameObj ) {
+                            const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein(...): No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                            console.warn( msg );
+                            throw Error( msg );
+                        }
+
+                        const annotationTypeItems_ForProjectSearchId =
+                            this.props.propsValue.dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get(projectSearchId)
+                        if ( ! annotationTypeItems_ForProjectSearchId ) {
+                            const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein(...): dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId;
+                            console.warn( msg );
+                            throw Error( msg );
+                        }
+
+                        for ( const bestPsm_FilterableAnnotationTypeId of bestPsm_FilterableAnnotationTypeIdsArray ) {
+
+                            const annotationTypeItem = annotationTypeItems_ForProjectSearchId.psmFilterableAnnotationTypes.get( bestPsm_FilterableAnnotationTypeId )
+                            if ( ! annotationTypeItem ) {
+                                const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein(...): annotationTypeItems_ForProjectSearchId.psmFilterableAnnotationTypes.get( bestPsm_FilterableAnnotationTypeId ) returned NOTHING for bestPsm_FilterableAnnotationTypeId: " + bestPsm_FilterableAnnotationTypeId + ", for projectSearchId: " + projectSearchId;
+                                console.warn( msg );
+                                throw Error( msg );
+                            }
+
+                            let sort_Null_BeforeValues_AfterValues_Enum: DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum = undefined
+
+                            if ( annotationTypeItem.filterDirectionBelow ) {
+
+                                sort_Null_BeforeValues_AfterValues_Enum = DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_AFTER_LARGEST_VALUE
+
+                            } else if ( annotationTypeItem.filterDirectionAbove ) {
+
+                                sort_Null_BeforeValues_AfterValues_Enum = DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_BEFORE_SMALLEST_VALUE
+
+                            } else {
+                                throw Error("NEITHER OF annotationTypeItem.filterDirectionBelow annotationTypeItem.filterDirectionAbove")
+                            }
+
+                            const displayName_Start = annotationName_Prefix_BestOfPsmValues_TextLabel + annotationTypeItem.name;
+
+                            let displayName: string = undefined;
+
+                            // if ( this.props.propsValue.projectSearchIds.length > 1 ) {
+                                const searchLabel__SearchShortName_OR_SearchId = searchNameObj.searchLabel__SearchShortName_OR_SearchId;
+                                displayName = displayName_Start + " (" + searchLabel__SearchShortName_OR_SearchId + ")";
+                            // } else {
+                            //     // Special value when only 1 search for Single Search
+                            //     displayName = displayName_Start;
+                            // }
+
+                            const dataTable_Column = new DataTable_Column( {
+                                id: "bestPsmAnn_" + annotationTypeItem.annotationTypeId + "_" + projectSearchId, // Used for tracking sort order. Keep short
+                                displayName,
+                                width: 100,
+                                sortable: true,
+                                sort_Null_BeforeValues_AfterValues_Enum
+                            } );
+                            dataTable_Columns.push( dataTable_Column );
+
+                            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
+                            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+                        }
                     }
                 }
             }
@@ -2012,230 +1825,31 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
                 const childOfTableRow_Component_Data_PerSearch_Map_Key_ProjectSearchId: Map<number, ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component_Data_SingleSearch> = new Map()
 
+
                 for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
 
-                    if ( this._searches_NOT_ContainScanFile_ProjectSearchId_Set.has( projectSearchId ) ) {
-                        //  Search does not have this scan file so skip
-                        continue // EARLY CONTINUE
+                    // if ( ! projectSearchIds_YES__searchScanFileIdSelections_OR_projectSearchId_FullSearch_Selections.has( projectSearchId ) ) {
+                    //     //  Search does not have this scan file so skip
+                    //     continue  // EARLY CONTINUE
+                    // }
+
+                    const createTableCell_Single_ProjectSearchId_Result =
+                        this._createTableCell_Single_ProjectSearchId( {
+                            scanNumber,
+                            projectSearchId,
+                            psmTblData_Array_Map_Key_ScanNumber_Map_Key_ProjectSearchId,
+                            psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId,
+
+                            dataTable_DataRow_ColumnEntries,    // updated
+                            dataColumns_tableDownload
+                        })
+
+                    if ( createTableCell_Single_ProjectSearchId_Result ) {
+
+                        const childOfTableRow_Component_Data_SingleSearch = createTableCell_Single_ProjectSearchId_Result.childOfTableRow_Component_Data_SingleSearch
+
+                        childOfTableRow_Component_Data_PerSearch_Map_Key_ProjectSearchId.set( projectSearchId, childOfTableRow_Component_Data_SingleSearch )
                     }
-
-                    const psm_GeneratedPeptideSequence_Entries_All_ForSearch: Array<string> = []
-
-                    const psmTblData_Array_Map_Key_ScanNumber = psmTblData_Array_Map_Key_ScanNumber_Map_Key_ProjectSearchId.get(projectSearchId)
-                    if ( ! psmTblData_Array_Map_Key_ScanNumber ) {
-
-                        //  Create Empty cell
-                        {
-                            const valueDisplay = "";
-                            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
-                            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-                            const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
-                                searchTableData,
-                                valueDisplay,
-                                valueSort: ""
-                            });
-                            dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
-
-                            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
-                            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
-                        }
-
-                        continue  // EARLY CONTINUE
-                    }
-                    const psmTblData_Array_For_ScanNumber = psmTblData_Array_Map_Key_ScanNumber.get( scanNumber )
-                    if ( ! psmTblData_Array_For_ScanNumber ) {
-
-                        //  Create Empty cell
-                        {
-                            const valueDisplay = "";
-                            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
-                            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-                            const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
-                                searchTableData,
-                                valueDisplay,
-                                valueSort: ""
-                            });
-                            dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
-
-                            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
-                            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
-                        }
-
-                        continue  // EARLY CONTINUE
-                    }
-
-                    // Create Generated Peptide with Mods for Each PSM
-
-                    const peptideIds_For_MainFilters_Holder = this._peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.get(projectSearchId);
-                    if ( ! peptideIds_For_MainFilters_Holder ) {
-                        throw Error( "No peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId for projectSearchId: " + projectSearchId );
-                    }
-
-                    const openModifications_On_PSM_For_MainFilters_Holder = this._openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
-
-                    const childOfTableRow_ComponentData_PsmTblData_Array: Array<ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component_Data_SinglePSM> = [] // Array since may be more than one
-
-                    for ( const psmTblData of psmTblData_Array_For_ScanNumber ) {
-
-                        const psm_GeneratedPeptideSequence_Entries: Array<string> = []
-
-                        const psmId = psmTblData.psmId
-                        const reportedPeptideId = psmTblData.reportedPeptideId
-
-                        const peptideId = peptideIds_For_MainFilters_Holder.get_PeptideId_For_ReportedPeptideId( reportedPeptideId );
-                        if ( ! peptideId ) {
-                            const msg = "proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData.ts: No peptideId for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
-                            console.warn(msg);
-                            throw Error(msg);
-                        }
-
-                        const peptideSequenceString : string = this._peptideSequences_For_MainFilters_Holder.get_PeptideSequence_For_PeptideId( peptideId );
-                        if ( ! peptideSequenceString ) {
-                            throw Error("proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData.ts: No peptideSequenceString for peptideId: " + peptideId + ", for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId );
-                        }
-
-                        //  Map<(reported peptide), Map<(position),Set<(mod mass rounded number)>>
-                        let variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId: Map<number, Map<number, Set<number>>> = undefined;
-                        if ( this._variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId_Map_Key_ProjectSearchId ) {
-                            variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId = this._variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId_Map_Key_ProjectSearchId.get( projectSearchId );
-                        }
-
-                        let variableModificationsRoundedArray_KeyPosition: Map<number, Set<number>> = undefined;
-
-                        if ( variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId ) {
-                            variableModificationsRoundedArray_KeyPosition = variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId.get( psmTblData.reportedPeptideId );
-                        }
-
-                        let psmOpenModificationMassForPsmId: CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId = undefined
-
-                        const psmOpenModificationMassPerPSM_ForPsmIdMap = openModifications_On_PSM_For_MainFilters_Holder.get_psmOpenModificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId( reportedPeptideId )
-                        if ( psmOpenModificationMassPerPSM_ForPsmIdMap ) {
-                            psmOpenModificationMassForPsmId = psmOpenModificationMassPerPSM_ForPsmIdMap.psmOpenModificationMassPerPSM_ForPsmIdMap.get( psmId );
-                        }
-
-                        if ( psmOpenModificationMassForPsmId && psmOpenModificationMassForPsmId.openModificationMass_Rounded === 0
-                            && this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
-
-                            //  Open Mod Mass Rounded is Zero and User has selected to Treat Open Mod Mass Zero as Unmodified
-                            //    So Remove Open Mod Mass from for PSM from Generation of this Generated Reported Peptide for this PSM.
-
-                            psmOpenModificationMassForPsmId = null;
-                        }
-
-                        if ( ! psmOpenModificationMassForPsmId ) {
-
-                            //  NO Open Mods for PSM
-
-                            const generatedPeptideString = _generatedPeptideString_For_Single_Psm__For_PeptideSequence_And_Mods({
-                                peptideSequenceString,
-                                variableModificationsRoundedArray_KeyPosition,
-                                open_Modification_Rounded: undefined,
-                                open_Modification_Rounded_Position: undefined,
-                                open_Modification_Rounded_NoPosition : undefined
-                            })
-
-                            psm_GeneratedPeptideSequence_Entries.push( generatedPeptideString )
-
-                        } else {
-                            if ( ( ! psmOpenModificationMassForPsmId.positionsMap_KeyPosition ) ) {
-
-                                const generatedPeptideString = _generatedPeptideString_For_Single_Psm__For_PeptideSequence_And_Mods({
-                                    peptideSequenceString,
-                                    variableModificationsRoundedArray_KeyPosition,
-                                    open_Modification_Rounded: undefined,
-                                    open_Modification_Rounded_Position: undefined,
-                                    open_Modification_Rounded_NoPosition: psmOpenModificationMassForPsmId.openModificationMass_Rounded.toString(),
-                                })
-
-                                psm_GeneratedPeptideSequence_Entries.push( generatedPeptideString )
-
-                            } else {
-
-                                for ( const positionMapEntry of psmOpenModificationMassForPsmId.positionsMap_KeyPosition.entries() ) {
-
-                                    const positionEntries_AtPosition = positionMapEntry[ 1 ];
-
-                                    for ( const positionEntry of positionEntries_AtPosition ) {
-
-                                        let open_Modification_Rounded_Position = positionEntry.position;
-                                        if ( positionEntry.isNTerminal ) {
-                                            open_Modification_Rounded_Position = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_N_TERMINUS_POSITION_INDEX;
-                                        } else if ( positionEntry.isCTerminal ) {
-                                            open_Modification_Rounded_Position = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_C_TERMINUS_POSITION_INDEX;
-                                        }
-
-                                        const generatedPeptideString = _generatedPeptideString_For_Single_Psm__For_PeptideSequence_And_Mods({
-                                            peptideSequenceString,
-                                            variableModificationsRoundedArray_KeyPosition,
-                                            open_Modification_Rounded: psmOpenModificationMassForPsmId.openModificationMass_Rounded,
-                                            open_Modification_Rounded_Position,
-                                            open_Modification_Rounded_NoPosition: undefined,
-                                        })
-
-                                        psm_GeneratedPeptideSequence_Entries.push( generatedPeptideString )
-                                    }
-                                }
-                            }
-                        }
-
-                        // for ( const psm_GeneratedPeptideSequence_Entry of psm_GeneratedPeptideSequence_Entries ) {
-                        //
-                        //
-                        // }
-
-                        psm_GeneratedPeptideSequence_Entries.sort()
-
-                        const psm_GeneratedPeptideSequence_Entries_Fmt = psm_GeneratedPeptideSequence_Entries.join(", ")
-
-                        psm_GeneratedPeptideSequence_Entries_All_ForSearch.push( psm_GeneratedPeptideSequence_Entries_Fmt )
-
-                        const component_Data_SinglePSM: ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component_Data_SinglePSM = {
-                            psmTblData, generatedPeptideString_Array: psm_GeneratedPeptideSequence_Entries
-                        }
-
-                        childOfTableRow_ComponentData_PsmTblData_Array.push( component_Data_SinglePSM )
-                    }
-
-
-                    const childOfTableRow_Component_Data_SingleSearch: ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component_Data_SingleSearch = {
-                        projectSearchId, psmTblData_Array: childOfTableRow_ComponentData_PsmTblData_Array
-                    }
-
-                    childOfTableRow_Component_Data_PerSearch_Map_Key_ProjectSearchId.set( projectSearchId, childOfTableRow_Component_Data_SingleSearch )
-
-                    const psm_GeneratedPeptideSequence_Entries_All_ForSearch_CommaDelim_For_Search_Sort_Download = psm_GeneratedPeptideSequence_Entries_All_ForSearch.join(", ")
-
-                    const psm_GeneratedPeptideSequence_Entries_All_ForSearch_ReturnJSX = () => {
-                        return (
-                            <div>
-                                { psm_GeneratedPeptideSequence_Entries_All_ForSearch.map((value, index) => {
-                                    return (
-                                        <div key={ index } style={ { marginTop: ( index > 0 ) ? 2 : 0 } }>
-                                            { value }
-                                        </div>
-                                    )
-                                }) }
-                            </div>
-                        )
-                    }
-
-                    //  Add Table Cell for Search for Scan Number
-                    {
-                        const searchEntriesForColumn : Array<string> = [ psm_GeneratedPeptideSequence_Entries_All_ForSearch_CommaDelim_For_Search_Sort_Download ]
-                        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-                        const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
-                            searchTableData,
-                            valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: psm_GeneratedPeptideSequence_Entries_All_ForSearch_ReturnJSX,
-                            valueSort: psm_GeneratedPeptideSequence_Entries_All_ForSearch_CommaDelim_For_Search_Sort_Download
-                        });
-                        dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
-
-                        const valueDisplay = psm_GeneratedPeptideSequence_Entries_All_ForSearch_CommaDelim_For_Search_Sort_Download;
-
-                        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
-                        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
-                    }
-
                 }
 
                 const dataRow_Get_RowChildContent_Return_ChildContent: DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent =
@@ -2309,6 +1923,8 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                 searchSubGroup_PropValue
             };
 
+            this._show_UpdatingMessage = false
+
             this.setState({
                 mainDisplayData_Loaded : true,
 
@@ -2325,10 +1941,424 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                 scanFileToSearches_Page_FiltersDisplay_ComponentData,
 
                 mainDisplay_DataTable_RootTableObject,
-                scanFile_Selected_ScanFilenames_CommaDelim
+                scanFile_currentlySelected_ScanFilenames_Array_Sorted
             });
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     * @param scanNumber
+     * @param projectSearchId
+     * @param psmTblData_Array_Map_Key_ScanNumber_Map_Key_ProjectSearchId
+     * @param dataTable_DataRow_ColumnEntries
+     * @param dataColumns_tableDownload
+     * @private
+     */
+    private _createTableCell_Single_ProjectSearchId(
+        {
+            scanNumber,
+            projectSearchId,
+            psmTblData_Array_Map_Key_ScanNumber_Map_Key_ProjectSearchId,
+            psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId,
+
+            dataTable_DataRow_ColumnEntries,    // updated
+            dataColumns_tableDownload
+        } : {
+            scanNumber: number
+            projectSearchId: number
+
+            psmTblData_Array_Map_Key_ScanNumber_Map_Key_ProjectSearchId: Map<number, Map<number, Array<CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>>
+            psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder>
+
+            dataTable_DataRow_ColumnEntries: Array<DataTable_DataRow_ColumnEntry>  // updated
+            dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn>  // updated
+        }
+    ) : {
+        childOfTableRow_Component_Data_SingleSearch: ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component_Data_SingleSearch
+    }{
+
+        //  Best PSM Values for Search
+
+        let bestPsm_FilterableAnnotationTypeIdsArray: Array<number> = undefined;
+
+        {
+            for ( const searchDataLookupParams_For_ProjectSearchId of this.state.searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
+                if ( searchDataLookupParams_For_ProjectSearchId.projectSearchId === projectSearchId ) {
+                    if ( searchDataLookupParams_For_ProjectSearchId.bestPsm_AnnTypeDisplay && searchDataLookupParams_For_ProjectSearchId.bestPsm_AnnTypeDisplay.length > 0 ) {
+                        bestPsm_FilterableAnnotationTypeIdsArray = searchDataLookupParams_For_ProjectSearchId.bestPsm_AnnTypeDisplay
+                    }
+                    break
+                }
+            }
+        }
+
+        const annotationTypeItems_ForProjectSearchId =
+            this.props.propsValue.dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get(projectSearchId)
+        if ( ! annotationTypeItems_ForProjectSearchId ) {
+            const msg = "_createTableCell_Single_ProjectSearchId(...): dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId;
+            console.warn( msg );
+            throw Error( msg );
+        }
+
+        let  psmFilterableAnnotationData__Holder: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder = undefined
+
+        if ( bestPsm_FilterableAnnotationTypeIdsArray ) {
+            psmFilterableAnnotationData__Holder = psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId.get( projectSearchId )
+            if ( ! psmFilterableAnnotationData__Holder ) {
+                const msg = "_createTableCell_Single_ProjectSearchId(...): internal__get_Best_PSM_Values_Computation_Result.psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId.get( projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId;
+                console.warn( msg );
+                throw Error( msg );
+            }
+        }
+
+
+        const psm_GeneratedPeptideSequence_Entries_All_ForSearch: Array<string> = []
+
+        const psmTblData_Array_Map_Key_ScanNumber = psmTblData_Array_Map_Key_ScanNumber_Map_Key_ProjectSearchId.get(projectSearchId)
+        if ( ! psmTblData_Array_Map_Key_ScanNumber ) {
+
+            { //  Create Empty cell for peptides
+
+                const valueDisplay = "";
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort: ""
+                });
+                dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+            }
+            if ( bestPsm_FilterableAnnotationTypeIdsArray ) {
+
+                //  Create Empty cell(s) for best Psm Values
+
+                for ( const bestPsm_FilterableAnnotationTypeId of bestPsm_FilterableAnnotationTypeIdsArray ) {
+
+                    const valueDisplay = "N/A";
+                    const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                    const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                    const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
+                        searchTableData,
+                        valueDisplay,
+                        valueSort: null
+                    });
+                    dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+
+                    const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                    dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                }
+            }
+
+            return  // EARLY RETURN
+        }
+        const psmTblData_Array_For_ScanNumber = psmTblData_Array_Map_Key_ScanNumber.get( scanNumber )
+        if ( ! psmTblData_Array_For_ScanNumber ) {
+
+            { //  Create Empty cell for peptides
+
+                const valueDisplay = "";
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort: ""
+                });
+                dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+            }
+            if ( bestPsm_FilterableAnnotationTypeIdsArray ) {
+
+                //  Create Empty cell(s) for best Psm Values
+
+                for ( const bestPsm_FilterableAnnotationTypeId of bestPsm_FilterableAnnotationTypeIdsArray ) {
+
+                    const valueDisplay = "N/A";
+                    const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                    const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                    const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
+                        searchTableData,
+                        valueDisplay,
+                        valueSort: null
+                    });
+                    dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+
+                    const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                    dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                }
+            }
+
+            return;  // EARLY RETURN
+        }
+
+        // Create Generated Peptide with Mods for Each PSM
+
+        //  Compute Best PSM values for the scan
+
+        const peptideIds_For_MainFilters_Holder = this._peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.get(projectSearchId);
+        if ( ! peptideIds_For_MainFilters_Holder ) {
+            throw Error( "No peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId for projectSearchId: " + projectSearchId );
+        }
+
+
+        const bestPsm_FilterableValue_ForAllPSMs_Map_Key_AnnotationType: Map<number, number> = new Map()
+
+
+        const openModifications_On_PSM_For_MainFilters_Holder = this._openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
+
+        const childOfTableRow_ComponentData_PsmTblData_Array: Array<ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component_Data_SinglePSM> = [] // Array since may be more than one
+
+        for ( const psmTblData of psmTblData_Array_For_ScanNumber ) {
+
+            const psm_GeneratedPeptideSequence_Entries: Array<string> = []
+
+            const psmId = psmTblData.psmId
+            const reportedPeptideId = psmTblData.reportedPeptideId
+
+            const peptideId = peptideIds_For_MainFilters_Holder.get_PeptideId_For_ReportedPeptideId( reportedPeptideId );
+            if ( ! peptideId ) {
+                const msg = "proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData.ts: No peptideId for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
+                console.warn(msg);
+                throw Error(msg);
+            }
+
+            const peptideSequenceString : string = this._peptideSequences_For_MainFilters_Holder.get_PeptideSequence_For_PeptideId( peptideId );
+            if ( ! peptideSequenceString ) {
+                throw Error("proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData.ts: No peptideSequenceString for peptideId: " + peptideId + ", for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId );
+            }
+
+            //  Map<(reported peptide), Map<(position),Set<(mod mass rounded number)>>
+            let variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId: Map<number, Map<number, Set<number>>> = undefined;
+            if ( this._variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId_Map_Key_ProjectSearchId ) {
+                variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId = this._variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId_Map_Key_ProjectSearchId.get( projectSearchId );
+            }
+
+            let variableModificationsRoundedArray_KeyPosition: Map<number, Set<number>> = undefined;
+
+            if ( variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId ) {
+                variableModificationsRoundedArray_KeyPosition = variableModificationsRoundedArray_KeyPosition_KeyReportedPeptideId.get( psmTblData.reportedPeptideId );
+            }
+
+            let psmOpenModificationMassForPsmId: CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_PsmId = undefined
+
+            const psmOpenModificationMassPerPSM_ForPsmIdMap = openModifications_On_PSM_For_MainFilters_Holder.get_psmOpenModificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId( reportedPeptideId )
+            if ( psmOpenModificationMassPerPSM_ForPsmIdMap ) {
+                psmOpenModificationMassForPsmId = psmOpenModificationMassPerPSM_ForPsmIdMap.psmOpenModificationMassPerPSM_ForPsmIdMap.get( psmId );
+            }
+
+            if ( psmOpenModificationMassForPsmId && psmOpenModificationMassForPsmId.openModificationMass_Rounded === 0
+                && this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+
+                //  Open Mod Mass Rounded is Zero and User has selected to Treat Open Mod Mass Zero as Unmodified
+                //    So Remove Open Mod Mass from for PSM from Generation of this Generated Reported Peptide for this PSM.
+
+                psmOpenModificationMassForPsmId = null;
+            }
+
+            if ( ! psmOpenModificationMassForPsmId ) {
+
+                //  NO Open Mods for PSM
+
+                const generatedPeptideString = _generatedPeptideString_For_Single_Psm__For_PeptideSequence_And_Mods({
+                    peptideSequenceString,
+                    variableModificationsRoundedArray_KeyPosition,
+                    open_Modification_Rounded: undefined,
+                    open_Modification_Rounded_Position: undefined,
+                    open_Modification_Rounded_NoPosition : undefined
+                })
+
+                psm_GeneratedPeptideSequence_Entries.push( generatedPeptideString )
+
+            } else {
+                if ( ( ! psmOpenModificationMassForPsmId.positionsMap_KeyPosition ) ) {
+
+                    const generatedPeptideString = _generatedPeptideString_For_Single_Psm__For_PeptideSequence_And_Mods({
+                        peptideSequenceString,
+                        variableModificationsRoundedArray_KeyPosition,
+                        open_Modification_Rounded: undefined,
+                        open_Modification_Rounded_Position: undefined,
+                        open_Modification_Rounded_NoPosition: psmOpenModificationMassForPsmId.openModificationMass_Rounded.toString(),
+                    })
+
+                    psm_GeneratedPeptideSequence_Entries.push( generatedPeptideString )
+
+                } else {
+
+                    for ( const positionMapEntry of psmOpenModificationMassForPsmId.positionsMap_KeyPosition.entries() ) {
+
+                        const positionEntries_AtPosition = positionMapEntry[ 1 ];
+
+                        for ( const positionEntry of positionEntries_AtPosition ) {
+
+                            let open_Modification_Rounded_Position = positionEntry.position;
+                            if ( positionEntry.isNTerminal ) {
+                                open_Modification_Rounded_Position = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_N_TERMINUS_POSITION_INDEX;
+                            } else if ( positionEntry.isCTerminal ) {
+                                open_Modification_Rounded_Position = reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_C_TERMINUS_POSITION_INDEX;
+                            }
+
+                            const generatedPeptideString = _generatedPeptideString_For_Single_Psm__For_PeptideSequence_And_Mods({
+                                peptideSequenceString,
+                                variableModificationsRoundedArray_KeyPosition,
+                                open_Modification_Rounded: psmOpenModificationMassForPsmId.openModificationMass_Rounded,
+                                open_Modification_Rounded_Position,
+                                open_Modification_Rounded_NoPosition: undefined,
+                            })
+
+                            psm_GeneratedPeptideSequence_Entries.push( generatedPeptideString )
+                        }
+                    }
+                }
+            }
+
+            psm_GeneratedPeptideSequence_Entries.sort()
+
+            const psm_GeneratedPeptideSequence_Entries_Fmt = psm_GeneratedPeptideSequence_Entries.join(", ")
+
+            psm_GeneratedPeptideSequence_Entries_All_ForSearch.push( psm_GeneratedPeptideSequence_Entries_Fmt )
+
+            const component_Data_SinglePSM: ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component_Data_SinglePSM = {
+                psmTblData, generatedPeptideString_Array: psm_GeneratedPeptideSequence_Entries
+            }
+
+            childOfTableRow_ComponentData_PsmTblData_Array.push( component_Data_SinglePSM )
+
+            if ( bestPsm_FilterableAnnotationTypeIdsArray ) {  //  Best PSM Annotation Data Update
+
+                const psmFilterableAnnotationData__Holder_For_PsmId = psmFilterableAnnotationData__Holder.get_Per_Psm_Holder_For_PsmId( psmId )
+                if ( ! psmFilterableAnnotationData__Holder_For_PsmId ) {
+                    const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein(...): psmFilterableAnnotationData__Holder.get_Per_Psm_Holder_For_PsmId( psmId ) returned NOTHING for psmId: " + psmId + ", projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                for ( const bestPsm_FilterableAnnotationTypeId of bestPsm_FilterableAnnotationTypeIdsArray ) {
+
+                    const psmFilterableAnnotationData_For_AnnotationTypeId = psmFilterableAnnotationData__Holder_For_PsmId.get_PsmFilterableAnnotationData_For_AnnotationTypeId( bestPsm_FilterableAnnotationTypeId )
+                    if ( ! psmFilterableAnnotationData_For_AnnotationTypeId ) {
+                        const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein(...): psmFilterableAnnotationData__Holder_For_PsmId.get_PsmFilterableAnnotationData_For_AnnotationTypeId( bestPsm_FilterableAnnotationTypeId ) returned NOTHING for bestPsm_FilterableAnnotationTypeId: " + bestPsm_FilterableAnnotationTypeId + ", psmId: " + psmId + ", projectSearchId: " + projectSearchId;
+                        console.warn( msg );
+                        throw Error( msg );
+                    }
+
+                    const newValue_annotationValueNumber = psmFilterableAnnotationData_For_AnnotationTypeId.annotationValueNumber
+
+                    if ( ! bestPsm_FilterableValue_ForAllPSMs_Map_Key_AnnotationType.has( bestPsm_FilterableAnnotationTypeId ) ) {
+                        bestPsm_FilterableValue_ForAllPSMs_Map_Key_AnnotationType.set( bestPsm_FilterableAnnotationTypeId, newValue_annotationValueNumber )
+                    } else {
+                        const bestPsm_FilterableValue_Map_CurrentValueForAnnTypeId = bestPsm_FilterableValue_ForAllPSMs_Map_Key_AnnotationType.get( bestPsm_FilterableAnnotationTypeId )
+                        if ( bestPsm_FilterableValue_Map_CurrentValueForAnnTypeId === undefined ) {
+                            const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein(...): bestPsm_FilterableValue_ForAllPSMs_Map_Key_AnnotationType.get( bestPsm_FilterableAnnotationTypeId ) returned undefined for bestPsm_FilterableAnnotationTypeId: " + bestPsm_FilterableAnnotationTypeId + ", for projectSearchId: " + projectSearchId;
+                            console.warn( msg );
+                            throw Error( msg );
+                        }
+
+                        const annotationTypeItem = annotationTypeItems_ForProjectSearchId.psmFilterableAnnotationTypes.get( bestPsm_FilterableAnnotationTypeId )
+                        if ( ! annotationTypeItem ) {
+                            const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein(...): annotationTypeItems_ForProjectSearchId.psmFilterableAnnotationTypes.get( bestPsm_FilterableAnnotationTypeId ) returned NOTHING for bestPsm_FilterableAnnotationTypeId: " + bestPsm_FilterableAnnotationTypeId + ", for projectSearchId: " + projectSearchId;
+                            console.warn( msg );
+                            throw Error( msg );
+                        }
+
+                        let newValue_BetterThan_OldValue = false
+                        {
+                            // From XSD: The direction a filterable annotation type is sorted in.  If set to "below", attributes with lower values are considered more significant (such as in the case of p-values). If set to "above", attributes with higher values are considered more significant (such as in the case of XCorr).</xs:documentation>
+
+                            if ( annotationTypeItem.filterDirectionAbove ) {
+                                if ( newValue_annotationValueNumber > bestPsm_FilterableValue_Map_CurrentValueForAnnTypeId ) {
+                                    newValue_BetterThan_OldValue = true
+                                }
+                            } else if ( annotationTypeItem.filterDirectionBelow ) {
+                                if ( newValue_annotationValueNumber < bestPsm_FilterableValue_Map_CurrentValueForAnnTypeId ) {
+                                    newValue_BetterThan_OldValue = true
+                                }
+                            } else {
+                                const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein(...): NOT ( annotationTypeItem.filterDirectionAbove ) OR ( annotationTypeItem.filterDirectionBelow ) for  bestPsm_FilterableAnnotationTypeId: " + bestPsm_FilterableAnnotationTypeId + ", for projectSearchId: " + projectSearchId;
+                                console.warn( msg );
+                                throw Error( msg );
+                            }
+                        }
+                        if ( newValue_BetterThan_OldValue ) {
+                            bestPsm_FilterableValue_ForAllPSMs_Map_Key_AnnotationType.set( bestPsm_FilterableAnnotationTypeId, newValue_annotationValueNumber )
+                        }
+                    }
+                }
+            }
+        }
+
+        const childOfTableRow_Component_Data_SingleSearch: ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component_Data_SingleSearch = {
+            projectSearchId, psmTblData_Array: childOfTableRow_ComponentData_PsmTblData_Array
+        }
+
+        const psm_GeneratedPeptideSequence_Entries_All_ForSearch_CommaDelim_For_Search_Sort_Download = psm_GeneratedPeptideSequence_Entries_All_ForSearch.join(", ")
+
+        const psm_GeneratedPeptideSequence_Entries_All_ForSearch_ReturnJSX = () => {
+            return (
+                <div>
+                    { psm_GeneratedPeptideSequence_Entries_All_ForSearch.map((value, index) => {
+                        return (
+                            <div key={ index } style={ { marginTop: ( index > 0 ) ? 2 : 0 } }>
+                                { value }
+                            </div>
+                        )
+                    }) }
+                </div>
+            )
+        }
+
+        //  Add Table Cell for Search Peptide Strings for Scan Number
+        {
+            const searchEntriesForColumn : Array<string> = [ psm_GeneratedPeptideSequence_Entries_All_ForSearch_CommaDelim_For_Search_Sort_Download ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: psm_GeneratedPeptideSequence_Entries_All_ForSearch_ReturnJSX,
+                valueSort: psm_GeneratedPeptideSequence_Entries_All_ForSearch_CommaDelim_For_Search_Sort_Download
+            });
+            dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+
+            const valueDisplay = psm_GeneratedPeptideSequence_Entries_All_ForSearch_CommaDelim_For_Search_Sort_Download;
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+        if ( bestPsm_FilterableAnnotationTypeIdsArray ) {
+
+            // Add Table Cells for Search Best PSM values for Scan Number
+
+                for ( const bestPsm_FilterableAnnotationTypeId of bestPsm_FilterableAnnotationTypeIdsArray ) {
+
+                    const bestPsm_FilterableValue_ForAllPSMs_For_AnnotationType = bestPsm_FilterableValue_ForAllPSMs_Map_Key_AnnotationType.get( bestPsm_FilterableAnnotationTypeId )
+                    if ( bestPsm_FilterableValue_ForAllPSMs_For_AnnotationType === undefined ) {
+                        throw Error( "bestPsm_FilterableValue_ForAllPSMs_Map_Key_AnnotationType.get( bestPsm_FilterableAnnotationTypeId ) returned undefined for bestPsm_FilterableAnnotationTypeId: " + bestPsm_FilterableAnnotationTypeId )
+                    }
+
+                    const valueDisplay = limelight__AnnotationDisplay_CommonFormatting_FilterableAnnotation_NumberFormatting_ForDisplayOnPage( bestPsm_FilterableValue_ForAllPSMs_For_AnnotationType )
+
+                    const searchEntriesForColumn : Array<string> = [ bestPsm_FilterableValue_ForAllPSMs_For_AnnotationType.toString() ]
+                    const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                    const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
+                        searchTableData,
+                        valueDisplay,
+                        valueSort: bestPsm_FilterableValue_ForAllPSMs_For_AnnotationType
+                    });
+                    dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+
+                    const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                    dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+
+                }
+        }
+
+        return { childOfTableRow_Component_Data_SingleSearch }
     }
 
     /**
@@ -3341,15 +3371,51 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
+
     /**
      *
+     * @param projectSearchId
      */
-    private _open_ScanFileSelections() {
+    private _change_SearchScanFileId_Button_Clicked(
+        {
+            searchScanFileId, projectSearchId
+        } : {
+            searchScanFileId: number
+            projectSearchId: number
+        }
+    ) : void {
 
-        this._show_ScanFileSelectionBlock = true
+        // Search has > 1 Scan File.  Open Overlay where user will select scan file on search.
 
-        this.setState({ force_Rerender: {} })
+        const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
+        if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
+            throw new Error("No value from commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
+        }
 
+        const callback_Selected_SearchScanFileId = ( searchScanFileId_NEW: number ) : void => {
+
+            this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.remove_searchScanFileIdSelection({ searchScanFileIdSelection: searchScanFileId })
+
+            this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.add_searchScanFileIdSelection({ searchScanFileIdSelection: searchScanFileId_NEW })
+
+            this._show_UpdatingMessage = true
+
+            this.setState({ force_Rerender: {} })
+
+            window.setTimeout( () => { try {
+
+                this._recompute_FullPage_Except_SearchDetails({ initialPageLoad: false })
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+            }, 10 );
+
+        }
+
+        open_ScanFileToSearchesPage_SelectScanFileOnSearch_Overlay_Component({
+            params: { projectSearchId, searchScanFileId_CurrentSelection: searchScanFileId, scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder, callback_Selected_SearchScanFileId }})
     }
 
     ////////////////////////////////////////
@@ -3403,208 +3469,25 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
         //     filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section = this._render_filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section({  })
         // }
 
-        let searchSubGroup_Ids_Selected : Set<number> = undefined;
-
-        if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
-
-            //  Only display for 1 search
-
-            const projectSearchId = this.props.propsValue.projectSearchIds[ 0 ];
-
-            const searchSubGroups_ForProjectSearchId = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
-            if ( ! searchSubGroups_ForProjectSearchId ) {
-                const msg = "returned nothing: props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
-                console.warn( msg )
-                throw Error( msg )
-            }
-
-            searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
-                searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
-            })
-        }
-
-        let scanFileSelections_Element: JSX.Element = undefined
-
-        // if ( true ) {
-        if  ( this._show_ScanFileSelectionBlock ) {
-
-            const scanFileSections_Entries: Array<{
-                scanFilename_Set: Set<string>
-                projectScanFileId: number
-                searchScanFileId_Set: Set<number>
-                searches_YES_ContainScanFile_ProjectSearchId_Set: Set<number>
-                searches_NOT_ContainScanFile_ProjectSearchId_Set: Set<number>
-            }> = []
-
-            // if ( this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.size > 0 ) {
-
-            for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-
-                const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
-                if ( ! scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder ) {
-                    continue // EARLY CONTINUE
-                }
-                const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
-                if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
-                    continue // EARLY CONTINUE
-                    // throw new Error("No value from commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
-                }
-                for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
-                    const scanFile_ProjectScanFileId_SearchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileData.searchScanFileId )
-                    if ( ! scanFile_ProjectScanFileId_SearchScanFileId ) {
-                        throw new Error( "No value from scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId(searchScanFileData.searchScanFileId) for searchScanFileData.searchScanFileId: " + searchScanFileData.searchScanFileId + ", projectSearchId: " + projectSearchId );
-                    }
-
-                    let found_projectScanFileId = false
-
-                    for ( const scanFileSections_Entry of scanFileSections_Entries ) {
-                        if ( scanFileSections_Entry.projectScanFileId && scanFileSections_Entry.projectScanFileId === scanFile_ProjectScanFileId_SearchScanFileId.projectScanFileId ) {
-                            found_projectScanFileId = true
-                            scanFileSections_Entry.scanFilename_Set.add( searchScanFileData.filename )
-                            scanFileSections_Entry.searchScanFileId_Set.add( searchScanFileData.searchScanFileId )
-                            scanFileSections_Entry.searches_YES_ContainScanFile_ProjectSearchId_Set.add( projectSearchId )
-                        }
-                    }
-
-                    if ( ! found_projectScanFileId ) {
-
-                        const scanFilename_Set: Set<string> = new Set()
-                        scanFilename_Set.add( searchScanFileData.filename )
-
-                        const searchScanFileId_Set: Set<number> = new Set()
-                        searchScanFileId_Set.add( searchScanFileData.searchScanFileId )
-
-                        const searches_YES_ContainScanFile_ProjectSearchId_Set: Set<number> = new Set()
-                        searches_YES_ContainScanFile_ProjectSearchId_Set.add( projectSearchId )
-
-                        scanFileSections_Entries.push( {
-                            scanFilename_Set,
-                            projectScanFileId: scanFile_ProjectScanFileId_SearchScanFileId.projectScanFileId,
-                            searchScanFileId_Set,
-                            searches_YES_ContainScanFile_ProjectSearchId_Set,
-                            searches_NOT_ContainScanFile_ProjectSearchId_Set: undefined
-                        } )
-                    }
-                }
-            }
-
-            // }
-
-            //  Set searches_NOT_ContainScanFile_ProjectSearchId_Set
-            for ( const scanFileSections_Entry of scanFileSections_Entries ) {
-
-                scanFileSections_Entry.searches_NOT_ContainScanFile_ProjectSearchId_Set = new Set()
-
-                for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-                    if ( ! scanFileSections_Entry.searches_YES_ContainScanFile_ProjectSearchId_Set.has( projectSearchId ) ) {
-                        scanFileSections_Entry.searches_NOT_ContainScanFile_ProjectSearchId_Set.add( projectSearchId )
-                    }
-                }
-            }
-
-
-
-            const scanFileSelectionElements: Array<JSX.Element> = []
-
-            let elementCounter = 0
-
-            for ( const scanFileSections_Entry of scanFileSections_Entries ) {
-
-                elementCounter++
-
-                const filenames_Array_Sorted = Array.from( scanFileSections_Entry.scanFilename_Set )
-                filenames_Array_Sorted.sort()
-                const filenames_CommaDelim = filenames_Array_Sorted.join(", ")
-
-                const element = (
-                    <div
-                        key={ elementCounter }
-                        style={ { marginBottom: 3 } }
-                    >
-                        <span
-                            className=" fake-link "
-                            onClick={ event => {
-                                try {
-                                    this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.set_projectScanFileIdSelection_searchScanFileIdSelections({
-                                        projectScanFileIdSelection: scanFileSections_Entry.projectScanFileId,
-                                        searchScanFileIdSelections_Set: scanFileSections_Entry.searchScanFileId_Set
-                                    })
-                                    this._searches_NOT_ContainScanFile_ProjectSearchId_Set = scanFileSections_Entry.searches_NOT_ContainScanFile_ProjectSearchId_Set
-                                    this._show_ScanFileSelectionBlock = false
-
-                                    this._recompute_FullPage_Except_SearchDetails({ initialPageLoad: false });
-
-                                } catch( e ) {
-                                    console.warn("Exception caught onClick");
-                                    console.warn( e );
-                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                                    throw e;
-                                }
-                            } }
-                        >
-                            { filenames_CommaDelim }
-                        </span>
-                        { this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_projectScanFileIdSelection() === scanFileSections_Entry.projectScanFileId ? (
-                            <>
-                                <span> </span>
-                                <span>(current selection)</span>
-                            </>
-                        ) : null }
-                    </div>
-                )
-                scanFileSelectionElements.push( element )
-            }
-
-            scanFileSelections_Element = (
-                <div style={ { marginLeft: 30, marginBottom: 20 } }>
-                    <div style={ { marginBottom: 10, fontWeight: "bold" } }>
-                        Select a scan file:
-                    </div>
-                    { scanFileSelectionElements }
-                </div>
-            )
-        }
-
-        let scanFile_NOT_In_Searches_Message: JSX.Element = undefined
-
-        {
-            if ( this._searches_NOT_ContainScanFile_ProjectSearchId_Set && this._searches_NOT_ContainScanFile_ProjectSearchId_Set.size > 0 ) {
-
-                const element_PerSearch_Array: Array<JSX.Element> = []
-
-                for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
-
-                    if ( this._searches_NOT_ContainScanFile_ProjectSearchId_Set.has( projectSearchId ) ) {
-
-                        const searchData_For_ProjectSearchId = this.props.propsValue.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
-
-                        const element = (
-                            <li key={ projectSearchId }>
-                                <span>{ searchData_For_ProjectSearchId.name }</span>
-                                <span> </span>
-                                <span style={ { whiteSpace: "nowrap" } }>
-                                    <span>(</span>
-                                    <span>{ searchData_For_ProjectSearchId.searchId }</span>
-                                    <span>)</span>
-                                </span>
-                            </li>
-                        )
-                        element_PerSearch_Array.push( element )
-                    }
-                }
-
-                scanFile_NOT_In_Searches_Message = (
-                    <div style={ { marginBottom: 20 } }>
-                        <div style={ { fontSize: 18, fontWeight: "bold", marginBottom: 7 } }>
-                            Searches that do NOT contain the Scan File:
-                        </div>
-                        <ul style={ { marginLeft: 30 } }>
-                            { element_PerSearch_Array }
-                        </ul>
-                    </div>
-                )
-            }
-        }
+        // let searchSubGroup_Ids_Selected : Set<number> = undefined;
+        //
+        // if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
+        //
+        //     //  Only display for 1 search
+        //
+        //     const projectSearchId = this.props.propsValue.projectSearchIds[ 0 ];
+        //
+        //     const searchSubGroups_ForProjectSearchId = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
+        //     if ( ! searchSubGroups_ForProjectSearchId ) {
+        //         const msg = "returned nothing: props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
+        //         console.warn( msg )
+        //         throw Error( msg )
+        //     }
+        //
+        //     searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
+        //         searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
+        //     })
+        // }
 
 
         ///////
@@ -3658,13 +3541,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
 
 
-                { this._show_NoScanFileData_In_AnySearches ? (
-
-                    <div style={ { fontSize: 18, fontWeight: "bold", marginTop: 20, marginBottom: 40 } }>
-                        No scan data imported in any of the searches.
-                    </div>
-
-                ) : ( ! this.state.mainDisplayData_Loaded ) ? (
+                { ( ! this.state.mainDisplayData_Loaded ) ? (
 
                     <div >
                         <div style={ { marginTop: 20, fontSize: 24, fontWeight: "bold"} }>
@@ -3679,56 +3556,74 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                     <React.Fragment>
 
                         <div
-                            style={ { display: "inline-block" } }  //  display: "inline-block" so can measure width of this div, including width of Peptide table and sub-tables
+                            style={ { display: "inline-block", position: "relative" } }  //  display: "inline-block" so can measure width of this div, including width of Peptide table and sub-tables
                             ref={ this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref }> {/* ref to allow measuring width of component */ }
 
-                            { this.state.scanFile_Selected_ScanFilenames_CommaDelim ? (
-                                <div style={ { marginBottom: 20 } }>
-                                    <span style={ { fontSize: 18, fontWeight: "bold" } }>
-                                        <span>Scan File: </span>
-                                        <span
-                                            title={ this.state.scanFile_Selected_ScanFilenames_CommaDelim.includes( "," ) ? "multiple scan file names since different file names in different searches" : null }
-                                        >
-                                            { this.state.scanFile_Selected_ScanFilenames_CommaDelim }
-                                        </span>
-                                    </span>
-                                    { this._projectSearchId_Count_GreaterThan_One ? (
-                                        <>
-                                            <span> </span>
-                                            <span
-                                                className=" fake-link "
-                                                style={ { fontSize: 14 } }
-                                                onClick={ event => {
-                                                    this._open_ScanFileSelections()
-                                                } }
-                                            >
-                                                Change
-                                            </span>
-                                        </>
-                                    ) : null }
-                                </div>
-                            ) : null }
+                            <div
+                                //    Set width to within viewport so text wraps
 
-                            { scanFileSelections_Element }
+                                style={ {
+                                    maxWidth: "calc( 100vw - 80px )"
+                                } }
+                            >
 
-                            { scanFile_NOT_In_Searches_Message }
+                                {/*  Block that is set to keep width within the viewport  */}
 
+                                { this._render_Selections_By_SearchName() }
+
+                            </div>
 
                             <div style={ { marginBottom: 20 } }>
-                                <AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component
-                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                    searchDataLookupParameters_Root={ this.state.searchDataLookupParamsRoot }
-                                    dataPageStateManager_DataFrom_Server={ this.props.propsValue.dataPageStateManager }
-                                />
+
+                                <div
+                                    // //  Add border on top to make the next section out.  Inside <div> containing this component to limit the horizontal length of the border.
+                                    // style={ {
+                                    //     width: "fit-content",
+                                    //     borderTopStyle: "solid",
+                                    //     borderTopWidth: 10,
+                                    //     paddingTop: 15
+                                    // } }
+                                    // className=" standard-border-color-very-dark "
+                                >
+                                    <AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component
+                                        projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                        searchDataLookupParameters_Root={ this.state.searchDataLookupParamsRoot }
+                                        dataPageStateManager_DataFrom_Server={ this.props.propsValue.dataPageStateManager }
+                                    />
+                                </div>
                             </div>
 
                             <div style={ { marginBottom: 10, fontSize: 18, fontWeight: "bold" } }>
                                 Results by Scan
                             </div>
 
+                            { this._shouldRender_WarningMessage_About_ScanDataBeing_FromNot_Single_Exact_Scanfile_Contents() ? (
+
+                                <div style={ { marginBottom: 10, marginLeft: 40, fontSize: 18, fontWeight: "bold" } }>
+
+                                        WARNING: The scan data shown for the searches is not the exact same scan file.
+
+                                </div>
+
+                            ) : null }
+
                             <DataTable_TableRoot tableObject={ this.state.mainDisplay_DataTable_RootTableObject }/>
 
+                            { this._show_UpdatingMessage ? (
+
+                                <div
+                                    className=" block-updating-overlay-container "
+                                >
+                                    <div
+                                        style={ { maxWidth: "calc( 100vw - 80px )" }}
+                                    >
+                                        Updating Data
+                                    </div>
+                                </div>
+
+                            ) : null }
                         </div>
+
                     </React.Fragment>
                 ) }
 
@@ -3737,241 +3632,538 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
         );
     }
 
-    //////////////////////////////
+    //////////////////
+
+    //  ShouldRender  Warning message about scan data being different
 
     /**
      *
+     * @private
      */
-    private _render_filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section(
-        {}: {}
-    ): JSX.Element {
+    private _shouldRender_WarningMessage_About_ScanDataBeing_FromNot_Single_Exact_Scanfile_Contents() {
 
-        let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;
+        let displayMessage__AllSearches_NOT_have_ExactSameScanFile__NOT_SAME_ProjectScanFileId = false
 
-        return (
+        if ( this.props.propsValue.projectSearchIds.length > 1 ) {
 
-            <React.Fragment>
+            const projectScanFileId_NOT_SET: number = undefined
 
-                <div>
+            let projectScanFileId_Prev = projectScanFileId_NOT_SET
 
-                    <div className=" filter-common-block-selection-container-block yes-section-labels ">
+            for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
+                const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
+                if ( ! scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder ) {
 
-                        {/* Display of User Selected filtering on  */}
+                    displayMessage__AllSearches_NOT_have_ExactSameScanFile__NOT_SAME_ProjectScanFileId = true
 
-                        <ScanFileToSearches_Page_FiltersDisplay
-                            scanFileToSearches_Page_FiltersDisplay_ComponentData={ this.state.scanFileToSearches_Page_FiltersDisplay_ComponentData }
-                            clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
-                        />
+                    break // EARLY BREAK
+                }
+                const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
+                if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
 
-                        {/* Filter On ... */}
+                    displayMessage__AllSearches_NOT_have_ExactSameScanFile__NOT_SAME_ProjectScanFileId = true
 
-                        <FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component>   {/*  Show/Hide the filters */}
+                    break // EARLY BREAK
+                }
+                for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
+
+                    if ( this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileId_Selections_Set().has( searchScanFileData.searchScanFileId ) ) {
+
+                        const scanFile_ProjectScanFileId_SearchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileData.searchScanFileId )
+                        if ( ! scanFile_ProjectScanFileId_SearchScanFileId ) {
+
+                            displayMessage__AllSearches_NOT_have_ExactSameScanFile__NOT_SAME_ProjectScanFileId = true
+
+                            break // EARLY BREAK
+                        }
+
+                        if ( projectScanFileId_Prev === projectScanFileId_NOT_SET ) {
+
+                            projectScanFileId_Prev = scanFile_ProjectScanFileId_SearchScanFileId.projectScanFileId
+
+                        } else if ( projectScanFileId_Prev !== scanFile_ProjectScanFileId_SearchScanFileId.projectScanFileId ) {
+
+                            displayMessage__AllSearches_NOT_have_ExactSameScanFile__NOT_SAME_ProjectScanFileId = true
+
+                            break // EARLY BREAK
+                        }
+                    }
+                }
+            }
+        }
+
+        return displayMessage__AllSearches_NOT_have_ExactSameScanFile__NOT_SAME_ProjectScanFileId
+    }
+
+    //////////////////
+
+    //  Selections
+
+    /**
+     *
+     * @private
+     */
+    private _render_Selections_By_SearchName() {
 
 
-                            <FilterOn_SearchProgramsGroup_ConditionalRender_Component
-                                searchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData={ this.state.searchSubGroup_PropValue }
-                                anySearches_Have_ScanFilenames={ this._anySearches_Have_ScanFilenames }
-                                commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder={ this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder }
-                            >
+        let scanFiles_TheirSearches_FullSearches_CurrentlyDisplayed_Message: JSX.Element = undefined
 
-                                {/*  Section Label  */}
+        {
+            const searchScanFileIdSelections_Set__FromStateObject = this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileId_Selections_Set()
 
-                                <div className=" section-label " style={ { gridColumn: "1/-1" } }>Search Filters
+            const element_PerSearch_Array: Array<JSX.Element> = []
+
+
+            for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
+
+                const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
+
+                const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
+
+                if ( ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) || scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_EntryCount() === 0 ) {
+
+                    const searchData_For_ProjectSearchId = this.props.propsValue.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+
+                    const element = (
+
+                        <React.Fragment
+                            key={ "projectSearchId_" + projectSearchId }
+                        >
+                            <li style={ { marginBottom: 10 } }>
+                                <div>
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <div>
+                                                <div>
+                                                    All scan numbers for this search is shown in the comparison.
+                                                </div>
+                                                <div>
+                                                    This search has no scan filenames so unable to determine if this
+                                                    search is for one scan file or more than one scan file.
+                                                </div>
+                                            </div>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <span>
+                                            Search: { searchData_For_ProjectSearchId.name }&nbsp;({ searchData_For_ProjectSearchId.searchId })
+                                        </span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </div>
 
-                                { (
-                                    this._anySearches_Have_ScanFilenames
-                                    && (
-                                        ! ( this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
-                                            && this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_total_SearchScanFileCount() === 1 ) )
-                                ) ? (
+                                <div style={ { marginLeft: 20 } }>
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            null
+                                            // <SearchAndScanFilename_Tooltip_Component/>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <span>
+                                            { _SCAN_FILENAME_DISPLAY_STRING__SEARCH_HAS_NO_SEARCH_SCAN_FILE_RECORDS }
+                                        </span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                </div>
+                            </li>
+                        </React.Fragment>
+                    )
 
-                                    //  Show Scan Filename Selector
+                    element_PerSearch_Array.push( element )
 
-                                    <ScanFilenameId_On_PSM_Filter_UserSelection_Component
-                                        allSearches_Have_ScanFilenames={ this._allSearches_Have_ScanFilenames }
-                                        projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                        commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder={ this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder }
-                                        scanFilenameId_On_PSM_Filter_UserSelection_StateObject={ this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject }
-                                        scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject={ this.state.scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject }
-                                        updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback_BindThis }
-                                    />
 
-                                ): null}
+                } else {
 
-                                <SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
-                                    projectSearchId={ this.props.propsValue.projectSearchIds[0] }
-                                    dataPageStateManager={ this.props.propsValue.dataPageStateManager }
-                                    displayData={ this.state.searchSubGroup_PropValue }
-                                    searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
-                                    searchSubGroup_SelectionsChanged_Callback={ this._searchSubGroup_SelectionsChanged_Callback_BindThis }
-                                    searchSubGroup_ManageGroupNames_Clicked_Callback={ undefined }
-                                    limelight_Colors_For_SingleSearch__SubSearches={ undefined }  //  Only for QC Page
-                                />
+                    //  ELSE OF:  Search has NO Scan Files
 
-                            </FilterOn_SearchProgramsGroup_ConditionalRender_Component>
+                    if ( ! scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder ) {
+                        continue // EARLY CONTINUE
+                    }
 
-                            {/*  Section Label  */}
+                    let searchScanFileData_ToDisplay: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry = undefined
 
-                            <div className=" section-label " style={ { gridColumn: "1/-1" } }>Modification Filters
-                            </div>
+                    if ( scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_EntryCount() === 1 ) {
 
-                            <ModificationMass_UserSelections_Root
-                                modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
-                                openModification_OpenSelectMassOverlay_Override_Callback={ this._openModificationMass_OpenUserSelections_Overlay_Override_BindThis }
-                                modificationMass_UserSelections_ComponentData={ this.state.modificationMass_UserSelections_ComponentData } // Only updated when new updated need to push from above
-                                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects }
-                                modificationMass_UserSelections_StateObject={ this.props.propsValue.modificationMass_UserSelections_StateObject } // Updated in the component
-                                modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.state.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData } // Only updated when new updated need to push from above
-                                modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass } // Updated in the component
-                                updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback={ this._updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback_BindThis }
-                                proteinSequenceVersionId={ null }
-                                projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                proteinNames={ null }
-                                proteinDescriptions={ null }
-                                modificationMass_CommonRounding_ReturnNumber={ modificationMass_CommonRounding_ReturnNumber_Param } // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
-                                updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this._modificationMass_UserSelections_UpdateMadeTo_StateObject_Callback_BindThis } // this.props.propsValue.modificationMass_UserSelections_StateObject has been updated.
-                                update_modificationMass_UserSelections_ComponentData_Callback={ this._modificationMass_Update_modificationMass_UserSelections_ComponentData_Callback_BindThis } // create new this.state.modificationMass_UserSelections_ComponentData
-                            />
 
-                            {/*  Section Label  */}
+                        for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
 
-                            <div className=" section-label " style={ { gridColumn: "1/-1" } }>PSM Filters
-                            </div>
+                            searchScanFileData_ToDisplay = searchScanFileData
+                            break
+                        }
+                    } else {
 
-                            <ReporterIonMass_UserSelections
-                                reporterIons_UserSelections_ComponentData={ this.state.reporterIons_UserSelections_ComponentData }
-                                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections }
-                                reporterIonMass_UserSelections_StateObject={ this.props.propsValue.reporterIonMass_UserSelections_StateObject }
-                                updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback={ this._updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback_BindThis }
-                            />
+                    }
 
-                            { ( this._anySearches_Have_PSM_RetentionTime_Precursor_MZ_OR_ScanData ) ? (
+                    for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
 
-                                <Scan_RetentionTime_MZ_UserSelections_Component
-                                    allSearches_Have_PSM_RetentionTime_Precursor_MZ_OR_ScanData={ this._allSearches_Have_PSM_RetentionTime_Precursor_MZ_OR_ScanData }
-                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                    scan_RetentionTime_MZ_UserSelections_StateObject={ this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject }
-                                    scan_RetentionTime_MZ_UserSelections_Object_Force_ResetToStateObject={ this.state.scan_RetentionTime_MZ_UserSelections_Object_Force_ResetToStateObject }
-                                    updateMadeTo_scan_RetentionTime_MZ_UserSelections_StateObject_Callback={ this._updateMadeTo_Scan_RetentionTime_MZ_UserSelections_StateObject_Callback_BindThis }
-                                />
+                        const scanFile_ProjectScanFileId_SearchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileData.searchScanFileId )
+                        if ( ! scanFile_ProjectScanFileId_SearchScanFileId ) {
+                            continue // EARLY CONTINUE
+                            // throw new Error( "No value from scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId(searchScanFileData.searchScanFileId) for searchScanFileData.searchScanFileId: " + searchScanFileData.searchScanFileId + ", projectSearchId: " + projectSearchId );
+                        }
 
-                            ): null}
+                        if ( searchScanFileIdSelections_Set__FromStateObject.has( scanFile_ProjectScanFileId_SearchScanFileId.searchScanFileId ) ) {
 
-                            { ( this._allSearches_Have_ScanData ) ? (
 
-                                // Show Scan Peak Filter
+                            const searchData_For_ProjectSearchId = this.props.propsValue.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
 
-                                <ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component
-                                    scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject={ this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject }
-                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                    dataPageStateManager={ this.props.propsValue.dataPageStateManager }
-                                    scanPeak_M_Over_Z__Intensity_Filter_UserSelection_Object_Force_ResetToStateObject={ this.state.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_Object_Force_ResetToStateObject }
-                                    updateMadeTo_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_Callback_BindThis }
-                                />
+                            // const SearchAndScanFilename_Tooltip_Component = () => {
+                            //     return (
+                            //         <div>
+                            //             <div>
+                            //                 This scan file for this search is added to the comparison.
+                            //             </div>
+                            //             <div>
+                            //                 This scan file is different from the selected scan file above.
+                            //             </div>
+                            //             <div>
+                            //                 If this scan filename is the same as the selected scan file above this file
+                            //                 is different since the scan file contents submitted to Limelight are
+                            //                 different.
+                            //             </div>
+                            //         </div>
+                            //     )
+                            // }
 
-                            ) : null }
 
-                            <Psm_Charge_Filter_UserSelection_Container_Component
-                                projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                psm_Charge_Filter_UserSelection_StateObject={ this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject }
-                                psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject={ this.state.psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject }
-                                updateMadeTo_psm_Charge_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_psm_Charge_Filter_UserSelection_StateObject_Callback_BindThis }
-                                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
-                            />
+                            const element = (
 
-                            { ( this.props.propsValue.dataPageStateManager.get_DataPage_common_Searches_Flags().is__anyPsmHas_IsIndependentDecoy_True__TrueForAnySearch() ) ? (
+                                <React.Fragment
+                                    key={ searchScanFileData.searchScanFileId }
+                                >
+                                    <li style={ { marginBottom: 10 } }>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                null
+                                                // <SearchAndScanFilename_Tooltip_Component/>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <div>
+                                                { searchData_For_ProjectSearchId.name }&nbsp;({ searchData_For_ProjectSearchId.searchId })
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        <div style={ { marginLeft: 20 } }>
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    null
+                                                    // <SearchAndScanFilename_Tooltip_Component/>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                            >
+                                                <span>
+                                                    <span>Scan File: </span>
+                                                    <span>{ searchScanFileData.filename }</span>
+                                                    </span>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
-                                <Psm_Exclude_IndependentDecoy_PSMs_UserSelection
-                                    psm_Exclude_IndependentDecoy_PSMs_UserSelection_StateObject={ this.props.propsValue.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject }
-                                    psm_Exclude_IndependentDecoy_PSMs_UserSelection_Object_Force_ResetToStateObject={ this.state.psm_Exclude_IndependentDecoy_PSMs_UserSelection_Object_Force_ResetToStateObject }
-                                    updateMadeTo_Psm_Exclude_IndependentDecoy_PSMs_UserSelection_StateObject_Callback={ this._updateMadeTo_psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject_Callback_BindThis }
-                                />
-                            ) : null
-                            }
+                                            { ( scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_EntryCount() > 1 ) ? (
+                                                <>
+                                                    &nbsp;&nbsp;
+                                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                        title={
+                                                            "Change to a different scan file for this search"
+                                                        }
+                                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                    >
+                                                        <button
+                                                            onClick={ event => {
+                                                                try {
+                                                                    this._change_SearchScanFileId_Button_Clicked({ projectSearchId, searchScanFileId: searchScanFileData.searchScanFileId })
 
-                            {/*<PeptideList_ScanFileToSearchesPage_SingleProtein_FilterOnCounts_psm_UserSelections_Component*/}
-                            {/*    peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject={ this.props.propsValue.peptideList_ScanFileToSearchesPage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject }*/}
-                            {/*    peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject={ this.state.peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject }*/}
-                            {/*    updateMadeTo_peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject_Callback={*/}
-                            {/*        this._updateMadeTo_peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject_Callback_BindThis*/}
-                            {/*    }*/}
-                            {/*/>*/}
+                                                                } catch( e ) {
+                                                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                                                    throw e;
+                                                                }
+                                                            } }
+                                                        >
+                                                            Change Scan File
+                                                        </button>
+                                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                                </>
+                                            ) : null }
+                                        </div>
+                                    </li>
+                                </React.Fragment>
+                            )
 
-                            {/*  Show Scan Number with Scan Filename or Search Selector  */}
+                            element_PerSearch_Array.push( element )
+                        }
+                    }
+                }
+            }
 
-                            <ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection__Component
-                                projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                dataPageStateManager={ this.props.propsValue.dataPageStateManager }
-                                commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder={ this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder }
-                                scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject={ this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject }
-                                scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject={ this.state.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject }
-                                updateMadeTo_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_Callback_BindThis }
-                            />
+            scanFiles_TheirSearches_FullSearches_CurrentlyDisplayed_Message = (
 
-                            {/*  Section Label  */}
+                <div style={ { marginBottom: 20 } }>
+                    <div style={ { fontSize: 18, fontWeight: "bold", marginBottom: 7 } }>
 
-                            <div className=" section-label " style={ { gridColumn: "1/-1" } }>Peptide and Protein Filters
-                            </div>
+                        Displaying data for these scan files for the searches:
 
-                            { this._allSearches_HaveProteins ? (
-
-                                <PeptideUnique_UserSelection
-                                    peptideUnique_UserSelection_ComponentData={ this.state.peptideUnique_UserSelection_ComponentData }
-                                    peptideUnique_UserSelection_StateObject={ this.props.propsValue.peptideUnique_UserSelection_StateObject }
-                                    updateMadeTo_peptideUnique_UserSelection_StateObject_Callback={ this._updateMadeTo_peptideUnique_UserSelection_StateObject_Callback_BindThis }
-                                />
-                            ) : null }
-
-                            <PeptideSequence_UserSelections
-                                peptideSequence_UserSelections_ComponentData={ this.state.peptideSequence_UserSelections_ComponentData }
-                                peptideSequence_UserSelections_StateObject={ this.props.propsValue.peptideSequence_UserSelections_StateObject }
-                                proteinSequenceString={ null }
-                                updateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback={ null }
-                                updateMadeTo_peptideSequence_UserSelections_StateObject_Callback={ this._updateMadeTo_peptideSequence_UserSelections_StateObject_Callback_BindThis }
-                            />
-
-                            <PeptideSequence_MissedCleavageCount_UserSelections_Component
-                                projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                peptideSequence_MissedCleavageCount_UserSelections_StateObject={ this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject }
-                                peptideSequence_MissedCleavageCount_UserSelections_Object_Force_ResetToStateObject={ this.state.peptideSequence_MissedCleavageCount_UserSelections_Object_Force_ResetToStateObject }
-                                updateMadeTo_peptideSequence_MissedCleavageCount_UserSelections_StateObject_Callback={ this._updateMadeTo_peptideSequence_MissedCleavageCount_UserSelections_StateObject_Callback_BindThis }
-                            />
-
-                            <PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component
-                                peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject={ this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject }
-                                peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Object_Force_ResetToStateObject={ this.state.peptideSequence_MissedCleavageCount_UserSelections_Object_Force_ResetToStateObject }
-                                updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_Callback={ this._updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_StateObject_Callback_BindThis }
-                            />
-
-                            { this._allSearches_HaveProteins ? (
-
-                                <ProteinPositionFilter_UserSelections__GetsProteinData
-                                    proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ this.state.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object }
-                                    proteinPositionFilter_UserSelections_StateObject={ this.props.propsValue.proteinPositionFilter_UserSelections_StateObject }
-                                    updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis }
-                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
-                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                />
-                            ) : null }
-
-                            <GeneratedPeptideContents_UserSelections_Root_Component
-                                generatedPeptideContents_UserSelections_StateObject={ this.props.propsValue.generatedPeptideContents_UserSelections_StateObject }
-                                searchContains_VariableModifications={ this._searchesContains_VariableModifications }
-                                searchContains_OpenModifications={ this._searchesContains_OpenModifications }
-                                searchContains_StaticModifications={ this._searchesContains_StaticModifications }
-                                updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback={ this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis  }
-                            />
-
-                        </FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component>
-
+                        {/*<Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component*/}
+                        {/*    title={*/}
+                        {/*        <div>*/}
+                        {/*            <div>*/}
+                        {/*                These selected scan filenames and their searches as well as Whole Searches are displayed below*/}
+                        {/*            </div>*/}
+                        {/*            /!*<div style={ { marginTop: 10 } }>*!/*/}
+                        {/*            /!*    *!/*/}
+                        {/*            /!*</div>*!/*/}
+                        {/*        </div>*/}
+                        {/*    }*/}
+                        {/*/>*/}
                     </div>
 
+                    <ul>
+                        {
+                            element_PerSearch_Array
+                        }
+                    </ul>
                 </div>
+            )
+        }
 
-            </React.Fragment>
+        return (
+            <div>
+                { scanFiles_TheirSearches_FullSearches_CurrentlyDisplayed_Message }
+            </div>
         )
     }
+
+    //////////////////////////////
+
+    // /**
+    //  *
+    //  */
+    // private _render_filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section(
+    //     {}: {}
+    // ): JSX.Element {
+    //
+    //     let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;
+    //
+    //     return (
+    //
+    //         <React.Fragment>
+    //
+    //             <div>
+    //
+    //                 <div className=" filter-common-block-selection-container-block yes-section-labels ">
+    //
+    //                     {/* Display of User Selected filtering on  */}
+    //
+    //                     <ScanFileToSearches_Page_FiltersDisplay
+    //                         scanFileToSearches_Page_FiltersDisplay_ComponentData={ this.state.scanFileToSearches_Page_FiltersDisplay_ComponentData }
+    //                         clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
+    //                     />
+    //
+    //                     {/* Filter On ... */}
+    //
+    //                     <FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component>   {/*  Show/Hide the filters */}
+    //
+    //
+    //                         <FilterOn_SearchProgramsGroup_ConditionalRender_Component
+    //                             searchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData={ this.state.searchSubGroup_PropValue }
+    //                             anySearches_Have_ScanFilenames={ this._anySearches_Have_ScanFilenames }
+    //                             commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder={ this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder }
+    //                         >
+    //
+    //                             {/*  Section Label  */}
+    //
+    //                             <div className=" section-label " style={ { gridColumn: "1/-1" } }>Search Filters
+    //                             </div>
+    //
+    //                             { (
+    //                                 this._anySearches_Have_ScanFilenames
+    //                                 && (
+    //                                     ! ( this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+    //                                         && this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_total_SearchScanFileCount() === 1 ) )
+    //                             ) ? (
+    //
+    //                                 //  Show Scan Filename Selector
+    //
+    //                                 <ScanFilenameId_On_PSM_Filter_UserSelection_Component
+    //                                     allSearches_Have_ScanFilenames={ this._allSearches_Have_ScanFilenames }
+    //                                     projectSearchIds={ this.props.propsValue.projectSearchIds }
+    //                                     commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder={ this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder }
+    //                                     scanFilenameId_On_PSM_Filter_UserSelection_StateObject={ this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject }
+    //                                     scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject={ this.state.scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject }
+    //                                     updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback_BindThis }
+    //                                 />
+    //
+    //                             ): null}
+    //
+    //                             <SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
+    //                                 projectSearchId={ this.props.propsValue.projectSearchIds[0] }
+    //                                 dataPageStateManager={ this.props.propsValue.dataPageStateManager }
+    //                                 displayData={ this.state.searchSubGroup_PropValue }
+    //                                 searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
+    //                                 searchSubGroup_SelectionsChanged_Callback={ this._searchSubGroup_SelectionsChanged_Callback_BindThis }
+    //                                 searchSubGroup_ManageGroupNames_Clicked_Callback={ undefined }
+    //                                 limelight_Colors_For_SingleSearch__SubSearches={ undefined }  //  Only for QC Page
+    //                             />
+    //
+    //                         </FilterOn_SearchProgramsGroup_ConditionalRender_Component>
+    //
+    //                         {/*  Section Label  */}
+    //
+    //                         <div className=" section-label " style={ { gridColumn: "1/-1" } }>Modification Filters
+    //                         </div>
+    //
+    //                         <ModificationMass_UserSelections_Root
+    //                             modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
+    //                             openModification_OpenSelectMassOverlay_Override_Callback={ this._openModificationMass_OpenUserSelections_Overlay_Override_BindThis }
+    //                             modificationMass_UserSelections_ComponentData={ this.state.modificationMass_UserSelections_ComponentData } // Only updated when new updated need to push from above
+    //                             modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects }
+    //                             modificationMass_UserSelections_StateObject={ this.props.propsValue.modificationMass_UserSelections_StateObject } // Updated in the component
+    //                             modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.state.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData } // Only updated when new updated need to push from above
+    //                             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass } // Updated in the component
+    //                             updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback={ this._updateMadeTo_modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass_Callback_BindThis }
+    //                             proteinSequenceVersionId={ null }
+    //                             projectSearchIds={ this.props.propsValue.projectSearchIds }
+    //                             proteinNames={ null }
+    //                             proteinDescriptions={ null }
+    //                             modificationMass_CommonRounding_ReturnNumber={ modificationMass_CommonRounding_ReturnNumber_Param } // Always passed for Experiment - Made a parameter to make easier to copy this code for Protein Page Single Search
+    //                             updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this._modificationMass_UserSelections_UpdateMadeTo_StateObject_Callback_BindThis } // this.props.propsValue.modificationMass_UserSelections_StateObject has been updated.
+    //                             update_modificationMass_UserSelections_ComponentData_Callback={ this._modificationMass_Update_modificationMass_UserSelections_ComponentData_Callback_BindThis } // create new this.state.modificationMass_UserSelections_ComponentData
+    //                         />
+    //
+    //                         {/*  Section Label  */}
+    //
+    //                         <div className=" section-label " style={ { gridColumn: "1/-1" } }>PSM Filters
+    //                         </div>
+    //
+    //                         <ReporterIonMass_UserSelections
+    //                             reporterIons_UserSelections_ComponentData={ this.state.reporterIons_UserSelections_ComponentData }
+    //                             modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections }
+    //                             reporterIonMass_UserSelections_StateObject={ this.props.propsValue.reporterIonMass_UserSelections_StateObject }
+    //                             updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback={ this._updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback_BindThis }
+    //                         />
+    //
+    //                         { ( this._anySearches_Have_PSM_RetentionTime_Precursor_MZ_OR_ScanData ) ? (
+    //
+    //                             <Scan_RetentionTime_MZ_UserSelections_Component
+    //                                 allSearches_Have_PSM_RetentionTime_Precursor_MZ_OR_ScanData={ this._allSearches_Have_PSM_RetentionTime_Precursor_MZ_OR_ScanData }
+    //                                 projectSearchIds={ this.props.propsValue.projectSearchIds }
+    //                                 scan_RetentionTime_MZ_UserSelections_StateObject={ this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject }
+    //                                 scan_RetentionTime_MZ_UserSelections_Object_Force_ResetToStateObject={ this.state.scan_RetentionTime_MZ_UserSelections_Object_Force_ResetToStateObject }
+    //                                 updateMadeTo_scan_RetentionTime_MZ_UserSelections_StateObject_Callback={ this._updateMadeTo_Scan_RetentionTime_MZ_UserSelections_StateObject_Callback_BindThis }
+    //                             />
+    //
+    //                         ): null}
+    //
+    //                         { ( this._allSearches_Have_ScanData ) ? (
+    //
+    //                             // Show Scan Peak Filter
+    //
+    //                             <ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component
+    //                                 scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject={ this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject }
+    //                                 projectSearchIds={ this.props.propsValue.projectSearchIds }
+    //                                 dataPageStateManager={ this.props.propsValue.dataPageStateManager }
+    //                                 scanPeak_M_Over_Z__Intensity_Filter_UserSelection_Object_Force_ResetToStateObject={ this.state.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_Object_Force_ResetToStateObject }
+    //                                 updateMadeTo_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_Callback_BindThis }
+    //                             />
+    //
+    //                         ) : null }
+    //
+    //                         <Psm_Charge_Filter_UserSelection_Container_Component
+    //                             projectSearchIds={ this.props.propsValue.projectSearchIds }
+    //                             psm_Charge_Filter_UserSelection_StateObject={ this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject }
+    //                             psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject={ this.state.psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject }
+    //                             updateMadeTo_psm_Charge_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_psm_Charge_Filter_UserSelection_StateObject_Callback_BindThis }
+    //                             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+    //                         />
+    //
+    //                         { ( this.props.propsValue.dataPageStateManager.get_DataPage_common_Searches_Flags().is__anyPsmHas_IsIndependentDecoy_True__TrueForAnySearch() ) ? (
+    //
+    //                             <Psm_Exclude_IndependentDecoy_PSMs_UserSelection
+    //                                 psm_Exclude_IndependentDecoy_PSMs_UserSelection_StateObject={ this.props.propsValue.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject }
+    //                                 psm_Exclude_IndependentDecoy_PSMs_UserSelection_Object_Force_ResetToStateObject={ this.state.psm_Exclude_IndependentDecoy_PSMs_UserSelection_Object_Force_ResetToStateObject }
+    //                                 updateMadeTo_Psm_Exclude_IndependentDecoy_PSMs_UserSelection_StateObject_Callback={ this._updateMadeTo_psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject_Callback_BindThis }
+    //                             />
+    //                         ) : null
+    //                         }
+    //
+    //                         {/*<PeptideList_ScanFileToSearchesPage_SingleProtein_FilterOnCounts_psm_UserSelections_Component*/}
+    //                         {/*    peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject={ this.props.propsValue.peptideList_ScanFileToSearchesPage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject }*/}
+    //                         {/*    peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject={ this.state.peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject }*/}
+    //                         {/*    updateMadeTo_peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject_Callback={*/}
+    //                         {/*        this._updateMadeTo_peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject_Callback_BindThis*/}
+    //                         {/*    }*/}
+    //                         {/*/>*/}
+    //
+    //                         {/*  Show Scan Number with Scan Filename or Search Selector  */}
+    //
+    //                         <ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection__Component
+    //                             projectSearchIds={ this.props.propsValue.projectSearchIds }
+    //                             dataPageStateManager={ this.props.propsValue.dataPageStateManager }
+    //                             commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder={ this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder }
+    //                             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject={ this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject }
+    //                             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject={ this.state.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject }
+    //                             updateMadeTo_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_Callback_BindThis }
+    //                         />
+    //
+    //                         {/*  Section Label  */}
+    //
+    //                         <div className=" section-label " style={ { gridColumn: "1/-1" } }>Peptide and Protein Filters
+    //                         </div>
+    //
+    //                         { this._allSearches_HaveProteins ? (
+    //
+    //                             <PeptideUnique_UserSelection
+    //                                 peptideUnique_UserSelection_ComponentData={ this.state.peptideUnique_UserSelection_ComponentData }
+    //                                 peptideUnique_UserSelection_StateObject={ this.props.propsValue.peptideUnique_UserSelection_StateObject }
+    //                                 updateMadeTo_peptideUnique_UserSelection_StateObject_Callback={ this._updateMadeTo_peptideUnique_UserSelection_StateObject_Callback_BindThis }
+    //                             />
+    //                         ) : null }
+    //
+    //                         <PeptideSequence_UserSelections
+    //                             peptideSequence_UserSelections_ComponentData={ this.state.peptideSequence_UserSelections_ComponentData }
+    //                             peptideSequence_UserSelections_StateObject={ this.props.propsValue.peptideSequence_UserSelections_StateObject }
+    //                             proteinSequenceString={ null }
+    //                             updateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback={ null }
+    //                             updateMadeTo_peptideSequence_UserSelections_StateObject_Callback={ this._updateMadeTo_peptideSequence_UserSelections_StateObject_Callback_BindThis }
+    //                         />
+    //
+    //                         <PeptideSequence_MissedCleavageCount_UserSelections_Component
+    //                             projectSearchIds={ this.props.propsValue.projectSearchIds }
+    //                             peptideSequence_MissedCleavageCount_UserSelections_StateObject={ this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject }
+    //                             peptideSequence_MissedCleavageCount_UserSelections_Object_Force_ResetToStateObject={ this.state.peptideSequence_MissedCleavageCount_UserSelections_Object_Force_ResetToStateObject }
+    //                             updateMadeTo_peptideSequence_MissedCleavageCount_UserSelections_StateObject_Callback={ this._updateMadeTo_peptideSequence_MissedCleavageCount_UserSelections_StateObject_Callback_BindThis }
+    //                         />
+    //
+    //                         <PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component
+    //                             peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject={ this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject }
+    //                             peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Object_Force_ResetToStateObject={ this.state.peptideSequence_MissedCleavageCount_UserSelections_Object_Force_ResetToStateObject }
+    //                             updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_Callback={ this._updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_StateObject_Callback_BindThis }
+    //                         />
+    //
+    //                         { this._allSearches_HaveProteins ? (
+    //
+    //                             <ProteinPositionFilter_UserSelections__GetsProteinData
+    //                                 proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ this.state.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object }
+    //                                 proteinPositionFilter_UserSelections_StateObject={ this.props.propsValue.proteinPositionFilter_UserSelections_StateObject }
+    //                                 updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis }
+    //                                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+    //                                 projectSearchIds={ this.props.propsValue.projectSearchIds }
+    //                             />
+    //                         ) : null }
+    //
+    //                         <GeneratedPeptideContents_UserSelections_Root_Component
+    //                             generatedPeptideContents_UserSelections_StateObject={ this.props.propsValue.generatedPeptideContents_UserSelections_StateObject }
+    //                             searchContains_VariableModifications={ this._searchesContains_VariableModifications }
+    //                             searchContains_OpenModifications={ this._searchesContains_OpenModifications }
+    //                             searchContains_StaticModifications={ this._searchesContains_StaticModifications }
+    //                             updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback={ this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis  }
+    //                         />
+    //
+    //                     </FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component>
+    //
+    //                 </div>
+    //
+    //             </div>
+    //
+    //         </React.Fragment>
+    //     )
+    // }
 
 }
 
@@ -3981,6 +4173,190 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
 //  NON Class Functions
 
+
+
+////////////////////////////////////
+
+//  onPageLoad Update  projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject  Selections
+
+/**
+ * onPageLoad Update  projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject  Selections
+ */
+const _onPageLoad__Update__projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject__Selections = function(
+    {
+        projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject,   //  Updated
+
+        projectSearchIds,
+
+        scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId,
+        commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+    } : {
+        projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject: ProjectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject
+
+        projectSearchIds: Array<number>
+
+        scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder>
+        commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+    }
+) {
+
+    //  First try to process ProjectScanFileId From URL and put in DOM
+
+    _onPageLoad__Update__projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject__Selections__From_ProjectScanFileId_From_DOM(
+        {
+            projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject,   //  Updated
+
+            projectSearchIds,
+
+            scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId,
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+        })
+
+    //  Validate all searchScanFileIdSelections_Set in current searches
+
+    const searchScanFileIdSelections_Set_NewEntries: Set<number> = new Set() //  Recompute since Searches Changed
+
+    for ( const projectSearchId of projectSearchIds ) {
+
+        const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
+        if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
+            continue // EARLY CONTINUE
+            // throw new Error("No value from commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
+        }
+
+        {
+            let found_searchScanFileId_In_ExistingSelections = false
+
+            for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
+
+                if ( projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileId_Selections_Set().has( searchScanFileData.searchScanFileId ) ) {
+
+                    searchScanFileIdSelections_Set_NewEntries.add( searchScanFileData.searchScanFileId )
+                    found_searchScanFileId_In_ExistingSelections = true
+                }
+            }
+
+            if ( ! found_searchScanFileId_In_ExistingSelections ) {
+
+                //  No Entry found for search so add first entry
+                for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
+                    searchScanFileIdSelections_Set_NewEntries.add( searchScanFileData.searchScanFileId )
+                    break  // Exit after first entry
+                }
+            }
+        }
+    }
+
+    projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.set_searchScanFileId_Selections_Set({
+        searchScanFileId_Selections_Set: searchScanFileIdSelections_Set_NewEntries
+    })
+
+}
+
+
+
+/**
+ * onPageLoad Update  projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject  Selections
+ *
+ * From ProjectScanFileId From URL and put in DOM (Opened this page by clicking on "[Compare Results by Scan]" on Scan File in Scan Files section of Project Page)
+ */
+const _onPageLoad__Update__projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject__Selections__From_ProjectScanFileId_From_DOM = function(
+    {
+        projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject,   //  Updated
+
+        projectSearchIds,
+
+        scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId,
+        commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+    } : {
+        projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject: ProjectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject
+
+        projectSearchIds: Array<number>
+
+        scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder>
+        commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+    }
+) {
+
+    const projectScanFileId_NOT_SET: number = undefined
+
+    let projectScanFileId_FromURL: number = projectScanFileId_NOT_SET
+    {
+        /**
+         * DOM <script> tag has the project_scan_file_id From the Project Page: special "B"..."B" URL value
+         */
+        let element = document.getElementById("project_scan_file_id_from_url");
+        if (!element) {
+            throw Error("No DOM element for id 'project_scan_file_id_from_url'");
+        }
+
+        const elementString = element.innerHTML
+
+        if ( elementString !== "" ) {
+
+            //  Have a String so process it
+            const domparser = new DOMParser()
+
+            try {
+                const doc = domparser.parseFromString(elementString, "text/html")
+
+                const body = doc.body;
+
+                const elementString_AsHTML_InnerText = body.innerText;
+
+                if ( elementString_AsHTML_InnerText !== "" ) {
+
+                    projectScanFileId_FromURL = Number.parseInt(elementString_AsHTML_InnerText)
+
+                    if ( Number.isNaN( projectScanFileId_FromURL ) ) {
+                        throw Error( "Value DOM element for id 'project_scan_file_id_from_url' is NOT parsable as Integer." );
+                    }
+                }
+
+            } catch (e) {
+                // Not parsable Value so exit
+
+            }
+        }
+    }
+
+    if ( projectScanFileId_FromURL === projectScanFileId_NOT_SET ) {
+
+        //  URL for loading this page does NOT have projectScanFileId so do nothing and return
+
+        return //  EARLY RETURN
+    }
+
+    let searchScanFileIdSelections_Set: Set<number> = new Set()
+
+    //  YES Passed in projectScanFileId so use it.
+
+    for ( const projectSearchId of projectSearchIds ) {
+        const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
+        if ( ! scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder ) {
+            throw new Error("No value from scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId ) for projectSearchId: " + projectSearchId );
+        }
+        const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
+        if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
+            throw new Error("No value from commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
+        }
+        for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
+            const scanFile_ProjectScanFileId_SearchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileData.searchScanFileId )
+            if ( ! scanFile_ProjectScanFileId_SearchScanFileId ) {
+                throw new Error( "No value from scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId(searchScanFileData.searchScanFileId) for searchScanFileData.searchScanFileId: " + searchScanFileData.searchScanFileId + ", projectSearchId: " + projectSearchId );
+            }
+
+            if ( projectScanFileId_FromURL === scanFile_ProjectScanFileId_SearchScanFileId.projectScanFileId ) {
+
+                searchScanFileIdSelections_Set.add( scanFile_ProjectScanFileId_SearchScanFileId.searchScanFileId )
+            }
+        }
+    }
+
+    projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.set_searchScanFileId_Selections_Set({
+        searchScanFileId_Selections_Set: searchScanFileIdSelections_Set
+    })
+}
 
 
 ////////////////////////////////////
@@ -4159,3 +4535,107 @@ const _generatedPeptideString_For_Single_Psm__For_PeptideSequence_And_Mods = fun
 
     return peptideSequenceDisplay
 }
+
+////////////////////////
+
+const _get_PsmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId = function (
+    {
+        projectSearchIds,
+        searchDataLookupParamsRoot,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    } : {
+        projectSearchIds : Array<number>
+
+        searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    }
+) : Promise<{
+    psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder>
+}> {
+
+    const psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder> = new Map()
+
+
+    const bestPsm_FilterableAnnotationTypeIds_ToRetrieve_Set__Map_Key_ProjectSearchId: Map<number, Set<number>> = new Map()
+
+    {
+        //  First get annotation types
+
+        for ( const projectSearchId of projectSearchIds ) {
+            for ( const searchDataLookupParams_For_ProjectSearchId of searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
+                if ( searchDataLookupParams_For_ProjectSearchId.projectSearchId === projectSearchId ) {
+                    if ( searchDataLookupParams_For_ProjectSearchId.bestPsm_AnnTypeDisplay && searchDataLookupParams_For_ProjectSearchId.bestPsm_AnnTypeDisplay.length > 0 ) {
+                        const bestPsm_FilterableAnnotationTypeIds_ToRetrieve = new Set( searchDataLookupParams_For_ProjectSearchId.bestPsm_AnnTypeDisplay )
+                        bestPsm_FilterableAnnotationTypeIds_ToRetrieve_Set__Map_Key_ProjectSearchId.set( projectSearchId, bestPsm_FilterableAnnotationTypeIds_ToRetrieve )
+                    }
+                    break
+                }
+            }
+        }
+    }
+
+    if ( bestPsm_FilterableAnnotationTypeIds_ToRetrieve_Set__Map_Key_ProjectSearchId.size === 0 ) {
+        //  no entries in selection
+
+        //  EARLY RETURN
+        return Promise.resolve({ psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId })
+    }
+
+
+    const promises: Array<Promise<void>> = []
+
+    for ( const projectSearchId of projectSearchIds ) {
+
+        const bestPsm_FilterableAnnotationTypeIds_ToRetrieve_Set = bestPsm_FilterableAnnotationTypeIds_ToRetrieve_Set__Map_Key_ProjectSearchId.get( projectSearchId )
+        if ( ! bestPsm_FilterableAnnotationTypeIds_ToRetrieve_Set ) {
+            // No data for projectSearchId so skip
+            continue  // EARLY CONTINUE
+        }
+
+        const commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId =
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+            get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId);
+        if (!commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId) {
+            const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
+            console.warn(msg);
+            throw Error(msg);
+        }
+
+        {
+            const get_PSM_FilterableAnnotationData_Unfiltered__Include_DecoyPSMs__Holder_Result =
+                commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData().
+                get_PSM_FilterableAnnotationData_Unfiltered__Include_DecoyPSMs__Holder({ psmFilterableAnnotationTypeIds_Requested: bestPsm_FilterableAnnotationTypeIds_ToRetrieve_Set });
+
+            if ( get_PSM_FilterableAnnotationData_Unfiltered__Include_DecoyPSMs__Holder_Result.data ) {
+                psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId.set( projectSearchId, get_PSM_FilterableAnnotationData_Unfiltered__Include_DecoyPSMs__Holder_Result.data.psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder )
+            } else if ( get_PSM_FilterableAnnotationData_Unfiltered__Include_DecoyPSMs__Holder_Result.promise ) {
+                const promise = new Promise<void>( (resolve, reject) => { try {
+                    get_PSM_FilterableAnnotationData_Unfiltered__Include_DecoyPSMs__Holder_Result.promise.catch(reason => { reject(reason) })
+                    get_PSM_FilterableAnnotationData_Unfiltered__Include_DecoyPSMs__Holder_Result.promise.then(value => { try {
+                        psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId.set( projectSearchId, value.psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder )
+                        resolve();
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                promises.push(promise);
+            } else {
+                const msg = "get_PSM_FilterableAnnotationData_Unfiltered__Include_DecoyPSMs__Holder_Result no data or promise";
+                console.warn(msg);
+                throw Error(msg);
+            }
+        }
+    }
+
+    const promisesAll = Promise.all( promises )
+    return new Promise((resolve, reject) => { try {
+        promisesAll.catch(reason => reject(reason))
+        promisesAll.then(novalue => { try {
+            resolve({
+                psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder_Map_Key_ProjectSearchId
+            })
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+}
+

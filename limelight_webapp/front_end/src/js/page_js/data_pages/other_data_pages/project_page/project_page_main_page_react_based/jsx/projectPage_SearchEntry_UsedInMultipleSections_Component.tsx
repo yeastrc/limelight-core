@@ -706,24 +706,22 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
                                 {/* Navigation Fake Links to Peptide, Protein, Modifications pages for Single Search */ }
 
-                                { searchDisplayListItem.searchHasScanDataFlag ? (
-                                    <>  {/*  Only display when have scan file uploaded  */}
-                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                            title={
-                                                limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
-                                            }
-                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                <>
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <span
+                                            className=" fake-link "
+                                            onClick={ this._scanFileToSearch_Page_FakeLink_Clicked_BindThis }
                                         >
-                                            <span
-                                                className=" fake-link "
-                                                onClick={ this._scanFileToSearch_Page_FakeLink_Clicked_BindThis }
-                                            >
-                                                [Scans]
-                                            </span>
-                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                        <span> </span>
-                                    </>
-                                ) : null }
+                                            [Scans]
+                                        </span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                    <span> </span>
+                                </>
 
                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                     title={
