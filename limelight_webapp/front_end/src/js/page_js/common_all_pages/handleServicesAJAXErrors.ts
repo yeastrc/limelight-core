@@ -281,7 +281,7 @@ function handleAJAXError(
 
 		} catch( e ) {
 			try {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e, webserviceURL: url } );
 			} catch( e2 ) {
 				console.log("reportWebErrorToServer.reportErrorObjectToServer threw exception:")
 				console.log( e2 );
