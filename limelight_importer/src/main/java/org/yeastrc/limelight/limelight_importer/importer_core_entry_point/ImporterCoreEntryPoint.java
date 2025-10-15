@@ -98,6 +98,10 @@ public class ImporterCoreEntryPoint {
 
 	private static final Logger log = LoggerFactory.getLogger( ImporterCoreEntryPoint.class );
 	
+	private static final String _LIMELIGHT_XML_FILE_DATA_ERROR__NO_REPORTED_PEPTIDE_ELEMENTS_UNDER_REPORTED_PEPTIDES_ELEMENT_MESSAGE = 
+			"Limelight XML File is invalid since it does NOT contain any PSMs or Reported Peptides.  Check the search program results and the Limelight converter program.  (The Limelight XML File does not contain an element <reported_peptides> or that element contains no children.)";
+	
+	
 	/**
 	 * private constructor
 	 */
@@ -231,10 +235,53 @@ public class ImporterCoreEntryPoint {
 
 			try ( InputStream inputStream = new FileInputStream( limelightXMLFile_FileContainer.getLimelightXMLFile() ) ) {
 
-				LimelightInput limelightInputForImport = deserializeLimelightInputFromInputStream( inputStream );
+				LimelightInput limelightInputForImport = deserializeLimelightInputFromInputStream( inputStream, false /* override_Disable_XSD_Validation */  );
 
 				return limelightInputForImport;  // EARLY RETURN
 
+
+			} catch ( LimelightImporterLimelightXMLDeserializeFailException e ) {
+				
+				String exceptionMessage = e.getMessage();
+				
+				if ( exceptionMessage != null && exceptionMessage.contains( "reported_peptides" ) ) {
+					
+					//  Check that XSD validation failed for no children of element <reported_peptides>
+					
+
+					try ( InputStream inputStream_Read_2 = new FileInputStream( limelightXMLFile_FileContainer.getLimelightXMLFile() ) ) {
+
+						LimelightInput limelightInput_NeverReturned_ForDataValidationOnly = deserializeLimelightInputFromInputStream( inputStream_Read_2, true /* override_Disable_XSD_Validation */ );
+					
+						if ( limelightInput_NeverReturned_ForDataValidationOnly.getReportedPeptides() != null ) {
+							
+							if ( limelightInput_NeverReturned_ForDataValidationOnly.getReportedPeptides().getReportedPeptide() != null
+									&& limelightInput_NeverReturned_ForDataValidationOnly.getReportedPeptides().getReportedPeptide().isEmpty() ) {
+								
+								log.error( _LIMELIGHT_XML_FILE_DATA_ERROR__NO_REPORTED_PEPTIDE_ELEMENTS_UNDER_REPORTED_PEPTIDES_ELEMENT_MESSAGE );
+								throw new LimelightImporterDataException( _LIMELIGHT_XML_FILE_DATA_ERROR__NO_REPORTED_PEPTIDE_ELEMENTS_UNDER_REPORTED_PEPTIDES_ELEMENT_MESSAGE );
+							}
+						}
+
+						//  Any other error throw the original exception
+						throw e;
+						
+					} catch ( LimelightImporterDataException de ) {
+						
+						throw de;  // rethrow just thrown LimelightImporterDataException
+					
+					} catch ( Throwable t ) {
+						
+						//  Any exception throw the original exception
+						throw e;
+					}
+					
+				}
+
+				//  If get here then just rethrow e
+				
+				throw e;
+				
 			} catch ( Exception e ) {
 				System.out.println( "Exception in deserializing the primary input XML file" );
 				System.err.println( "Exception in deserializing the primary input XML file" );
@@ -289,10 +336,54 @@ public class ImporterCoreEntryPoint {
 			
 			InputStream inputStream = responseInputStream;
 
-			LimelightInput limelightInputForImport = deserializeLimelightInputFromInputStream( inputStream );
+			LimelightInput limelightInputForImport = deserializeLimelightInputFromInputStream( inputStream, false /* override_Disable_XSD_Validation */  );
 
 			return limelightInputForImport;  // EARLY RETURN
 
+
+		} catch ( LimelightImporterLimelightXMLDeserializeFailException e ) {
+			
+			String exceptionMessage = e.getMessage();
+			
+			if ( exceptionMessage != null && exceptionMessage.contains( "reported_peptides" ) ) {
+				
+				//  Check that XSD validation failed for no children of element <reported_peptides>
+
+				try ( ResponseInputStream<GetObjectResponse> responseInputStream = amazonS3_Client.getObject(getObjectRequest) ) {
+					
+					InputStream inputStream_Read_2 = responseInputStream;
+
+					LimelightInput limelightInput_NeverReturned_ForDataValidationOnly = deserializeLimelightInputFromInputStream( inputStream_Read_2, true /* override_Disable_XSD_Validation */ );
+				
+					if ( limelightInput_NeverReturned_ForDataValidationOnly.getReportedPeptides() != null ) {
+						
+						if ( limelightInput_NeverReturned_ForDataValidationOnly.getReportedPeptides().getReportedPeptide() != null
+								&& limelightInput_NeverReturned_ForDataValidationOnly.getReportedPeptides().getReportedPeptide().isEmpty() ) {
+							
+							log.error( _LIMELIGHT_XML_FILE_DATA_ERROR__NO_REPORTED_PEPTIDE_ELEMENTS_UNDER_REPORTED_PEPTIDES_ELEMENT_MESSAGE );
+							throw new LimelightImporterDataException( _LIMELIGHT_XML_FILE_DATA_ERROR__NO_REPORTED_PEPTIDE_ELEMENTS_UNDER_REPORTED_PEPTIDES_ELEMENT_MESSAGE );
+						}
+					}
+
+					//  Any other error throw the original exception
+					throw e;
+
+				} catch ( LimelightImporterDataException de ) {
+					
+					throw de;  // rethrow just thrown LimelightImporterDataException
+				
+				} catch ( Throwable t ) {
+					
+					//  Any exception throw the original exception
+					throw e;
+				}
+				
+			}
+
+			//  If get here then just rethrow e
+			
+			throw e;
+			
 		} catch ( NoSuchKeyException e ) {
 			
 			//  Throw Data Exception if externally passed in object key and bucket name
@@ -310,13 +401,15 @@ public class ImporterCoreEntryPoint {
 	 * Utility method to get the LimelightInput from an input stream
 	 * 
 	 * @param inputStream
+	 * @param override_Disable_XSD_Validation - If true will force Disable XSD validation
 	 * @return
 	 * @throws Exception
 	 */
-	public LimelightInput deserializeLimelightInputFromInputStream( 
-			InputStream inputStream
+	private LimelightInput deserializeLimelightInputFromInputStream( 
+			InputStream inputStream,
+			boolean override_Disable_XSD_Validation
 			) throws Exception, LimelightImporterLimelightXMLDeserializeFailException {
-		
+			
 		//  Unmarshall the main import file
 		LimelightInput limelightInputForImport = null;
 		try {
@@ -324,7 +417,9 @@ public class ImporterCoreEntryPoint {
 			
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			
-			if ( Limelight_XSD_XML_Schema_Enabled_And_Filename_With_Path_Constant.Limelight_XSD_XML_SCHEMA_VALIDATION_ENABLED ) {
+			if ( ( ! override_Disable_XSD_Validation )
+					&& Limelight_XSD_XML_Schema_Enabled_And_Filename_With_Path_Constant.Limelight_XSD_XML_SCHEMA_VALIDATION_ENABLED ) {
+				
 				URL xmlSchemaURL = null;
 				try {
 					xmlSchemaURL = this.getClass().getResource( Limelight_XSD_XML_Schema_Enabled_And_Filename_With_Path_Constant.Limelight_XSD_XML_SCHEMA_FILENAME_WITH_PATH );
@@ -355,9 +450,11 @@ public class ImporterCoreEntryPoint {
 				
 				unmarshaller.setSchema(schema);
 			} else {
-				log.warn( "" );
-				log.warn( "NOT Performing XSD validation since is false Limelight_XSD_XML_Schema_Enabled_And_Filename_With_Path_Constant.Limelight_XSD_XML_SCHEMA_VALIDATION_ENABLED" );
-				log.warn( "" );
+				if ( ( ! override_Disable_XSD_Validation ) ) {
+					log.warn( "" );
+					log.warn( "NOT Performing XSD validation since is false Limelight_XSD_XML_Schema_Enabled_And_Filename_With_Path_Constant.Limelight_XSD_XML_SCHEMA_VALIDATION_ENABLED" );
+					log.warn( "" );
+				}
 			}
 			Object unmarshalledObject = null;
 			try {
