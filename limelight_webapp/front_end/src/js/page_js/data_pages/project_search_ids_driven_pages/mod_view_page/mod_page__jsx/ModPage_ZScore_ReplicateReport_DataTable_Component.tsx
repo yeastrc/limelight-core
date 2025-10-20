@@ -1186,7 +1186,7 @@ const _create_DataTable_Data = function (
         const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
             <div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
-                    { quantTypeString + " Count " }
+                    { quantTypeString_With_Count_String }
                 </div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     Group 2 { searchesOrSubSearches_Label_String }:
@@ -1201,6 +1201,156 @@ const _create_DataTable_Data = function (
 
         const dataTableColumn = new DataTable_Column( {
             id: "count_2", // Used for tracking sort order. Keep short
+            displayName,
+            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
+            width : 85,
+            sortable : true
+        });
+        dataTableColumns.push( dataTableColumn );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+    }
+
+    const quantTypeString_With_Ratio_String = quantTypeString + " Ratio"
+
+    {
+        const displayName = quantTypeString_With_Ratio_String + " " + group_1_ColumnHeader_Addition;
+
+        let searchesOrSubSearches_Label_String = "Searches"
+
+        const searchName_Or_SubSearchLabels: Array<JSX.Element> = []
+
+        if ( processing_SubSearches ) {
+
+            searchesOrSubSearches_Label_String = "Sub searches"
+
+            for ( const subSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {
+
+                const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId )
+                if ( ! searchSubGroup ) {
+                    throw Error("searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId ) returned NOTHING for subSearchId: " + subSearchId )
+                }
+
+                searchName_Or_SubSearchLabels.push(
+                    <li
+                        key={ searchSubGroup.searchSubGroup_Id }
+                        style={ { marginBottom: 8 } }
+                    >
+                        ({ searchSubGroup.subgroupName_Display }) { searchSubGroup.searchSubgroupName_fromImportFile }
+                    </li>
+                )
+            }
+
+        } else {
+
+            for ( const projectSearchId of group_1_ProjectSearchIds_Or_SubSearchIds ) {
+
+                const searchData_For_ProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+
+                searchName_Or_SubSearchLabels.push(
+                    <li
+                        key={ searchData_For_ProjectSearchId.projectSearchId }
+                        style={ { marginBottom: 8 } }
+                    >
+                        ({ searchData_For_ProjectSearchId.searchId }) { searchData_For_ProjectSearchId.name }
+                    </li>
+                )
+            }
+        }
+
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
+            <div>
+                <div style={ { fontWeight: "bold", marginBottom: 6 } }>
+                    { quantTypeString_With_Ratio_String }
+                </div>
+                <div style={ { fontWeight: "bold", marginBottom: 6 } }>
+                    Group 1 { searchesOrSubSearches_Label_String }:
+                </div>
+                <div>
+                    <ul>
+                        { searchName_Or_SubSearchLabels }
+                    </ul>
+                </div>
+            </div>
+        )
+
+        const dataTableColumn = new DataTable_Column( {
+            id: "ratio_1", // Used for tracking sort order. Keep short
+            displayName,
+            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
+            width : 85,
+            sortable : true
+        });
+        dataTableColumns.push( dataTableColumn );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+    }
+
+    {
+        const displayName = quantTypeString_With_Ratio_String + " " + group_2_ColumnHeader_Addition;
+
+        let searchesOrSubSearches_Label_String = "Searches"
+
+        const searchName_Or_SubSearchLabels: Array<JSX.Element> = []
+
+        if ( processing_SubSearches ) {
+
+            searchesOrSubSearches_Label_String = "Sub searches"
+
+            for ( const subSearchId of group_2_ProjectSearchIds_Or_SubSearchIds ) {
+
+                const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId )
+                if ( ! searchSubGroup ) {
+                    throw Error("searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( subSearchId ) returned NOTHING for subSearchId: " + subSearchId )
+                }
+
+                searchName_Or_SubSearchLabels.push(
+                    <li
+                        key={ searchSubGroup.searchSubGroup_Id }
+                        style={ { marginBottom: 8 } }
+                    >
+                        ({ searchSubGroup.subgroupName_Display }) { searchSubGroup.searchSubgroupName_fromImportFile }
+                    </li>
+                )
+            }
+
+        } else {
+
+            for ( const projectSearchId of group_2_ProjectSearchIds_Or_SubSearchIds ) {
+
+                const searchData_For_ProjectSearchId = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
+
+                searchName_Or_SubSearchLabels.push(
+                    <li
+                        key={ searchData_For_ProjectSearchId.projectSearchId }
+                        style={ { marginBottom: 8 } }
+                    >
+                        ({ searchData_For_ProjectSearchId.searchId }) { searchData_For_ProjectSearchId.name }
+                    </li>
+                )
+            }
+        }
+
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
+            <div>
+                <div style={ { fontWeight: "bold", marginBottom: 6 } }>
+                    { quantTypeString_With_Ratio_String }
+                </div>
+                <div style={ { fontWeight: "bold", marginBottom: 6 } }>
+                    Group 2 { searchesOrSubSearches_Label_String }:
+                </div>
+                <div>
+                    <ul>
+                        { searchName_Or_SubSearchLabels }
+                    </ul>
+                </div>
+            </div>
+        )
+
+        const dataTableColumn = new DataTable_Column( {
+            id: "ratio_2", // Used for tracking sort order. Keep short
             displayName,
             columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
             width : 85,
@@ -1353,6 +1503,35 @@ const _create_DataTable_Data = function (
                 searchTableData,
                 valueDisplay,
                 valueSort : tableRow.count_2
+            });
+            columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+
+        {
+            const valueDisplay = tableRow.groupRatio_1.toExponential( 2 );
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay,
+                valueSort : tableRow.groupRatio_1
+            });
+            columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+        {
+            const valueDisplay = tableRow.groupRatio_2.toExponential( 2 );
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay,
+                valueSort : tableRow.groupRatio_2
             });
             columnEntries.push( columnEntry );
 
