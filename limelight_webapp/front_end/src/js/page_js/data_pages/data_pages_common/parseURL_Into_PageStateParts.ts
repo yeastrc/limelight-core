@@ -59,6 +59,23 @@ import {
 	_FEATURE_DETECTION_ENCODED_IDENTIFIER
 } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
+
+/**
+ *
+ */
+export class ParseURL_Into_PageStateParts__FailToParse__StillHas__go__InUrl_Exception_Class {
+
+	/**
+	 *
+	 */
+	constructor() {
+
+	}
+
+}
+
+
+
 /**
  * 
  */
@@ -95,7 +112,6 @@ export class ParseURL_Into_PageStateParts {
 			windowPath = windowPath.substring( 0, windowPath.length - 1 );
 		}
 
-
 		let is_ProjectSearchId_Based_URL = false;
 		let is_ExperimentId_Based_URL = false;
 		let is_FeatureDetectionId_Based_URL = false
@@ -122,6 +138,17 @@ export class ParseURL_Into_PageStateParts {
 							//  URL is Feature Detection Based
 							is_projectScanFileId_Based_URL = true;
 						} else {
+
+							{
+								if ( windowPath.indexOf( '/go/' ) ) {
+
+									//  Throw this exception so NOT logged to server
+									const msg = "ERROR: Page URL is not Project Search Id Based or Experiment Id Based or Feature Detection Id Based or Project Scan File Id.  Page URL contains '/go/'.  Page URL: " + windowPath;
+									console.warn( msg );
+									throw new ParseURL_Into_PageStateParts__FailToParse__StillHas__go__InUrl_Exception_Class()
+								}
+							}
+
 							const msg = "ERROR: Page URL is not Project Search Id Based or Experiment Id Based or Feature Detection Id Based or Project Scan File Id.  Page URL: " + windowPath;
 							console.warn( msg );
 							throw Error( msg );

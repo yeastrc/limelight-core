@@ -21,6 +21,9 @@ import { _AJAX_POST_JSON_CONTENT_TYPE } from "page_js/common_all_pages/EveryPage
 import {
 	WebserviceCallStandardPost_RejectObject_Class
 } from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
+import {
+	ParseURL_Into_PageStateParts__FailToParse__StillHas__go__InUrl_Exception_Class
+} from "page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts";
 
 let _pageHide_Event_Triggered = false; //  true when 'pagehide' event called on page unload
 
@@ -136,6 +139,13 @@ var reportWebErrorToServer = {
 				} else {
 					console.warn("Exception Stack contains dev tools string so NOT displaying error msg to user.  dev tools string: '" + react_devtools_backend_String + "'." )
 				}
+			}
+
+			if ( errorException instanceof ParseURL_Into_PageStateParts__FailToParse__StillHas__go__InUrl_Exception_Class ) {
+
+				console.warn( "reportErrorObjectToServer: errorException instanceof ParseURL_Into_PageStateParts__FailToParse__StillHas__go__InUrl_Exception_Class SO NOT report exception to server" )
+
+				return //   EARLY RETURN
 			}
 
 			console.warn("reportErrorObjectToServer: params: ", params)
