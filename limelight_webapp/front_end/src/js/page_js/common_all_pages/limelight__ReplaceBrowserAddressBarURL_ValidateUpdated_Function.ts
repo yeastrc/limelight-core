@@ -72,16 +72,16 @@ export const limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function = f
 
         const new_Browser_location_pathname = window.location.pathname
 
-        if ( new_Browser_location_pathname.startsWith( limelight_base_href_value_String ) ) {
-
-            const new_Browser_location_pathname_AFTER_baseRef = new_Browser_location_pathname.substring( limelight_base_href_value_String.length )
-
-            if ( new_Browser_location_pathname_AFTER_baseRef !== newURL ) {
-
-                const msg = "After call window.history.replaceState( null, null, newURL );  window.location.pathname after Limelight Base Ref NOT Equal newURL. newURL: '" + newURL + "', window.location.pathname after Limelight Base Ref: '" + new_Browser_location_pathname_AFTER_baseRef + "'"
-                console.warn( msg )
-                throw new Limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function_Exception_Class()
-            }
-        }
+        // if ( new_Browser_location_pathname.startsWith( limelight_base_href_value_String ) ) {
+        //
+        //     const new_Browser_location_pathname_AFTER_baseRef = new_Browser_location_pathname.substring( limelight_base_href_value_String.length )
+        //
+        //     if ( new_Browser_location_pathname_AFTER_baseRef !== newURL ) {
+        //
+        //         const msg = "After call window.history.replaceState( null, null, newURL );  window.location.pathname after Limelight Base Ref NOT Equal newURL. newURL: '" + newURL + "', window.location.pathname after Limelight Base Ref: '" + new_Browser_location_pathname_AFTER_baseRef + "'"
+        //         console.warn( msg )
+        //         throw new Limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function_Exception_Class()
+        //     }
+        // }
     }
 }
