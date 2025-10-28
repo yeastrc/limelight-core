@@ -72,16 +72,25 @@ export const limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function = f
 
         const new_Browser_location_pathname = window.location.pathname
 
-        // if ( new_Browser_location_pathname.startsWith( limelight_base_href_value_String ) ) {
-        //
-        //     const new_Browser_location_pathname_AFTER_baseRef = new_Browser_location_pathname.substring( limelight_base_href_value_String.length )
-        //
-        //     if ( new_Browser_location_pathname_AFTER_baseRef !== newURL ) {
-        //
-        //         const msg = "After call window.history.replaceState( null, null, newURL );  window.location.pathname after Limelight Base Ref NOT Equal newURL. newURL: '" + newURL + "', window.location.pathname after Limelight Base Ref: '" + new_Browser_location_pathname_AFTER_baseRef + "'"
-        //         console.warn( msg )
-        //         throw new Limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function_Exception_Class()
-        //     }
-        // }
+        let new_Browser_location_pathname_ForComparison = new_Browser_location_pathname
+
+        if ( ! newURL.startsWith( limelight_base_href_value_String ) ) {
+
+            //  Remove limelight_base_href_value_String from limelight_base_href_value_String since newURL does not start with it
+
+            const new_Browser_location_pathname_AFTER_baseRef = new_Browser_location_pathname.substring( limelight_base_href_value_String.length )
+
+            new_Browser_location_pathname_ForComparison = new_Browser_location_pathname_AFTER_baseRef
+        }
+
+        if ( new_Browser_location_pathname.startsWith( limelight_base_href_value_String ) ) {
+
+            if ( new_Browser_location_pathname_ForComparison !== newURL ) {
+
+                const msg = "After call window.history.replaceState( null, null, newURL );  new_Browser_location_pathname_ForComparison NOT Equal newURL. newURL: '" + newURL + "', new_Browser_location_pathname_ForComparison: '" + new_Browser_location_pathname_ForComparison + "'"
+                console.warn( msg )
+                throw new Limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function_Exception_Class()
+            }
+        }
     }
 }
