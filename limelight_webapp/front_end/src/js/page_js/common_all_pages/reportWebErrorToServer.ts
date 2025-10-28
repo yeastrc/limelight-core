@@ -24,6 +24,9 @@ import {
 import {
 	ParseURL_Into_PageStateParts__FailToParse__StillHas__go__InUrl_Exception_Class
 } from "page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts";
+import {
+	Limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function_Exception_Class
+} from "page_js/common_all_pages/limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function";
 
 let _pageHide_Event_Triggered = false; //  true when 'pagehide' event called on page unload
 
@@ -144,6 +147,13 @@ var reportWebErrorToServer = {
 			if ( errorException instanceof ParseURL_Into_PageStateParts__FailToParse__StillHas__go__InUrl_Exception_Class ) {
 
 				console.warn( "reportErrorObjectToServer: errorException instanceof ParseURL_Into_PageStateParts__FailToParse__StillHas__go__InUrl_Exception_Class SO NOT report exception to server" )
+
+				return //   EARLY RETURN
+			}
+
+			if ( errorException instanceof Limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function_Exception_Class ) {
+
+				console.warn( "reportErrorObjectToServer: errorException instanceof Limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function_Exception_Class SO NOT report exception to server" )
 
 				return //   EARLY RETURN
 			}

@@ -55,6 +55,9 @@ import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPag
 import {
 	limelight__Sort_ArrayOfNumbers_SortArrayInPlace
 } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
+import {
+	limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function
+} from "page_js/common_all_pages/limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function";
 
 //  Overrides for LorikeetOptions:
 
@@ -264,7 +267,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			projectSearchId : this._projectSearchId, psmId : this._psmId_Displayed, openModPosition: this._openModPosition_Displayed, scanPeaks_MZ_That_PassFilters_Array__For_PsmId: urlParsed.scanPeaks_MZ_That_PassFilters_Array__For_PsmId
 		});
 
-		window.history.replaceState( null, null, lorikeetSpectrumViewer_newWindowURL );
+		limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function({ newURL: lorikeetSpectrumViewer_newWindowURL })
 
 
 		{  // Update table for new/current selection

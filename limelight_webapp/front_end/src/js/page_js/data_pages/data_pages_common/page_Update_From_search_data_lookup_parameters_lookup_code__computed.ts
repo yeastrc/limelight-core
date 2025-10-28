@@ -19,6 +19,9 @@ import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_
 import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
 import { ParseURL_Into_PageStateParts }  from 'page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts';
+import {
+	limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function
+} from "page_js/common_all_pages/limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function";
 
 /**
  *
@@ -68,5 +71,5 @@ export const page_Update_From_search_data_lookup_parameters_lookup_code__compute
 
 	const newURL = pageControllerPath + search_data_lookup_parameters_lookup_code__computed + "/r";
 
-	window.history.replaceState( null, null, newURL );
+	limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function({ newURL })
 }

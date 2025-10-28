@@ -286,7 +286,7 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
             //  Remove "Updating" overlay displayed in this method if NO LONGER use window.location.href to change to new page
 
 
-            // window.history.replaceState( null, null, newURL );
+            // limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function({ newURL })
             //
             // navigation_dataPages_Maint_Instance.updateNavLinks();
             //
@@ -321,7 +321,7 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
 //         experimentId : undefined
 //     } );
 //
-//     window.history.replaceState( null, null, newURL );
+//     limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function({ newURL })
 //
 //     navigation_dataPages_Maint_Instance.updateNavLinks();
 // }

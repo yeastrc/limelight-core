@@ -67,6 +67,9 @@ import { newURL_Build_PerProjectSearchIds_Or_ExperimentId }  from 'page_js/data_
 import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
 import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint';
+import {
+	limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function
+} from "page_js/common_all_pages/limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function";
 
 
 class CentralPageStateManager_Method_getURL_ForCurrentState_Params {
@@ -146,7 +149,7 @@ export class CentralPageStateManager {
 		
 			let newURL = windowPath.substring( 0, newURLlength );
 
-			window.history.replaceState( null, null, newURL );
+			limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function({ newURL })
 		}
 	}
 	
@@ -249,7 +252,7 @@ export class CentralPageStateManager {
 
 		const newURL = this.getURL_ForCurrentState( undefined );
 
-		window.history.replaceState( null, null, newURL );
+		limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function({ newURL })
 
 		const controller_path_prefix_ProjectSearchId_Based = controller_path_prefix_ProjectSearchId_Based_FromDOM();
 		const controller_path_prefix_ExperimentId_Based = controller_path_prefix_ExperimentId_Based_FromDOM();

@@ -58,6 +58,9 @@ import {
 import {
 	FeatureDetection_ViewPage_RootTableSelection_StateObject
 } from "page_js/data_pages/feature_detection_driven_pages/feature_detection_view_page/feature_detection_view_page_root/featureDetection_ViewPage_RootTableSelection_StateObject";
+import {
+	limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function
+} from "page_js/common_all_pages/limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function";
 
 /**
  *
@@ -201,7 +204,7 @@ export class FeatureDetection_ViewPage_RootClass_Common {
 
 			let newURL = windowPath.substring( 0, newURLlength );
 
-			window.history.replaceState( null, null, newURL );
+			limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function({ newURL })
 		}
 	}
 

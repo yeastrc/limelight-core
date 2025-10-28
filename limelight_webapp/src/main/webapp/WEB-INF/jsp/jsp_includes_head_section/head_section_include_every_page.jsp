@@ -9,6 +9,10 @@ head_section_include_every_page.jsp
 
  	<%--  Make all relative URLs start after the context path request.getContextPath() --%>
 	<base href="<%= request.getContextPath() %>/">  <%-- The trailing '/' in the href is required --%>
+		
+		<%--  Set this script tag value to EXACTLY the same as the <base href> value --%>
+	<script id="limelight_base_href_value" 
+		type="text/text" ><%= request.getContextPath() %>/</script>  <%-- The trailing '/' is required. Same as in the href above --%>
 	
 	<script id="internet_explorer_not_supported_page_url" 
 		type="text/text" ><%= request.getContextPath() %>/<%= AA_ErrorPageControllerPaths_Constants.INTERNET_EXPLORER_NOT_SUPPORTED_ERROR_PAGE_CONTROLLER %></script>

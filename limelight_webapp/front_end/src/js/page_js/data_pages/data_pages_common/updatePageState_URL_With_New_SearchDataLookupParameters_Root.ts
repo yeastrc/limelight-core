@@ -24,6 +24,9 @@ import { newURL_Build_PerProjectSearchIds_Or_ExperimentId }  from './newURL_Buil
 import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint';
 import { limelight__IsVariableAString } from 'page_js/common_all_pages/limelight__IsVariableAString';
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {
+	limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function
+} from "page_js/common_all_pages/limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function";
 
 /**
  *
@@ -107,8 +110,8 @@ const _updateURL_withNew_searchDataLookupParamsCode = function( { searchDataLook
 		referrer : pageStatePartsFromURL.referrer,
 		experimentId : undefined
 	} );
-	
-	window.history.replaceState( null, null, newURL );
+
+	limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function({ newURL })
 
 	navigation_dataPages_Maint_Instance.updateNavLinks();
 }
