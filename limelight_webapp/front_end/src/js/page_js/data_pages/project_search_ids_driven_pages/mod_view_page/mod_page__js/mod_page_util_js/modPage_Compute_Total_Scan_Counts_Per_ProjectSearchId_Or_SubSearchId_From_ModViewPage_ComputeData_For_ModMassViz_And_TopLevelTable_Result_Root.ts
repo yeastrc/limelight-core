@@ -6,7 +6,8 @@ import {
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable";
 import {
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 
 
@@ -56,10 +57,39 @@ export const modPage_Compute_Total_Scan_Counts_Per_ProjectSearchId_Or_SubSearchI
     const scanNumbers_Set_AcrossAllModMasses__OnlyWhen_SearchScanFileId_NOT_Populated__Map_Key_ProjectSearchId_Or_SubSearchId: Map<number, Set<number>> = new Map()
 
 
-    if ( ! (
-        modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() !== undefined
-        || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax() !== undefined
-    ) ) {
+    // ONLY if NOT ( "Min and max mod masses:" either has a value )
+
+    let no_MinMax_Filters = false
+
+    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
+
+        if ( ! (
+            modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== undefined
+            || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== undefined
+        ) ) {
+            no_MinMax_Filters = true
+        }
+
+    } else if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM ) {
+
+        if ( ! (
+            modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined
+            || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined
+        ) ) {
+            no_MinMax_Filters = true
+        }
+
+    } else {
+        const msg = "Unexpected value for modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab(): " + modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        console.warn(msg)
+        throw Error(msg)
+    }
+
+
+
+    if ( no_MinMax_Filters ) {
 
         // ONLY if NOT ( "Min and max mod masses:" either has a value )
 

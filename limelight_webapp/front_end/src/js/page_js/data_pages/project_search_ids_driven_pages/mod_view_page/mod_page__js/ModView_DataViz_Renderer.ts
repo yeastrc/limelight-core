@@ -1,7 +1,9 @@
 /**
  * ModView_DataViz_Renderer.ts
  *
- * Render the graphic on the Mod page
+ * Render the graphic on the Mod page - Heatmap
+ *
+ * Heatmap of mod mass count of mod mass rounded to whole number
  */
 
 
@@ -17,7 +19,8 @@ import {
     ModViewPage_DataVizOptions_VizSelections_PageStateManager,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum,
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 import {
     limelight__Input_NumberOrString_ReturnNumber
@@ -903,8 +906,8 @@ const _updateSelectedRectIndicators = function (
         }
     }
 
-    modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin( min_ModMassSelected )
-    modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax( max_ModMassSelected )
+    modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( min_ModMassSelected )
+    modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( max_ModMassSelected )
 
     // const modMasses_ProjectSearchIds_Visualization_Selections_Root = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMasses_ProjectSearchIds_Visualization_Selections_Root()
     //
@@ -986,15 +989,20 @@ const _showToolTip = function (
 
     const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
 
-    const showRatiosBoolean = modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios
+    const showRatiosBoolean =
+        modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP
+        && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios
 
     let labelText: string
 
-    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === undefined
-        || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
+    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP
+        || ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() === undefined
+        || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) ) {
         labelText = showRatiosBoolean ? "<p>" + quantTypeString + " Ratio:" : "<p>" + quantTypeString + " Count:";
     } else {
-        switch( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() ) {
+        switch( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() ) {
             case ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.per_mod_zscore:
             case ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_zscore:
                 labelText = "Z-Score:";
@@ -1084,9 +1092,10 @@ const _showToolTip = function (
 
             if ( topLevelTable_DisplayValue !== undefined ) {
 
-                if (
-                    ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === undefined
-                        || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none )
+                if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                    === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP
+                    && ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() === undefined
+                        || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none )
                     && ! showRatiosBoolean ) {
 
                     txt += labelText + " " + _numberWithCommas(topLevelTable_DisplayValue) + "</p>";
@@ -1180,10 +1189,11 @@ const _addColorScaleLegend = function (
 
     let showInts = false
 
-    if (
-        ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === undefined
-            || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none )
-        && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts ) {
+    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP
+        && ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() === undefined
+            || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none )
+        && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts ) {
 
         showInts = true;
     } else {
@@ -1204,12 +1214,17 @@ const _addColorScaleLegend = function (
 
         let labelText = quantType;
         labelText += (
-            modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
+            modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+            !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP
+            || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
                 ? ' Count' : ' Ratio'
         )
 
-        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== undefined
-            && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
+        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+            === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP
+            && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() !== undefined
+            && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
+
             labelText += " (" + modPage_Get_DataTransformationType_DisplayLabel( { modViewPage_DataVizOptions_VizSelections_PageStateManager } ) + ")";
         }
         labelText += ' Color:';

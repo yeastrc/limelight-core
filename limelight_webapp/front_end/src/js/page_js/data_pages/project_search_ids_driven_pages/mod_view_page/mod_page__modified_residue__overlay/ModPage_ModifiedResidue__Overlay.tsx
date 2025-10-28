@@ -136,13 +136,13 @@ class ModPage_ModifiedResidue__Overlay_Component extends React.Component< ModPag
         const _HEADER_ROWS_PADDING_BOTTOM = 10
         const _DATA_ROWS_PADDING_BOTTOM = 3
 
-        const entries_ForLetters_TextLines_ForLogging: Array<string> = []
+        // const entries_ForLetters_TextLines_ForLogging: Array<string> = []
 
         const entries_For_ResidueLetters_JSX: Array<JSX.Element> = []
 
         for ( const rowValue of this.props.params.modifiedResidue_RowValues ) {
 
-            entries_ForLetters_TextLines_ForLogging.push( rowValue.residueLetter + "\t" + rowValue.count )
+            // entries_ForLetters_TextLines_ForLogging.push( rowValue.residueLetter + "\t" + rowValue.count )
 
             let barWidth = _BAR_WIDTH_MAX
 
@@ -212,8 +212,8 @@ class ModPage_ModifiedResidue__Overlay_Component extends React.Component< ModPag
             entries_For_ResidueLetters_JSX.push( dataForResidue_Element )
         }
 
-        entries_ForLetters_TextLines_ForLogging.push("")
-        console.log( "entries_ForLetters_TextLines_ForLogging: \n\n" + entries_ForLetters_TextLines_ForLogging.join("\n"))
+        // entries_ForLetters_TextLines_ForLogging.push("")
+        // console.log( "entries_ForLetters_TextLines_ForLogging: \n\n" + entries_ForLetters_TextLines_ForLogging.join("\n"))
 
         return (
             <ModalOverlay_Limelight_Component_v001_B_FlexBox

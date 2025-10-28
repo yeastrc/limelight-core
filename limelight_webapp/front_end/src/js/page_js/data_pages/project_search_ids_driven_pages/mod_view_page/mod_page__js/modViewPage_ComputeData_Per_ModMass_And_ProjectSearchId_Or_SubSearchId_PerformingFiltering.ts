@@ -66,12 +66,19 @@ import {
 import {
     ModificationPosition_DataType
 } from "page_js/data_pages/data_pages__common_data_types_typescript/modificationPosition_DataType_Typescript";
+import {
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 
 
 ///////////////////////
 
 
 ///  Search this file for the string:   MAIN exported function
+
+
+const _MOD_MASS_MIN_MAX_NOT_SET: number = undefined
+
 
 /**
  *
@@ -85,6 +92,8 @@ export enum ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearch
  *
  */
 export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_UI_Selections_UsedForCreation {
+
+    readonly visualization_DisplayTab: ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum
 
     /**
      * Value for modViewPage_DataVizOptions_VizSelections_PageStateManager.get_excludeUnlocalizedOpenMods() used to create this result
@@ -115,6 +124,9 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     readonly projectSearchId_Or_SubSearchId_Enum: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result___ProjectSearchId_Or_SubSearchId_Enum
 
     private _dataEntry_SingleModMass__Map_Key_ModMass: Map<number, ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_ForSingle_ModMass> = new Map()
+
+    private _modMass_Min_Across_All_Searches: number = _MOD_MASS_MIN_MAX_NOT_SET
+    private _modMass_Max_Across_All_Searches: number = _MOD_MASS_MIN_MAX_NOT_SET
 
     /**
      * A place to save "Unmodified" PSM IDs since need them in the denominator for "Filtered ZScore" and "Filtered P-Value";
@@ -155,6 +167,26 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
     }
 
     /**
+     * !!  INTERNAL ONLY to the code file for this class.  Excluding filtering on Mod Mass Min/Max.
+     */
+    INTERNAL_ONLY__ForCompute_ModMass_Min_Max__Unfiltered_ModMass_MinMax( modMass: number ) {
+
+        if ( this._modMass_Min_Across_All_Searches === _MOD_MASS_MIN_MAX_NOT_SET ) {
+
+            this._modMass_Min_Across_All_Searches = modMass
+            this._modMass_Max_Across_All_Searches = modMass
+
+        } else {
+            if ( this._modMass_Min_Across_All_Searches > modMass ) {
+                this._modMass_Min_Across_All_Searches = modMass
+            }
+            if ( this._modMass_Max_Across_All_Searches < modMass ) {
+                this._modMass_Max_Across_All_Searches = modMass
+            }
+        }
+    }
+
+    /**
      * !!  INTERNAL ONLY to the code file for this class
      */
     INTERNAL__AddTo_psmIds_With_NO_Modifications_Set_For_ProjectSearchId_Or_SubSearchId(
@@ -173,6 +205,20 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
         }
 
         psmTblData_With_NO_Modifications_Map_Key_PsmId_Map.set( psmTblData.psmId, psmTblData )
+    }
+
+    /**
+     * Get modMass_Min_Across_All_Searches.  Excluding filtering on Mod Mass Min/Max.
+     */
+    get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax() {
+        return this._modMass_Min_Across_All_Searches
+    }
+
+    /**
+     * Get modMass_Max_Across_All_Searches.  Excluding filtering on Mod Mass Min/Max.
+     */
+    get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax() {
+        return this._modMass_Max_Across_All_Searches
     }
 
     /**
@@ -1095,13 +1141,34 @@ const _modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Pe
     }
 ): ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
 {
-    const ui_Selections_Used_ForCreation : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_UI_Selections_UsedForCreation = {
-        excludeUnlocalizedOpenMods_UI_Selection: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_excludeUnlocalizedOpenMods(),
-        modMassCutoffMin: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin(),
-        modMassCutoffMax: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax()
+    let modMassCutoffMin: number = undefined
+    let modMassCutoffMax: number = undefined
+
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
+
+        modMassCutoffMin = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY()
+        modMassCutoffMax = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY()
+
+    } else if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM ) {
+
+        modMassCutoffMin = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+        modMassCutoffMax = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+    } else {
+        const msg = "Unexpected value for all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab(): " + all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        console.warn(msg)
+        throw Error(msg)
     }
 
 
+    const ui_Selections_Used_ForCreation : ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_UI_Selections_UsedForCreation = {
+        visualization_DisplayTab: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab(),
+        excludeUnlocalizedOpenMods_UI_Selection: all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_excludeUnlocalizedOpenMods(),
+        modMassCutoffMin,
+        modMassCutoffMax
+    }
 
     let searchSubGroup_Ids_Selected : Set<number> = undefined;
 
@@ -1435,32 +1502,65 @@ const _process_SinglePsm = function (
 
                     psm_has_Any_ModMassEntries___Includes_ModificationsThat_NOT_PassesFilters___EXCLUDES__OpenModMassRoundsToZero_AND_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Checked = true
 
-                    //                          Round again here since may round to different value from whole number
-                    const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId.modificationMass )
+                    const modMass = psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId.modificationMass
 
-                    if (
-                        ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
-                            && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass_Rounded_ForModPage_Processing )
-                        || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
-                            && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass_Rounded_ForModPage_Processing ) ) {
+                    const modificationPositions_OnPeptide = [ psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId.position ]
 
-                        //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+                    const filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result =
+                        _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_ModificationPositions_OnPeptide_ThatPassFilters( {
+                            modificationPositions_OnPeptide,
+                            psmTblData,
+                            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                            proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
+                            peptideIds_For_MainFilters_Holder,
+                            peptideSequences_For_MainFilters_Holder
+                        } )
 
-                    } else {
+                    if ( filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.passesFilter ) {
 
-                        const modificationPositions_OnPeptide = [ psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId.position ]
+                        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root.INTERNAL_ONLY__ForCompute_ModMass_Min_Max__Unfiltered_ModMass_MinMax( modMass )
 
-                        const filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result =
-                            _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_ModificationPositions_OnPeptide_ThatPassFilters( {
-                                modificationPositions_OnPeptide,
-                                psmTblData,
-                                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
-                                proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
-                                peptideIds_For_MainFilters_Holder,
-                                peptideSequences_For_MainFilters_Holder
-                            } )
+                        //                          Round again here since may round to different value from whole number
+                        const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( modMass )
 
-                        if ( filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.passesFilter ) {
+                        let modMass_PassesCutoffs = false
+
+                        if ( ui_Selections_Used_ForCreation.visualization_DisplayTab === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
+
+                            if (
+                                ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
+                                    && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass_Rounded_ForModPage_Processing )
+                                || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
+                                    && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass_Rounded_ForModPage_Processing ) ) {
+
+                                //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+
+                            } else {
+                                modMass_PassesCutoffs = true
+                            }
+
+                        } else if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                            === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM ) {
+
+                            if (
+                                ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
+                                    && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass )
+                                || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
+                                    && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass ) ) {
+
+                                //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+
+                            } else {
+                                modMass_PassesCutoffs = true
+                            }
+
+                        } else {
+                            const msg = "Unexpected value for all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab(): " + all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                            console.warn(msg)
+                            throw Error(msg)
+                        }
+
+                        if ( modMass_PassesCutoffs ) {
 
                             const psmId = psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId.psmId
 
@@ -1524,33 +1624,66 @@ const _process_SinglePsm = function (
 
                 psm_has_Any_ModMassEntries___Includes_ModificationsThat_NOT_PassesFilters___EXCLUDES__OpenModMassRoundsToZero_AND_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Checked = true
 
-                //                          Round again here since may round to different value from whole number
-                const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.mass )
+                const modMass = variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.mass
 
-                if (
-                    ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
-                        && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass_Rounded_ForModPage_Processing )
-                    || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
-                        && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass_Rounded_ForModPage_Processing ) ) {
+                const modificationPositions_OnPeptide = [ variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.position ]
 
-                    //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
-
-                } else {
-
-                    const modificationPositions_OnPeptide = [ variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.position ]
-
-                    const filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result =
-                        _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_ModificationPositions_OnPeptide_ThatPassFilters( {
-                            modificationPositions_OnPeptide,
-                            psmTblData,
-                            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
-                            proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
-                            peptideIds_For_MainFilters_Holder,
-                            peptideSequences_For_MainFilters_Holder
-                        } )
+                const filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result =
+                    _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_ModificationPositions_OnPeptide_ThatPassFilters( {
+                        modificationPositions_OnPeptide,
+                        psmTblData,
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                        proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
+                        peptideIds_For_MainFilters_Holder,
+                        peptideSequences_For_MainFilters_Holder
+                    } )
 
 
-                    if ( filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.passesFilter ) {
+                if ( filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.passesFilter ) {
+
+                    modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root.INTERNAL_ONLY__ForCompute_ModMass_Min_Max__Unfiltered_ModMass_MinMax( modMass )
+
+                    //                          Round again here since may round to different value from whole number
+                    const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( modMass )
+
+                    let modMass_PassesCutoffs = false
+
+                    if ( ui_Selections_Used_ForCreation.visualization_DisplayTab === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
+
+                        if (
+                            ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
+                                && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass_Rounded_ForModPage_Processing )
+                            || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
+                                && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass_Rounded_ForModPage_Processing ) ) {
+
+                            //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+
+                        } else {
+                            modMass_PassesCutoffs = true
+                        }
+
+                    } else if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM ) {
+
+                        if (
+                            ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
+                                && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass )
+                            || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
+                                && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass ) ) {
+
+                            //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+
+                        } else {
+                            modMass_PassesCutoffs = true
+                        }
+
+                    } else {
+                        const msg = "Unexpected value for all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab(): " + all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+
+                    if ( modMass_PassesCutoffs ) {
 
                         const psmId = psmTblData.psmId
 
@@ -1631,75 +1764,139 @@ const _process_SinglePsm = function (
 
                     psm_has_Any_ModMassEntries___Includes_ModificationsThat_NOT_PassesFilters___EXCLUDES__OpenModMassRoundsToZero_AND_ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Checked = true
 
+                    const modMass = psmOpenModificationMassForPsmId.openModificationMass
+
                     //                          Round again here since may round to different value from whole number
-                    const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( psmOpenModificationMassForPsmId.openModificationMass )
+                    const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( modMass )
 
-                    if (
-                        ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
-                            && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass_Rounded_ForModPage_Processing )
-                        || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
-                            && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass_Rounded_ForModPage_Processing )
-                        || ( ui_Selections_Used_ForCreation.excludeUnlocalizedOpenMods_UI_Selection
-                            && ( ( ! psmOpenModificationMassForPsmId.positionsMap_KeyPosition ) || psmOpenModificationMassForPsmId.positionsMap_KeyPosition.size === 0 ) ) ) {
+                    let psm_PassesFilters = false
 
-                        //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax OR ( excludeUnlocalizedOpenMods AND NO Localization ) so skip
+                    let modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm = undefined
+                    let modificationPositions_OnPeptide_ThatPassFilters: Set<number> = undefined
 
-                    } else {
+                    if ( psmOpenModificationMassForPsmId.positionsMap_KeyPosition ) {
 
-                        let psm_PassesFilters = false
+                        const modificationPositions_OnPeptide: Array<number> = []
 
-                        let modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm = undefined
-                        let modificationPositions_OnPeptide_ThatPassFilters: Set<number> = undefined
+                        for ( const positionEntries of psmOpenModificationMassForPsmId.positionsMap_KeyPosition.values() ) {
+                            for ( const positionEntry of positionEntries ) {
+                                modificationPositions_OnPeptide.push( positionEntry.position )
+                            }
+                        }
 
-                        if ( psmOpenModificationMassForPsmId.positionsMap_KeyPosition ) {
+                        const filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result =
+                            _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_ModificationPositions_OnPeptide_ThatPassFilters( {
+                                modificationPositions_OnPeptide,
+                                psmTblData,
+                                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                                proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
+                                peptideIds_For_MainFilters_Holder,
+                                peptideSequences_For_MainFilters_Holder
+                            } )
 
-                            const modificationPositions_OnPeptide: Array<number> = []
+                        if ( filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.passesFilter ) {
 
-                            for ( const positionEntries of psmOpenModificationMassForPsmId.positionsMap_KeyPosition.values() ) {
-                                for ( const positionEntry of positionEntries ) {
-                                    modificationPositions_OnPeptide.push( positionEntry.position )
+                            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root.INTERNAL_ONLY__ForCompute_ModMass_Min_Max__Unfiltered_ModMass_MinMax( modMass )
+
+                            let modMass_PassesCutoffs = false
+
+                            if ( ui_Selections_Used_ForCreation.visualization_DisplayTab === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
+
+                                if (
+                                    ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
+                                        && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass_Rounded_ForModPage_Processing )
+                                    || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
+                                        && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass_Rounded_ForModPage_Processing ) ) {
+
+                                    //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+
+                                } else {
+                                    modMass_PassesCutoffs = true
                                 }
+
+                            } else if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                                === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM ) {
+
+                                if (
+                                    ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
+                                        && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass )
+                                    || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
+                                        && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass ) ) {
+
+                                    //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+
+                                } else {
+                                    modMass_PassesCutoffs = true
+                                }
+
+                            } else {
+                                const msg = "Unexpected value for all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab(): " + all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                                console.warn(msg)
+                                throw Error(msg)
                             }
 
-                            if ( psmTblData.psmId === 725788503 ) {
-                                var z = 0
-                            }
-
-                            const filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result =
-                                _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_ModificationPositions_OnPeptide_ThatPassFilters( {
-                                    modificationPositions_OnPeptide,
-                                    psmTblData,
-                                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
-                                    proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
-                                    peptideIds_For_MainFilters_Holder,
-                                    peptideSequences_For_MainFilters_Holder
-                                } )
-
-                            if ( filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.passesFilter ) {
-
-                                if ( psmTblData.psmId === 725788503 ) {
-                                    var z = 0
-                                }
+                            if ( modMass_PassesCutoffs ) {
 
                                 psm_PassesFilters = true
 
                                 modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm = filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm
                                 modificationPositions_OnPeptide_ThatPassFilters = filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter__ProteinPositions_Data_Result.modificationPositions_OnPeptide_ThatPassFilters
                             }
+                        }
+                    } else {
 
-                        } else {
+                        const filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result =
+                            _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter({
+                                psmTblData,
+                                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
-                            const filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result =
-                                _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter({
-                                    psmTblData,
-                                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                                proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
+                                peptideIds_For_MainFilters_Holder,
+                                peptideSequences_For_MainFilters_Holder
+                            })
 
-                                    proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
-                                    peptideIds_For_MainFilters_Holder,
-                                    peptideSequences_For_MainFilters_Holder
-                                })
+                        if ( filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result.passesFilter ) {
 
-                            if ( filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result.passesFilter ) {
+                            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root.INTERNAL_ONLY__ForCompute_ModMass_Min_Max__Unfiltered_ModMass_MinMax( modMass )
+
+                            let modMass_PassesCutoffs = false
+
+                            if ( ui_Selections_Used_ForCreation.visualization_DisplayTab === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
+
+                                if (
+                                    ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
+                                        && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass_Rounded_ForModPage_Processing )
+                                    || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
+                                        && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass_Rounded_ForModPage_Processing ) ) {
+
+                                    //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+
+                                } else {
+                                    modMass_PassesCutoffs = true
+                                }
+
+                            } else if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                                === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM ) {
+
+                                if (
+                                    ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
+                                        && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass )
+                                    || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
+                                        && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass ) ) {
+
+                                    //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+
+                                } else {
+                                    modMass_PassesCutoffs = true
+                                }
+
+                            } else {
+                                const msg = "Unexpected value for all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab(): " + all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                                console.warn(msg)
+                                throw Error(msg)
+                            }
+
+                            if ( modMass_PassesCutoffs ) {
 
                                 psm_PassesFilters = true
 
@@ -1708,61 +1905,57 @@ const _process_SinglePsm = function (
                                 modificationPositions_OnPeptide_ThatPassFilters = filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result.modificationPositions_OnPeptide_ThatPassFilters
                             }
                         }
+                    }
 
-                        if ( psm_PassesFilters ) {
+                    if ( psm_PassesFilters ) {
+
+                        const psmId = psmTblData.psmId
+
+                        //  Does NO Filtering
+                        const dataFor_SinglePsm_For_PsmId = _get_dataFor_SinglePsm_For_PsmId( {
+                            psmId,
+                            psmTblData,
+                            psmEntry,
+                            modMass_Rounded_ForModPage_Processing,
+                            projectSearchId,
+                            singleSearch_WithSubSearches_Flag: singleSearch_WithSubSearches_Flag,
+                            searchSubGroup_Ids_Selected,
+
+                            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root, // Updated
+
+                            searchSubGroupId_ForPSM_ID_Holder,
+                            variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder,
+                            variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder,
+                            openModifications_On_PSM_For_MainFilters_Holder,
+
+                            peptideIds_For_MainFilters_Holder,
+                            peptideSequences_For_MainFilters_Holder
+                        } )
+
+                        dataFor_SinglePsm_For_PsmId.INTERNAL_ONLY__Add_PsmOpenMod_Entry( {
+                            psmId,
+                            modMass_Rounded_ForModPage_Processing,
+                            psmOpenModificationForPsmId: psmOpenModificationMassForPsmId
+                        } )
+
+                        if ( modificationPositions_OnPeptide_ThatPassFilters ) {
 
                             if ( psmTblData.psmId === 725788503 ) {
                                 var z = 0
                             }
 
-                            const psmId = psmTblData.psmId
+                            _update__dataFor_SinglePsm_For_PsmId__For__modificationPositions_OnPeptide_ThatPassFilters__AND__ModifiedResidueLetters({
+                                dataFor_SinglePsm_For_PsmId,  //  UPDATED
 
-                            //  Does NO Filtering
-                            const dataFor_SinglePsm_For_PsmId = _get_dataFor_SinglePsm_For_PsmId( {
-                                psmId,
-                                psmTblData,
-                                psmEntry,
-                                modMass_Rounded_ForModPage_Processing,
-                                projectSearchId,
-                                singleSearch_WithSubSearches_Flag: singleSearch_WithSubSearches_Flag,
-                                searchSubGroup_Ids_Selected,
-
-                                modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root, // Updated
-
-                                searchSubGroupId_ForPSM_ID_Holder,
-                                variable_Dynamic_Modifications_On_PSM_For_MainFilters_Holder,
-                                variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder,
-                                openModifications_On_PSM_For_MainFilters_Holder,
+                                modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm,
+                                modificationPositions_OnPeptide_ThatPassFilters,
 
                                 peptideIds_For_MainFilters_Holder,
                                 peptideSequences_For_MainFilters_Holder
-                            } )
-
-                            dataFor_SinglePsm_For_PsmId.INTERNAL_ONLY__Add_PsmOpenMod_Entry( {
-                                psmId,
-                                modMass_Rounded_ForModPage_Processing,
-                                psmOpenModificationForPsmId: psmOpenModificationMassForPsmId
-                            } )
-
-                            if ( modificationPositions_OnPeptide_ThatPassFilters ) {
-
-                                if ( psmTblData.psmId === 725788503 ) {
-                                    var z = 0
-                                }
-
-                                _update__dataFor_SinglePsm_For_PsmId__For__modificationPositions_OnPeptide_ThatPassFilters__AND__ModifiedResidueLetters({
-                                    dataFor_SinglePsm_For_PsmId,  //  UPDATED
-
-                                    modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm,
-                                    modificationPositions_OnPeptide_ThatPassFilters,
-
-                                    peptideIds_For_MainFilters_Holder,
-                                    peptideSequences_For_MainFilters_Holder
-                                })
-                            }
-
-                            psm_Any_ModMassEntry_ForPSM_Passed_Filters = true
+                            })
                         }
+
+                        psm_Any_ModMassEntry_ForPSM_Passed_Filters = true
                     }
                 }
             }

@@ -42,6 +42,58 @@ export const Jstat_ExternalLibrary_Without_TypescriptDefinition_Calls = {
         }
 
         return result
+    },
+
+    /**
+     * Calls mean( array )
+     * Returns the mean of the array vector.
+     *
+     * https://jstat.github.io/vector.html#mean
+     *
+     * Have this function to ensure expected result is the result for typescript typing instead of having 'any' get cast to 'number'.
+     */
+    call_jStat_mean( array: Array<number> ) : number {
+
+        let result = jStat.mean( array )
+
+        //  Assume that if wanted to call jStat.ztest(...) and use default for 'sides' that need to call jStat.ztest( value ) instead of passing undefined for 'sides' since ran into issue with 'flag'
+
+        if ( ! limelight__variable_is_type_number_Check( result ) ) {
+            const msg = "result from call to jStat.stdev(...) did NOT return a number"
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        return result
+    },
+
+    /**
+     * Calls stdev( array[, flag] )
+     * Returns the standard deviation of the array vector. By default, the population standard deviation is returned.  Passing true to flag returns the sample standard deviation.
+     *
+     * https://jstat.github.io/vector.html#stdev
+     *
+     * Have this function to ensure expected result is the result for typescript typing instead of having 'any' get cast to 'number'.
+     */
+    call_jStat_stdev( array: Array<number>, flag?: boolean ) : number {
+
+        let result: any
+
+        if ( flag ) {
+            result = jStat.stdev( array, flag )
+        } else {
+            result = jStat.stdev( array )  //  Cannot pass flag if undefined since if undefined the function returns NaN
+        }
+
+        //  Assume that if wanted to call jStat.ztest(...) and use default for 'sides' that need to call jStat.ztest( value ) instead of passing undefined for 'sides' since ran into issue with 'flag'
+
+        if ( ! limelight__variable_is_type_number_Check( result ) ) {
+            const msg = "result from call to jStat.stdev(...) did NOT return a number"
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        return result
     }
 
 } as  const

@@ -19,10 +19,10 @@ import { ModViewPage_RootClass_LoggedInUsers }
 
 ///////////////
 
-$(document).ready(function() {
+// $(document).ready(function() {
 
 	try {
-		var modViewPage_RootClass_LoggedInUsers = new ModViewPage_RootClass_LoggedInUsers();
+		const modViewPage_RootClass_LoggedInUsers = new ModViewPage_RootClass_LoggedInUsers();
 		modViewPage_RootClass_LoggedInUsers.initialize();
 
 	} catch( e ) {
@@ -30,4 +30,4 @@ $(document).ready(function() {
 		throw e;
 	}
 
-});
+// });

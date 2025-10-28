@@ -5,7 +5,8 @@
 import {
     ModViewPage_DataVizOptions_VizSelections_PageStateManager,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum,
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 import {
     modPage_GetSearchNameForProjectSearchId
@@ -274,7 +275,9 @@ const _modPage_Download_SummaryStatistics_After_GetData = function (
             for ( const searchSubGroup of searchSubGroups_InOrder_Filtered ) {
 
                 outputLine += "\tSub Search:" + searchSubGroup.subgroupName_Display + " " + quantTypeString + " " +
-                    ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() ===
+                    ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                    !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP
+                    || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() ===
                     ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts ? "count" : "ratio" );
             }
 
@@ -288,7 +291,9 @@ const _modPage_Download_SummaryStatistics_After_GetData = function (
                 }
 
                 outputLine += "\tSearch:" + search_Id_NameDisplayString.searchId + " " + quantTypeString + " " +
-                    ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() ===
+                    ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                    !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP
+                    || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() ===
                     ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts ? "count" : "ratio" );
             }
         }

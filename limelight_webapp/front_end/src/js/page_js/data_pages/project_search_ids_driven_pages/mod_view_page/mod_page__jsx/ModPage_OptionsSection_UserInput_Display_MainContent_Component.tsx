@@ -1,6 +1,9 @@
 /**
  * ModPage_OptionsSection_UserInput_Display_MainContent_Component.tsx
  *
+ *     HeatMap Tab Options Section
+ *
+ *
  */
 
 import React from "react";
@@ -52,7 +55,7 @@ interface ModPage_OptionsSection_UserInput_Display_MainContent_Component_State {
 }
 
 /**
- *
+ *  HeatMap Options Section
  */
 export class ModPage_OptionsSection_UserInput_Display_MainContent_Component extends React.Component< ModPage_OptionsSection_UserInput_Display_MainContent_Component_Props, ModPage_OptionsSection_UserInput_Display_MainContent_Component_State > {
 
@@ -121,7 +124,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
     private _psmQuantMethod_Counts_Clicked_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
 
-        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_psmQuant( ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts )
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_psmQuant_WhenDisplay_HEATMAP_ONLY( ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts )
 
         this._rerender_Then_After_SetTimeout_Call_valueChanged_Callback()
 
@@ -138,7 +141,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
     private _psmQuantMethod_Ratios_Clicked_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
 
-        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_psmQuant( ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios )
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_psmQuant_WhenDisplay_HEATMAP_ONLY( ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios )
 
         this._rerender_Then_After_SetTimeout_Call_valueChanged_Callback()
 
@@ -162,17 +165,17 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
          const newValue = event.target.value
 
         if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) {
-            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none )
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation_For__WhenDisplay_HEATMAP_ONLY( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none )
         } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.scaled_mean_diff ) {
-            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.scaled_mean_diff )
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation_For__WhenDisplay_HEATMAP_ONLY( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.scaled_mean_diff )
         } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.per_mod_zscore ) {
-            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.per_mod_zscore )
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation_For__WhenDisplay_HEATMAP_ONLY( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.per_mod_zscore )
         } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_zscore ) {
-            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_zscore )
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation_For__WhenDisplay_HEATMAP_ONLY( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_zscore )
         } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_pvalue_bonf ) {
-            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_pvalue_bonf )
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation_For__WhenDisplay_HEATMAP_ONLY( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_pvalue_bonf )
         } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_qvalue_bh ) {
-            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_qvalue_bh )
+            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_dataTransformation_For__WhenDisplay_HEATMAP_ONLY( ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_qvalue_bh )
         } else {
             const msg = "_transformations_InputFieldChanged_Callback: event.target.value is NOT any value in ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum "
             console.warn(msg)
@@ -192,12 +195,12 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
      */
     private _colorCutoffRatio_InputFieldChanged_Callback( newValue_Number: number ) { try {
 
-        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio() ) {
+        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() ) {
             // No change so exit
             return // EARLY RETURN
         }
 
-        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_colorCutoffRatio( newValue_Number )
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( newValue_Number )
 
         this._inputField_TypeText_Changed()
 
@@ -212,12 +215,12 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
         const newValue_Number = _inputNumberField_Compute_IntegerNumberFromFieldContents( newValue_String )
 
-        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() ) {
+        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() ) {
             // No change so exit
             return // EARLY RETURN
         }
 
-        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_colorCutoffCount( newValue_Number )
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( newValue_Number )
 
         this._inputField_TypeText_Changed()
 
@@ -228,12 +231,12 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
      */
     private _modMassCutoffMin_InputFieldChanged_Callback( newValue_Number: number ) { try {
 
-        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() ) {
+        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() ) {
             // No change so exit
             return // EARLY RETURN
         }
 
-        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin( newValue_Number )
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( newValue_Number )
 
         this._inputField_TypeText_Changed()
 
@@ -244,12 +247,12 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
      */
     private _modMassCutoffMax_InputFieldChanged_Callback( newValue_Number: number ) { try {
 
-        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax() ) {
+        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() ) {
             // No change so exit
             return // EARLY RETURN
         }
 
-        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax( newValue_Number )
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( newValue_Number )
 
         this._inputField_TypeText_Changed()
 
@@ -260,8 +263,8 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
      */
     private _clear_ModMass_MinMax_Cutoffs( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
 
-        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin( undefined )
-        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax( undefined )
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( undefined )
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( undefined )
 
         this.setState({ forceReRender_Object: {} })
 
@@ -372,39 +375,67 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
         )
 
         const tooltipContents__Max_cutoff_for_color_scale_Count_Label = (
-            <span>
-                Override maximum value for PSM or scan count when scaling color in visualization. Only used when quant
-                method is set to counts.
-            </span>
+            <div>
+                <div>
+                    Override maximum value for PSM or scan count when scaling color in visualization.
+                </div>
+                <div>
+                    Only used when quant method is set to counts.
+                </div>
+            </div>
         )
 
         const tooltipContents__Max_cutoff_for_color_scale_Ratio_Label = (
-            <span>
-                Override maximum value for ratio when scaling color in
-                visualization. Only used when quant method is set to ratios.
-            </span>
+            <div>
+                <div>
+                    Override maximum value for ratio when scaling color in visualization.
+                </div>
+                <div>
+                    Only used when quant method is set to ratios.
+                </div>
+            </div>
         )
 
         const tooltipContents__Min_and_max_mod_masses_Label = (
-            <span>
-                Override the minimum and maximum modification masses to be shown in the visualization and data table.
-                Masses outside this range are also excluded from Z-score and P-value calculations.
-            </span>
+            <div>
+                <div>
+                    Override the minimum and maximum modification masses to be shown in the visualization and data table.
+                </div>
+                <div>
+                    Masses outside this range are also excluded from Z-score and P-value calculations.
+                </div>
+                <div>
+                    The modification masses are rounded before comparing to the minimum and maximum.
+                </div>
+            </div>
         )
 
         const tooltipContents__Min_and_max_mod_masses_Minimum_Label = (
-            <span>
-                Override the minimum modification mass to be shown in the visualization and data table. Masses below
-                this value are also excluded from Z-score and P-value calculations.
-            </span>
+            <div>
+                <div>
+                    Override the minimum modification mass to be shown in the visualization and data table.
+                </div>
+                <div>
+                    Masses below this value are also excluded from Z-score and P-value calculations.
+                </div>
+                <div>
+                    The modification masses are rounded before comparing to the minimum.
+                </div>
+            </div>
         )
 
         const tooltipContents__Min_and_max_mod_masses_Maximum_Label = (
-            <span>
-                Override the maximum modification mass to be shown in the
-                visualization and data table. Masses greater than this value are
-                also excluded from Z-score and P-value calculations.
-            </span>
+            <div>
+                <div>
+                    Override the maximum modification mass to be shown in the visualization and data table.
+                </div>
+                <div>
+                    Masses greater than this value are also excluded from Z-score and P-value calculations.
+                </div>
+                <div>
+                    The modification masses are rounded before comparing to the minimum and maximum.
+                </div>
+            </div>
         )
 
         const tooltipContents__Min_and_max_mod_masses_Clear_Minimum_Maximum_Label = (
@@ -446,7 +477,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
         let tooltipContents__Transformations__SelectElement: string = undefined
 
-        switch ( this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() ) {
+        switch ( this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() ) {
 
             case ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none:
                 tooltipContents__Transformations__SelectElement = tooltipContents__Transformations_OptionEntry_title_attribute__none
@@ -530,8 +561,6 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                             <label>
                                                 <input
                                                     type="radio"
-                                                    name="quant-type"
-                                                    value="psms"
                                                     checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms }
                                                     onChange={ this._quantType_Psms_Clicked_Callback_BindThis }
                                                 />
@@ -555,8 +584,6 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                             <label>
                                                 <input
                                                     type="radio"
-                                                    name="quant-type"
-                                                    value="scans"
                                                     checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_quantType() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.scans }
                                                     onChange={ this._quantType_Scans_Clicked_Callback_BindThis }
                                                 />
@@ -583,9 +610,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                             <label>
                                                 <input
                                                     type="radio"
-                                                    name="psm-quant"
-                                                    value="counts"
-                                                    checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts }
+                                                    checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts }
                                                     onChange={ this._psmQuantMethod_Counts_Clicked_Callback_BindThis }
                                                 />
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -609,9 +634,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                             <label>
                                                 <input
                                                     type="radio"
-                                                    name="psm-quant"
-                                                    value="ratios"
-                                                    checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios }
+                                                    checked={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios }
                                                     onChange={ this._psmQuantMethod_Ratios_Clicked_Callback_BindThis }
                                                 />
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -631,7 +654,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
                                         </div>
 
-                                        { this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios ? (
+                                        { this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios ? (
                                             //  'ratios' selected
 
                                             <div style={ { marginTop: 5, marginLeft: 10 } }>
@@ -689,7 +712,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
                                     <div style={ { marginTop: 10 } }>
 
-                                        { this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts ? (
+                                        { this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts ? (
                                             //  'counts' selected
                                             <>
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -709,13 +732,13 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                                     type="text"
                                                     size={ 4 }
                                                     className={
-                                                        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() !== undefined
-                                                        && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() !== null ? "mod-page-user-selection-entered" : null
+                                                        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== undefined
+                                                        && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== null ? "mod-page-user-selection-entered" : null
                                                     }
                                                     value={
-                                                        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() !== undefined
-                                                        && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() !== null
-                                                            ? this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount()
+                                                        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== undefined
+                                                        && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== null
+                                                            ? this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY()
                                                             : ""
                                                     }
                                                     onChange={ this._colorCutoffCount_InputFieldChanged_Callback_BindThis }
@@ -723,7 +746,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                             </>
                                         ) : null }
 
-                                        { this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios ? (
+                                        { this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios ? (
                                             //  'ratios' selected
                                             <>
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -740,7 +763,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                                 <span> </span>
 
                                                 <INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component
-                                                    existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio() }
+                                                    existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() }
                                                     valueChanged_Callback={ this._colorCutoffRatio_InputFieldChanged_Callback_BindThis }
                                                 />
                                             </>
@@ -768,16 +791,23 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
                                     </div>
                                     <div>
+                                        <span style={ { fontSize: 10 } }>(Filter on rounded mass values.)</span>
+                                    </div>
+                                    <div>
                                         <span style={ { fontSize: 10 } }>(Leave blank to use defaults.)</span>
                                     </div>
 
                                     <div
                                         style={ {
                                             marginTop: 10,
-                                            display: "grid", gridTemplateColumns: "min-content min-content auto", alignItems: "baseline", rowGap: 3, columnGap: 5
+                                            display: "grid",
+                                            gridTemplateColumns: "min-content min-content auto",
+                                            alignItems: "baseline",
+                                            rowGap: 3,
+                                            columnGap: 5
                                         } }
                                     >
-                                        {/*  Row 1  */}
+                                        {/*  Row 1  */ }
                                         <div>
                                             <span style={ { whiteSpace: "nowrap" } }>
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -797,16 +827,16 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                         </div>
                                         <div
                                             className={
-                                                this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() !== undefined
-                                                && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() !== null ? "mod-page-user-selection-entered" : null
+                                                this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== undefined
+                                                && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== null ? "mod-page-user-selection-entered" : null
                                             }
                                         >
                                             <INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component
-                                                existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() }
+                                                existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() }
                                                 valueChanged_Callback={ this._modMassCutoffMin_InputFieldChanged_Callback_BindThis }
                                             />
                                         </div>
-                                        {/*  Column 3 to allow the bottom row 3 to be longer  */}
+                                        {/*  Column 3 to allow the bottom row 3 to be longer  */ }
                                         <div></div>
                                         {/*  Row 2  */ }
                                         <div>
@@ -828,17 +858,17 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                         </div>
                                         <div>
                                             <INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component
-                                                existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax() }
+                                                existingValue_In_ModViewPage_DataVizOptions_VizSelections_PageStateManager={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() }
                                                 valueChanged_Callback={ this._modMassCutoffMax_InputFieldChanged_Callback_BindThis }
                                             />
                                         </div>
-                                        {/*  Column 3 to allow the bottom row 3 to be longer  */}
+                                        {/*  Column 3 to allow the bottom row 3 to be longer  */ }
                                         <div></div>
                                         {/*  Row 3  */ }
-                                        { this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin() ||
-                                            this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax() ? (
+                                        { this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== undefined ||
+                                        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== undefined ? (
 
-                                            <div style={ { gridColumn: "1 / -1 " } }>{/*  Span All Columns  */}
+                                            <div style={ { gridColumn: "1 / -1 " } }>{/*  Span All Columns  */ }
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                                     title={ tooltipContents__Min_and_max_mod_masses_Clear_Minimum_Maximum_Label }
                                                     { ...tooltip_Main_Props }
@@ -855,9 +885,9 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                     </div>
                                 </div>
 
-                                {/*  4 of 4 Inner Flex Box Items  */}
+                                {/*  4 of 4 Inner Flex Box Items  */ }
 
-                                {/*  Column In "flex"  */}
+                                {/*  Column In "flex"  */ }
                                 <div className="viz-form-section">
 
                                     <div>
@@ -898,7 +928,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
                                     <div>
                                         <select
-                                            value={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() }
+                                            value={ this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() }
                                             title={ tooltipContents__Transformations__SelectElement }
                                             onChange={ this._transformations_InputFieldChanged_Callback_BindThis  }
                                         >

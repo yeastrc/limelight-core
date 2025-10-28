@@ -17,10 +17,10 @@ import { ModViewPage_RootClass_Common }  from './modViewPage_RootClass_Common';
 
 ///////////////
 
-$(document).ready(function() {
+// $(document).ready(function() {
 
 	try {
-		var modViewPage_RootClass_Common = new ModViewPage_RootClass_Common({});
+		const modViewPage_RootClass_Common = new ModViewPage_RootClass_Common({});
 		modViewPage_RootClass_Common.initialize();
 
 	} catch( e ) {
@@ -28,4 +28,4 @@ $(document).ready(function() {
 		throw e;
 	}
 
-});
+// });

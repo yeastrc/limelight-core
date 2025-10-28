@@ -7,7 +7,8 @@ import * as d3 from "d3";
 import {
     ModViewPage_DataVizOptions_VizSelections_PageStateManager,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum,
-    ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_DataVizOptions_VizSelections_PageStateManager";
 import {
     ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root
@@ -74,11 +75,15 @@ export const modView_DataViz_Compute_ColorScale_WidthHeight_Etc = function (
 
     let minValue_ForViz = 0;
 
-    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== undefined
-        && ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation()
-            !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) ) {
+    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
 
-        minValue_ForViz = _getMin_topLevelTable_DisplayValue_AcrossAll_ModMasses_All_ProjectSearchIds_Or_SubSearchIds( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root, modViewPage_DataVizOptions_VizSelections_PageStateManager )
+        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() !== undefined
+            && ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY()
+                !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) ) {
+
+            minValue_ForViz = _getMin_topLevelTable_DisplayValue_AcrossAll_ModMasses_All_ProjectSearchIds_Or_SubSearchIds( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root, modViewPage_DataVizOptions_VizSelections_PageStateManager )
+        }
     }
 
     let maxValue_ForViz = _getMax_topLevelTable_DisplayValue_Or_UserEntered_MaxColorPsmCount_Or_MaxColorRatio( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root, modViewPage_DataVizOptions_VizSelections_PageStateManager )
@@ -90,18 +95,21 @@ export const modView_DataViz_Compute_ColorScale_WidthHeight_Etc = function (
     //  Code was:
     // if( vizOptionsData.data.dataTransformation !== undefined
     //     && vizOptionsData.data.dataTransformation !== 'none') {
+    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
 
-    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== undefined
-        && ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation()
-            !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) ) {
+        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() !== undefined
+            && ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY()
+                !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) ) {
 
-        if ( Math.abs( minValue_ForViz ) > maxValue_ForViz ) {
+            if ( Math.abs( minValue_ForViz ) > maxValue_ForViz ) {
 
-            maxValue_ForViz = Math.abs(minValue_ForViz);
+                maxValue_ForViz = Math.abs(minValue_ForViz);
 
-        } else if ( maxValue_ForViz > Math.abs( minValue_ForViz ) ) {
+            } else if ( maxValue_ForViz > Math.abs( minValue_ForViz ) ) {
 
-            minValue_ForViz = -1 * maxValue_ForViz;
+                minValue_ForViz = -1 * maxValue_ForViz;
+            }
         }
     }
 
@@ -122,13 +130,15 @@ export const modView_DataViz_Compute_ColorScale_WidthHeight_Etc = function (
 
     let colorScale: any  // treated as a function in code below so unknown what the type is since ".range(" returns an array per d3 Typescript types
 
-    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() !== undefined
-        && ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation()
+    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP
+        && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() !== undefined
+        && ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY()
             !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none ) ) {
 
-        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation()
+        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY()
             === ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_pvalue_bonf
-            || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation() ===
+            || modViewPage_DataVizOptions_VizSelections_PageStateManager.get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() ===
             ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.global_qvalue_bh ) {
 
             minValue_ForViz = 0;
@@ -245,18 +255,22 @@ const _getMax_topLevelTable_DisplayValue_Or_UserEntered_MaxColorPsmCount_Or_MaxC
     modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
     modViewPage_DataVizOptions_VizSelections_PageStateManager: ModViewPage_DataVizOptions_VizSelections_PageStateManager) {
 
-    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios
-        && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio() !== undefined ) {
+    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
 
-        //  Displaying Ratios so return User Entered Max Color Cutoff Ratio
-        return modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio()  // EARLY RETURN
-    }
+        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.ratios
+            && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== undefined ) {
 
-    if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
-        && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount() !== undefined ) {
+            //  Displaying Ratios so return User Entered Max Color Cutoff Ratio
+            return modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY()  // EARLY RETURN
+        }
 
-        //  Displaying Counts so return User Entered Max Color Cutoff Count
-        return modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount()  // EARLY RETURN
+        if ( modViewPage_DataVizOptions_VizSelections_PageStateManager.get_psmQuant_WhenDisplay_HEATMAP_ONLY() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts
+            && modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() !== undefined ) {
+
+            //  Displaying Counts so return User Entered Max Color Cutoff Count
+            return modViewPage_DataVizOptions_VizSelections_PageStateManager.get_colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY()  // EARLY RETURN
+        }
     }
 
     let max_topLevelTable_DisplayValue = 0
@@ -299,16 +313,16 @@ const _getModMatrix = function (
 
         modMatrix[modMass_Index] = Array(projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length);
 
-        let searchIndex = 0;
+        let search_Or_SubSearch_Index = 0;
 
-        for ( const projectSearchId of projectSearchIds_Or_SubSearchIds_For_DisplayOrder ) {
+        for ( const projectSearchId_Or_SubSearchId of projectSearchIds_Or_SubSearchIds_For_DisplayOrder ) {
 
             let found_For_ModMass_ProjectSearchId = false
 
             const data_For_ModMass = modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.get_Data_For_ModMass( modMass )
             if ( data_For_ModMass ) {
 
-                const data_For__ProjectSearchId_Or_SubSearchId = data_For_ModMass.get_For__ProjectSearchId_Or_SubSearchId( projectSearchId )
+                const data_For__ProjectSearchId_Or_SubSearchId = data_For_ModMass.get_For__ProjectSearchId_Or_SubSearchId( projectSearchId_Or_SubSearchId )
                 if ( data_For__ProjectSearchId_Or_SubSearchId ) {
 
                     const topLevelTable_DisplayValue = data_For__ProjectSearchId_Or_SubSearchId.topLevelTable_DisplayValue
@@ -323,14 +337,14 @@ const _getModMatrix = function (
                         topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale = maxValue_ForViz
                     }
 
-                    modMatrix[modMass_Index][searchIndex] = {
+                    modMatrix[modMass_Index][search_Or_SubSearch_Index] = {
                         topLevelTable_DisplayValue,
                         topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale,
-                        projectSearchId_OR_SubSearchId: projectSearchId,
+                        projectSearchId_OR_SubSearchId: projectSearchId_Or_SubSearchId,
                         modMass: modMass,
                         minValue_ForViz,
                         maxValue_ForViz
-                        // searchIndex: searchIndex,
+                        // search_Or_SubSearch_Index: search_Or_SubSearch_Index,
                         // modMassIndex: modMass_Index
                     };
 
@@ -343,19 +357,19 @@ const _getModMatrix = function (
                 //  HARD CODE to default of topLevelTable_DisplayValue of zero.
                 //     TODO  This value is assumed to be correct regardless of what the "Transform" choice is.
 
-                modMatrix[modMass_Index][searchIndex] = {
+                modMatrix[modMass_Index][search_Or_SubSearch_Index] = {
                     topLevelTable_DisplayValue: 0,
                     topLevelTable_DisplayValue__ClampedTo_MinMax_For_ColorScale: 0,
-                    projectSearchId_OR_SubSearchId: projectSearchId,
+                    projectSearchId_OR_SubSearchId: projectSearchId_Or_SubSearchId,
                     modMass: modMass,
                     minValue_ForViz,
                     maxValue_ForViz
-                    // searchIndex: searchIndex,
+                    // search_Or_SubSearch_Index: search_Or_SubSearch_Index,
                     // modMassIndex: modMass_Index
                 };
             }
 
-            searchIndex++;
+            search_Or_SubSearch_Index++;
         }
 
         modMass_Index++;

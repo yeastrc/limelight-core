@@ -4,6 +4,8 @@
  * hash string in the URL
  */
 
+////  Search for:   MAIN CLASS
+
 import {MOD_VIEW_MULTI_SEARCH_DATA_VIZ__CENTRAL_STATE_MANAGER_KEY} from 'page_js/data_pages/central_page_state_manager/centralPageStateManager_Keys';
 import {CentralPageStateManager} from "page_js/data_pages/central_page_state_manager/centralPageStateManager";
 import {
@@ -16,6 +18,11 @@ import {
     ProteinPosition_Of_Modification_Filter_UserSelections_StateObject_Get_RangeEntries_SingleRange
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_of_modification_filter_component/js/proteinPosition_Of_Modification_Filter_UserSelections_StateObject";
 
+
+export enum ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum {
+    HEATMAP = "HEATMAP",
+    HISTOGRAM = "HISTOGRAM"
+}
 
 export enum ModViewPage_DataVizOptions_VizSelections_PageStateManager__DISPLAY_TAB_Values_Enum {
     modListTab = "modListTab",
@@ -52,6 +59,33 @@ export enum ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICA
 export enum ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum {
     PROJECT_SEARCH_IDS = "PROJECT_SEARCH_IDS",
     SUB_SEARCH_IDS = "SUB_SEARCH_IDS"
+}
+
+
+export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class {
+
+    static readonly SEPARATE_PLOTS = new ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class( 1 )
+    static readonly STACKED_BAR_CHART = new ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class( 2 )
+    static readonly ALL_DATA_MERGED_SINGLE_PLOT = new ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class( 3 )
+
+    /**
+     * Default
+     */
+    static readonly DEFAULT = ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS
+
+    readonly pageState_EncodingNumber__PageStateEncodingOnly: number
+
+    /**
+     *
+     * @param pageState_EncodingNumber__PageStateEncodingOnly -- WARNING: MUST be UNIQUE across the values
+     * @private
+     */
+    private constructor(pageState_EncodingNumber__PageStateEncodingOnly: number) {
+
+        this.pageState_EncodingNumber__PageStateEncodingOnly = pageState_EncodingNumber__PageStateEncodingOnly
+    }
+
+    private _DO_NOT_CALL(){}  // Dummy so require constructor
 }
 
 /////////////////
@@ -690,21 +724,41 @@ const _SAVE_STATE_KEYS = {
     SIGNIFICANCE_METRIC_CHART_TYPE: 'b',
     'COLOR_MAX_CUTOFF_COUNT': 'c',
     'DISPLAY_TAB': 'd',
+    VISUALIZATION_DISPLAY_TAB: 'e',
     zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData: 'f',
     searchGroups_For_ZScore_Selections: 'g',
-    'MOD_MASS_MIN_CUTOFF': 'n',
+    histogram_ChartType_Enum_Class: 'h',
+    show_inverse_RangeDirection_Plot_2_WhenTwoPlots: 'i',
+    display_Mean_StandardDeviation_Line_And_Number: 'j',
+    show_DifferenceChart_WhenTwoPlots: 'k',
+    MOD_MASS_MIN_CUTOFF__ROUNDED_MASS_FOR_HEATMAP: 'n',
+    MOD_MASS_MIN_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM: 'o',
     PROJECT_SEARCH_IDS: 'p',
     'PSM_QUANT_METHOD': 'q',
     'COLOR_MAX_CUTOFF_RATIO': 'r',
     'SELECTED_RECTS': 's',
     'DATA_TRANSFORMATION' : 't',
     psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator: 'u',
-    'MOD_MASS_MAX_CUTOFF': 'x',
+    MOD_MASS_MAX_CUTOFF__ROUNDED_MASS_FOR_HEATMAP: 'x',
+    MOD_MASS_MAX_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM: 'y',
     'PROTEIN_POSITION_FILTER' : 'pp',
     'EXCLUDE_UNLOCALIZED_MODS' : 'xu',
 } as const
 
 
+////////
+
+const _VISUALIZATION_DISPLAY_TAB_ENCODING_KEYS: { [key: string]: any } = {}
+
+_VISUALIZATION_DISPLAY_TAB_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ] = 0
+_VISUALIZATION_DISPLAY_TAB_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM ] = 1
+
+const _VISUALIZATION_DISPLAY_TAB_DECODING_KEYS = [
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP,
+    ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM
+]
+
+/////
 
 const _DISPLAY_TAB_ENCODING_KEYS: { [key: string]: any } = {}
 
@@ -715,6 +769,8 @@ const _DISPLAY_TAB_DECODING_KEYS = [
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__DISPLAY_TAB_Values_Enum.modListTab,
     ModViewPage_DataVizOptions_VizSelections_PageStateManager__DISPLAY_TAB_Values_Enum.zScoreTab
 ]
+
+/////
 
 const _PSM_QUANT_METHOD_ENCODING_KEYS: { [key: string]: any } = {}
 
@@ -783,16 +839,63 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
 
         projectSearchIds_OrderOverride_Deprecated : Array<number>  //  Deprecated override of ProjectSearchId order where user changed search order in Mod Page graphic which is no longer supported
 
+        visualization_DisplayTab: ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum
+
         displayTab : ModViewPage_DataVizOptions_VizSelections_PageStateManager__DISPLAY_TAB_Values_Enum
+
         quantType : ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum
-        psmQuant : ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum
+
+        /**
+         * Ignore when visualization_DisplayTab is HISTOGRAM
+         */
+        psmQuant_WhenDisplay_HEATMAP_ONLY : ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum
+        /**
+         * Ignore when visualization_DisplayTab is HISTOGRAM
+         */
         psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator: boolean  //  true means to use result of filters in 'Click to Show Filters and Options' for Denominator for Ratios calculations
 
-        dataTransformation : ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum
-        colorCutoffRatio : number
-        colorCutoffCount : number
-        modMassCutoffMin : number
-        modMassCutoffMax : number
+        /**
+         * Ignore when visualization_DisplayTab is HISTOGRAM
+         */
+        dataTransformation_For__WhenDisplay_HEATMAP_ONLY : ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum
+
+        /**
+         * Ignore when visualization_DisplayTab is HISTOGRAM
+         */
+        colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : number
+        /**
+         * Ignore when visualization_DisplayTab is HISTOGRAM
+         */
+        colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : number
+
+        /**
+         * Cutoff based on ROUNDED Mod Mass:   const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( mod mass )
+         *
+         * Ignore when visualization_DisplayTab is HISTOGRAM
+         */
+        modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : number
+        /**
+         * Cutoff based on ROUNDED Mod Mass:   const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( mod mass )
+         *
+         * Ignore when visualization_DisplayTab is HISTOGRAM
+         */
+        modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : number
+
+
+        /**
+         * Cutoff based on Actual Mod Mass:
+         *
+         * Ignore when visualization_DisplayTab is HEATMAP
+         */
+        modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY : number
+        /**
+         * Cutoff based on Actual Mod Mass:
+         *
+         * Ignore when visualization_DisplayTab is HEATMAP
+         */
+        modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY : number
+
+
         excludeUnlocalizedOpenMods : boolean
 
         modMasses_ProjectSearchIds_Visualization_Selections_Root: ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasses_ProjectSearchIds_Visualization_Selections
@@ -802,6 +905,14 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
         zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData : boolean
 
         significance_metric_chart_type : ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum
+
+        histogram_ChartType_Enum_Class : ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class
+
+        show_inverse_RangeDirection_Plot_2_WhenTwoPlots: boolean
+
+        display_Mean_StandardDeviation_Line_And_Number: boolean
+
+        show_DifferenceChart_WhenTwoPlots: boolean
     }
 
     private _projectSearchIds_WereLoadedFromStateInURL = false
@@ -826,22 +937,29 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
         this._storedState = {
             projectSearchIds_OrderOverride_Deprecated : undefined,  //  Deprecated override of ProjectSearchId order where user changed search order in Mod Page graphic (which user can no longer do)
 
+            visualization_DisplayTab: ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP,  //  Default HEATMAP
             displayTab: ModViewPage_DataVizOptions_VizSelections_PageStateManager__DISPLAY_TAB_Values_Enum.modListTab,   // DEFAULT modListTab
             quantType : ModViewPage_DataVizOptions_VizSelections_PageStateManager__QUANT_TYPE_Values_Enum.psms,          // DEFAULT psms
-            psmQuant : ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts,   // DEFAULT counts
+            psmQuant_WhenDisplay_HEATMAP_ONLY : ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum.counts,   // DEFAULT counts
             psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator: undefined,
-            dataTransformation : ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none, // DEFAULT none
-            colorCutoffRatio : undefined,
-            colorCutoffCount : undefined,
-            modMassCutoffMin : undefined,
-            modMassCutoffMax : undefined,
+            dataTransformation_For__WhenDisplay_HEATMAP_ONLY : ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none, // DEFAULT none
+            colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : undefined,
+            colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : undefined,
+            modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : undefined,
+            modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : undefined,
+            modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY : undefined,
+            modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY : undefined,
             excludeUnlocalizedOpenMods : false,  //  DEFAULT false
             modMasses_ProjectSearchIds_Visualization_Selections_Root:
                 new ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasses_ProjectSearchIds_Visualization_Selections({ callbackOnChange: this._updateState_ForChange_BindThis }),
             searchGroups_For_ZScore_Selections:
                 new ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections({ callbackOnChange: this._updateState_ForChange_BindThis }),
             zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData: false,  //  DEFAULT false
-            significance_metric_chart_type : ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE // DEFAULT ZSCORE
+            significance_metric_chart_type : ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE, // DEFAULT ZSCORE
+            histogram_ChartType_Enum_Class : ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.DEFAULT,
+            show_inverse_RangeDirection_Plot_2_WhenTwoPlots: true,  // Default to true
+            display_Mean_StandardDeviation_Line_And_Number: false,   // Default to false
+            show_DifferenceChart_WhenTwoPlots: false,   // Default to false
         }
 
         var z = 0
@@ -878,6 +996,18 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
         }
     }
 
+    get_visualization_DisplayTab() {
+
+        return this._storedState.visualization_DisplayTab
+    }
+
+    set_visualization_DisplayTab( visualization_DisplayTab : ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum ) {
+
+        this._storedState.visualization_DisplayTab = visualization_DisplayTab
+
+        this._updateState_ForChange()
+    }
+
     get_displayTab() {
 
         return this._storedState.displayTab
@@ -902,18 +1032,24 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
         this._updateState_ForChange()
     }
 
-    get_psmQuant() {
+    /**
+     * Ignore when visualization_DisplayTab is HISTOGRAM
+     */
+    get_psmQuant_WhenDisplay_HEATMAP_ONLY() {
 
-        return this._storedState.psmQuant
+        return this._storedState.psmQuant_WhenDisplay_HEATMAP_ONLY
     }
 
-    set_psmQuant( psmQuant : ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum ) {
+    set_psmQuant_WhenDisplay_HEATMAP_ONLY( psmQuant_WhenDisplay_HEATMAP_ONLY : ModViewPage_DataVizOptions_VizSelections_PageStateManager__PSM_QUANT_METHOD_Values_Enum ) {
 
-        this._storedState.psmQuant = psmQuant
+        this._storedState.psmQuant_WhenDisplay_HEATMAP_ONLY = psmQuant_WhenDisplay_HEATMAP_ONLY
 
         this._updateState_ForChange()
     }
 
+    /**
+     * Ignore when visualization_DisplayTab is HISTOGRAM
+     */
     get_psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator() {
 
         return this._storedState.psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator
@@ -930,65 +1066,130 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
         this._updateState_ForChange()
     }
 
-    get_dataTransformation() {
+    /**
+     * Ignore when visualization_DisplayTab is HISTOGRAM
+     */
+    get_dataTransformation_For__WhenDisplay_HEATMAP_ONLY() {
 
-        return this._storedState.dataTransformation
+        return this._storedState.dataTransformation_For__WhenDisplay_HEATMAP_ONLY
     }
 
-    set_dataTransformation( dataTransformation : ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum ) {
+    set_dataTransformation_For__WhenDisplay_HEATMAP_ONLY( dataTransformation_For__WhenDisplay_HEATMAP_ONLY : ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum ) {
 
-        this._storedState.dataTransformation = dataTransformation
+        this._storedState.dataTransformation_For__WhenDisplay_HEATMAP_ONLY = dataTransformation_For__WhenDisplay_HEATMAP_ONLY
 
         this._updateState_ForChange()
     }
 
-    get_colorCutoffRatio() {
+    /**
+     * Ignore when visualization_DisplayTab is HISTOGRAM
+     */
+    get_colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() {
 
-        return this._storedState.colorCutoffRatio
+        return this._storedState.colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY
     }
 
-    set_colorCutoffRatio( colorCutoffRatio : number ) {
+    set_colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : number ) {
 
-        this._storedState.colorCutoffRatio = colorCutoffRatio
+        this._storedState.colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY = colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY
 
         this._updateState_ForChange()
     }
 
-    get_colorCutoffCount() {
+    get_colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() {
 
-        return this._storedState.colorCutoffCount
+        return this._storedState.colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY
     }
 
-    set_colorCutoffCount( colorCutoffCount : number ) {
+    set_colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : number ) {
 
-        this._storedState.colorCutoffCount = colorCutoffCount
+        this._storedState.colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY = colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY
 
         this._updateState_ForChange()
     }
 
-    get_modMassCutoffMin() {
+    ////////////
 
-        return this._storedState.modMassCutoffMin
+    /**
+     * Cutoff based on ROUNDED Mod Mass:   const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( mod mass )
+     *
+     * Ignore when visualization_DisplayTab is HISTOGRAM
+     */
+    get_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() {
+
+        return this._storedState.modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY
     }
 
-    set_modMassCutoffMin( modMassCutoffMin : number ) {
+    /**
+     * Cutoff based on ROUNDED Mod Mass:   const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( mod mass )
+     */
+    set_modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( modMassCutoffMin_For_ROUNDED_ModMass : number ) {
 
-        this._storedState.modMassCutoffMin = modMassCutoffMin
+        this._storedState.modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY = modMassCutoffMin_For_ROUNDED_ModMass
 
         this._updateState_ForChange()
     }
 
-    get_modMassCutoffMax() {
+    /**
+     * Cutoff based on ROUNDED Mod Mass:   const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( mod mass )
+     *
+     * Ignore when visualization_DisplayTab is HISTOGRAM
+     */
+    get_modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY() {
 
-        return this._storedState.modMassCutoffMax
+        return this._storedState.modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY
     }
 
-    set_modMassCutoffMax( modMassCutoffMax : number ) {
+    /**
+     * Cutoff based on ROUNDED Mod Mass:   const modMass_Rounded_ForModPage_Processing = modPage_ModMass_Rounding_UTIL( mod mass )
+     */
+    set_modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY( modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : number ) {
 
-        this._storedState.modMassCutoffMax = modMassCutoffMax
+        this._storedState.modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY = modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY
 
         this._updateState_ForChange()
     }
+
+    /**
+     * Cutoff based on Actual Mod Mass:
+     *
+     * Ignore when visualization_DisplayTab is HEATMAP
+     */
+    get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() {
+
+        return this._storedState.modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+    }
+
+    /**
+     * Cutoff based on Actual Mod Mass:
+     */
+    set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY : number ) {
+
+        this._storedState.modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+
+        this._updateState_ForChange()
+    }
+
+    /**
+     * Cutoff based on Actual Mod Mass:
+     *
+     * Ignore when visualization_DisplayTab is HEATMAP
+     */
+    get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() {
+
+        return this._storedState.modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+    }
+
+    /**
+     * Cutoff based on Actual Mod Mass:
+     */
+    set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY : number ) {
+
+        this._storedState.modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+
+        this._updateState_ForChange()
+    }
+
 
     get_excludeUnlocalizedOpenMods() {
 
@@ -1051,6 +1252,55 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
 
         this._updateState_ForChange()
     }
+
+    get_histogram_ChartType_Enum_Class() {
+
+        return this._storedState.histogram_ChartType_Enum_Class
+    }
+
+    set_histogram_ChartType_Enum_Class( histogram_ChartType_Enum_Class : ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class ) {
+
+        this._storedState.histogram_ChartType_Enum_Class = histogram_ChartType_Enum_Class
+
+        this._updateState_ForChange()
+    }
+
+    get_show_inverse_RangeDirection_Plot_2_WhenTwoPlots() {
+
+        return this._storedState.show_inverse_RangeDirection_Plot_2_WhenTwoPlots
+    }
+
+    set_show_inverse_RangeDirection_Plot_2_WhenTwoPlots( show_inverse_RangeDirection_Plot_2_WhenTwoPlots : boolean ) {
+
+        this._storedState.show_inverse_RangeDirection_Plot_2_WhenTwoPlots = show_inverse_RangeDirection_Plot_2_WhenTwoPlots
+
+        this._updateState_ForChange()
+    }
+
+    get_display_Mean_StandardDeviation_Line_And_Number() {
+
+        return this._storedState.display_Mean_StandardDeviation_Line_And_Number
+    }
+
+    set_display_Mean_StandardDeviation_Line_And_Number( display_Mean_StandardDeviation_Line_And_Number : boolean ) {
+
+        this._storedState.display_Mean_StandardDeviation_Line_And_Number = display_Mean_StandardDeviation_Line_And_Number
+
+        this._updateState_ForChange()
+    }
+
+    get_show_DifferenceChart_WhenTwoPlots() {
+
+        return this._storedState.show_DifferenceChart_WhenTwoPlots
+    }
+
+    set_show_DifferenceChart_WhenTwoPlots( show_DifferenceChart_WhenTwoPlots : boolean ) {
+
+        this._storedState.show_DifferenceChart_WhenTwoPlots = show_DifferenceChart_WhenTwoPlots
+
+        this._updateState_ForChange()
+    }
+
 
     /**
      * take in deserialized json that represents an optimized view of the data and save it as a working view of the data
@@ -1171,11 +1421,14 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
                 }
             }
 
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.VISUALIZATION_DISPLAY_TAB)) {
+                this._storedState.visualization_DisplayTab = _VISUALIZATION_DISPLAY_TAB_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.VISUALIZATION_DISPLAY_TAB]];
+            }
             if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.DISPLAY_TAB)) {
                 this._storedState.displayTab = _DISPLAY_TAB_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.DISPLAY_TAB]];
             }
             if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.PSM_QUANT_METHOD)) {
-                this._storedState.psmQuant = _PSM_QUANT_METHOD_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.PSM_QUANT_METHOD]];
+                this._storedState.psmQuant_WhenDisplay_HEATMAP_ONLY = _PSM_QUANT_METHOD_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.PSM_QUANT_METHOD]];
             }
 
             if ( encodedStateData[ _SAVE_STATE_KEYS.psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator ] ) {
@@ -1189,23 +1442,31 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
             }
 
             if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.DATA_TRANSFORMATION)) {
-                this._storedState.dataTransformation = _DATA_TRANSFORMATION_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.DATA_TRANSFORMATION]];
+                this._storedState.dataTransformation_For__WhenDisplay_HEATMAP_ONLY = _DATA_TRANSFORMATION_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.DATA_TRANSFORMATION]];
             }
 
             if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_COUNT)) {
-                this._storedState.colorCutoffCount = encodedStateData[_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_COUNT];
+                this._storedState.colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY = encodedStateData[_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_COUNT];
             }
 
             if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_RATIO)) {
-                this._storedState.colorCutoffRatio = encodedStateData[_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_RATIO];
+                this._storedState.colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY = encodedStateData[_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_RATIO];
             }
 
-            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.MOD_MASS_MAX_CUTOFF)) {
-                this._storedState.modMassCutoffMax = encodedStateData[_SAVE_STATE_KEYS.MOD_MASS_MAX_CUTOFF];
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.MOD_MASS_MAX_CUTOFF__ROUNDED_MASS_FOR_HEATMAP)) {
+                this._storedState.modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY = encodedStateData[_SAVE_STATE_KEYS.MOD_MASS_MAX_CUTOFF__ROUNDED_MASS_FOR_HEATMAP];
             }
 
-            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF)) {
-                this._storedState.modMassCutoffMin = encodedStateData[_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF];
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF__ROUNDED_MASS_FOR_HEATMAP)) {
+                this._storedState.modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY = encodedStateData[_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF__ROUNDED_MASS_FOR_HEATMAP];
+            }
+
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.MOD_MASS_MAX_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM)) {
+                this._storedState.modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = encodedStateData[_SAVE_STATE_KEYS.MOD_MASS_MAX_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM];
+            }
+
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM)) {
+                this._storedState.modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = encodedStateData[_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM];
             }
 
             if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.EXCLUDE_UNLOCALIZED_MODS)) {
@@ -1229,6 +1490,35 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
 
             if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.SIGNIFICANCE_METRIC_CHART_TYPE)) {
                 this._storedState.significance_metric_chart_type = _SIGNIFICANCE_METRIC_CHART_TYPE_DECODING_KEYS[encodedStateData[_SAVE_STATE_KEYS.SIGNIFICANCE_METRIC_CHART_TYPE]];
+            }
+
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.histogram_ChartType_Enum_Class)) {
+
+                const pageState_EncodingNumber__PageStateEncodingOnly = encodedStateData[ _SAVE_STATE_KEYS.histogram_ChartType_Enum_Class ]
+
+                if ( pageState_EncodingNumber__PageStateEncodingOnly === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS.pageState_EncodingNumber__PageStateEncodingOnly ) {
+                    this._storedState.histogram_ChartType_Enum_Class = ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS
+                } else if ( pageState_EncodingNumber__PageStateEncodingOnly === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART.pageState_EncodingNumber__PageStateEncodingOnly ) {
+                    this._storedState.histogram_ChartType_Enum_Class = ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART
+                } else if ( pageState_EncodingNumber__PageStateEncodingOnly === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT.pageState_EncodingNumber__PageStateEncodingOnly ) {
+                    this._storedState.histogram_ChartType_Enum_Class = ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT
+                } else {
+                    const msg = "unknown value in encodedStateData[_SAVE_STATE_KEYS.histogram_ChartType_Enum_Class]: " + encodedStateData[ _SAVE_STATE_KEYS.histogram_ChartType_Enum_Class ]
+                    console.warn( msg )
+                    throw Error( msg )
+                }
+            }
+
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.show_inverse_RangeDirection_Plot_2_WhenTwoPlots)) {
+                this._storedState.show_inverse_RangeDirection_Plot_2_WhenTwoPlots = encodedStateData[_SAVE_STATE_KEYS.show_inverse_RangeDirection_Plot_2_WhenTwoPlots];
+            }
+
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.display_Mean_StandardDeviation_Line_And_Number)) {
+                this._storedState.display_Mean_StandardDeviation_Line_And_Number = encodedStateData[_SAVE_STATE_KEYS.display_Mean_StandardDeviation_Line_And_Number];
+            }
+
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.show_DifferenceChart_WhenTwoPlots)) {
+                this._storedState.show_DifferenceChart_WhenTwoPlots = encodedStateData[_SAVE_STATE_KEYS.show_DifferenceChart_WhenTwoPlots];
             }
 
 
@@ -1321,12 +1611,15 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
             dataForEncoding[_SAVE_STATE_KEYS.PROJECT_SEARCH_IDS] = this._storedState.projectSearchIds_OrderOverride_Deprecated;
         }
 
+        if ( this._storedState.visualization_DisplayTab !== undefined ) {
+            dataForEncoding[ _SAVE_STATE_KEYS.VISUALIZATION_DISPLAY_TAB ] = _VISUALIZATION_DISPLAY_TAB_ENCODING_KEYS[ this._storedState.visualization_DisplayTab ]
+        }
         if ( this._storedState.displayTab !== undefined ) {
             dataForEncoding[ _SAVE_STATE_KEYS.DISPLAY_TAB ] = _DISPLAY_TAB_ENCODING_KEYS[ this._storedState.displayTab ]
         }
 
-        if ( this._storedState.psmQuant !== undefined ) {
-            dataForEncoding[_SAVE_STATE_KEYS.PSM_QUANT_METHOD] =  _PSM_QUANT_METHOD_ENCODING_KEYS[this._storedState.psmQuant];
+        if ( this._storedState.psmQuant_WhenDisplay_HEATMAP_ONLY !== undefined ) {
+            dataForEncoding[_SAVE_STATE_KEYS.PSM_QUANT_METHOD] =  _PSM_QUANT_METHOD_ENCODING_KEYS[this._storedState.psmQuant_WhenDisplay_HEATMAP_ONLY];
         }
         if ( this._storedState.psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator !== undefined ) {
             dataForEncoding[ _SAVE_STATE_KEYS.psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator ] = this._storedState.psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator
@@ -1336,24 +1629,32 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
             dataForEncoding[_SAVE_STATE_KEYS.QUANT_TYPE] =  _QUANT_TYPE_ENCODING_KEYS[this._storedState.quantType];
         }
 
-        if ( this._storedState.dataTransformation !== undefined && this._storedState.dataTransformation !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none) {
-            dataForEncoding[_SAVE_STATE_KEYS.DATA_TRANSFORMATION] =  _DATA_TRANSFORMATION_ENCODING_KEYS[this._storedState.dataTransformation];
+        if ( this._storedState.dataTransformation_For__WhenDisplay_HEATMAP_ONLY !== undefined && this._storedState.dataTransformation_For__WhenDisplay_HEATMAP_ONLY !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__DATA_TRANSFORMATION_Values_Enum.none) {
+            dataForEncoding[_SAVE_STATE_KEYS.DATA_TRANSFORMATION] =  _DATA_TRANSFORMATION_ENCODING_KEYS[this._storedState.dataTransformation_For__WhenDisplay_HEATMAP_ONLY];
         }
 
-        if ( this._storedState.colorCutoffCount !== undefined ) {
-            dataForEncoding[_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_COUNT] = this._storedState.colorCutoffCount;
+        if ( this._storedState.colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY !== undefined ) {
+            dataForEncoding[_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_COUNT] = this._storedState.colorCutoffCount_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY;
         }
 
-        if ( this._storedState.colorCutoffRatio !== undefined ) {
-            dataForEncoding[_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_RATIO] = this._storedState.colorCutoffRatio;
+        if ( this._storedState.colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY !== undefined ) {
+            dataForEncoding[_SAVE_STATE_KEYS.COLOR_MAX_CUTOFF_RATIO] = this._storedState.colorCutoffRatio_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY;
         }
 
-        if ( this._storedState.modMassCutoffMax !== undefined ) {
-            dataForEncoding[_SAVE_STATE_KEYS.MOD_MASS_MAX_CUTOFF] = this._storedState.modMassCutoffMax;
+        if ( this._storedState.modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY !== undefined ) {
+            dataForEncoding[_SAVE_STATE_KEYS.MOD_MASS_MAX_CUTOFF__ROUNDED_MASS_FOR_HEATMAP] = this._storedState.modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY;
         }
 
-        if ( this._storedState.modMassCutoffMin !== undefined ) {
-            dataForEncoding[_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF] = this._storedState.modMassCutoffMin;
+        if ( this._storedState.modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY !== undefined ) {
+            dataForEncoding[_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF__ROUNDED_MASS_FOR_HEATMAP] = this._storedState.modMassCutoffMin_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY;
+        }
+
+        if ( this._storedState.modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined ) {
+            dataForEncoding[_SAVE_STATE_KEYS.MOD_MASS_MAX_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM] = this._storedState.modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY;
+        }
+
+        if ( this._storedState.modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined ) {
+            dataForEncoding[_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM] = this._storedState.modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY;
         }
 
         if ( this._storedState.excludeUnlocalizedOpenMods !== undefined ) {
@@ -1362,6 +1663,38 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
 
         if ( this._storedState.significance_metric_chart_type !== undefined) {
             dataForEncoding[_SAVE_STATE_KEYS.SIGNIFICANCE_METRIC_CHART_TYPE] =  _SIGNIFICANCE_METRIC_CHART_TYPE_ENCODING_KEYS[this._storedState.significance_metric_chart_type];
+        }
+
+        if ( this._storedState.histogram_ChartType_Enum_Class ) {
+
+            let dataForEncoding_Value: any = undefined
+
+            if ( this._storedState.histogram_ChartType_Enum_Class === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS ) {
+                dataForEncoding_Value = ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS.pageState_EncodingNumber__PageStateEncodingOnly
+            } else if ( this._storedState.histogram_ChartType_Enum_Class === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART ) {
+                dataForEncoding_Value = ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART.pageState_EncodingNumber__PageStateEncodingOnly
+            } else if ( this._storedState.histogram_ChartType_Enum_Class === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT ) {
+                dataForEncoding_Value = ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT.pageState_EncodingNumber__PageStateEncodingOnly
+            } else {
+
+                const msg = "unknown value in this._storedState.histogram_ChartType_Enum_Class: "
+                console.warn( msg, this._storedState.histogram_ChartType_Enum_Class )
+                throw Error( msg )
+            }
+
+            dataForEncoding[ _SAVE_STATE_KEYS.histogram_ChartType_Enum_Class ] = dataForEncoding_Value
+        }
+
+        if ( this._storedState.show_inverse_RangeDirection_Plot_2_WhenTwoPlots !== undefined) {
+            dataForEncoding[_SAVE_STATE_KEYS.show_inverse_RangeDirection_Plot_2_WhenTwoPlots] =  this._storedState.show_inverse_RangeDirection_Plot_2_WhenTwoPlots
+        }
+
+        if ( this._storedState.display_Mean_StandardDeviation_Line_And_Number !== undefined) {
+            dataForEncoding[_SAVE_STATE_KEYS.display_Mean_StandardDeviation_Line_And_Number] =  this._storedState.display_Mean_StandardDeviation_Line_And_Number
+        }
+
+        if ( this._storedState.show_DifferenceChart_WhenTwoPlots !== undefined) {
+            dataForEncoding[_SAVE_STATE_KEYS.show_DifferenceChart_WhenTwoPlots] =  this._storedState.show_DifferenceChart_WhenTwoPlots
         }
 
         {
