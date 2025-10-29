@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1113,7 +1114,7 @@ public class Project_UploadData_V2_UploadFile_Chunking_Upload_File_RestWebservic
 				int bytes_FullChunk__BytesPopulatedCount = 0;
 	
 				boolean fileTooLarge = false;
-	
+				
 				try ( InputStream inputStreamFromPOSTLocal = httpServletRequest.getInputStream() ) {
 	
 					byte[] buf = new byte[ COPY_FILE_ARRAY_SIZE ];
@@ -1165,6 +1166,48 @@ public class Project_UploadData_V2_UploadFile_Chunking_Upload_File_RestWebservic
 					return methodResults;
 				}
 				
+				if ( webserviceRequestHeaderContents.getSha256_Value_ForChunk() != null ) {
+					
+					//  Have  SHA-256 value computed in the browser
+
+					//  Compute SHA-256 and validate that to the passed in value computed in the browser
+					
+					final String SHA_256_ALGORITHM = "SHA-256";
+					
+					MessageDigest messageDigest_SHA_256 = MessageDigest.getInstance( SHA_256_ALGORITHM );
+					
+					messageDigest_SHA_256.update( bytes_FullChunk, 0, bytes_FullChunk__BytesPopulatedCount );
+		
+					byte[] sha_256_Digest = messageDigest_SHA_256.digest();
+					
+					StringBuilder sha_256_Digest_HexString_SB = new StringBuilder( sha_256_Digest.length * 3 );
+					
+					for ( byte sha_256_Digest_Byte : sha_256_Digest ) {
+					    
+						String hexChars = String.format( "%02x", sha_256_Digest_Byte ); // %02x formats byte as two uppercase hex characters
+						sha_256_Digest_HexString_SB.append( hexChars );
+					}
+					
+					String sha_256_Digest_HexString = sha_256_Digest_HexString_SB.toString();
+					
+					if ( ! webserviceRequestHeaderContents.getSha256_Value_ForChunk().equals( sha_256_Digest_HexString ) ) {
+						
+						String msg = "SHA-256 string computed on Client NOT the same as computed on server.  Client: " 
+								+ webserviceRequestHeaderContents.getSha256_Value_ForChunk()
+								+ ", Server: " + sha_256_Digest_HexString;
+						
+						log.warn(msg);
+
+						//  Return Error -  Status Code 400
+						webserviceResult.setStatusSuccess(false);
+						
+						webserviceResult.setChecksumSHA256_NotMatch(true);
+
+						methodResults.returnBadRequestStatusCode = true;
+
+						return methodResults;   	//  EARLY RETURN
+					}
+				}
 				
 	
 				try ( FileOutputStream fos = new FileOutputStream( uploadedFileOnDisk, true /* append */ )) {

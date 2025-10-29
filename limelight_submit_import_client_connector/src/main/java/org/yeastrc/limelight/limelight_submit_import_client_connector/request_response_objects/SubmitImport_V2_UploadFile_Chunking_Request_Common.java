@@ -53,6 +53,9 @@ public class SubmitImport_V2_UploadFile_Chunking_Request_Common {
 	private Long fileChunk_StartByte;
 	@XmlAttribute
 	private Long fileChunk_SequenceNumber;  //  For when store in AWS, this Must be between 1 and 10,000.
+
+	@XmlAttribute
+	private String sha256_Value_ForChunk;
 	
 	//  Attributes only for submitting from a program
 	@XmlAttribute
@@ -134,6 +137,12 @@ public class SubmitImport_V2_UploadFile_Chunking_Request_Common {
 	}
 	public void setFileChunk_SequenceNumber(Long fileChunk_SequenceNumber) {
 		this.fileChunk_SequenceNumber = fileChunk_SequenceNumber;
+	}
+	public String getSha256_Value_ForChunk() {
+		return sha256_Value_ForChunk;
+	}
+	public void setSha256_Value_ForChunk(String sha256_Value_ForChunk) {
+		this.sha256_Value_ForChunk = sha256_Value_ForChunk;
 	}
 	
 }

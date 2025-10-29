@@ -69,6 +69,8 @@ public abstract class SubmitImport_V2_UploadFile_Chunking_Response_Base extends 
 	private boolean scanFilerootXMLNodeIncorrect;
 	@XmlAttribute
 	private boolean projectLocked;
+	@XmlAttribute
+	private boolean checksumSHA256_NotMatch;
 	
 	public boolean isFileSizeLimitExceeded() {
 		return fileSizeLimitExceeded;
@@ -178,6 +180,12 @@ public abstract class SubmitImport_V2_UploadFile_Chunking_Response_Base extends 
 	}
 	public void setAws_S3_Config_Changed(boolean aws_S3_Config_Changed) {
 		this.aws_S3_Config_Changed = aws_S3_Config_Changed;
+	}
+	public boolean isChecksumSHA256_NotMatch() {
+		return checksumSHA256_NotMatch;
+	}
+	public void setChecksumSHA256_NotMatch(boolean checksumSHA256_NotMatch) {
+		this.checksumSHA256_NotMatch = checksumSHA256_NotMatch;
 	}
 	
 }

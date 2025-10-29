@@ -36,6 +36,8 @@ const LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM = "limelight_upload_file_p
 
 const LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR = "REJECT_ON_NETWORK_ERROR";
 
+const LIMELIGHT_UPLOAD_FILE__REJECT_ON_CHECKSUM_NOT_MATCH = "REJECT_ON_CHECKSUM_NOT_MATCH";
+
 
 export class ProjectPage_UploadData_SendUploadFileToServer__Progress_Callback_Params {
 	progressPercent: number
@@ -131,150 +133,144 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 	/**
 	 * !!!  WARNING:  Promise will resolve when there are ERRORS.  Need to check the result of the resolve.  !!!
 	 */
-	projectPage_UploadData_SendUploadFileToServer(
+	async projectPage_UploadData_SendUploadFileToServer(
 		{
 			uniqueRequestIdentifier_ForThisFile
 		} : {
 			uniqueRequestIdentifier_ForThisFile: string
 		}
-	) : Promise<ProjectPage_UploadData_SendUploadFileToServer__Send_Response> {
+	) : Promise<ProjectPage_UploadData_SendUploadFileToServer__Send_Response> { try {
 
-		return new Promise<ProjectPage_UploadData_SendUploadFileToServer__Send_Response>( (resolve, reject) => { try {
+		// return new Promise<ProjectPage_UploadData_SendUploadFileToServer__Send_Response>( (resolve, reject) => { try {
 
-			//   Read the file to upload in blocks and send each block to the server in its own AJAX request
+		//   Read the file to upload in blocks and send each block to the server in its own AJAX request
 
-			const sendData_BlockSize_MINIMUM = Math.trunc( this.maxFileUploadChunkSize * MINIMUM_SEND_DATA_BLOCK_SIZE__AS_FRACTION_OF_MAX_SIZE );
+		const sendData_BlockSize_MINIMUM = Math.trunc( this.maxFileUploadChunkSize * MINIMUM_SEND_DATA_BLOCK_SIZE__AS_FRACTION_OF_MAX_SIZE );
 
-			const sendData_StartByte = 0;
+		let sendData_BlockSize = Math.trunc( this.maxFileUploadChunkSize * STARTING_SEND_DATA_BLOCK_SIZE__AS_FRACTION_OF_MAX_SIZE ) ;   // size of one chunk/block to send to the server.  this.maxFileUploadChunkSize  from server max size
 
-			let sendData_BlockSize = Math.trunc( this.maxFileUploadChunkSize * STARTING_SEND_DATA_BLOCK_SIZE__AS_FRACTION_OF_MAX_SIZE ) ;   // size of one chunk/block to send to the server.  this.maxFileUploadChunkSize  from server max size
+		let sendData_BlockSize__CanChange = true;
 
-			let sendData_BlockSize__CanChange = true;
+		//  this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified: number;  //  Populated when store on S3.  Each uploaded chunk except last one MUST be this size
 
-			//  this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified: number;  //  Populated when store on S3.  Each uploaded chunk except last one MUST be this size
+		if ( this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified !== undefined
+			&& this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified !== null ) {
 
-			if ( this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified !== undefined
-				&& this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified !== null ) {
+			sendData_BlockSize = this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified;
 
-				sendData_BlockSize = this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified;
+			sendData_BlockSize__CanChange = false;  // MUST always send this block size except last block
+		}
 
-				sendData_BlockSize__CanChange = false;  // MUST always send this block size except last block
-			}
+		const totalFileSize = this._fileToUpload.size;  // total size of file
 
-			const totalFileSize = this._fileToUpload.size;  // total size of file
+		let processedBytes_OfFile = 0;  //  Used as StartByte.  Updated at end of loop for size of block sent.
 
+		let fileChunk_SequenceNumber = 1; // start at 1  For use with AWS S3 storing chunks.
 
+		while ( true ) {  // 'return' inside the loop
 
-			let processedBytes_OfFile = 0;  //  Used as StartByte of Next Block to send
+			const blob_ForFileSlice = this._fileToUpload.slice( processedBytes_OfFile, processedBytes_OfFile + sendData_BlockSize ); //  a single chunk of file
 
-			let fileChunk_SequenceNumber = 1; // start at 1
+			const contentToSend = await blob_ForFileSlice.arrayBuffer()  //  Bytes read from the file slice, to send to server
 
-			const reader = new FileReader();
-			const blob = this._fileToUpload.slice(sendData_StartByte, sendData_BlockSize); //a single chunk in starting of step size
-			reader.readAsBinaryString(blob);   // reading that chunk. when it read it, onload will be invoked
+			const _DIGEST_ALGORITHM = 'SHA-256'
 
+			// Use the SubtleCrypto API to digest the ArrayBuffer with SHA-256
+			const hash_ArrayBuffer = await window.crypto.subtle.digest( _DIGEST_ALGORITHM, contentToSend );
 
-			reader.onload = (e) => {
+			const contentToSend_HashHex = Array.from( new Uint8Array(hash_ArrayBuffer ) )
+				.map(byte => byte.toString( 16 ).padStart( 2, '0' )) // 'padStart': ensure is 2 characters by prefix with zero
+				.join('');
 
-				//  reader.onload  triggered by reader.readAsBinaryString
-				//     					reader.readAsBinaryString called above for first read and down below for each following read
+			let result_uploadFile_Send_A_Block_HandleResponse_HighLevel: {sendTime_Milliseconds: number} = undefined
 
-				const contentToSend = reader.result
-
-				const promise_uploadFile_Send_A_Block_HandleResponse_HighLevel =
-					this._uploadFile_Send_A_Block_HandleResponse_HighLevel(
-						{
-							uploadFileSize: totalFileSize,
-							uniqueRequestIdentifier_ForThisFile,
-							fileChunk_StartByte: processedBytes_OfFile,
-							fileChunk_SequenceNumber,
-							contentToSend
-						}
-					);
-
-				promise_uploadFile_Send_A_Block_HandleResponse_HighLevel.catch( reason => {
-
-					if ( this._errorMessage_Internal_ReturnedToCaller ) {
-
-						const resolveResult : ProjectPage_UploadData_SendUploadFileToServer__Send_Response = {
-							statusSuccess: false, errorMessage: this._errorMessage_Internal_ReturnedToCaller
-						}
-
-						resolve(resolveResult)
-					}
-
-					reject( reason )
-				});
-
-				promise_uploadFile_Send_A_Block_HandleResponse_HighLevel.then( result => {
-
-					if ( this.uploadFile_UploadInProgress_Canceled ) {
-
-						//  Upload canceled so skip
-
-						return;  //  EARLY RETURN
-					}
-
-					fileChunk_SequenceNumber++;
-
-					processedBytes_OfFile += sendData_BlockSize;
-
-					if ( processedBytes_OfFile <= totalFileSize ) {
-
-						// file is NOT completely uploaded
-
-						if ( this._progress_Callback ) {
-
-							let progressPercent = Math.ceil(( processedBytes_OfFile / totalFileSize) * 100 );
-							progressPercent = Math.min( progressPercent, 95 );  // Show max of 95
-							this._progress_Callback( { progressPercent : progressPercent }  );
-						}
-
-						if ( sendData_BlockSize__CanChange ) {
-
-							//  Compute new sendData_BlockSize based on the send time of the last block sent.  Optimal send time is SEND_DATA_AJAX_CALL_PREFERRED_LENGTH__IN_SECONDS
-
+			try {
+				result_uploadFile_Send_A_Block_HandleResponse_HighLevel =
+					await
+						this._uploadFile_Send_A_Block_HandleResponse_HighLevel(
 							{
-								const prevSendTimePerByte_Milliseconds = sendData_BlockSize / result.sendTime_Milliseconds;
-								const new_sendData_BlockSize_UnTruncated = prevSendTimePerByte_Milliseconds * SEND_DATA_AJAX_CALL_PREFERRED_MAX_DURATION__IN_SECONDS * 1000
-
-								let new_sendData_BlockSize = Math.trunc(new_sendData_BlockSize_UnTruncated)
-
-								if ( new_sendData_BlockSize > this.maxFileUploadChunkSize ) {
-									new_sendData_BlockSize = this.maxFileUploadChunkSize  //  limit to max size
-								}
-								if ( new_sendData_BlockSize < sendData_BlockSize_MINIMUM ) {
-									new_sendData_BlockSize = sendData_BlockSize_MINIMUM  //  Limit to Min size
-								}
-
-								// console.warn( "result.sendTime_Milliseconds: " + result.sendTime_Milliseconds.toLocaleString() + ", old sendData_BlockSize: " + sendData_BlockSize.toLocaleString() + " , new_sendData_BlockSize: " + new_sendData_BlockSize.toLocaleString() )
-
-								sendData_BlockSize = new_sendData_BlockSize;
+								uploadFileSize: totalFileSize,
+								uniqueRequestIdentifier_ForThisFile,
+								fileChunk_StartByte: processedBytes_OfFile,
+								fileChunk_SequenceNumber,
+								contentToSend,
+								contentToSend_HashHex
 							}
-						}
+						);
+			} catch ( e ) {
 
-						//  Get next block of file to send.  The reader.on will be executed when the block is read
+				if ( this._errorMessage_Internal_ReturnedToCaller ) {
 
-						const blob = this._fileToUpload.slice(processedBytes_OfFile, processedBytes_OfFile + sendData_BlockSize);  // getting next chunk
-
-						reader.readAsBinaryString(blob);        //reading it through file reader which will call onload again. So it will happen recursively until file is completely uploaded.
-
-					} else {
-
-						// file IS completely uploaded
-
-						const resolveResult : ProjectPage_UploadData_SendUploadFileToServer__Send_Response = {
-							statusSuccess: true, errorMessage: undefined
-						}
-
-						resolve(resolveResult)
+					const resolveResult: ProjectPage_UploadData_SendUploadFileToServer__Send_Response = {
+						statusSuccess: false, errorMessage: this._errorMessage_Internal_ReturnedToCaller
 					}
-				})
 
+					return resolveResult  // EARLY RETURN
+				}
+
+				throw e
 			}
-		} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
-	}
+			if ( this.uploadFile_UploadInProgress_Canceled ) {
+
+				//  Upload canceled so skip
+
+				return;  //  EARLY RETURN
+			}
+
+			//  Prepare to upload next chunk of file to upload
+
+			fileChunk_SequenceNumber++;
+
+			processedBytes_OfFile += sendData_BlockSize;
+
+			if ( processedBytes_OfFile <= totalFileSize ) {
+
+				// file is NOT completely uploaded
+
+				if ( this._progress_Callback ) {
+
+					let progressPercent = Math.ceil(( processedBytes_OfFile / totalFileSize) * 100 );
+					progressPercent = Math.min( progressPercent, 95 );  // Show max of 95
+					this._progress_Callback( { progressPercent : progressPercent }  );
+				}
+
+				if ( sendData_BlockSize__CanChange ) {
+
+					//  Compute new sendData_BlockSize based on the send time of the last block sent.  Optimal send time is SEND_DATA_AJAX_CALL_PREFERRED_LENGTH__IN_SECONDS
+
+					{
+						const prevSendTimePerByte_Milliseconds = sendData_BlockSize / result_uploadFile_Send_A_Block_HandleResponse_HighLevel.sendTime_Milliseconds;
+						const new_sendData_BlockSize_UnTruncated = prevSendTimePerByte_Milliseconds * SEND_DATA_AJAX_CALL_PREFERRED_MAX_DURATION__IN_SECONDS * 1000
+
+						let new_sendData_BlockSize = Math.trunc(new_sendData_BlockSize_UnTruncated)
+
+						if ( new_sendData_BlockSize > this.maxFileUploadChunkSize ) {
+							new_sendData_BlockSize = this.maxFileUploadChunkSize  //  limit to max size
+						}
+						if ( new_sendData_BlockSize < sendData_BlockSize_MINIMUM ) {
+							new_sendData_BlockSize = sendData_BlockSize_MINIMUM  //  Limit to Min size
+						}
+
+						// console.warn( "result.sendTime_Milliseconds: " + result.sendTime_Milliseconds.toLocaleString() + ", old sendData_BlockSize: " + sendData_BlockSize.toLocaleString() + " , new_sendData_BlockSize: " + new_sendData_BlockSize.toLocaleString() )
+
+						sendData_BlockSize = new_sendData_BlockSize;
+					}
+				}
+
+			} else {
+
+				// file IS completely uploaded
+
+				const resolveResult : ProjectPage_UploadData_SendUploadFileToServer__Send_Response = {
+					statusSuccess: true, errorMessage: undefined
+				}
+
+				return resolveResult  // EARLY RETURN --  Exit loop 'while(true)'
+			}
+		}
+
+	} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
 	/**
@@ -286,20 +282,22 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 			uniqueRequestIdentifier_ForThisFile,
 			fileChunk_StartByte,
 			fileChunk_SequenceNumber,
-			contentToSend
+			contentToSend,
+			contentToSend_HashHex
 		} : {
 			uploadFileSize: number
 			uniqueRequestIdentifier_ForThisFile: string
 			fileChunk_StartByte: number
 			fileChunk_SequenceNumber: number
-			contentToSend: any
+			contentToSend: ArrayBuffer
+			contentToSend_HashHex: string
 		}
 	) : Promise<{
 		sendTime_Milliseconds: number
 	}> {
 
-		const retryCount_NetworkError_RetryCountMax = 4;
-		let retryCount_NetworkError = 0;
+		const retryCount_NetworkError_ChecksumError_RetryCountMax = 4;
+		let retryCount_NetworkError_ChecksumError = 0;
 
 		while (true) {  // Exit using 'return' inside loop
 			try {
@@ -318,7 +316,8 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 						uniqueRequestIdentifier_ForThisFile,
 						fileChunk_StartByte,
 						fileChunk_SequenceNumber,
-						contentToSend
+						contentToSend,
+						contentToSend_HashHex
 					});
 
 				return midLevel_Response;
@@ -329,16 +328,32 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 
 				if ( error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR ) {
 
-					console.warn( "this._uploadFile_Send_A_Block_HandleResponse_MidLevel threw error. error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR. retryCount_NetworkError before increment: "
-						+ retryCount_NetworkError + ", error: ", error );
+					console.warn( "this._uploadFile_Send_A_Block_HandleResponse_MidLevel threw error. error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR. retryCount_NetworkError_ChecksumError before increment: "
+						+ retryCount_NetworkError_ChecksumError + ", error: ", error );
 
-					retryCount_NetworkError++;
+					retryCount_NetworkError_ChecksumError++;
 
-					if ( retryCount_NetworkError > retryCount_NetworkError_RetryCountMax ) {
+					if ( retryCount_NetworkError_ChecksumError > retryCount_NetworkError_ChecksumError_RetryCountMax ) {
 
-						console.warn( "this._uploadFile_Send_A_Block_HandleResponse_MidLevel threw error. error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR. ( retryCount_NetworkError > retryCount_NetworkError_RetryCountMax ) error: ", error );
+						console.warn( "this._uploadFile_Send_A_Block_HandleResponse_MidLevel threw error. error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR. ( retryCount_NetworkError_ChecksumError > retryCount_NetworkError_ChecksumError_RetryCountMax ) error: ", error );
 
 						this._errorMessage_Internal_ReturnedToCaller = "File NOT Uploaded.  Error connecting to server";
+
+						throw error;
+					}
+
+				} else if ( error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_CHECKSUM_NOT_MATCH ) {
+
+					console.warn( "this._uploadFile_Send_A_Block_HandleResponse_MidLevel threw error. error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_CHECKSUM_NOT_MATCH. retryCount_NetworkError_ChecksumError before increment: "
+						+ retryCount_NetworkError_ChecksumError + ", error: ", error );
+
+					retryCount_NetworkError_ChecksumError++;
+
+					if ( retryCount_NetworkError_ChecksumError > retryCount_NetworkError_ChecksumError_RetryCountMax ) {
+
+						console.warn( "this._uploadFile_Send_A_Block_HandleResponse_MidLevel threw error. error === LIMELIGHT_UPLOAD_FILE__REJECT_ON_CHECKSUM_NOT_MATCH. ( retryCount_NetworkError_ChecksumError > retryCount_NetworkError_ChecksumError_RetryCountMax ) error: ", error );
+
+						this._errorMessage_Internal_ReturnedToCaller = "File NOT Uploaded.  Data getting corrupted in transport to server.  Checksum not match.";
 
 						throw error;
 					}
@@ -362,13 +377,15 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 			fileChunk_StartByte,
 			uniqueRequestIdentifier_ForThisFile,
 			fileChunk_SequenceNumber,
-			contentToSend
+			contentToSend,
+			contentToSend_HashHex
 		} : {
 			uploadFileSize: number
 			uniqueRequestIdentifier_ForThisFile: string
 			fileChunk_StartByte: number
 			fileChunk_SequenceNumber: number
-			contentToSend: any
+			contentToSend: ArrayBuffer
+			contentToSend_HashHex: string
 		}
 	) : Promise<{
 		sendTime_Milliseconds: number
@@ -384,7 +401,8 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 						uniqueRequestIdentifier_ForThisFile,
 						fileChunk_StartByte,
 						fileChunk_SequenceNumber,
-						contentToSend
+						contentToSend,
+						contentToSend_HashHex
 					});
 
 				promise_send.catch( reason => {
@@ -436,13 +454,15 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 			uniqueRequestIdentifier_ForThisFile,
 			fileChunk_StartByte,
 			fileChunk_SequenceNumber,
-			contentToSend
+			contentToSend,
+			contentToSend_HashHex
 		} : {
 			uploadFileSize: number
 			uniqueRequestIdentifier_ForThisFile: string
 			fileChunk_StartByte: number
 			fileChunk_SequenceNumber: number
-			contentToSend: any
+			contentToSend: ArrayBuffer
+			contentToSend_HashHex: string
 		}) {
 
 		let objectThis = this;
@@ -478,7 +498,15 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 								this._errorMessage_Internal_ReturnedToCaller = 'Unknown error occurred: [' + xhrResponseText + ']';
 							}
 							if ( resp !== null ) {
-								if ( resp.fileSizeLimitExceeded ) {
+								if ( resp.checksumSHA256_NotMatch ) {
+
+									//  Special 'reject'
+
+									reject( LIMELIGHT_UPLOAD_FILE__REJECT_ON_CHECKSUM_NOT_MATCH );
+
+									return  // EARLY RETURN
+
+								} else if ( resp.fileSizeLimitExceeded ) {
 									this._errorMessage_Internal_ReturnedToCaller = "File NOT Uploaded, file too large.  Max file size in bytes: " + resp.maxSizeFormatted;
 								} else if ( resp.ProjectLocked ) {
 									this._errorMessage_Internal_ReturnedToCaller = "The project is locked so no imports are allowed.  Please reload the web page.";
@@ -606,7 +634,8 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 					uniqueRequestIdentifier_ForThisFile,
 					uploadFileSize,
 					fileChunk_StartByte,
-					fileChunk_SequenceNumber
+					fileChunk_SequenceNumber,
+					sha256_Value_ForChunk: contentToSend_HashHex
 				}
 				let uploadFileHeaderParamsJSON = JSON.stringify( uploadFileHeaderParams );
 
