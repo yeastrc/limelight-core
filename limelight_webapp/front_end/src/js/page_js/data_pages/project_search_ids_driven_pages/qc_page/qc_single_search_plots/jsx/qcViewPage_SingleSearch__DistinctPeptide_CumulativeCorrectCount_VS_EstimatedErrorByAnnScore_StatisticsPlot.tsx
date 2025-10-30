@@ -694,7 +694,7 @@ export class QcViewPage_SingleSearch__DistinctPeptide_CumulativeCorrectCount_VS_
 
                 //  Create Chart Data
 
-                const chart_Data = []
+                const chart_Data: Plotly.Data[] = []
 
                 for ( let annotationTypeId_Array_Index = 0; annotationTypeId_Array_Index < this.props.annotationTypeId_Array.length; annotationTypeId_Array_Index++ ) {
 
@@ -1001,14 +1001,14 @@ export class QcViewPage_SingleSearch__DistinctPeptide_CumulativeCorrectCount_VS_
                         marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__OVERLAY;
                     }
 
-                    const chart_Entry =    {
+                    const chart_Entry: Plotly.Data =    {
                         name: annotationType_Name_Score,
                         x: chart_X,
                         y: chart_Y,
                         type: 'scattergl',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'scatter'
                         // hoverinfo: "text", //  Hover contents
                         // hovertext: chart_Bars_Tooltips,  //  Hover contents per bar
-                        mode: 'line',
+                        mode: 'lines',
                         marker: {
                             size: marker_Size,  //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
                             color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color

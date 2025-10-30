@@ -762,7 +762,7 @@ export class QcViewPage_SingleSearch__SubSearches__DistinctPeptide_CumulativeCor
                 }
 
                 //  Final Array of Chart Traces
-                const chartData_MainTraces_Array = [];
+                const chartData_MainTraces_Array: Plotly.Data[] = [];
 
                 for ( const searchSubGroup of searchSubGroups_DisplayOrder ) {
 
@@ -1079,7 +1079,7 @@ export class QcViewPage_SingleSearch__SubSearches__DistinctPeptide_CumulativeCor
                         const chart_Data_TraceName = searchSubGroup.subgroupName_Display + ": " + annotationType_Name_Score
 
                         // https://plotly.com/javascript/reference/scattergl/#scattergl-line-dash
-                        let chart_LineType_dash_property = undefined; // Type: enumerated , one of ( "dash" | "dashdot" | "dot" | "longdash" | "longdashdot" | "solid" )
+                        let chart_LineType_dash_property: Plotly.Dash = undefined; // Type: enumerated , one of ( "dash" | "dashdot" | "dot" | "longdash" | "longdashdot" | "solid" )
 
                         if ( annotationTypeId_Array_Index === 0 ) {
 
@@ -1099,14 +1099,14 @@ export class QcViewPage_SingleSearch__SubSearches__DistinctPeptide_CumulativeCor
                             throw Error(msg)
                         }
 
-                        const chart_Entry =    {
+                        const chart_Entry: Plotly.Data =    {
                             name: chart_Data_TraceName,
                             x: chart_X,
                             y: chart_Y,
                             type: 'scattergl',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'scatter'
                             // hoverinfo: "text", //  Hover contents
                             // hovertext: chart_Bars_Tooltips,  //  Hover contents per bar
-                            mode: 'line',
+                            mode: 'lines',
                             line: {
                                 color: chart_Trace_Color,
                                 width: 2,

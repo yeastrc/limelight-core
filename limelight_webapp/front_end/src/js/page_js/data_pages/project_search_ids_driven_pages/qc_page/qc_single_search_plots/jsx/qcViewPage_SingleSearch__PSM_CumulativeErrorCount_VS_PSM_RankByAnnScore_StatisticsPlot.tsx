@@ -737,7 +737,7 @@
 //                         type: 'scatter',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'scatter'
 //                         // hoverinfo: "text", //  Hover contents
 //                         // hovertext: chart_Bars_Tooltips,  //  Hover contents per bar
-//                         mode: 'line',
+//                         mode: 'lines',
 //                         marker: {
 //                             size: 2,  //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
 //                             color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
