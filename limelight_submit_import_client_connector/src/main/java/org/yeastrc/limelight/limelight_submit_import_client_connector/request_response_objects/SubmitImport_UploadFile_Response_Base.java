@@ -69,6 +69,8 @@ public abstract class SubmitImport_UploadFile_Response_Base extends BaseSubmitIm
 	private Boolean genericOtherFile_NotAllowed;
 	@XmlAttribute
 	private boolean projectLocked;
+	@XmlAttribute
+	private boolean uploadedFileSHA256HashNotMatchParamFileSHA256Hash;
 	
 	public boolean isFileSizeLimitExceeded() {
 		return fileSizeLimitExceeded;
@@ -177,6 +179,13 @@ public abstract class SubmitImport_UploadFile_Response_Base extends BaseSubmitIm
 	}
 	public void setGenericOtherFile_NotAllowed(Boolean genericOtherFile_NotAllowed) {
 		this.genericOtherFile_NotAllowed = genericOtherFile_NotAllowed;
+	}
+	public boolean isUploadedFileSHA256HashNotMatchParamFileSHA256Hash() {
+		return uploadedFileSHA256HashNotMatchParamFileSHA256Hash;
+	}
+	public void setUploadedFileSHA256HashNotMatchParamFileSHA256Hash(
+			boolean uploadedFileSHA256HashNotMatchParamFileSHA256Hash) {
+		this.uploadedFileSHA256HashNotMatchParamFileSHA256Hash = uploadedFileSHA256HashNotMatchParamFileSHA256Hash;
 	}
 	
 }

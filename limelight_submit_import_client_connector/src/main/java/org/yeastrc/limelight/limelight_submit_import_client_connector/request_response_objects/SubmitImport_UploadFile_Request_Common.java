@@ -45,6 +45,8 @@ public class SubmitImport_UploadFile_Request_Common {
 	private Integer fileType;
 	@XmlAttribute
 	private String filename;
+	@XmlAttribute
+	private String fileSHA256Hash;
 
 	//  Attributes only for submitting from a program
 	@XmlAttribute
@@ -110,6 +112,12 @@ public class SubmitImport_UploadFile_Request_Common {
 	}
 	public void setSubmitProgram_Version(Integer submitProgram_Version) {
 		this.submitProgram_Version = submitProgram_Version;
+	}
+	public String getFileSHA256Hash() {
+		return fileSHA256Hash;
+	}
+	public void setFileSHA256Hash(String fileSHA256Hash) {
+		this.fileSHA256Hash = fileSHA256Hash;
 	}
 	
 }

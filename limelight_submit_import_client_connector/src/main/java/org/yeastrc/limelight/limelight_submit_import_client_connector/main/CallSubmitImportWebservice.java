@@ -274,7 +274,7 @@ public class CallSubmitImportWebservice {
 			throw new IllegalArgumentException( "userSubmitImportProgramKey property in webserviceRequest param must not be null or empty in call to call_SubmitImport_UploadFile_Service(...)" );
 		}
 		
-		//  Create
+		//  From parameter 'webserviceRequest', create XML String that will sent to the server in the HTTP Header 
 		
 		ByteArrayOutputStream byteArrayOutputStream_ToSend = serializeObjectToXML_Return_ByteArrayOutputStream( webserviceRequest );
 		String headerString = new String( byteArrayOutputStream_ToSend.toByteArray(), XML_ENCODING_CHARACTER_SET );
