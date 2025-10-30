@@ -20,7 +20,11 @@ package org.yeastrc.limelight.limelight_submit_import.main;
 
 import java.io.Console;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +41,7 @@ import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImpo
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportServerResponseException;
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportUserDataException;
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportUsernamePasswordFileException;
+import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception;
 import org.yeastrc.limelight.limelight_submit_import.get_submitter_key.GetSubmitterKey;
 import org.yeastrc.limelight.limelight_submit_import.objects.SearchTagCategory_AndItsSearchTagStrings_Object;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.call_submit_import_parameter_objects.Call_SubmitImport_UploadFile_Service_Parameters;
@@ -59,10 +64,6 @@ import org.yeastrc.limelight.limelight_submit_import_client_connector.request_re
 
 /**
  * 
- *
- */
-/**
- * @author danj
  *
  */
 public class SubmitUploadMain {
@@ -454,15 +455,22 @@ public class SubmitUploadMain {
 					}
 
 					if ( ! submitterSameMachine ) {
-
+						
+						String file_SHA256_Hash = compute_SHA256_Hash_ForFile( limelightXMLFile );
+						
 						SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
 
+						webserviceRequest.setSubmitProgram_Version( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
+						
 						webserviceRequest.setProjectIdentifier( projectIdString );
 						webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
 						webserviceRequest.setUploadKey( submitImport_UploadKey );
 						webserviceRequest.setFileIndex( submitImport_FinalSubmit_SingleFileItem.getFileIndex() );
 						webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
 						webserviceRequest.setFilename( limelightXMLFile.getName() );
+						
+						webserviceRequest.setFileSHA256Hash( file_SHA256_Hash );
+						
 						webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( limelightXMLFile.getAbsolutePath() );
 						webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( limelightXMLFile.getCanonicalPath() );
 
@@ -483,6 +491,13 @@ public class SubmitUploadMain {
 								System.err.println( "Limelight XML file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
 							}
 
+							if ( submitImport_UploadFile_Response.isUploadedFileSHA256HashNotMatchParamFileSHA256Hash() ) {
+							
+								System.err.println( "The file contents received by the server have a different hash than the hash computed by this program on the file." );
+								
+								throw new LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception();
+							}
+							
 							System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
 
 							submitResult.exitCode = PROGRAM_EXIT_CODE_UPLOAD_SEND_FILE_FAILED;
@@ -517,14 +532,21 @@ public class SubmitUploadMain {
 
 					if ( ! submitterSameMachine ) {
 
+						String file_SHA256_Hash = compute_SHA256_Hash_ForFile( limelightXMLFile );
+						
 						SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
 
+						webserviceRequest.setSubmitProgram_Version( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
+						
 						webserviceRequest.setProjectIdentifier( projectIdString );
 						webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
 						webserviceRequest.setUploadKey( submitImport_UploadKey );
 						webserviceRequest.setFileIndex( submitImport_FinalSubmit_SingleFileItem.getFileIndex() );
 						webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
 						webserviceRequest.setFilename( fastaFile.getName() );
+
+						webserviceRequest.setFileSHA256Hash( file_SHA256_Hash );
+						
 						webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( fastaFile.getAbsolutePath() );
 						webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( fastaFile.getCanonicalPath() );
 
@@ -544,6 +566,14 @@ public class SubmitUploadMain {
 							
 								System.err.println( "FASTA file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
 							}
+
+							if ( submitImport_UploadFile_Response.isUploadedFileSHA256HashNotMatchParamFileSHA256Hash() ) {
+							
+								System.err.println( "The file contents received by the server have a different hash than the hash computed by this program on the file." );
+								
+								throw new LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception();
+							}
+							
 							if ( submitImport_UploadFile_Response.getFastaFile_InvalidContents() != null &&  submitImport_UploadFile_Response.getFastaFile_InvalidContents().booleanValue() ) {
 
 								System.err.println( "FASTA file is invalid.  It does not start with '>' or is not ASCII text." );
@@ -586,6 +616,8 @@ public class SubmitUploadMain {
 
 						if ( ! submitterSameMachine ) {
 
+							String file_SHA256_Hash = compute_SHA256_Hash_ForFile( limelightXMLFile );
+							
 							SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
 
 							webserviceRequest.setSubmitProgram_Version( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
@@ -596,6 +628,9 @@ public class SubmitUploadMain {
 							webserviceRequest.setFileIndex( submitImport_FinalSubmit_SingleFileItem.getFileIndex() );
 							webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
 							webserviceRequest.setFilename( scanFile.getName() );
+
+							webserviceRequest.setFileSHA256Hash( file_SHA256_Hash );
+							
 							webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( scanFile.getAbsolutePath() );
 							webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( scanFile.getCanonicalPath() );
 
@@ -614,6 +649,13 @@ public class SubmitUploadMain {
 								if ( submitImport_UploadFile_Response.isFileSizeLimitExceeded() ) {
 								
 									System.err.println( "Scan file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
+								}
+
+								if ( submitImport_UploadFile_Response.isUploadedFileSHA256HashNotMatchParamFileSHA256Hash() ) {
+								
+									System.err.println( "The file contents received by the server have a different hash than the hash computed by this program on the file." );
+									
+									throw new LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception();
 								}
 
 								System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
@@ -653,14 +695,21 @@ public class SubmitUploadMain {
 
 						if ( ! submitterSameMachine ) {
 
+							String file_SHA256_Hash = compute_SHA256_Hash_ForFile( limelightXMLFile );
+							
 							SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
 
+							webserviceRequest.setSubmitProgram_Version( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
+							
 							webserviceRequest.setProjectIdentifier( projectIdString );
 							webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
 							webserviceRequest.setUploadKey( submitImport_UploadKey );
 							webserviceRequest.setFileIndex( submitImport_FinalSubmit_SingleFileItem.getFileIndex() );
 							webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
 							webserviceRequest.setFilename( genericOtherFile.getName() );
+
+							webserviceRequest.setFileSHA256Hash( file_SHA256_Hash );
+							
 							webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( genericOtherFile.getAbsolutePath() );
 							webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( genericOtherFile.getCanonicalPath() );
 
@@ -679,6 +728,13 @@ public class SubmitUploadMain {
 								if ( submitImport_UploadFile_Response.isFileSizeLimitExceeded() ) {
 								
 									System.err.println( "Scan file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
+								}
+
+								if ( submitImport_UploadFile_Response.isUploadedFileSHA256HashNotMatchParamFileSHA256Hash() ) {
+								
+									System.err.println( "The file contents received by the server have a different hash than the hash computed by this program on the file." );
+									
+									throw new LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception();
 								}
 
 								System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
@@ -721,8 +777,27 @@ public class SubmitUploadMain {
 				System.out.println( "Submission Successful");
 				System.out.println( "");
 
-			} catch ( LimelightSubmitImportWebserviceCallErrorException e ) {
+			} catch ( LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception e ) {
+				
+				if ( retryCountLimit == 0 || retryCount > retryCountLimit ) {
+					
+					throw e;
+				}
+				
+				//  Retry
+				
+				int retry_InSeconds = 5 * ( retryCount + 1 );
 
+				System.out.println("Will Try Again to submit import in " + retry_InSeconds + " seconds." );
+				
+				int sleepTime = 1000 * retry_InSeconds;
+
+				Thread.sleep(sleepTime);
+
+				continue;  //  EARY CONTINUE
+				
+			} catch ( LimelightSubmitImportWebserviceCallErrorException e ) {
+				
 				if ( retryCountLimit == 0 || retryCount > retryCountLimit ) {
 					
 					throw e;
@@ -789,6 +864,45 @@ public class SubmitUploadMain {
 	}
 
 
+	/**
+	 * Compute SHA256 hash for file
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 * @throws NoSuchAlgorithmException 
+	 */
+	private static String compute_SHA256_Hash_ForFile( File file ) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
+		
+		final String SHA_256_ALGORITHM = "SHA-256";
+
+		MessageDigest digest = MessageDigest.getInstance( SHA_256_ALGORITHM );
+
+		try ( FileInputStream fis = new FileInputStream( file ) ) {
+			byte[] buffer = new byte[8192]; // Use a buffer for efficient reading
+			int bytesRead;
+			while ((bytesRead = fis.read(buffer)) != -1) {
+				digest.update(buffer, 0, bytesRead);
+			}
+		}
+
+		byte[] hashBytes = digest.digest(); // Get the final hash as a byte array
+
+		// Convert the byte array to a hexadecimal string representation
+		StringBuilder file_SHA256_Hash_SB = new StringBuilder();
+		for (byte b : hashBytes) {
+			String hex = Integer.toHexString(0xff & b);
+			if (hex.length() == 1) {
+				file_SHA256_Hash_SB.append('0');
+			}
+			file_SHA256_Hash_SB.append(hex);
+		}
+		String file_SHA256_Hash = file_SHA256_Hash_SB.toString();
+
+		return file_SHA256_Hash;
+	}
+	
 
 	/**
 	 * validateScanFileSuffix

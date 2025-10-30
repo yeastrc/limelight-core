@@ -10,7 +10,8 @@ Submit Import Help:
 
 -V  display version (Capitol V)
 
--r (--retry-count-limit=) <retry count as integer>  
+-r (--retry-count-limit=) <retry count as integer> 
+   (defaults to 1) 
    (Optional) 
    (Only applies to errors connecting to server. Response HTTP status code not 200.)
    (Each retry adds 5 seconds of additional wait time.  So retry delays are 5 seconds, 10, 15, ...)

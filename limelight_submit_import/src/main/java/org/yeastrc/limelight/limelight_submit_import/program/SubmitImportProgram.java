@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_submit_import.auth_test.AuthTest_Perform_ConnectToServer;
 import org.yeastrc.limelight.limelight_submit_import.config.ConfigParams;
+import org.yeastrc.limelight.limelight_submit_import.constants.RetryCountLimit_Default_Constants;
 import org.yeastrc.limelight.limelight_submit_import.constants.SearchTagCategory_SeparatorCharacter_Constants;
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportConfigException;
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportReportedErrorException;
@@ -117,7 +118,7 @@ public class SubmitImportProgram {
 		
 		String userSubmitImportProgramKeyFromCommandLine = null;
 
-		int retryCountLimit = 0;
+		int retryCountLimit = RetryCountLimit_Default_Constants.RETRY_COUNT_LIMIT_DEFAULT;
 		
 		int projectId = -1;
 		String projectIdString = null;

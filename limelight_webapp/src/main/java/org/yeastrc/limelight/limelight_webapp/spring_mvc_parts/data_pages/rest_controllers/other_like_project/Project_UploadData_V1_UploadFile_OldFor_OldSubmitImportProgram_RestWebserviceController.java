@@ -22,6 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,6 +117,9 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 	//  Keep all these Strings in sync with the Submit Program Send:
 	
 	private static final String UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML = "limelight_upload_file_params_xml";
+	
+
+	private static final String SHA_256_ALGORITHM = "SHA-256";
 
 	@Autowired
 	private Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectIdIF validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId;
@@ -736,28 +741,83 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 
 				
 				
+				//////////////
 				
-				if ( httpRequest_ContentLengthInHeader < aws_S3_MaxPutSize_Minus_A_Value ) {
+				//  ALWAYS use the Multipart processing since then can Abort if the SHA256 hash does NOT match.  Never use the 'put'
 				
-					//  Uploaded File Size (ContentLength) is UNDER 5GB limit so can 'put' to S3 with single 'putObject' call, passing in the input stream from the HTTP Connection
-
-					try ( InputStream inputStreamFromPOSTLocal = httpServletRequest.getInputStream() ) {
-
-			            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-			                .bucket(amazonS3_bucketName)
-			                .key(s3_Object_Key)
-			                .contentLength( httpRequest_ContentLengthInHeader )
-			                .build();
-			            
-			            RequestBody amazonS3_RequestBody = RequestBody.fromInputStream(inputStreamFromPOSTLocal, httpRequest_ContentLengthInHeader);
-
-						amazonS3_Client.putObject(putObjectRequest, amazonS3_RequestBody );
-					}
-
-				} else {
+				//////////////
+					
+				
+//				if ( httpRequest_ContentLengthInHeader < aws_S3_MaxPutSize_Minus_A_Value ) {
+//				
+//					//  Uploaded File Size (ContentLength) is UNDER 5GB limit so can 'put' to S3 with single 'putObject' call, passing in the input stream from the HTTP Connection
+//					
+//					
+//					MessageDigest messageDigest_SHA_256_Of_StreamContents = MessageDigest.getInstance(SHA_256_ALGORITHM);
+//					
+//		
+//					try ( InputStream inputStreamFromPOSTLocal = httpServletRequest.getInputStream() ) {
+//
+//						DigestInputStream digestInputStream_SHA_256 = new DigestInputStream( inputStreamFromPOSTLocal, messageDigest_SHA_256_Of_StreamContents );
+//						
+//			            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+//			                .bucket(amazonS3_bucketName)
+//			                .key(s3_Object_Key)
+//			                .contentLength( httpRequest_ContentLengthInHeader )
+//			                .build();
+//			            
+//			            RequestBody amazonS3_RequestBody = RequestBody.fromInputStream(digestInputStream_SHA_256, httpRequest_ContentLengthInHeader);
+//
+//						amazonS3_Client.putObject(putObjectRequest, amazonS3_RequestBody );
+//
+//						{  // sha256_Of_PostBody
+//
+//							if ( webserviceRequestHeaderContents.getFileSHA256Hash() != null ) {
+//
+//								byte[] hashBytes = digestInputStream_SHA_256.getMessageDigest().digest();
+//
+//								StringBuilder hashBytesAsHexSB = new StringBuilder( hashBytes.length * 2 + 2 );
+//
+//								for ( int i = 0; i < hashBytes.length; i++ ) {
+//									String byteAsHex = Integer.toHexString( Byte.toUnsignedInt( hashBytes[ i ] ) );
+//									if ( byteAsHex.length() == 1 ) {
+//										hashBytesAsHexSB.append( "0" ); //  Leading zero dropped by 'toHexString' so add here
+//									}
+//									hashBytesAsHexSB.append( byteAsHex );
+//								}
+//
+//								String sha256_Of_PostBody = hashBytesAsHexSB.toString();
+//								
+//								if ( ! sha256_Of_PostBody.equals( webserviceRequestHeaderContents.getFileSHA256Hash() ) ) {
+//									
+//									
+//									//  Delete uploaded data?   Have no existing code to delete the uploaded data.
+//								
+//									//  Return Error -  Status Code 400
+//									webserviceResult.setStatusSuccess(false);
+//									
+//
+//									webserviceResult.setUploadedFileSHA256HashNotMatchParamFileSHA256Hash(true);
+//		
+//									methodResults.returnBadRequestStatusCode = true;
+//		
+//									//  EARLY RETURN
+//									return methodResults;
+//									
+//								}
+//								
+//							}
+//						}
+//					}
+//
+//				} else {
 
 					//  Uploaded File Size (ContentLength) is OVER 5GB limit so need to 'put' to S3 using Multipart
 
+					
+					MessageDigest messageDigest_SHA_256_Of_StreamContents = MessageDigest.getInstance(SHA_256_ALGORITHM);
+					
+					
 					String uploadId_S3Client_Client = null;
 
 					try {
@@ -786,6 +846,8 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 
 						try ( InputStream inputStreamFrom_HTTP_Request = httpServletRequest.getInputStream() ) {
 
+							DigestInputStream digestInputStream_SHA_256_From_HTTP_Request = new DigestInputStream( inputStreamFrom_HTTP_Request, messageDigest_SHA_256_Of_StreamContents );
+							
 							long inputStream_Byte_Start = 1;
 							int partNumber_To_S3Client_Client = 0; // Pre-increment so first value is 1
 
@@ -824,7 +886,7 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 
 
 								try ( InternalClass__Limelight_InputStream_ReadOnlyTo_MaxSize internalClass__Limelight_InputStream_ReadOnlyTo_MaxSize  =
-										new InternalClass__Limelight_InputStream_ReadOnlyTo_MaxSize( inputStreamFrom_HTTP_Request, partSize_To_S3Client_Client) ) {
+										new InternalClass__Limelight_InputStream_ReadOnlyTo_MaxSize( digestInputStream_SHA_256_From_HTTP_Request, partSize_To_S3Client_Client) ) {
 									
 								     UploadPartRequest uploadPartRequest = UploadPartRequest.builder()
 								                .bucket(amazonS3_bucketName)
@@ -847,7 +909,61 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 								}
 							}
 
+							if ( webserviceRequestHeaderContents.getFileSHA256Hash() != null ) {
+
+								byte[] hashBytes = digestInputStream_SHA_256_From_HTTP_Request.getMessageDigest().digest();
+
+								StringBuilder hashBytesAsHexSB = new StringBuilder( hashBytes.length * 2 + 2 );
+
+								for ( int i = 0; i < hashBytes.length; i++ ) {
+									String byteAsHex = Integer.toHexString( Byte.toUnsignedInt( hashBytes[ i ] ) );
+									if ( byteAsHex.length() == 1 ) {
+										hashBytesAsHexSB.append( "0" ); //  Leading zero dropped by 'toHexString' so add here
+									}
+									hashBytesAsHexSB.append( byteAsHex );
+								}
+
+
+								String sha256_Of_PostBody = hashBytesAsHexSB.toString();
+
+								if ( ! sha256_Of_PostBody.equals( webserviceRequestHeaderContents.getFileSHA256Hash() ) ) {
+
+									//  SHA256 hash from Post body NOT match SHA256 hash computed on client
+							
+
+									try {
+										AbortMultipartUploadRequest abortMultipartUploadRequest = 
+												AbortMultipartUploadRequest
+												.builder()
+												.bucket(amazonS3_bucketName)
+								        		.key(s3_Object_Key)
+								        		.uploadId(uploadId_S3Client_Client)
+												.build();
+										
+										
+										amazonS3_Client.abortMultipartUpload( abortMultipartUploadRequest );
+										
+									} catch ( Throwable t2_Abort) {
+										// Eat Exception
+										log.error( "Error while performing S3 MultipartUpload.  Now Exception from abort the multiplart upload by call amazonS3_Client.abortMultipartUpload(...)", t2_Abort );
+									}
+
+									//  Return Error -  Status Code 400
+									webserviceResult.setStatusSuccess(false);
+									
+
+									webserviceResult.setUploadedFileSHA256HashNotMatchParamFileSHA256Hash(true);
+		
+									methodResults.returnBadRequestStatusCode = true;
+		
+									//  EARLY RETURN
+									return methodResults;
+								}
+							}
+							
 						}
+						
+						
 
 						try {
 							// Step 3: Complete.
@@ -1003,7 +1119,7 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 						
 					}
 					  
-				}
+//				}
 				
 //				if ( totalBytesCopied != httpRequest_ContentLengthInHeader ) {
 //					
@@ -1026,18 +1142,27 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 			}
 			
 		} else {
+			
+			//////    Store content to LOCAL Disk file
+			
+			
 			fileImportTrackingSingleFileDTO.setFilenameOnDisk(uploadedFile_StoreOnDiskFileObject_FilenameOnly);
 			
 			//  Copy InputStream containing POST body into file on disk
 			{
 				long totalBytesCopied = 0;
+				
+				MessageDigest messageDigest_SHA_256_Of_StreamContents = MessageDigest.getInstance(SHA_256_ALGORITHM);
+				
 	
 				try ( InputStream inputStreamFromPOSTLocal = httpServletRequest.getInputStream() ) {
-	
+					
+					DigestInputStream digestInputStream_SHA_256 = new DigestInputStream( inputStreamFromPOSTLocal, messageDigest_SHA_256_Of_StreamContents );
+					
 					try ( FileOutputStream fos = new FileOutputStream( uploadedFile_StoreOnDiskFileObject )) {
 						byte[] buf = new byte[ COPY_FILE_ARRAY_SIZE ];
 						int len;
-						while ((len = inputStreamFromPOSTLocal.read(buf)) > 0){
+						while ((len = digestInputStream_SHA_256.read(buf)) > 0){
 							fos.write(buf, 0, len);
 							
 							if ( totalBytesCopied == 0 ) {
@@ -1103,6 +1228,43 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 							}
 						}
 					}
+
+					{  // sha256_Of_PostBody
+
+						if ( webserviceRequestHeaderContents.getFileSHA256Hash() != null ) {
+
+							byte[] hashBytes = digestInputStream_SHA_256.getMessageDigest().digest();
+
+							StringBuilder hashBytesAsHexSB = new StringBuilder( hashBytes.length * 2 + 2 );
+
+							for ( int i = 0; i < hashBytes.length; i++ ) {
+								String byteAsHex = Integer.toHexString( Byte.toUnsignedInt( hashBytes[ i ] ) );
+								if ( byteAsHex.length() == 1 ) {
+									hashBytesAsHexSB.append( "0" ); //  Leading zero dropped by 'toHexString' so add here
+								}
+								hashBytesAsHexSB.append( byteAsHex );
+							}
+
+							String sha256_Of_PostBody = hashBytesAsHexSB.toString();
+
+							if ( ! sha256_Of_PostBody.equals( webserviceRequestHeaderContents.getFileSHA256Hash() ) ) {
+
+								//  Return Error -  Status Code 400
+								webserviceResult.setStatusSuccess(false);
+								
+
+								webserviceResult.setUploadedFileSHA256HashNotMatchParamFileSHA256Hash(true);
+	
+								methodResults.returnBadRequestStatusCode = true;
+	
+								//  EARLY RETURN
+								return methodResults;
+								
+							}
+							
+						}
+					}
+
 				}
 				if ( totalBytesCopied != httpRequest_ContentLengthInHeader ) {
 					
@@ -1122,6 +1284,8 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 					//  EARLY RETURN
 					return methodResults;
 				}
+				
+
 			}
 		}
 		
