@@ -26,6 +26,7 @@ import { CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFil
 import {
     open_ScanCount_VS_IonInjectionTime_OverlayContainer
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__ScanCount_VS_IonInjectionTime_OverlayContainer";
+import Plotly from "plotly.js-dist-min";
 
 
 const chartTitle = "Ion Injection Time Distribution (MS2)";
@@ -448,7 +449,7 @@ export class QcViewPage_SingleSearch__ScanCount_VS_IonInjectionTime_StatisticsPl
 
                 const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index(0);
 
-                const chart_Data = [
+                const chart_Data: Plotly.Data[] = [
                     {
                         name: "",  // So tooltip does not show "trace0"
                         type: 'histogram',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'histogram'

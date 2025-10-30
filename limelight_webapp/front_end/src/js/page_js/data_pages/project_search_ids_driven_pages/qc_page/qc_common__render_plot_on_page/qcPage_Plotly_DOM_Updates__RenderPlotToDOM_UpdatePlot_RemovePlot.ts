@@ -654,11 +654,10 @@ export class QcPage_Plotly__ChangePlotlyLayout_For_XaxisLabelLengths__Params {
  *
  */
 export class QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params {
-
     readonly plotly_CreatePlot_Params: {
-        chart_Data: any
-        chart_Layout: any
-        chart_config: any
+        chart_Data: any // Plotly.Data[]
+        chart_Layout: Partial<Plotly.Layout>
+        chart_config: Partial<Plotly.Config>
     }
     readonly chart_Width: number
     readonly chart_Height: number
@@ -674,7 +673,11 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Para
             plotly_CreatePlot_Params, chart_Width, chart_Height, image_DOM_Element,
             changePlotlyLayout_For_XaxisLabelLengths__Params, plotRendered_Success_Callback, plotRendered_Fail_Callback
         } : {
-            plotly_CreatePlot_Params: { chart_Data: any; chart_Layout: any; chart_config: any }
+            plotly_CreatePlot_Params: {
+                chart_Data: any // Plotly.Data[]
+                chart_Layout: Partial<Plotly.Layout>
+                chart_config: Partial<Plotly.Config>
+            }
             chart_Width: number
             chart_Height: number
             image_DOM_Element: HTMLImageElement

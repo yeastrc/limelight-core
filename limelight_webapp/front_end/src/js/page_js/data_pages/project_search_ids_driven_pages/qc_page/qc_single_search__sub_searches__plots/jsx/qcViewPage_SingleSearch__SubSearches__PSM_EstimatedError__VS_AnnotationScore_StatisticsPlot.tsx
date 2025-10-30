@@ -42,6 +42,7 @@ import {
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
 
 
 const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
@@ -719,7 +720,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError__VS_Annota
                 const annotationType_Name_Score_X : string = this._get_AnnotationTypeName_SearchProgramName( this.props.annotationTypeId_Score_X );
 
                 //  Final Array of Chart Traces
-                const chartData_MainTraces_Array = [];
+                const chartData_MainTraces_Array: Plotly.Data[] = [];
 
                 for ( const searchSubGroup of searchSubGroups_DisplayOrder ) {
 
@@ -924,7 +925,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError__VS_Annota
                         marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__OVERLAY;
                     }
 
-                    const chart_Data_ForSearch =
+                    const chart_Data_ForSearch: Plotly.Data =
                         {
                             name: chart_Data_ForSearch__TraceName,
                             x: chart_X,

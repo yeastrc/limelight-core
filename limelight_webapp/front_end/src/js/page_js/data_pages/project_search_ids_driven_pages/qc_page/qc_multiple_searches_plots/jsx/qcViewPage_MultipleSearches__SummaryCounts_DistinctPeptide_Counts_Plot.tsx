@@ -24,6 +24,7 @@ import {
 import {qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_plots/js/qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
 
 
 const chartTitle = "Distinct Peptide Count";
@@ -386,7 +387,7 @@ export class QcViewPage_MultipleSearches__SummaryCounts_DistinctPeptide_Counts_P
         }
 
 
-        const chart_Data = [
+        const chart_Data: Plotly.Data[] = [
             {
                 type: 'bar',
                 x: chart_X,

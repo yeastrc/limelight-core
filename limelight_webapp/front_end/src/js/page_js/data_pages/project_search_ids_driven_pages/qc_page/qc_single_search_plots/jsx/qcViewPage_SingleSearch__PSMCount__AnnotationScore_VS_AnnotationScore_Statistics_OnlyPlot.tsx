@@ -31,6 +31,7 @@ import {
     CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData";
 import { CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
+import Plotly from "plotly.js-dist-min";
 
 /**
  *
@@ -583,7 +584,7 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
             console.log( "PSMCount__AnnotationScore_VS_AnnotationScore: min_Score_X: " + min_Score_X + ", max_Score_X: " + max_Score_X + ", min_Score_Y: " + min_Score_Y + ", max_Score_Y: " + max_Score_Y );
         }
 
-        let chart_Data = undefined;
+        let chart_Data: Plotly.Data[] = undefined;
 
         if ( this.props.propsValue.chartType === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType.CHART_TYPE_2D_DENSITY_PLOT ) {
 

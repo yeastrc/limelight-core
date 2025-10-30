@@ -33,6 +33,7 @@ import {
 import {
     QcPage_ChartBorder
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
+import Plotly from "plotly.js-dist-min";
 
 
 const chartTitle = "Peptide Length vs/ Retention Time";
@@ -619,7 +620,7 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
                         chart_Y.push( peptideSequence_Length );
                     }
 
-                    const chart_Data = [
+                    const chart_Data: Plotly.Data[] = [
                         {
                             name: '',
                             x: chart_X,

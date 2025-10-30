@@ -41,6 +41,7 @@ import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js
 import {
     Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition
 } from "page_js/common_all_pages/Plotly_PlottingLibrary_CommonCode/Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition";
+import Plotly from "plotly.js-dist-min";
 
 
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
@@ -696,7 +697,7 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Single_SplitViolin_ByA
 
                 //  Create Plot Traces for Histogram
 
-                const chart_Data = []
+                const chart_Data: Plotly.Data[] = []
 
                 const annotationType_Name_Score: string = this._get_AnnotationTypeName_SearchProgramName(this.props.annotationTypeId_Score_X);
 
@@ -759,7 +760,7 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Single_SplitViolin_ByA
 
                     const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index( 0 );
 
-                    const chart_Entry =    {
+                    const chart_Entry: Plotly.Data =    {
                         name: "Target",
                         type: 'violin',
                         x: chart_X__Target_or_IndependentDecoy__Array,
@@ -823,7 +824,7 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Single_SplitViolin_ByA
 
                     const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index( 1 );
 
-                    const chart_Entry =    {
+                    const chart_Entry: Plotly.Data =    {
                         name: "Decoy",
                         type: 'violin',
                         x: chart_X__Decoy__Array,

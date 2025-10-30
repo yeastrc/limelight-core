@@ -29,6 +29,7 @@ import {QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_M
 import {qc_SingleSearch__SubSearches__Open_ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__plots/jsx/qcViewPage_SingleSearch__SubSearches__ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_OverlayContainer";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
 
 
 const chartTitle = "Peptides Per Protein";
@@ -431,7 +432,7 @@ export class QcViewPage_SingleSearch__SubSearches__ProteinCount_For_DistinctPept
                 }
             }
 
-            const chartData_MainTraces_Array = [];
+            const chartData_MainTraces_Array: Plotly.Data[] = [];
 
             {
                 const searchSubGroups_DisplayOrder: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = [];
@@ -558,7 +559,7 @@ export class QcViewPage_SingleSearch__SubSearches__ProteinCount_For_DistinctPept
                         chart_Bars_Tooltips.push( chart_Bars_Tooltip );
                     }
 
-                    const chart_Data_SingleProjectSearchId =
+                    const chart_Data_SingleProjectSearchId: Plotly.Data =
                         {
                             name: searchSubGroup.subgroupName_Display,
                             type: 'scatter',

@@ -42,6 +42,7 @@ import {
 import {QcViewPage__ReferenceLine_Y_equals_X_Calculation_Class} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ReferenceLine_Y_equals_X_Calculation_Class";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
 
 
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
@@ -624,7 +625,7 @@ export class QcViewPage_SingleSearch__PSM_EstimatedError__AnnotationScore_VS_Ann
 
                 const referenceLine_XY = referenceLine_Y_equals_X_Calculation_Class.get_ReferenceLine_XY();
 
-                const chart_Data = [
+                const chart_Data: Plotly.Data[] = [
                     {
                         //  Draw reference line from 0,0 to max_of_X_Y, max_of_X_Y (45 degree angle).  Draw first UNDER the main data.
                         name: "Reference Line: y = x",

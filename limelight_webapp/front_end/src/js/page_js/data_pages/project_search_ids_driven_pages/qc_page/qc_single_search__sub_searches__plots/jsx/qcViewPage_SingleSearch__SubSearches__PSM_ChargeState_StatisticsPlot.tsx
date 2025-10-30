@@ -25,6 +25,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 import { QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import { QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
 
 
 const chartTitle = "Fraction of PSMs with Charge";
@@ -482,7 +483,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_ChargeState_StatisticsPlo
                     }
                 }
 
-                const chartData_MainTraces_Array = [];
+                const chartData_MainTraces_Array: Plotly.Data[] = [];
 
 
                 for (const searchSubGroup of searchSubGroups_DisplayOrder) {
@@ -555,7 +556,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_ChargeState_StatisticsPlo
                         chart_Bars_Tooltips.push(tooltip);
                     }
 
-                    const chart_Data_ForSearch =
+                    const chart_Data_ForSearch: Plotly.Data =
                         {
                             name: chart_Data_ForSearch__TraceName,
                             type: 'scatter',

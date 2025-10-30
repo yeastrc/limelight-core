@@ -27,6 +27,7 @@ import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSear
 import {open_ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_OverlayContainer";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
 
 
 const chartTitle = "Peptides Per Protein";
@@ -527,7 +528,7 @@ export class QcViewPage_SingleSearch__ProteinCount_For_DistinctPeptideCount_Per_
 
             const colorEntry = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index( 0 );
 
-            const chart_Data = [
+            const chart_Data: Plotly.Data[] = [
                 {
                     type: 'scatter',
                     x: chart_X,

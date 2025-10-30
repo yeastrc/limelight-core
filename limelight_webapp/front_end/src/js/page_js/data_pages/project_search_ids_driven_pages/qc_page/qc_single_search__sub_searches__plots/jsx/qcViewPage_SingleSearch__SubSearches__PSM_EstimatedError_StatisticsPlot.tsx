@@ -31,6 +31,7 @@ import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js
 import {
     CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered";
+import Plotly from "plotly.js-dist-min";
 
 
 const chartTitle = "PSM Estimated Error";
@@ -581,7 +582,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError_Statistics
                 chart_Colors.push(color);
             }
 
-            const chart_Data = [
+            const chart_Data: Plotly.Data[] = [
                 {
                     type: 'bar',
                     x: chart_X,

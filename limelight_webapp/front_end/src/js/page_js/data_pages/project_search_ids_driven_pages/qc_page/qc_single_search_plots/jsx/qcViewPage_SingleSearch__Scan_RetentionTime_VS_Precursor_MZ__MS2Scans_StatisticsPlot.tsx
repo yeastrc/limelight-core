@@ -27,6 +27,7 @@ import { CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFil
 import {
     open_PSM_RetentionTime_VS_Precursor_MZ__MS2Scans_OverlayContainer
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__Scan_RetentionTime_VS_Precursor_MZ__MS2Scans_OverlayContainer";
+import Plotly from "plotly.js-dist-min";
 
 
 const chartTitle = "MS2 Precursor m/z vs/ Retention Time";
@@ -442,7 +443,7 @@ export class QcViewPage_SingleSearch__Scan_RetentionTime_VS_Precursor_MZ__MS2Sca
                     marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__OVERLAY;
                 }
 
-                const chart_Data = [
+                const chart_Data: Plotly.Data[] = [
                     {
                         name: "",  // So tooltip does not show "trace0"
                         x: chart_X,

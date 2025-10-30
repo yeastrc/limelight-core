@@ -45,6 +45,7 @@ import {
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
 
 
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
@@ -647,7 +648,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError__Annotatio
 
                 //  Final Array of Chart Traces
 
-                const chartData_MainTraces_Array = [];
+                const chartData_MainTraces_Array: Plotly.Data[] = [];
                 let max_of_X_Y: number = undefined;
 
                 for ( const searchSubGroup of searchSubGroups_DisplayOrder ) {
@@ -717,7 +718,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError__Annotatio
                         marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__OVERLAY;
                     }
 
-                    const trace_For_SubGroup = {
+                    const trace_For_SubGroup: Plotly.Data = {
                         name: chart_Data_ForSearch__TraceName,
                         x: chart_X_ALL__ScatterPlot,
                         y: chart_Y_ALL__ScatterPlot,
@@ -737,7 +738,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError__Annotatio
                 {
 
                     //  First entry is "Reference Line"
-                    const firstElement_ChartTrace = {
+                    const firstElement_ChartTrace: Plotly.Data = {
                         //  Draw reference line from 0,0 to max_of_X_Y, max_of_X_Y (45 degree angle).  Draw first UNDER the main data.
                         name: "Reference Line: y = x",
                         x: [ 0, max_of_X_Y ],

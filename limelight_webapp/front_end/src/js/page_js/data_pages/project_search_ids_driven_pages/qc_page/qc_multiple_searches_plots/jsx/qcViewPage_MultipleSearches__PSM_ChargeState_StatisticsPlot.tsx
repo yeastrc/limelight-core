@@ -26,6 +26,7 @@ import { qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc } from "pag
 import { QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import { QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
 import { CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
+import Plotly from "plotly.js-dist-min";
 
 
 const chartTitle = "Fraction of PSMs with Charge";
@@ -485,7 +486,7 @@ export class QcViewPage_MultipleSearches__PSM_ChargeState_StatisticsPlot
 
                 const searchLabelTitle_InTooltip = qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc__Result.xAxisTitle;
 
-                const chartData_MainTraces_Array = [];
+                const chartData_MainTraces_Array: Plotly.Data[] = [];
 
 
                 for (const projectSearchId of projectSearchIds) {
@@ -563,7 +564,7 @@ export class QcViewPage_MultipleSearches__PSM_ChargeState_StatisticsPlot
                         chart_Bars_Tooltips.push(tooltip);
                     }
 
-                    const chart_Data_ForSearch =
+                    const chart_Data_ForSearch: Plotly.Data =
                         {
                             name: searchData.searchLabel__SearchShortName_OR_SearchId,
                             type: 'scatter',

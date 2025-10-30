@@ -38,6 +38,7 @@ import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_al
 import {QcViewPage__ReferenceLine_Y_equals_X_Calculation_Class} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ReferenceLine_Y_equals_X_Calculation_Class";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
 
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_BELOW = "\u2264"; // "<=" as a single character
@@ -810,7 +811,7 @@ export class QcViewPage_SingleSearch__PSM_Target_Yaxis_VS_Decoy_Xaxis_ByAnnScore
                     }
                 }
 
-                const chart_Data = []
+                const chart_Data: Plotly.Data[] = []
 
                 const annotationType_Name_Score : string = this._get_AnnotationTypeName_SearchProgramName( this.props.annotationTypeId_Score_X );
 
@@ -829,7 +830,7 @@ export class QcViewPage_SingleSearch__PSM_Target_Yaxis_VS_Decoy_Xaxis_ByAnnScore
 
                     const referenceLine_XY = referenceLine_Y_equals_X_Calculation_Class.get_ReferenceLine_XY();
 
-                    const chart_Entry =    {
+                    const chart_Entry: Plotly.Data =    {
                         x: [ referenceLine_XY.referenceLine_BottomLeft_XY, referenceLine_XY.referenceLine_TopRight_XY ],
                         y: [ referenceLine_XY.referenceLine_BottomLeft_XY, referenceLine_XY.referenceLine_TopRight_XY ],
                         type: 'scattergl',
@@ -853,7 +854,7 @@ export class QcViewPage_SingleSearch__PSM_Target_Yaxis_VS_Decoy_Xaxis_ByAnnScore
                         marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__OVERLAY;
                     }
 
-                    const chart_Entry =    {
+                    const chart_Entry: Plotly.Data =    {
                         x: chart_X,
                         y: chart_Y,
                         type: 'scattergl',

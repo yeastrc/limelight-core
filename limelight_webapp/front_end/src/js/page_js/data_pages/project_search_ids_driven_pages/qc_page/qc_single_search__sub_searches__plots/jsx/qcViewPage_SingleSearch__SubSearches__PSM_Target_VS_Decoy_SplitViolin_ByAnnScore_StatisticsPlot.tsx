@@ -44,6 +44,7 @@ import { QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_
 import {
     Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition
 } from "page_js/common_all_pages/Plotly_PlottingLibrary_CommonCode/Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition";
+import Plotly from "plotly.js-dist-min";
 
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_BELOW = "\u2264"; // "<=" as a single character
@@ -766,7 +767,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViol
 
                 //  Create Plot Traces for Histogram
 
-                const chart_Data = []
+                const chart_Data: Plotly.Data[] = []
 
                 const annotationType_Name_Score: string = this._get_AnnotationTypeName_SearchProgramName(this.props.annotationTypeId_Score_X);
 
@@ -828,7 +829,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViol
                         }
                     }
 
-                    const chart_Entry =    {
+                    const chart_Entry: Plotly.Data =    {
                         name: "Target",
                         type: 'violin',
                         x: chart_X,
@@ -890,7 +891,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViol
                         }
                     }
 
-                    const chart_Entry =    {
+                    const chart_Entry: Plotly.Data =    {
                         name: "Decoy",
                         type: 'violin',
                         x: chart_X,
