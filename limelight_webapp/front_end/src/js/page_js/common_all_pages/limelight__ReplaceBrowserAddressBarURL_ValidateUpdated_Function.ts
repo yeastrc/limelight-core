@@ -83,11 +83,17 @@ export const limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function = f
             new_Browser_location_pathname_ForComparison = new_Browser_location_pathname_AFTER_baseRef
         }
 
-        if ( new_Browser_location_pathname.startsWith( limelight_base_href_value_String ) ) {
+        if ( new_Browser_location_pathname_ForComparison.startsWith( limelight_base_href_value_String ) ) {
 
-            if ( new_Browser_location_pathname_ForComparison !== newURL ) {
+            const new_Browser_location_href = window.location.href
 
-                const msg = "After call window.history.replaceState( null, null, newURL );  new_Browser_location_pathname_ForComparison NOT Equal newURL. newURL: '" + newURL + "', new_Browser_location_pathname_ForComparison: '" + new_Browser_location_pathname_ForComparison + "'"
+            const new_Browser_location_href__StartIndex = new_Browser_location_href.indexOf( new_Browser_location_pathname_ForComparison )
+
+            const new_Browser_location_href__StartAt_StartIndex = new_Browser_location_href.substring( new_Browser_location_href__StartIndex )
+
+            if ( new_Browser_location_href__StartAt_StartIndex !== newURL ) {
+
+                const msg = "After call window.history.replaceState( null, null, newURL );  new_Browser_location_href__StartAt_StartIndex NOT Equal newURL. newURL: '" + newURL + "', new_Browser_location_href__StartAt_StartIndex: '" + new_Browser_location_href__StartAt_StartIndex + "'"
                 console.warn( msg )
                 throw new Limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function_Exception_Class()
             }
