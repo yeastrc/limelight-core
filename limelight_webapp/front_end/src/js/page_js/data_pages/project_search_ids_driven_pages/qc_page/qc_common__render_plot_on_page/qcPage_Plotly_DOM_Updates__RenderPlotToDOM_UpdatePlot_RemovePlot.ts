@@ -655,7 +655,7 @@ export class QcPage_Plotly__ChangePlotlyLayout_For_XaxisLabelLengths__Params {
  */
 export class QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params {
     readonly plotly_CreatePlot_Params: {
-        chart_Data: any // Plotly.Data[]
+        chart_Data: Plotly.Data[]
         chart_Layout: Partial<Plotly.Layout>
         chart_config: Partial<Plotly.Config>
     }
@@ -674,9 +674,7 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Para
             changePlotlyLayout_For_XaxisLabelLengths__Params, plotRendered_Success_Callback, plotRendered_Fail_Callback
         } : {
             plotly_CreatePlot_Params: {
-                chart_Data:
-                    any
-                    // Plotly.Data[] // any //
+                chart_Data: Plotly.Data[]
                 chart_Layout: Partial<Plotly.Layout>
                 chart_config: Partial<Plotly.Config>
             }

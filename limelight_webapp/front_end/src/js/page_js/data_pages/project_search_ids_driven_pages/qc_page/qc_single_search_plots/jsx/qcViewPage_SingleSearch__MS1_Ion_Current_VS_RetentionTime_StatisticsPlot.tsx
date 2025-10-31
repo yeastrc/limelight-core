@@ -23,6 +23,10 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
+import {
+    Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition
+} from "page_js/common_all_pages/Plotly_PlottingLibrary_CommonCode/Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition";
 
 /**
  *
@@ -400,21 +404,30 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_VS_RetentionTime_Statistic
 
         const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index(0);
 
-        const chart_Data = [
-            {
-                name: "",  // So tooltip does not show "trace0"
-                type: 'histogram',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'histogram'
-                histfunc: "sum",
-                nbinsx: 200, // _CHART_MAX_BINS,
-                x: chart_X,
-                y: chart_Y,
-                hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
-                    '<b>Ion Current</b>: %{y}' +
-                    '<br><b>Retention Time (minutes)</b>: %{x}<extra></extra>',
-                marker: {
-                    color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
-                }
+
+        const chart_Data_Entry: Plotly.Data =    {
+            name: "",  // So tooltip does not show "trace0"
+            type: 'histogram',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'histogram'
+            histfunc: "sum",
+            x: chart_X,
+            y: chart_Y,
+            hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
+                '<b>Ion Current</b>: %{y}' +
+                '<br><b>Retention Time (minutes)</b>: %{x}<extra></extra>',
+            marker: {
+                color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
             }
+
+            //  nbinsx property set in next statement
+        }
+
+        Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.Data_Class.plotly_Set_chart_Data_nbinsx_property({
+            nbinsx_PropertyValue: 200, // _CHART_MAX_BINS,
+            plotly_Data_SingleTrace: chart_Data_Entry
+        })
+
+        const chart_Data = [
+            chart_Data_Entry
         ];
 
         const chartTitle = "MS1 Ion Current vs/ Retention Time<br><sup>Note: Data in plot are not filtered.</sup>";

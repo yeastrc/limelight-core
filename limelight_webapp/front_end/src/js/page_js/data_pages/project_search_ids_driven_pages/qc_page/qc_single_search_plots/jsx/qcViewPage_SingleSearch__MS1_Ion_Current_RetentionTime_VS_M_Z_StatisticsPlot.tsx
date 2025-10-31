@@ -7,7 +7,7 @@
 
 import React from "react";
 
-import { Legend, Shape, ShapeLine } from "plotly.js-dist-min";
+import Plotly, { Legend, Shape, ShapeLine } from "plotly.js-dist-min";
 
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { qcPage_StandardChartLayout } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
@@ -728,7 +728,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
             chart_Y_Axis_Label: "m/z",
             showlegend: true,
-            notMoveTitle: true
+            notMoveTitle: true,
         });
 
         {
@@ -764,7 +764,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
         /////////////
 
-        const chart_Data = [];  //  !!!!!!!!!!   MAIN Plotly Chart Data Array
+        const chart_Data: Plotly.Data[] = [];  //  !!!!!!!!!!   MAIN Plotly Chart Data Array
 
         /////////////
 
@@ -799,23 +799,26 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                 }
             }
 
+            chart_Layout.xaxis =
+                {
+                    range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
+                }
+
+            chart_Layout.yaxis = {
+                range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
+            }
+
             chart_Data.push(
                 {
                     //  Fake Scatter Plot with points in upper left and lower right so chart not shift when hide MS2 scatter plot data
                     name: "",  // So tooltip does not show "trace0"
                     type: 'scatter',
                     hoverinfo: "none",
-                    mode: 'marker',
+                    mode: 'markers',
                     marker: {
                         size: 1, //  2,  4 in overlay //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
                         color: 'rgba(255,255,255,0)', // white, transparent
                         // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
-                    },
-                    xaxis: {
-                        range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
-                    },
-                    yaxis: {
-                        range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
                     },
                     x: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ],
                     y: [ ms1_ChartData.chart_Y_Max, ms1_ChartData.chart_Y_Min ],
@@ -846,13 +849,15 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
             //  Can set colorbar length by pixels if needs to be more exact:  https://plotly.com/javascript/reference/layout/coloraxis/#layout-coloraxis-colorbar-lenmode
 
-            chart_Data.push({
+            const chart_Data_Entry: Plotly.Data = {
                 name: "",  // So tooltip does not show "trace0"
                 type: 'heatmap',
 
-                colorscale: [   //  The numbers on left are from zero to one
-                    ['0', '#CCCCCC'], // grey
-                    ['1', '#0072B2'], // blue
+                //  'colorscale' property:    Plotly docs have the first element as a string instead of a number but Plotly typings have it as a number
+
+                colorscale: [   //  The numbers on left are from zero to one.
+                    [0, '#CCCCCC'], // grey
+                    [1, '#0072B2'], // blue
                 ],
 
                 // https://plotly.com/javascript/colorscales/
@@ -885,27 +890,31 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     tickvals: ms1_ChartData.ms1_IntensityScaleBar_Tick_Values,
                     ticktext: ms1_ChartData.ms1_IntensityScaleBar_Tick_Labels
                 },
-                xaxis: {
-                    range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
-                },
-                yaxis: {
-                    range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
-                },
                 x: ms1_ChartData.chart_X,
                 y: ms1_ChartData.chart_Y,
                 z: ms1_ChartData.chart_Z,
                 zmin: ms1_ChartData.intensity_Min_For_ColorBar_Computations_Log,
                 zmax: ms1_ChartData.intensity_Max_For_ColorBar_Computations_Log,
                 hoverongaps: false,
-                text: ms1_ChartData.chart_TextEntries_ForTooltip,
+
                 hoverinfo: 'text',
+                //  'text' property set in next statement
+
                 //   !!!  Update hovertemplate
                 // hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
                 //     '<b>Ion Current</b>: %{z}' +
                 //     '<br><b>Retention Time (minutes)</b>: %{x}' +
                 //     '<br><b>m/z</b>: %{y}' +
                 //     '<extra></extra>'
-            })
+            }
+
+            //  'text' property per typings is supposed to be string | Array<String>
+            //              but here it is assigned Array<Array<string>> and somehow it works
+
+            // @ts-ignore
+            chart_Data_Entry.text = ms1_ChartData.chart_TextEntries_ForTooltip,
+
+            chart_Data.push( chart_Data_Entry )
         }
 
         ///////////////////
@@ -956,12 +965,6 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                         size: 2, //  2,  4 in overlay //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
                         color: _CHART_COLORS.FEATURE_DETECTION__INDIVIDUAL_MS1_FEATURES,
                         // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
-                    },
-                    xaxis: {
-                        range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
-                    },
-                    yaxis: {
-                        range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
                     },
                     x: chart_X__MS_1_IndividualFeature_Data,
                     y: chart_Y__MS_1_IndividualFeature_Data,
@@ -1193,12 +1196,6 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     size: ms2_Marker_Size, //   https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
                     color: _CHART_COLORS.MS_X_FILTERED,
                     // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
-                },
-                xaxis: {
-                    range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
-                },
-                yaxis: {
-                    range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
                 },
                 x: chart_X__MS_2_Plus_PrecursorData,
                 y: chart_Y__MS_2_Plus_PrecursorData,

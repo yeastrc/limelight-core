@@ -35,6 +35,7 @@ import {CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filteri
 import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
 
 /**
  *
@@ -776,11 +777,11 @@ export class QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_Statistic
                     hoverTemplate_X_Axis_Label = "-Log10(" + hoverTemplate_X_Axis_Label + ")";
                 }
 
-                const chart_Data = [
+                const chart_Data: Plotly.Data[] = [
                     {
                         x: chart_X,
                         type: 'histogram',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'scatter'
-                        nbins: 200,
+                        // nbins: 200,  REMOVED since not a valid property.  There is a property 'nbinsx'.  It is NOT in the Typescript typings.  If want to set it see Limelight class  Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.
                         hovertemplate:
                             '<br><b>PSM Count</b>: %{y}' +
                             '<br><b>' + hoverTemplate_X_Axis_Label + '</b>: %{x}' +

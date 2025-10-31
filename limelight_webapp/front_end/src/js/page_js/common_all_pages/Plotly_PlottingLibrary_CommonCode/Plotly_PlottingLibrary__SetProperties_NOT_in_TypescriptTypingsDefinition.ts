@@ -107,6 +107,27 @@ const plotly_Set_chart_Data_bingroup_property = function (
 }
 
 /**
+ * SET: chart_Data.nbinsx = nbinsx_PropertyValue
+ *
+ *  https://plotly.com/javascript/reference/histogram/#histogram-nbinsx
+ *
+ * @param nbinsx_PropertyValue
+ * @param plotly_Data_SingleTrace
+ */
+const plotly_Set_chart_Data_nbinsx_property = function (
+    {
+        nbinsx_PropertyValue, plotly_Data_SingleTrace
+    } : {
+        nbinsx_PropertyValue: any
+        plotly_Data_SingleTrace: Plotly.Data
+    }
+) : void {
+
+    // @ts-ignore  -- NOT in the types but still in the docs so keep with the ignore
+    plotly_Data_SingleTrace.nbinsx = nbinsx_PropertyValue
+}
+
+/**
  * Plotly 'Data' Class for single trace
  *
  * Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition
@@ -119,8 +140,8 @@ const plotly_Set_chart_Data_bingroup_property = function (
 class Data_Class {
 
     static plotly_Set_chart_Data_transforms_property = plotly_Set_chart_Data_transforms_property
-
     static plotly_Set_chart_Data_bingroup_property = plotly_Set_chart_Data_bingroup_property
+    static plotly_Set_chart_Data_nbinsx_property = plotly_Set_chart_Data_nbinsx_property
 }
 
 
