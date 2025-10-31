@@ -38,6 +38,10 @@ import {
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
+import {
+    Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition
+} from "page_js/common_all_pages/Plotly_PlottingLibrary_CommonCode/Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition";
 
 
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
@@ -696,7 +700,7 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Histogram_ByAnnScore_S
 
                 //  Create Plot Traces for Histogram
 
-                const chart_Data = []
+                const chart_Data: Plotly.Data[] = []
 
                 const annotationType_Name_Score: string = this._get_AnnotationTypeName_SearchProgramName(this.props.annotationTypeId_Score_X);
 
@@ -729,12 +733,11 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Histogram_ByAnnScore_S
 
                     const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index( 0 );
 
-                    const chart_Entry =    {
+                    const chart_Entry: Plotly.Data =    {
                         type: 'histogram',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'histogram'
                         histnorm: 'probability', // https://plotly.com/javascript/histograms/#normalized-histogram
                         x: chart_X__Target_or_IndependentDecoy__Array,
                         xbins: chart_Trace_xbins,
-                        bingroup: binroup_Label,  //  All traces with this bingroup string will have same bins.  required when use 'chart_Layout.barmode = "overlay";' and want aligned bars
                         name: "Target",
                         hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
                             '<br><b>Target PSMs</b>: %{y}' +
@@ -743,7 +746,14 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Histogram_ByAnnScore_S
                             color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                         },
                         opacity: 0.5
+
+                        //  bingroup property set in next statement
                     }
+
+                    Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.Data_Class.plotly_Set_chart_Data_bingroup_property({
+                        bingroup_PropertyValue: binroup_Label,  //  All traces with this bingroup string will have same bins.  required when use 'chart_Layout.barmode = "overlay";' and want aligned bars,
+                        plotly_Data_SingleTrace: chart_Entry
+                    })
 
                     chart_Data.push( chart_Entry )
                 }
@@ -752,12 +762,11 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Histogram_ByAnnScore_S
 
                     const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index( 1 );
 
-                    const chart_Entry =    {
+                    const chart_Entry: Plotly.Data =    {
                         type: 'histogram',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'histogram'
                         histnorm: 'probability', // https://plotly.com/javascript/histograms/#normalized-histogram
                         x: chart_X__Decoy__Array,
                         xbins: chart_Trace_xbins,
-                        bingroup: binroup_Label,  //  All traces with this bingroup string will have same bins.  required when use 'chart_Layout.barmode = "overlay";' and want aligned bars
                         name: "Decoy",
                         hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
                             '<br><b>Decoy PSMs</b>: %{y}' +
@@ -766,7 +775,14 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Histogram_ByAnnScore_S
                             color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                         },
                         opacity: 0.6
+
+                        //  bingroup property set in next statement
                     }
+
+                    Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.Data_Class.plotly_Set_chart_Data_bingroup_property({
+                        bingroup_PropertyValue: binroup_Label,  //  All traces with this bingroup string will have same bins.  required when use 'chart_Layout.barmode = "overlay";' and want aligned bars,
+                        plotly_Data_SingleTrace: chart_Entry
+                    })
 
                     chart_Data.push( chart_Entry )
                 }

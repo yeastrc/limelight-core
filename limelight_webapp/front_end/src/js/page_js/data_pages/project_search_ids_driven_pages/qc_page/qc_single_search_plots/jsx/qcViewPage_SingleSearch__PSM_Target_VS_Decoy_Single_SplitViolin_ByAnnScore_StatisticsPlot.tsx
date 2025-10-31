@@ -928,7 +928,7 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Single_SplitViolin_ByA
                 // If "overlay", the violins are plotted over one another, you might need to set "opacity" to see them multiple violins.
                 // Has no effect on traces that have "width" set.
 
-                Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.plotly_Set_chart_Layout_violinmode_To_Overlay({ chart_Layout })
+                Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.Layout_Class.plotly_Set_chart_Layout_violinmode_To_Overlay({ chart_Layout })
 
                 //////////////
 

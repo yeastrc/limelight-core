@@ -969,7 +969,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViol
                     // If "overlay", the violins are plotted over one another, you might need to set "opacity" to see them multiple violins.
                     // Has no effect on traces that have "width" set.
 
-                Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.plotly_Set_chart_Layout_violinmode_To_Overlay({ chart_Layout })
+                Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.Layout_Class.plotly_Set_chart_Layout_violinmode_To_Overlay({ chart_Layout })
 
                 // chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
 

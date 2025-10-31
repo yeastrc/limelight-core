@@ -26,6 +26,10 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import Plotly from "plotly.js-dist-min";
+import {
+    Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition
+} from "page_js/common_all_pages/Plotly_PlottingLibrary_CommonCode/Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition";
 
 
 const chartTitle = "Distribution of PSM Peptide Lengths";
@@ -560,7 +564,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSMCount_VS_PeptideLength_Sta
                 transforms_styles.push({target: searchSubGroup.subgroupName_Display, value: {line: {color: color}}});
             }
 
-            const chart_Data_Entry = {
+            const chart_Data_Entry: Plotly.Data = {
                 type: 'violin',
                 x: chart_X,
                 y: chart_Y,
@@ -574,12 +578,17 @@ export class QcViewPage_SingleSearch__SubSearches__PSMCount_VS_PeptideLength_Sta
                 meanline: {
                     visible: true
                 },
-                transforms: [{
+                //  'transforms' property set in next statement
+            }
+
+            Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.Data_Class.plotly_Set_chart_Data_transforms_property({
+                transforms_PropertyValue: [{
                     type: 'groupby',
                     groups: chart_X,
                     styles: transforms_styles
-                }]
-            }
+                }],
+                plotly_Data_SingleTrace: chart_Data_Entry
+            })
 
             //  Single Search:
             // const chart_Data_Entry = {
