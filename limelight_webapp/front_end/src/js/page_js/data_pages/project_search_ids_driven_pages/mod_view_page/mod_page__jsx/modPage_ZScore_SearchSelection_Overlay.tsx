@@ -31,7 +31,7 @@ import {
 
 /////
 
-const _Overlay_Title = "Choose the searches for ZScore Groups"
+const _Overlay_Title = "Choose the searches for Enrichment Analysis Groups"
 
 
 const _Overlay_Width_Min = 600;
@@ -308,25 +308,43 @@ class ModPage_ZScore_SearchSelection_Overlay_OuterContainer_Component extends Re
                         key={ projectSearchId }
                         style={ { marginBottom: 3 } }
                     >
-                        <button
-                            onClick={ event => {
-                                this._group_1_ProjectSearchIds_InProgress.add( projectSearchId )
-
-                                this.setState({ force_Rerender: {} })
-                            } }
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Add search to Group 1
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            Group 1
-                        </button>
+                            <button
+                                onClick={ event => {
+                                    this._group_1_ProjectSearchIds_InProgress.add( projectSearchId )
+
+                                    this.setState({ force_Rerender: {} })
+                                } }
+                            >
+                                Group 1
+                            </button>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         <span> </span>
-                        <button
-                            onClick={ event => {
-                                this._group_2_ProjectSearchIds_InProgress.add( projectSearchId )
-
-                                this.setState({ force_Rerender: {} })
-                            } }
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Add search to Group 2
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            Group 2
-                        </button>
+                            <button
+                                onClick={ event => {
+                                    this._group_2_ProjectSearchIds_InProgress.add( projectSearchId )
+
+                                    this.setState({ force_Rerender: {} })
+                                } }
+                            >
+                                Group 2
+                            </button>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         <span> </span>
                         { searchNameForProjectSearchId }
                     </div>
@@ -386,8 +404,14 @@ class ModPage_ZScore_SearchSelection_Overlay_OuterContainer_Component extends Re
                             )}
                         </div>
 
-                        <div style={ { fontWeight: "bold", marginTop: 10, marginBottom: 5 } }>
-                            Searches NOT in a group
+                        <div style={ { marginTop: 10, marginBottom: 5 } }>
+                            <span style={ { fontWeight: "bold" } }>
+                                Searches NOT in a group
+                            </span>
+                            <span> </span>
+                            <span>
+                                (click 'Group 1' or 'Group 2' to move search to group)
+                            </span>
                         </div>
                         <div style={ { marginLeft: 20 } }>
                             { notIn_Group_SearchNames_Elements.length === 0 ? (
