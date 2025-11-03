@@ -43,7 +43,7 @@
     "@types/react": "^17.0.2",
     "@types/react-beautiful-dnd": "^11.0.3",
     "babel-loader": "^10.0.0",
-    "caniuse-lite": "^1.0.30001723",
+    "caniuse-lite": "^1.0.30001753",
     "d3": "^7.8.5",
     "jstat": "^1.9.1",
     "ml-savitzky-golay": "^5.0.0",
