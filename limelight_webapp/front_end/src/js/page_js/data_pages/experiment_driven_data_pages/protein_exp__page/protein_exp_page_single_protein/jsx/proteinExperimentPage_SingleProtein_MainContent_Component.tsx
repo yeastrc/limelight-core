@@ -1557,6 +1557,13 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                     reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdsAndTheirPsmIdsEntry );
                 }
 
+                if ( reportedPeptideIdsAndTheirPsmIds.length === 0 ) {
+
+                    //  NO Entries in reportedPeptideIdsAndTheirPsmIds SO SKIP  projectSearchId
+
+                    continue  // EARLY CONTINUE
+                }
+
                 const experimentDataForSearch = conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId.get( projectSearchId );
                 if ( experimentDataForSearch === undefined ) {
                     const msg = "No value in conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId for projectSearchId: " + projectSearchId;
@@ -1677,6 +1684,12 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                     }
                 }
 
+                if ( reportedPeptideIdsAndTheirPsmIds.length === 0 ) {
+
+                    //  NO reportedPeptideIdsAndTheirPsmIds entries SO SKIP projectSearchId
+
+                    continue   // EARLY CONTINUE
+                }
 
                 const experimentDataForSearch = conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId.get( projectSearchId );
                 if ( experimentDataForSearch === undefined ) {

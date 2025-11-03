@@ -1390,6 +1390,13 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                     reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdsAndTheirPsmIdsEntry );
                 }
 
+                if ( reportedPeptideIdsAndTheirPsmIds.length === 0 ) {
+
+                    //  NO entries in reportedPeptideIdsAndTheirPsmIds so SKIP projectSearchId
+
+                    continue  // EARLY CONTINUE
+                }
+
                 const projectSearchIdsReportedPeptideIdsPsmIds_Entry = { projectSearchId, reportedPeptideIdsAndTheirPsmIds };
                 projectSearchIdsReportedPeptideIdsPsmIds.push( projectSearchIdsReportedPeptideIdsPsmIds_Entry );
             }
@@ -1529,23 +1536,31 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                         const reportedPeptideIdsAndTheirPsmIdsEntry : DownloadPSMs_PerReportedPeptideId = { reportedPeptideId };
                         reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdsAndTheirPsmIdsEntry );
                     }
-                }
+                } else {
 
-                const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
-                if ( psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId && psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.size > 0 ) {
+                    const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
+                    if ( psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId && psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.size > 0 ) {
 
-                    //  YES Filtered on specific PSM IDs so No passing PSM IDs to filter on
+                        //  YES Filtered on specific PSM IDs so No passing PSM IDs to filter on
 
-                    for ( const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry of psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.entries() ) {
-                        const reportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[0];
-                        const psmEntries_Map_Key_PsmId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[1];
+                        for ( const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry of psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.entries() ) {
+                            const reportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[ 0 ];
+                            const psmEntries_Map_Key_PsmId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[ 1 ];
 
-                        const reportedPeptideIdAndPsmIds : DownloadPSMs_PerReportedPeptideId = {
-                            reportedPeptideId,
-                            psmEntries_Include_Map_Key_PsmId: psmEntries_Map_Key_PsmId
-                        };
+                            const reportedPeptideIdAndPsmIds: DownloadPSMs_PerReportedPeptideId = {
+                                reportedPeptideId,
+                                psmEntries_Include_Map_Key_PsmId: psmEntries_Map_Key_PsmId
+                            };
 
-                        reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdAndPsmIds );
+                            reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdAndPsmIds );
+                        }
+
+                    } else {
+
+                        //  NO entry for projectSearchId in 'Not Filtered on specific PSM IDs' OR 'YES Filtered on specific PSM IDs'
+                        //     so SKIPPING projectSearchId
+
+                        continue   // EARLY CONTINUE
                     }
                 }
 
