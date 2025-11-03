@@ -162,6 +162,12 @@ const _doActual__download_Psms_For_projectSearchIds_FilterCriteria_ExperimentDat
 
             if ( projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds ) {
 
+                if ( projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds.length === 0 ) {
+                    const msg = "ERROR: ( projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds.length === 0 ).  projectSearchIdsReportedPeptideIdsPsmIds_Entry.projectSearchId: " + projectSearchIdsReportedPeptideIdsPsmIds_Entry.projectSearchId
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
                 projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds.sort( (a,b) => {
                     if ( a.reportedPeptideId < b.reportedPeptideId ) {
                         return -1

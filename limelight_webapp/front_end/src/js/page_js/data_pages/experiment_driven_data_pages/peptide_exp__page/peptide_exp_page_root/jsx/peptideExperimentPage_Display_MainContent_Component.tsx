@@ -1389,8 +1389,15 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
             const peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList
 
 
+
+            /**
+             * ReportedPeptideIds which have NO filtering on specific PSM IDs
+             */
             const reportedPeptideId_NotFilterdOnPsmId_Set__Map_Key_ProjectSearchId : Map<number, Set<number>> = new Map();
 
+            /**
+             * ReportedPeptideIds which have YES filtering on specific PSM IDs
+             */
             const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId : Map<number,Map<number, Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId>>> = new Map();
 
             if ( peptideList && peptideList.length > 0 ) {
@@ -1473,27 +1480,36 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                         const reportedPeptideIdsAndTheirPsmIdsEntry : DownloadPSMs_PerReportedPeptideId = { reportedPeptideId };
                         reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdsAndTheirPsmIdsEntry );
                     }
-                }
+                } else {
 
-                const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
-                if ( psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId && psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.size > 0 ) {
+                    const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId__Map_Key_ProjectSearchId.get( projectSearchId );
+                    if ( psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId && psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.size > 0 ) {
 
-                    //  YES Filtered on specific PSM IDs so No passing PSM IDs to filter on
+                        //  YES Filtered on specific PSM IDs so No passing PSM IDs to filter on
 
-                    for ( const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry of psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.entries() ) {
-                        const reportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[0];
-                        const psmEntries_Map_Key_PsmId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[1];
+                        for ( const psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry of psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId.entries() ) {
+                            const reportedPeptideId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[0];
+                            const psmEntries_Map_Key_PsmId = psmEntries_Map_Key_PsmId_For_ReportedPeptideId_Map_Key_ReportedPeptideId_Entry[1];
 
-                        const reportedPeptideIdAndPsmIds : DownloadPSMs_PerReportedPeptideId = {
-                            reportedPeptideId,
-                            psmEntries_Include_Map_Key_PsmId: psmEntries_Map_Key_PsmId
-                        };
+                            const reportedPeptideIdAndPsmIds : DownloadPSMs_PerReportedPeptideId = {
+                                reportedPeptideId,
+                                psmEntries_Include_Map_Key_PsmId: psmEntries_Map_Key_PsmId
+                            };
 
-                        reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdAndPsmIds );
+                            reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdAndPsmIds );
+                        }
+
+                    } else {
+
+                        //  NO entry for projectSearchId in 'Not Filtered on specific PSM IDs' OR 'YES Filtered on specific PSM IDs'
+                        //     so SKIPPING projectSearchId
+
+                        continue   // EARLY CONTINUE
                     }
                 }
 
-                //  Build data for 'experimentDataForSearch' property
+
+            //  Build data for 'experimentDataForSearch' property
 
                 const conditionGroupLabel_and_ConditionLabel_Data_FOR_ProjectSearchId = conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId.get( projectSearchId );
                 if ( conditionGroupLabel_and_ConditionLabel_Data_FOR_ProjectSearchId === undefined ) {
