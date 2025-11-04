@@ -280,7 +280,7 @@ export class CommonData_LoadedFromServer_SingleSearch__Num_PSMs_By_SearchSubGrou
 
                         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-                        promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                        promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
 
                         promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => { try {
                             console.log("AJAX Call to get psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );

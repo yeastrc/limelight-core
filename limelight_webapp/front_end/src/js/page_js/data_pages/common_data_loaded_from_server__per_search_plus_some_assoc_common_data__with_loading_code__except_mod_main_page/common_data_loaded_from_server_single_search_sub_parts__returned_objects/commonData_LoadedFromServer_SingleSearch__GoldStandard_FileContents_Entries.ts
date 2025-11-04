@@ -243,7 +243,7 @@ export class CommonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-                    promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                    promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
 
                     promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => { try {
 

@@ -81,14 +81,14 @@ export const commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
             // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = webserviceCallStandardPostResponse.api;
 
-            promise_webserviceCallStandardPost.catch( () => {
+            promise_webserviceCallStandardPost.catch( (reason) => {
 
                 console.log("AJAX Call END Rejected: URL: " + url + new Date() );
 
                 // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
                 window.alert( "Webservice call rejected. URL: " + url )
 
-                reject()
+                reject(reason)
             });
 
             promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {

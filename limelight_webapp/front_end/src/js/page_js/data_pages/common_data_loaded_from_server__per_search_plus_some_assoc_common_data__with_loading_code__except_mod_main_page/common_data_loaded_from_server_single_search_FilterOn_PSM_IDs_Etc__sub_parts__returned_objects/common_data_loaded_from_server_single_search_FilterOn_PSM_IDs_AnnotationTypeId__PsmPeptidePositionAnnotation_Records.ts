@@ -94,9 +94,9 @@ export const common_data_loaded_from_server_single_search_FilterOn_PSM_IDs_Annot
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
         // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = webserviceCallStandardPostResponse.api;
 
-        promise_webserviceCallStandardPost.catch( () => {
+        promise_webserviceCallStandardPost.catch( (reason) => {
             // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
-            reject()
+            reject(reason)
         });
 
         promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: INTERNAL_WebserviceResponse }) => {

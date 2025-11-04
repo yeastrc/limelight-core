@@ -322,7 +322,7 @@ export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifica
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-                    promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                    promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
 
                     promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => { try {
                         console.log("AJAX Call to get psm-variable-dynamic-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001 END, Now: " + new Date() );

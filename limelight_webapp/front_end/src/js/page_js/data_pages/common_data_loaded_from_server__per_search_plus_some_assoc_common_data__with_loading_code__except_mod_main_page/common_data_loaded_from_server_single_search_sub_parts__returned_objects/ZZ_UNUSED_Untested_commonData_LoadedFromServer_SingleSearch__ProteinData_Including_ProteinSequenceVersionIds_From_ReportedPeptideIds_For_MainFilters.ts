@@ -314,7 +314,7 @@ import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToS
 //
 //                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 //
-//                     promise_webserviceCallStandardPost.catch( () => { reject() }  );
+//                     promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
 //
 //                     promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
 //                         try {

@@ -443,7 +443,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_D
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
 
                 promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                     try {
@@ -757,7 +757,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_D
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-                promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
 
                 promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
                     try {

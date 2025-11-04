@@ -266,7 +266,7 @@ export class CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilter
 
                         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-                        promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                        promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
 
                         promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => { try {
                             console.log("AJAX Call to get d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids-version-0001 END, Now: " + new Date() );

@@ -330,7 +330,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ReporterIonMasses_On_PSM_
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-                    promise_webserviceCallStandardPost.catch( () => { reject() }  );
+                    promise_webserviceCallStandardPost.catch( (reason) => { reject(reason) }  );
 
                     promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => { try {
                         console.log("AJAX Call to get psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );

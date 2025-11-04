@@ -475,12 +475,12 @@ export class CommonData_LoadedFromServer_SingleSearch__ReportedPeptide_Filterabl
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-                    promise_webserviceCallStandardPost.catch( () => {
+                    promise_webserviceCallStandardPost.catch( (reason) => {
 
                         //  Remove this promise
                         this._remove_Promise_From__loadingInProgress_Promises( promise )
 
-                        reject()
+                        reject(reason)
                     }  );
 
                     promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {

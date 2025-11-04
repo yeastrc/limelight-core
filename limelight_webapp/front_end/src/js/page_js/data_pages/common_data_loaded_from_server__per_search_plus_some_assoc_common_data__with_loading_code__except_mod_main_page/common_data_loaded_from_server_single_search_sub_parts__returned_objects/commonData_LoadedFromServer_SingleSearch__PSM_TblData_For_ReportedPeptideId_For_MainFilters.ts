@@ -434,11 +434,11 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-                    promise_webserviceCallStandardPost.catch( () => {
+                    promise_webserviceCallStandardPost.catch( (reason) => {
 
                         console.log( "END: REJECTED: getting data from URL: " + url );
 
-                        reject()
+                        reject(reason)
                     });
 
                     promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => { try {
