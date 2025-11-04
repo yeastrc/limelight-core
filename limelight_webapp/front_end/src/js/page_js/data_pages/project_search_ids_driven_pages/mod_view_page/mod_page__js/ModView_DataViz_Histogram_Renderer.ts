@@ -1980,7 +1980,9 @@ export const modView_DataViz_Histogram_Renderer = function (
                     }
                 }
 
-                if ( eventdata["xaxis.autorange"] ) {
+                if ( eventdata["xaxis.autorange"] || eventdata["xaxis.range"] ) {
+
+                    //  User clicked on the icon for 'Autoscale' (first value in 'if') or 'Reset Axes' (second value in 'if')
 
                     //  Reset Mod Mass Min/Max selection
 
