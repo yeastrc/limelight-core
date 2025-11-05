@@ -40,14 +40,14 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc
  */
 export const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId = function (
     {
-        retentionTimeRange_Min,
-        retentionTimeRange_Max,
+        retentionTime_Seconds_Range_Min,
+        retentionTime_Seconds_Range_Max,
         searchScanFileId,
         psmList,
         commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
     } : {
-        retentionTimeRange_Min: number
-        retentionTimeRange_Max: number
+        retentionTime_Seconds_Range_Min: number
+        retentionTime_Seconds_Range_Max: number
 
         searchScanFileId: number
         psmList: Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
@@ -103,8 +103,8 @@ export const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc
                     get_commonData_LoadedFromServer_SingleSearch__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange().
                     get_MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange_Data_ReturnPromise({
                         searchScanFileId,
-                        retentionTimeRange_Min,
-                        retentionTimeRange_Max
+                        retentionTime_Seconds_Range_Min,
+                        retentionTime_Seconds_Range_Max
                     })
 
                 promise_FromCall.catch(reason => { reject( reason )})

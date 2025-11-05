@@ -116,8 +116,8 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId_RetentionTimeRan
 
                 const promise_And_scanNumbers_RetrieveInProgress_FromArray = promise_And_scanNumbers_RetrieveInProgress_Array.find( promise_And_scanNumbers_RetrieveInProgress_Entry => {
 
-                    if ( requestParams.retentionTimeRange_Min === promise_And_scanNumbers_RetrieveInProgress_Entry.requestParams.retentionTimeRange_Min
-                        &&  requestParams.retentionTimeRange_Max === promise_And_scanNumbers_RetrieveInProgress_Entry.requestParams.retentionTimeRange_Max ) {
+                    if ( requestParams.retentionTime_Seconds_Range_Min === promise_And_scanNumbers_RetrieveInProgress_Entry.requestParams.retentionTime_Seconds_Range_Min
+                        &&  requestParams.retentionTime_Seconds_Range_Max === promise_And_scanNumbers_RetrieveInProgress_Entry.requestParams.retentionTime_Seconds_Range_Max ) {
 
                         return promise_And_scanNumbers_RetrieveInProgress_Entry
                     }
@@ -237,8 +237,8 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId_RetentionTimeRan
             (resolve, reject) => { try {
                 const requestObject = {
                     projectScanFileId: requestParams.projectScanFileId,
-                    retentionTimeRange_Min: requestParams.retentionTimeRange_Min,
-                    retentionTimeRange_Max: requestParams.retentionTimeRange_Max
+                    retentionTimeRange_Min: requestParams.retentionTime_Seconds_Range_Min,
+                    retentionTimeRange_Max: requestParams.retentionTime_Seconds_Range_Max
                 };
 
                 const url = "d/rws/for-page/psfb/scan-numbers-for-ms-1-scans-project-scan-file-id-retention-time-range";
@@ -308,7 +308,7 @@ const _populate_DataPage_CommonData_LoadedFromServer_From_ProjectScanFileId_Rete
     const result: CommonData_LoadedFromServer_From_ProjectScanFileId_RetentionTimeRange__MS_1_ScanNumbers_Data_Holder = {
 
         scanNumber_Array: scanNumber_List,
-        retentionTimeRange_Min: requestParams.retentionTimeRange_Min, retentionTimeRange_Max: requestParams.retentionTimeRange_Max
+        retentionTimeRange_Min: requestParams.retentionTime_Seconds_Range_Min, retentionTimeRange_Max: requestParams.retentionTime_Seconds_Range_Max
     }
 
     return result ;
@@ -325,8 +325,8 @@ const _requestParams_Match__INTERNAL__SingleRequestToServer_RequestParams = func
     requestParams: INTERNAL__SingleRequestToServer_RequestParams, dataHolder: CommonData_LoadedFromServer_From_ProjectScanFileId_RetentionTimeRange__MS_1_ScanNumbers_Data_Holder
 ) : boolean {
 
-    if ( requestParams.retentionTimeRange_Min === dataHolder.retentionTimeRange_Min
-        && requestParams.retentionTimeRange_Max === dataHolder.retentionTimeRange_Max ) {
+    if ( requestParams.retentionTime_Seconds_Range_Min === dataHolder.retentionTimeRange_Min
+        && requestParams.retentionTime_Seconds_Range_Max === dataHolder.retentionTimeRange_Max ) {
         return true
     }
 
@@ -339,8 +339,8 @@ class INTERNAL__SingleRequestToServer_RequestParams {
     //   Keep Function above this in Sync with these values  '_requestParams_Match__INTERNAL__SingleRequestToServer_RequestParams'
 
     readonly projectScanFileId: number;
-    readonly retentionTimeRange_Min: number;
-    readonly retentionTimeRange_Max: number;
+    readonly retentionTime_Seconds_Range_Min: number;
+    readonly retentionTime_Seconds_Range_Max: number;
 }
 
 

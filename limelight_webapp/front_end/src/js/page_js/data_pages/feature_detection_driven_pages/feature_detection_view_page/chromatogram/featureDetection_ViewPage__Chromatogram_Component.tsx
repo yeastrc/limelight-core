@@ -977,8 +977,8 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                         get_commonData_LoadedFromServer_From_ProjectScanFileId_RetentionTimeRange__MS_1_ScanNumbers().
                         get_MS_1_ScanNumbers_DataHolder_From_ProjectScanFileId_RetentionTimeRange_ReturnPromise({
                             projectScanFileId: this.props.featureDetection_ViewPage__Chromatogram_Component_Params.projectScanFileId,
-                            retentionTimeRange_Min: retentionTimeRange_Min__LoadDataForScansFor,
-                            retentionTimeRange_Max: retentionTimeRange_Max__LoadDataForScansFor
+                            retentionTime_Seconds_Range_Min: retentionTimeRange_Min__LoadDataForScansFor,
+                            retentionTime_Seconds_Range_Max: retentionTimeRange_Max__LoadDataForScansFor
                         })
 
                     promise_get_MS_1_ScanNumbers_DataHolder_From_ProjectScanFileId_RetentionTimeRange_ReturnPromise.catch(reason => {

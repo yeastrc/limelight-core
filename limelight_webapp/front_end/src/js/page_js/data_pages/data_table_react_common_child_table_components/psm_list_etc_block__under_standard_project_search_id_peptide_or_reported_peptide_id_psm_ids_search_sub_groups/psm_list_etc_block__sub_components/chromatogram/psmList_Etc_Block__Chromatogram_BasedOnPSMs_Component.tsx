@@ -301,15 +301,19 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
     private _open_modification_mass_decimal_place_rounding__user_selection: number = _OPEN_MODIFICATION_MASS_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT;
     private _open_modification_mass_decimal_place_rounding__10_POWER___for_user_selection: number = Math.pow( 10, _OPEN_MODIFICATION_MASS_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT );
 
-    private _retentionTimeSeconds_Range_ComputedFromPSMs_Min_Max: Internal__RetentionTimeSeconds_Range_Min_Max
+    /////////////
+
+    //  Retention Time
+
+    private _retentionTimeMinutes_Range_ComputedFromPSMs_Min_Max: Internal__RetentionTimeMinutes_Range_Min_Max
 
     //  Pass to Component to create chart
 
-    private _retentionTimeSeconds_Range_ForChart_Min_Max: Internal__RetentionTimeSeconds_Range_Min_Max
+    private _retentionTime_Minutes_Range_ForChart_Min_Max: Internal__RetentionTimeMinutes_Range_Min_Max
 
-    private _retentionTimeSeconds_Range_ForChart_Min_Max__PreviousValues: Internal__RetentionTimeSeconds_Range_Min_Max
+    private _retentionTimeMinutes_Range_ForChart_Min_Max__PreviousValues: Internal__RetentionTimeMinutes_Range_Min_Max
 
-    private _retentionTimeSeconds_Range_ForChart_Min_Max__Reset_To_Previous: boolean
+    private _retentionTimeMinutes_Range_ForChart_Min_Max__Reset_To_Previous: boolean
 
 
 
@@ -511,15 +515,15 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
             //   Only call when change scan file
             this._displayChromatogram_For_Selected_SearchScanFileId_Selected_ReportedPeptideId( { currentSelection_ObjectReference_AtStartOf_Request: this._currentSelection_ObjectReference } )
 
-        } else if ( this._retentionTimeSeconds_Range_ForChart_Min_Max__PreviousValues ) {
+        } else if ( this._retentionTimeMinutes_Range_ForChart_Min_Max__PreviousValues ) {
 
             //  Reset to Previous
-            this._retentionTimeSeconds_Range_ForChart_Min_Max = this._retentionTimeSeconds_Range_ForChart_Min_Max__PreviousValues
+            this._retentionTime_Minutes_Range_ForChart_Min_Max = this._retentionTimeMinutes_Range_ForChart_Min_Max__PreviousValues
 
             //  set previous to null
-            this._retentionTimeSeconds_Range_ForChart_Min_Max__PreviousValues = null
+            this._retentionTimeMinutes_Range_ForChart_Min_Max__PreviousValues = null
 
-            this._retentionTimeSeconds_Range_ForChart_Min_Max__Reset_To_Previous = true;
+            this._retentionTimeMinutes_Range_ForChart_Min_Max__Reset_To_Previous = true;
 
             this._compute_selection_ReportedPeptide_OpenModMass_Charge__Array__DefaultSelection__For_ScanFile()
 
@@ -887,11 +891,15 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
         this._psmList_PossiblyFiltered_ForChart_ForDisplay = psmList_LOCAL_PossiblyFiltered
 
-        this._retentionTimeSeconds_Range_ComputedFromPSMs_Min_Max = {
-            retentionTimeSeconds_Range_Min: retentionTimeSeconds_Range_ForChart_Min, retentionTimeSeconds_Range_Max: retentionTimeSeconds_Range_ForChart_Max
+
+        const retentionTime_Minutes_Range_Min = _compute_RT_Minutes_FromSeconds_Apply_Math_floor_or_ceil_To_NumberOfDecimalPlaces( retentionTimeSeconds_Range_ForChart_Min, INTERNAL__MATH_FLOOR_CEIL.FLOOR )
+        const retentionTime_Minutes_Range_Max = _compute_RT_Minutes_FromSeconds_Apply_Math_floor_or_ceil_To_NumberOfDecimalPlaces( retentionTimeSeconds_Range_ForChart_Max, INTERNAL__MATH_FLOOR_CEIL.CEIL )
+
+        this._retentionTimeMinutes_Range_ComputedFromPSMs_Min_Max = {
+            retentionTime_Minutes_Range_Min, retentionTime_Minutes_Range_Max
         }
 
-        this._retentionTimeSeconds_Range_ForChart_Min_Max = this._retentionTimeSeconds_Range_ComputedFromPSMs_Min_Max
+        this._retentionTime_Minutes_Range_ForChart_Min_Max = this._retentionTimeMinutes_Range_ComputedFromPSMs_Min_Max
 
         this._force_SetTo_ValueFromParent__FOR__Internal__RetentionTime_Min_Max_UserEditable_Component = {}
     }
@@ -1085,8 +1093,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                 retentionTime_Seconds_ExtendRange_AddSubtract_ToMinMaxValues: _MAX_VALUE_FOR_GET_FROM_SERVER__retentionTime_Seconds_ExtendRange_AddSubtract_ToMinMaxValues
             })
 
-        const retentionTimeRange_Min__LoadDataForScansFor = compute_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId__Result.psm_RetentionTime_Seconds__With_ExtendRange_AddSubtract_Applied_Min
-        const retentionTimeRange_Max__LoadDataForScansFor = compute_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId__Result.psm_RetentionTime_Seconds__With_ExtendRange_AddSubtract_Applied_Max
+        const retentionTime_Minutes_Range_Min__LoadDataForScansFor = compute_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId__Result.psm_RetentionTime_Seconds__With_ExtendRange_AddSubtract_Applied_Min / 60
+        const retentionTime_Minutes_Range_Max__LoadDataForScansFor = compute_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId__Result.psm_RetentionTime_Seconds__With_ExtendRange_AddSubtract_Applied_Max / 60
 
         this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId = this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_Map_Key_SearchScanFileId.get( this._searchScanFileId_Selected )
         this._dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId = this._dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_Map_Key_SearchScanFileId.get( this._searchScanFileId_Selected )
@@ -1101,8 +1109,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
             this._load_Chromatogram_For_Selected_SearchScanFileId({
                 currentSelection_ObjectReference_AtStartOf_Request,
 
-                retentionTimeRange_Min__LoadDataForScansFor,
-                retentionTimeRange_Max__LoadDataForScansFor
+                retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+                retentionTime_Minutes_Range_Max__LoadDataForScansFor
             })
 
             return // EARLY RETURN
@@ -1122,13 +1130,13 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
     private _load_Chromatogram_For_Selected_SearchScanFileId(
         {
             currentSelection_ObjectReference_AtStartOf_Request,
-            retentionTimeRange_Min__LoadDataForScansFor,
-            retentionTimeRange_Max__LoadDataForScansFor
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor
         } : {
             currentSelection_ObjectReference_AtStartOf_Request: object
 
-            retentionTimeRange_Min__LoadDataForScansFor: number
-            retentionTimeRange_Max__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor: number
         }
     ) : void {
         try {
@@ -1150,8 +1158,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                     searchScanFileId_Selected_AtStartOf_LoadRequest,
                     currentSelection_ObjectReference_AtStartOf_Request,
 
-                    retentionTimeRange_Min__LoadDataForScansFor,
-                    retentionTimeRange_Max__LoadDataForScansFor
+                    retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+                    retentionTime_Minutes_Range_Max__LoadDataForScansFor
                 })
 
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
@@ -1166,14 +1174,14 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
         {
             searchScanFileId_Selected_AtStartOf_LoadRequest,
             currentSelection_ObjectReference_AtStartOf_Request,
-            retentionTimeRange_Min__LoadDataForScansFor,
-            retentionTimeRange_Max__LoadDataForScansFor
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor
         } : {
             searchScanFileId_Selected_AtStartOf_LoadRequest: number
             currentSelection_ObjectReference_AtStartOf_Request: object
 
-            retentionTimeRange_Min__LoadDataForScansFor: number
-            retentionTimeRange_Max__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor: number
         }
     ) : void {
         try {
@@ -1201,8 +1209,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                     this._load_Chromatogram_For_Selected_SearchScanFileId__CallAfterSetTimeout__AfterValidate_SearchScanFileId_Has_MS1_Scans({
                         searchScanFileId_Selected_AtStartOf_LoadRequest,
                         currentSelection_ObjectReference_AtStartOf_Request,
-                        retentionTimeRange_Min__LoadDataForScansFor,
-                        retentionTimeRange_Max__LoadDataForScansFor
+                        retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+                        retentionTime_Minutes_Range_Max__LoadDataForScansFor
                     })
 
                 } else {
@@ -1242,8 +1250,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                         this._load_Chromatogram_For_Selected_SearchScanFileId__CallAfterSetTimeout__AfterValidate_SearchScanFileId_Has_MS1_Scans({
                             searchScanFileId_Selected_AtStartOf_LoadRequest,
                             currentSelection_ObjectReference_AtStartOf_Request,
-                            retentionTimeRange_Min__LoadDataForScansFor,
-                            retentionTimeRange_Max__LoadDataForScansFor
+                            retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+                            retentionTime_Minutes_Range_Max__LoadDataForScansFor
                         })
 
                     } else {
@@ -1296,14 +1304,14 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
         {
             searchScanFileId_Selected_AtStartOf_LoadRequest,
             currentSelection_ObjectReference_AtStartOf_Request,
-            retentionTimeRange_Min__LoadDataForScansFor,
-            retentionTimeRange_Max__LoadDataForScansFor
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor
         } : {
             searchScanFileId_Selected_AtStartOf_LoadRequest: number
             currentSelection_ObjectReference_AtStartOf_Request: object
 
-            retentionTimeRange_Min__LoadDataForScansFor: number
-            retentionTimeRange_Max__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor: number
         }
     ) : void {
         try {
@@ -1319,7 +1327,9 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                 const promise = new Promise<void>((resolve, reject) => { try {
 
                     //  Get MaxScanDataWithPeaksReturnCount every request and Store in module wide variable
-                    const promise_Get_MaxScanDataWithPeaksReturnCount = commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_ReturnPromise({ projectSearchId: this.props.projectSearchId })
+                    const promise_Get_MaxScanDataWithPeaksReturnCount = commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_ReturnPromise({
+                        projectSearchId: this.props.projectSearchId
+                    })
                     promise_Get_MaxScanDataWithPeaksReturnCount.catch(reason => {
                         reject(reason)
                     })
@@ -1340,8 +1350,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
                     const promise_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId = psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId({
 
-                        retentionTimeRange_Min: retentionTimeRange_Min__LoadDataForScansFor,
-                        retentionTimeRange_Max: retentionTimeRange_Max__LoadDataForScansFor,
+                        retentionTime_Seconds_Range_Min: retentionTime_Minutes_Range_Min__LoadDataForScansFor * 60,  //  '* 60' for seconds
+                        retentionTime_Seconds_Range_Max: retentionTime_Minutes_Range_Max__LoadDataForScansFor * 60,  //  '* 60' for seconds
 
                         searchScanFileId: searchScanFileId_Selected_AtStartOf_LoadRequest,
                         psmList: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.webserviceResult_Root.resultList,
@@ -1364,9 +1374,9 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                         const dataForChromatogram_For_SearchScanFileId = new Internal_DataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId({
                             data: {
                                 searchScanFileId: searchScanFileId_Selected_AtStartOf_LoadRequest,
-                                retentionTimeSeconds_Range_Min_Max__LoadingDataFor: {
-                                    retentionTimeSeconds_Range_Min: retentionTimeRange_Min__LoadDataForScansFor,
-                                    retentionTimeSeconds_Range_Max: retentionTimeRange_Max__LoadDataForScansFor
+                                retentionTime_Minutes_Range_Min_Max__LoadingDataFor: {
+                                    retentionTime_Minutes_Range_Min: retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+                                    retentionTime_Minutes_Range_Max: retentionTime_Minutes_Range_Max__LoadDataForScansFor
                                 },
                                 data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId: value_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId,
                                 compute_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId__Result
@@ -2105,7 +2115,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                             <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                                                 title={
                                                     <span>
-                                                        Select the combination of peptide (plus any modifications) and charge state for which to build a chromatogram.
+                                                        Select the combination of peptide (plus any modifications) and
+                                                        charge state for which to build a chromatogram.
                                                     </span>
                                                 }
                                             />
@@ -2114,59 +2125,69 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
                                             <select
                                                 value={ this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection.selectElement_ValueString }
-                                                onChange={ event => { try {
+                                                onChange={ event => {
+                                                    try {
 
-                                                    const selectedValueString = event.target.value
-                                                    const arrayIndex = Number.parseInt( selectedValueString )
-                                                    if ( Number.isNaN(arrayIndex)) {
-                                                        throw Error("Selected Value is not a number for DOM Element [select] defaultValue={ this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection.selectElement_ValueString }>. selectedValueString: " + selectedValueString )
-                                                    }
-
-                                                    const selectionEntry = this._ionSelection__reportedPeptide_OpenModMass_Charge_SelectionArray[ arrayIndex ]
-                                                    if ( ! selectionEntry ) {
-                                                        throw Error("Selected Value not found in array for DOM Element [select] defaultValue={ this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection.selectElement_ValueString }>. arrayIndex: " + arrayIndex + ", selectedValueString: " + selectedValueString )
-                                                    }
-                                                    if ( selectionEntry.selectElement_ValueString !== selectedValueString ) {
-                                                        throw Error("( selectionEntry.selectElement_ValueString !== selectedValueString ) for DOM Element [select] defaultValue={ this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection.selectElement_ValueString }>. arrayIndex: " +
-                                                            arrayIndex +
-                                                            ", selectionEntry.selectElement_ValueString: " + selectionEntry.selectElement_ValueString +
-                                                            ", selectedValueString: " + selectedValueString )
-                                                    }
-
-                                                    this._showUpdatingMessage = true;
-
-                                                    this.setState({ forceRerenderObject: {} })
-
-                                                    this._currentSelection_ObjectReference = {}
-
-                                                    const currentSelection_ObjectReference_Local = this._currentSelection_ObjectReference
-
-                                                    window.setTimeout( () => { try {
-
-                                                        if ( currentSelection_ObjectReference_Local !== this._currentSelection_ObjectReference ) {
-                                                            return
+                                                        const selectedValueString = event.target.value
+                                                        const arrayIndex = Number.parseInt( selectedValueString )
+                                                        if ( Number.isNaN( arrayIndex ) ) {
+                                                            throw Error( "Selected Value is not a number for DOM Element [select] defaultValue={ this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection.selectElement_ValueString }>. selectedValueString: " + selectedValueString )
                                                         }
 
-                                                        this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection = selectionEntry
+                                                        const selectionEntry = this._ionSelection__reportedPeptide_OpenModMass_Charge_SelectionArray[ arrayIndex ]
+                                                        if ( ! selectionEntry ) {
+                                                            throw Error( "Selected Value not found in array for DOM Element [select] defaultValue={ this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection.selectElement_ValueString }>. arrayIndex: " + arrayIndex + ", selectedValueString: " + selectedValueString )
+                                                        }
+                                                        if ( selectionEntry.selectElement_ValueString !== selectedValueString ) {
+                                                            throw Error( "( selectionEntry.selectElement_ValueString !== selectedValueString ) for DOM Element [select] defaultValue={ this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection.selectElement_ValueString }>. arrayIndex: " +
+                                                                arrayIndex +
+                                                                ", selectionEntry.selectElement_ValueString: " + selectionEntry.selectElement_ValueString +
+                                                                ", selectedValueString: " + selectedValueString )
+                                                        }
 
-                                                        this._compute_RetentionTime_MinMax_PSM_List_For_Chart()
+                                                        this._showUpdatingMessage = true;
+
+                                                        this.setState( { forceRerenderObject: {} } )
 
                                                         this._currentSelection_ObjectReference = {}
 
-                                                        //   Only call when change scan file
-                                                        // this._displayChromatogram_For_Selected_SearchScanFileId({ currentSelection_ObjectReference_AtStartOf_Request: this._currentSelection_ObjectReference })
+                                                        const currentSelection_ObjectReference_Local = this._currentSelection_ObjectReference
 
-                                                        this._showUpdatingMessage = false;
+                                                        window.setTimeout( () => {
+                                                            try {
 
-                                                        this._triggerPlotUpdate_Object = {}
+                                                                if ( currentSelection_ObjectReference_Local !== this._currentSelection_ObjectReference ) {
+                                                                    return
+                                                                }
 
-                                                        this.setState({ forceRerenderObject: {} })
+                                                                this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection = selectionEntry
 
-                                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
+                                                                this._compute_RetentionTime_MinMax_PSM_List_For_Chart()
 
-                                                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
+                                                                this._currentSelection_ObjectReference = {}
+
+                                                                //   Only call when change scan file
+                                                                // this._displayChromatogram_For_Selected_SearchScanFileId({ currentSelection_ObjectReference_AtStartOf_Request: this._currentSelection_ObjectReference })
+
+                                                                this._showUpdatingMessage = false;
+
+                                                                this._triggerPlotUpdate_Object = {}
+
+                                                                this.setState( { forceRerenderObject: {} } )
+
+                                                            } catch ( e ) {
+                                                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                                throw e
+                                                            }
+                                                        }, 10 )
+
+                                                    } catch ( e ) {
+                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                        throw e
+                                                    }
+                                                } }
                                             >
-                                                { this._ionSelection__reportedPeptide_OpenModMass_Charge_SelectionArray.map((value, index, array) => {
+                                                { this._ionSelection__reportedPeptide_OpenModMass_Charge_SelectionArray.map( ( value, index, array ) => {
                                                     return (
                                                         <option
                                                             key={ value.selectElement_ValueString }
@@ -2174,19 +2195,19 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                                         >
                                                             {
                                                                 value.reportedPeptide_String +
-                                                                    " (z=" +  value.charge + ")" +
+                                                                " (z=" + value.charge + ")" +
                                                                 (
                                                                     ( ( ! value.no_PSM_hasOpenModMass ) && ( ! value.no_openModMass ) ) ? (
                                                                         " (" +
                                                                         ( value.openModMass_Sum_Rounded > 0 ? "+" : "" ) +
                                                                         value.openModMass_Sum_Rounded.toFixed( this._open_modification_mass_decimal_place_rounding__user_selection ) +
-                                                                         ")"
+                                                                        ")"
                                                                     ) : ""
                                                                 )
                                                             }
                                                         </option>
                                                     )
-                                                })}
+                                                } ) }
                                             </select>
 
                                             { this._anyPsm_Have_OpenModifications ? (
@@ -2199,13 +2220,26 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                                     <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                                                         title={
                                                             <span>
-                                                                Open modification masses are typically the difference between the observed mass for a peptide ion and the calculated mass for the peptide ion.
-                                                                Since this value inherently includes error the exact values for the open modification associated with PSMs can vary slightly.
-                                                                The chromatogram viewer rounds the open modification mass using the scale selected here,
-                                                                and bins which PSMs are included in the chromatogram based on which PSMs have observed m/z values in that bin.
-                                                                The calculated m/z that is the center of the window for peak finding the MS1 scan (see below) will be the mean observed m/z of the PSMs in this bin.
-                                                                Very specific rounding (i.e., more decimal places) risks including only a subset of the PSMs that have a true underlying open modification.
-                                                                Very general rounding (fewer decimal places) risks including PSMs with different underlying true open modifications.
+                                                                Open modification masses are typically the difference
+                                                                between the observed mass for a peptide ion and the
+                                                                calculated mass for the peptide ion.
+                                                                Since this value inherently includes error the exact
+                                                                values for the open modification associated with PSMs
+                                                                can vary slightly.
+                                                                The chromatogram viewer rounds the open modification
+                                                                mass using the scale selected here,
+                                                                and bins which PSMs are included in the chromatogram
+                                                                based on which PSMs have observed m/z values in that
+                                                                bin.
+                                                                The calculated m/z that is the center of the window for
+                                                                peak finding the MS1 scan (see below) will be the mean
+                                                                observed m/z of the PSMs in this bin.
+                                                                Very specific rounding (i.e., more decimal places) risks
+                                                                including only a subset of the PSMs that have a true
+                                                                underlying open modification.
+                                                                Very general rounding (fewer decimal places) risks
+                                                                including PSMs with different underlying true open
+                                                                modifications.
                                                             </span>
                                                         }
                                                     />
@@ -2215,50 +2249,60 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                                     <span> </span>
                                                     <select
                                                         defaultValue={ this._open_modification_mass_decimal_place_rounding__user_selection }
-                                                        onChange={ event => { try {
+                                                        onChange={ event => {
+                                                            try {
 
-                                                            const valueString = event.target.value
+                                                                const valueString = event.target.value
 
-                                                            const valueNumber = Number.parseInt( valueString )
+                                                                const valueNumber = Number.parseInt( valueString )
 
-                                                            if ( Number.isNaN( valueNumber ) ) {
-                                                                const msg = "valueString is NOT an Integer.  valueString: " + valueString
-                                                                console.warn(msg)
-                                                                throw Error(msg)
+                                                                if ( Number.isNaN( valueNumber ) ) {
+                                                                    const msg = "valueString is NOT an Integer.  valueString: " + valueString
+                                                                    console.warn( msg )
+                                                                    throw Error( msg )
+                                                                }
+
+                                                                this._showUpdatingMessage = true;
+
+                                                                this.setState( { forceRerenderObject: {} } )
+
+                                                                window.setTimeout( () => {
+                                                                    try {
+
+                                                                        this._open_modification_mass_decimal_place_rounding__user_selection = valueNumber
+
+                                                                        this._open_modification_mass_decimal_place_rounding__10_POWER___for_user_selection = Math.pow( 10, this._open_modification_mass_decimal_place_rounding__user_selection );
+
+                                                                        this._compute_selection_ReportedPeptide_OpenModMass_Charge__Array__DefaultSelection__For_ScanFile()
+
+                                                                        this._currentSelection_ObjectReference = {}
+
+                                                                        const searchScanFileId_Selected_AtStartOf_LoadRequest = this._searchScanFileId_Selected;
+
+                                                                        this._load_Chromatogram_For_Selected_SearchScanFileId__AfterGet_ScanData_RenderOnPage( {
+                                                                            currentSelection_ObjectReference_AtStartOf_Request: this._currentSelection_ObjectReference,
+                                                                            searchScanFileId_Selected_AtStartOf_LoadRequest
+                                                                        } )
+
+                                                                        this._showUpdatingMessage = false;
+
+                                                                        this._triggerPlotUpdate_Object = {}
+
+                                                                        this.setState( { forceRerenderObject: {} } )
+
+                                                                    } catch ( e ) {
+                                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                                        throw e
+                                                                    }
+                                                                }, 10 )
+
+                                                            } catch ( e ) {
+                                                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                                throw e
                                                             }
-
-                                                            this._showUpdatingMessage = true;
-
-                                                            this.setState({ forceRerenderObject: {} })
-
-                                                            window.setTimeout( () => { try {
-
-                                                                this._open_modification_mass_decimal_place_rounding__user_selection = valueNumber
-
-                                                                this._open_modification_mass_decimal_place_rounding__10_POWER___for_user_selection = Math.pow( 10, this._open_modification_mass_decimal_place_rounding__user_selection );
-
-                                                                this._compute_selection_ReportedPeptide_OpenModMass_Charge__Array__DefaultSelection__For_ScanFile()
-
-                                                                this._currentSelection_ObjectReference = {}
-
-                                                                const searchScanFileId_Selected_AtStartOf_LoadRequest = this._searchScanFileId_Selected;
-
-                                                                this._load_Chromatogram_For_Selected_SearchScanFileId__AfterGet_ScanData_RenderOnPage({
-                                                                    currentSelection_ObjectReference_AtStartOf_Request: this._currentSelection_ObjectReference,
-                                                                    searchScanFileId_Selected_AtStartOf_LoadRequest
-                                                                })
-
-                                                                this._showUpdatingMessage = false;
-
-                                                                this._triggerPlotUpdate_Object = {}
-
-                                                                this.setState({ forceRerenderObject: {} })
-
-                                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
-
-                                                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
+                                                        } }
                                                     >
-                                                        { _OPEN_MODIFICATION_MASS_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION_OPTIONS.map( (value, index) => {
+                                                        { _OPEN_MODIFICATION_MASS_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION_OPTIONS.map( ( value, index ) => {
                                                             return (
                                                                 <option
                                                                     key={ index }
@@ -2267,7 +2311,7 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                                                     { value }
                                                                 </option>
                                                             )
-                                                        })}
+                                                        } ) }
                                                     </select>
                                                     <span> decimal places</span>
                                                 </>
@@ -2376,27 +2420,27 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                         <Internal__RetentionTime_Min_Max_UserEditable_Component
                                             force_SetTo_ValueFromParent={ this._force_SetTo_ValueFromParent__FOR__Internal__RetentionTime_Min_Max_UserEditable_Component }  // On object reference change, the input values will be set to the values from Parent
 
-                                            retentionTimeSeconds_Range_ForChart_Min__ValueFromParent={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Min }
-                                            retentionTimeSeconds_Range_ForChart_Max__ValueFromParent={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Max }
+                                            retentionTime_Minutes_Range_ForChart_Min__ValueFromParent={ this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Min }
+                                            retentionTime_Minutes_Range_ForChart_Max__ValueFromParent={ this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Max }
 
-                                            retentionTimeSeconds_Range_ForChart_Min__DefaultValue={ this._retentionTimeSeconds_Range_ComputedFromPSMs_Min_Max.retentionTimeSeconds_Range_Min }
-                                            retentionTimeSeconds_Range_ForChart_Max__DefaultValue={ this._retentionTimeSeconds_Range_ComputedFromPSMs_Min_Max.retentionTimeSeconds_Range_Max }
+                                            retentionTime_Minutes_Range_ForChart_Min__DefaultValue={ this._retentionTimeMinutes_Range_ComputedFromPSMs_Min_Max.retentionTime_Minutes_Range_Min }
+                                            retentionTime_Minutes_Range_ForChart_Max__DefaultValue={ this._retentionTimeMinutes_Range_ComputedFromPSMs_Min_Max.retentionTime_Minutes_Range_Max }
 
                                             updatedValues_Callback={ ( params ) => {
 
-                                                this._retentionTimeSeconds_Range_ForChart_Min_Max__PreviousValues = this._retentionTimeSeconds_Range_ForChart_Min_Max
+                                                this._retentionTimeMinutes_Range_ForChart_Min_Max__PreviousValues = this._retentionTime_Minutes_Range_ForChart_Min_Max
 
-                                                this._retentionTimeSeconds_Range_ForChart_Min_Max = {
-                                                    retentionTimeSeconds_Range_Min: params.retentionTimeSeconds_Range_ForChart_Min, retentionTimeSeconds_Range_Max: params.retentionTimeSeconds_Range_ForChart_Max
+                                                this._retentionTime_Minutes_Range_ForChart_Min_Max = {
+                                                    retentionTime_Minutes_Range_Min: params.retentionTime_Minutes_Range_ForChart_Min, retentionTime_Minutes_Range_Max: params.retentionTime_Minutes_Range_ForChart_Max
                                                 }
 
 
                                                 if ( this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId ) {
 
-                                                    const retentionTimeSeconds_Range_Min_Max__LoadingDataFor = this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.data.retentionTimeSeconds_Range_Min_Max__LoadingDataFor
+                                                    const retentionTime_Minutes_Range_Min_Max__LoadingDataFor = this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.data.retentionTime_Minutes_Range_Min_Max__LoadingDataFor
 
-                                                    if ( this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Min < retentionTimeSeconds_Range_Min_Max__LoadingDataFor.retentionTimeSeconds_Range_Min ||
-                                                        this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Max > retentionTimeSeconds_Range_Min_Max__LoadingDataFor.retentionTimeSeconds_Range_Max ) {
+                                                    if ( this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Min < retentionTime_Minutes_Range_Min_Max__LoadingDataFor.retentionTime_Minutes_Range_Min ||
+                                                        this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Max > retentionTime_Minutes_Range_Min_Max__LoadingDataFor.retentionTime_Minutes_Range_Max ) {
 
                                                         //  Load data based on NEW Retention Time Range
 
@@ -2405,8 +2449,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
                                                         this._load_Chromatogram_For_Selected_SearchScanFileId({
                                                             currentSelection_ObjectReference_AtStartOf_Request: this._currentSelection_ObjectReference,
-                                                            retentionTimeRange_Min__LoadDataForScansFor: this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Min,
-                                                            retentionTimeRange_Max__LoadDataForScansFor: this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Max
+                                                            retentionTime_Minutes_Range_Min__LoadDataForScansFor: this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Min,
+                                                            retentionTime_Minutes_Range_Max__LoadDataForScansFor: this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Max
                                                         })
 
                                                         return // EARLY RETURN
@@ -2448,8 +2492,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
                                                 precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection={ this._precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection }
 
-                                                retentionTimeSeconds_Range_ForChart_Min={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Min }
-                                                retentionTimeSeconds_Range_ForChart_Max={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Max }
+                                                retentionTime_Minutes_Range_ForChart_FromUserInput_Min={ this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Min }
+                                                retentionTime_Minutes_Range_ForChart_FromUserInput_Max={ this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Max }
 
                                                 psmList_FilteredForDisplay={ this._psmList_PossiblyFiltered_ForChart_ForDisplay }
 
@@ -2621,7 +2665,7 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                 ) : null }
 
                                 {/*  Overlay for Updated Retention Time selection to previous selection  */}
-                                { this._retentionTimeSeconds_Range_ForChart_Min_Max__Reset_To_Previous ? (
+                                { this._retentionTimeMinutes_Range_ForChart_Min_Max__Reset_To_Previous ? (
                                     <div
                                         className=" standard-background-color standard-border-color-gray "
                                         style={ {
@@ -2646,7 +2690,7 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                         <div style={ { marginTop: 10 } }>
                                             <button
                                                 onClick={ event => {
-                                                    this._retentionTimeSeconds_Range_ForChart_Min_Max__Reset_To_Previous = false
+                                                    this._retentionTimeMinutes_Range_ForChart_Min_Max__Reset_To_Previous = false
                                                     this.setState({ forceRerenderObject: {} })
                                                 }}
                                             >
@@ -2696,8 +2740,8 @@ interface Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Componen
 
     precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection: number
 
-    retentionTimeSeconds_Range_ForChart_Min: number
-    retentionTimeSeconds_Range_ForChart_Max: number
+    retentionTime_Minutes_Range_ForChart_FromUserInput_Min: number
+    retentionTime_Minutes_Range_ForChart_FromUserInput_Max: number
 
     psmList_FilteredForDisplay: Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
 
@@ -2736,10 +2780,13 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
     private _DO_NOT_CALL() { //  Test Cast of method
     }
 
-    private plot_div_Ref :  React.RefObject<HTMLDivElement>
+    private _plot_div_Ref :  React.RefObject<HTMLDivElement>
 
-    // private plot_Ion_Current_Ref :  React.RefObject<HTMLDivElement>
-    // private plot_Ion_Count_Ref :  React.RefObject<HTMLDivElement>
+
+    private _retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min: number
+    private _retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max: number
+
+    private _areaUnderCurve_Display: number
 
     private _showCreatingMessage = true
     private _showUpdatingMessage = false
@@ -2750,36 +2797,28 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
     private _psms_Contain_PSM_Level_VariableModifications_ShowMessage = false
 
+    //
+
     /**
      *
      */
     constructor( props: Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Props ) {
         super( props );
 
-        this.plot_div_Ref = React.createRef();
+        this._plot_div_Ref = React.createRef();
 
-        // this.plot_Ion_Current_Ref = React.createRef();
-        // this.plot_Ion_Count_Ref = React.createRef();
+        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Min
+        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Max
     }
 
     componentWillUnmount() {
         try {
             try {
-                Plotly.purge(this.plot_div_Ref.current)
+                Plotly.purge(this._plot_div_Ref.current)
             } catch (e) {
                 //  Eat Exception
             }
 
-            // try {
-            //     Plotly.purge(this.plot_Ion_Current_Ref.current)
-            // } catch (e) {
-            //     //  Eat Exception
-            // }
-            // try {
-            //     Plotly.purge(this.plot_Ion_Count_Ref.current)
-            // } catch (e) {
-            //     //  Eat Exception
-            // }
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
@@ -2788,6 +2827,9 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             if (
                 prevProps.triggerPlotUpdate_Object !== this.props.triggerPlotUpdate_Object
             ) {
+                this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Min
+                this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Max
+
                 this._showUpdatingMessage = true
                 this._show_NO_DATA_ForSelection_Message = false;
 
@@ -2824,8 +2866,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
      */
     private _createOnMount_And_OnUpdate() {
 
-        const retentionTimeSeconds_Range_ForChart_Min = this.props.retentionTimeSeconds_Range_ForChart_Min
-        const retentionTimeSeconds_Range_ForChart_Max = this.props.retentionTimeSeconds_Range_ForChart_Max
+        const retentionTime_Minutes_Range_ForChart_Min = this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min
+        const retentionTime_Minutes_Range_ForChart_Max = this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max
 
         const psmList_LOCAL_PossiblyFiltered = this.props.psmList_FilteredForDisplay;
 
@@ -2860,7 +2902,9 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
                         //  Scan Number found With Peaks
 
-                        if ( scanItem_YES_Peaks.retentionTime < retentionTimeSeconds_Range_ForChart_Min || scanItem_YES_Peaks.retentionTime > retentionTimeSeconds_Range_ForChart_Max ) {
+                        const scanItem_YES_Peaks__RetentionTime_Minutes = scanItem_YES_Peaks.retentionTime / 60
+
+                        if ( scanItem_YES_Peaks__RetentionTime_Minutes < retentionTime_Minutes_Range_ForChart_Min || scanItem_YES_Peaks__RetentionTime_Minutes > retentionTime_Minutes_Range_ForChart_Max ) {
 
                             //  Scan retentionTime not in range so SKIP
 
@@ -2887,7 +2931,9 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                 const scanItem_NO_Peaks = this.props.dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.scanData_Map_Key_ScanNumber.get(  scanNumber )
                 if ( scanItem_NO_Peaks ) {
 
-                    if ( scanItem_NO_Peaks.retentionTime_InSeconds < retentionTimeSeconds_Range_ForChart_Min || scanItem_NO_Peaks.retentionTime_InSeconds > retentionTimeSeconds_Range_ForChart_Max ) {
+                    const scanItem_YES_Peaks__RetentionTime_Minutes = scanItem_NO_Peaks.retentionTime_InSeconds / 60
+
+                    if ( scanItem_YES_Peaks__RetentionTime_Minutes < retentionTime_Minutes_Range_ForChart_Min || scanItem_NO_Peaks.retentionTime_InSeconds > retentionTime_Minutes_Range_ForChart_Max ) {
 
                         //  Scan retentionTime not in range so SKIP
 
@@ -2928,8 +2974,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
                 chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_CURRENT,
 
-                retentionTimeSeconds_Range_ForChart_Min,
-                retentionTimeSeconds_Range_ForChart_Max,
+                retentionTime_Minutes_Range_ForChart_Min,
+                retentionTime_Minutes_Range_ForChart_Max,
                 psmList_LOCAL_PossiblyFiltered,
                 scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
                 psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
@@ -2939,8 +2985,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
                 chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT,
 
-                retentionTimeSeconds_Range_ForChart_Min,
-                retentionTimeSeconds_Range_ForChart_Max,
+                retentionTime_Minutes_Range_ForChart_Min,
+                retentionTime_Minutes_Range_ForChart_Max,
                 psmList_LOCAL_PossiblyFiltered,
                 scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
                 psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
@@ -2959,8 +3005,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         {
             chartCreate__IonCurrent__IonCount__Enum,
 
-            retentionTimeSeconds_Range_ForChart_Min,
-            retentionTimeSeconds_Range_ForChart_Max,
+            retentionTime_Minutes_Range_ForChart_Min,
+            retentionTime_Minutes_Range_ForChart_Max,
             psmList_LOCAL_PossiblyFiltered,
             scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
 
@@ -2968,8 +3014,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         } : {
             chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum
 
-            retentionTimeSeconds_Range_ForChart_Min: number
-            retentionTimeSeconds_Range_ForChart_Max: number
+            retentionTime_Minutes_Range_ForChart_Min: number
+            retentionTime_Minutes_Range_ForChart_Max: number
 
             psmList_LOCAL_PossiblyFiltered: Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
             scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime: Array<{
@@ -2986,11 +3032,15 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
         const psmList_DataTable_DataRowEntry_Map_Key_PsmId: Map<number, DataTable_DataRowEntry> = this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.dataTable_Data.dataTable_DataRowEntries_Map_Key_Psm_Id
 
-        const trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass: Array<any> = []
+        const trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass: Array<Plotly.Data> = []
 
         const trace_Psm_Points_X: Array<number> = []
         const trace_Psm_Points_Y: Array<number> = []
         const trace_Psm_Points_Tooltips: Array<string> = []
+
+        this._areaUnderCurve_Display = undefined
+
+        let areaUnderCurve_Total = 0
 
         const psmItem_Map_Key_PsmTooltip: Map<string, PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item> = new Map()
 
@@ -3108,9 +3158,13 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                     //     ", m_Over_Z_Window_Max: " + m_Over_Z_Window_Max
                     // )
 
-                    const plotlyTrace = this._create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope({
+                    const plotlyTrace_Etc_Result = _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component__Create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope({
 
                         chartCreate__IonCurrent__IonCount__Enum,
+                        selection_ReportedPeptide_OpenModMass_Charge: this.props.selection_ReportedPeptide_OpenModMass_Charge,
+
+                        scanPeakSelect: this.props.scanPeakSelect,
+                        smoothingOption_Selection: this.props.smoothingOption_Selection,
 
                         plotlyTrace_Label,
                         plotlyTrace_Color: "rgb(31, 119, 180)",
@@ -3122,6 +3176,9 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                         scanItem_Array_SortOn_RetentionTime: scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
                         psmList_LOCAL_PossiblyFiltered: psmList_LOCAL_PossiblyFiltered,
 
+                        dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId: this.props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId,
+                        psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results,
+
                         //  Updated
                         psmList_DataTable_DataRowEntry_Map_Key_PsmId,
                         psmItem_Map_Key_PsmTooltip,
@@ -3132,9 +3189,11 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                         trace_Psm_Points_Tooltips
                     })
 
-                    if ( plotlyTrace ) {
+                    if ( plotlyTrace_Etc_Result ) {
 
-                        trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.push( plotlyTrace )
+                        trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.push( plotlyTrace_Etc_Result.plotly_TraceData )
+
+                        areaUnderCurve_Total += plotlyTrace_Etc_Result.areaUnderCurve_SingleTrace
                     }
                 }
 
@@ -3167,9 +3226,13 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                     //     ", m_Over_Z_Window_Max: " + m_Over_Z_Window_Max
                     // )
 
-                    const plotlyTrace = this._create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope({
+                    const plotlyTrace_Etc_Result = _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component__Create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope({
 
                         chartCreate__IonCurrent__IonCount__Enum,
+                        selection_ReportedPeptide_OpenModMass_Charge: this.props.selection_ReportedPeptide_OpenModMass_Charge,
+
+                        scanPeakSelect: this.props.scanPeakSelect,
+                        smoothingOption_Selection: this.props.smoothingOption_Selection,
 
                         plotlyTrace_Label,
                         plotlyTrace_Color: _ISOTOPE_PLOT_TRACE_COLORS[ isotope_Number ],
@@ -3181,6 +3244,9 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                         scanItem_Array_SortOn_RetentionTime: scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
                         psmList_LOCAL_PossiblyFiltered: psmList_LOCAL_PossiblyFiltered,
 
+                        dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId: this.props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId,
+                        psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results,
+
                         //  Updated
                         psmList_DataTable_DataRowEntry_Map_Key_PsmId,
                         psmItem_Map_Key_PsmTooltip,
@@ -3191,26 +3257,33 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                         trace_Psm_Points_Tooltips
                     })
 
-                    if ( plotlyTrace ) {
+                    if ( plotlyTrace_Etc_Result ) {
 
-                        trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.push( plotlyTrace )
+                        trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.push( plotlyTrace_Etc_Result.plotly_TraceData )
+
+                        areaUnderCurve_Total += plotlyTrace_Etc_Result.areaUnderCurve_SingleTrace
                     }
                 }
             }
         }
 
-        if ( trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.length === 0 ) {
+        // if ( trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.length === 0 ) {
+        //
+        //     console.log( "NO Plotly traces created for MS 1 Scans. trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.length === 0")
+        //
+        //     this._show_NO_DATA_ForSelection_Message = true
+        //
+        //     this._areaUnderCurve_Display = undefined
+        //
+        //     this._showCreatingMessage = false
+        //     this._showUpdatingMessage = false
+        //
+        //     this.setState({ forceRerenderObject: {} })
+        //
+        //     return; // EARLY EXIT
+        // }
 
-            console.log( "NO Plotly traces created for MS 1 Scans. trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.length === 0")
-
-            this._show_NO_DATA_ForSelection_Message = true
-
-            this._showCreatingMessage = false
-            this._showUpdatingMessage = false
-            this.setState({ forceRerenderObject: {} })
-
-            return; // EARLY EXIT
-        }
+        this._areaUnderCurve_Display = areaUnderCurve_Total
 
         //  PSM Points
         const trace_Psm_Points = {
@@ -3255,7 +3328,11 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         }
 
 
-        const chartTitle = chartTitle_Start + " Chromatogram - " + reportedPeptideSequence + "<sup>" + this.props.selection_ReportedPeptide_OpenModMass_Charge.charge + "+</sup>" + openModMass_Display_For_ChartTitle
+        const chartTitle_FirstLine = chartTitle_Start + " Chromatogram - " + reportedPeptideSequence + "<sup>" + this.props.selection_ReportedPeptide_OpenModMass_Charge.charge + "+</sup>" + openModMass_Display_For_ChartTitle
+
+
+        const chartTitle = chartTitle_FirstLine + "<br>" + "Peak Area: " + _areaUnderCurve_Display_FormattingFunction( areaUnderCurve_Total )
+
         const chart_X_Axis_Label = "Time (min)"
 
         let chart_Y_Axis_Label = "Ion Current"
@@ -3275,7 +3352,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                 title: {
                     text: chart_X_Axis_Label
                 },
-                range: [ retentionTimeSeconds_Range_ForChart_Min / 60, retentionTimeSeconds_Range_ForChart_Max / 60 ],
+                range: [ retentionTime_Minutes_Range_ForChart_Min, retentionTime_Minutes_Range_ForChart_Max ],
 
                 exponentformat: 'e'  // https://plotly.com/javascript/tick-formatting/#using-exponentformat
             },
@@ -3291,21 +3368,31 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                 itemsizing: 'constant' // Legend marker size will be constant
             }
         }
-        
+
+        if ( trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.length === 0 ) {
+
+            //  Add Center message that there is NO data
+
+            chart_Layout.annotations = [
+                {
+                    text: 'No data for selections above<br>and retention times: <br>' + this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min + " to " + this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max,
+                    //  Center
+                    x: 0.5,
+                    y: 0.5,
+                    xanchor: 'center',
+                    yanchor: 'middle',
+                    xref: 'paper',
+                    yref: 'paper',
+                    showarrow: false,
+                    font: { size: 24 },
+                    bgcolor: "white",
+                    borderpad: 20
+                }
+            ]
+        }
 
 
-        let plotly_DOM_Element: HTMLDivElement = this.plot_div_Ref.current
-
-        // if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
-        //
-        //     plotly_DOM_Element = this.plot_Ion_Count_Ref.current
-        //
-        // } else {
-        //
-        //     plotly_DOM_Element = this.plot_Ion_Current_Ref.current
-        //
-        // }
-
+        let plotly_DOM_Element: HTMLDivElement = this._plot_div_Ref.current
         const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: plotly_DOM_Element });
 
         const newPlotResulting_Promise = Plotly.newPlot(
@@ -3385,6 +3472,89 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             })
         }
 
+        //  Register callback on user selects zoom area in chart
+        {
+            //   @ts-ignore   'on' is added to DOM Element by Plotly
+            plotly_DOM_Element.on("plotly_relayout", (eventdata: any) => {
+                try {
+
+                    if ( eventdata["xaxis.autorange"] || eventdata["xaxis.range"] ) {
+
+                        //  User clicked on the icon for 'Autoscale' (first value in 'if') or 'Reset Axes' (second value in 'if')
+
+                        //  Reset Mod Mass Min/Max selection
+
+                        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Min
+                        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Max
+
+
+                        this._showUpdatingMessage = true
+                        this._show_NO_DATA_ForSelection_Message = false;
+
+                        this._psms_NOT_PutOnChart_ShowMessage = false
+                        this._psms_Contain_PSM_Level_VariableModifications_ShowMessage = false
+
+                        this.setState({ forceRerenderObject: {} })
+
+                        window.setTimeout( () => { try {
+
+                            this._createOnMount_And_OnUpdate()
+
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                        // this._areaUnderCurve_Value_Container_div_Ref.current.style.display = "none"
+
+                        return // EARLY RETURN
+                    }
+
+                    if (eventdata["xaxis.range[1]"] !== undefined) {
+
+                        //  Selected Range  - X axis is Retention Time in Minutes.  Y axis is ion current
+
+                        const xaxis_range_0 = eventdata["xaxis.range[0]"];
+                        const xaxis_range_1 = eventdata["xaxis.range[1]"];
+
+                        // const yaxis_range_0 = eventdata["yaxis.range[0]"];
+                        // const yaxis_range_1 = eventdata["yaxis.range[1]"];
+
+                        let selectedRange_Start = Number.parseFloat( xaxis_range_0 )
+                        let selectedRange_End = Number.parseFloat( xaxis_range_1 )
+
+                        if ( selectedRange_Start < this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Min ) {
+                            selectedRange_Start = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Min
+                        }
+
+                        if ( selectedRange_End > this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Max ) {
+                            selectedRange_End = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Max
+                        }
+
+                        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min = selectedRange_Start
+                        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max = selectedRange_End
+
+                        this._showUpdatingMessage = true
+                        this._show_NO_DATA_ForSelection_Message = false;
+
+                        this._psms_NOT_PutOnChart_ShowMessage = false
+                        this._psms_Contain_PSM_Level_VariableModifications_ShowMessage = false
+
+                        this.setState({ forceRerenderObject: {} })
+
+                        window.setTimeout( () => { try {
+
+                            this._createOnMount_And_OnUpdate()
+
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                        return // EARLY RETURN
+                    }
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            });
+        }
+
         if ( psms_NOT_PutOnChart_PSM_IDs.size > 0 ) {
 
             //   NOT all PSMs put on the chart, Display These PSMs at zero on Y axis
@@ -3412,7 +3582,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                         }
                     }
 
-                    this._plot_PSM(
+                    _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component__Plot_PSM(
                         {
                             psmItem_ToPlot: psmEntry,
                             scanData_NO_Peaks_Entry_MS_1: scanData_NO_Peaks_Entry_MS_1,
@@ -3423,6 +3593,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                             psmList_DataTable_DataRowEntry_Map_Key_PsmId,
 
                             psmItem_Map_Key_PsmTooltip,
+                            psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results,
                             trace_Psm_Points_X,
                             trace_Psm_Points_Y,
                             trace_Psm_Points_Tooltips
@@ -3464,608 +3635,6 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         this.setState({ forceRerenderObject: {} })
     }
 
-    /**
-     *
-     * @param plotlyTrace_Label
-     * @param m_Over_Z_Window_Min
-     * @param m_Over_Z_Window_Max
-     * @param m_Over_Z_Window_Index
-     * @param scanItem_Array_SortOn_RetentionTime
-     * @param psmList_LOCAL_PossiblyFiltered
-     * @param psmList_DataTable_DataRowEntry_Map_Key_PsmId
-     * @param psmItem_Map_Key_PsmTooltip
-     * @param psms_NOT_PutOnChart_PSM_IDs
-     * @param trace_Psm_Points_X
-     * @param trace_Psm_Points_Y
-     * @param trace_Psm_Points_Tooltips
-     * @private
-     */
-    private _create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope(
-        {
-            chartCreate__IonCurrent__IonCount__Enum,
-
-            plotlyTrace_Label,
-            plotlyTrace_Color,
-
-            m_Over_Z_Window_Min,
-            m_Over_Z_Window_Max,
-            m_Over_Z_Window_Index,  // Not sure used
-
-            scanItem_Array_SortOn_RetentionTime,
-            psmList_LOCAL_PossiblyFiltered,
-
-            //  Updated
-            psmList_DataTable_DataRowEntry_Map_Key_PsmId,
-            psmItem_Map_Key_PsmTooltip,
-            psms_NOT_PutOnChart_PSM_IDs,
-
-            trace_Psm_Points_X,
-            trace_Psm_Points_Y,
-            trace_Psm_Points_Tooltips
-        } : {
-            chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum
-
-            plotlyTrace_Label: string
-            plotlyTrace_Color: string
-
-            m_Over_Z_Window_Min: number
-            m_Over_Z_Window_Max: number
-            m_Over_Z_Window_Index: number  // Not sure used
-
-            scanItem_Array_SortOn_RetentionTime: Array<{
-                scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
-                scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
-                scan_RetentionTime: number
-                scanNumber: number
-                scanLevel: number
-            }>
-
-            psmList_LOCAL_PossiblyFiltered: Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
-
-            //  Updated
-            psmList_DataTable_DataRowEntry_Map_Key_PsmId: Map<number, DataTable_DataRowEntry>
-            psmItem_Map_Key_PsmTooltip: Map<string, PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
-            psms_NOT_PutOnChart_PSM_IDs: Set<number>
-
-            trace_Psm_Points_X: Array<number>
-            trace_Psm_Points_Y: Array<number>
-            trace_Psm_Points_Tooltips: Array<string>
-
-        }
-    ) : any { // return any since return plotly trace
-
-        // console.log( "START Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label )
-
-        //  Middle between m_Over_Z_Window_Min and m_Over_Z_Window_Max
-        const m_Over_Z_Window_Middle_Between_Min_Max = m_Over_Z_Window_Min + ( ( m_Over_Z_Window_Max - m_Over_Z_Window_Min ) / 2 )
-
-        const psmItem_Array_Map_Key_Associated_MS_1_ScanNumber: Map<number, Array<{ psmItem: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item, psmItem_m_Over_Z_Min_Max__Ranges_Index: number }>> = new Map()
-
-        const ms_1_ScanNumber_Map_Key_PsmId: Map<number, number> = new Map()
-
-        const scanData_NO_Peaks_Entry_Map_Key_ScanNumber: Map<number,  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map()
-
-        for ( const scanItem of this.props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.data.data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.value_CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
-
-            scanData_NO_Peaks_Entry_Map_Key_ScanNumber.set( scanItem.scanNumber, scanItem )
-        }
-
-        for ( const psmItem of psmList_LOCAL_PossiblyFiltered ) {
-
-             if ( psmItem.precursor_M_Over_Z < m_Over_Z_Window_Min || psmItem.precursor_M_Over_Z > m_Over_Z_Window_Max ) {
-                 // psmItem NOT for mz window so SKIP
-                 continue; // EARLY CONTINUE
-             }
-
-            let scanData_NO_Peaks_Entry_MS_1 = scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( psmItem.scanNumber )
-            if ( ! scanData_NO_Peaks_Entry_MS_1 ) {
-                throw Error("scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( psmItem.scanNumber ) returned NOTHING for psmItem.scanNumber: " + psmItem.scanNumber )
-            }
-            while ( scanData_NO_Peaks_Entry_MS_1.level > 1 ) {
-                scanData_NO_Peaks_Entry_MS_1 = scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.parentScanNumber )
-                if ( ! scanData_NO_Peaks_Entry_MS_1 ) {
-                    throw Error("scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.parentScanNumber ) returned NOTHING for scanData_NO_Peaks_Entry_MS_1.parentScanNumber: " + scanData_NO_Peaks_Entry_MS_1.parentScanNumber + ", psmItem.scanNumber: " + psmItem.scanNumber )
-                }
-            }
-
-            let psmItem_Array = psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.scanNumber )
-            if ( ! psmItem_Array ) {
-                psmItem_Array = []
-                psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.set( scanData_NO_Peaks_Entry_MS_1.scanNumber, psmItem_Array )
-            }
-
-            psmItem_Array.push({ psmItem, psmItem_m_Over_Z_Min_Max__Ranges_Index: m_Over_Z_Window_Index })
-
-            ms_1_ScanNumber_Map_Key_PsmId.set( psmItem.psmId, scanData_NO_Peaks_Entry_MS_1.scanNumber )
-        }
-
-        //  For the PSMs to go with the scans/peaks on this trace
-
-        const psm_And_Its_ScanData: Array<{
-            psmItem: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item
-            scanItem: {
-                scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
-                scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
-                scan_RetentionTime: number
-                scanNumber: number
-            }
-            peakToUse_DisplayDataForPSM_Tooltip: Internal__PeakToUse_DisplayDataForPSM_Tooltip
-            y_Trace_Index: number
-        }> = []
-
-        //  For the Scan Trace
-
-        const trace_rt_Intensity_Line_X: Array<number> = []
-        let trace_rt_Intensity_Line_Y: Array<number> = []  // 'let' to allow replace after smoothing
-        const trace_rt_Intensity_Tooltips: Array<string> = []
-
-        //  Processing for each charge value
-        {
-            let scanCount_Where_MoreThanOnePeak_InsideWindow = 0;
-
-            for ( const scanItem of scanItem_Array_SortOn_RetentionTime ) {
-
-                const scan_retentionTime_Minutes = scanItem.scan_RetentionTime / 60 // convert RT to minutes
-
-                if ( scan_retentionTime_Minutes === undefined || scan_retentionTime_Minutes === null ) {
-                    const msg = "( scan_retentionTime_Minutes === undefined || scan_retentionTime_Minutes === null ) "
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                const psmItem_Array_For_Associated_MS_1_ScanNumber = psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanItem.scanNumber )
-
-                let noPeak_In_M_Over_Z_Range = false
-
-                const scanItem_WithPeaks = scanItem.scan_WithPeaks
-
-                if ( ! scanItem_WithPeaks || scanItem_WithPeaks.peaks.length === 0 ) {
-
-                    noPeak_In_M_Over_Z_Range = true
-
-                } else {
-
-                    let peakToUse: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak = undefined
-                    let peakToUse_DifferenceFrom_M_Over_Z_RangeCenter: number = undefined
-
-                    for ( const peak of scanItem_WithPeaks.peaks ) {
-
-                        if ( peak.mz < m_Over_Z_Window_Min || peak.mz > m_Over_Z_Window_Max ) {
-                            // peak NOT for current mz window so SKIP
-                            continue; // EARLY CONTINUE
-                        }
-
-                        if ( peakToUse === undefined ) {
-                            peakToUse = peak
-                            peakToUse_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
-                        } else {
-                            scanCount_Where_MoreThanOnePeak_InsideWindow++
-
-                            if ( this.props.scanPeakSelect === ScanPeakSelect_Enum.MAX_PEAK_INTENSITY ) {
-                                if ( peakToUse.intensity < peak.intensity ) {
-                                    peakToUse = peak
-                                }
-                            } else if ( this.props.scanPeakSelect === ScanPeakSelect_Enum.PEAK_MZ_CENTER_OF_MZ_RANGE ) {
-
-                                const peak_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
-
-                                if ( peak_DifferenceFrom_M_Over_Z_RangeCenter < peakToUse_DifferenceFrom_M_Over_Z_RangeCenter ) {
-                                    peakToUse = peak
-                                    peakToUse_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
-                                }
-                            } else {
-                                throw Error("Unknown value for this.props.scanPeakSelect: " + this.props.scanPeakSelect )
-                            }
-                        }
-                    }
-
-                    if ( ! peakToUse ) {
-                        //  NO Peak on Scan is in the mz range for this charge so Set NO Peak In M/Z range flag to true
-
-                        noPeak_In_M_Over_Z_Range = true
-
-                    } else {
-
-                        let tooltip_Peak_Value_Label = "Peak Intensity"
-
-                        let lineY_Value = peakToUse.intensity
-
-                        if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
-
-                            //  Ion Count
-
-                            tooltip_Peak_Value_Label = "Peak Ion Count"
-
-                            // Ion Count = total ion current (or intensity of a specific feature) * ion injection time / 1000 (because total ion current is in ions/second and ion injection time is in milliseconds).
-
-                            lineY_Value = peakToUse.intensity /  scanItem_WithPeaks.ionInjectionTime / 1000
-                        }
-
-
-                        const peakToUse_DisplayDataForPSM_Tooltip: Internal__PeakToUse_DisplayDataForPSM_Tooltip = {
-                            peak_MZ: peakToUse.mz,
-                            peak_Intensity_Or_IonCount__Label: tooltip_Peak_Value_Label,
-                            peak_Intensity_Or_IonCount__Value: lineY_Value
-                        }
-
-
-                        trace_rt_Intensity_Line_X.push( scan_retentionTime_Minutes )
-                        trace_rt_Intensity_Line_Y.push( lineY_Value )
-                        trace_rt_Intensity_Tooltips.push(
-                            "MS 1" +
-                            "<br><b>Scan Number</b>: " + scanItem.scanNumber +
-                            "<br><b>Scan Level</b>: " + scanItem.scanLevel +
-                            "<br><b>Peak mz</b>: " + peakToUse.mz.toFixed( _M_OVER_Z_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
-                            "<br><b>" + tooltip_Peak_Value_Label + "</b>: " + lineY_Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY ) +
-                            "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
-
-                        const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
-
-                        if ( psmItem_Array_For_Associated_MS_1_ScanNumber ) {
-                            //  Have PSM Items for this MS 1 scan number
-
-                            for ( const psmItem_Array_For_Associated_MS_1_ScanNumber_Item of psmItem_Array_For_Associated_MS_1_ScanNumber ) {
-
-                                const psmItem_For_Associated_MS_1_ScanNumber = psmItem_Array_For_Associated_MS_1_ScanNumber_Item.psmItem
-
-                                psm_And_Its_ScanData.push({
-                                    psmItem: psmItem_For_Associated_MS_1_ScanNumber,
-                                    scanItem, peakToUse_DisplayDataForPSM_Tooltip,
-                                    y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded
-                                })
-                            }
-                        }
-                    }
-                }
-
-                if ( noPeak_In_M_Over_Z_Range ) {
-
-                    trace_rt_Intensity_Line_X.push( scan_retentionTime_Minutes )
-                    trace_rt_Intensity_Line_Y.push( 0 )
-                    trace_rt_Intensity_Tooltips.push(
-                        "MS 1" +
-                        "<br><b>Scan Number</b>: " + scanItem.scanNumber +
-                        "<br><b>Scan Level</b>: " + scanItem.scanLevel +
-                        "<br><b>No Scan Peak</b>" +
-                        "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
-
-                    const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
-
-                    if ( psmItem_Array_For_Associated_MS_1_ScanNumber ) {
-                        //  Have PSM Items for this MS 1 scan number
-
-                        for ( const psmItem_Array_For_Associated_MS_1_ScanNumber_Item of psmItem_Array_For_Associated_MS_1_ScanNumber ) {
-
-                            const psmItem_For_Associated_MS_1_ScanNumber = psmItem_Array_For_Associated_MS_1_ScanNumber_Item.psmItem
-
-                            psm_And_Its_ScanData.push({
-                                psmItem: psmItem_For_Associated_MS_1_ScanNumber,
-                                scanItem,
-                                peakToUse_DisplayDataForPSM_Tooltip: undefined,  //  May NOT be populated
-                                y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded
-                            })
-                        }
-
-                    }
-                }
-            }
-
-            // console.log( "scanCount_Where_MoreThanOnePeak_InsideWindow: " + scanCount_Where_MoreThanOnePeak_InsideWindow )
-        }
-
-        if ( trace_rt_Intensity_Line_X.length > 0 ) {
-
-            //  Scan Trace Smoothing if needed
-
-            if ( this.props.smoothingOption_Selection === SmoothingOption_Enum.SAVITZKY_GOLAY ) {
-
-                const result = smoothSavitzkyGolay( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
-
-                if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
-                    const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
-
-                    if ( result.x[index] !== trace_rt_Intensity_Line_X[index] ) {
-                        const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
-                        console.warn(msg)
-                        throw Error(msg)
-                    }
-                }
-
-                trace_rt_Intensity_Line_Y =  result.y
-
-            } else if ( this.props.smoothingOption_Selection === SmoothingOption_Enum.LOWESS ) {
-
-                // console.log( "BEFORE call to 'smoothLowess'.  Input X array: ", trace_rt_Intensity_Line_X )
-                // console.log( "BEFORE call to 'smoothLowess'.  Input Y array: ", trace_rt_Intensity_Line_Y )
-                // console.log( "BEFORE call to 'smoothLowess'.  NO 'smoothingFactor' parameter" )
-                // console.log( "BEFORE call to 'smoothLowess'.  Reported Peptide Id: " + this.props.selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id )
-
-                const result = smoothLowess( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
-
-                // console.log( "AFTER call to 'smoothLowess'.  result: ", result )
-
-                if ( ! result ) {
-                    const msg = "smoothLowess returned nothing.  Reported Peptide Id: " + this.props.selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                if ( ! result.x ) {
-                    const msg = "smoothLowess returned an object without a property 'x'.  Reported Peptide Id: " + this.props.selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                if ( ! Array.isArray( result.x )  ) {
-                    const msg = "smoothLowess returned an object ( ! Array.isArray( result.x )  ).  Reported Peptide Id: " + this.props.selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                if ( ! Array.isArray( result.y)  ) {
-                    const msg = "smoothLowess returned an object ( ! Array.isArray( result.y )  ).  Reported Peptide Id: " + this.props.selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                if ( result.x.length !== result.y.length ) {
-                    const msg = "( result.x.length !== result.y.length )"
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
-                    const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
-
-                    if ( result.x[index] !== trace_rt_Intensity_Line_X[index] ) {
-                        const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
-                        console.warn(msg)
-                        throw Error(msg)
-                    }
-                }
-
-                trace_rt_Intensity_Line_Y =  result.y
-            }
-
-
-            //   PSM Trace Additions
-
-            {
-                for ( const psm_And_Its_ScanData_Entry of psm_And_Its_ScanData ) {
-
-                    const plot_Y_Value = trace_rt_Intensity_Line_Y[ psm_And_Its_ScanData_Entry.y_Trace_Index ]
-
-                    if ( plot_Y_Value === undefined ) {
-                        const msg = "( plot_Y_Value === undefined ) psmId: " + psm_And_Its_ScanData_Entry.psmItem.psmId
-                        console.warn(msg)
-                        throw Error(msg)
-                    }
-
-                    this._plot_PSM(
-                        {
-                            psmItem_ToPlot: psm_And_Its_ScanData_Entry.psmItem,
-                            scanItem: psm_And_Its_ScanData_Entry.scanItem,
-                            scanData_NO_Peaks_Entry_MS_1: undefined,
-                            peakToUse_DisplayDataForPSM_Tooltip: psm_And_Its_ScanData_Entry.peakToUse_DisplayDataForPSM_Tooltip,  //  May NOT be populated
-
-                            plot_Y_Value,
-
-                            psmList_DataTable_DataRowEntry_Map_Key_PsmId,
-
-                            psmItem_Map_Key_PsmTooltip,
-                            trace_Psm_Points_X,
-                            trace_Psm_Points_Y,
-                            trace_Psm_Points_Tooltips
-                        } )
-
-                    psms_NOT_PutOnChart_PSM_IDs.delete( psm_And_Its_ScanData_Entry.psmItem.psmId )  //  Delete since did put this psm id on the chart
-                }
-            }
-
-            //  Scan Trace
-
-            const trace_RT_Intensity_Line = {
-                name: plotlyTrace_Label,
-                x: trace_rt_Intensity_Line_X,
-                y: trace_rt_Intensity_Line_Y,
-                // type: 'scatter',
-                mode: 'lines',
-                marker: {
-                    color: plotlyTrace_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
-                },
-                //  This
-                hoverinfo: "text", //  Hover contents
-                hovertext: trace_rt_Intensity_Tooltips,
-            };
-
-            // console.log( "END Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label + ", returning a plotly trace object" )
-
-            return trace_RT_Intensity_Line // EARLY RETURN
-        }
-
-        // console.log( "END Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label + ", NOT returning a plotly trace object since NO points added to the trace" )
-
-        return null //  NO data for trace so return null
-    }
-
-    ///////////////
-
-    private _plot_PSM(
-        {
-            psmItem_ToPlot,
-            scanData_NO_Peaks_Entry_MS_1,
-            scanItem,
-            peakToUse_DisplayDataForPSM_Tooltip,  //  May NOT be populated
-
-            plot_Y_Value,   //  The 'Y' value for plotting.  Added to support smoothing
-
-            psmList_DataTable_DataRowEntry_Map_Key_PsmId,
-
-            psmItem_Map_Key_PsmTooltip,
-            trace_Psm_Points_X,
-            trace_Psm_Points_Y,
-            trace_Psm_Points_Tooltips
-        } : {
-            psmItem_ToPlot: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item
-            scanData_NO_Peaks_Entry_MS_1:  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
-
-            scanItem: {
-                scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
-                scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
-                scan_RetentionTime: number
-                scanNumber: number
-            }
-
-            peakToUse_DisplayDataForPSM_Tooltip: Internal__PeakToUse_DisplayDataForPSM_Tooltip
-
-            plot_Y_Value: number
-
-            psmList_DataTable_DataRowEntry_Map_Key_PsmId: Map<number, DataTable_DataRowEntry>
-
-            psmItem_Map_Key_PsmTooltip: Map<string, PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
-            trace_Psm_Points_X: Array<number>
-            trace_Psm_Points_Y: Array<number>
-            trace_Psm_Points_Tooltips: Array<string>
-        }
-    ) {
-
-        const psmList_DataTable_DataRowEntry = psmList_DataTable_DataRowEntry_Map_Key_PsmId.get( psmItem_ToPlot.psmId )
-        if ( ! psmList_DataTable_DataRowEntry ) {
-            throw Error("psmList_DataTable_DataRowEntry_Map_Key_PsmId.get( psmItem_ToPlot.psmId ) returned NOTHING for psmItem_ToPlot.psmId: " + psmItem_ToPlot.psmId )
-        }
-
-        let psmTooltip: string = undefined
-
-        let scanNumber: number = undefined
-        let scanRetentionTime_Seconds: number = undefined
-
-        if ( scanData_NO_Peaks_Entry_MS_1 ) {
-
-            scanNumber = scanData_NO_Peaks_Entry_MS_1.scanNumber
-            scanRetentionTime_Seconds = scanData_NO_Peaks_Entry_MS_1.retentionTime_InSeconds
-
-        } else if ( scanItem ) {
-
-            scanNumber = scanItem.scanNumber
-            scanRetentionTime_Seconds = scanItem.scan_RetentionTime
-
-        } else {
-            const msg = "Neither Populated: scanData_NO_Peaks_Entry_MS_1 or scanItem"
-            console.warn(msg)
-            throw Error(msg)
-        }
-
-        {
-            const psmTooltipLines: Array<string> = []
-
-            if ( this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns.length !== psmList_DataTable_DataRowEntry.columnEntries.length ) {
-                throw Error("( this.props.psmList_DataTable_RootTableObject.tableDataObject.columns.length !== psmList_DataTable_DataRowEntry.columnEntries.length )")
-            }
-
-            const columnCount = this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns.length
-
-            // Start at index 1 to skip first column - The link to lorikeet
-
-            for ( let columnIndex = 1; columnIndex < columnCount; columnIndex++  ) {
-
-                const tableColumnData = this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns[ columnIndex ]
-                if ( ! tableColumnData ) {
-                    throw Error("this.props.psmList_DataTable_RootTableObject.tableDataObject.columns[ columnIndex ] returned nothing for columnIndex: " + columnIndex )
-                }
-                const tableRowData_ForColumn = psmList_DataTable_DataRowEntry.columnEntries[ columnIndex ]
-                if ( ! tableRowData_ForColumn ) {
-                    throw Error("psmList_DataTable_DataRowEntry.columnEntries[ columnIndex ] returned nothing for columnIndex: " + columnIndex )
-                }
-
-                let value_ForDisplay_ForColumn = ""
-                if ( tableRowData_ForColumn.valueDisplay ) {
-                    value_ForDisplay_ForColumn = tableRowData_ForColumn.valueDisplay
-                } else if ( tableRowData_ForColumn.valueSort ) {
-                    value_ForDisplay_ForColumn = tableRowData_ForColumn.valueSort.toString()
-                }
-
-                const psmTooltipLine = "<b>" + tableColumnData.displayName + "</b>: " + value_ForDisplay_ForColumn;
-                psmTooltipLines.push( psmTooltipLine )
-            }
-
-            {
-                //  Code to ensure each PSM has a unique string for the PSM Tooltip.
-                //     This allows using the tooltip as the key to the map psmItem_Map_Key_PsmTooltip to get the psmItem Object from the tooltip string for handing click on PSM in chart
-
-                let psmTooltip_Unique = false
-
-                let psmTooltip_Unique_TryCount = 0;
-
-                const _TOOLTIP_LINE_INDENT = "   ";
-
-                while ( ! psmTooltip_Unique ) {
-
-                    //  Set psmTooltip variable (declared above) here
-
-                    psmTooltip = (
-                        "<b>PSM Data</b>" +
-                        ":" +
-                        " ".repeat( psmTooltip_Unique_TryCount ) + //  Inserted to make unique
-                        "<br>" +
-                        _TOOLTIP_LINE_INDENT +
-                        psmTooltipLines.join("<br>" + _TOOLTIP_LINE_INDENT ) +
-                        '<br>' +
-                        '<br>' +
-                        '<b>Associated MS 1 Scan</b>: ' +
-                        '<br>' +
-                        _TOOLTIP_LINE_INDENT +
-                        '<b>MS 1 Scan Number</b>: ' +  scanNumber +
-                        '<br>' +
-                        _TOOLTIP_LINE_INDENT +
-                        '<b>MS 1 Scan RT(Min)</b>: ' + ( scanRetentionTime_Seconds / 60 ).toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
-                        "<br>" +
-                        (
-                            peakToUse_DisplayDataForPSM_Tooltip ? (
-                                _TOOLTIP_LINE_INDENT +
-                                '<b>MS 1 Scan Peak M/Z</b>: ' + peakToUse_DisplayDataForPSM_Tooltip.peak_MZ.toFixed( _M_OVER_Z_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
-                                '<br>' +
-                                _TOOLTIP_LINE_INDENT +
-                                '<b>MS 1 Scan ' + peakToUse_DisplayDataForPSM_Tooltip.peak_Intensity_Or_IonCount__Label +
-                                '</b>: ' + peakToUse_DisplayDataForPSM_Tooltip.peak_Intensity_Or_IonCount__Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY )
-                            ) : ""
-                        )
-                    )
-
-                    if ( ! psmItem_Map_Key_PsmTooltip.has( psmTooltip ) ) {
-
-                        //  psmTooltip string is unique in map keys
-
-                        psmItem_Map_Key_PsmTooltip.set( psmTooltip, psmItem_ToPlot )
-
-                        psmTooltip_Unique = true;
-
-                    } else {
-
-                        psmTooltip_Unique_TryCount++
-                    }
-                }
-            }
-        }
-
-        const retentionTimeSeconds = scanRetentionTime_Seconds;  //  PSM positioned using retention time of MS 1 Scan
-
-        const retentionTime_Minutes = retentionTimeSeconds / 60
-
-        trace_Psm_Points_X.push( retentionTime_Minutes )
-        trace_Psm_Points_Y.push( plot_Y_Value )
-        trace_Psm_Points_Tooltips.push( psmTooltip )
-    }
-
     ////////////////////    RENDER
 
     /**
@@ -4075,39 +3644,44 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         return (
             <div style={ { position: "relative" } }>
 
-                <div style={ { display: "flex", flexWrap: "wrap", gap: 10 } }>
-                    
-                    
-                    <div
-                        style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT, borderStyle: "solid", borderWidth: 1, borderColor: "black" } }
-                    >
-                        <div
-                            ref={this.plot_div_Ref}
-                            style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
-                        ></div>
-                    </div>
+                <div>
 
-                    {/* WAS
+                    {/* Show Area under the curve and the  Retention Time Range used */}
+
+                    { this._areaUnderCurve_Display !== undefined ? (
+
+                        <div style={ { marginBottom: 10 } }>
+                            <div style={ { fontSize: 18 } }>
+                                <span style={ { fontWeight: "bold" } }>Peak area: </span>
+                                <span>
+                                    { _areaUnderCurve_Display_FormattingFunction( this._areaUnderCurve_Display ) }
+                                </span>
+                            </div>
+                            <div>
+                                <span>Boundaries for peak area calculation: </span>
+                                <span>
+                                    { this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min.toString() }
+                                </span>
+                                <span> minutes to </span>
+                                <span>
+                                    { this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max.toString() }
+                                </span>
+                                <span> minutes (calculated using Δ in seconds).</span>
+
+                            </div>
+                        </div>
+                    ) : null }
+
+                    {/*  Outer container <div> of the actual Chart  */ }
                     <div
                         style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT, borderStyle: "solid", borderWidth: 1, borderColor: "black" } }
                     >
+                        {/*  Inner container <div> of the actual Chart  */}
                         <div
-                            ref={this.plot_Ion_Current_Ref}
+                            ref={ this._plot_div_Ref }
                             style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
                         ></div>
                     </div>
-                    <div
-                        style={ {
-                            display: ( ! this._show__Plot_Ion_Count_Div ) ? "none" : undefined,
-                            width: _CHART_WIDTH, height: _CHART_HEIGHT, borderStyle: "solid", borderWidth: 1, borderColor: "black"
-                    } }
-                    >
-                        <div
-                            ref={this.plot_Ion_Count_Ref}
-                            style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
-                        ></div>
-                    </div>
-                */}
 
                 </div>
                 
@@ -4207,6 +3781,693 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         );
     }
 }
+
+/////
+
+
+/**
+ *
+ * @param plotlyTrace_Label
+ * @param m_Over_Z_Window_Min
+ * @param m_Over_Z_Window_Max
+ * @param m_Over_Z_Window_Index
+ * @param scanItem_Array_SortOn_RetentionTime
+ * @param psmList_LOCAL_PossiblyFiltered
+ * @param psmList_DataTable_DataRowEntry_Map_Key_PsmId
+ * @param psmItem_Map_Key_PsmTooltip
+ * @param psms_NOT_PutOnChart_PSM_IDs
+ * @param trace_Psm_Points_X
+ * @param trace_Psm_Points_Y
+ * @param trace_Psm_Points_Tooltips
+ * @private
+ */
+const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component__Create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope = function (
+    {
+        chartCreate__IonCurrent__IonCount__Enum,
+        selection_ReportedPeptide_OpenModMass_Charge,
+
+        scanPeakSelect,
+        smoothingOption_Selection,
+
+        plotlyTrace_Label,
+        plotlyTrace_Color,
+
+        m_Over_Z_Window_Min,
+        m_Over_Z_Window_Max,
+        m_Over_Z_Window_Index,  // Not sure used
+
+        scanItem_Array_SortOn_RetentionTime,
+        psmList_LOCAL_PossiblyFiltered,
+
+        dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId,
+        psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results,
+
+        //  Updated
+        psmList_DataTable_DataRowEntry_Map_Key_PsmId,
+        psmItem_Map_Key_PsmTooltip,
+        psms_NOT_PutOnChart_PSM_IDs,
+
+        trace_Psm_Points_X,
+        trace_Psm_Points_Y,
+        trace_Psm_Points_Tooltips
+    } : {
+        chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum
+
+        //  Single Selected Reported Peptide Open Mod Mass Charge
+        selection_ReportedPeptide_OpenModMass_Charge: Internal__Selection_ReportedPeptide_OpenModMass_Charge
+
+        scanPeakSelect: ScanPeakSelect_Enum
+        smoothingOption_Selection: SmoothingOption_Enum
+
+        plotlyTrace_Label: string
+        plotlyTrace_Color: string
+
+        m_Over_Z_Window_Min: number
+        m_Over_Z_Window_Max: number
+        m_Over_Z_Window_Index: number  // Not sure used
+
+        scanItem_Array_SortOn_RetentionTime: Array<{
+            scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+            scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+            scan_RetentionTime: number
+            scanNumber: number
+            scanLevel: number
+        }>
+
+        psmList_LOCAL_PossiblyFiltered: Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
+
+        dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId: Internal_DataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId
+
+        //  ONLY Use for the DataTable Contents for Tooltip
+        psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result
+
+        //  Updated
+        psmList_DataTable_DataRowEntry_Map_Key_PsmId: Map<number, DataTable_DataRowEntry>
+        psmItem_Map_Key_PsmTooltip: Map<string, PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
+        psms_NOT_PutOnChart_PSM_IDs: Set<number>
+
+        trace_Psm_Points_X: Array<number>
+        trace_Psm_Points_Y: Array<number>
+        trace_Psm_Points_Tooltips: Array<string>
+
+    }
+) : {
+    plotly_TraceData: Plotly.Data
+    singleTraceData_RT_Intensity_Data: Internal__SingleTraceData_RT_Intensity
+    areaUnderCurve_SingleTrace: number
+} { // return any since return plotly trace
+
+    // console.log( "START Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label )
+
+    //  Middle between m_Over_Z_Window_Min and m_Over_Z_Window_Max
+    const m_Over_Z_Window_Middle_Between_Min_Max = m_Over_Z_Window_Min + ( ( m_Over_Z_Window_Max - m_Over_Z_Window_Min ) / 2 )
+
+    const psmItem_Array_Map_Key_Associated_MS_1_ScanNumber: Map<number, Array<{ psmItem: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item, psmItem_m_Over_Z_Min_Max__Ranges_Index: number }>> = new Map()
+
+    const ms_1_ScanNumber_Map_Key_PsmId: Map<number, number> = new Map()
+
+    const scanData_NO_Peaks_Entry_Map_Key_ScanNumber: Map<number,  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map()
+
+    for ( const scanItem of dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.data.data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.value_CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
+
+        scanData_NO_Peaks_Entry_Map_Key_ScanNumber.set( scanItem.scanNumber, scanItem )
+    }
+
+    for ( const psmItem of psmList_LOCAL_PossiblyFiltered ) {
+
+        if ( psmItem.precursor_M_Over_Z < m_Over_Z_Window_Min || psmItem.precursor_M_Over_Z > m_Over_Z_Window_Max ) {
+            // psmItem NOT for mz window so SKIP
+            continue; // EARLY CONTINUE
+        }
+
+        let scanData_NO_Peaks_Entry_MS_1 = scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( psmItem.scanNumber )
+        if ( ! scanData_NO_Peaks_Entry_MS_1 ) {
+            throw Error("scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( psmItem.scanNumber ) returned NOTHING for psmItem.scanNumber: " + psmItem.scanNumber )
+        }
+        while ( scanData_NO_Peaks_Entry_MS_1.level > 1 ) {
+            scanData_NO_Peaks_Entry_MS_1 = scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.parentScanNumber )
+            if ( ! scanData_NO_Peaks_Entry_MS_1 ) {
+                throw Error("scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.parentScanNumber ) returned NOTHING for scanData_NO_Peaks_Entry_MS_1.parentScanNumber: " + scanData_NO_Peaks_Entry_MS_1.parentScanNumber + ", psmItem.scanNumber: " + psmItem.scanNumber )
+            }
+        }
+
+        let psmItem_Array = psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.scanNumber )
+        if ( ! psmItem_Array ) {
+            psmItem_Array = []
+            psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.set( scanData_NO_Peaks_Entry_MS_1.scanNumber, psmItem_Array )
+        }
+
+        psmItem_Array.push({ psmItem, psmItem_m_Over_Z_Min_Max__Ranges_Index: m_Over_Z_Window_Index })
+
+        ms_1_ScanNumber_Map_Key_PsmId.set( psmItem.psmId, scanData_NO_Peaks_Entry_MS_1.scanNumber )
+    }
+
+    //  For the PSMs to go with the scans/peaks on this trace
+
+    const psm_And_Its_ScanData: Array<{
+        psmItem: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item
+        scanItem: {
+            scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+            scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+            scan_RetentionTime: number
+            scanNumber: number
+        }
+        peakToUse_DisplayDataForPSM_Tooltip: Internal__PeakToUse_DisplayDataForPSM_Tooltip
+        y_Trace_Index: number
+    }> = []
+
+    //  For the Scan Trace
+
+    const trace_rt_Intensity_Line_X: Array<number> = []
+    let trace_rt_Intensity_Line_Y: Array<number> = []  // 'let' to allow replace after smoothing
+    const trace_rt_Intensity_Tooltips: Array<string> = []
+
+    //  Processing for each charge value
+    {
+        let scanCount_Where_MoreThanOnePeak_InsideWindow = 0;
+
+        for ( const scanItem of scanItem_Array_SortOn_RetentionTime ) {
+
+            const scan_retentionTime_Minutes = scanItem.scan_RetentionTime / 60 // convert RT to minutes
+
+            if ( scan_retentionTime_Minutes === undefined || scan_retentionTime_Minutes === null ) {
+                const msg = "( scan_retentionTime_Minutes === undefined || scan_retentionTime_Minutes === null ) "
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            const psmItem_Array_For_Associated_MS_1_ScanNumber = psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanItem.scanNumber )
+
+            let noPeak_In_M_Over_Z_Range = false
+
+            const scanItem_WithPeaks = scanItem.scan_WithPeaks
+
+            if ( ! scanItem_WithPeaks || scanItem_WithPeaks.peaks.length === 0 ) {
+
+                noPeak_In_M_Over_Z_Range = true
+
+            } else {
+
+                let peakToUse: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak = undefined
+                let peakToUse_DifferenceFrom_M_Over_Z_RangeCenter: number = undefined
+
+                for ( const peak of scanItem_WithPeaks.peaks ) {
+
+                    if ( peak.mz < m_Over_Z_Window_Min || peak.mz > m_Over_Z_Window_Max ) {
+                        // peak NOT for current mz window so SKIP
+                        continue; // EARLY CONTINUE
+                    }
+
+                    if ( peakToUse === undefined ) {
+                        peakToUse = peak
+                        peakToUse_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
+                    } else {
+                        scanCount_Where_MoreThanOnePeak_InsideWindow++
+
+                        if ( scanPeakSelect === ScanPeakSelect_Enum.MAX_PEAK_INTENSITY ) {
+                            if ( peakToUse.intensity < peak.intensity ) {
+                                peakToUse = peak
+                            }
+                        } else if ( scanPeakSelect === ScanPeakSelect_Enum.PEAK_MZ_CENTER_OF_MZ_RANGE ) {
+
+                            const peak_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
+
+                            if ( peak_DifferenceFrom_M_Over_Z_RangeCenter < peakToUse_DifferenceFrom_M_Over_Z_RangeCenter ) {
+                                peakToUse = peak
+                                peakToUse_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
+                            }
+                        } else {
+                            throw Error("Unknown value for scanPeakSelect: " + scanPeakSelect )
+                        }
+                    }
+                }
+
+                if ( ! peakToUse ) {
+                    //  NO Peak on Scan is in the mz range for this charge so Set NO Peak In M/Z range flag to true
+
+                    noPeak_In_M_Over_Z_Range = true
+
+                } else {
+
+                    let tooltip_Peak_Value_Label = "Peak Intensity"
+
+                    let lineY_Value = peakToUse.intensity
+
+                    if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+
+                        //  Ion Count
+
+                        tooltip_Peak_Value_Label = "Peak Ion Count"
+
+                        // Ion Count = total ion current (or intensity of a specific feature) * ion injection time / 1000 (because total ion current is in ions/second and ion injection time is in milliseconds).
+
+                        lineY_Value = peakToUse.intensity /  scanItem_WithPeaks.ionInjectionTime / 1000
+                    }
+
+
+                    const peakToUse_DisplayDataForPSM_Tooltip: Internal__PeakToUse_DisplayDataForPSM_Tooltip = {
+                        peak_MZ: peakToUse.mz,
+                        peak_Intensity_Or_IonCount__Label: tooltip_Peak_Value_Label,
+                        peak_Intensity_Or_IonCount__Value: lineY_Value
+                    }
+
+
+                    trace_rt_Intensity_Line_X.push( scan_retentionTime_Minutes )
+                    trace_rt_Intensity_Line_Y.push( lineY_Value )
+                    trace_rt_Intensity_Tooltips.push(
+                        "MS 1" +
+                        "<br><b>Scan Number</b>: " + scanItem.scanNumber +
+                        "<br><b>Scan Level</b>: " + scanItem.scanLevel +
+                        "<br><b>Peak mz</b>: " + peakToUse.mz.toFixed( _M_OVER_Z_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
+                        "<br><b>" + tooltip_Peak_Value_Label + "</b>: " + lineY_Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY ) +
+                        "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
+
+                    const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
+
+                    if ( psmItem_Array_For_Associated_MS_1_ScanNumber ) {
+                        //  Have PSM Items for this MS 1 scan number
+
+                        for ( const psmItem_Array_For_Associated_MS_1_ScanNumber_Item of psmItem_Array_For_Associated_MS_1_ScanNumber ) {
+
+                            const psmItem_For_Associated_MS_1_ScanNumber = psmItem_Array_For_Associated_MS_1_ScanNumber_Item.psmItem
+
+                            psm_And_Its_ScanData.push({
+                                psmItem: psmItem_For_Associated_MS_1_ScanNumber,
+                                scanItem, peakToUse_DisplayDataForPSM_Tooltip,
+                                y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded
+                            })
+                        }
+                    }
+                }
+            }
+
+            if ( noPeak_In_M_Over_Z_Range ) {
+
+                trace_rt_Intensity_Line_X.push( scan_retentionTime_Minutes )
+                trace_rt_Intensity_Line_Y.push( 0 )
+                trace_rt_Intensity_Tooltips.push(
+                    "MS 1" +
+                    "<br><b>Scan Number</b>: " + scanItem.scanNumber +
+                    "<br><b>Scan Level</b>: " + scanItem.scanLevel +
+                    "<br><b>No Scan Peak</b>" +
+                    "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
+
+                const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
+
+                if ( psmItem_Array_For_Associated_MS_1_ScanNumber ) {
+                    //  Have PSM Items for this MS 1 scan number
+
+                    for ( const psmItem_Array_For_Associated_MS_1_ScanNumber_Item of psmItem_Array_For_Associated_MS_1_ScanNumber ) {
+
+                        const psmItem_For_Associated_MS_1_ScanNumber = psmItem_Array_For_Associated_MS_1_ScanNumber_Item.psmItem
+
+                        psm_And_Its_ScanData.push({
+                            psmItem: psmItem_For_Associated_MS_1_ScanNumber,
+                            scanItem,
+                            peakToUse_DisplayDataForPSM_Tooltip: undefined,  //  May NOT be populated
+                            y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded
+                        })
+                    }
+
+                }
+            }
+        }
+
+        // console.log( "scanCount_Where_MoreThanOnePeak_InsideWindow: " + scanCount_Where_MoreThanOnePeak_InsideWindow )
+    }
+
+    //  Save "NOT Smoothed" data
+    const trace_rt_Intensity_Line_Y_NOT_Smoothed = trace_rt_Intensity_Line_Y
+
+    //  Compute 'areaUnderCurve_SingleTrace'
+
+    let areaUnderCurve_SingleTrace = 0
+
+
+    if ( trace_rt_Intensity_Line_X.length > 1 ) {
+
+        if ( trace_rt_Intensity_Line_X.length !== trace_rt_Intensity_Line_Y.length ) {
+            const msg = "ERROR: ( trace_rt_Intensity_Line_X.length !== trace_rt_Intensity_Line_Y.length )"
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        const chart_X_Length = trace_rt_Intensity_Line_X.length
+
+        for ( let index = 0; index < ( chart_X_Length - 1 ); index++  ) {
+
+            const chart_X = trace_rt_Intensity_Line_X[ index ]
+            const chart_Y = trace_rt_Intensity_Line_Y[ index ]
+
+            const chart_X_Index_Plus_1 = trace_rt_Intensity_Line_X[ index + 1 ]
+            const chart_Y_Index_Plus_1 = trace_rt_Intensity_Line_Y[ index + 1 ]
+
+            const chart_Y_Average = ( chart_Y + chart_Y_Index_Plus_1 ) / 2
+
+            const area = chart_Y_Average * ( ( chart_X_Index_Plus_1 - chart_X ) * 60 )  // '* 60' to change X axis values to seconds
+
+            areaUnderCurve_SingleTrace += area
+        }
+    }
+
+
+
+    if ( trace_rt_Intensity_Line_X.length > 0 ) {
+
+        //  Scan Trace Smoothing if needed
+
+        if ( smoothingOption_Selection === SmoothingOption_Enum.SAVITZKY_GOLAY ) {
+
+            const result = smoothSavitzkyGolay( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
+
+            if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
+                const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
+
+                if ( result.x[index] !== trace_rt_Intensity_Line_X[index] ) {
+                    const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+            }
+
+            trace_rt_Intensity_Line_Y =  result.y
+
+        } else if ( smoothingOption_Selection === SmoothingOption_Enum.LOWESS ) {
+
+            // console.log( "BEFORE call to 'smoothLowess'.  Input X array: ", trace_rt_Intensity_Line_X )
+            // console.log( "BEFORE call to 'smoothLowess'.  Input Y array: ", trace_rt_Intensity_Line_Y )
+            // console.log( "BEFORE call to 'smoothLowess'.  NO 'smoothingFactor' parameter" )
+            // console.log( "BEFORE call to 'smoothLowess'.  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id )
+
+            const result = smoothLowess( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
+
+            // console.log( "AFTER call to 'smoothLowess'.  result: ", result )
+
+            if ( ! result ) {
+                const msg = "smoothLowess returned nothing.  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            if ( ! result.x ) {
+                const msg = "smoothLowess returned an object without a property 'x'.  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            if ( ! Array.isArray( result.x )  ) {
+                const msg = "smoothLowess returned an object ( ! Array.isArray( result.x )  ).  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            if ( ! Array.isArray( result.y)  ) {
+                const msg = "smoothLowess returned an object ( ! Array.isArray( result.y )  ).  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            if ( result.x.length !== result.y.length ) {
+                const msg = "( result.x.length !== result.y.length )"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
+                const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
+
+                if ( result.x[index] !== trace_rt_Intensity_Line_X[index] ) {
+                    const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+            }
+
+            trace_rt_Intensity_Line_Y =  result.y
+        }
+
+
+        //   PSM Trace Additions
+
+        {
+            for ( const psm_And_Its_ScanData_Entry of psm_And_Its_ScanData ) {
+
+                const plot_Y_Value = trace_rt_Intensity_Line_Y[ psm_And_Its_ScanData_Entry.y_Trace_Index ]
+
+                if ( plot_Y_Value === undefined ) {
+                    const msg = "( plot_Y_Value === undefined ) psmId: " + psm_And_Its_ScanData_Entry.psmItem.psmId
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component__Plot_PSM(
+                    {
+                        psmItem_ToPlot: psm_And_Its_ScanData_Entry.psmItem,
+                        scanItem: psm_And_Its_ScanData_Entry.scanItem,
+                        scanData_NO_Peaks_Entry_MS_1: undefined,
+                        peakToUse_DisplayDataForPSM_Tooltip: psm_And_Its_ScanData_Entry.peakToUse_DisplayDataForPSM_Tooltip,  //  May NOT be populated
+
+                        plot_Y_Value,
+
+                        psmList_DataTable_DataRowEntry_Map_Key_PsmId,
+
+                        psmItem_Map_Key_PsmTooltip,
+                        psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results,
+                        trace_Psm_Points_X,
+                        trace_Psm_Points_Y,
+                        trace_Psm_Points_Tooltips
+                    } )
+
+                psms_NOT_PutOnChart_PSM_IDs.delete( psm_And_Its_ScanData_Entry.psmItem.psmId )  //  Delete since did put this psm id on the chart
+            }
+        }
+
+        //  Scan Trace
+
+        const trace_RT_Intensity_Line: Plotly.Data = {
+            name: plotlyTrace_Label,
+            x: trace_rt_Intensity_Line_X,
+            y: trace_rt_Intensity_Line_Y,
+            // type: 'scatter',
+            mode: 'lines',
+            marker: {
+                color: plotlyTrace_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
+            },
+            //  This
+            hoverinfo: "text", //  Hover contents
+            hovertext: trace_rt_Intensity_Tooltips,
+        };
+
+        // console.log( "END Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label + ", returning a plotly trace object" )
+
+        return  {  // EARLY RETURN
+
+            plotly_TraceData: trace_RT_Intensity_Line,
+            singleTraceData_RT_Intensity_Data: {
+                chart_X: trace_rt_Intensity_Line_X,
+                chart_Y_NotSmoothed: trace_rt_Intensity_Line_Y_NOT_Smoothed,
+                chart_Y_ForDisplay_PossiblySmoothed: trace_rt_Intensity_Line_Y
+            },
+            areaUnderCurve_SingleTrace
+        }
+    }
+
+    // console.log( "END Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label + ", NOT returning a plotly trace object since NO points added to the trace" )
+
+    return null //  NO data for trace so return null
+}
+
+///////////////
+
+const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component__Plot_PSM = function (
+    {
+        psmItem_ToPlot,
+        scanData_NO_Peaks_Entry_MS_1,
+        scanItem,
+        peakToUse_DisplayDataForPSM_Tooltip,  //  May NOT be populated
+
+        plot_Y_Value,   //  The 'Y' value for plotting.  Added to support smoothing
+
+        psmList_DataTable_DataRowEntry_Map_Key_PsmId,
+
+        psmItem_Map_Key_PsmTooltip,
+
+        psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results,
+
+        trace_Psm_Points_X,
+        trace_Psm_Points_Y,
+        trace_Psm_Points_Tooltips
+    } : {
+        psmItem_ToPlot: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item
+        scanData_NO_Peaks_Entry_MS_1:  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+
+        scanItem: {
+            scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+            scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+            scan_RetentionTime: number
+            scanNumber: number
+        }
+
+        peakToUse_DisplayDataForPSM_Tooltip: Internal__PeakToUse_DisplayDataForPSM_Tooltip
+
+        plot_Y_Value: number
+
+        psmList_DataTable_DataRowEntry_Map_Key_PsmId: Map<number, DataTable_DataRowEntry>
+
+        psmItem_Map_Key_PsmTooltip: Map<string, PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
+
+        //  ONLY Use for the DataTable Contents for Tooltip
+        psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result
+
+        trace_Psm_Points_X: Array<number>
+        trace_Psm_Points_Y: Array<number>
+        trace_Psm_Points_Tooltips: Array<string>
+    }
+) {
+
+    const psmList_DataTable_DataRowEntry = psmList_DataTable_DataRowEntry_Map_Key_PsmId.get( psmItem_ToPlot.psmId )
+    if ( ! psmList_DataTable_DataRowEntry ) {
+        throw Error("psmList_DataTable_DataRowEntry_Map_Key_PsmId.get( psmItem_ToPlot.psmId ) returned NOTHING for psmItem_ToPlot.psmId: " + psmItem_ToPlot.psmId )
+    }
+
+    let psmTooltip: string = undefined
+
+    let scanNumber: number = undefined
+    let scanRetentionTime_Seconds: number = undefined
+
+    if ( scanData_NO_Peaks_Entry_MS_1 ) {
+
+        scanNumber = scanData_NO_Peaks_Entry_MS_1.scanNumber
+        scanRetentionTime_Seconds = scanData_NO_Peaks_Entry_MS_1.retentionTime_InSeconds
+
+    } else if ( scanItem ) {
+
+        scanNumber = scanItem.scanNumber
+        scanRetentionTime_Seconds = scanItem.scan_RetentionTime
+
+    } else {
+        const msg = "Neither Populated: scanData_NO_Peaks_Entry_MS_1 or scanItem"
+        console.warn(msg)
+        throw Error(msg)
+    }
+
+    {
+        const psmTooltipLines: Array<string> = []
+
+        if ( psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns.length !== psmList_DataTable_DataRowEntry.columnEntries.length ) {
+            throw Error("( psmList_DataTable_RootTableObject.tableDataObject.columns.length !== psmList_DataTable_DataRowEntry.columnEntries.length )")
+        }
+
+        const columnCount = psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns.length
+
+        // Start at index 1 to skip first column - The link to lorikeet
+
+        for ( let columnIndex = 1; columnIndex < columnCount; columnIndex++  ) {
+
+            const tableColumnData = psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns[ columnIndex ]
+            if ( ! tableColumnData ) {
+                throw Error("psmList_DataTable_RootTableObject.tableDataObject.columns[ columnIndex ] returned nothing for columnIndex: " + columnIndex )
+            }
+            const tableRowData_ForColumn = psmList_DataTable_DataRowEntry.columnEntries[ columnIndex ]
+            if ( ! tableRowData_ForColumn ) {
+                throw Error("psmList_DataTable_DataRowEntry.columnEntries[ columnIndex ] returned nothing for columnIndex: " + columnIndex )
+            }
+
+            let value_ForDisplay_ForColumn = ""
+            if ( tableRowData_ForColumn.valueDisplay ) {
+                value_ForDisplay_ForColumn = tableRowData_ForColumn.valueDisplay
+            } else if ( tableRowData_ForColumn.valueSort ) {
+                value_ForDisplay_ForColumn = tableRowData_ForColumn.valueSort.toString()
+            }
+
+            const psmTooltipLine = "<b>" + tableColumnData.displayName + "</b>: " + value_ForDisplay_ForColumn;
+            psmTooltipLines.push( psmTooltipLine )
+        }
+
+        {
+            //  Code to ensure each PSM has a unique string for the PSM Tooltip.
+            //     This allows using the tooltip as the key to the map psmItem_Map_Key_PsmTooltip to get the psmItem Object from the tooltip string for handing click on PSM in chart
+
+            let psmTooltip_Unique = false
+
+            let psmTooltip_Unique_TryCount = 0;
+
+            const _TOOLTIP_LINE_INDENT = "   ";
+
+            while ( ! psmTooltip_Unique ) {
+
+                //  Set psmTooltip variable (declared above) here
+
+                psmTooltip = (
+                    "<b>PSM Data</b>" +
+                    ":" +
+                    " ".repeat( psmTooltip_Unique_TryCount ) + //  Inserted to make unique
+                    "<br>" +
+                    _TOOLTIP_LINE_INDENT +
+                    psmTooltipLines.join("<br>" + _TOOLTIP_LINE_INDENT ) +
+                    '<br>' +
+                    '<br>' +
+                    '<b>Associated MS 1 Scan</b>: ' +
+                    '<br>' +
+                    _TOOLTIP_LINE_INDENT +
+                    '<b>MS 1 Scan Number</b>: ' +  scanNumber +
+                    '<br>' +
+                    _TOOLTIP_LINE_INDENT +
+                    '<b>MS 1 Scan RT(Min)</b>: ' + ( scanRetentionTime_Seconds / 60 ).toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
+                    "<br>" +
+                    (
+                        peakToUse_DisplayDataForPSM_Tooltip ? (
+                            _TOOLTIP_LINE_INDENT +
+                            '<b>MS 1 Scan Peak M/Z</b>: ' + peakToUse_DisplayDataForPSM_Tooltip.peak_MZ.toFixed( _M_OVER_Z_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
+                            '<br>' +
+                            _TOOLTIP_LINE_INDENT +
+                            '<b>MS 1 Scan ' + peakToUse_DisplayDataForPSM_Tooltip.peak_Intensity_Or_IonCount__Label +
+                            '</b>: ' + peakToUse_DisplayDataForPSM_Tooltip.peak_Intensity_Or_IonCount__Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY )
+                        ) : ""
+                    )
+                )
+
+                if ( ! psmItem_Map_Key_PsmTooltip.has( psmTooltip ) ) {
+
+                    //  psmTooltip string is unique in map keys
+
+                    psmItem_Map_Key_PsmTooltip.set( psmTooltip, psmItem_ToPlot )
+
+                    psmTooltip_Unique = true;
+
+                } else {
+
+                    psmTooltip_Unique_TryCount++
+                }
+            }
+        }
+    }
+
+    const retentionTimeSeconds = scanRetentionTime_Seconds;  //  PSM positioned using retention time of MS 1 Scan
+
+    const retentionTime_Minutes = retentionTimeSeconds / 60
+
+    trace_Psm_Points_X.push( retentionTime_Minutes )
+    trace_Psm_Points_Y.push( plot_Y_Value )
+    trace_Psm_Points_Tooltips.push( psmTooltip )
+}
+
+
+
+
+
+
+
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -4640,8 +4901,8 @@ class Internal__MS1_Window_Size_Selection_Component extends React.Component< Int
 //    Internal Component for User change the Retention Time Min/Max
 
 class Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback_Params {
-    retentionTimeSeconds_Range_ForChart_Min: number
-    retentionTimeSeconds_Range_ForChart_Max: number
+    retentionTime_Minutes_Range_ForChart_Min: number
+    retentionTime_Minutes_Range_ForChart_Max: number
 }
 
 type Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback =
@@ -4655,11 +4916,11 @@ interface Internal__RetentionTime_Min_Max_UserEditable_Component_Props {
 
     force_SetTo_ValueFromParent: object  // On object reference change, the input values will be set to the values from Parent
 
-    retentionTimeSeconds_Range_ForChart_Min__ValueFromParent: number
-    retentionTimeSeconds_Range_ForChart_Max__ValueFromParent: number
+    retentionTime_Minutes_Range_ForChart_Min__ValueFromParent: number
+    retentionTime_Minutes_Range_ForChart_Max__ValueFromParent: number
 
-    retentionTimeSeconds_Range_ForChart_Min__DefaultValue: number
-    retentionTimeSeconds_Range_ForChart_Max__DefaultValue: number
+    retentionTime_Minutes_Range_ForChart_Min__DefaultValue: number
+    retentionTime_Minutes_Range_ForChart_Max__DefaultValue: number
 
     updatedValues_Callback: Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback
 }
@@ -4685,8 +4946,8 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
     private _retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString: string
     private _retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString: string
 
-    private _retentionTimeMinutes_Range_ForChart_Min__Current_InSeconds__Number: number
-    private _retentionTimeMinutes_Range_ForChart_Max__Current_InSeconds__Number: number
+    private _retentionTimeMinutes_Range_ForChart_Min__Current_InMinutes__Number: number
+    private _retentionTimeMinutes_Range_ForChart_Max__Current_InMinutes__Number: number
 
 
     private _retentionTimeMinutes_Range_ForChart_Min__PrevValue: number
@@ -4724,29 +4985,26 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
      */
     private _set_LocalProperties_On_Create_Or_SetTo_ValuesFromParent(props: Internal__RetentionTime_Min_Max_UserEditable_Component_Props) {
 
-        if ( this._retentionTimeMinutes_Range_ForChart_Min__Current_InSeconds__Number === props.retentionTimeSeconds_Range_ForChart_Min__ValueFromParent
-            && this._retentionTimeMinutes_Range_ForChart_Max__Current_InSeconds__Number === props.retentionTimeSeconds_Range_ForChart_Max__ValueFromParent ) {
+        if ( this._retentionTimeMinutes_Range_ForChart_Min__Current_InMinutes__Number === props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent
+            && this._retentionTimeMinutes_Range_ForChart_Max__Current_InMinutes__Number=== props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent ) {
 
             //  Already have current values
 
             return // EARLY RETURN
         }
 
-        this._retentionTimeMinutes_Range_ForChart_Min__Current_InSeconds__Number = props.retentionTimeSeconds_Range_ForChart_Min__ValueFromParent
-        this._retentionTimeMinutes_Range_ForChart_Max__Current_InSeconds__Number = props.retentionTimeSeconds_Range_ForChart_Max__ValueFromParent
+        this._retentionTimeMinutes_Range_ForChart_Min__Current_InMinutes__Number = props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent
+        this._retentionTimeMinutes_Range_ForChart_Max__Current_InMinutes__Number = props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent
 
 
-        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this._compute_RT_Minutes_FromSeconds_ForDataFromUpstream( props.retentionTimeSeconds_Range_ForChart_Min__ValueFromParent, INTERNAL__MATH_FLOOR_CEIL.FLOOR )
-        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this._compute_RT_Minutes_FromSeconds_ForDataFromUpstream( props.retentionTimeSeconds_Range_ForChart_Max__ValueFromParent, INTERNAL__MATH_FLOOR_CEIL.CEIL )
+        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent
+        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent
 
         this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number.toString()
         this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number.toString()
 
         this._retentionTimeMinutes_Range_ForChart_Min__PrevValue = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number
         this._retentionTimeMinutes_Range_ForChart_Max__PrevValue = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number
-
-        this._retentionTimeMinutes_Range_ForChart_Min__Current_InSeconds__Number = props.retentionTimeSeconds_Range_ForChart_Min__ValueFromParent
-        this._retentionTimeMinutes_Range_ForChart_Max__Current_InSeconds__Number = props.retentionTimeSeconds_Range_ForChart_Max__ValueFromParent
 
 
         this._updateButton_Enabled = true
@@ -4757,8 +5015,8 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
      */
     private _set_LocalProperties_On_Create_Or_SetTo_Defaults() {
 
-        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this._compute_RT_Minutes_FromSeconds_ForDataFromUpstream( this.props.retentionTimeSeconds_Range_ForChart_Min__DefaultValue, INTERNAL__MATH_FLOOR_CEIL.FLOOR )
-        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this._compute_RT_Minutes_FromSeconds_ForDataFromUpstream( this.props.retentionTimeSeconds_Range_ForChart_Max__DefaultValue, INTERNAL__MATH_FLOOR_CEIL.CEIL )
+        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this.props.retentionTime_Minutes_Range_ForChart_Min__DefaultValue
+        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this.props.retentionTime_Minutes_Range_ForChart_Max__DefaultValue
 
         this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number.toString()
         this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number.toString()
@@ -4766,34 +5024,6 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
         this._updateButton_Enabled = true
 
         this.setState({ forceRerenderObject: {} })
-    }
-
-    /**
-     *
-     */
-    private _compute_RT_Minutes_FromSeconds_ForDataFromUpstream( retentionTimeSeconds: number, math_FloorCeil: INTERNAL__MATH_FLOOR_CEIL ) {
-
-        const retentionTimeMinutes = ( retentionTimeSeconds / 60 )
-
-        let retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = retentionTimeMinutes * _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT__POW_10
-
-        if ( math_FloorCeil === INTERNAL__MATH_FLOOR_CEIL.FLOOR ) {
-
-            retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = Math.floor( retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil )
-
-        } else if ( math_FloorCeil === INTERNAL__MATH_FLOOR_CEIL.CEIL ) {
-
-            retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = Math.ceil( retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil )
-
-        } else {
-            const msg = "Unknown value for math_FloorCeil: " + math_FloorCeil
-            console.warn(msg)
-            throw Error(msg)
-        }
-
-        const retentionTimeMinutes_Floor_OR_Ceil_To_X_Decimal = retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil / _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT__POW_10
-
-        return retentionTimeMinutes_Floor_OR_Ceil_To_X_Decimal
     }
 
     /**
@@ -4832,18 +5062,26 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
     /**
      *
      */
-    private _updateButton_Clicked() {
+    private _update_OR_Reset_Button_Clicked(
+        {
+            resetButtonClicked
+        } : {
+            resetButtonClicked: boolean
+        }
+    ) {
         try {
             if ( ! this._is_AllNumbersValid() ) {
                 return // EARLY RETURN
             }
 
-            if ( this._retentionTimeMinutes_Range_ForChart_Min__Current__Number === this._retentionTimeMinutes_Range_ForChart_Min__PrevValue
-                && this._retentionTimeMinutes_Range_ForChart_Max__Current__Number === this._retentionTimeMinutes_Range_ForChart_Max__PrevValue ) {
-
-                //  Min/Max NOT changed so no need to update
-                return // EARLY RETURN
-            }
+            // if ( ! resetButtonClicked ) {
+            //     if ( this._retentionTimeMinutes_Range_ForChart_Min__Current__Number === this._retentionTimeMinutes_Range_ForChart_Min__PrevValue
+            //         && this._retentionTimeMinutes_Range_ForChart_Max__Current__Number === this._retentionTimeMinutes_Range_ForChart_Max__PrevValue ) {
+            //
+            //         //  Min/Max NOT changed so no need to update
+            //         return // EARLY RETURN
+            //     }
+            // }
 
             this._retentionTimeMinutes_Range_ForChart_Min__PrevValue = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number
             this._retentionTimeMinutes_Range_ForChart_Max__PrevValue = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number
@@ -4851,16 +5089,16 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
             this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number.toString()
             this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number.toString()
 
-            this._retentionTimeMinutes_Range_ForChart_Min__Current_InSeconds__Number = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number * 60
-            this._retentionTimeMinutes_Range_ForChart_Max__Current_InSeconds__Number = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number * 60
+            this._retentionTimeMinutes_Range_ForChart_Min__Current_InMinutes__Number = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number
+            this._retentionTimeMinutes_Range_ForChart_Max__Current_InMinutes__Number = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number
 
             this.setState({ forceRerenderObject: {} })
 
             window.setTimeout( () => {
                 try {
                     this.props.updatedValues_Callback({
-                        retentionTimeSeconds_Range_ForChart_Min: this._retentionTimeMinutes_Range_ForChart_Min__Current__Number * 60,
-                        retentionTimeSeconds_Range_ForChart_Max: this._retentionTimeMinutes_Range_ForChart_Max__Current__Number * 60
+                        retentionTime_Minutes_Range_ForChart_Min: this._retentionTimeMinutes_Range_ForChart_Min__Current__Number,
+                        retentionTime_Minutes_Range_ForChart_Max: this._retentionTimeMinutes_Range_ForChart_Max__Current__Number
                     })
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
             }, 10 )
@@ -4885,90 +5123,124 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
                                 if ( ! this._updateButton_Enabled ) {
                                     return
                                 }
-                                this._updateButton_Clicked()
+                                this._update_OR_Reset_Button_Clicked({ resetButtonClicked: false })
                             }}
                         >
                             <span>Retention time range (minutes):</span>
 
                             <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                                 title={
-                                    <span>
-                                        A chromatogram will be built for this range of retention times.
-                                        By default the range will be the retention time of the earliest PSM (minus 30 seconds) to the retention time of the latest PSM (plus 30 seconds).
-                                        When making the retention time range smaller,
-                                        the smoothing algorithm will be reapplied to the resulting chromatogram,
-                                        which does not occur when zooming in using the chromatogram graphical interface.
-                                    </span>
+                                    <div>
+                                        <div>
+                                            A chromatogram will be built for this range of retention times.
+                                        </div>
+                                        <div style={ { marginTop: 5 } }>
+                                            By default the range will be the retention time of the earliest PSM (minus 30 seconds) to the retention time of the latest PSM (plus 30 seconds).
+                                        </div>
+                                   </div>
                                 }
                             />
 
                             <span style={ { marginLeft: _MARGIN_LEFT_AFTER_HELP_SYMBOL } }> Start: </span>
-                            <input
-                                value={ this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString }
-                                maxLength={ _INPUT_FIELD_MAX_LENGTH }
-                                style={ { width: _INPUT_FIELD_WIDTH } }
-                                onChange={ event => {
-                                    const valueString = event.target.value
-                                    if ( valueString === "" || valueString === "." || valueString === "-" ) {
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    this._updateButton_Enabled ? (
+                                        <span>
+                                            Click 'Update' to update chart with retention time start and end entered
+                                        </span>
+                                    ) : null
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input
+                                    value={ this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString }
+                                    maxLength={ _INPUT_FIELD_MAX_LENGTH }
+                                    style={ { width: _INPUT_FIELD_WIDTH } }
+                                    onChange={ event => {
+                                        const valueString = event.target.value
+                                        if ( valueString === "" || valueString === "." || valueString === "-" ) {
+                                            this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = valueString
+                                            this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this._NUMBER_NOT_ASSIGNED
+
+                                            this._set_UpdateButton_Enabled()
+
+                                            return // EARLY RETURN
+                                        }
+
+                                        const valueNumber = Number.parseFloat( valueString )
+                                        if ( Number.isNaN( valueNumber ) ) {
+                                            //  Not a number so ignore new value
+                                            return; // EARLY RETURN
+                                        }
+
+                                        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = valueNumber
+
                                         this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = valueString
-                                        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this._NUMBER_NOT_ASSIGNED
 
                                         this._set_UpdateButton_Enabled()
 
-                                        return // EARLY RETURN
-                                    }
-
-                                    const valueNumber = Number.parseFloat( valueString )
-                                    if ( Number.isNaN( valueNumber ) ) {
-                                        //  Not a number so ignore new value
-                                        return; // EARLY RETURN
-                                    }
-
-                                    this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = valueNumber
-
-                                    this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = valueString
-
-                                    this._set_UpdateButton_Enabled()
-
-                                } }
-                            />
+                                    } }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             <span>  End: </span>
-                            <input
-                                value={ this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString }
-                                maxLength={ _INPUT_FIELD_MAX_LENGTH }
-                                style={ { width: _INPUT_FIELD_WIDTH } }
-                                onChange={ event => {
-                                    const valueString = event.target.value
-                                    if ( valueString === "" || valueString === "." || valueString === "-" ) {
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    this._updateButton_Enabled ? (
+                                        <span>
+                                            Click 'Update' to update chart with retention time start and end entered
+                                        </span>
+                                    ) : null
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input
+                                    value={ this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString }
+                                    maxLength={ _INPUT_FIELD_MAX_LENGTH }
+                                    style={ { width: _INPUT_FIELD_WIDTH } }
+                                    onChange={ event => {
+                                        const valueString = event.target.value
+                                        if ( valueString === "" || valueString === "." || valueString === "-" ) {
+                                            this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = valueString
+                                            this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this._NUMBER_NOT_ASSIGNED
+
+                                            this._set_UpdateButton_Enabled()
+
+                                            return // EARLY RETURN
+                                        }
+
+                                        const valueNumber = Number.parseFloat( valueString )
+                                        if ( Number.isNaN( valueNumber ) ) {
+                                            //  Not a number so ignore new value
+                                            return; // EARLY RETURN
+                                        }
+
+                                        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = valueNumber
+
                                         this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = valueString
-                                        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this._NUMBER_NOT_ASSIGNED
 
                                         this._set_UpdateButton_Enabled()
-
-                                        return // EARLY RETURN
-                                    }
-
-                                    const valueNumber = Number.parseFloat( valueString )
-                                    if ( Number.isNaN( valueNumber ) ) {
-                                        //  Not a number so ignore new value
-                                        return; // EARLY RETURN
-                                    }
-
-                                    this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = valueNumber
-
-                                    this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = valueString
-
-                                    this._set_UpdateButton_Enabled()
-                                } }
-                            />
+                                    } }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             <span> </span>
                             <div style={ { position: "relative", display: "inline-block" } }>
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        this._updateButton_Enabled ? (
+                                            <span>
+                                                Update chart with retention time start and end entered
+                                            </span>
+                                        ) : null
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
                                 <button
                                     disabled={ ! this._updateButton_Enabled }
                                     //  containing form has onSubmit
                                 >
                                     Update
                                 </button>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 { ! this._updateButton_Enabled ? (
                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                         title={
@@ -4989,7 +5261,7 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                 title={
                                     <span>
-                                        Reset to Defaults
+                                        Reset to Retention Time Defaults based on PSM retention times
                                     </span>
                                 }
                                 { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
@@ -5000,7 +5272,7 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
 
                                         this._set_LocalProperties_On_Create_Or_SetTo_Defaults()
 
-                                        this._updateButton_Clicked()
+                                        this._update_OR_Reset_Button_Clicked({ resetButtonClicked: true })
                                     }}
                                 >
                                     Reset
@@ -5015,16 +5287,59 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
 }
 
 
+/**
+ * Divide by 60 AND Apply Math floor or ceil to # decimal places in _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT__POW_10
+ */
+const _compute_RT_Minutes_FromSeconds_Apply_Math_floor_or_ceil_To_NumberOfDecimalPlaces = function ( retentionTimeSeconds: number, math_FloorCeil: INTERNAL__MATH_FLOOR_CEIL ) {
+
+    const retentionTimeMinutes = ( retentionTimeSeconds / 60 )
+
+    let retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = retentionTimeMinutes * _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT__POW_10
+
+    if ( math_FloorCeil === INTERNAL__MATH_FLOOR_CEIL.FLOOR ) {
+
+        retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = Math.floor( retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil )
+
+    } else if ( math_FloorCeil === INTERNAL__MATH_FLOOR_CEIL.CEIL ) {
+
+        retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = Math.ceil( retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil )
+
+    } else {
+        const msg = "Unknown value for math_FloorCeil: " + math_FloorCeil
+        console.warn(msg)
+        throw Error(msg)
+    }
+
+    const retentionTimeMinutes_Floor_OR_Ceil_To_X_Decimal = retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil / _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT__POW_10
+
+    return retentionTimeMinutes_Floor_OR_Ceil_To_X_Decimal
+}
+
+
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
+
+////////////////////
+////////////////////
+
+////   Internal Classes
+
 /**
  *
  */
-class Internal__RetentionTimeSeconds_Range_Min_Max {
-    readonly retentionTimeSeconds_Range_Min: number
-    readonly retentionTimeSeconds_Range_Max: number
+class Internal__RetentionTimeMinutes_Range_Min_Max {
+    readonly retentionTime_Minutes_Range_Min: number
+    readonly retentionTime_Minutes_Range_Max: number
+}
+
+
+class Internal__SingleTraceData_RT_Intensity {
+
+    chart_X: Array<number>
+    chart_Y_NotSmoothed: Array<number>
+    chart_Y_ForDisplay_PossiblySmoothed: Array<number>
 }
 
 /**
@@ -5053,7 +5368,7 @@ class Internal_DataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId {
 
         readonly compute_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId__Result: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId__Result_Root
 
-        readonly retentionTimeSeconds_Range_Min_Max__LoadingDataFor: Internal__RetentionTimeSeconds_Range_Min_Max
+        readonly retentionTime_Minutes_Range_Min_Max__LoadingDataFor: Internal__RetentionTimeMinutes_Range_Min_Max
 
         readonly data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_Root
     }
@@ -5067,7 +5382,7 @@ class Internal_DataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId {
 
                 readonly compute_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId__Result: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId__Result_Root
 
-                readonly retentionTimeSeconds_Range_Min_Max__LoadingDataFor: Internal__RetentionTimeSeconds_Range_Min_Max
+                readonly retentionTime_Minutes_Range_Min_Max__LoadingDataFor: Internal__RetentionTimeMinutes_Range_Min_Max
 
                 readonly data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_Root
             }
@@ -5147,6 +5462,14 @@ class Internal__PeakToUse_DisplayDataForPSM_Tooltip {
     peak_Intensity_Or_IonCount__Value: number
 }
 
+
+
+
+
+
+////////////////////
+
+
 enum INTERNAL__MATH_FLOOR_CEIL {
     FLOOR = "FLOOR",
     CEIL = "CEIL"
@@ -5185,4 +5508,13 @@ const _compute_Isotope_M_Over_Z_Addition_For_Isotope_Number = function(
     }
 ) : number {
     return isotope_Number * C13_MASS_DELTA / charge
+}
+
+/**
+ *
+ * @param areaUnderCurve_Display
+ */
+const _areaUnderCurve_Display_FormattingFunction = function ( areaUnderCurve_Display: number ) {
+
+    return areaUnderCurve_Display.toExponential( 3 )
 }

@@ -82,15 +82,17 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumber
      */
     get_MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange_Data_ReturnPromise(
         {
-            searchScanFileId, retentionTimeRange_Min, retentionTimeRange_Max
+            searchScanFileId, retentionTime_Seconds_Range_Min, retentionTime_Seconds_Range_Max
         } : {
             searchScanFileId: number
-            readonly retentionTimeRange_Min: number;
-            readonly retentionTimeRange_Max: number;
+            readonly retentionTime_Seconds_Range_Min: number;
+            readonly retentionTime_Seconds_Range_Max: number;
         }
     ): Promise<CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange__FunctionResult> {
         try {
-            const result = this.get_MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange_Data({ searchScanFileId, retentionTimeRange_Min, retentionTimeRange_Max })
+            const result = this.get_MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange_Data({
+                searchScanFileId, retentionTime_Seconds_Range_Min, retentionTime_Seconds_Range_Max
+            })
 
             if (result.data) {
 
@@ -111,11 +113,11 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumber
      */
     get_MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange_Data(
         {
-            searchScanFileId, retentionTimeRange_Min, retentionTimeRange_Max
+            searchScanFileId, retentionTime_Seconds_Range_Min, retentionTime_Seconds_Range_Max
         } : {
             searchScanFileId: number
-            readonly retentionTimeRange_Min: number;
-            readonly retentionTimeRange_Max: number;
+            readonly retentionTime_Seconds_Range_Min: number;
+            readonly retentionTime_Seconds_Range_Max: number;
         }) : {
             data: CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange__FunctionResult
             promise: Promise<CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange__FunctionResult>
@@ -140,8 +142,8 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumber
                     get__commonData_LoadedFromServer_From_ProjectScanFileId___ROOT().get_commonData_LoadedFromServer_From_ProjectScanFileId_RetentionTimeRange__MS_1_ScanNumbers().
                     get_MS_1_ScanNumbers_DataHolder_From_ProjectScanFileId_RetentionTimeRange({
                         projectScanFileId: scanFile_ProjectScanFileId_SearchScanFileId_Entry.projectScanFileId,
-                        retentionTimeRange_Min,
-                        retentionTimeRange_Max
+                        retentionTime_Seconds_Range_Min: retentionTime_Seconds_Range_Min,
+                        retentionTime_Seconds_Range_Max: retentionTime_Seconds_Range_Max
                     })
 
                 if ( get_MS_1_ScanNumbers_DataHolder_From_ProjectScanFileId_RetentionTimeRange_Result.data ) {
@@ -207,8 +209,8 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumber
                                 get__commonData_LoadedFromServer_From_ProjectScanFileId___ROOT().get_commonData_LoadedFromServer_From_ProjectScanFileId_RetentionTimeRange__MS_1_ScanNumbers().
                                 get_MS_1_ScanNumbers_DataHolder_From_ProjectScanFileId_RetentionTimeRange_ReturnPromise({
                                     projectScanFileId: scanFile_ProjectScanFileId_SearchScanFileId_Entry.projectScanFileId,
-                                    retentionTimeRange_Min,
-                                    retentionTimeRange_Max
+                                    retentionTime_Seconds_Range_Min: retentionTime_Seconds_Range_Min,
+                                    retentionTime_Seconds_Range_Max: retentionTime_Seconds_Range_Max
                                 })
 
                             get_MS_1_ScanNumbers_DataHolder_From_ProjectScanFileId_RetentionTimeRange_Result_Promise.catch(reason => reject(reason))
