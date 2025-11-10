@@ -1774,7 +1774,9 @@ const _process_SinglePsm = function (
                     let modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm = undefined
                     let modificationPositions_OnPeptide_ThatPassFilters: Set<number> = undefined
 
-                    if ( psmOpenModificationMassForPsmId.positionsMap_KeyPosition ) {
+                    if ( psmOpenModificationMassForPsmId.positionsMap_KeyPosition && psmOpenModificationMassForPsmId.positionsMap_KeyPosition.size > 0 ) {
+
+                        //  Open Mod YES HAS Positions
 
                         const modificationPositions_OnPeptide: Array<number> = []
 
@@ -1845,64 +1847,75 @@ const _process_SinglePsm = function (
                         }
                     } else {
 
-                        const filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result =
-                            _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter({
-                                psmTblData,
-                                all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+                        //  Open Mod does NOT HAVE Positions
 
-                                proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
-                                peptideIds_For_MainFilters_Holder,
-                                peptideSequences_For_MainFilters_Holder
-                            })
+                        if ( ! ui_Selections_Used_ForCreation.excludeUnlocalizedOpenMods_UI_Selection) {
 
-                        if ( filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result.passesFilter ) {
+                            //  User Selection 'Exclude unlocalized mods" is NOT checked: so execute following code
 
-                            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root.INTERNAL_ONLY__ForCompute_ModMass_Min_Max__Unfiltered_ModMass_MinMax( modMass )
+                            const filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result =
+                                _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter({
+                                    psmTblData,
+                                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
 
-                            let modMass_PassesCutoffs = false
+                                    proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
+                                    peptideIds_For_MainFilters_Holder,
+                                    peptideSequences_For_MainFilters_Holder
+                                })
 
-                            if ( ui_Selections_Used_ForCreation.visualization_DisplayTab === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
+                            if ( filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result.passesFilter ) {
 
-                                if (
-                                    ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
-                                        && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass_Rounded_ForModPage_Processing )
-                                    || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
-                                        && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass_Rounded_ForModPage_Processing ) ) {
+                                modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_Result_Root.INTERNAL_ONLY__ForCompute_ModMass_Min_Max__Unfiltered_ModMass_MinMax( modMass )
 
-                                    //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+                                let modMass_PassesCutoffs = false
+
+                                if ( ui_Selections_Used_ForCreation.visualization_DisplayTab === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
+
+                                    if (
+                                        ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
+                                            && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass_Rounded_ForModPage_Processing )
+                                        || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
+                                            && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass_Rounded_ForModPage_Processing )
+                                        || ( ui_Selections_Used_ForCreation.excludeUnlocalizedOpenMods_UI_Selection
+                                            && ( ( ! psmOpenModificationMassForPsmId.positionsMap_KeyPosition ) || psmOpenModificationMassForPsmId.positionsMap_KeyPosition.size === 0 ) ) ) {
+
+                                        //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+
+                                    } else {
+                                        modMass_PassesCutoffs = true
+                                    }
+
+                                } else if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                                    === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM ) {
+
+                                    if (
+                                        ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
+                                            && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass )
+                                        || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
+                                            && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass )
+                                        || ( ui_Selections_Used_ForCreation.excludeUnlocalizedOpenMods_UI_Selection
+                                            && ( ( ! psmOpenModificationMassForPsmId.positionsMap_KeyPosition ) || psmOpenModificationMassForPsmId.positionsMap_KeyPosition.size === 0 ) ) ) {
+
+                                        //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+
+                                    } else {
+                                        modMass_PassesCutoffs = true
+                                    }
 
                                 } else {
-                                    modMass_PassesCutoffs = true
+                                    const msg = "Unexpected value for all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab(): " + all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
+                                    console.warn(msg)
+                                    throw Error(msg)
                                 }
 
-                            } else if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
-                                === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM ) {
+                                if ( modMass_PassesCutoffs ) {
 
-                                if (
-                                    ( ui_Selections_Used_ForCreation.modMassCutoffMin !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMin !== null
-                                        && ui_Selections_Used_ForCreation.modMassCutoffMin > modMass )
-                                    || ( ui_Selections_Used_ForCreation.modMassCutoffMax !== undefined && ui_Selections_Used_ForCreation.modMassCutoffMax !== null
-                                        && ui_Selections_Used_ForCreation.modMassCutoffMax < modMass ) ) {
+                                    psm_PassesFilters = true
 
-                                    //   Mod Mass is < modMassCutoffMin OR Mod Mass is > modMassCutoffMax so skip
+                                    modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm = filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result.modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm
 
-                                } else {
-                                    modMass_PassesCutoffs = true
+                                    modificationPositions_OnPeptide_ThatPassFilters = filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result.modificationPositions_OnPeptide_ThatPassFilters
                                 }
-
-                            } else {
-                                const msg = "Unexpected value for all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab(): " + all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
-                                console.warn(msg)
-                                throw Error(msg)
-                            }
-
-                            if ( modMass_PassesCutoffs ) {
-
-                                psm_PassesFilters = true
-
-                                modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm = filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result.modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm
-
-                                modificationPositions_OnPeptide_ThatPassFilters = filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePositionInProtein__Return_PassesFilter_Result.modificationPositions_OnPeptide_ThatPassFilters
                             }
                         }
                     }
