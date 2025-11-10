@@ -1447,10 +1447,6 @@ const _process_SinglePsm = function (
     }
 ) {
 
-    if ( psmTblData.psmId === 725788503 ) {
-        var z = 0
-    }
-
     //
     //   These 2 boolean variables track if ANY Modification found for PSM and if the Mod Mass entry passed the filters.
     //
@@ -1953,10 +1949,6 @@ const _process_SinglePsm = function (
 
                         if ( modificationPositions_OnPeptide_ThatPassFilters ) {
 
-                            if ( psmTblData.psmId === 725788503 ) {
-                                var z = 0
-                            }
-
                             _update__dataFor_SinglePsm_For_PsmId__For__modificationPositions_OnPeptide_ThatPassFilters__AND__ModifiedResidueLetters({
                                 dataFor_SinglePsm_For_PsmId,  //  UPDATED
 
@@ -2024,16 +2016,6 @@ const _update__dataFor_SinglePsm_For_PsmId__For__modificationPositions_OnPeptide
         peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
 
     }) {
-
-    // Move "Apportionment of mod positions for multiple positions or zero positions" to this file for all proteins
-    //
-    // Will also need same code when compute for Protein List
-
-
-    if ( dataFor_SinglePsm_For_PsmId.psmTblData.psmId === 725788503 ) {
-        var z = 0
-    }
-
 
     dataFor_SinglePsm_For_PsmId.INTERNAL_ONLY__Add_AllMods_PeptidePositions( modificationPositions_OnPeptide_ThatPassFilters )
 
@@ -2234,14 +2216,6 @@ const _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPos
     modificationPositions_OnPeptide_ThatPassFilters: Set<number>
     modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm
 } {
-
-    if ( psmTblData.psmId === 725788503 ) {
-        var z = 0
-    }
-
-    // How can I populate "modificationPositions_OnPeptide_ThatPassFilters" here or does this need to happen elsewhere???????
-    //
-    //     "modificationPositions_OnPeptide_ThatPassFilters" is needed to populate the modified residue letters on the top level table per mod mass
 
     if ( ( ! all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPosition_Of_Modification_Filter_UserSelections_StateObject.isAnySelections() )
         && ( ! all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) ) {
@@ -2742,10 +2716,6 @@ const _compute_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_Mo
     }
 ) : ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm
 {
-
-    if ( psmTblData.psmId === 725788503 ) {
-        var z = 0
-    }
 
     const peptideId_For_ReportedPeptideId = peptideIds_For_MainFilters_Holder.get_PeptideId_For_ReportedPeptideId( psmTblData.reportedPeptideId )
     if ( ! peptideId_For_ReportedPeptideId ) {
