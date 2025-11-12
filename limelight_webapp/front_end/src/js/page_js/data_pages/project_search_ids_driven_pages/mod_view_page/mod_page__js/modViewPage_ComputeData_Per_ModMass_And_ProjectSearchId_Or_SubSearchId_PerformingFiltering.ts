@@ -574,9 +574,9 @@ export class ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearc
         return this._psmVariable_Dynamic_ModificationMassPerPSM_ForPsmId_Array.values()
     }
 
-    // get__variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry__Array_Length() {
-    //     return this._variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.length
-    // }
+    get__variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry__Array_Length() {
+        return this._variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.length
+    }
     get__variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry__Array_Entries() {
         return this._variable_Dynamic_ModificationsOnReportedPeptide_For_ReportedPeptideId_Entry.values()
     }

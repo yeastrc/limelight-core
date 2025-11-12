@@ -85,6 +85,9 @@ import {
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    open_ModPage_Download_ModPositionInProtein_Report__DownloadForSingleModMassRounded_Overlay
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_Download_ModPositionInProtein_Report__DownloadFor_All_Or_SingleModMassRounded_Overlay";
 
 
 //  Default and Min Width for the block for the search names and Color Legend Bar label to the left of the SVG with the Mod Mass Heat Map
@@ -135,6 +138,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
     private _download_Data_Table_Clicked_BindThis = this._download_Data_Table_Clicked.bind(this)
     private _download_PSM_Localization_Report_Clicked_BindThis = this._download_PSM_Localization_Report_Clicked.bind(this)
+    private _download_ModPositionInProtein_Report_Clicked_BindThis = this._download_ModPositionInProtein_Report_Clicked.bind(this)
 
     /**
      *  Width for the block for the search names and Color Legend Bar label to the left of the SVG with the Mod Mass Heat Map
@@ -925,6 +929,22 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
         })
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _download_ModPositionInProtein_Report_Clicked( event: React.MouseEvent<HTMLSpanElement, globalThis.MouseEvent> ) { try {
+
+        open_ModPage_Download_ModPositionInProtein_Report__DownloadForSingleModMassRounded_Overlay({
+            projectSearchIds: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
+            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+            modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass: this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+        })
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
 
     /**
      *
@@ -1815,7 +1835,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                 </span>
                             </div>
 
-                            <div>
+                            <div style={ { marginBottom: 4 } }>
                                 <span
                                     className=" fake-link "
                                     onClick={ this._download_PSM_Localization_Report_Clicked_BindThis }
@@ -1823,6 +1843,18 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                     [Download PSM Localization Report]
                                 </span>
                             </div>
+
+                            { this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.allSearches_HaveProteins ? (
+                                //  ONLY render if ALL searches have proteins
+                                <div>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ this._download_ModPositionInProtein_Report_Clicked_BindThis }
+                                    >
+                                        [Download Modification Position in Protein Report]
+                                    </span>
+                                </div>
+                            ) : null}
                         </div>
 
                         {
