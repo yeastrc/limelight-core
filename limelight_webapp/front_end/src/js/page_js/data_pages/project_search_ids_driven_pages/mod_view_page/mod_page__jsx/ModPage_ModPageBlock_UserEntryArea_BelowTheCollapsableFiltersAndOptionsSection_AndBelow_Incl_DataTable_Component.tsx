@@ -88,6 +88,12 @@ import {
 import {
     open_ModPage_Download_ModPositionInProtein_Report__DownloadForSingleModMassRounded_Overlay
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_Download_ModPositionInProtein_Report__DownloadFor_All_Or_SingleModMassRounded_Overlay";
+import {
+    ModPage_Groups_For_Searches_Or_SubSearches_Component
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_Groups_For_Searches_Or_SubSearches_Component";
+import {
+    modPage_SearchGroups_SubSearchGroups_Init_VizSelections_PageStateManager
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__search_groups_sub_search_groups_init/modPage_SearchGroups_SubSearchGroups_Init_VizSelections_PageStateManager";
 
 
 //  Default and Min Width for the block for the search names and Color Legend Bar label to the left of the SVG with the Mod Mass Heat Map
@@ -222,6 +228,15 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                     this._show_Difference_Plot_WhenTwoPlots_BasedOn_Search_Or_SubSearch_Count = true
                 }
             }
+        }
+
+        if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram() ) {
+
+            modPage_SearchGroups_SubSearchGroups_Init_VizSelections_PageStateManager({
+                projectSearchIds_AllForPage: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
+                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
+            })
         }
 
         this.state = {
@@ -597,7 +612,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
                 modView_DataViz_Histogram_Renderer( {
                     displaying_Mean_StandardDeviation: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_display_Mean_StandardDeviation_Line_And_Number(),
-                    show_Difference_Plot: this._show_Difference_Plot_WhenTwoPlots_BasedOn_Search_Or_SubSearch_Count,
+                    show_Difference_Plot_WhenTwoPlots_BasedOn_Search_Or_SubSearch_Count: this._show_Difference_Plot_WhenTwoPlots_BasedOn_Search_Or_SubSearch_Count,
                     data_viz_Histogram_container_DOMElement,
                     data_viz_Histogram_Difference_Plot_container_DOMElement: this._data_viz_Histogram_Difference_Plot_container_Ref.current,
                     modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root: this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root,
@@ -1150,6 +1165,47 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                 download_As_SVG_Div_Top = 0
             }
 
+            let histogramBlock_GroupingSection_Hide = false
+
+            {
+                if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length === 1 ) {
+
+                    const searchSubGroups_Root= this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
+
+                    if ( searchSubGroups_Root ) {
+
+                        const projectSearchId = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
+
+                        const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId )
+                        if ( ! searchSubGroups_ForProjectSearchId ) {
+                            throw Error("searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                        }
+
+                        const searchSubGroups_Array = searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode()
+                        if ( searchSubGroups_Array.length === 1 ) {
+
+                            histogramBlock_GroupingSection_Hide = true
+                        }
+                    } else {
+
+                        histogramBlock_GroupingSection_Hide = true
+                    }
+                }
+            }
+
+            let histogramBlock_SectionAfterGrouping_Hide = false
+
+            if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram() ) {
+
+                const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
+
+                if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0
+                    && searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 ) {
+
+                    histogramBlock_SectionAfterGrouping_Hide = true
+                }
+            }
+
             return (
                 <div
                     // id="mod_page_visualization_outer_container_block"
@@ -1415,10 +1471,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                             <div
                                 style={ { marginTop: 20, marginBottom: 20 } }
                             >
-                                <div>
-                                    Histogram:
-                                </div>
-
+                                {/*  "Quant method:" etc  */ }
                                 <ModPage_OptionsSection_HistogramTab_UserInput_Display_MainContent_Component
                                     propsValue={ {
                                         modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
@@ -1427,391 +1480,489 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                     } }
                                 />
 
-                                <div>
-                                    <div>
-                                        <span>Chart Type: </span>
-                                        <label>
-                                            <input
-                                                type="radio"
-                                                checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
-                                                    === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS }
-                                                onChange={ event => {
-                                                    try {
-                                                        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
-                                                            ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS
-                                                        )
-
-                                                        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-
-                                                    } catch ( e ) {
-                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                        throw e
-                                                    }
-                                                } }
-                                            />
-                                            <span> Separate Plots</span>
-                                        </label>
-                                        <span> </span>
-                                        <label>
-                                            <input
-                                                type="radio"
-                                                checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
-                                                    === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART }
-                                                onChange={ event => {
-                                                    try {
-
-                                                        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
-                                                            ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART
-                                                        )
-
-                                                        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-
-                                                    } catch ( e ) {
-                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                        throw e
-                                                    }
-                                                } }
-                                            />
-                                            <span> Stacked Bar Chart</span>
-                                        </label>
-                                        <span> </span>
-                                        <label>
-                                            <input
-                                                type="radio"
-                                                checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
-                                                    === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT }
-                                                onChange={ event => {
-                                                    try {
-
-                                                        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
-                                                            ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT
-                                                        )
-
-                                                        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-                                                    } catch ( e ) {
-                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                        throw e
-                                                    }
-                                                } }
-                                            />
-                                            <span> All Data Merged Single Plot </span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div style={ { marginTop: 10, marginBottom: 5 } }>
-
-                                    <label>
-                                        <span> Fit normal curve and show mean </span>
-
-                                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                            title={
-                                                <div>
-                                                    <div>
-                                                        Fit and draw a normal distribution for the
-                                                    </div>
-                                                    <div>
-                                                        modification mass of all displayed PSMs or scans.
-                                                    </div>
-                                                    <div>
-                                                        Adds calculated mean to plot area.
-                                                    </div>
-                                                </div>
-                                            }
-                                        />
-                                        <span> </span>
-
-                                        <input
-                                            type="checkbox"
-                                            checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_display_Mean_StandardDeviation_Line_And_Number() }
-                                            onChange={ event => {
-                                                try {
-                                                    const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_display_Mean_StandardDeviation_Line_And_Number()
-
-                                                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_display_Mean_StandardDeviation_Line_And_Number( newValue )
-
-                                                    this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-                                                } catch ( e ) {
-                                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                    throw e
-                                                }
-                                            } }
-                                        />
-                                    </label>
-                                </div>
-
-                                {(
-                                    this._show_Checkbox__Inverse_RangeDirection_Plot_2_WhenTwoPlots_BasedOn_Search_Or_SubSearch_Count
-                                    &&
-                                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
-                                    === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS
-
-                                ) ? (
+                                { ( ! histogramBlock_GroupingSection_Hide ) ? (
 
                                     <>
-                                        <div style={ { marginTop: 10, marginBottom: 5 } }>
+                                        <div style={ { marginBottom: 10 } }>
 
                                             <label>
-                                                <span> Invert Y axis for second sub plot </span>
-
-                                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                                    title={
-                                                        <div>
-                                                            <div>
-                                                                Invert and draw the second plot underneath the first plot,
-                                                            </div>
-                                                            <div>
-                                                                also known as a butterfly plot.
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                />
-                                                <span> </span>
-
+                                                <span>Group Searches or Sub Searches in the histogram: </span>
                                                 <input
                                                     type="checkbox"
-                                                    checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_inverse_RangeDirection_Plot_2_WhenTwoPlots() }
+                                                    checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram() }
                                                     onChange={ event => {
                                                         try {
-                                                            const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_inverse_RangeDirection_Plot_2_WhenTwoPlots()
+                                                            const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram()
 
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_show_inverse_RangeDirection_Plot_2_WhenTwoPlots( newValue )
+                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_group_SearchesSubSearches_In_Histogram( newValue )
 
-                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-                                                        } catch ( e ) {
-                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                            throw e
-                                                        }
-                                                    } }
-                                                />
-                                            </label>
-                                        </div>
+                                                            if ( newValue ) {
 
-                                        <div style={ { marginTop: 10, marginBottom: 5 } }>
-
-                                            <label>
-                                                <span> Show difference chart </span>
-
-                                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                                    title={
-                                                        <div>
-                                                            <div>
-                                                                For each modification mass bin,
-                                                            </div>
-                                                            <div>
-                                                                plot the number of PSMs (or scans)
-                                                            </div>
-                                                            <div>
-                                                                in the first search minus the number in the second search.
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                />
-                                                <span> </span>
-
-                                                <input
-                                                    type="checkbox"
-                                                    checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_DifferenceChart_WhenTwoPlots() }
-                                                    onChange={ event => {
-                                                        try {
-                                                            const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_DifferenceChart_WhenTwoPlots()
-
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_show_DifferenceChart_WhenTwoPlots( newValue )
-
-                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-                                                        } catch ( e ) {
-                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                            throw e
-                                                        }
-                                                    } }
-                                                />
-                                            </label>
-                                        </div>
-                                    </>
-
-                                ) : null }
-
-
-                                { this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined ||
-                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined ? (
-
-                                    <div style={ { marginTop: 15 } }>
-                                        <span
-                                            className={
-                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined ?
-                                                    " fake-link " : " fake-link-disabled "
-                                            }
-                                            onClick={ event => {
-                                                try {
-
-                                                    const modMassCutoffMin_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
-                                                    const modMassCutoffMax_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
-
-                                                    if ( modMassCutoffMin_CurrentSelection !== undefined ) {
-
-                                                        //  Min has value
-
-                                                        const modMass_Min_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax()
-                                                        const modMass_Max_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax()
-
-                                                        if ( modMassCutoffMax_CurrentSelection !== undefined ) {
-
-                                                            const minMaxDiff = modMassCutoffMax_CurrentSelection - modMassCutoffMin_CurrentSelection
-                                                            const minMaxDiff_80Percent = minMaxDiff * .8
-
-                                                            let minNew = modMassCutoffMin_CurrentSelection - minMaxDiff_80Percent
-                                                            const maxNew = modMassCutoffMax_CurrentSelection - minMaxDiff_80Percent
-
-                                                            if ( minNew < modMass_Min_Across_All_Searches ) {
-
-                                                                minNew = undefined
+                                                                modPage_SearchGroups_SubSearchGroups_Init_VizSelections_PageStateManager( {
+                                                                    projectSearchIds_AllForPage: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
+                                                                    modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                                                                    dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
+                                                                } )
                                                             }
 
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
+                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
 
-                                                        } else {
-
-                                                            //  NO current Max
-
-                                                            const minMaxDiff = modMass_Max_Across_All_Searches - modMassCutoffMin_CurrentSelection
-                                                            const minMaxDiff_80Percent = minMaxDiff * .8
-
-                                                            const minNew = modMassCutoffMin_CurrentSelection - minMaxDiff_80Percent
-                                                            const maxNew = modMass_Max_Across_All_Searches - minMaxDiff_80Percent
-
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
+                                                        } catch ( e ) {
+                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                            throw e
                                                         }
+                                                    } }
+                                                />
+                                            </label>
+                                        </div>
+
+                                        { this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram() ? (
+
+                                            <div style={ { marginLeft: 20, marginBottom: 20 } }>
+
+                                                <ModPage_Groups_For_Searches_Or_SubSearches_Component
+
+                                                    force_RecomputeSearchList_Object={ this.state.forceReRender_Object }
+
+                                                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root }
+
+                                                    modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root={ this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root }
+                                                    modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass={ this._modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass }
+                                                    modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root={ this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root }
+                                                    modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result={ this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result }
+
+                                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+                                                    modPage_updateSelected_Searches_Callback_Function={ () => {
+                                                        try {
+                                                            this.setState( { forceReRender_Object: {} } )
+
+                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+                                                        } catch ( e ) {
+                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                            throw e
+                                                        }
+                                                    } }
+                                                />
+                                            </div>
+
+                                        ) : null }
+                                    </>
+                                ) : null }
+
+                                {/*
+                                    Container Div for rest of histogram block.
+
+                                    Needed so can hide when Grouping but one of the groups does NOT have entries.
+                                */}
+                                <div
+                                    hidden={ histogramBlock_SectionAfterGrouping_Hide }
+
+                                >
+
+                                    <div>
+                                        <div>
+                                            <span>Chart Type: </span>
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
+                                                        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS }
+                                                    onChange={ event => {
+                                                        try {
+                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
+                                                                ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS
+                                                            )
+
+                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+                                                        } catch ( e ) {
+                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                            throw e
+                                                        }
+                                                    } }
+                                                />
+                                                <span> Separate Plots</span>
+                                            </label>
+                                            <span> </span>
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
+                                                        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART }
+                                                    onChange={ event => {
+                                                        try {
+
+                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
+                                                                ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART
+                                                            )
+
+                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+                                                        } catch ( e ) {
+                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                            throw e
+                                                        }
+                                                    } }
+                                                />
+                                                <span> Stacked Bar Chart</span>
+                                            </label>
+                                            <span> </span>
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
+                                                        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT }
+                                                    onChange={ event => {
+                                                        try {
+
+                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
+                                                                ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT
+                                                            )
+
+                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+                                                        } catch ( e ) {
+                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                            throw e
+                                                        }
+                                                    } }
+                                                />
+                                                <span> All Data Merged Single Plot </span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div style={ { marginTop: 10, marginBottom: 5 } }>
+
+                                        <label>
+                                            <span> Fit normal curve and show mean </span>
+
+                                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                title={
+                                                    <div>
+                                                        <div>
+                                                            Fit and draw a normal distribution for the
+                                                        </div>
+                                                        <div>
+                                                            modification mass of all displayed PSMs or scans.
+                                                        </div>
+                                                        <div>
+                                                            Adds calculated mean to plot area.
+                                                        </div>
+                                                    </div>
+                                                }
+                                            />
+                                            <span> </span>
+
+                                            <input
+                                                type="checkbox"
+                                                checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_display_Mean_StandardDeviation_Line_And_Number() }
+                                                onChange={ event => {
+                                                    try {
+                                                        const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_display_Mean_StandardDeviation_Line_And_Number()
+
+                                                        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_display_Mean_StandardDeviation_Line_And_Number( newValue )
 
                                                         this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+                                                    } catch ( e ) {
+                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                        throw e
                                                     }
+                                                } }
+                                            />
+                                        </label>
+                                    </div>
 
-                                                } catch ( e ) {
-                                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                    throw e
+                                    { (
+                                        (
+                                            this._show_Checkbox__Inverse_RangeDirection_Plot_2_WhenTwoPlots_BasedOn_Search_Or_SubSearch_Count
+                                            ||
+                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram()
+                                        )
+                                        &&
+                                        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
+                                        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS
+
+                                    ) ? (
+
+                                        <>
+                                            <div style={ { marginTop: 10, marginBottom: 5 } }>
+
+                                                <label>
+                                                    <span> Invert Y axis for second sub plot </span>
+
+                                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                        title={
+                                                            <div>
+                                                                <div>
+                                                                    Invert and draw the second plot underneath the first
+                                                                    plot,
+                                                                </div>
+                                                                <div>
+                                                                    also known as a butterfly plot.
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    />
+                                                    <span> </span>
+
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_inverse_RangeDirection_Plot_2_WhenTwoPlots() }
+                                                        onChange={ event => {
+                                                            try {
+                                                                const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_inverse_RangeDirection_Plot_2_WhenTwoPlots()
+
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_show_inverse_RangeDirection_Plot_2_WhenTwoPlots( newValue )
+
+                                                                this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+                                                            } catch ( e ) {
+                                                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                                throw e
+                                                            }
+                                                        } }
+                                                    />
+                                                </label>
+                                            </div>
+
+                                            <div style={ { marginTop: 10, marginBottom: 5 } }>
+
+                                                <label>
+                                                    <span> Show difference chart </span>
+
+                                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                        title={
+                                                            <div>
+                                                                <div>
+                                                                    For each modification mass bin,
+                                                                </div>
+                                                                <div>
+                                                                    plot the number of PSMs (or scans)
+                                                                </div>
+                                                                <div>
+                                                                    in the first search minus the number in the second
+                                                                    search.
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    />
+                                                    <span> </span>
+
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_DifferenceChart_WhenTwoPlots() }
+                                                        onChange={ event => {
+                                                            try {
+                                                                const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_DifferenceChart_WhenTwoPlots()
+
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_show_DifferenceChart_WhenTwoPlots( newValue )
+
+                                                                this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+                                                            } catch ( e ) {
+                                                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                                throw e
+                                                            }
+                                                        } }
+                                                    />
+                                                </label>
+                                            </div>
+                                        </>
+
+                                    ) : null }
+
+
+                                    { this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined ||
+                                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined ? (
+
+                                        <div style={ { marginTop: 15 } }>
+                                            <span
+                                                className={
+                                                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined ?
+                                                        " fake-link " : " fake-link-disabled "
                                                 }
-                                            } }
-                                        >
-                                            Pan Left
-                                        </span>
+                                                onClick={ event => {
+                                                    try {
 
-                                        <span style={ { width: 10 } }> </span>
-
-                                        <span
-                                            className={
-                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined ?
-                                                    " fake-link " : " fake-link-disabled "
-                                            }
-                                            style={ { marginLeft: 10 } }
-                                            onClick={ event => {
-                                                try {
-
-                                                    const modMassCutoffMin_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
-                                                    const modMassCutoffMax_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
-
-                                                    if ( modMassCutoffMax_CurrentSelection !== undefined ) {
-
-                                                        //  Max has value
-
-                                                        const modMass_Min_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax()
-                                                        const modMass_Max_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax()
+                                                        const modMassCutoffMin_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+                                                        const modMassCutoffMax_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
 
                                                         if ( modMassCutoffMin_CurrentSelection !== undefined ) {
 
-                                                            const minMaxDiff = modMassCutoffMax_CurrentSelection - modMassCutoffMin_CurrentSelection
-                                                            const minMaxDiff_80Percent = minMaxDiff * .8
+                                                            //  Min has value
 
-                                                            const minNew = modMassCutoffMin_CurrentSelection + minMaxDiff_80Percent
-                                                            let maxNew = modMassCutoffMax_CurrentSelection + minMaxDiff_80Percent
+                                                            const modMass_Min_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax()
+                                                            const modMass_Max_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax()
 
-                                                            if ( maxNew > modMass_Max_Across_All_Searches ) {
+                                                            if ( modMassCutoffMax_CurrentSelection !== undefined ) {
 
-                                                                maxNew = undefined
+                                                                const minMaxDiff = modMassCutoffMax_CurrentSelection - modMassCutoffMin_CurrentSelection
+                                                                const minMaxDiff_80Percent = minMaxDiff * .8
+
+                                                                let minNew = modMassCutoffMin_CurrentSelection - minMaxDiff_80Percent
+                                                                const maxNew = modMassCutoffMax_CurrentSelection - minMaxDiff_80Percent
+
+                                                                if ( minNew < modMass_Min_Across_All_Searches ) {
+
+                                                                    minNew = undefined
+                                                                }
+
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
+
+                                                            } else {
+
+                                                                //  NO current Max
+
+                                                                const minMaxDiff = modMass_Max_Across_All_Searches - modMassCutoffMin_CurrentSelection
+                                                                const minMaxDiff_80Percent = minMaxDiff * .8
+
+                                                                const minNew = modMassCutoffMin_CurrentSelection - minMaxDiff_80Percent
+                                                                const maxNew = modMass_Max_Across_All_Searches - minMaxDiff_80Percent
+
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
                                                             }
 
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
-
-                                                        } else {
-
-                                                            //  NO current Min
-
-                                                            const minMaxDiff = modMassCutoffMax_CurrentSelection - modMass_Min_Across_All_Searches
-                                                            const minMaxDiff_80Percent = minMaxDiff * .8
-
-                                                            const minNew = modMass_Min_Across_All_Searches + minMaxDiff_80Percent
-                                                            const maxNew = modMassCutoffMax_CurrentSelection + minMaxDiff_80Percent
-
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
+                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
                                                         }
 
-                                                        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+                                                    } catch ( e ) {
+                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                        throw e
                                                     }
+                                                } }
+                                            >
+                                                Pan Left
+                                            </span>
 
-                                                } catch ( e ) {
-                                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                    throw e
+                                            <span style={ { width: 10 } }> </span>
+
+                                            <span
+                                                className={
+                                                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined ?
+                                                        " fake-link " : " fake-link-disabled "
                                                 }
-                                            } }
+                                                style={ { marginLeft: 10 } }
+                                                onClick={ event => {
+                                                    try {
+
+                                                        const modMassCutoffMin_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+                                                        const modMassCutoffMax_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+                                                        if ( modMassCutoffMax_CurrentSelection !== undefined ) {
+
+                                                            //  Max has value
+
+                                                            const modMass_Min_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax()
+                                                            const modMass_Max_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax()
+
+                                                            if ( modMassCutoffMin_CurrentSelection !== undefined ) {
+
+                                                                const minMaxDiff = modMassCutoffMax_CurrentSelection - modMassCutoffMin_CurrentSelection
+                                                                const minMaxDiff_80Percent = minMaxDiff * .8
+
+                                                                const minNew = modMassCutoffMin_CurrentSelection + minMaxDiff_80Percent
+                                                                let maxNew = modMassCutoffMax_CurrentSelection + minMaxDiff_80Percent
+
+                                                                if ( maxNew > modMass_Max_Across_All_Searches ) {
+
+                                                                    maxNew = undefined
+                                                                }
+
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
+
+                                                            } else {
+
+                                                                //  NO current Min
+
+                                                                const minMaxDiff = modMassCutoffMax_CurrentSelection - modMass_Min_Across_All_Searches
+                                                                const minMaxDiff_80Percent = minMaxDiff * .8
+
+                                                                const minNew = modMass_Min_Across_All_Searches + minMaxDiff_80Percent
+                                                                const maxNew = modMassCutoffMax_CurrentSelection + minMaxDiff_80Percent
+
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
+                                                            }
+
+                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+                                                        }
+
+                                                    } catch ( e ) {
+                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                        throw e
+                                                    }
+                                                } }
+                                            >
+                                                Pan Right
+                                            </span>
+
+
+                                        </div>
+
+                                    ) : null }
+
+
+                                    <div
+                                        style={ {
+                                            // display:  // HIDE <div> and children with display: "none" when NOT is_ContainsAnyData().
+                                            //     ( ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root )
+                                            //         || ( this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
+                                            //             && ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.is_ContainsAnyData() ) ) ) ? "none" : undefined
+                                        } }
+                                    >
+                                        <div
+                                            ref={ this._data_viz_Histogram_container_Ref }
+                                            // data-label="this._data_viz_Histogram_container_Ref"
                                         >
-                                            Pan Right
-                                        </span>
-
-
+                                        </div>
                                     </div>
 
-                                ) : null }
+                                    { ( this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root && ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.is_ContainsAnyData() ) ) ? (
+
+                                        //  SHOW with "none" when NOT is_ContainsAnyData()
+                                        <div style={ { fontSize: 24, marginTop: 20 } }>No modification data found for
+                                            filters.</div>
 
 
-                                <div
-                                    style={ {
-                                        // display:  // HIDE <div> and children with display: "none" when NOT is_ContainsAnyData().
-                                        //     ( ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root )
-                                        //         || ( this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
-                                        //             && ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.is_ContainsAnyData() ) ) ) ? "none" : undefined
-                                    } }
-                                >
+                                    ) : null }
+
                                     <div
-                                        ref={ this._data_viz_Histogram_container_Ref }
-                                        // data-label="this._data_viz_Histogram_container_Ref"
+                                        style={ {
+                                            display:  // HIDE <div> and children with display: "none" when NOT is_ContainsAnyData().
+                                                ( ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_DifferenceChart_WhenTwoPlots() )
+                                                    || ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
+                                                        !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS )
+                                                    || (
+                                                        ! (
+                                                            this._show_Difference_Plot_WhenTwoPlots_BasedOn_Search_Or_SubSearch_Count
+                                                            ||
+                                                            (
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram()
+                                                                &&
+                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
+                                                                === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS
+                                                            )
+                                                        )
+                                                        )
+                                                    || ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root )
+                                                    || ( this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
+                                                        && ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.is_ContainsAnyData() ) ) ) ? "none" : undefined
+                                        } }
                                     >
+                                        <div>
+                                            Difference Chart
+                                        </div>
+
+                                        <div
+                                            ref={ this._data_viz_Histogram_Difference_Plot_container_Ref }
+                                        >
+                                        </div>
                                     </div>
                                 </div>
 
-                                { ( this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root && ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.is_ContainsAnyData() ) ) ? (
-
-                                    //  SHOW with "none" when NOT is_ContainsAnyData()
-                                    <div style={ { fontSize: 24, marginTop: 20 } }>No modification data found for
-                                        filters.</div>
-
-
-                                ) : null }
-
-                                <div
-                                    style={ {
-                                        display:  // HIDE <div> and children with display: "none" when NOT is_ContainsAnyData().
-                                            ( ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_DifferenceChart_WhenTwoPlots() )
-                                                || ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
-                                                    !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS )
-                                                || ( ! this._show_Difference_Plot_WhenTwoPlots_BasedOn_Search_Or_SubSearch_Count )
-                                                || ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root )
-                                                || ( this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
-                                                    && ( ! this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.is_ContainsAnyData() ) ) ) ? "none" : undefined
-                                    } }
-                                >
-                                    <div>
-                                        Difference Chart
-                                    </div>
-
-                                    <div
-                                        ref={ this._data_viz_Histogram_Difference_Plot_container_Ref }
-                                    >
-                                    </div>
-                                </div>
                             </div>
-
 
                         </div>
 

@@ -31,17 +31,8 @@ import {
     ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__container_classes_js/ModViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass";
 import {
-    modPage_GetSearchNameForProjectSearchId
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_GetSearchNameForProjectSearchId";
-import {
-    open_ModPage_ZScore_SearchSelection_Overlay
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/modPage_ZScore_SearchSelection_Overlay";
-import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
-import {
-    open_ModPage_ZScore_SubSearchSelection_Overlay
-} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/modPage_ZScore_SubSearchSelection_Overlay";
 import {
     ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
@@ -49,8 +40,11 @@ import {
     ModPage_MainContent_SingleProtein_proteinName_Clicked_Callback_Function
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_Display_MainContent_Component";
 import {
-    SearchDetailsAndFilterBlock_ChangeSearches
-} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_ChangeSearches";
+    ModPage_Groups_For_Searches_Or_SubSearches_Component
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_Groups_For_Searches_Or_SubSearches_Component";
+import {
+    modPage_SearchGroups_SubSearchGroups_Init_VizSelections_PageStateManager
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__search_groups_sub_search_groups_init/modPage_SearchGroups_SubSearchGroups_Init_VizSelections_PageStateManager";
 
 /**
  *
@@ -84,14 +78,11 @@ interface ModPage_ZScore_ReplicateReport_Root_Component_State {
  */
 export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Component< ModPage_ZScore_ReplicateReport_Root_Component_Props, ModPage_ZScore_ReplicateReport_Root_Component_State > {
 
-    private _change_Searches_InGroups_BindThis = this._change_Searches_InGroups.bind(this)
-    private _change_SubSearches_InGroups_BindThis = this._change_SubSearches_InGroups.bind(this)
     private _zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData_Checkbox_Changed_Handler_BindThis = this._zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData_Checkbox_Changed_Handler.bind(this)
 
     private _display_NO_Searches_Message = false
 
     private _display_OnlyOneSearch_Message = false
-    private _display_OneOrMoreGroupsHas_No_Searches_Or_SubSearches_Message = false
 
 
     /**
@@ -130,96 +121,11 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
         if ( ( ! this._display_NO_Searches_Message ) && ( ! this._display_OnlyOneSearch_Message ) ) {
 
-            if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length === 1 ) {
-
-                //  Single Search with Sub Groups so putting the sub groups into ZScore Groups
-
-                const searchSubGroups_Root= this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
-
-                if ( ! searchSubGroups_Root ) {
-                    const msg = "IN 'if ( ( ! this._display_NO_Searches_Message ) && ( ! this._display_OnlyOneSearch_Message ) ) {' AND 'if ( ! searchSubGroups_Root ) {'"
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
-
-                if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 &&
-                    searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 &&
-                    searchGroups.searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 ) {
-
-                    //  NO Sub Searches set so compute from searches
-
-                    const projectSearchId = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
-
-                    const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId )
-                    if ( ! searchSubGroups_ForProjectSearchId ) {
-                        throw Error("searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
-                    }
-
-                    const searchSubGroups_Array = searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode()
-
-                    const searchSubGroups_ArrayLength_Half_Ceil = Math.ceil( searchSubGroups_Array.length / 2 )
-
-                    const group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: Set<number> = new Set()
-                    const group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: Set<number> = new Set()
-
-                    for ( const searchSubGroup of searchSubGroups_Array.slice( 0, searchSubGroups_ArrayLength_Half_Ceil ) ) {
-                        group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.add( searchSubGroup.searchSubGroup_Id )
-                    }
-                    for ( const searchSubGroup of searchSubGroups_Array.slice( searchSubGroups_ArrayLength_Half_Ceil, searchSubGroups_Array.length ) ) {
-                        group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.add( searchSubGroup.searchSubGroup_Id )
-                    }
-
-                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().set_SearchGroups({
-                        group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
-                        group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
-                        searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set: new Set(),
-                        projectSearchId_FOR_SubSearchIds: projectSearchId,
-                        projectSearchIds_Or_SubSearchIds_Enum: ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS
-                    })
-                } else {
-                    if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 ||
-                        searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 ) {
-
-                        //  Display message that user needs to change searches in groups so at least one search is in each group
-
-                        this._display_OneOrMoreGroupsHas_No_Searches_Or_SubSearches_Message = true
-                    }
-                }
-
-            } else {
-
-                const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
-
-                if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 &&
-                    searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 &&
-                    searchGroups.searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 ) {
-
-                    //  NO searches set so compute from searches
-
-                    const projectSearchIdsLength_Half_Ceil = Math.ceil( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length / 2 )
-
-                    const group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.slice( 0, projectSearchIdsLength_Half_Ceil ) )
-                    const group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.slice( projectSearchIdsLength_Half_Ceil, this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length ) )
-
-                    this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().set_SearchGroups({
-                        group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
-                        group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set,
-                        searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set: new Set(),
-                        projectSearchId_FOR_SubSearchIds: undefined,
-                        projectSearchIds_Or_SubSearchIds_Enum: ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.PROJECT_SEARCH_IDS
-                    })
-                } else {
-                    if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 ||
-                        searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size === 0 ) {
-
-                        //  Display message that user needs to change searches in groups so at least one search is in each group
-
-                        this._display_OneOrMoreGroupsHas_No_Searches_Or_SubSearches_Message = true
-                    }
-                }
-            }
+            modPage_SearchGroups_SubSearchGroups_Init_VizSelections_PageStateManager({
+                projectSearchIds_AllForPage: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
+                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
+            })
         }
 
         this.state = { forceReRender_Object: {} };
@@ -241,7 +147,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
         } else if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length === 1 ) {
 
-            const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+            const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
 
             if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
@@ -297,46 +203,6 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
     /**
      *
      */
-    private _change_Searches_InGroups( event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) { try {
-
-        const callback_updateSelected_Searches = () => {
-
-            this._display_OneOrMoreGroupsHas_No_Searches_Or_SubSearches_Message = false  // Set false since only way to save from overlay is all groups have at least 1 search
-
-            this.setState({ forceReRender_Object: {} })
-        }
-
-        open_ModPage_ZScore_SearchSelection_Overlay({
-            projectSearchIds_All : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            dataPageStateManager_DataFrom_Server : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server,
-            callback_updateSelected_Searches
-        })
-    } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
-
-    /**
-     *
-     */
-    private _change_SubSearches_InGroups( event: React.MouseEvent<HTMLButtonElement, MouseEvent> ) { try {
-
-        const callback_updateSelected_Searches = () => {
-
-            this._display_OneOrMoreGroupsHas_No_Searches_Or_SubSearches_Message = false  // Set false since only way to save from overlay is all groups have at least 1 search
-
-            this.setState({ forceReRender_Object: {} })
-        }
-
-        open_ModPage_ZScore_SubSearchSelection_Overlay({
-            projectSearchIds_All : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
-            modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-            dataPageStateManager_DataFrom_Server : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server,
-            callback_updateSelected_Searches
-        })
-    } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
-
-    /**
-     *
-     */
     private _zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData_Checkbox_Changed_Handler( event: React.ChangeEvent<HTMLInputElement> ){ try {
 
         this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData( event.target.checked )
@@ -351,136 +217,10 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
      */
     render() { try {
 
-        const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
-
-        let processing_SubSearches = false
-
-        let subSearchesLabel_NotCapitol: string = undefined
-
-        if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
-
-            processing_SubSearches = true
-
-            subSearchesLabel_NotCapitol = "sub "
-        }
-
-        if ( this._display_NO_Searches_Message ) {
-
-            return (
-                <div style={ { marginTop: 20 } }>
-                    No { subSearchesLabel_NotCapitol } searches.
-                </div>
-            )
-        }
-
-        if ( this._display_OnlyOneSearch_Message ) {
-
-            return (
-                <div style={ { marginTop: 20 } }>
-                    <div>
-                        Enrichment analysis requires more than one { subSearchesLabel_NotCapitol } search to be loaded.
-                    </div>
-
-                    { ! processing_SubSearches ? (
-                        <div style={ { marginTop: 10 } }>
-                            <span
-                                className=" fake-link "
-                                onClick={ event => { try {
-
-                                    const dataUpdated_Callback = () => {
-
-                                        //  Currently, this will not be called.  The browser will be taken to a new href in searchDetailsAndFilterBlock_ChangeSearches.changeSearches();
-
-                                        throw Error("No Call to 'dataUpdated_Callback()' Expected.  Inside private _openUserChangeSearches_Overlay_Callback()")
-
-                                        // const params = new SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param();
-                                        //
-                                        // this.props.propValue.filterValuesChanged_Callback( params );
-                                    }
-
-                                    const searchDetailsAndFilterBlock_ChangeSearches = new SearchDetailsAndFilterBlock_ChangeSearches({
-                                        isProteinPage: false,
-                                        dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-                                        searchDetailsBlockDataMgmtProcessing : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.searchDetailsBlockDataMgmtProcessing,
-                                        dataUpdated_Callback
-                                    })
-
-                                    searchDetailsAndFilterBlock_ChangeSearches.open_ChangeSearches_Overlay();
-
-                                } catch ( e ) {
-                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                    throw e
-                                }
-                                }}
-
-                            >
-                                Click here to add loaded searches
-                            </span>
-                        </div>
-                    ) : null }
-                </div>
-            )
-        }
-
-        if ( this._display_OneOrMoreGroupsHas_No_Searches_Or_SubSearches_Message ) {
-
-            if ( processing_SubSearches ) {
-
-                const buttonLabel = "Change Sub Searches in Groups"
-
-                return (
-                    <div style={ { marginTop: 20 } }>
-                        <div>
-                            At least one of the groups does not have any { subSearchesLabel_NotCapitol } searches.
-                        </div>
-                        <div style={ { marginTop: 2 } }>
-                            Click the button '{ buttonLabel }' to change the groups.
-                        </div>
-                        <div style={ { marginTop: 3 } }>
-
-                            <button
-                                onClick={ this._change_SubSearches_InGroups_BindThis }
-                            >
-                                { buttonLabel }
-                            </button>
-                        </div>
-
-                    </div>
-                )
-            }
-
-            const buttonLabel = "Change Searches in Groups"
-
-            return (
-                <div style={ { marginTop: 20 } }>
-                    <div>
-                        At least one of the groups does not have any { subSearchesLabel_NotCapitol } searches.
-                    </div>
-                    <div style={ { marginTop: 2 } }>
-                        Click the button '{ buttonLabel }' to change the groups.
-                    </div>
-                    <div style={ { marginTop: 3 } }>
-
-                            <button
-                                onClick={ this._change_Searches_InGroups_BindThis }
-                            >
-                                { buttonLabel }
-                            </button>
-                    </div>
-
-                </div>
-            )
-        }
-
-        let buttonTo_Change_Searches_Or_SubSearches: JSX.Element = undefined
+        const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
 
         const group_1_ProjectSearchIds_OR_SubSearchIds: Array<number> = []
         const group_2_ProjectSearchIds_OR_SubSearchIds: Array<number> = []
-
-        const group_1_SearchNames_OR_SubSearchLabels_Elements: Array<JSX.Element> = []
-        const group_2_SearchNames_OR_SubSearchLabels_Elements: Array<JSX.Element> = []
-
-        const notIn_Any_Group_SearchNames_OR_SubSearchLabels_Elements: Array<JSX.Element> = []
 
         if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
@@ -498,173 +238,44 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
 
             for ( const searchSubGroup of searchSubGroups_Array ) {
 
-                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id ) ) {
+                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id ) ) {
                     //  NOT in group 1 so skip
                     continue  // EARLY CONTINUE
                 }
-
-                const element = (
-                    <li
-                        key={ searchSubGroup.searchSubGroup_Id }
-                        style={ { marginBottom: 6 } }
-                    >
-                        ({ searchSubGroup.subgroupName_Display }) { searchSubGroup.searchSubgroupName_fromImportFile }
-                    </li>
-                )
-
-                group_1_SearchNames_OR_SubSearchLabels_Elements.push( element )
 
                 group_1_ProjectSearchIds_OR_SubSearchIds.push( searchSubGroup.searchSubGroup_Id )
             }
 
             for ( const searchSubGroup of searchSubGroups_Array ) {
 
-                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id ) ) {
+                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id ) ) {
                     //  NOT in group 1 so skip
                     continue  // EARLY CONTINUE
                 }
 
-                const element = (
-                    <li
-                        key={ searchSubGroup.searchSubGroup_Id }
-                        style={ { marginBottom: 6 } }
-                    >
-                        ({ searchSubGroup.subgroupName_Display }) { searchSubGroup.searchSubgroupName_fromImportFile }
-                    </li>
-                )
-
-                group_2_SearchNames_OR_SubSearchLabels_Elements.push( element )
-
                 group_2_ProjectSearchIds_OR_SubSearchIds.push( searchSubGroup.searchSubGroup_Id )
             }
-
-
-            for ( const searchSubGroup of searchSubGroups_Array ) {
-
-                if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id )
-                    || this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( searchSubGroup.searchSubGroup_Id ) ) {
-                    // In a group so skip
-                    continue  // EARLY CONTINUE
-                }
-
-                const element = (
-                    <li
-                        key={ searchSubGroup.searchSubGroup_Id }
-                        style={ { marginBottom: 6 } }
-                    >
-                        ({ searchSubGroup.subgroupName_Display }) { searchSubGroup.searchSubgroupName_fromImportFile }
-                    </li>
-                )
-
-                notIn_Any_Group_SearchNames_OR_SubSearchLabels_Elements.push( element )
-            }
-
-            {
-                const buttonLabel = "Change Sub Searches in Groups"
-
-                buttonTo_Change_Searches_Or_SubSearches = (
-
-                    <button
-                        onClick={ this._change_SubSearches_InGroups_BindThis }
-                    >
-                        { buttonLabel }
-                    </button>
-                )
-            }
-
 
         } else if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.PROJECT_SEARCH_IDS ) {
 
             for ( const projectSearchId of this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage ) {
 
-                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId ) ) {
+                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId ) ) {
                     //  NOT in group 1 so skip
                     continue  // EARLY CONTINUE
                 }
-
-                const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
-                    projectSearchId,
-                    dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
-                } )
-
-                const element = (
-                    <li
-                        key={ projectSearchId }
-                        style={ { marginBottom: 6 } }
-                    >
-                        { searchNameForProjectSearchId }
-                    </li>
-                )
-
-                group_1_SearchNames_OR_SubSearchLabels_Elements.push( element )
 
                 group_1_ProjectSearchIds_OR_SubSearchIds.push( projectSearchId )
             }
 
             for ( const projectSearchId of this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage ) {
 
-                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId ) ) {
+                if ( ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId ) ) {
                     //  NOT in group 1 so skip
                     continue  // EARLY CONTINUE
                 }
 
-                const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
-                    projectSearchId,
-                    dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
-                } )
-
-                const element = (
-                    <li
-                        key={ projectSearchId }
-                        style={ { marginBottom: 6 } }
-                    >
-                        { searchNameForProjectSearchId }
-                    </li>
-                )
-
-                group_2_SearchNames_OR_SubSearchLabels_Elements.push( element )
-
                 group_2_ProjectSearchIds_OR_SubSearchIds.push( projectSearchId )
-            }
-
-            {
-                for ( const projectSearchId of this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage ) {
-
-                    if ( this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId )
-                        || this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId ) ) {
-                        // In a group so skip
-                        continue  // EARLY CONTINUE
-                    }
-
-                    const searchNameForProjectSearchId = modPage_GetSearchNameForProjectSearchId( {
-                        projectSearchId,
-                        dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
-                    } )
-
-                    const element = (
-                        <li
-                            key={ projectSearchId }
-                            style={ { marginBottom: 6 } }
-                        >
-                            { searchNameForProjectSearchId }
-                        </li>
-                    )
-
-                    notIn_Any_Group_SearchNames_OR_SubSearchLabels_Elements.push( element )
-                }
-            }
-
-            {
-                const buttonLabel = "Change Searches in Groups"
-
-                buttonTo_Change_Searches_Or_SubSearches = (
-
-                    <button
-                        onClick={ this._change_Searches_InGroups_BindThis }
-                    >
-                        { buttonLabel }
-                    </button>
-                )
             }
 
         } else {
@@ -680,59 +291,19 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
                         <span style={ { fontSize: 18 } }>ZScore Data Report</span>
                     </div>
 
-                    <div>
-                        <div style={ { fontWeight: "bold" } }>
-                            Group 1 { subSearchesLabel_NotCapitol } searches
-                        </div>
-                        <div
-                            // style={ { marginLeft: 20 } }
-                        >
-                            <ul>
-                                { group_1_SearchNames_OR_SubSearchLabels_Elements }
-                            </ul>
-                        </div>
-                        <div style={ { fontWeight: "bold" } }>
-                            Group 2 { subSearchesLabel_NotCapitol } searches
-                        </div>
-                        <div
-                            // style={ { marginLeft: 20 } }
-                        >
-                            <ul>
-                                { group_2_SearchNames_OR_SubSearchLabels_Elements }
-                            </ul>
-                        </div>
+                    <ModPage_Groups_For_Searches_Or_SubSearches_Component
+                        force_RecomputeSearchList_Object={ this.state.forceReRender_Object }
 
-                        { group_1_SearchNames_OR_SubSearchLabels_Elements.length !== group_2_SearchNames_OR_SubSearchLabels_Elements.length ? (
-                            <div
-                                className=" mod-page-gentle-notification-background "
-                                style={ { marginBottom: 10 } }
-                            >
-                                Warning: Number of { subSearchesLabel_NotCapitol } searches in groups 1 and 2 are not equal.
-                            </div>
-                        ) : null }
-
-                        { notIn_Any_Group_SearchNames_OR_SubSearchLabels_Elements.length > 0 ? (
-                            <>
-                                <div style={ { fontWeight: "bold" } }>
-                                    { processing_SubSearches ? (
-                                        "Sub searches"
-                                    ) : (
-                                        "Searches"
-                                    )}  NOT in a group
-                                </div>
-                                <div
-                                    // style={ { marginLeft: 20 } }
-                                >
-                                    <ul>
-                                        { notIn_Any_Group_SearchNames_OR_SubSearchLabels_Elements }
-                                    </ul>
-                                </div>
-                            </>
-                        ) : null }
-                    </div>
-                    <div>
-                        { buttonTo_Change_Searches_Or_SubSearches }
-                    </div>
+                        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass={ this.props.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass }
+                        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root={ this.props.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root }
+                        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root={ this.props.modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root }
+                        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result={ this.props.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result }
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root }
+                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+                        modPage_updateSelected_Searches_Callback_Function={ () => {
+                            this.setState({ forceReRender_Object: {} })
+                        } }
+                    />
 
                 </div>
 

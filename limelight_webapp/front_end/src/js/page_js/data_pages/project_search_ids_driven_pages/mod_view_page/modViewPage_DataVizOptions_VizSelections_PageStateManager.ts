@@ -94,7 +94,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogra
 /**
  *  Selections of Search Groups for ZScore
  */
-export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections {
+export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections {
 
     private static _ENCODING__VERSION_NUMBER_PROPERTY_NAME = 'a'
     private static _ENCODING__VERSION_NUMBER = 1
@@ -133,8 +133,8 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
     ) {
         this._selectionChanged_Callback = callbackOnChange
 
-        ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.PROJECT_SEARCH_IDS ] = 0
-        ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ] = 1
+        ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.PROJECT_SEARCH_IDS ] = 0
+        ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ] = 1
     }
 
     /**
@@ -219,18 +219,18 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
             return
         }
 
-        if ( encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__VERSION_NUMBER_PROPERTY_NAME ] !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__VERSION_NUMBER ) {
+        if ( encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__VERSION_NUMBER_PROPERTY_NAME ] !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__VERSION_NUMBER ) {
 
             const msg = "Version Number is NOT expected value.  Expected value: " +
-                ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__VERSION_NUMBER +
+                ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__VERSION_NUMBER +
                 ". value in encodedStateData: " +
-                encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__VERSION_NUMBER_PROPERTY_NAME ]
+                encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__VERSION_NUMBER_PROPERTY_NAME ]
             console.warn(msg)
             throw Error(msg)
         }
 
         {
-            const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__GROUP_1_PROPERTY_NAME ]
+            const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__GROUP_1_PROPERTY_NAME ]
             if ( encoded_Group ) {
                 this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( encoded_Group )
             } else {
@@ -238,7 +238,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
             }
         }
         {
-            const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__GROUP_2_PROPERTY_NAME ]
+            const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__GROUP_2_PROPERTY_NAME ]
             if ( encoded_Group ) {
                 this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( encoded_Group )
             } else {
@@ -246,7 +246,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
             }
         }
         {
-            const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__NOT_IN_GROUP_PROPERTY_NAME ]
+            const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__NOT_IN_GROUP_PROPERTY_NAME ]
             if ( encoded_Group ) {
                 this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set = new Set( encoded_Group )
             } else {
@@ -254,17 +254,17 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
             }
         }
         {
-            const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__PROJECT_SEARCH_ID_FOR_SUB_SEARCH_IDS_PROPERTY_NAME ]
+            const encoded_Group = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__PROJECT_SEARCH_ID_FOR_SUB_SEARCH_IDS_PROPERTY_NAME ]
             if ( encoded_Group ) {
                 this._projectSearchId_FOR_SubSearchIds = encoded_Group
             }
         }
 
         {
-            const encodedValue = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_PROPERTY_NAME ]
+            const encodedValue = encodedStateData[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_PROPERTY_NAME ]
             if ( encodedValue !== undefined ) {
 
-                const value = ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_DECODING_KEYS[ encodedValue ]
+                const value = ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_DECODING_KEYS[ encodedValue ]
                 if ( value === undefined ) {
                     const msg = "ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_DECODING_KEYS[ encodedValue ] returned undefined for encodedValue: " + encodedValue
                     console.warn(msg)
@@ -389,37 +389,37 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
 
             const result_ProjectSearchIds = Array.from( this._group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set )
 
-            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__GROUP_1_PROPERTY_NAME ] = result_ProjectSearchIds
+            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__GROUP_1_PROPERTY_NAME ] = result_ProjectSearchIds
         }
 
         if ( this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set && this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.size > 0 ) {
 
             const result_ProjectSearchIds = Array.from( this._group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set )
 
-            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__GROUP_2_PROPERTY_NAME ] = result_ProjectSearchIds
+            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__GROUP_2_PROPERTY_NAME ] = result_ProjectSearchIds
         }
 
         if ( this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set && this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set.size > 0 ) {
 
             const result_ProjectSearchIds = Array.from( this._searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set )
 
-            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__NOT_IN_GROUP_PROPERTY_NAME ] = result_ProjectSearchIds
+            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__NOT_IN_GROUP_PROPERTY_NAME ] = result_ProjectSearchIds
         }
 
         if ( this._projectSearchId_FOR_SubSearchIds ) {
 
-            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__PROJECT_SEARCH_ID_FOR_SUB_SEARCH_IDS_PROPERTY_NAME ] = this._projectSearchId_FOR_SubSearchIds
+            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__PROJECT_SEARCH_ID_FOR_SUB_SEARCH_IDS_PROPERTY_NAME ] = this._projectSearchId_FOR_SubSearchIds
         }
 
         if ( this._projectSearchIds_Or_SubSearchIds_Enum !== undefined ) {
 
-            const encodedValue = ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS[ this._projectSearchIds_Or_SubSearchIds_Enum ]
+            const encodedValue = ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS[ this._projectSearchIds_Or_SubSearchIds_Enum ]
             if ( encodedValue === undefined ) {
                 const msg = "ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_ENCODING_KEYS[ this._projectSearchIds_Or_SubSearchIds_Enum ] returned undefined for this._projectSearchIds_Or_SubSearchIds_Enum: " + this._projectSearchIds_Or_SubSearchIds_Enum
                 console.warn( msg )
                 throw Error( msg )
             }
-            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_PROPERTY_NAME ] = encodedValue
+            result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__PROJECT_SEARCH_IDS_SUB_SEARCH_IDS_ENUM_PROPERTY_NAME ] = encodedValue
         }
 
         if ( Object.keys( result ).length === 0 ) {
@@ -427,7 +427,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGr
             return undefined
         }
 
-        result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__VERSION_NUMBER_PROPERTY_NAME ] = ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections._ENCODING__VERSION_NUMBER
+        result[ ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__VERSION_NUMBER_PROPERTY_NAME ] = ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections._ENCODING__VERSION_NUMBER
 
         return result
     }
@@ -731,6 +731,7 @@ const _SAVE_STATE_KEYS = {
     show_inverse_RangeDirection_Plot_2_WhenTwoPlots: 'i',
     display_Mean_StandardDeviation_Line_And_Number: 'j',
     show_DifferenceChart_WhenTwoPlots: 'k',
+    group_SearchesSubSearches_In_Histogram: 'l',
     MOD_MASS_MIN_CUTOFF__ROUNDED_MASS_FOR_HEATMAP: 'n',
     MOD_MASS_MIN_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM: 'o',
     PROJECT_SEARCH_IDS: 'p',
@@ -900,7 +901,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
 
         modMasses_ProjectSearchIds_Visualization_Selections_Root: ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasses_ProjectSearchIds_Visualization_Selections
 
-        searchGroups_For_ZScore_Selections: ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections
+        searchGroups_For_ZScore_And_Histogram_Selections: ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections
 
         zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData : boolean
 
@@ -913,6 +914,8 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
         display_Mean_StandardDeviation_Line_And_Number: boolean
 
         show_DifferenceChart_WhenTwoPlots: boolean
+
+        group_SearchesSubSearches_In_Histogram: boolean
     }
 
     private _projectSearchIds_WereLoadedFromStateInURL = false
@@ -952,14 +955,15 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
             excludeUnlocalizedOpenMods : false,  //  DEFAULT false
             modMasses_ProjectSearchIds_Visualization_Selections_Root:
                 new ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasses_ProjectSearchIds_Visualization_Selections({ callbackOnChange: this._updateState_ForChange_BindThis }),
-            searchGroups_For_ZScore_Selections:
-                new ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections({ callbackOnChange: this._updateState_ForChange_BindThis }),
+            searchGroups_For_ZScore_And_Histogram_Selections:
+                new ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections({ callbackOnChange: this._updateState_ForChange_BindThis }),
             zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData: false,  //  DEFAULT false
             significance_metric_chart_type : ModViewPage_DataVizOptions_VizSelections_PageStateManager__SIGNIFICANCE_METRIC_CHART_TYPE_Values_PValue_Zscore_Enum.ZSCORE, // DEFAULT ZSCORE
             histogram_ChartType_Enum_Class : ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.DEFAULT,
             show_inverse_RangeDirection_Plot_2_WhenTwoPlots: true,  // Default to true
             display_Mean_StandardDeviation_Line_And_Number: false,   // Default to false
             show_DifferenceChart_WhenTwoPlots: false,   // Default to false
+            group_SearchesSubSearches_In_Histogram: false,   // Default to false
         }
 
         var z = 0
@@ -1216,14 +1220,14 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
     //     this._updateState_ForChange()
     // }
 
-    get_searchGroups_For_ZScore_Selections() {
+    get_searchGroups_For_ZScore_And_Histogram_Selections() {
 
-        return this._storedState.searchGroups_For_ZScore_Selections
+        return this._storedState.searchGroups_For_ZScore_And_Histogram_Selections
     }
 
-    // set_searchGroups_For_ZScore_Selections( searchGroups_For_ZScore_Selections: ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasses_ProjectSearchIds_Visualization_Selections ) {
+    // set_searchGroups_For_ZScore_And_Histogram_Selections( searchGroups_For_ZScore_And_Histogram_Selections: ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasses_ProjectSearchIds_Visualization_Selections ) {
     //
-    //     this._storedState.searchGroups_For_ZScore_Selections = ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections
+    //     this._storedState.searchGroups_For_ZScore_And_Histogram_Selections = ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_And_Histogram_Selections
     //
     //     this._updateState_ForChange()
     // }
@@ -1300,6 +1304,19 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
 
         this._updateState_ForChange()
     }
+
+    get_group_SearchesSubSearches_In_Histogram() {
+
+        return this._storedState.group_SearchesSubSearches_In_Histogram
+    }
+
+    set_group_SearchesSubSearches_In_Histogram( group_SearchesSubSearches_In_Histogram : boolean ) {
+
+        this._storedState.group_SearchesSubSearches_In_Histogram = group_SearchesSubSearches_In_Histogram
+
+        this._updateState_ForChange()
+    }
+
 
 
     /**
@@ -1481,7 +1498,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
             //  Selections in the <svg> graphic showing the Mods for the searches
             if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.searchGroups_For_ZScore_Selections)) {
                 const encodedStateData__searchGroups_For_ZScore_Selections = encodedStateData[_SAVE_STATE_KEYS.searchGroups_For_ZScore_Selections]
-                this._storedState.searchGroups_For_ZScore_Selections.INTERNAL_ONLY__decode_EncodedSelection({ encodedStateData: encodedStateData__searchGroups_For_ZScore_Selections, projectSearchIds_MainPage: initParams.projectSearchIds_MainPage });
+                this._storedState.searchGroups_For_ZScore_And_Histogram_Selections.INTERNAL_ONLY__decode_EncodedSelection({ encodedStateData: encodedStateData__searchGroups_For_ZScore_Selections, projectSearchIds_MainPage: initParams.projectSearchIds_MainPage });
             }
 
             if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.zScore_DataTab_DataTable_ZScore_Pvalue_For_FilteredData)) {
@@ -1521,6 +1538,9 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
                 this._storedState.show_DifferenceChart_WhenTwoPlots = encodedStateData[_SAVE_STATE_KEYS.show_DifferenceChart_WhenTwoPlots];
             }
 
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.group_SearchesSubSearches_In_Histogram)) {
+                this._storedState.group_SearchesSubSearches_In_Histogram = encodedStateData[_SAVE_STATE_KEYS.group_SearchesSubSearches_In_Histogram];
+            }
 
             ///   WARNING:  This MUST be the LAST value taken from the encoded state in URL.  The URL will be updated for changes to proteinPosition_Of_Modification_Filter_UserSelections_StateObject
 
@@ -1697,6 +1717,10 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
             dataForEncoding[_SAVE_STATE_KEYS.show_DifferenceChart_WhenTwoPlots] =  this._storedState.show_DifferenceChart_WhenTwoPlots
         }
 
+        if ( this._storedState.group_SearchesSubSearches_In_Histogram !== undefined) {
+            dataForEncoding[_SAVE_STATE_KEYS.group_SearchesSubSearches_In_Histogram] =  this._storedState.group_SearchesSubSearches_In_Histogram
+        }
+
         {
             const encodedData = this._storedState.modMasses_ProjectSearchIds_Visualization_Selections_Root && this._storedState.modMasses_ProjectSearchIds_Visualization_Selections_Root.INTERNAL_ONLY__getEncodedSelectedRects();
 
@@ -1706,7 +1730,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
         }
 
         {
-            const encodedData = this._storedState.searchGroups_For_ZScore_Selections && this._storedState.searchGroups_For_ZScore_Selections.INTERNAL_ONLY__getEncodedSelection();
+            const encodedData = this._storedState.searchGroups_For_ZScore_And_Histogram_Selections && this._storedState.searchGroups_For_ZScore_And_Histogram_Selections.INTERNAL_ONLY__getEncodedSelection();
 
             if ( encodedData ) {
                 dataForEncoding[ _SAVE_STATE_KEYS.searchGroups_For_ZScore_Selections ] = encodedData

@@ -144,7 +144,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
         this._volcanoPlot_1_Div_Ref = React.createRef();
         this._volcanoPlot_2_Div_Ref = React.createRef();
 
-        const searchGroups = props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+        const searchGroups = props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
 
         this._group_1_ProjectSearchIds_Or_SubSearchIds_PrevRendered = searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set
         this._group_2_ProjectSearchIds_Or_SubSearchIds_PrevRendered = searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set
@@ -189,7 +189,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
 
         let searchGroupsDifferent = false
 
-        const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+        const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
 
         if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set !== this._group_1_ProjectSearchIds_Or_SubSearchIds_PrevRendered
             || searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set !== this._group_2_ProjectSearchIds_Or_SubSearchIds_PrevRendered ) {
@@ -914,7 +914,7 @@ const _create_DataTable_Data = function (
 
     let searchSubGroups_ForProjectSearchId: SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry = undefined
     {
-        const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+        const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
         if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
             processing_SubSearches = true
@@ -954,7 +954,7 @@ const _create_DataTable_Data = function (
 
         //  Both groups have ONE search or sub search
 
-        const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+        const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
 
         if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
@@ -2039,7 +2039,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
                 countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
 
-                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
                     if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
                         //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero
@@ -2055,7 +2055,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
                 countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
 
-                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
                     if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
                         //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero
@@ -2080,7 +2080,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
                 countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__PsmCount_For_ProjectSearchIds_Result.psmCount_Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
 
-                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
                     if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
                         //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero
@@ -2096,7 +2096,7 @@ const _modPage_View_SignificantMods_CombineReps_After_GetData = function (
                 countForSearch = modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass__ScanCount_For_ProjectSearchIds_Result.scanNumber_SearchScanFileId_Pair_Unique_Count__Map_Key_ProjectSearchId_or_SubSearchId.get( projectSearchId_Or_SubSearchId )
                 if ( countForSearch === undefined || countForSearch === null ) {
 
-                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().get_SearchGroups()
+                    const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
                     if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 
                         //  With Sub Searches, if there is NO data for that SubSearch then there will be NO entry in the map so set to zero

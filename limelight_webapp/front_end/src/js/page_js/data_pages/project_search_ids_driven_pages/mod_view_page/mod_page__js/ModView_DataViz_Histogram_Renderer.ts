@@ -72,7 +72,7 @@ export const modView_DataViz_Histogram_Renderer = function (
     {
         displaying_Mean_StandardDeviation,
 
-        show_Difference_Plot,
+        show_Difference_Plot_WhenTwoPlots_BasedOn_Search_Or_SubSearch_Count,
 
         data_viz_Histogram_container_DOMElement,
 
@@ -94,7 +94,7 @@ export const modView_DataViz_Histogram_Renderer = function (
     } : {
         displaying_Mean_StandardDeviation: boolean
 
-        show_Difference_Plot: boolean
+        show_Difference_Plot_WhenTwoPlots_BasedOn_Search_Or_SubSearch_Count: boolean
 
         data_viz_Histogram_container_DOMElement: HTMLDivElement
 
@@ -128,14 +128,12 @@ export const modView_DataViz_Histogram_Renderer = function (
     let modMass_ActualData_Min = modMass_MinMax_NOT_SET
     let modMass_ActualData_Max = modMass_MinMax_NOT_SET
 
-    const psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId: Map<number,
+    const psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId: Map<number,
         {
             projectSearchId_ForUseWhereRequire_projectSearchId: number
             psmIds_Or_ScanData_Set__Map_Key_ModMassExact: Map<number, Set< number | string >>
         }
     > = new Map()
-
-    const projectSearchId_Or_SearchSubGroupId_InData_Set: Set<number> = new Set()
 
     {
 
@@ -195,6 +193,8 @@ export const modView_DataViz_Histogram_Renderer = function (
             }
         }
 
+        const _GROUP_ID_1 = 1
+        const _GROUP_ID_2 = 2
 
         for ( const modMass of sortedModsToDisplay ) {
 
@@ -206,27 +206,69 @@ export const modView_DataViz_Histogram_Renderer = function (
 
             for ( const modMass_Data_AllValues_Entry of data_For_ModMass.get_Data_AllValues() ) {
 
-                const projectSearchId_Or_SubSearchId = modMass_Data_AllValues_Entry.projectSearchId_Or_SubSearchId
+                let projectSearchId_Or_SubSearchId_Or_GroupId = modMass_Data_AllValues_Entry.projectSearchId_Or_SubSearchId  // Initialize to projectSearchId_Or_SubSearchId
 
-                projectSearchId_Or_SearchSubGroupId_InData_Set.add( projectSearchId_Or_SubSearchId )
+                {
+                    const projectSearchId_Or_SubSearchId = modMass_Data_AllValues_Entry.projectSearchId_Or_SubSearchId
 
-                let psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId = psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId.get( projectSearchId_Or_SubSearchId )
+                    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram() ) {
+
+                        const searchGroups = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
+
+                        if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId_Or_SubSearchId ) ) {
+
+                            projectSearchId_Or_SubSearchId_Or_GroupId = _GROUP_ID_1
+
+                        } else if ( searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId_Or_SubSearchId ) ) {
+
+                            projectSearchId_Or_SubSearchId_Or_GroupId = _GROUP_ID_2
+                        }
+
+                        // if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.ProjectSearchId ) {
+                        //
+                        //     if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId_Or_SubSearchId ) ) {
+                        //
+                        //         projectSearchId_Or_SubSearchId_Or_GroupId = _GROUP_ID_1
+                        //
+                        //     } else if ( searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId_Or_SubSearchId ) ) {
+                        //
+                        //         projectSearchId_Or_SubSearchId_Or_GroupId = _GROUP_ID_2
+                        //     }
+                        //
+                        // } else {
+                        //
+                        //     if ( searchGroups.group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId_Or_SubSearchId ) ) {
+                        //
+                        //         projectSearchId_Or_SubSearchId_Or_GroupId = _GROUP_ID_1
+                        //
+                        //     } else if ( searchGroups.group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set.has( projectSearchId_Or_SubSearchId ) ) {
+                        //
+                        //         projectSearchId_Or_SubSearchId_Or_GroupId = _GROUP_ID_2
+                        //     }
+                        // }
+                    }
+                }
+
+
+                let psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId =
+                    psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.get( projectSearchId_Or_SubSearchId_Or_GroupId )
                 if ( ! psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId ) {
                     psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId = {
                         projectSearchId_ForUseWhereRequire_projectSearchId: modMass_Data_AllValues_Entry.projectSearchId_ForUseWhereRequire_projectSearchId,
                         psmIds_Or_ScanData_Set__Map_Key_ModMassExact: new Map()
                     }
-                    psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId.set( projectSearchId_Or_SubSearchId, psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId )
+                    psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.set(
+                        projectSearchId_Or_SubSearchId_Or_GroupId, psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId
+                    )
                 }
 
 
                 const dataPage_common_Flags_SingleSearch_ForProjectSearchId =
-                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( modMass_Data_AllValues_Entry.projectSearchId_ForUseWhereRequire_projectSearchId )
+                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.
+                    get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( modMass_Data_AllValues_Entry.projectSearchId_ForUseWhereRequire_projectSearchId )
 
 
                 for ( const dataFor_SinglePsm of modMass_Data_AllValues_Entry.get_DataFor_SinglePsm_All() ) {
-
-                    // dataFor_SinglePsm.psmId
 
                     if ( dataPage_common_Flags_SingleSearch_ForProjectSearchId.anyPsmHas_DynamicModifications ) {
 
@@ -312,7 +354,7 @@ export const modView_DataViz_Histogram_Renderer = function (
 
         let numberOfDataPoints_ForBinning = 0
 
-        for ( const psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Value of psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId.values() ) {
+        for ( const psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Value of psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.values() ) {
 
             let numberOfDataPoints_ForSearchOrSubSearch = 0
 
@@ -397,7 +439,7 @@ export const modView_DataViz_Histogram_Renderer = function (
 
     //  Put Mod Mass Entries into bins
 
-    const psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId: Map<number,
+    const psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId: Map<number,
         {
             projectSearchId_ForUseWhereRequire_projectSearchId: number
             psmIds_Or_ScanData_Set__Map_Key_BinIndex: Map<number, Set< number | string >>
@@ -405,9 +447,9 @@ export const modView_DataViz_Histogram_Renderer = function (
     > = new Map()
 
     {
-        for ( const psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_MapEntry of psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId.entries() ) {
+        for ( const psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_MapEntry of psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.entries() ) {
 
-            const projectSearchId_Or_SearchSubGroupId = psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_MapEntry[ 0 ]
+            const projectSearchId_Or_SearchSubGroupId_Or_GroupId = psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_MapEntry[ 0 ]
             const psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Value = psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_MapEntry[ 1 ]
 
             for ( const psmIds_Or_ScanData_Set__Map_Key_ModMassExact_MapEntry of psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Value.psmIds_Or_ScanData_Set__Map_Key_ModMassExact.entries() ) {
@@ -428,14 +470,14 @@ export const modView_DataViz_Histogram_Renderer = function (
                     binIndex = binCount - 1
                 }
 
-                let psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId = psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId.get( projectSearchId_Or_SearchSubGroupId )
+                let psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId = psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.get( projectSearchId_Or_SearchSubGroupId_Or_GroupId )
                 if ( ! psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId ) {
                     psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId =
                         {
                             projectSearchId_ForUseWhereRequire_projectSearchId: psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Value.projectSearchId_ForUseWhereRequire_projectSearchId,
                             psmIds_Or_ScanData_Set__Map_Key_BinIndex: new Map()
                         }
-                    psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId.set( projectSearchId_Or_SearchSubGroupId, psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId )
+                    psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.set( projectSearchId_Or_SearchSubGroupId_Or_GroupId, psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId )
                 }
 
                 let psmIds_Or_ScanData_Set__For__BinIndex = psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData__For__ProjectSearchId_Or_SearchSubGroupId.psmIds_Or_ScanData_Set__Map_Key_BinIndex.get( binIndex )
@@ -520,14 +562,9 @@ export const modView_DataViz_Histogram_Renderer = function (
 
             for ( let projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX = 0; projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX < projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length; projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX++ ) {
 
-                const projectSearchId_Or_SubSearchId_In_DisplayOrder = projectSearchIds_Or_SubSearchIds_For_DisplayOrder[ projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX ]
+                const projectSearchId_Or_SubSearchId_OrGroupId_In_DisplayOrder = projectSearchIds_Or_SubSearchIds_For_DisplayOrder[ projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX ]
 
-                if ( ! projectSearchId_Or_SearchSubGroupId_InData_Set.has( projectSearchId_Or_SubSearchId_In_DisplayOrder ) ) {
-                    //  No data so skip
-                    continue  // EARLY CONTINUE
-                }
-
-                const psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_For_ProjectSearchId_Or_SearchSubGroupId = psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId.get( projectSearchId_Or_SubSearchId_In_DisplayOrder )
+                const psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_For_ProjectSearchId_Or_SearchSubGroupId = psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.get( projectSearchId_Or_SubSearchId_OrGroupId_In_DisplayOrder )
 
                 if ( ! psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_For_ProjectSearchId_Or_SearchSubGroupId ) {
                     //  No data so skip
@@ -546,9 +583,9 @@ export const modView_DataViz_Histogram_Renderer = function (
                     }
 
 
-                    for ( const psmIds_Or_ScanData of psmIds_Or_ScanData_Set ) {
+                    for ( const psmIds_Or_ScanData_Entry of psmIds_Or_ScanData_Set ) {
 
-                        psmIds_Or_ScanData_Set__COMBINED__For__BinIndex.add( psmIds_Or_ScanData )
+                        psmIds_Or_ScanData_Set__COMBINED__For__BinIndex.add( psmIds_Or_ScanData_Entry )  // This utilizes that PSM Ids are unique across searches
                     }
                 }
 
@@ -752,7 +789,7 @@ export const modView_DataViz_Histogram_Renderer = function (
 
                         const modMass_Array: Array<number> = []
 
-                        for ( const mapValue_Per_ProjectSearchId_Or_SearchSubGroupId of psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId.values() ) {
+                        for ( const mapValue_Per_ProjectSearchId_Or_SearchSubGroupId of psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.values() ) {
 
                             for ( const mapEntry_per_ModMassExact of mapValue_Per_ProjectSearchId_Or_SearchSubGroupId.psmIds_Or_ScanData_Set__Map_Key_ModMassExact ) {
                                 const modMassExact = mapEntry_per_ModMassExact[ 0 ]
@@ -913,11 +950,20 @@ export const modView_DataViz_Histogram_Renderer = function (
         || all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART
     ) {
 
-        //  if YES separate out by search or sub search
+        //  if YES separate out by Search or Sub Search or Group
 
-        //   Chart per Search or Sub Search Version
+        //   Chart per Search or Sub Search or Group Version
 
-        const computeColorsForCategories__categoryCount = projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length
+        let projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder = Array.from( projectSearchIds_Or_SubSearchIds_For_DisplayOrder )
+
+        let computeColorsForCategories__categoryCount = projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length
+
+        if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram() ) {
+
+            projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder = [ 1, 2 ]
+
+            computeColorsForCategories__categoryCount = 2
+        }
 
         //  Colors for Bars
         const qcViewPage__ComputeColorsForCategories = new QcViewPage__ComputeColorsForCategories( { categoryCount: computeColorsForCategories__categoryCount } );
@@ -926,20 +972,28 @@ export const modView_DataViz_Histogram_Renderer = function (
 
 
         {
-            for ( let projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX = 0; projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX < projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length; projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX++ ) {
+            for ( let projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX = 0; projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX < projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder.length; projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX++ ) {
 
-                //  Process Single Search or Sub Search creating a Plotly Trace
+                //  Process Single Search or Sub Search or Group creating a Plotly Trace
 
-                const projectSearchId_Or_SubSearchId_In_DisplayOrder = projectSearchIds_Or_SubSearchIds_For_DisplayOrder[ projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX ]
+                const projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder = projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder[ projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX ]
 
                 let traceName_String: string = undefined
                 let searchName_SubSearchName_TooltipText: string = undefined
 
-                if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.ProjectSearchId ) {
+                if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram() ) {
 
-                    const searchData_For_ProjectSearchId = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId_Or_SubSearchId_In_DisplayOrder )
+                    traceName_String =  "Group " + projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder.toString()
+
+                    searchName_SubSearchName_TooltipText = "<b>Group:</b> " + projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder
+
+                    yaxis_Entry_Title_Text__Search_SubSearch_Label__Array.push( "Group " + projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder )
+
+                } else if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.ProjectSearchId ) {
+
+                    const searchData_For_ProjectSearchId = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder )
                     if ( ! searchData_For_ProjectSearchId ) {
-                        const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId_Or_SubSearchId_In_DisplayOrder ) returned NOTHING for projectSearchId_Or_SubSearchId_In_DisplayOrder: " + projectSearchId_Or_SubSearchId_In_DisplayOrder
+                        const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder ) returned NOTHING for projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder: " + projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder
                         console.warn( msg )
                         throw Error( msg )
                     }
@@ -973,9 +1027,9 @@ export const modView_DataViz_Histogram_Renderer = function (
                         throw Error( msg )
                     }
 
-                    const searchSubGroup_For_SearchSubGroup_Id = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( projectSearchId_Or_SubSearchId_In_DisplayOrder )
+                    const searchSubGroup_For_SearchSubGroup_Id = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder )
                     if ( ! searchSubGroup_For_SearchSubGroup_Id ) {
-                        const msg = "searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( projectSearchId_Or_SubSearchId_In_DisplayOrder ) returned NOTHING for projectSearchId_Or_SubSearchId_In_DisplayOrder: " + projectSearchId_Or_SubSearchId_In_DisplayOrder
+                        const msg = "searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder ) returned NOTHING for projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder: " + projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder
                         console.warn( msg )
                         throw Error( msg )
                     }
@@ -1001,12 +1055,12 @@ export const modView_DataViz_Histogram_Renderer = function (
                 let total_PSM_Or_Scan_Count = 0
 
 
-                // if ( ! projectSearchId_Or_SearchSubGroupId_InData_Set.has( projectSearchId_Or_SubSearchId_In_DisplayOrder ) ) {
+                // if ( ! projectSearchId_Or_SearchSubGroupId_InData_Set.has( projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder ) ) {
                 //     //  No data so skip
                 //     continue  // EARLY CONTINUE
                 // }
 
-                const psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_For_ProjectSearchId_Or_SearchSubGroupId = psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId.get( projectSearchId_Or_SubSearchId_In_DisplayOrder )
+                const psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_For_ProjectSearchId_Or_SearchSubGroupId = psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.get( projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder )
 
                 if ( binningOverride_Using_Display_MinMax ) {
 
@@ -1051,7 +1105,7 @@ export const modView_DataViz_Histogram_Renderer = function (
 
                         total_PSM_Or_Scan_Count += psm_Or_Scan_Count_ForBin
 
-                        if ( projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX === 0 ) {
+                        if ( projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX === 0 ) {
 
                             //  Should be same for all entries so only store for first
                             chart_Bars_Tooltips_Parts__All.push( {
@@ -1112,7 +1166,7 @@ export const modView_DataViz_Histogram_Renderer = function (
                         total_PSM_Or_Scan_Count += psm_Or_Scan_Count_ForBin
 
 
-                        if ( projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX === 0 ) {
+                        if ( projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX === 0 ) {
 
                             //  Should be same for all entries so only store for first
                             chart_Bars_Tooltips_Parts__All.push( {
@@ -1156,9 +1210,9 @@ export const modView_DataViz_Histogram_Renderer = function (
                     }
                 }
 
-                console.log( "Creating Histogram: projectSearchId_Or_SubSearchId_In_DisplayOrder: " + projectSearchId_Or_SubSearchId_In_DisplayOrder + ", Total PSM or Scan Count: " + total_PSM_Or_Scan_Count.toLocaleString() )
+                console.log( "Creating Histogram: projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder: " + projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder + ", Total PSM or Scan Count: " + total_PSM_Or_Scan_Count.toLocaleString() )
 
-                const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index( projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX );
+                const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index( projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX );
 
                 let xaxis_String: string = undefined
                 let yaxis_String: string = undefined
@@ -1166,7 +1220,7 @@ export const modView_DataViz_Histogram_Renderer = function (
                 if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS ) {
 
                     xaxis_String = "x"
-                    yaxis_String = "y" + ( projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX + 1 ) //  Add 1 since 'yaxis_String' is one based and '...INDEX' is zero based    WAS ( chart_Data.length + 1 )   // Create the index from prev length
+                    yaxis_String = "y" + ( projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX + 1 ) //  Add 1 since 'yaxis_String' is one based and '...INDEX' is zero based    WAS ( chart_Data.length + 1 )   // Create the index from prev length
                 }
 
                 const chart_Data_Entry: Plotly.Data = {
@@ -1237,7 +1291,7 @@ export const modView_DataViz_Histogram_Renderer = function (
                         if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS ) {
 
                             xaxis_String = "x"
-                            yaxis_String = "y" + ( projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX + 1 ) //  Add 1 since 'yaxis_String' is one based and '...INDEX' is zero based    WAS ( chart_Data.length + 1 )   // Create the index from prev length
+                            yaxis_String = "y" + ( projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX + 1 ) //  Add 1 since 'yaxis_String' is one based and '...INDEX' is zero based    WAS ( chart_Data.length + 1 )   // Create the index from prev length
                         }
 
                         let mean: number = undefined
@@ -1261,7 +1315,7 @@ export const modView_DataViz_Histogram_Renderer = function (
                                     const modMass_Array: Array<number> = []
 
                                     const psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData__FOR__ProjectSearchId_Or_SearchSubGroupId =
-                                        psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId.get( projectSearchId_Or_SubSearchId_In_DisplayOrder )
+                                        psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.get( projectSearchId_Or_SubSearchId_Or_GroupId_In_DisplayOrder )
 
                                     if ( psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData__FOR__ProjectSearchId_Or_SearchSubGroupId ) {
                                         for ( const mapEntry_per_ModMassExact of psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData__FOR__ProjectSearchId_Or_SearchSubGroupId.psmIds_Or_ScanData_Set__Map_Key_ModMassExact ) {
@@ -1403,7 +1457,7 @@ export const modView_DataViz_Histogram_Renderer = function (
                                     &&
                                     projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length === 2
                                     &&
-                                    projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX === 1  // Second entry
+                                    projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX === 1  // Second entry
                                 ) {
 
                                     //  for inverse Y Axis second chart of two charts, change text position
@@ -1470,7 +1524,7 @@ export const modView_DataViz_Histogram_Renderer = function (
 
                             const modMass_Array: Array<number> = []
 
-                            for ( const mapValue_Per_ProjectSearchId_Or_SearchSubGroupId of psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId.values() ) {
+                            for ( const mapValue_Per_ProjectSearchId_Or_SearchSubGroupId of psmIds_Or_ScanData_Set__Map_Key_ModMassExact_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.values() ) {
 
                                 for ( const mapEntry_per_ModMassExact of mapValue_Per_ProjectSearchId_Or_SearchSubGroupId.psmIds_Or_ScanData_Set__Map_Key_ModMassExact ) {
                                     const modMassExact = mapEntry_per_ModMassExact[ 0 ]
@@ -1683,16 +1737,26 @@ export const modView_DataViz_Histogram_Renderer = function (
     }
 
 
+
+    let projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder = Array.from( projectSearchIds_Or_SubSearchIds_For_DisplayOrder )
+
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram() ) {
+
+        projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder = [ 1, 2 ]
+    }
+
+
+
     let chart_Height = _CHART_HEIGHT
 
     if (
-        projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length > 2
+        projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder.length > 2
         && (
             all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
             !== ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT
         )
     ) {
-        chart_Height += _CHART_HEIGHT_ADDITION_PER_TRACE * ( projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length - 2 )
+        chart_Height += _CHART_HEIGHT_ADDITION_PER_TRACE * ( projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder.length - 2 )
     }
 
     const chart_Layout: Partial<Layout> = {
@@ -1781,7 +1845,6 @@ export const modView_DataViz_Histogram_Renderer = function (
         ]
     }
 
-
     if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS ) {
 
         // Add Y Axis title, etc. for each subplot for 'yaxis2' 'yaxis3' ... ('yaxis' set above) since have subplots
@@ -1791,14 +1854,14 @@ export const modView_DataViz_Histogram_Renderer = function (
         let outputCounter = 2
 
         for ( let yaxis_Entry_Title_Text__Search_SubSearch_Label__Array_Index = plotTrace_Index_Start;
-              yaxis_Entry_Title_Text__Search_SubSearch_Label__Array_Index < projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length;
+              yaxis_Entry_Title_Text__Search_SubSearch_Label__Array_Index < projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder.length;
               yaxis_Entry_Title_Text__Search_SubSearch_Label__Array_Index ++ ) {
 
             let inverse_RangeDirection = false
 
             if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_inverse_RangeDirection_Plot_2_WhenTwoPlots() ) {
 
-                if ( projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length === 2 ) {
+                if ( projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder.length === 2 ) {
                     if ( outputCounter === 2 ) {
 
                         inverse_RangeDirection = true
@@ -1847,7 +1910,7 @@ export const modView_DataViz_Histogram_Renderer = function (
         }
 
         chart_Layout.grid = {
-            rows: projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length,
+            rows: projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder.length,
             columns: 1
             // yaxes: [ 'yaxis_0','yaxis_1', 'yaxis_2', 'yaxis_3' ],
             // pattern: 'independent',
@@ -1859,7 +1922,7 @@ export const modView_DataViz_Histogram_Renderer = function (
         chart_Layout.grid.subplots = subplots
 
         if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_inverse_RangeDirection_Plot_2_WhenTwoPlots()
-            && projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length === 2 ) {
+            && projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder.length === 2 ) {
 
             //  ygap is a fraction of the vertical plot space as a gap between rows
             chart_Layout.grid.ygap = 0  //  ygap set to zero results in the zero lines are on top of each other BUT there are 2 Y axis labels so looks funny.
@@ -2076,9 +2139,22 @@ export const modView_DataViz_Histogram_Renderer = function (
     }
 
     if (
-        show_Difference_Plot
-        && all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
-        === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS ) {
+        (
+            show_Difference_Plot_WhenTwoPlots_BasedOn_Search_Or_SubSearch_Count
+            &&
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
+            === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS
+        )
+        ||
+        (
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram()
+            &&
+            projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder.length === 2
+            &&
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
+            === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS
+        )
+    ) {
 
         _plot__data_viz_Histogram_Difference_Plot_container_DOMElement( {
             data_viz_Histogram_Difference_Plot_container_DOMElement,

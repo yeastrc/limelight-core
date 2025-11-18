@@ -834,6 +834,44 @@ export class ModViewPage_Display_MainContent_Component extends React.Component< 
             }
         }
 
+        {  //  Purge/clear 'group_SearchesSubSearches_In_Histogram' selection in Page state if single search and no sub groups or 1 sub group
+
+            //  Put here since next to other purge call
+
+            let histogramBlock_GroupingFlag_Clear = false
+
+            {
+                if ( this.props.propsValue.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length === 1 ) {
+
+                    const searchSubGroups_Root= this.props.propsValue.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root()
+
+                    if ( searchSubGroups_Root ) {
+
+                        const projectSearchId = this.props.propsValue.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage[ 0 ]
+
+                        const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId )
+                        if ( ! searchSubGroups_ForProjectSearchId ) {
+                            throw Error("searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                        }
+
+                        const searchSubGroups_Array = searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode()
+                        if ( searchSubGroups_Array.length === 1 ) {
+
+                            histogramBlock_GroupingFlag_Clear = true
+                        }
+                    } else {
+
+                        histogramBlock_GroupingFlag_Clear = true
+                    }
+                }
+
+                if ( histogramBlock_GroupingFlag_Clear ) {
+
+                    this.props.propsValue.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_group_SearchesSubSearches_In_Histogram( false )
+                }
+            }
+        }
+
         {  //  remove from selection state objects values that are not in the loaded data. (Values that have been for: searches removed, or for values that don't meet new filter cutoffs)
 
             const promise = purge_FilterSelections_NotIn_CurrentData({

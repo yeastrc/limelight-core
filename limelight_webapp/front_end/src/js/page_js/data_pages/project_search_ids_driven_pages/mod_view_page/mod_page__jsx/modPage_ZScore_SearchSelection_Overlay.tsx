@@ -116,7 +116,7 @@ class ModPage_ZScore_SearchSelection_Overlay_OuterContainer_Component extends Re
     constructor(props: ModPage_ZScore_SearchSelection_Overlay_OuterContainer_Component_Props) {
         super(props);
 
-        const searchGroups_For_ZScore_Selections = this.props.props_value.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections()
+        const searchGroups_For_ZScore_Selections = this.props.props_value.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections()
 
         this._group_1_ProjectSearchIds_InProgress = new Set( searchGroups_For_ZScore_Selections.get_SearchGroups().group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set )
         this._group_2_ProjectSearchIds_InProgress = new Set( searchGroups_For_ZScore_Selections.get_SearchGroups().group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set )
@@ -153,7 +153,7 @@ class ModPage_ZScore_SearchSelection_Overlay_OuterContainer_Component extends Re
             }
         }
 
-        this.props.props_value.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_Selections().set_SearchGroups({
+        this.props.props_value.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().set_SearchGroups({
             group_1_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: this._group_1_ProjectSearchIds_InProgress,
             group_2_SearchGroup_ProjectSearchIds_Or_SubSearchIds_Set: this._group_2_ProjectSearchIds_InProgress,
             searches_NOT_InAnyGroup_ProjectSearchIds_Or_SubSearchIds_Set: searches_NOT_InAnyGroup_ProjectSearchIds_Set,
