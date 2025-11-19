@@ -217,6 +217,41 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
      */
     render() { try {
 
+        const sectionLabel_Element = (
+
+            <div style={ { marginTop: 15, marginBottom: 5 } }>
+                <span style={ { fontSize: 18 } }>ZScore Data Report</span>
+            </div>
+        )
+
+
+        if ( this._display_NO_Searches_Message || this._display_OnlyOneSearch_Message ) {
+
+            return (  //  EARLY RETURN
+
+                <div>
+                    { sectionLabel_Element }
+
+                    <ModPage_Groups_For_Searches_Or_SubSearches_Component
+                        force_RecomputeSearchList_Object={ this.state.forceReRender_Object }
+
+                        modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass={ this.props.modViewPage_ContainerFor_ContentsTo_Compute_TotalPsmCountAndTotalScansCount_For_Ratios_ContainerClass }
+                        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root={ this.props.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Result_Root }
+                        modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root={ this.props.modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root }
+                        modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result={ this.props.modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result }
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root }
+                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+                        modPage_updateSelected_Searches_Callback_Function={ () => {
+                            this.setState( { forceReRender_Object: {} } )
+                        } }
+                    />
+
+                </div>
+
+            )
+        }
+
+
         const searchGroups = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_searchGroups_For_ZScore_And_Histogram_Selections().get_SearchGroups()
 
         const group_1_ProjectSearchIds_OR_SubSearchIds: Array<number> = []
@@ -287,9 +322,7 @@ export class ModPage_ZScore_ReplicateReport_Root_Component extends React.Compone
         return (
             <div>
                 <div>
-                    <div style={ { marginTop: 15, marginBottom: 5 } }>
-                        <span style={ { fontSize: 18 } }>ZScore Data Report</span>
-                    </div>
+                    { sectionLabel_Element }
 
                     <ModPage_Groups_For_Searches_Or_SubSearches_Component
                         force_RecomputeSearchList_Object={ this.state.forceReRender_Object }
