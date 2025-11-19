@@ -335,25 +335,43 @@ class ModPage_ZScore_SubSearchSelection_Overlay_OuterContainer_Component extends
                         key={ searchSubGroup.searchSubGroup_Id }
                         style={ { marginBottom: 3 } }
                     >
-                        <button
-                            onClick={ event => {
-                                this._group_1_SubSearchIds_InProgress.add( searchSubGroup.searchSubGroup_Id )
-
-                                this.setState({ force_Rerender: {} })
-                            } }
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Move sub search to Group 1
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            Group 1
-                        </button>
+                            <button
+                                onClick={ event => {
+                                    this._group_1_SubSearchIds_InProgress.add( searchSubGroup.searchSubGroup_Id )
+
+                                    this.setState({ force_Rerender: {} })
+                                } }
+                            >
+                                Group 1
+                            </button>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         <span> </span>
-                        <button
-                            onClick={ event => {
-                                this._group_2_SubSearchIds_InProgress.add( searchSubGroup.searchSubGroup_Id )
-
-                                this.setState({ force_Rerender: {} })
-                            } }
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Move sub search to Group 2
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            Group 2
-                        </button>
+                            <button
+                                onClick={ event => {
+                                    this._group_2_SubSearchIds_InProgress.add( searchSubGroup.searchSubGroup_Id )
+
+                                    this.setState({ force_Rerender: {} })
+                                } }
+                            >
+                                Group 2
+                            </button>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         <span> </span>
                         { subSearchDisplay }
                     </div>
