@@ -811,89 +811,101 @@ export const modView_DataViz_Histogram_Renderer = function (
                         standardDeviation = Jstat_ExternalLibrary_Without_TypescriptDefinition_Calls.call_jStat_stdev( modMass_Array )
                     }
 
-                    // Determine amplitude from tallest bar
-                    const amplitude = chart_Y_Max_Value
 
-                    {
-                        const numberOfStandardDeviations_To_Subtract_Add = 3
+                    if ( ( ! Number.isNaN( mean ) ) && ( ! Number.isNaN( standardDeviation ) ) ) {
 
-                        let x_Start = modMass_ActualData_Min - numberOfStandardDeviations_To_Subtract_Add * standardDeviation
-                        let x_End = modMass_ActualData_Max + numberOfStandardDeviations_To_Subtract_Add * standardDeviation
+                        //  'mean' and 'standardDeviation' are NOT NaN so compute
 
-                        if ( x_Start < modMass_ChartDisplayRange_Min ) {
-                            x_Start = modMass_ChartDisplayRange_Min
-                        }
-                        if ( x_End > modMass_ChartDisplayRange_Max ) {
-                            x_End = modMass_ChartDisplayRange_Max
-                        }
+                        // Determine amplitude from tallest bar
+                        const amplitude = chart_Y_Max_Value
 
-                        const binCount = _MAX_BIN_COUNT
+                        {
+                            const numberOfStandardDeviations_To_Subtract_Add = 3
 
-                        const x_Start_End_Difference = x_End - x_Start
+                            let x_Start = modMass_ActualData_Min - numberOfStandardDeviations_To_Subtract_Add * standardDeviation
+                            let x_End = modMass_ActualData_Max + numberOfStandardDeviations_To_Subtract_Add * standardDeviation
 
-                        const scale = x_Start_End_Difference / binCount
+                            if ( x_Start < modMass_ChartDisplayRange_Min ) {
+                                x_Start = modMass_ChartDisplayRange_Min
+                            }
+                            if ( x_End > modMass_ChartDisplayRange_Max ) {
+                                x_End = modMass_ChartDisplayRange_Max
+                            }
 
-                        const chart_X_Intermediate: Array<number> = []
-                        const chart_Y_NormalValues: Array<number> = []
+                            const binCount = _MAX_BIN_COUNT
 
-                        // Generate smooth normal curve
-                        for ( let offset_Counter = 0; offset_Counter <= binCount; offset_Counter++ ) {
+                            const x_Start_End_Difference = x_End - x_Start
 
-                            const x = x_Start + ( offset_Counter * scale )
+                            const scale = x_Start_End_Difference / binCount
 
-                            const normalVal = Math.exp( -0.5 * ( ( x - mean ) / standardDeviation ) ** 2 );
-                            chart_X_Intermediate.push( x );
-                            chart_Y_NormalValues.push( normalVal );
-                        }
+                            const chart_X_Intermediate: Array<number> = []
+                            const chart_Y_NormalValues: Array<number> = []
 
-                        const chart_Y_ScaledTo_Amplitude: Array<number> = []
+                            // Generate smooth normal curve
+                            for ( let offset_Counter = 0; offset_Counter <= binCount; offset_Counter++ ) {
 
-                        // Scale curve so its peak = amplitude
-                        const maxNormal = Math.max( ...chart_Y_NormalValues );
-                        for ( let i = 0; i < chart_Y_NormalValues.length; i++ ) {
-                            chart_Y_ScaledTo_Amplitude[ i ] = ( chart_Y_NormalValues[ i ] / maxNormal ) * amplitude;
-                        }
+                                const x = x_Start + ( offset_Counter * scale )
 
-                        for ( let i = 0; i < chart_X_Intermediate.length; i++ ) {
+                                const normalVal = Math.exp( -0.5 * ( ( x - mean ) / standardDeviation ) ** 2 );
+                                chart_X_Intermediate.push( x );
+                                chart_Y_NormalValues.push( normalVal );
+                            }
 
-                            const chart_X_Value = chart_X_Intermediate[ i ]
-                            const chart_Y_Value = chart_Y_ScaledTo_Amplitude[ i ]
+                            const chart_Y_ScaledTo_Amplitude: Array<number> = []
 
-                            chart_X__Mean_StandardDeviation.push( chart_X_Value )
-                            chart_Y__Mean_StandardDeviation.push( chart_Y_Value )
-                            // chart_Bars_Tooltips__Mean_StandardDeviation.push( "<b>mean:</b> " + mean + "<br>" + "<b>standard deviation:</b> " + standardDeviation )
+                            // Scale curve so its peak = amplitude
+                            const maxNormal = Math.max( ...chart_Y_NormalValues );
+                            for ( let i = 0; i < chart_Y_NormalValues.length; i++ ) {
+                                chart_Y_ScaledTo_Amplitude[ i ] = ( chart_Y_NormalValues[ i ] / maxNormal ) * amplitude;
+                            }
+
+                            for ( let i = 0; i < chart_X_Intermediate.length; i++ ) {
+
+                                const chart_X_Value = chart_X_Intermediate[ i ]
+                                const chart_Y_Value = chart_Y_ScaledTo_Amplitude[ i ]
+
+                                chart_X__Mean_StandardDeviation.push( chart_X_Value )
+                                chart_Y__Mean_StandardDeviation.push( chart_Y_Value )
+                                // chart_Bars_Tooltips__Mean_StandardDeviation.push( "<b>mean:</b> " + mean + "<br>" + "<b>standard deviation:</b> " + standardDeviation )
+                            }
                         }
                     }
                 }
 
-                const chart_Data_Entry__Mean_StandardDeviation: Plotly.Data = {
+                if ( ( ! Number.isNaN( mean ) ) && ( ! Number.isNaN( standardDeviation ) ) ) {
 
-                    name: "",
-                    showlegend: false, // This trace will NOT appear in the legend
+                    //  'mean' and 'standardDeviation' are NOT NaN so add to chart
 
-                    xaxis: xaxis_String,
-                    yaxis: yaxis_String,
+                    const chart_Data_Entry__Mean_StandardDeviation: Plotly.Data = {
 
-                    mode: 'lines',
-                    x: chart_X__Mean_StandardDeviation,
-                    y: chart_Y__Mean_StandardDeviation,
-                    // text: chart_Bars_labels, //  Text put on each bar
-                    hoverinfo: "skip", //  Skip Hover contents
-                    // hoverinfo: "text", //  Hover contents
-                    // hovertext: chart_Bars_Tooltips__Mean_StandardDeviation,  //  Hover contents per bar
-                    marker: {
-                        color: _CHART__MEAN_LINE__COLOR, // 'rgba(255, 0, 0, 0.991)', // chart_Color,  // Color of the bar itself: If not populated, ALL the bars for this element in array 'chart_Data' are the same color
-                        // line: {
-                        //     width: 1, // 1px border width
-                        //     color: 'black' // Black border color
-                        // }
+                        name: "",
+                        showlegend: false, // This trace will NOT appear in the legend
+
+                        xaxis: xaxis_String,
+                        yaxis: yaxis_String,
+
+                        mode: 'lines',
+                        x: chart_X__Mean_StandardDeviation,
+                        y: chart_Y__Mean_StandardDeviation,
+                        // text: chart_Bars_labels, //  Text put on each bar
+                        hoverinfo: "skip", //  Skip Hover contents
+                        // hoverinfo: "text", //  Hover contents
+                        // hovertext: chart_Bars_Tooltips__Mean_StandardDeviation,  //  Hover contents per bar
+                        marker: {
+                            color: _CHART__MEAN_LINE__COLOR, // 'rgba(255, 0, 0, 0.991)', // chart_Color,  // Color of the bar itself: If not populated, ALL the bars for this element in array 'chart_Data' are the same color
+                            // line: {
+                            //     width: 1, // 1px border width
+                            //     color: 'black' // Black border color
+                            // }
+                        }
                     }
-                }
 
-                chart_Data.push( chart_Data_Entry__Mean_StandardDeviation )
+                    chart_Data.push( chart_Data_Entry__Mean_StandardDeviation )
+                }
             }
             {
-                if ( modMass_ActualData_Min !== modMass_ActualData_Max ) {
+                if ( ( modMass_ActualData_Min !== modMass_ActualData_Max )
+                    && ( ! Number.isNaN( mean ) ) && ( ! Number.isNaN( standardDeviation ) ) ) {
 
                     //  Only populate when have more than 1 unique mod mass
 
