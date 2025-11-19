@@ -593,6 +593,7 @@ class ProteinSequence_SinglePosition extends React.Component< ProteinSequence_Si
                     />
                 }
                 { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                placement="right-start"
             >
                 <div
                     onClick={ this._onClick_BindThis }
