@@ -560,9 +560,16 @@ export const modView_DataViz_Histogram_Renderer = function (
 
         {
 
-            for ( let projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX = 0; projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX < projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length; projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX++ ) {
+            let projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder = Array.from( projectSearchIds_Or_SubSearchIds_For_DisplayOrder )
 
-                const projectSearchId_Or_SubSearchId_OrGroupId_In_DisplayOrder = projectSearchIds_Or_SubSearchIds_For_DisplayOrder[ projectSearchIds_Or_SubSearchIds_For_DisplayOrder_INDEX ]
+            if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram() ) {
+
+                projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder = [ 1, 2 ]
+            }
+
+            for ( let projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX = 0; projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX < projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder.length; projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX++ ) {
+
+                const projectSearchId_Or_SubSearchId_OrGroupId_In_DisplayOrder = projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder[ projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder_INDEX ]
 
                 const psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_For_ProjectSearchId_Or_SearchSubGroupId = psmIds_Or_ScanData_Set__Map_Key_BinIndex_Map_AndData_Key_ProjectSearchId_Or_SearchSubGroupId_Or_GroupId.get( projectSearchId_Or_SubSearchId_OrGroupId_In_DisplayOrder )
 
@@ -1023,14 +1030,12 @@ export const modView_DataViz_Histogram_Renderer = function (
 
         let projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder = Array.from( projectSearchIds_Or_SubSearchIds_For_DisplayOrder )
 
-        let computeColorsForCategories__categoryCount = projectSearchIds_Or_SubSearchIds_For_DisplayOrder.length
-
         if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram() ) {
 
             projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder = [ 1, 2 ]
-
-            computeColorsForCategories__categoryCount = 2
         }
+
+        const computeColorsForCategories__categoryCount = projectSearchIds_Or_SubSearchIds_Or_GroupId_For_DisplayOrder.length
 
         //  Colors for Bars
         const qcViewPage__ComputeColorsForCategories = new QcViewPage__ComputeColorsForCategories( { categoryCount: computeColorsForCategories__categoryCount } );
