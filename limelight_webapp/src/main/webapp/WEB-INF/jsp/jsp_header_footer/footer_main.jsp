@@ -9,9 +9,78 @@
 
 	<div class="footer-outer-container" id="footer_outer_container_div">
 	
+		<%--  Footer contents left edge --%>
 		<div class="footer-left-container">
-			<span><img id="footer-logo-img" src="static/images/header-footer-logo.png"></span>
+			
+			<div class="footer-left-container-image-outer-container">
+				<img id="footer-logo-img" src="static/images/header-footer-logo.png">
+			</div>
+			
+			<div class="footer-left-container-version-outer-container">
+			
+				<div class="footer-left-container-version-inner-container">
+					<span><a 
+								target="_blank"
+								rel="noopener noreferrer"
+								title="Limelight Releases"
+								href="https://github.com/yeastrc/limelight-core/releases">Release</a>: </span>
+								
+					<span>
+						<c:choose>
+							<c:when test="${ not empty Webapp_VersionAndGitInfo_FromBuild.limelightRelease_Tag_EnvironmentVariableValue_OrDefault }">
+								
+								<c:choose>
+									<c:when test="${ not empty Webapp_VersionAndGitInfo_FromBuild.limelightRelease_URL_EnvironmentVariableValue_OrDefault }">
+										
+										<c:choose>
+											<c:when test="${ not empty Webapp_VersionAndGitInfo_FromBuild.limelightRelease_TooltipText_EnvironmentVariableValue_OrDefault }">
+												<a 
+													target="_blank"
+													rel="noopener noreferrer"
+													href="${ Webapp_VersionAndGitInfo_FromBuild.limelightRelease_URL_EnvironmentVariableValue_OrDefault }"
+													title="<c:out value="${ Webapp_VersionAndGitInfo_FromBuild.limelightRelease_TooltipText_EnvironmentVariableValue_OrDefault }"></c:out>"
+												><c:out value="${ Webapp_VersionAndGitInfo_FromBuild.limelightRelease_Tag_EnvironmentVariableValue_OrDefault }"></c:out></a>
+											</c:when>
+											<c:otherwise>
+												<a 
+													target="_blank"
+													rel="noopener noreferrer"
+													href="${ Webapp_VersionAndGitInfo_FromBuild.limelightRelease_URL_EnvironmentVariableValue_OrDefault }"
+												><c:out value="${ Webapp_VersionAndGitInfo_FromBuild.limelightRelease_Tag_EnvironmentVariableValue_OrDefault }"></c:out></a>
+											</c:otherwise>
+										</c:choose>
+									</c:when>
+									<c:otherwise>
+										<c:out value="${ Webapp_VersionAndGitInfo_FromBuild.limelightRelease_Tag_EnvironmentVariableValue_OrDefault }"></c:out>
+									</c:otherwise>
+								</c:choose>
+							</c:when>
+							<c:when test="${ not empty Webapp_VersionAndGitInfo_FromBuild.repo_Tag_Name_From_GIT }">
+								<a 
+									target="_blank"
+									rel="noopener noreferrer"
+									title="GIT tag of current Limelight web application"
+									href="https://github.com/yeastrc/limelight-core/releases/tag/<c:out value="${ Webapp_VersionAndGitInfo_FromBuild.repo_Tag_Name_From_GIT }"></c:out>">
+									<c:out value="${ Webapp_VersionAndGitInfo_FromBuild.repo_Tag_Name_From_GIT }"></c:out>
+								</a>
+							</c:when>
+							<c:otherwise>
+								<a 
+									target="_blank"
+									rel="noopener noreferrer"
+									title="GIT commit of current Limelight web application"
+									href="https://github.com/yeastrc/limelight-core/commit/<c:out value="${ Webapp_VersionAndGitInfo_FromBuild.repo_Hash_Full_From_GIT }"></c:out>">
+									<c:out value="${ Webapp_VersionAndGitInfo_FromBuild.repo_Hash_Short_From_GIT }"></c:out>
+								</a>
+							</c:otherwise>
+						
+						</c:choose>
+					</span>
+				</div>
+			</div>
 		</div>
+		
+		<%--  Footer contents right edge --%>
 		<div class="footer-right-container">
 			&copy; 2025 University of Washington
 			<%--
@@ -25,7 +94,7 @@
 			 --%>
 		</div>
 		
-		
+		<%--  Footer contents center --%>
 		<div class="footer-center-outer-container">
 		  <div class="footer-center-container" >
 			<%--  'id' used by manage configuration to update this div with admin entered data --%>

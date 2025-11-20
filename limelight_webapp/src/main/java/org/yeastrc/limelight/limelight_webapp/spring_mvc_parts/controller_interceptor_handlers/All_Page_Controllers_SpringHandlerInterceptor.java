@@ -74,9 +74,9 @@ public class All_Page_Controllers_SpringHandlerInterceptor implements HandlerInt
     public boolean preHandle( HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler ) throws Exception {
     	
     	{
-    		String releaseString_FromFile = webapp_VersionAndGitInfo_FromBuild.get_Webapp_VersionAndGitInfo_FromBuild_Results().getLimelightRelease_EnvironmentVariableValue_OrDefault();
+//    		String releaseString_FromFile = webapp_VersionAndGitInfo_FromBuild.get_Webapp_VersionAndGitInfo_FromBuild_Results().getLimelightRelease_Tag_EnvironmentVariableValue_OrDefault();
     	
-    		httpServletRequest.setAttribute( "releaseString_FromFile", releaseString_FromFile );
+    		httpServletRequest.setAttribute( "Webapp_VersionAndGitInfo_FromBuild", webapp_VersionAndGitInfo_FromBuild.get_Webapp_VersionAndGitInfo_FromBuild_Results() );
     	}
     	
     	String requestURI = httpServletRequest.getRequestURI();

@@ -326,7 +326,25 @@ div.footer-outer-container {
     div.footer-left-container {
         float: left;
         padding-left: 7px;
-        margin-top: 8px;
+        display: flex;
+        height: 100%;
+
+        div.footer-left-container-image-outer-container {
+
+            display: grid;
+            align-items: center;
+
+            img#footer-logo-img {
+              max-height: 23px;
+            }
+        }
+
+        div.footer-left-container-version-outer-container {
+
+          display: grid;
+          align-items: center;
+          margin-left: 10px;
+        }
     }
 
     div.footer-right-container {
@@ -338,12 +356,6 @@ div.footer-outer-container {
     div.footer-center-outer-container {
         text-align: center;
         margin-top: 8px;
-    }
-
-    img#footer-logo-img {
-      max-height:23px;
-      position:absolute;
-      top:3px;
     }
 
 }

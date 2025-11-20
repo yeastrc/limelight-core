@@ -1,18 +1,22 @@
 /*
  * Web App
- *
- * This build file was Copied from https://spring.io/guides/gs/serving-web-content/.
- *
-  	Task for building the war: 'build'
+ 
+       	NOTE:  See section labeled 'Environment Variables Used' 
+ 
+ 				for environment variables to set to alter what is displayed for the release in the webapp
+ 				
   	
-  	DO NOT build the webapp by directly running this Gradle script.
-  	   Build by running the ant script 'ant_create_war.xml' in the same directory.
-  	   It first builds the 'Submit Import' app and the 'front_end' subdir for this webapp.
-  	   
-  	   
-   Set the Release string to be displayed by setting environment variable 'LIMELIGHT_RELEASE_STRING_FOR_DISPLAY' before building.
-   
-   	(see def limelightRelease_EnvironmentVariableName = 'LIMELIGHT_RELEASE_STRING_FOR_DISPLAY')
+  		NOTE:  DO NOT build the webapp by directly running this Gradle script.
+			  	   
+			  	   Build by running the ant script 'ant_create_war.xml' in the same directory.
+			  	   It first builds the 'Submit Import' app and the 'front_end' subdir for this webapp.
+			  	   
+			  	    				
+ 
+	This build file was Copied from https://spring.io/guides/gs/serving-web-content/.
+ 
+  	Task for building the war: 'build'
+			  	   
  */
  
  
@@ -322,17 +326,34 @@ task createFileGitHashEtc(type: GradleBuild) {
   	doLast {
 	  	println("Webapp Gradle build createFileGitHashEtc doLast called - Before WAR created. Create file under WEB-INF with GIT Hash Etc")
 		  	
-        def limelightRelease_EnvironmentVariableName = 'LIMELIGHT_RELEASE_TAG' //  Environment variable used
-        
-        def limelightRelease_EnvironmentVariableValue = System.getenv(limelightRelease_EnvironmentVariableName)
-        
+		  	
+		//  Environment Variables Used
+		
+		//    Optional Environment Variables to Override the release displayed  	
+		  	
+        def limelightRelease_Tag_EnvironmentVariableName = 'LIMELIGHT_RELEASE_TAG' //  Environment variable used
+        def limelightRelease_URL_EnvironmentVariableName = 'LIMELIGHT_RELEASE_TAG_URL' //  Environment variable used
+        def limelightRelease_TooltipText_EnvironmentVariableName = 'LIMELIGHT_RELEASE_TAG_TOOLTIP_TEXT' //  Environment variable used
+          
         def limelightRelease_EnvironmentVariableValue_DefaultValue = ''
         
-        def limelightRelease_EnvironmentVariableValue_OrDefault = limelightRelease_EnvironmentVariableValue ?: limelightRelease_EnvironmentVariableValue_DefaultValue // Fallback if env var is not set
-		  	
-		println("Environment Variable value 'LIMELIGHT_RELEASE_TAG': " + limelightRelease_EnvironmentVariableValue )
-		
-		println("Environment Variable value 'LIMELIGHT_RELEASE_TAG' or Default: " + limelightRelease_EnvironmentVariableValue_OrDefault )
+        def limelightRelease_Tag_EnvironmentVariableValue = System.getenv(limelightRelease_Tag_EnvironmentVariableName)
+        def limelightRelease_URL_EnvironmentVariableValue = System.getenv(limelightRelease_URL_EnvironmentVariableName)
+        def limelightRelease_TooltipText_EnvironmentVariableValue = System.getenv(limelightRelease_TooltipText_EnvironmentVariableName)
+        
+        def limelightRelease_Tag_EnvironmentVariableValue_OrDefault = limelightRelease_Tag_EnvironmentVariableValue ?: limelightRelease_EnvironmentVariableValue_DefaultValue // Fallback if env var is not set
+        def limelightRelease_URL_EnvironmentVariableValue_OrDefault = limelightRelease_URL_EnvironmentVariableValue ?: limelightRelease_EnvironmentVariableValue_DefaultValue // Fallback if env var is not set
+        def limelightRelease_TooltipText_EnvironmentVariableValue_OrDefault = limelightRelease_TooltipText_EnvironmentVariableValue ?: limelightRelease_EnvironmentVariableValue_DefaultValue // Fallback if env var is not set
+        
+        
+		println("Environment Variable value '" + limelightRelease_Tag_EnvironmentVariableName + "': " + limelightRelease_Tag_EnvironmentVariableValue )
+		println("Environment Variable value '" + limelightRelease_Tag_EnvironmentVariableName + "' or Default: " + limelightRelease_Tag_EnvironmentVariableValue_OrDefault )
+		       
+		println("Environment Variable value '" + limelightRelease_URL_EnvironmentVariableName + "': " + limelightRelease_URL_EnvironmentVariableValue )
+		println("Environment Variable value '" + limelightRelease_URL_EnvironmentVariableName + "' or Default: " + limelightRelease_URL_EnvironmentVariableValue_OrDefault )
+		       
+		println("Environment Variable value '" + limelightRelease_TooltipText_EnvironmentVariableName + "': " + limelightRelease_TooltipText_EnvironmentVariableValue )
+		println("Environment Variable value '" + limelightRelease_TooltipText_EnvironmentVariableName + "' or Default: " + limelightRelease_TooltipText_EnvironmentVariableValue_OrDefault )
 		
 		//  Assign to grgit, created by plugin
 		def gitRepo = grgit
@@ -353,11 +374,13 @@ task createFileGitHashEtc(type: GradleBuild) {
 		def repoHeadTag = gitRepo.tag.list().find {
 			it.commit == repoHead
 		}
-		def repoTagName = "NO GIT Tag at HEAD"
+		def repoTagName = ""
+		def repoTagName_NoneFound = "NO GIT Tag at HEAD"
 		
 		if ( repoHeadTag ) {
 			println("GIT Tag at HEAD found")
 			repoTagName = repoHeadTag.getName()
+			repoTagName_NoneFound = ""
 		}
 		
 		
@@ -365,6 +388,7 @@ task createFileGitHashEtc(type: GradleBuild) {
 		println("gitCommit: " + gitCommit )
 		println("gitBranch: " + gitBranch )
 		println("GIT Tag at HEAD: " + repoTagName )
+		println("GIT Tag at HEAD None Found: " + repoTagName_NoneFound )
 		
 		//  The filename 'limelight_version_from_build.properties' 
 		//     is also in Java code org.yeastrc.limelight.limelight_webapp.constants_config_filenames. LimelightWebapp_BuildInfo_Incl_GitHash_Filename_Constants
@@ -373,13 +397,16 @@ task createFileGitHashEtc(type: GradleBuild) {
 
 #  Generated by the build
 
-LimelightRelease_EnvironmentVariableValue_OrDefault=${limelightRelease_EnvironmentVariableValue_OrDefault}
+limelightRelease_Tag_EnvironmentVariableValue_OrDefault=${limelightRelease_Tag_EnvironmentVariableValue_OrDefault}
+limelightRelease_URL_EnvironmentVariableValue_OrDefault=${limelightRelease_URL_EnvironmentVariableValue_OrDefault}
+limelightRelease_TooltipText_EnvironmentVariableValue_OrDefault=${limelightRelease_TooltipText_EnvironmentVariableValue_OrDefault}
 
 Project-Title=${project.name}
 Branch=$gitBranch
 GIT-HASH=${gitCommit}
 GIT-Full-HASH=${gitHeadId}
 GIT-Repo-Tag-Name=${repoTagName}
+GIT-Repo-Tag-Name-None-Found=${repoTagName_NoneFound}
 Buildtime=${new Date().format("yyyy-MM-dd HH:mm:ssZ")}
 """
 	}

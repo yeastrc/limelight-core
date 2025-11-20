@@ -32,10 +32,39 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	 */
 	public static class Webapp_VersionAndGitInfo_FromBuild_Results {
 		
-		private String limelightRelease_EnvironmentVariableValue_OrDefault;
+		//  From Environment Variables during build
+		private String limelightRelease_Tag_EnvironmentVariableValue_OrDefault;
+		private String limelightRelease_URL_EnvironmentVariableValue_OrDefault;
+		private String limelightRelease_TooltipText_EnvironmentVariableValue_OrDefault;
+		
+		//  From GIT Tag at HEAD
+		private String repo_Tag_Name_From_GIT;
+		
+		//  From GIT Hash Short at HEAD
+		private String repo_Hash_Short_From_GIT;
 
-		public String getLimelightRelease_EnvironmentVariableValue_OrDefault() {
-			return limelightRelease_EnvironmentVariableValue_OrDefault;
+		//  From GIT Hash Full at HEAD
+		private String repo_Hash_Full_From_GIT;
+
+		
+		
+		public String getLimelightRelease_Tag_EnvironmentVariableValue_OrDefault() {
+			return limelightRelease_Tag_EnvironmentVariableValue_OrDefault;
+		}
+		public String getRepo_Tag_Name_From_GIT() {
+			return repo_Tag_Name_From_GIT;
+		}
+		public String getRepo_Hash_Short_From_GIT() {
+			return repo_Hash_Short_From_GIT;
+		}
+		public String getRepo_Hash_Full_From_GIT() {
+			return repo_Hash_Full_From_GIT;
+		}
+		public String getLimelightRelease_URL_EnvironmentVariableValue_OrDefault() {
+			return limelightRelease_URL_EnvironmentVariableValue_OrDefault;
+		}
+		public String getLimelightRelease_TooltipText_EnvironmentVariableValue_OrDefault() {
+			return limelightRelease_TooltipText_EnvironmentVariableValue_OrDefault;
 		}
 	}
 	
@@ -125,6 +154,13 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		
 		results = new Webapp_VersionAndGitInfo_FromBuild_Results();
 
-		results.limelightRelease_EnvironmentVariableValue_OrDefault = versionProperties.getProperty( "LimelightRelease_EnvironmentVariableValue_OrDefault" );
+		results.limelightRelease_Tag_EnvironmentVariableValue_OrDefault = versionProperties.getProperty( "limelightRelease_Tag_EnvironmentVariableValue_OrDefault" );
+		results.limelightRelease_URL_EnvironmentVariableValue_OrDefault = versionProperties.getProperty( "limelightRelease_URL_EnvironmentVariableValue_OrDefault" );
+		results.limelightRelease_TooltipText_EnvironmentVariableValue_OrDefault = versionProperties.getProperty( "limelightRelease_TooltipText_EnvironmentVariableValue_OrDefault" );
+		
+		results.repo_Tag_Name_From_GIT = versionProperties.getProperty( "GIT-Repo-Tag-Name" );
+		results.repo_Hash_Short_From_GIT = versionProperties.getProperty( "GIT-HASH" );
+		results.repo_Hash_Full_From_GIT = versionProperties.getProperty( "GIT-Full-HASH" );
+
 	}
 }
