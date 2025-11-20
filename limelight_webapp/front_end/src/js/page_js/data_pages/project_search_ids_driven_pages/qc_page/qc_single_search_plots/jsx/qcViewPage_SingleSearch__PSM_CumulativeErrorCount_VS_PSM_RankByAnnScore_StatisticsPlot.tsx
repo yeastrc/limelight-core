@@ -763,8 +763,6 @@
 //                     showlegend: true
 //                 });
 //
-//                 // chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
-//
 //                 if ( this.props.isInSingleChartOverlay ) {
 //
 //                     chart_Layout.width = chart_Width;

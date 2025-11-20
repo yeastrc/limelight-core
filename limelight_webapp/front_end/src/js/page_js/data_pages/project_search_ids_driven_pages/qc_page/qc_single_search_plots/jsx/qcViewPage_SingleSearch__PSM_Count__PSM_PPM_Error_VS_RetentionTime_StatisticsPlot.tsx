@@ -449,18 +449,21 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_
 
         }
 
+        let hovermode_OnlyProcessFalseValue_MayBeIgnored: boolean = undefined
+
+        if ( this.props.chartType === QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_OverlayContainer_ChartTypeChoice.SCATTER_PLOT ) {
+
+            hovermode_OnlyProcessFalseValue_MayBeIgnored = false;  //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
+        }
+
         const chart_Layout = qcPage_StandardChartLayout({
             chartTitle,
             chart_X_Axis_Label: "Retention Time (minutes)",
             //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram2dcontour'
             chart_Y_Axis_Label: "PPM Error",
-            showlegend: false
+            showlegend: false,
+            hovermode_OnlyProcessFalseValue_MayBeIgnored
         });
-
-        if ( this.props.chartType === QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_OverlayContainer_ChartTypeChoice.SCATTER_PLOT ) {
-
-            chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
-        }
 
         ////////////
 

@@ -971,8 +971,6 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViol
 
                 Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition.Layout_Class.plotly_Set_chart_Layout_violinmode_To_Overlay({ chart_Layout })
 
-                // chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
-
                 // {
                 //     console.log("chartTitle: " + chartTitle )
                 //     console.log("annotationType_Name_Score: " + annotationType_Name_Score )

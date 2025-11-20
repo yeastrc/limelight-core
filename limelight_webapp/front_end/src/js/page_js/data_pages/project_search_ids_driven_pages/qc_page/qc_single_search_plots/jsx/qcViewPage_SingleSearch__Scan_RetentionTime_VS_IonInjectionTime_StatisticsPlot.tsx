@@ -491,10 +491,9 @@ export class QcViewPage_SingleSearch__Scan_RetentionTime_VS_IonInjectionTime_Sta
                     chartTitle,
                     chart_X_Axis_Label,
                     chart_Y_Axis_Label,
-                    showlegend: false
+                    showlegend: false,
+                    hovermode_OnlyProcessFalseValue_MayBeIgnored: false  //  TURN OFF Tooltips for Scatter Plot since get 100% CPU usage when too many points with very similar X or Y
                 });
-
-                chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
 
                 ////////////
 

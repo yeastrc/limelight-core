@@ -818,8 +818,6 @@ export class QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_Statistic
                     showlegend: false
                 });
 
-                // chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot since get 100% CPU usage when too many points with very similar X or Y
-
                 //    Positioned Above create chart since width used in chart creation/computation
                 // const chart_Layout = qcPage_StandardChartLayout(...)
 

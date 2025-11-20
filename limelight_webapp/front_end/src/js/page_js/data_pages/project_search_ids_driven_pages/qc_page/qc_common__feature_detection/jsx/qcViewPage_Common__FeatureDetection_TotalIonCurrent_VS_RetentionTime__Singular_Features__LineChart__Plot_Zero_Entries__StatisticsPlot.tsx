@@ -994,7 +994,8 @@ export class QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singu
             chart_X_Axis_Label: "Retention Time (minutes)",
             //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
             chart_Y_Axis_Label,
-            showlegend: true
+            showlegend: true,
+            hovermode_OnlyProcessFalseValue_MayBeIgnored: false   //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
         });
 
         if ( chart_Layout.yaxis ) {
@@ -1008,8 +1009,6 @@ export class QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singu
         } else {
             chart_Layout.xaxis = { rangemode: 'tozero' };  //  Include zero in the range
         }
-
-        chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot since get 100% CPU usage when too many points with very similar X or Y
 
         const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
 

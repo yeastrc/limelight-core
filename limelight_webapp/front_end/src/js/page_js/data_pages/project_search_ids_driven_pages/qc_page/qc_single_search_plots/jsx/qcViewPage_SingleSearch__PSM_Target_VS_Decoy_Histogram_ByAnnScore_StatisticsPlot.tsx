@@ -815,8 +815,6 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Histogram_ByAnnScore_S
 
                 chart_Layout.barmode = "overlay";     //  Trace 1 bars 'overlay' Trace 2 bars
 
-                // chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
-
                 // {
                 //     console.log("chartTitle: " + chartTitle )
                 //     console.log("annotationType_Name_Score: " + annotationType_Name_Score )

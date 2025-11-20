@@ -1136,10 +1136,9 @@ export class QcViewPage_SingleSearch__SubSearches__DistinctPeptide_CumulativeCor
                     chart_X_Axis_Label,
                     //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram2dcontour'
                     chart_Y_Axis_Label,
-                    showlegend: true
+                    showlegend: true,
+                    hovermode_OnlyProcessFalseValue_MayBeIgnored: false   //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
                 });
-
-                chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
 
                 const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
 

@@ -88,10 +88,17 @@ export const qcPage_ChartOverlayDimensions = function() {
  * @param chart_Y_Axis_Label
  * @param showlegend - Default to false
  * @param notMoveTitle - if true, do NOT move the Chart title
+ *
+ * @param hovermode_SetFalse_MayBeIgnored - Result.hovermode only set to false if this is false.  Other values ignored.  May be ignored if can find other settings so it is not required.
  */
 export const qcPage_StandardChartLayout = function (
     {
-        chartTitle, chart_X_Axis_Label, chart_X_Axis_IsTypeCategory, chart_Y_Axis_Label, showlegend, notMoveTitle, search_SubSearch_Count_SizeFor
+        chartTitle, chart_X_Axis_Label, chart_X_Axis_IsTypeCategory, chart_Y_Axis_Label, showlegend, notMoveTitle, search_SubSearch_Count_SizeFor,
+
+        /**
+         * Result.hovermode only set to false if this is false.  Other values ignored.  May be ignored if can find other settings so it is not required.
+         */
+        hovermode_OnlyProcessFalseValue_MayBeIgnored
     } : {
         chartTitle: string
         chart_X_Axis_Label: string
@@ -100,6 +107,11 @@ export const qcPage_StandardChartLayout = function (
         showlegend?: boolean // Default to false
         notMoveTitle?: boolean
         search_SubSearch_Count_SizeFor?: number  //  Passed in for Combine Search and Sub Searches when Searches or Sub Searches are categories on Horizontal Access
+
+        /**
+         * Result.hovermode only set to false if this is false.  Other values ignored.  May be ignored if can find other settings so it is not required.
+         */
+        hovermode_OnlyProcessFalseValue_MayBeIgnored?: boolean
 
     }) : Partial<Layout> {
 
@@ -190,6 +202,19 @@ export const qcPage_StandardChartLayout = function (
         },
         showlegend: showlegend_Local,
         legend
+    }
+
+    {
+        if ( hovermode_OnlyProcessFalseValue_MayBeIgnored === false ) {
+            result.hovermode = hovermode_OnlyProcessFalseValue_MayBeIgnored
+        }
+    }
+
+    {
+        const result_AsAny = result as any
+
+        // Attempt to fix hover tooltips.   Set per https://github.com/plotly/plotly.js/issues/5927#issuecomment-1697679087
+        result_AsAny.spikedistance = 0
     }
 
     return result
