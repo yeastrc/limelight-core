@@ -2187,8 +2187,10 @@ export const modView_DataViz_Histogram_Renderer = function (
 
     //  Register callback on user selects zoom area in chart
     {
-        //   @ts-ignore   'on' is added to DOM Element by Plotly
-        data_viz_Histogram_container_DOMElement.on("plotly_relayout", (eventdata) => {
+        const data_viz_Histogram_container_DOMElement_AS_Any = data_viz_Histogram_container_DOMElement as any
+
+        //   'on' is added to DOM Element by Plotly
+        data_viz_Histogram_container_DOMElement_AS_Any.on("plotly_relayout", (eventdata: any) => {
             try {
                 // const plot_width = chart_Layout.width;
                 //
@@ -2333,7 +2335,11 @@ export const modView_DataViz_Histogram_Renderer = function (
             modMass_ChartDisplayRange_Min,
             modMass_ChartDisplayRange_Max,
 
-            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
+
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+
+            updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
         } )
     }
 
@@ -2360,7 +2366,11 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
         modMass_ChartDisplayRange_Min,
         modMass_ChartDisplayRange_Max,
 
-        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
+
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root,
+
+        updated_modViewPage_DataVizOptions_VizSelections_PageStateManager
     } : {
         data_viz_Histogram_Difference_Plot_container_DOMElement: HTMLDivElement
 
@@ -2385,7 +2395,11 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
         modMass_ChartDisplayRange_Min: number
         modMass_ChartDisplayRange_Max: number
 
+        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
+
         all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
+
+        updated_modViewPage_DataVizOptions_VizSelections_PageStateManager: () => void
     }
 ) {
 
@@ -2701,7 +2715,8 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
         chart_config.modeBarButtonsToRemove.push(
             // 'pan2d',
             // 'zoom2d','zoomIn2d', 'zoomOut2d',
-            'lasso2d', 'select2d', 'autoScale2d', 'resetViews', 'resetScale2d'
+            'lasso2d', 'select2d',
+            // 'autoScale2d', 'resetViews', 'resetScale2d'
         )
     }
 
@@ -2711,6 +2726,125 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
         chart_Layout,
         chart_config
     )
+
+
+    //  Register callback on user selects zoom area in chart
+    {
+        const data_viz_Histogram_Difference_Plot_container_DOMElement_AS_Any = data_viz_Histogram_Difference_Plot_container_DOMElement as any
+
+        //   'on' is added to DOM Element by Plotly
+        data_viz_Histogram_Difference_Plot_container_DOMElement_AS_Any.on("plotly_relayout", (eventdata: any) => {
+            try {
+                // const plot_width = chart_Layout.width;
+                //
+                // let newMarkerSize: number = undefined;
+
+                // Check for the presence of a 'dragmode' property in the event data
+                if (eventdata['dragmode'] !== undefined) {
+                    saved_Chart_Layout__dragmode = eventdata[ 'dragmode' ];   //  Zoom vs Pan
+
+                    if ( saved_Chart_Layout__dragmode === 'pan' ) {
+                        console.log( 'User switched to the pan tool.' );
+                    } else {
+                        console.log( `User switched to: ${ saved_Chart_Layout__dragmode }` );
+                    }
+                }
+
+                if ( eventdata["xaxis.autorange"] || eventdata["xaxis.range"] ) {
+
+                    //  User clicked on the icon for 'Autoscale' (first value in 'if') or 'Reset Axes' (second value in 'if')
+
+                    //  Reset Mod Mass Min/Max selection
+
+                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( undefined )
+                    all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( undefined )
+
+                    updated_modViewPage_DataVizOptions_VizSelections_PageStateManager()
+
+                    return // EARLY RETURN
+                }
+
+                if (eventdata["xaxis.range[1]"] !== undefined) {
+
+                    //  Selected Range  - X axis is Retention Time in Minutes.  Y axis is m/z
+
+                    const xaxis_range_0 = eventdata["xaxis.range[0]"];
+                    const xaxis_range_1 = eventdata["xaxis.range[1]"];
+
+                    // let do_Floor_Ceil = true
+                    //
+                    // {
+                    //     const _do_Floor_Ceil_MAX_DIFFERENCE = 0.1
+                    //
+                    //     const xaxis_range_0__xaxis_range_1__Difference = Math.abs( xaxis_range_1 - xaxis_range_0 )
+                    //     if ( xaxis_range_0__xaxis_range_1__Difference < _do_Floor_Ceil_MAX_DIFFERENCE ) {
+                    //
+                    //         // do_Floor_Ceil = false
+                    //     }
+                    // }
+
+                    // const _SELECT_RANGE_SIGNIFICANT_DIGIT_COUNT = 5
+                    //
+                    // const _SELECT_RANGE_SIGNIFICANT_MULTIPLIER_DIVIDER = Math.pow( 10, _SELECT_RANGE_SIGNIFICANT_DIGIT_COUNT )
+
+                    {
+                        const modMass_Min_Across_All_Searches = modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax()
+
+                        let modMassCutoffMin_UserSelection_NewValue = xaxis_range_0
+
+                        // if ( do_Floor_Ceil ) {
+                        //
+                        //     modMassCutoffMin_UserSelection_NewValue = Math.floor( xaxis_range_0 * _SELECT_RANGE_SIGNIFICANT_MULTIPLIER_DIVIDER ) / _SELECT_RANGE_SIGNIFICANT_MULTIPLIER_DIVIDER
+                        // }
+
+                        if ( modMassCutoffMin_UserSelection_NewValue < modMass_Min_Across_All_Searches ) {
+
+                            modMassCutoffMin_UserSelection_NewValue = undefined  // Clear since zoomed out past min value
+                        }
+
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( modMassCutoffMin_UserSelection_NewValue )
+                    }
+
+                    {
+                        const modMass_Max_Across_All_Searches = modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax()
+
+                        let modMassCutoffMax_UserSelection_NewValue = xaxis_range_1
+
+                        // if ( do_Floor_Ceil ) {
+                        //
+                        //     modMassCutoffMax_UserSelection_NewValue = Math.ceil( xaxis_range_1 * _SELECT_RANGE_SIGNIFICANT_MULTIPLIER_DIVIDER ) / _SELECT_RANGE_SIGNIFICANT_MULTIPLIER_DIVIDER
+                        // }
+
+                        if ( modMassCutoffMax_UserSelection_NewValue > modMass_Max_Across_All_Searches ) {
+
+                            modMassCutoffMax_UserSelection_NewValue = undefined  // Clear since zoomed out past min value
+                        }
+
+                        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( modMassCutoffMax_UserSelection_NewValue )
+                    }
+
+                    updated_modViewPage_DataVizOptions_VizSelections_PageStateManager()
+
+                    // const yaxis_range_0 = eventdata["yaxis.range[0]"];
+                    // const yaxis_range_1 = eventdata["yaxis.range[1]"];
+
+                    // this._selectedChartArea = {
+                    //     x_Axis_Start: xaxis_range_0,
+                    //     x_Axis_End: xaxis_range_1,
+                    //     y_Axis_Start: yaxis_range_0,
+                    //     y_Axis_End: yaxis_range_1
+                    // }
+
+                    return // EARLY RETURN
+                }
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        });
+    }
+
 }
 
 
