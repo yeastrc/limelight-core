@@ -533,7 +533,7 @@ export const modView_DataViz_Histogram_Renderer = function (
     //   '__All' variables for the 'Difference Plot' when there are 2 sub plots in the main plot
 
     const chart_X__All: Array<Array<number>> = []
-    const chart_Y__All: Array<Array<number>> = []
+    const chart_Y__All_UnClippedValues: Array<Array<number>> = []
 
     const chart_Bars_Tooltips_Parts__All: Array<{
         binStart: number
@@ -598,6 +598,7 @@ export const modView_DataViz_Histogram_Renderer = function (
 
         const chart_X: Array<number> = []
         const chart_Y: Array<number> = []
+        const chart_Y_UnClippedValues: Array<number> = []
         const chart_Bars_Tooltips: Array<string> = [];
 
         //  Create bars in bar chart from binned data.  Actual processing:
@@ -623,8 +624,22 @@ export const modView_DataViz_Histogram_Renderer = function (
                     psm_Or_Scan_Count_ForBin = binValue.size
                 }
 
+                let psm_Or_Scan_Count_ForBin__PossiblyClipped = psm_Or_Scan_Count_ForBin
+
+                {
+                    const histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+                    if ( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined && histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== null ) {
+
+                        if ( psm_Or_Scan_Count_ForBin__PossiblyClipped > histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) {
+                            psm_Or_Scan_Count_ForBin__PossiblyClipped = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+                        }
+                    }
+                }
+
                 chart_X.push( binCenter );
-                chart_Y.push( psm_Or_Scan_Count_ForBin );
+                chart_Y.push( psm_Or_Scan_Count_ForBin__PossiblyClipped );
+                chart_Y_UnClippedValues.push( psm_Or_Scan_Count_ForBin )
 
                 const chart_Bar_Tooltip = "<b>Mod Mass Range </b>: " + binStart + " to " + binEnd +
                     "<br><b>" + label_Start_PSM_Or_Scan + " Count</b>: " + psm_Or_Scan_Count_ForBin.toLocaleString();
@@ -632,8 +647,8 @@ export const modView_DataViz_Histogram_Renderer = function (
 
                 total_PSM_Or_Scan_Count += psm_Or_Scan_Count_ForBin
 
-                if ( maxBar_Y_Value < psm_Or_Scan_Count_ForBin ) {
-                    maxBar_Y_Value= psm_Or_Scan_Count_ForBin
+                if ( maxBar_Y_Value < psm_Or_Scan_Count_ForBin__PossiblyClipped ) {
+                    maxBar_Y_Value = psm_Or_Scan_Count_ForBin__PossiblyClipped
                 }
             }
 
@@ -664,53 +679,67 @@ export const modView_DataViz_Histogram_Renderer = function (
                     psm_Or_Scan_Count_ForBin = binValue.size
                 }
 
+                let psm_Or_Scan_Count_ForBin__PossiblyClipped = psm_Or_Scan_Count_ForBin
+
+                {
+                    const histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+                    if ( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined && histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== null ) {
+
+                        if ( psm_Or_Scan_Count_ForBin__PossiblyClipped > histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) {
+                            psm_Or_Scan_Count_ForBin__PossiblyClipped = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+                        }
+                    }
+                }
+
                 chart_X.push( binCenter );
-                chart_Y.push( psm_Or_Scan_Count_ForBin );
+                chart_Y.push( psm_Or_Scan_Count_ForBin__PossiblyClipped );
+                chart_Y_UnClippedValues.push( psm_Or_Scan_Count_ForBin );
 
                 const chart_Bar_Tooltip = "<b>Mod Mass Range </b>: " + binStart + " to " + binEnd +
-                    "<br><b>" + label_Start_PSM_Or_Scan + " Count</b>: " + psm_Or_Scan_Count_ForBin.toLocaleString();
+                    "<br><b>" + label_Start_PSM_Or_Scan + " Count QQQQ</b>: " + psm_Or_Scan_Count_ForBin.toLocaleString();
                 chart_Bars_Tooltips.push( chart_Bar_Tooltip );
 
                 total_PSM_Or_Scan_Count += psm_Or_Scan_Count_ForBin
 
-                if ( maxBar_Y_Value < psm_Or_Scan_Count_ForBin ) {
-                    maxBar_Y_Value= psm_Or_Scan_Count_ForBin
+                if ( maxBar_Y_Value < psm_Or_Scan_Count_ForBin__PossiblyClipped ) {
+                    maxBar_Y_Value= psm_Or_Scan_Count_ForBin__PossiblyClipped
                 }
 
                 binIndex_MainData++
             }
 
-            // Add Zero Count bins to right out to Display Max.  Start at binIndex_MainData since that was NOT processed in the loop above ('break' after increment before add to 'chart_X' 'chart_Y')
-            for ( let binIndex_Right = binIndex_MainData; true; binIndex_Right++ ) {
-
-                const binStart = modMass_ActualData_Min + ( binSize * ( binIndex_Right ) )
-                const binCenter = modMass_ActualData_Min + ( binSize * ( binIndex_Right + 0.5 ) )
-                const binEnd = modMass_ActualData_Min + ( binSize * ( binIndex_Right + 1 ) )
-
-                if ( binEnd > modMass_ChartDisplayRange_Max ) {
-                    // bin > data max so break
-                    break  // EARLY BREAK
-                }
-
-                chart_X.push( binCenter );
-                chart_Y.push( 0 );
-            }
-
-            // Add Zero Count bins to left out to Display Min
-            for ( let binIndex_Left = -1; true; binIndex_Left-- ) {
-
-                const binStart = modMass_ActualData_Min + ( binSize * ( binIndex_Left ) )
-                const binCenter = modMass_ActualData_Min + ( binSize * ( binIndex_Left + 0.5 ) )
-                const binEnd = modMass_ActualData_Min + ( binSize * ( binIndex_Left + 1 ) )
-
-                if ( binStart < modMass_ChartDisplayRange_Min ) {
-                    // bin > data max so break
-                    break  // EARLY BREAK
-                }
-
-                chart_X.push( binCenter );
-                chart_Y.push( 0 );
-            }
+            // // Add Zero Count bins to right out to Display Max.  Start at binIndex_MainData since that was NOT processed in the loop above ('break' after increment before add to 'chart_X' 'chart_Y')
+            // for ( let binIndex_Right = binIndex_MainData; true; binIndex_Right++ ) {
+            //
+            //     const binStart = modMass_ActualData_Min + ( binSize * ( binIndex_Right ) )
+            //     const binCenter = modMass_ActualData_Min + ( binSize * ( binIndex_Right + 0.5 ) )
+            //     const binEnd = modMass_ActualData_Min + ( binSize * ( binIndex_Right + 1 ) )
+            //
+            //     if ( binEnd > modMass_ChartDisplayRange_Max ) {
+            //         // bin > data max so break
+            //         break  // EARLY BREAK
+            //     }
+            //
+            //     chart_X.push( binCenter );
+            //     chart_Y.push( 0 );
+            // }
+            //
+            // // Add Zero Count bins to left out to Display Min
+            // for ( let binIndex_Left = -1; true; binIndex_Left-- ) {
+            //
+            //     const binStart = modMass_ActualData_Min + ( binSize * ( binIndex_Left ) )
+            //     const binCenter = modMass_ActualData_Min + ( binSize * ( binIndex_Left + 0.5 ) )
+            //     const binEnd = modMass_ActualData_Min + ( binSize * ( binIndex_Left + 1 ) )
+            //
+            //     if ( binStart < modMass_ChartDisplayRange_Min ) {
+            //         // bin > data max so break
+            //         break  // EARLY BREAK
+            //     }
+            //
+            //     chart_X.push( binCenter );
+            //     chart_Y.push( 0 );
+            // }
         }
 
 
@@ -757,7 +786,7 @@ export const modView_DataViz_Histogram_Renderer = function (
         //  Save X and Y data to "__All" data
 
         chart_X__All.push( chart_X )
-        chart_Y__All.push( chart_Y )
+        chart_Y__All_UnClippedValues.push( chart_Y_UnClippedValues )
 
         ////////
 
@@ -817,7 +846,19 @@ export const modView_DataViz_Histogram_Renderer = function (
                         //  'mean' and 'standardDeviation' are NOT NaN so compute
 
                         // Determine amplitude from tallest bar
-                        const amplitude = chart_Y_Max_Value
+                        let amplitude = chart_Y_Max_Value
+
+                        {
+                            const histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+                            if ( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined
+                                && histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== null ) {
+
+                                if ( amplitude > histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) {
+                                    amplitude = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+                                }
+                            }
+                        }
 
                         {
                             const numberOfStandardDeviations_To_Subtract_Add = 3
@@ -912,7 +953,21 @@ export const modView_DataViz_Histogram_Renderer = function (
                     //  Text Label Trace in upper right
 
                     const x_Position = modMass_ChartDisplayRange_Max - ( ( modMass_ChartDisplayRange_Max - modMass_ChartDisplayRange_Min ) * 0.05 )
-                    const y_Position = maxBar_Y_Value
+                    let y_Position = maxBar_Y_Value
+
+
+                    {
+                        const histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+                        if ( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined
+                            && histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== null ) {
+
+                            if ( y_Position > histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) {
+                                y_Position = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+                            }
+                        }
+                    }
+
 
                     // const textLabel = `μ = ${mean(y1).toFixed(2)}`
 
@@ -1060,6 +1115,7 @@ export const modView_DataViz_Histogram_Renderer = function (
 
                 const chart_X: Array<number> = []
                 const chart_Y: Array<number> = []
+                const chart_Y_UnClippedValues: Array<number> = []
                 const chart_Bars_Tooltips: Array<string> = [];
 
                 //  Create bars in bar chart from binned data.  Actual processing:
@@ -1096,17 +1152,31 @@ export const modView_DataViz_Histogram_Renderer = function (
                             }
                         }
 
-                        if ( maxBar_Y_Value < psm_Or_Scan_Count_ForBin ) {
-                            maxBar_Y_Value = psm_Or_Scan_Count_ForBin
+                        let psm_Or_Scan_Count_ForBin__PossiblyClipped = psm_Or_Scan_Count_ForBin
+
+                        {
+                            const histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+                            if ( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined && histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== null ) {
+
+                                if ( psm_Or_Scan_Count_ForBin__PossiblyClipped > histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) {
+                                    psm_Or_Scan_Count_ForBin__PossiblyClipped = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+                                }
+                            }
+                        }
+
+                        if ( maxBar_Y_Value < psm_Or_Scan_Count_ForBin__PossiblyClipped ) {
+                            maxBar_Y_Value = psm_Or_Scan_Count_ForBin__PossiblyClipped
                         }
 
                         chart_X.push( binCenter );
-                        chart_Y.push( psm_Or_Scan_Count_ForBin );
+                        chart_Y.push( psm_Or_Scan_Count_ForBin__PossiblyClipped );
+                        chart_Y_UnClippedValues.push( psm_Or_Scan_Count_ForBin )
 
                         if ( chart_Y__SummedAcrossTraces[ binIndex ] ) {
-                            chart_Y__SummedAcrossTraces[ binIndex ] += psm_Or_Scan_Count_ForBin
+                            chart_Y__SummedAcrossTraces[ binIndex ] += psm_Or_Scan_Count_ForBin__PossiblyClipped
                         } else {
-                            chart_Y__SummedAcrossTraces[ binIndex ] = psm_Or_Scan_Count_ForBin
+                            chart_Y__SummedAcrossTraces[ binIndex ] = psm_Or_Scan_Count_ForBin__PossiblyClipped
                         }
 
                         const chart_Bar_Tooltip =
@@ -1156,17 +1226,31 @@ export const modView_DataViz_Histogram_Renderer = function (
                             }
                         }
 
-                        if ( maxBar_Y_Value < psm_Or_Scan_Count_ForBin ) {
-                            maxBar_Y_Value = psm_Or_Scan_Count_ForBin
+                        let psm_Or_Scan_Count_ForBin__PossiblyClipped = psm_Or_Scan_Count_ForBin
+
+                        {
+                            const histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+                            if ( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined && histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== null ) {
+
+                                if ( psm_Or_Scan_Count_ForBin__PossiblyClipped > histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) {
+                                    psm_Or_Scan_Count_ForBin__PossiblyClipped = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+                                }
+                            }
+                        }
+
+                        if ( maxBar_Y_Value < psm_Or_Scan_Count_ForBin__PossiblyClipped ) {
+                            maxBar_Y_Value = psm_Or_Scan_Count_ForBin__PossiblyClipped
                         }
 
                         chart_X.push( binCenter );
-                        chart_Y.push( psm_Or_Scan_Count_ForBin );
+                        chart_Y.push( psm_Or_Scan_Count_ForBin__PossiblyClipped );
+                        chart_Y_UnClippedValues.push( psm_Or_Scan_Count_ForBin )
 
                         if ( chart_Y__SummedAcrossTraces[ binIndex_MainData ] ) {
-                            chart_Y__SummedAcrossTraces[ binIndex_MainData ] += psm_Or_Scan_Count_ForBin
+                            chart_Y__SummedAcrossTraces[ binIndex_MainData ] += psm_Or_Scan_Count_ForBin__PossiblyClipped
                         } else {
-                            chart_Y__SummedAcrossTraces[ binIndex_MainData ] = psm_Or_Scan_Count_ForBin
+                            chart_Y__SummedAcrossTraces[ binIndex_MainData ] = psm_Or_Scan_Count_ForBin__PossiblyClipped
                         }
 
                         const chart_Bar_Tooltip =
@@ -1203,6 +1287,7 @@ export const modView_DataViz_Histogram_Renderer = function (
 
                         chart_X.push( binCenter );
                         chart_Y.push( 0 );
+                        chart_Y_UnClippedValues.push( 0 )
                     }
 
                     // Add Zero Count bins to left out to Display Min
@@ -1219,6 +1304,7 @@ export const modView_DataViz_Histogram_Renderer = function (
 
                         chart_X.push( binCenter );
                         chart_Y.push( 0 );
+                        chart_Y_UnClippedValues.push( 0 )
                     }
                 }
 
@@ -1279,7 +1365,7 @@ export const modView_DataViz_Histogram_Renderer = function (
                 //  Save X, Y and trace_Parts data to "__All" data
 
                 chart_X__All.push( chart_X )
-                chart_Y__All.push( chart_Y )
+                chart_Y__All_UnClippedValues.push( chart_Y_UnClippedValues )
 
                 trace_Parts_All.push( {
                     traceName_String,
@@ -1351,7 +1437,19 @@ export const modView_DataViz_Histogram_Renderer = function (
                                 }
 
                                 // Determine amplitude from tallest bar
-                                const amplitude = chart_Y_Max_Value
+                                let amplitude = chart_Y_Max_Value
+
+                                {
+                                    const histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+                                    if ( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined
+                                        && histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== null ) {
+
+                                        if ( amplitude > histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) {
+                                            amplitude = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+                                        }
+                                    }
+                                }
 
                                 {
                                     const numberOfStandardDeviations_To_Subtract_Add = 3
@@ -1439,7 +1537,19 @@ export const modView_DataViz_Histogram_Renderer = function (
                                 //  Text Label Trace in upper right ( automatically flips to bottom right for inverse Y Axis 'range' )
 
                                 const x_Position = modMass_ChartDisplayRange_Max - ( ( modMass_ChartDisplayRange_Max - modMass_ChartDisplayRange_Min ) * 0.05 )
-                                const y_Position = maxBar_Y_Value
+                                let y_Position = maxBar_Y_Value
+
+                                {
+                                    const histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+                                    if ( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined
+                                        && histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== null ) {
+
+                                        if ( y_Position > histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) {
+                                            y_Position = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+                                        }
+                                    }
+                                }
 
                                 // const textLabel = `μ = ${mean(y1).toFixed(2)}`
 
@@ -1647,7 +1757,19 @@ export const modView_DataViz_Histogram_Renderer = function (
                         //  Text Label Trace in upper right
 
                         const x_Position = modMass_ChartDisplayRange_Max - ( ( modMass_ChartDisplayRange_Max - modMass_ChartDisplayRange_Min ) * 0.05 )
-                        const y_Position = maxBar_Y_Value
+                        let y_Position = maxBar_Y_Value
+
+                        {
+                            const histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+                            if ( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined
+                                && histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== null ) {
+
+                                if ( y_Position > histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) {
+                                    y_Position = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+                                }
+                            }
+                        }
 
                         // const textLabel = `μ = ${mean(y1).toFixed(2)}`
 
@@ -1696,8 +1818,22 @@ export const modView_DataViz_Histogram_Renderer = function (
 
     /////////////////
 
+    let chartTitle_SecondLine = ""
 
-    const chartTitle = label_Start_PSM_Or_Scan + " Count vs/ Mod Mass"
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined
+        && all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== null ) {
+
+        chartTitle_SecondLine =
+            "<br>" +
+            "<sup>" +
+            "Note: " +
+            label_Start_PSM_Or_Scan +
+            " Count bar height clipped at " +
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY().toLocaleString() +
+            "</sup>"
+    }
+
+    const chartTitle = label_Start_PSM_Or_Scan + " Count vs/ Mod Mass" + chartTitle_SecondLine
 
     const chart_X_Axis_Label = "Mod Mass"
     const chart_Y_Axis_Label = label_Start_PSM_Or_Scan + " Count"
@@ -1711,16 +1847,30 @@ export const modView_DataViz_Histogram_Renderer = function (
             inverse_RangeDirection: boolean
         }) => {
 
+        let yaxis_Entry_range_MaxValue = maxBar_Y_Value
+
+        {
+            const histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+            if ( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined
+                && histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== null ) {
+
+                if ( yaxis_Entry_range_MaxValue > histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) {
+                    yaxis_Entry_range_MaxValue = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+                }
+            }
+        }
+
         let yaxis_Entry_range: Array<any> = undefined
 
         let yaxis_Entry_Title_Text = chart_Y_Axis_Label
 
         if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class() === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS ) {
 
-            yaxis_Entry_range = [ 0, maxBar_Y_Value ]  //  Add so all subplots scaled same on Y axis.  This way bar heights are comparable across subplots.
+            yaxis_Entry_range = [ 0, yaxis_Entry_range_MaxValue ]  //  Add so all subplots scaled same on Y axis.  This way bar heights are comparable across subplots.
 
             if ( inverse_RangeDirection ) {
-                yaxis_Entry_range = [ maxBar_Y_Value, 0 ]  //  Reverse the 'range' so that the zero is at the top
+                yaxis_Entry_range = [ yaxis_Entry_range_MaxValue, 0 ]  //  Reverse the 'range' so that the zero is at the top
             }
 
             const yaxis_Entry_Title_Text__Search_SubSearch_Label = yaxis_Entry_Title_Text__Search_SubSearch_Label__Array[ yaxis_Entry_Title_Text__Search_SubSearch_Label__Array_Index ]
@@ -2175,13 +2325,15 @@ export const modView_DataViz_Histogram_Renderer = function (
             binCount,
 
             chart_X__All,
-            chart_Y__All,
+            chart_Y__All_UnClippedValues,
             chart_Bars_Tooltips_Parts__All,
 
             trace_Parts_All,
 
             modMass_ChartDisplayRange_Min,
-            modMass_ChartDisplayRange_Max
+            modMass_ChartDisplayRange_Max,
+
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
         } )
     }
 
@@ -2200,13 +2352,15 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
         binCount,
 
         chart_X__All,
-        chart_Y__All,
+        chart_Y__All_UnClippedValues,
         chart_Bars_Tooltips_Parts__All,
 
         trace_Parts_All,
 
         modMass_ChartDisplayRange_Min,
-        modMass_ChartDisplayRange_Max
+        modMass_ChartDisplayRange_Max,
+
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     } : {
         data_viz_Histogram_Difference_Plot_container_DOMElement: HTMLDivElement
 
@@ -2215,7 +2369,7 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
         binCount: number
 
         chart_X__All: Array<Array<number>>
-        chart_Y__All: Array<Array<number>>
+        chart_Y__All_UnClippedValues: Array<Array<number>>
 
 
         chart_Bars_Tooltips_Parts__All: Array<{
@@ -2230,8 +2384,51 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
 
         modMass_ChartDisplayRange_Min: number
         modMass_ChartDisplayRange_Max: number
+
+        all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root: ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
     }
 ) {
+
+    if ( chart_X__All.length !== 2 || chart_Y__All_UnClippedValues.length !== 2 ) {
+        const msg = "( chart_X__All.length !== 2 || chart_Y__All_UnClippedValues.length !== 2 ): chart_X__All.length: " + chart_X__All.length + ", chart_Y__All_UnClippedValues.length: " + chart_Y__All_UnClippedValues.length
+        console.warn(msg)
+        throw Error(msg)
+    }
+    if ( chart_Y__All_UnClippedValues[ 0 ].length !== chart_X__All[ 1 ].length ) {
+        const msg = "( chart_X__All[ 0 ].length !== chart_X__All[ 1 ].length ): chart_X__All[ 0 ].length: " + chart_X__All[ 0 ].length + ", chart_X__All[ 1 ].length: " + chart_X__All[ 1 ].length
+        console.warn(msg)
+        throw Error(msg)
+    }
+    if ( chart_Y__All_UnClippedValues[ 0 ].length !== chart_Y__All_UnClippedValues[ 1 ].length ) {
+        const msg = "( chart_Y__All_UnClippedValues[ 0 ].length !== chart_Y__All_UnClippedValues[ 1 ].length ): chart_Y__All_UnClippedValues[ 0 ].length: " + chart_Y__All_UnClippedValues[ 0 ].length + ", chart_Y__All_UnClippedValues[ 1 ].length: " + chart_Y__All_UnClippedValues[ 1 ].length
+        console.warn(msg)
+        throw Error(msg)
+    }
+    if ( chart_X__All[ 0 ].length !== chart_Y__All_UnClippedValues[ 1 ].length ) {
+        const msg = "( chart_X__All[ 0 ].length !== chart_Y__All_UnClippedValues[ 1 ].length ): chart_X__All[ 0 ].length: " + chart_X__All[ 0 ].length + ", chart_Y__All_UnClippedValues[ 1 ].length: " + chart_Y__All_UnClippedValues[ 1 ].length
+        console.warn(msg)
+        throw Error(msg)
+    }
+
+    {
+        //  Validate chart_X values are same
+
+        const chart_X__0 = chart_X__All[ 0 ]
+        const chart_X__1 = chart_X__All[ 1 ]
+
+        for ( let index = 0; index < chart_X__0.length; index++ ) {
+            if ( chart_X__0[ index ] !== chart_X__1[ index ] ) {
+                const msg = "( chart_X__0[ index ] !== chart_X__1[ index ] ): chart_X__0[ index ]: " + chart_X__0[ index ] + ", chart_X__1[ index ]: " + chart_X__1[ index ]
+                console.warn(msg)
+                throw Error(msg)
+            }
+            if ( chart_X__0[ index ] === undefined || chart_X__1[ index ] === undefined ) {
+                const msg = "( chart_X__0[ index ] === undefined || chart_X__1[ index ] === undefined ): chart_X__0[ index ]: " + chart_X__0[ index ] + ", chart_X__1[ index ]: " + chart_X__1[ index ] + ", index: " + index
+                console.warn(msg)
+                throw Error(msg)
+            }
+        }
+    }
 
 
     const chart_Data: Array<Plotly.Data> = []
@@ -2254,10 +2451,35 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
 
     for ( let index = 0; index < chart_X__All[0].length; index++ ) {
 
-        const chart_Y_Value_0 = chart_Y__All[ 0 ][ index ]
-        const chart_Y_Value_1 = chart_Y__All[ 1 ][ index ]
+        const chart_Y_Value_0 = chart_Y__All_UnClippedValues[ 0 ][ index ]
+        const chart_Y_Value_1 = chart_Y__All_UnClippedValues[ 1 ][ index ]
+
+        if ( chart_Y_Value_0 === undefined || chart_Y_Value_1 === undefined ) {
+            const msg = "( chart_Y_Value_0 === undefined || chart_Y_Value_1 === undefined ): index: " + index
+            console.warn(msg)
+            throw Error(msg)
+        }
 
         const difference = chart_Y_Value_0 - chart_Y_Value_1
+
+        let difference_PossiblyClipped = difference
+
+        {
+            const histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+            if ( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined
+                && histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== null ) {
+
+                //  Clip positive value
+                if ( difference_PossiblyClipped > histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) {
+                    difference_PossiblyClipped = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+                }
+                //  Clip negative value
+                if ( difference_PossiblyClipped < ( - histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY ) ) {
+                    difference_PossiblyClipped = ( - histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY )
+                }
+            }
+        }
 
         let chart_Bar_Tooltip_Main: string = ""
 
@@ -2276,7 +2498,7 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
 
             differences_ALL_ZERO = false
 
-            chart_Y__1.push( difference );
+            chart_Y__1.push( difference_PossiblyClipped );
 
             chart_Y__2.push( 0 ); // Nothing for trace 2.  Need to add to take up X axis area so surrounding bars are correct width.
 
@@ -2293,7 +2515,7 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
 
             chart_Y__1.push( 0 ); // Nothing for trace 1.  Need to add to take up X axis area so surrounding bars are correct width.
 
-            chart_Y__2.push( difference );
+            chart_Y__2.push( difference_PossiblyClipped );
 
             const searchName_SubSearchName_TooltipText = trace_Parts_All[ 1 ].searchName_SubSearchName_TooltipText
 
@@ -2307,6 +2529,9 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
 
             chart_Y__1.push( 0 );
             chart_Y__2.push( 0 );
+
+            chart_Bars_Tooltips__1.push( "" );
+            chart_Bars_Tooltips__2.push( "" );
         }
     }
 
@@ -2386,7 +2611,22 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
 
 
 
-    const chartTitle = label_Start_PSM_Or_Scan + " Count Difference vs/ Mod Mass"
+    let chartTitle_SecondLine = ""
+
+    if ( all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined
+        && all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== null ) {
+
+        chartTitle_SecondLine =
+            "<br>" +
+            "<sup>" +
+            "Note: " +
+            label_Start_PSM_Or_Scan +
+            " Count Difference bar height clipped at " +
+            all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY().toLocaleString() +
+            "</sup>"
+    }
+
+    const chartTitle = label_Start_PSM_Or_Scan + " Count Difference vs/ Mod Mass" + chartTitle_SecondLine
 
     const chart_X_Axis_Label = "Mod Mass"
     const chart_Y_Axis_Label = label_Start_PSM_Or_Scan + " Count Difference"

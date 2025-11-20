@@ -742,6 +742,7 @@ const _SAVE_STATE_KEYS = {
     psmQuant_Ratios_Use_SecondaryFilteringResultForDenominator: 'u',
     MOD_MASS_MAX_CUTOFF__ROUNDED_MASS_FOR_HEATMAP: 'x',
     MOD_MASS_MAX_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM: 'y',
+    histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY: 'z',
     'PROTEIN_POSITION_FILTER' : 'pp',
     'EXCLUDE_UNLOCALIZED_MODS' : 'xu',
 } as const
@@ -895,6 +896,12 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
          * Ignore when visualization_DisplayTab is HEATMAP
          */
         modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY : number
+        /**
+         * Cutoff of Histogram Bar Height PSM or Scan Count
+         *
+         * Ignore when visualization_DisplayTab is HEATMAP
+         */
+        histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY: number
 
 
         excludeUnlocalizedOpenMods : boolean
@@ -952,6 +959,7 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
             modMassCutoffMax_For_ROUNDED_ModMass__WhenDisplay_HEATMAP_ONLY : undefined,
             modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY : undefined,
             modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY : undefined,
+            histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY: undefined,
             excludeUnlocalizedOpenMods : false,  //  DEFAULT false
             modMasses_ProjectSearchIds_Visualization_Selections_Root:
                 new ModViewPage_DataVizOptions_VizSelections_PageStateManager__ModMasses_ProjectSearchIds_Visualization_Selections({ callbackOnChange: this._updateState_ForChange_BindThis }),
@@ -1194,6 +1202,19 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
         this._updateState_ForChange()
     }
 
+    get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() {
+
+        return this._storedState.histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+    }
+
+    set_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY : number ) {
+
+        this._storedState.histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY
+
+        this._updateState_ForChange()
+    }
+
+    /////////////
 
     get_excludeUnlocalizedOpenMods() {
 
@@ -1482,6 +1503,10 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
                 this._storedState.modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = encodedStateData[_SAVE_STATE_KEYS.MOD_MASS_MAX_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM];
             }
 
+            if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY)) {
+                this._storedState.histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = encodedStateData[_SAVE_STATE_KEYS.histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY];
+            }
+
             if ( encodedDataKeys.includes(_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM)) {
                 this._storedState.modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY = encodedStateData[_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM];
             }
@@ -1671,6 +1696,10 @@ export class ModViewPage_DataVizOptions_VizSelections_PageStateManager {
 
         if ( this._storedState.modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined ) {
             dataForEncoding[_SAVE_STATE_KEYS.MOD_MASS_MAX_CUTOFF__ACTUAL_MASS_FOR_HISTOGRAM] = this._storedState.modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY;
+        }
+
+        if ( this._storedState.histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined ) {
+            dataForEncoding[_SAVE_STATE_KEYS.histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY] = this._storedState.histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY;
         }
 
         if ( this._storedState.modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY !== undefined ) {

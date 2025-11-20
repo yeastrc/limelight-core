@@ -23,6 +23,9 @@ import {
 import {
     ModViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering";
+import {
+    INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_OptionsSection_UserInput_Display_MainContent_Component";
 
 
 
@@ -68,6 +71,7 @@ export class ModPage_OptionsSection_HistogramTab_UserInput_Display_MainContent_C
     private _quantType_Scans_Clicked_Callback_BindThis = this._quantType_Scans_Clicked_Callback.bind(this)
 
 
+    private _barHeight_CutoffCount_InputFieldChanged_Callback_BindThis = this._barHeight_CutoffCount_InputFieldChanged_Callback.bind(this)
     private _modMassCutoffMin_InputFieldChanged_Callback_BindThis = this._modMassCutoffMin_InputFieldChanged_Callback.bind(this)
     private _modMassCutoffMax_InputFieldChanged_Callback_BindThis = this._modMassCutoffMax_InputFieldChanged_Callback.bind(this)
     private _clear_ModMass_MinMax_Cutoffs_BindThis = this._clear_ModMass_MinMax_Cutoffs.bind(this)
@@ -130,6 +134,24 @@ export class ModPage_OptionsSection_HistogramTab_UserInput_Display_MainContent_C
     /////////
 
     //  Process onChange on <input> text fields containing integers
+
+    private _barHeight_CutoffCount_InputFieldChanged_Callback( event: React.ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue_String = event.target.value
+
+        const newValue_Number = _inputNumberField_Compute_IntegerNumberFromFieldContents( newValue_String )
+
+        if ( newValue_Number === this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() ) {
+            // No change so exit
+            return // EARLY RETURN
+        }
+
+        this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( newValue_Number )
+
+        this._inputField_TypeText_Changed()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
 
     /**
      *
@@ -251,6 +273,20 @@ export class ModPage_OptionsSection_HistogramTab_UserInput_Display_MainContent_C
                 peptide containing a mod mass. A scan will only count once even
                 if multiple peptides are IDed by the same scan.
             </span>
+        )
+
+        const tooltipContents__Max_cutoff_for_bar_height_Label = (
+            <span>
+                Override maximum values used when determining the bar height in the histogram.
+            </span>
+        )
+
+        const tooltipContents__Max_cutoff_for_bar_height_Count_Label = (
+            <div>
+                <div>
+                    Override maximum value for PSM or scan count when computing bar height.
+                </div>
+            </div>
         )
 
         const tooltipContents__Min_and_max_mod_masses_Label = (
@@ -384,6 +420,64 @@ export class ModPage_OptionsSection_HistogramTab_UserInput_Display_MainContent_C
                                         </div>
                                     </div>
 
+                                </div>
+
+                                {/*  2 of 4 Inner Flex Box Items  */ }
+
+                                {/*  Column In "flex"  */ }
+                                <div className="viz-form-section">
+
+                                    <div>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={ null }
+                                            { ...tooltip_Main_Props }
+                                        >
+                                            <span>
+                                                Max cutoff for count bar height:
+                                            </span>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                            title={ tooltipContents__Max_cutoff_for_bar_height_Label }
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <span style={ { fontSize: 10 } }>(Leave blank to use defaults.)</span>
+                                    </div>
+
+                                    <div style={ { marginTop: 10 } }>
+
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={ tooltipContents__Max_cutoff_for_bar_height_Count_Label }
+                                            { ...tooltip_Main_Props }
+                                        >
+                                            <span>Count:</span>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                            title={ tooltipContents__Max_cutoff_for_bar_height_Count_Label }
+                                        />
+
+                                        <span> </span>
+
+                                        <input
+                                            type="text"
+                                            size={ 4 }
+                                            className={
+                                                this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined
+                                                && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== null ? "mod-page-user-selection-entered" : null
+                                            }
+                                            value={
+                                                this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined
+                                                && this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== null
+                                                    ? this.props.propsValue.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogramBarHeight_Count_Cutoff_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+                                                    : ""
+                                            }
+                                            onChange={ this._barHeight_CutoffCount_InputFieldChanged_Callback_BindThis }
+                                        />
+
+                                    </div>
                                 </div>
 
                                 {/*  3 of 4 Inner Flex Box Items  */ }
@@ -751,6 +845,28 @@ const _inputNumberField_Compute_DecimalNumberFromFieldContents = function ( inpu
     }
 
     const inputFieldValue_AsNumber = Number.parseFloat( inputFieldValue_AsString_Trimmed )
+
+    if ( Number.isNaN( inputFieldValue_AsNumber ) ) {
+        return undefined
+    }
+
+    return inputFieldValue_AsNumber
+}
+
+////////////
+
+/**
+ *
+ */
+const _inputNumberField_Compute_IntegerNumberFromFieldContents = function ( inputFieldValue_AsString: string ) : number {
+
+    const inputFieldValue_AsString_Trimmed = inputFieldValue_AsString.trim()
+
+    if ( inputFieldValue_AsString_Trimmed.length === 0 ) {
+        return undefined
+    }
+
+    const inputFieldValue_AsNumber = Number.parseInt( inputFieldValue_AsString_Trimmed )
 
     if ( Number.isNaN( inputFieldValue_AsNumber ) ) {
         return undefined
