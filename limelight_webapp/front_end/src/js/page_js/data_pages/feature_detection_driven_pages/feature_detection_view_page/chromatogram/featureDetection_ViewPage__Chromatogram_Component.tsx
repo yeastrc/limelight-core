@@ -144,7 +144,7 @@ const _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAUL
 
 const _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT__POW_10 = Math.pow( 10, _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT );
 
-const _MAX_VALUE_FOR_GET_FROM_SERVER__retentionTime_Seconds_ExtendRange_AddSubtract_ToMinMaxValues = 30;
+const _MAX_VALUE_FOR_GET_FROM_SERVER__retentionTime_Minutes_ExtendRange_AddSubtract_ToMinMaxValues = 0.5;  //   30 seconds
 const _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues = 25;
 
 const _MAX_GET_SCAN_DATA_WITH_PEAKS_PARALLEL_BATCH_SIZE = 3;  //  The common Webservice call code has a max parallel call so anything larger than that will just queue there which isn't good.
@@ -315,15 +315,15 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
     //  Set default. Requires Same Default in the Component Internal__MS1_Window_Size_Selection_Component
     private _precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection = _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues
 
-    private _retentionTimeSeconds_Range_ComputedFrom_PersistentFeature_Min_Max: Internal__RetentionTimeSeconds_Range_Min_Max
+    private _retentionTime_Minutes_Range_ComputedFrom_PersistentFeature_Min_Max: Internal__RetentionTimeMinutes_Range_Min_Max
 
     //  Pass to Component to create chart
 
-    private _retentionTimeSeconds_Range_ForChart_Min_Max: Internal__RetentionTimeSeconds_Range_Min_Max
+    private _retentionTime_Minutes_Range_ForChart_Min_Max: Internal__RetentionTimeMinutes_Range_Min_Max
 
-    private _retentionTimeSeconds_Range_ForChart_Min_Max__PreviousValues: Internal__RetentionTimeSeconds_Range_Min_Max
+    private _retentionTime_Minutes_Range_ForChart_Min_Max__PreviousValues: Internal__RetentionTimeMinutes_Range_Min_Max
 
-    private _retentionTimeSeconds_Range_ForChart_Min_Max__Reset_To_Previous: boolean
+    private _retentionTime_Minutes_Range_ForChart_Min_Max__Reset_To_Previous: boolean
 
     private _force_SetTo_ValueFromParent__FOR__Internal__RetentionTime_Min_Max_UserEditable_Component: object
 
@@ -381,20 +381,23 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
      */
     private _computeFromProps( props : FeatureDetection_ViewPage__Chromatogram_Component_Props ) {
 
+        const retentionTime_Minutes_Range_ForChart_Min =
+            _compute_RT_Minutes_FloorCeil_FromMinutes_Apply_Math_floor_or_ceil_To_NumberOfDecimalPlaces(
+                ( this.props.featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.featureDetection_PersistentFeature_Entry.retentionTimeRange_Start -
+                    _MAX_VALUE_FOR_GET_FROM_SERVER__retentionTime_Minutes_ExtendRange_AddSubtract_ToMinMaxValues ) ,
+                INTERNAL__MATH_FLOOR_CEIL.FLOOR )
 
-        const retentionTimeSeconds_Range_ForChart_Min =
-            ( this.props.featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.featureDetection_PersistentFeature_Entry.retentionTimeRange_Start * 60 ) -
-            _MAX_VALUE_FOR_GET_FROM_SERVER__retentionTime_Seconds_ExtendRange_AddSubtract_ToMinMaxValues
+        const retentionTime_Minutes_Range_ForChart_Max =
+            _compute_RT_Minutes_FloorCeil_FromMinutes_Apply_Math_floor_or_ceil_To_NumberOfDecimalPlaces(
+                ( this.props.featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.featureDetection_PersistentFeature_Entry.retentionTimeRange_End +
+                    _MAX_VALUE_FOR_GET_FROM_SERVER__retentionTime_Minutes_ExtendRange_AddSubtract_ToMinMaxValues ) ,
+                INTERNAL__MATH_FLOOR_CEIL.CEIL )
 
-        const retentionTimeSeconds_Range_ForChart_Max =
-            ( this.props.featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.featureDetection_PersistentFeature_Entry.retentionTimeRange_End * 60 ) +
-            _MAX_VALUE_FOR_GET_FROM_SERVER__retentionTime_Seconds_ExtendRange_AddSubtract_ToMinMaxValues
-
-        this._retentionTimeSeconds_Range_ComputedFrom_PersistentFeature_Min_Max = {
-            retentionTimeSeconds_Range_Min: retentionTimeSeconds_Range_ForChart_Min, retentionTimeSeconds_Range_Max: retentionTimeSeconds_Range_ForChart_Max
+        this._retentionTime_Minutes_Range_ComputedFrom_PersistentFeature_Min_Max = {
+            retentionTime_Minutes_Range_Min: retentionTime_Minutes_Range_ForChart_Min, retentionTime_Minutes_Range_Max: retentionTime_Minutes_Range_ForChart_Max
         }
 
-        this._retentionTimeSeconds_Range_ForChart_Min_Max = this._retentionTimeSeconds_Range_ComputedFrom_PersistentFeature_Min_Max
+        this._retentionTime_Minutes_Range_ForChart_Min_Max = this._retentionTime_Minutes_Range_ComputedFrom_PersistentFeature_Min_Max
 
         this._currentSelection_ObjectReference = {}
     }
@@ -431,22 +434,22 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
 
         this._loadingData_ScanNumberCount = null
 
-        if ( this._retentionTimeSeconds_Range_ForChart_Min_Max__PreviousValues ) {
+        if ( this._retentionTime_Minutes_Range_ForChart_Min_Max__PreviousValues ) {
 
             //  Reset to Previous
-            this._retentionTimeSeconds_Range_ForChart_Min_Max = this._retentionTimeSeconds_Range_ForChart_Min_Max__PreviousValues
+            this._retentionTime_Minutes_Range_ForChart_Min_Max = this._retentionTime_Minutes_Range_ForChart_Min_Max__PreviousValues
 
             //  set previous to null
-            this._retentionTimeSeconds_Range_ForChart_Min_Max__PreviousValues = null
+            this._retentionTime_Minutes_Range_ForChart_Min_Max__PreviousValues = null
 
-            this._retentionTimeSeconds_Range_ForChart_Min_Max__Reset_To_Previous = true;
+            this._retentionTime_Minutes_Range_ForChart_Min_Max__Reset_To_Previous = true;
 
             //   Only call when change scan file
             this._displayChromatogram( { currentSelection_ObjectReference_AtStartOf_Request: this._currentSelection_ObjectReference } )
 
         } else {
 
-            const msg = "In _clickOn_Button_Cancel_LoadingData_Button(): this._retentionTimeSeconds_Range_ForChart_Min_Max__PreviousValues has no value"
+            const msg = "In _clickOn_Button_Cancel_LoadingData_Button(): this._retentionTime_Minutes_Range_ForChart_Min_Max__PreviousValues has no value"
             console.warn(msg)
             throw Error(msg)
         }
@@ -707,8 +710,8 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
             currentSelection_ObjectReference_AtStartOf_Request: object
         }
     ) {
-        const retentionTimeRange_Min__LoadDataForScansFor = this._retentionTimeSeconds_Range_ComputedFrom_PersistentFeature_Min_Max.retentionTimeSeconds_Range_Min
-        const retentionTimeRange_Max__LoadDataForScansFor = this._retentionTimeSeconds_Range_ComputedFrom_PersistentFeature_Min_Max.retentionTimeSeconds_Range_Max
+        const retentionTime_Minutes_Range_Min__LoadDataForScansFor = this._retentionTime_Minutes_Range_ComputedFrom_PersistentFeature_Min_Max.retentionTime_Minutes_Range_Min
+        const retentionTime_Minutes_Range_Max__LoadDataForScansFor = this._retentionTime_Minutes_Range_ComputedFrom_PersistentFeature_Min_Max.retentionTime_Minutes_Range_Max
 
         this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId = this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_Map_Key_ProjectScanFileId.get( this.props.featureDetection_ViewPage__Chromatogram_Component_Params.projectScanFileId )
         this._dataFromServer_ScansWithPeaks_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId = this._dataFromServer_ScansWithPeaks_For_Single_ProjectScanFileId_Map_Key_ProjectScanFileId.get( this.props.featureDetection_ViewPage__Chromatogram_Component_Params.projectScanFileId )
@@ -723,8 +726,8 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
             this._load_Chromatogram_For_Selected_ProjectScanFileId({
                 currentSelection_ObjectReference_AtStartOf_Request,
 
-                retentionTimeRange_Min__LoadDataForScansFor,
-                retentionTimeRange_Max__LoadDataForScansFor
+                retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+                retentionTime_Minutes_Range_Max__LoadDataForScansFor
             })
 
             return // EARLY RETURN
@@ -744,13 +747,13 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
     private _load_Chromatogram_For_Selected_ProjectScanFileId(
         {
             currentSelection_ObjectReference_AtStartOf_Request,
-            retentionTimeRange_Min__LoadDataForScansFor,
-            retentionTimeRange_Max__LoadDataForScansFor
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor
         } : {
             currentSelection_ObjectReference_AtStartOf_Request: object
 
-            retentionTimeRange_Min__LoadDataForScansFor: number
-            retentionTimeRange_Max__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor: number
         }
     ) : void {
         try {
@@ -777,8 +780,8 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                     projectScanFileId_Selected_AtStartOf_LoadRequest,
                     currentSelection_ObjectReference_AtStartOf_Request,
 
-                    retentionTimeRange_Min__LoadDataForScansFor,
-                    retentionTimeRange_Max__LoadDataForScansFor
+                    retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+                    retentionTime_Minutes_Range_Max__LoadDataForScansFor
                 })
 
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
@@ -793,14 +796,14 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
         {
             projectScanFileId_Selected_AtStartOf_LoadRequest,
             currentSelection_ObjectReference_AtStartOf_Request,
-            retentionTimeRange_Min__LoadDataForScansFor,
-            retentionTimeRange_Max__LoadDataForScansFor
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor
         } : {
             projectScanFileId_Selected_AtStartOf_LoadRequest: number
             currentSelection_ObjectReference_AtStartOf_Request: object
 
-            retentionTimeRange_Min__LoadDataForScansFor: number
-            retentionTimeRange_Max__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor: number
         }
     ) : void {
         try {
@@ -828,8 +831,8 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                     this._load_Chromatogram_For_Selected_ProjectScanFileId__CallAfterSetTimeout__AfterValidate_ProjectScanFileId_Has_MS1_Scans({
                         projectScanFileId_Selected_AtStartOf_LoadRequest,
                         currentSelection_ObjectReference_AtStartOf_Request,
-                        retentionTimeRange_Min__LoadDataForScansFor,
-                        retentionTimeRange_Max__LoadDataForScansFor
+                        retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+                        retentionTime_Minutes_Range_Max__LoadDataForScansFor
                     })
 
                 } else {
@@ -871,8 +874,8 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                         this._load_Chromatogram_For_Selected_ProjectScanFileId__CallAfterSetTimeout__AfterValidate_ProjectScanFileId_Has_MS1_Scans({
                             projectScanFileId_Selected_AtStartOf_LoadRequest,
                             currentSelection_ObjectReference_AtStartOf_Request,
-                            retentionTimeRange_Min__LoadDataForScansFor,
-                            retentionTimeRange_Max__LoadDataForScansFor
+                            retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+                            retentionTime_Minutes_Range_Max__LoadDataForScansFor
                         })
 
                     } else {
@@ -926,14 +929,14 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
         {
             projectScanFileId_Selected_AtStartOf_LoadRequest,
             currentSelection_ObjectReference_AtStartOf_Request,
-            retentionTimeRange_Min__LoadDataForScansFor,
-            retentionTimeRange_Max__LoadDataForScansFor
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor
         } : {
             projectScanFileId_Selected_AtStartOf_LoadRequest: number
             currentSelection_ObjectReference_AtStartOf_Request: object
 
-            retentionTimeRange_Min__LoadDataForScansFor: number
-            retentionTimeRange_Max__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Min__LoadDataForScansFor: number
+            retentionTime_Minutes_Range_Max__LoadDataForScansFor: number
         }
     ) : void {
         try {
@@ -977,8 +980,8 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                         get_commonData_LoadedFromServer_From_ProjectScanFileId_RetentionTimeRange__MS_1_ScanNumbers().
                         get_MS_1_ScanNumbers_DataHolder_From_ProjectScanFileId_RetentionTimeRange_ReturnPromise({
                             projectScanFileId: this.props.featureDetection_ViewPage__Chromatogram_Component_Params.projectScanFileId,
-                            retentionTime_Seconds_Range_Min: retentionTimeRange_Min__LoadDataForScansFor,
-                            retentionTime_Seconds_Range_Max: retentionTimeRange_Max__LoadDataForScansFor
+                            retentionTime_Seconds_Range_Min: retentionTime_Minutes_Range_Min__LoadDataForScansFor * 60,
+                            retentionTime_Seconds_Range_Max: retentionTime_Minutes_Range_Max__LoadDataForScansFor * 60
                         })
 
                     promise_get_MS_1_ScanNumbers_DataHolder_From_ProjectScanFileId_RetentionTimeRange_ReturnPromise.catch(reason => {
@@ -1044,9 +1047,9 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                     const dataForChromatogram_For_ProjectScanFileId = new Internal_DataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId( {
                         data: {
                             projectScanFileId: projectScanFileId_Selected_AtStartOf_LoadRequest,
-                            retentionTimeSeconds_Range_Min_Max__LoadingDataFor: {
-                                retentionTimeSeconds_Range_Min: retentionTimeRange_Min__LoadDataForScansFor,
-                                retentionTimeSeconds_Range_Max: retentionTimeRange_Max__LoadDataForScansFor
+                            retentionTime_Minutes_Range_Min_Max__LoadingDataFor: {
+                                retentionTime_Minutes_Range_Min: retentionTime_Minutes_Range_Min__LoadDataForScansFor,
+                                retentionTime_Minutes_Range_Max: retentionTime_Minutes_Range_Max__LoadDataForScansFor
                             },
                             ms_1_scanNumbers_Data_Holder: ms_1_ScanNumbers_Data_Holder,
                             scanData_NO_Peaks_Data_Holder__For_ALL_SingularFeatures
@@ -1666,27 +1669,27 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                                         <Internal__RetentionTime_Min_Max_UserEditable_Component
                                             force_SetTo_ValueFromParent={ this._force_SetTo_ValueFromParent__FOR__Internal__RetentionTime_Min_Max_UserEditable_Component }  // On object reference change, the input values will be set to the values from Parent
 
-                                            retentionTimeSeconds_Range_ForChart_Min__ValueFromParent={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Min }
-                                            retentionTimeSeconds_Range_ForChart_Max__ValueFromParent={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Max }
+                                            retentionTime_Minutes_Range_ForChart_Min__ValueFromParent={ this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Min }
+                                            retentionTime_Minutes_Range_ForChart_Max__ValueFromParent={ this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Max }
 
-                                            retentionTimeSeconds_Range_ForChart_Min__DefaultValue={ this._retentionTimeSeconds_Range_ComputedFrom_PersistentFeature_Min_Max.retentionTimeSeconds_Range_Min }
-                                            retentionTimeSeconds_Range_ForChart_Max__DefaultValue={ this._retentionTimeSeconds_Range_ComputedFrom_PersistentFeature_Min_Max.retentionTimeSeconds_Range_Max }
+                                            retentionTime_Minutes_Range_ForChart_Min__DefaultValue={ this._retentionTime_Minutes_Range_ComputedFrom_PersistentFeature_Min_Max.retentionTime_Minutes_Range_Min }
+                                            retentionTime_Minutes_Range_ForChart_Max__DefaultValue={ this._retentionTime_Minutes_Range_ComputedFrom_PersistentFeature_Min_Max.retentionTime_Minutes_Range_Max }
 
                                             updatedValues_Callback={ ( params ) => {
 
-                                                this._retentionTimeSeconds_Range_ForChart_Min_Max__PreviousValues = this._retentionTimeSeconds_Range_ForChart_Min_Max
+                                                this._retentionTime_Minutes_Range_ForChart_Min_Max__PreviousValues = this._retentionTime_Minutes_Range_ForChart_Min_Max
 
-                                                this._retentionTimeSeconds_Range_ForChart_Min_Max = {
-                                                    retentionTimeSeconds_Range_Min: params.retentionTimeSeconds_Range_ForChart_Min, retentionTimeSeconds_Range_Max: params.retentionTimeSeconds_Range_ForChart_Max
+                                                this._retentionTime_Minutes_Range_ForChart_Min_Max = {
+                                                    retentionTime_Minutes_Range_Min: params.retentionTime_Minutes_Range_ForChart_Min, retentionTime_Minutes_Range_Max: params.retentionTime_Minutes_Range_ForChart_Max
                                                 }
 
 
                                                 if ( this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId ) {
 
-                                                    const retentionTimeSeconds_Range_Min_Max__LoadingDataFor = this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId.data.retentionTimeSeconds_Range_Min_Max__LoadingDataFor
+                                                    const retentionTime_Minutes_Range_Min_Max__LoadingDataFor = this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId.data.retentionTime_Minutes_Range_Min_Max__LoadingDataFor
 
-                                                    if ( this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Min < retentionTimeSeconds_Range_Min_Max__LoadingDataFor.retentionTimeSeconds_Range_Min ||
-                                                        this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Max > retentionTimeSeconds_Range_Min_Max__LoadingDataFor.retentionTimeSeconds_Range_Max ) {
+                                                    if ( this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Min < retentionTime_Minutes_Range_Min_Max__LoadingDataFor.retentionTime_Minutes_Range_Min ||
+                                                        this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Max > retentionTime_Minutes_Range_Min_Max__LoadingDataFor.retentionTime_Minutes_Range_Max ) {
 
                                                         //  Load data based on NEW Retention Time Range
 
@@ -1695,8 +1698,8 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
 
                                                         this._load_Chromatogram_For_Selected_ProjectScanFileId({
                                                             currentSelection_ObjectReference_AtStartOf_Request: this._currentSelection_ObjectReference,
-                                                            retentionTimeRange_Min__LoadDataForScansFor: this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Min,
-                                                            retentionTimeRange_Max__LoadDataForScansFor: this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Max
+                                                            retentionTime_Minutes_Range_Min__LoadDataForScansFor: this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Min,
+                                                            retentionTime_Minutes_Range_Max__LoadDataForScansFor: this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Max
                                                         })
 
                                                         return // EARLY RETURN
@@ -1732,8 +1735,8 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
 
                                                 precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection={ this._precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection }
 
-                                                retentionTimeSeconds_Range_ForChart_Min={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Min }
-                                                retentionTimeSeconds_Range_ForChart_Max={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Max }
+                                                retentionTime_Minutes_Range_ForChart_FromUserInput_Min={ this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Min }
+                                                retentionTime_Minutes_Range_ForChart_FromUserInput_Max={ this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Max }
 
 
                                                 dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId={ this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId }
@@ -1906,7 +1909,7 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                                   */}
 
                                 {/*  Overlay for Updated Retention Time selection to previous selection  */}
-                                { this._retentionTimeSeconds_Range_ForChart_Min_Max__Reset_To_Previous ? (
+                                { this._retentionTime_Minutes_Range_ForChart_Min_Max__Reset_To_Previous ? (
                                     <div
                                         className=" standard-background-color standard-border-color-gray "
                                         style={ {
@@ -1931,7 +1934,7 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                                         <div style={ { marginTop: 10 } }>
                                             <button
                                                 onClick={ event => {
-                                                    this._retentionTimeSeconds_Range_ForChart_Min_Max__Reset_To_Previous = false
+                                                    this._retentionTime_Minutes_Range_ForChart_Min_Max__Reset_To_Previous = false
                                                     this.setState({ forceRerenderObject: {} })
                                                 }}
                                             >
@@ -1970,8 +1973,8 @@ interface Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component_Pr
 
     precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection: number
 
-    retentionTimeSeconds_Range_ForChart_Min: number
-    retentionTimeSeconds_Range_ForChart_Max: number
+    retentionTime_Minutes_Range_ForChart_FromUserInput_Min: number
+    retentionTime_Minutes_Range_ForChart_FromUserInput_Max: number
 
     dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId: Internal_DataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId
     dataFromServer_ScansWithPeaks_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId: Internal_DataFromServer_ScansWithPeaks_For_Single_ProjectScanFileId
@@ -2014,8 +2017,10 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
     private plot_div_Ref :  React.RefObject<HTMLDivElement>
 
-    // private plot_Ion_Current_Ref :  React.RefObject<HTMLDivElement>
-    // private plot_Ion_Count_Ref :  React.RefObject<HTMLDivElement>
+    private _retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min: number
+    private _retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max: number
+
+    private _areaUnderCurve_Display: number
 
     private _showCreatingMessage = true
     private _showUpdatingMessage = false
@@ -2044,8 +2049,8 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
         this.plot_div_Ref = React.createRef();
 
-        // this.plot_Ion_Current_Ref = React.createRef();
-        // this.plot_Ion_Count_Ref = React.createRef();
+        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Min
+        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Max
     }
 
     componentWillUnmount() {
@@ -2074,6 +2079,9 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
             if (
                 prevProps.triggerPlotUpdate_Object !== this.props.triggerPlotUpdate_Object
             ) {
+                this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Min
+                this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Max
+
                 this._showUpdatingMessage = true
                 this._show_NO_DATA_ForSelection_Message = false;
 
@@ -2120,12 +2128,15 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
      */
     private _createOnMount_And_OnUpdate(): void {
 
-        const retentionTimeSeconds_Range_ForChart_Min = this.props.retentionTimeSeconds_Range_ForChart_Min
-        const retentionTimeSeconds_Range_ForChart_Max = this.props.retentionTimeSeconds_Range_ForChart_Max
+        const retentionTime_Minutes_Range_ForChart_Min = this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min
+        const retentionTime_Minutes_Range_ForChart_Max = this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max
 
         const scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime: Array<{
             scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
             scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+            /**
+             * In Seconds
+             */
             scan_RetentionTime: number
             scanNumber: number
             scanLevel: number
@@ -2141,7 +2152,7 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
                         //  Scan Number found With Peaks
 
-                        if ( scanItem_YES_Peaks.retentionTime < retentionTimeSeconds_Range_ForChart_Min || scanItem_YES_Peaks.retentionTime > retentionTimeSeconds_Range_ForChart_Max ) {
+                        if ( scanItem_YES_Peaks.retentionTime < ( retentionTime_Minutes_Range_ForChart_Min * 60 ) || scanItem_YES_Peaks.retentionTime > ( retentionTime_Minutes_Range_ForChart_Max * 60 ) ) {
 
                             //  Scan retentionTime not in range so SKIP
 
@@ -2168,7 +2179,7 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                 const scanItem_NO_Peaks = this.props.dataFromServer_Scans_NO_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId.scanData_Map_Key_ScanNumber.get(  scanNumber )
                 if ( scanItem_NO_Peaks ) {
 
-                    if ( scanItem_NO_Peaks.retentionTime_InSeconds < retentionTimeSeconds_Range_ForChart_Min || scanItem_NO_Peaks.retentionTime_InSeconds > retentionTimeSeconds_Range_ForChart_Max ) {
+                    if ( scanItem_NO_Peaks.retentionTime_InSeconds < ( retentionTime_Minutes_Range_ForChart_Min * 60 ) || scanItem_NO_Peaks.retentionTime_InSeconds > ( retentionTime_Minutes_Range_ForChart_Max * 60 ) ) {
 
                         //  Scan retentionTime not in range so SKIP
 
@@ -2212,8 +2223,8 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
                 chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_CURRENT,
 
-                retentionTimeSeconds_Range_ForChart_Min,
-                retentionTimeSeconds_Range_ForChart_Max,
+                retentionTime_Minutes_Range_ForChart_Min,
+                retentionTime_Minutes_Range_ForChart_Max,
                 scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime
             } )
             promises.push( promise )
@@ -2222,8 +2233,8 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
                 chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT,
 
-                retentionTimeSeconds_Range_ForChart_Min,
-                retentionTimeSeconds_Range_ForChart_Max,
+                retentionTime_Minutes_Range_ForChart_Min,
+                retentionTime_Minutes_Range_ForChart_Max,
                 scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime
             } )
             promises.push( promise )
@@ -2245,8 +2256,8 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
     /**
      *
-     * @param retentionTimeSeconds_Range_ForChart_Min
-     * @param retentionTimeSeconds_Range_ForChart_Max
+     * @param retentionTime_Minutes_Range_ForChart_Min
+     * @param retentionTime_Minutes_Range_ForChart_Max
      * @param psmList_LOCAL_PossiblyFiltered
      * @param scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime
      */
@@ -2254,14 +2265,14 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
         {
             chartCreate__IonCurrent__IonCount__Enum,
 
-            retentionTimeSeconds_Range_ForChart_Min,
-            retentionTimeSeconds_Range_ForChart_Max,
+            retentionTime_Minutes_Range_ForChart_Min,
+            retentionTime_Minutes_Range_ForChart_Max,
             scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime
         } : {
             chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum
 
-            retentionTimeSeconds_Range_ForChart_Min: number
-            retentionTimeSeconds_Range_ForChart_Max: number
+            retentionTime_Minutes_Range_ForChart_Min: number
+            retentionTime_Minutes_Range_ForChart_Max: number
 
             scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime: Array<{
                 scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
@@ -2275,11 +2286,15 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
         const singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId: Map<number, DataTable_DataRowEntry> = this.props.featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results.dataTable_Data.dataTable_DataRowEntries_Map_Key_SingularFeature_Id
 
-        const trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass: Array<any> = []
+        const trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass: Array<Plotly.Data> = []
 
         const trace_SingularFeature_Points_X: Array<number> = []
         const trace_SingularFeature_Points_Y: Array<number> = []
         const trace_SingularFeature_Points_Tooltips: Array<string> = []
+
+        this._areaUnderCurve_Display = undefined
+
+        let areaUnderCurve_Total = 0
 
         const singularFeatureItem_Map_Key_SingularFeatureTooltip: Map<string, CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry> = new Map()
 
@@ -2343,6 +2358,7 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                 psmTblData_Array__Map_Key_ProjectSearchId.set( projectSearchId, psmTblData_Array_Filtered_RetentionTime )
 
                 for ( const psmItem of psmTblData_Array ) {
+
                     let retentionTimeSeconds = psmItem.retentionTimeSeconds
 
                     if ( retentionTimeSeconds === undefined || retentionTimeSeconds == null ) {
@@ -2353,10 +2369,12 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                             console.warn(msg)
                             throw Error(msg)
                         }
-                        retentionTimeSeconds = scanData_NO_Peaks_For_ScanNumber.retentionTime_InSeconds;
+                        retentionTimeSeconds = scanData_NO_Peaks_For_ScanNumber.retentionTime_InSeconds
                     }
 
-                    if ( retentionTimeSeconds < retentionTimeSeconds_Range_ForChart_Min || retentionTimeSeconds > retentionTimeSeconds_Range_ForChart_Max ) {
+                    const retentionTimeMinutes = retentionTimeSeconds / 60
+
+                    if ( retentionTimeMinutes < retentionTime_Minutes_Range_ForChart_Min || retentionTimeMinutes > retentionTime_Minutes_Range_ForChart_Max ) {
 
                         //  PSM retentionTime not in range so SKIP
 
@@ -2400,9 +2418,12 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                     //     ", m_Over_Z_Window_Max: " + m_Over_Z_Window_Max
                     // )
 
-                    const plotlyTrace = this._create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope({
+                    const plotlyTrace_Etc_Result = _for_Component__Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component___Create_Single_PlotlyTrace_Etc__For_MZ_OR_MZ_Plus_X_Isotope({
 
                         chartCreate__IonCurrent__IonCount__Enum,
+
+                        scanPeakSelect: this.props.scanPeakSelect,
+                        smoothingOption_Selection: this.props.smoothingOption_Selection,
 
                         plotlyTrace_Label,
                         plotlyTrace_Color: "rgb(31, 119, 180)",
@@ -2414,6 +2435,18 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                         scanItem_Array_SortOn_RetentionTime: scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
 
                         psmTblData_Array__Map_Key_ProjectSearchId,
+
+                        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds: this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+
+                        dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId: this.props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId,
+
+                        featureDetection_ViewPage__Chromatogram_Component_Params: this.props.featureDetection_ViewPage__Chromatogram_Component_Params,
+
+                        scanData_NO_Peaks_Data_Holder__ALL_SCANS: this.props.scanData_NO_Peaks_Data_Holder__ALL_SCANS,
+
+                        featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results: this.props.featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results,
+
+                        featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter: this.props.featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter,
 
                         //  Updated
                         singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId,
@@ -2428,9 +2461,11 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                         psm_ToPlot_All
                     })
 
-                    if ( plotlyTrace ) {
+                    if ( plotlyTrace_Etc_Result ) {
 
-                        trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.push( plotlyTrace )
+                        trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.push( plotlyTrace_Etc_Result.plotly_TraceData )
+
+                        areaUnderCurve_Total += plotlyTrace_Etc_Result.areaUnderCurve_SingleTrace
                     }
                 }
 
@@ -2467,9 +2502,12 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                     //     ", m_Over_Z_Window_Max: " + m_Over_Z_Window_Max
                     // )
 
-                    const plotlyTrace = this._create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope({
+                    const plotlyTrace_Etc_Result = _for_Component__Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component___Create_Single_PlotlyTrace_Etc__For_MZ_OR_MZ_Plus_X_Isotope({
 
                         chartCreate__IonCurrent__IonCount__Enum,
+
+                        scanPeakSelect: this.props.scanPeakSelect,
+                        smoothingOption_Selection: this.props.smoothingOption_Selection,
 
                         plotlyTrace_Label,
                         plotlyTrace_Color: _ISOTOPE_PLOT_TRACE_COLORS[ isotope_Number ],
@@ -2481,6 +2519,18 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                         scanItem_Array_SortOn_RetentionTime: scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
 
                         psmTblData_Array__Map_Key_ProjectSearchId,
+
+                        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds: this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+
+                        dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId: this.props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId,
+
+                        featureDetection_ViewPage__Chromatogram_Component_Params: this.props.featureDetection_ViewPage__Chromatogram_Component_Params,
+
+                        scanData_NO_Peaks_Data_Holder__ALL_SCANS: this.props.scanData_NO_Peaks_Data_Holder__ALL_SCANS,
+
+                        featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results: this.props.featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results,
+
+                        featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter: this.props.featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter,
 
                         //  Updated
                         singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId,
@@ -2495,25 +2545,12 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                         psm_ToPlot_All
                     })
 
-                    if ( plotlyTrace ) {
+                    if ( plotlyTrace_Etc_Result ) {
 
-                        trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.push( plotlyTrace )
+                        trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.push( plotlyTrace_Etc_Result.plotly_TraceData )
                     }
                 }
             }
-        }
-
-        if ( trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.length === 0 ) {
-
-            console.log( "NO Plotly traces created for MS 1 Scans. trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.length === 0")
-
-            this._show_NO_DATA_ForSelection_Message = true
-
-            this._showCreatingMessage = false
-            this._showUpdatingMessage = false
-            this.setState({ forceRerenderObject: {} })
-
-            return; // EARLY EXIT
         }
 
         const chart_Data = Array.from( trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass ) //  Start with Traces for MS 1 Scans
@@ -2573,14 +2610,18 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
         }
 
 
+        this._areaUnderCurve_Display = areaUnderCurve_Total
+
+
         let chartTitle_Start = "Ion Current"
 
         if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
             chartTitle_Start = "Ions"
         }
+        const chartTitle_FirstLine = chartTitle_Start + " Chromatogram - m/z " + m_over_z_PersistentFeature.toFixed( 4 )
 
+        const chartTitle = chartTitle_FirstLine + "<br>" + "Peak Area: " + _areaUnderCurve_Display_FormattingFunction( areaUnderCurve_Total )
 
-        const chartTitle = chartTitle_Start + " Chromatogram - m/z " + m_over_z_PersistentFeature.toFixed( 4 )
         const chart_X_Axis_Label ="Time (min)"
 
         let chart_Y_Axis_Label = "Ion Current"
@@ -2600,7 +2641,7 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                 title: {
                     text: chart_X_Axis_Label
                 },
-                range: [ retentionTimeSeconds_Range_ForChart_Min / 60, retentionTimeSeconds_Range_ForChart_Max / 60 ],
+                range: [ retentionTime_Minutes_Range_ForChart_Min, retentionTime_Minutes_Range_ForChart_Max ],
 
                 exponentformat: 'e'  // https://plotly.com/javascript/tick-formatting/#using-exponentformat
             },
@@ -2615,6 +2656,28 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                 // https://plotly.com/javascript/reference/#layout-legend-itemsizing
                 itemsizing: 'constant' // Legend marker size will be constant
             }
+        }
+
+        if ( trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.length === 0 ) {
+
+            //  Add Center message that there is NO data
+
+            chart_Layout.annotations = [
+                {
+                    text: 'No data for selections above<br>and retention times: <br>' + this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min + " to " + this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max,
+                    //  Center
+                    x: 0.5,
+                    y: 0.5,
+                    xanchor: 'center',
+                    yanchor: 'middle',
+                    xref: 'paper',
+                    yref: 'paper',
+                    showarrow: false,
+                    font: { size: 24 },
+                    bgcolor: "white",
+                    borderpad: 20
+                }
+            ]
         }
 
         //   Add grey rectangle with Persistent Feature Start and End:  +/- 30 seconds or 0.5 minutes
@@ -2884,7 +2947,91 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                 }
 
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-        })
+
+
+        })  //  END OF:  plotly_DOM_Element.on('plotly_click', (data) => {
+
+        //  Register callback on user selects zoom area in chart
+        {
+            //   @ts-ignore   'on' is added to DOM Element by Plotly
+            plotly_DOM_Element.on("plotly_relayout", (eventdata: any) => {
+                try {
+
+                    if ( eventdata["xaxis.autorange"] || eventdata["xaxis.range"] ) {
+
+                        //  User clicked on the icon for 'Autoscale' (first value in 'if') or 'Reset Axes' (second value in 'if')
+
+                        //  Reset Mod Mass Min/Max selection
+
+                        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Min
+                        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Max
+
+
+                        this._showUpdatingMessage = true
+                        this._show_NO_DATA_ForSelection_Message = false;
+
+                        this._singularFeatures_NOT_PutOnChart_ShowMessage = false
+
+                        this.setState({ forceRerenderObject: {} })
+
+                        window.setTimeout( () => { try {
+
+                            this._createOnMount_And_OnUpdate()
+
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                        // this._areaUnderCurve_Value_Container_div_Ref.current.style.display = "none"
+
+                        return // EARLY RETURN
+                    }
+
+                    if (eventdata["xaxis.range[1]"] !== undefined) {
+
+                        //  Selected Range  - X axis is Retention Time in Minutes.  Y axis is ion current
+
+                        const xaxis_range_0 = eventdata["xaxis.range[0]"];
+                        const xaxis_range_1 = eventdata["xaxis.range[1]"];
+
+                        // const yaxis_range_0 = eventdata["yaxis.range[0]"];
+                        // const yaxis_range_1 = eventdata["yaxis.range[1]"];
+
+                        let selectedRange_Start = Number.parseFloat( xaxis_range_0 )
+                        let selectedRange_End = Number.parseFloat( xaxis_range_1 )
+
+                        if ( selectedRange_Start < this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Min ) {
+                            selectedRange_Start = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Min
+                        }
+
+                        if ( selectedRange_End > this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Max ) {
+                            selectedRange_End = this.props.retentionTime_Minutes_Range_ForChart_FromUserInput_Max
+                        }
+
+                        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min = selectedRange_Start
+                        this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max = selectedRange_End
+
+                        this._showUpdatingMessage = true
+                        this._show_NO_DATA_ForSelection_Message = false;
+
+                        this._singularFeatures_NOT_PutOnChart_ShowMessage = false
+
+                        this.setState({ forceRerenderObject: {} })
+
+                        window.setTimeout( () => { try {
+
+                            this._createOnMount_And_OnUpdate()
+
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                        return // EARLY RETURN
+                    }
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            });
+        }
+
 
         ////
 
@@ -2916,7 +3063,7 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                         }
                     }
 
-                    this._plot_SingularFeature(
+                    _for_Component__Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component___Plot_SingularFeature(
                         {
                             singularFeatureItem_ToPlot: singularFeatureEntry,
                             scanData_NO_Peaks_Entry_MS_1: scanData_NO_Peaks_Entry_MS_1,
@@ -2926,6 +3073,8 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
                             singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId,
 
+                            featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results: this.props.featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results,
+
                             singularFeatureItem_Map_Key_SingularFeatureTooltip,
                             singularFeatureEntry_ToPlot_In_PointOrder_Array,
 
@@ -2934,7 +3083,7 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                             trace_SingularFeature_Points_Tooltips,
                         } )
 
-                    // logMessage += "\n SingularFeature: PsmId: " + singularFeatureEntry.singularFeatureId + ", scanNumber: " + singularFeatureEntry.scanNumber + ", precursor_M_Over_Z: " + singularFeatureEntry.precursor_M_Over_Z + ", scan_RetentionTimeSeconds: " + singularFeatureEntry.retentionTimeSeconds +
+                    // logMessage += "\n SingularFeature: PsmId: " + singularFeatureEntry.singularFeatureId + ", scanNumber: " + singularFeatureEntry.scanNumber + ", precursor_M_Over_Z: " + singularFeatureEntry.precursor_M_Over_Z + ", scan_RetentionTimeMinutes: " + singularFeatureEntry.retentionTimeMinutes +
                     //     ", Associated MS 1 Scan Data:  scan number: " + scanData_NO_Peaks_Entry_MS_1.scanNumber +
                     //     ", retention time seconds: " + scanData_NO_Peaks_Entry_MS_1.retentionTime + ",  retention time minutes: " + scanData_NO_Peaks_Entry_MS_1.retentionTime / 60
                 }
@@ -2954,579 +3103,6 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
-    /**
-     *
-     * @param plotlyTrace_Label
-     * @param m_Over_Z_Window_Min
-     * @param m_Over_Z_Window_Max
-     * @param m_Over_Z_Window_Index
-     * @param scanItem_Array_SortOn_RetentionTime
-     * @param singularFeatureList_LOCAL_PossiblyFiltered
-     * @param singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId
-     * @param singularFeatureItem_Map_Key_SingularFeatureTooltip
-     * @param singularFeatures_NOT_PutOnChart_SingularFeature_IDs
-     * @param trace_Psm_Points_X
-     * @param trace_Psm_Points_Y
-     * @param trace_Psm_Points_Tooltips
-     * @private
-     */
-    private _create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope(
-        {
-            chartCreate__IonCurrent__IonCount__Enum,
-
-            plotlyTrace_Label,
-            plotlyTrace_Color,
-
-            m_Over_Z_Window_Min,
-            m_Over_Z_Window_Max,
-            m_Over_Z_Window_Index,  // Not sure used
-
-            scanItem_Array_SortOn_RetentionTime,
-
-            psmTblData_Array__Map_Key_ProjectSearchId,
-
-            //  Updated
-            singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId,
-            singularFeatureItem_Map_Key_SingularFeatureTooltip,
-            singularFeatureEntry_ToPlot_In_PointOrder_Array,
-            singularFeatures_NOT_PutOnChart_SingularFeature_IDs,
-
-            trace_SingularFeature_Points_X,
-            trace_SingularFeature_Points_Y,
-            trace_SingularFeature_Points_Tooltips,
-
-            psm_ToPlot_All
-        } : {
-            chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum
-
-            plotlyTrace_Label: string
-            plotlyTrace_Color: string
-
-            m_Over_Z_Window_Min: number
-            m_Over_Z_Window_Max: number
-            m_Over_Z_Window_Index: number  // Not sure used
-
-            scanItem_Array_SortOn_RetentionTime: Array<{
-                scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
-                scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
-                scan_RetentionTime: number
-                scanNumber: number
-                scanLevel: number
-            }>
-
-            //  ONLY if have Searches
-            psmTblData_Array__Map_Key_ProjectSearchId: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>
-
-            //  Updated
-            singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId: Map<number, DataTable_DataRowEntry>
-            singularFeatureItem_Map_Key_SingularFeatureTooltip: Map<string, CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry>
-            singularFeatureEntry_ToPlot_In_PointOrder_Array: Array<Internal__SingularFeature_Entry_ToPlot>
-            singularFeatures_NOT_PutOnChart_SingularFeature_IDs: Set<number>
-
-            trace_SingularFeature_Points_X: Array<number>
-            trace_SingularFeature_Points_Y: Array<number>
-            trace_SingularFeature_Points_Tooltips: Array<string>
-
-            psm_ToPlot_All: Internal__Psm_ToPlot_All
-
-        }
-    ) : any { // return any since return plotly trace
-
-        // console.log( "START Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label )
-
-        //  Middle between m_Over_Z_Window_Min and m_Over_Z_Window_Max
-        const m_Over_Z_Window_Middle_Between_Min_Max = m_Over_Z_Window_Min + ( ( m_Over_Z_Window_Max - m_Over_Z_Window_Min ) / 2 )
-
-        const singularFeatureItem_Array_Map_Key_Associated_MS_1_ScanNumber: Map<number, Array<{ singularFeatureItem: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry, singularFeatureItem_m_Over_Z_Min_Max__Ranges_Index: number }>> = new Map()
-
-        const ms_1_ScanNumber_Map_Key_SingularFeatureId: Map<number, number> = new Map()
-
-        const scanData_NO_Peaks_Entry_Map_Key_ScanNumber: Map<number,  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map()
-
-        for ( const scanItem of this.props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId.data.scanData_NO_Peaks_Data_Holder__For_ALL_SingularFeatures.scanData.scansArray ) {
-
-            scanData_NO_Peaks_Entry_Map_Key_ScanNumber.set( scanItem.scanNumber, scanItem )
-        }
-
-
-        let psmItem_Array_Map_Key_Associated_MS_1_ScanNumber: Map<number, Array<{
-            psmItem: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId, psmItem_m_Over_Z_Min_Max__Ranges_Index: number, projectSearchId: number
-        }>> = undefined
-        let ms_1_ScanNumber_Map_Key_PsmId: Map<number, number> = undefined
-
-
-        if ( this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds ) {
-
-            psmItem_Array_Map_Key_Associated_MS_1_ScanNumber = new Map()
-            ms_1_ScanNumber_Map_Key_PsmId = new Map()
-
-            for ( const projectSearchId of this.props.featureDetection_ViewPage__Chromatogram_Component_Params.projectSearchIds ) {
-
-                const psmTblData_Array = psmTblData_Array__Map_Key_ProjectSearchId.get( projectSearchId )
-                if ( ! psmTblData_Array ) {
-                    // NONE for projectSearchId
-                    continue // EARLY CONTINUE
-                }
-
-                for ( const psmItem of psmTblData_Array ) {
-
-                    const scanData_NO_Peaks_For_ScanNumber_On_PSM: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber = this.props.scanData_NO_Peaks_Data_Holder__ALL_SCANS.scanData.get_ScanData_NO_Peaks_For_ScanNumber( psmItem.scanNumber )
-                    if ( ! scanData_NO_Peaks_For_ScanNumber_On_PSM ) {
-                        const msg = "this.props.scanData_NO_Peaks_Data_Holder__ALL_SCANS.scanData.get_ScanData_NO_Peaks_For_ScanNumber( psmItem.scanNumber ) returned NOTHING for psmItem.scanNumber: " + psmItem.scanNumber
-                        console.warn(msg)
-                        throw Error(msg)
-                    }
-
-                    {
-                        let precursor_M_Over_Z = psmItem.precursor_M_Over_Z
-
-                        if ( precursor_M_Over_Z === undefined || precursor_M_Over_Z == null ) {
-
-                            precursor_M_Over_Z = scanData_NO_Peaks_For_ScanNumber_On_PSM.precursor_M_Over_Z;
-                        }
-
-                        if ( precursor_M_Over_Z < m_Over_Z_Window_Min || precursor_M_Over_Z > m_Over_Z_Window_Max ) {
-                            // psmItem NOT for mz window so SKIP
-
-                            continue; // EARLY CONTINUE
-                        }
-                    }
-
-                    let scanData_NO_Peaks_Entry_MS_1 = scanData_NO_Peaks_For_ScanNumber_On_PSM //  Initialize to scan number on PSM and then go up parentScanNumber until get to level 1
-
-                    while ( scanData_NO_Peaks_Entry_MS_1.level > 1 ) {
-                        scanData_NO_Peaks_Entry_MS_1 = this.props.scanData_NO_Peaks_Data_Holder__ALL_SCANS.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanData_NO_Peaks_Entry_MS_1.parentScanNumber )
-                        if ( ! scanData_NO_Peaks_Entry_MS_1 ) {
-                            throw Error("this.props.scanData_NO_Peaks_Data_Holder__ALL_SCANS.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanData_NO_Peaks_Entry_MS_1.parentScanNumber ) returned NOTHING for scanData_NO_Peaks_Entry_MS_1.parentScanNumber: " + scanData_NO_Peaks_Entry_MS_1.parentScanNumber + ", psmItem.scanNumber: " + psmItem.scanNumber )
-                        }
-                    }
-
-                    let psmItem_Array = psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.scanNumber )
-                    if ( ! psmItem_Array ) {
-                        psmItem_Array = []
-                        psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.set( scanData_NO_Peaks_Entry_MS_1.scanNumber, psmItem_Array )
-                    }
-
-                    psmItem_Array.push({ psmItem, psmItem_m_Over_Z_Min_Max__Ranges_Index: m_Over_Z_Window_Index, projectSearchId })
-
-                    ms_1_ScanNumber_Map_Key_PsmId.set( psmItem.psmId, scanData_NO_Peaks_Entry_MS_1.scanNumber )
-                }
-            }
-        }
-
-        for ( const singularFeatureItem of this.props.featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results.featureDetection_SingularFeature_Entries_For_PersistentId ) {
-
-            const m_over_z_SingularFeature = singularFeatureItem.base_isotope_peak
-            // PeptideMassCalculator.calculateMZ_From_MonoisotopicMass_Charge({
-            //     monoisotopicMass: singularFeatureItem.monoisotopic_mass,
-            //     charge: singularFeatureItem.charge
-            // })
-
-            if ( m_over_z_SingularFeature < m_Over_Z_Window_Min || m_over_z_SingularFeature > m_Over_Z_Window_Max ) {
-                // singularFeatureItem NOT for mz window so SKIP
-                continue; // EARLY CONTINUE
-            }
-
-            let scanData_NO_Peaks_Entry_MS_1 = scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( singularFeatureItem.ms_1_scan_number )
-            if ( ! scanData_NO_Peaks_Entry_MS_1 ) {
-                throw Error("scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( singularFeatureItem.ms_1_scan_number ) returned NOTHING for singularFeatureItem.ms_1_scan_number: " + singularFeatureItem.ms_1_scan_number )
-            }
-            while ( scanData_NO_Peaks_Entry_MS_1.level > 1 ) {
-                scanData_NO_Peaks_Entry_MS_1 = scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.parentScanNumber )
-                if ( ! scanData_NO_Peaks_Entry_MS_1 ) {
-                    throw Error("scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.parentScanNumber ) returned NOTHING for scanData_NO_Peaks_Entry_MS_1.parentScanNumber: " + scanData_NO_Peaks_Entry_MS_1.parentScanNumber + ", singularFeatureItem.scanNumber: " + singularFeatureItem.ms_1_scan_number )
-                }
-            }
-
-            let singularFeatureItem_Array = singularFeatureItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.scanNumber )
-            if ( ! singularFeatureItem_Array ) {
-                singularFeatureItem_Array = []
-                singularFeatureItem_Array_Map_Key_Associated_MS_1_ScanNumber.set( scanData_NO_Peaks_Entry_MS_1.scanNumber, singularFeatureItem_Array )
-            }
-
-            singularFeatureItem_Array.push({ singularFeatureItem, singularFeatureItem_m_Over_Z_Min_Max__Ranges_Index: m_Over_Z_Window_Index })
-
-            ms_1_ScanNumber_Map_Key_SingularFeatureId.set( singularFeatureItem.id, scanData_NO_Peaks_Entry_MS_1.scanNumber )
-        }
-
-        //  For the SingularFeatures to go with the scans/peaks on this trace
-
-        const singularFeature_And_Its_ScanData: Array<{
-            singularFeatureItem: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry
-            scanItem: {
-                scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
-                scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
-                scan_RetentionTime: number
-                scanNumber: number
-            }
-            peakToUse_DisplayDataForSingularFeature_Tooltip: Internal__PeakToUse_DisplayDataForSingularFeature_Tooltip
-            y_Trace_Index: number
-        }> = []
-
-        //  For the PSMs to go with the scans/peaks on this trace
-
-        const psm_And_Its_ScanData_All: Internal__Psm_And_Its_ScanData_All = {
-            psm_And_Its_ScanData_Array: []
-        }
-
-        //  For the Scan Trace
-
-        const trace_rt_Intensity_Line_X: Array<number> = []
-        let trace_rt_Intensity_Line_Y: Array<number> = []  // 'let' to allow replace after smoothing
-        const trace_rt_Intensity_Tooltips: Array<string> = []
-
-        //  Processing for each charge value
-        {
-            let scanCount_Where_MoreThanOnePeak_InsideWindow = 0;
-
-            for ( const scanItem of scanItem_Array_SortOn_RetentionTime ) {
-
-                if ( scanItem.scan_RetentionTime === undefined || scanItem.scan_RetentionTime === null ) {
-                    const msg = "( scanItem.scan_RetentionTime === undefined || scanItem.scan_RetentionTime === null ) "
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                const scan_retentionTime_Minutes = scanItem.scan_RetentionTime / 60 // convert RT to minutes
-
-                const singularFeatureItem_Array_For_Associated_MS_1_ScanNumber = singularFeatureItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanItem.scanNumber )
-
-
-                let psmItem_Array_For_Associated_MS_1_ScanNumber: Array<{
-                    psmItem: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId, psmItem_m_Over_Z_Min_Max__Ranges_Index: number, projectSearchId: number
-                }> = undefined
-
-                if ( psmItem_Array_Map_Key_Associated_MS_1_ScanNumber ) {
-                    psmItem_Array_For_Associated_MS_1_ScanNumber = psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanItem.scanNumber )
-                }
-
-
-                let noPeak_In_M_Over_Z_Range = false
-
-                const scanItem_WithPeaks = scanItem.scan_WithPeaks
-
-                if ( ! scanItem_WithPeaks || scanItem_WithPeaks.peaks.length === 0 ) {
-
-                    noPeak_In_M_Over_Z_Range = true
-
-                } else {
-
-                    let peakToUse: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak = undefined
-                    let peakToUse_DifferenceFrom_M_Over_Z_RangeCenter: number = undefined
-
-                    for ( const peak of scanItem_WithPeaks.peaks ) {
-
-                        if ( peak.mz < m_Over_Z_Window_Min || peak.mz > m_Over_Z_Window_Max ) {
-                            // peak NOT for current mz window so SKIP
-                            continue; // EARLY CONTINUE
-                        }
-
-                        if ( peakToUse === undefined ) {
-                            peakToUse = peak
-                            peakToUse_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
-                        } else {
-                            scanCount_Where_MoreThanOnePeak_InsideWindow++
-
-                            if ( this.props.scanPeakSelect === ScanPeakSelect_Enum.MAX_PEAK_INTENSITY ) {
-                                if ( peakToUse.intensity < peak.intensity ) {
-                                    peakToUse = peak
-                                }
-                            } else if ( this.props.scanPeakSelect === ScanPeakSelect_Enum.PEAK_MZ_CENTER_OF_MZ_RANGE ) {
-
-                                const peak_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
-
-                                if ( peak_DifferenceFrom_M_Over_Z_RangeCenter < peakToUse_DifferenceFrom_M_Over_Z_RangeCenter ) {
-                                    peakToUse = peak
-                                    peakToUse_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
-                                }
-                            } else {
-                                throw Error("Unknown value for this.props.scanPeakSelect: " + this.props.scanPeakSelect )
-                            }
-                        }
-                    }
-
-                    if ( ! peakToUse ) {
-                        //  NO Peak on Scan is in the mz range for this charge so Set NO Peak In M/Z range flag to true
-
-                        noPeak_In_M_Over_Z_Range = true
-
-                    } else {
-
-                        let tooltip_Peak_Value_Label = "Peak Intensity"
-
-                        let lineY_Value = peakToUse.intensity
-
-                        if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
-
-                            //  Ion Count
-
-                            tooltip_Peak_Value_Label = "Peak Ion Count"
-
-                            // Ion Count = total ion current (or intensity of a specific feature) * ion injection time / 1000 (because total ion current is in ions/second and ion injection time is in milliseconds).
-
-                            lineY_Value = peakToUse.intensity /  scanItem_WithPeaks.ionInjectionTime / 1000
-                        }
-
-
-                        const peakToUse_DisplayDataForSingularFeature_Tooltip: Internal__PeakToUse_DisplayDataForSingularFeature_Tooltip = {
-                            peak_MZ: peakToUse.mz,
-                            peak_Intensity_Or_IonCount__Label: tooltip_Peak_Value_Label,
-                            peak_Intensity_Or_IonCount__Value: lineY_Value
-                        }
-
-                        trace_rt_Intensity_Line_X.push( scan_retentionTime_Minutes )
-                        trace_rt_Intensity_Line_Y.push( lineY_Value )
-                        trace_rt_Intensity_Tooltips.push(
-                            "MS 1" +
-                            "<br><b>Scan Number</b>: " + scanItem.scanNumber +
-                            "<br><b>Scan Level</b>: " + scanItem.scanLevel +
-                            "<br><b>Peak mz</b>: " + peakToUse.mz.toFixed( _M_OVER_Z_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
-                            "<br><b>" + tooltip_Peak_Value_Label + "</b>: " + lineY_Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY ) +
-                            "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
-
-                        const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
-
-                        if ( singularFeatureItem_Array_For_Associated_MS_1_ScanNumber ) {
-                            //  Have SingularFeature Items for this MS 1 scan number
-
-                            for ( const singularFeatureItem_Array_For_Associated_MS_1_ScanNumber_Item of singularFeatureItem_Array_For_Associated_MS_1_ScanNumber ) {
-
-                                const singularFeatureItem_For_Associated_MS_1_ScanNumber = singularFeatureItem_Array_For_Associated_MS_1_ScanNumber_Item.singularFeatureItem
-
-                                singularFeature_And_Its_ScanData.push({
-                                    singularFeatureItem: singularFeatureItem_For_Associated_MS_1_ScanNumber,
-                                    scanItem,
-                                    peakToUse_DisplayDataForSingularFeature_Tooltip,
-                                    y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded
-                                })
-                            }
-                        }
-
-                        if ( psmItem_Array_For_Associated_MS_1_ScanNumber ) {
-                            //  Have PSM Items for this MS 1 scan number
-
-                            for ( const psmItem_Array_For_Associated_MS_1_ScanNumber_Item of psmItem_Array_For_Associated_MS_1_ScanNumber ) {
-
-                                const psmItem_For_Associated_MS_1_ScanNumber = psmItem_Array_For_Associated_MS_1_ScanNumber_Item.psmItem
-
-                                psm_And_Its_ScanData_All.psm_And_Its_ScanData_Array.push({
-                                    psmItem: psmItem_For_Associated_MS_1_ScanNumber,
-                                    scanItem,
-                                    peakToUse_DisplayDataForSingularFeature_Tooltip,
-                                    y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded,
-                                    projectSearchId: psmItem_Array_For_Associated_MS_1_ScanNumber_Item.projectSearchId
-                                })
-                            }
-                        }
-                    }
-                }
-
-                if ( noPeak_In_M_Over_Z_Range ) {
-
-                    trace_rt_Intensity_Line_X.push( scan_retentionTime_Minutes )
-                    trace_rt_Intensity_Line_Y.push( 0 )
-                    trace_rt_Intensity_Tooltips.push(
-                        "MS 1" +
-                        "<br><b>Scan Number</b>: " + scanItem.scanNumber +
-                        "<br><b>Scan Level</b>: " + scanItem.scanLevel +
-                        "<br><b>No Scan Peak</b>" +
-                        "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
-
-                    const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
-
-                    if ( singularFeatureItem_Array_For_Associated_MS_1_ScanNumber ) {
-                        //  Have SingularFeature Items for this MS 1 scan number
-
-                        for ( const singularFeatureItem_Array_For_Associated_MS_1_ScanNumber_Item of singularFeatureItem_Array_For_Associated_MS_1_ScanNumber ) {
-
-                            const singularFeatureItem_For_Associated_MS_1_ScanNumber = singularFeatureItem_Array_For_Associated_MS_1_ScanNumber_Item.singularFeatureItem
-
-                            singularFeature_And_Its_ScanData.push({
-                                singularFeatureItem: singularFeatureItem_For_Associated_MS_1_ScanNumber,
-                                scanItem,
-                                peakToUse_DisplayDataForSingularFeature_Tooltip: undefined,  //  May NOT be populated
-                                y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded
-                            })
-                        }
-
-                    }
-                }
-            }
-
-            // console.log( "scanCount_Where_MoreThanOnePeak_InsideWindow: " + scanCount_Where_MoreThanOnePeak_InsideWindow )
-        }
-
-        if ( trace_rt_Intensity_Line_X.length > 0 ) {
-
-            //  Scan Trace Smoothing if needed
-
-            if ( this.props.smoothingOption_Selection === SmoothingOption_Enum.SAVITZKY_GOLAY ) {
-
-                const result = smoothSavitzkyGolay( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
-
-                if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
-                    const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
-
-                    if ( result.x[index] !== trace_rt_Intensity_Line_X[index] ) {
-                        const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
-                        console.warn(msg)
-                        throw Error(msg)
-                    }
-                }
-
-                trace_rt_Intensity_Line_Y =  result.y
-
-            } else if ( this.props.smoothingOption_Selection === SmoothingOption_Enum.LOWESS ) {
-
-                // console.log( "BEFORE call to 'smoothLowess'.  Input X array: ", trace_rt_Intensity_Line_X )
-                // console.log( "BEFORE call to 'smoothLowess'.  Input Y array: ", trace_rt_Intensity_Line_Y )
-                // console.log( "BEFORE call to 'smoothLowess'.  NO 'smoothingFactor' parameter" )
-                // console.log( "BEFORE call to 'smoothLowess'.  Reported Peptide Id: " + this.props.selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id )
-
-                const result = smoothLowess( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
-
-                // console.log( "AFTER call to 'smoothLowess'.  result: ", result )
-
-                if ( ! result ) {
-                    const msg = "smoothLowess returned nothing.  feature_detection_root__project_scnfl_mapping_tbl_Id: " + this.props.featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.feature_detection_root__project_scnfl_mapping_tbl_Id
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                if ( ! result.x ) {
-                    const msg = "smoothLowess returned an object without a property 'x'.  feature_detection_root__project_scnfl_mapping_tbl_Id: " + this.props.featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.feature_detection_root__project_scnfl_mapping_tbl_Id
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                if ( ! Array.isArray( result.x )  ) {
-                    const msg = "smoothLowess returned an object ( ! Array.isArray( result.x )  ).  feature_detection_root__project_scnfl_mapping_tbl_Id: " + this.props.featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.feature_detection_root__project_scnfl_mapping_tbl_Id
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                if ( ! Array.isArray( result.y)  ) {
-                    const msg = "smoothLowess returned an object ( ! Array.isArray( result.y )  ).  feature_detection_root__project_scnfl_mapping_tbl_Id: " + this.props.featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.feature_detection_root__project_scnfl_mapping_tbl_Id
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                if ( result.x.length !== result.y.length ) {
-                    const msg = "( result.x.length !== result.y.length )"
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
-                    const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
-                for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
-
-                    if ( result.x[index] !== trace_rt_Intensity_Line_X[index] ) {
-                        const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
-                        console.warn(msg)
-                        throw Error(msg)
-                    }
-                }
-
-                trace_rt_Intensity_Line_Y =  result.y
-            }
-
-            //   Singular Feature Trace Additions
-
-            {
-                for ( const singularFeature_And_Its_ScanData_Entry of singularFeature_And_Its_ScanData ) {
-
-                    const plot_Y_Value = trace_rt_Intensity_Line_Y[ singularFeature_And_Its_ScanData_Entry.y_Trace_Index ]
-
-                    if ( plot_Y_Value === undefined ) {
-                        const msg = "( plot_Y_Value === undefined ) Singular Feature : " + singularFeature_And_Its_ScanData_Entry.singularFeatureItem.id
-                        console.warn(msg)
-                        throw Error(msg)
-                    }
-
-                    this._plot_SingularFeature(
-                        {
-                            singularFeatureItem_ToPlot: singularFeature_And_Its_ScanData_Entry.singularFeatureItem,
-                            scanItem: singularFeature_And_Its_ScanData_Entry.scanItem,
-                            scanData_NO_Peaks_Entry_MS_1: undefined,
-                            peakToUse_DisplayDataForSingularFeature_Tooltip: singularFeature_And_Its_ScanData_Entry.peakToUse_DisplayDataForSingularFeature_Tooltip,  //  May NOT be populated
-
-                            plot_Y_Value,
-
-                            singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId,
-
-                            singularFeatureItem_Map_Key_SingularFeatureTooltip,
-                            singularFeatureEntry_ToPlot_In_PointOrder_Array,
-
-                            trace_SingularFeature_Points_X,
-                            trace_SingularFeature_Points_Y,
-                            trace_SingularFeature_Points_Tooltips,
-                        } )
-
-                    singularFeatures_NOT_PutOnChart_SingularFeature_IDs.delete( singularFeature_And_Its_ScanData_Entry.singularFeatureItem.id )  //  Delete since did put this singular feature id on the chart
-                }
-            }
-
-            //   PSM Trace Additions
-
-            {
-                for ( const psm_And_Its_ScanData_Entry of psm_And_Its_ScanData_All.psm_And_Its_ScanData_Array ) {
-
-                    const plot_Y_Value = trace_rt_Intensity_Line_Y[ psm_And_Its_ScanData_Entry.y_Trace_Index ]
-
-                    if ( plot_Y_Value === undefined ) {
-                        const msg = "( plot_Y_Value === undefined ) psmId: " + psm_And_Its_ScanData_Entry.psmItem.psmId
-                        console.warn( msg )
-                        throw Error( msg )
-                    }
-
-                    let psm_ToPlot_For_ProjectSearchId = psm_ToPlot_All.psm_ToPlot_For_ProjectSearchId_Map_Key_ProjectSearchId.get( psm_And_Its_ScanData_Entry.projectSearchId )
-                    if ( ! psm_ToPlot_For_ProjectSearchId ) {
-                        psm_ToPlot_For_ProjectSearchId = new Internal__Psm_ToPlot_For_ProjectSearchId({ projectSearchId: psm_And_Its_ScanData_Entry.projectSearchId })
-                        psm_ToPlot_All.psm_ToPlot_For_ProjectSearchId_Map_Key_ProjectSearchId.set( psm_And_Its_ScanData_Entry.projectSearchId, psm_ToPlot_For_ProjectSearchId )
-                    }
-
-                    psm_ToPlot_For_ProjectSearchId.psm_ToPlot_Entry_Array.push({
-                        plot_Y_Value,
-                        psm_And_Its_ScanData: psm_And_Its_ScanData_Entry
-                    })
-                }
-            }
-
-            //  Scan Trace
-
-            const trace_RT_Intensity_Line = {
-                name: plotlyTrace_Label,
-                x: trace_rt_Intensity_Line_X,
-                y: trace_rt_Intensity_Line_Y,
-                // type: 'scatter',
-                mode: 'lines',
-                marker: {
-                    color: plotlyTrace_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
-                },
-                //  This
-                hoverinfo: "text", //  Hover contents
-                hovertext: trace_rt_Intensity_Tooltips,
-            };
-
-            // console.log( "END Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label + ", returning a plotly trace object" )
-
-            return trace_RT_Intensity_Line // EARLY RETURN
-        }
-
-        // console.log( "END Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label + ", NOT returning a plotly trace object since NO points added to the trace" )
-
-        return null //  NO data for trace so return null
-    }
 
     ///////////////
 
@@ -3909,183 +3485,6 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
         }
     }
 
-    ///////////////
-
-    private _plot_SingularFeature(
-        {
-            singularFeatureItem_ToPlot,
-            scanData_NO_Peaks_Entry_MS_1,
-            scanItem,
-            peakToUse_DisplayDataForSingularFeature_Tooltip,  //  May NOT be populated
-
-            plot_Y_Value,   //  The 'Y' value for plotting.  Added to support smoothing
-
-            singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId,
-
-            singularFeatureItem_Map_Key_SingularFeatureTooltip,
-            singularFeatureEntry_ToPlot_In_PointOrder_Array,
-
-            trace_SingularFeature_Points_X,
-            trace_SingularFeature_Points_Y,
-            trace_SingularFeature_Points_Tooltips
-        } : {
-            singularFeatureItem_ToPlot: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry
-            scanData_NO_Peaks_Entry_MS_1:  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
-
-            scanItem: {
-                scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
-                scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
-                scan_RetentionTime: number
-                scanNumber: number
-            }
-
-            peakToUse_DisplayDataForSingularFeature_Tooltip: Internal__PeakToUse_DisplayDataForSingularFeature_Tooltip
-
-            plot_Y_Value: number
-
-            singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId: Map<number, DataTable_DataRowEntry>
-
-            singularFeatureItem_Map_Key_SingularFeatureTooltip: Map<string, CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry>
-            singularFeatureEntry_ToPlot_In_PointOrder_Array: Array<Internal__SingularFeature_Entry_ToPlot>
-
-            trace_SingularFeature_Points_X: Array<number>
-            trace_SingularFeature_Points_Y: Array<number>
-            trace_SingularFeature_Points_Tooltips: Array<string>
-        }
-    ) {
-
-        const singularFeatureList_DataTable_DataRowEntry = singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId.get( singularFeatureItem_ToPlot.id )
-        if ( ! singularFeatureList_DataTable_DataRowEntry ) {
-            throw Error("singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId.get( singularFeatureItem_ToPlot.id ) returned NOTHING for singularFeatureItem_ToPlot.id: " + singularFeatureItem_ToPlot.id )
-        }
-
-        let singularFeatureTooltip: string = undefined
-
-        let scanNumber: number = undefined
-        let scanRetentionTime_Seconds: number = undefined
-
-        if ( scanData_NO_Peaks_Entry_MS_1 ) {
-
-            scanNumber = scanData_NO_Peaks_Entry_MS_1.scanNumber
-            scanRetentionTime_Seconds = scanData_NO_Peaks_Entry_MS_1.retentionTime_InSeconds
-
-        } else if ( scanItem ) {
-
-            scanNumber = scanItem.scanNumber
-            scanRetentionTime_Seconds = scanItem.scan_RetentionTime
-
-        } else {
-            const msg = "Neither Populated: scanData_NO_Peaks_Entry_MS_1 or scanItem"
-            console.warn(msg)
-            throw Error(msg)
-        }
-
-        {
-            const singularFeatureTooltipLines: Array<string> = []
-
-            if ( this.props.featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns.length !== singularFeatureList_DataTable_DataRowEntry.columnEntries.length ) {
-                throw Error("( this.props.singularFeatureList_DataTable_RootTableObject.tableDataObject.columns.length !== singularFeatureList_DataTable_DataRowEntry.columnEntries.length )")
-            }
-
-            const columnCount = this.props.featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns.length
-
-            //  Start at columnIndex 1 since index zero is link to Scan Browser page
-
-            for ( let columnIndex = 0; columnIndex < columnCount; columnIndex++  ) {
-
-                const tableColumnData = this.props.featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns[ columnIndex ]
-                if ( ! tableColumnData ) {
-                    throw Error("this.props.singularFeatureList_DataTable_RootTableObject.tableDataObject.columns[ columnIndex ] returned nothing for columnIndex: " + columnIndex )
-                }
-                const tableRowData_ForColumn = singularFeatureList_DataTable_DataRowEntry.columnEntries[ columnIndex ]
-                if ( ! tableRowData_ForColumn ) {
-                    throw Error("singularFeatureList_DataTable_DataRowEntry.columnEntries[ columnIndex ] returned nothing for columnIndex: " + columnIndex )
-                }
-
-                if ( tableColumnData.displayName === undefined || tableColumnData.displayName === null ||
-                    tableRowData_ForColumn.valueDisplay === undefined || tableRowData_ForColumn.valueDisplay === null ) {
-                    //  Cannot put into tooltip if displayName or valueDisplay is undefined or null so skip
-
-                    continue;
-                }
-
-                const singularFeatureTooltipLine = "<b>" + tableColumnData.displayName + "</b>: " + tableRowData_ForColumn.valueDisplay;
-                singularFeatureTooltipLines.push( singularFeatureTooltipLine )
-            }
-
-            {
-                //  Code to ensure each SingularFeature has a unique string for the SingularFeature Tooltip.
-                //     This allows using the tooltip as the key to the map singularFeatureItem_Map_Key_SingularFeatureTooltip to get the singularFeatureItem Object from the tooltip string for handing click on SingularFeature in chart
-
-                let singularFeatureTooltip_Unique = false
-
-                let singularFeatureTooltip_Unique_TryCount = 0;
-
-                const _TOOLTIP_LINE_INDENT = "   ";
-
-                while ( ! singularFeatureTooltip_Unique ) {
-
-                    //  Set singularFeatureTooltip variable (declared above) here
-
-                    singularFeatureTooltip = (
-                        "<b>Singular Feature Data</b>" +
-                        ":" +
-                        " ".repeat( singularFeatureTooltip_Unique_TryCount ) + //  Inserted to make unique
-                        "<br>" +
-                        _TOOLTIP_LINE_INDENT +
-                        singularFeatureTooltipLines.join("<br>" + _TOOLTIP_LINE_INDENT ) +
-                        '<br>' +
-                        '<br>' +
-                        '<b>Associated MS 1 Scan</b>: ' +
-                        '<br>' +
-                        _TOOLTIP_LINE_INDENT +
-                        '<b>MS 1 Scan Number</b>: ' +  scanNumber +
-                        '<br>' +
-                        _TOOLTIP_LINE_INDENT +
-                        '<b>MS 1 Scan RT(Min)</b>: ' + ( scanRetentionTime_Seconds / 60 ).toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
-                        "<br>" +
-                        (
-                            peakToUse_DisplayDataForSingularFeature_Tooltip ? (
-                                _TOOLTIP_LINE_INDENT +
-                                '<b>MS 1 Scan Peak M/Z</b>: ' + peakToUse_DisplayDataForSingularFeature_Tooltip.peak_MZ.toFixed( _M_OVER_Z_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
-                                '<br>' +
-                                _TOOLTIP_LINE_INDENT +
-                                '<b>MS 1 Scan ' + peakToUse_DisplayDataForSingularFeature_Tooltip.peak_Intensity_Or_IonCount__Label +
-                                '</b>: ' + peakToUse_DisplayDataForSingularFeature_Tooltip.peak_Intensity_Or_IonCount__Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY )
-                            ) : ""
-                        )
-                    )
-
-                    if ( ! singularFeatureItem_Map_Key_SingularFeatureTooltip.has( singularFeatureTooltip ) ) {
-
-                        //  singularFeatureTooltip string is unique in map keys
-
-                        singularFeatureItem_Map_Key_SingularFeatureTooltip.set( singularFeatureTooltip, singularFeatureItem_ToPlot )
-
-                        singularFeatureEntry_ToPlot_In_PointOrder_Array.push({
-                            singularFeatureItem: singularFeatureItem_ToPlot, singularFeature_Tooltip_String: singularFeatureTooltip
-                        } )
-
-                        singularFeatureTooltip_Unique = true;
-
-                    } else {
-
-                        singularFeatureTooltip_Unique_TryCount++
-                    }
-                }
-
-            }
-        }
-
-        const retentionTimeSeconds = scanRetentionTime_Seconds;  //  SingularFeature positioned using retention time of MS 1 Scan
-
-        const retentionTime_Minutes = retentionTimeSeconds / 60
-
-        trace_SingularFeature_Points_X.push( retentionTime_Minutes )
-        trace_SingularFeature_Points_Y.push( plot_Y_Value )
-        trace_SingularFeature_Points_Tooltips.push( singularFeatureTooltip )
-    }
-
     ////////////////////    RENDER
 
     /**
@@ -4097,35 +3496,42 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
             <div>
                 <div style={ { position: "relative" } }>
 
-                    <div style={ { display: "flex", flexWrap: "wrap", gap: 10 } }>
-                        <div
-                            style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT, borderStyle: "solid", borderWidth: 1, borderColor: "black" } }
-                        >
-                            <div
-                                ref={this.plot_div_Ref}
-                                style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
-                            ></div>
-                        </div>
+                    {/* Show Area under the curve and the  Retention Time Range used */}
 
-                        {/* WAS
-                                <div
-                                    style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT, borderStyle: "solid", borderWidth: 1, borderColor: "black" } }
-                                >
-                                    <div
-                                        ref={this.plot_Ion_Current_Ref}
-                                        style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
-                                    ></div>
-                                </div>
-                                <div
-                                    style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT, borderStyle: "solid", borderWidth: 1, borderColor: "black" } }
-                                >
-                                    <div
-                                        ref={this.plot_Ion_Count_Ref}
-                                        style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
-                                    ></div>
-                                </div>
-                              */}
+                    { this._areaUnderCurve_Display !== undefined ? (
+
+                        <div style={ { marginBottom: 10 } }>
+                            <div style={ { fontSize: 18 } }>
+                                <span style={ { fontWeight: "bold" } }>Peak area: </span>
+                                <span>
+                                    { _areaUnderCurve_Display_FormattingFunction( this._areaUnderCurve_Display ) }
+                                </span>
+                            </div>
+                            <div>
+                                <span>Boundaries for peak area calculation: </span>
+                                <span>
+                                    { this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Min.toString() }
+                                </span>
+                                <span> minutes to </span>
+                                <span>
+                                    { this._retentionTime_Minutes_Range_ForChart_Local_PossiblyZoomIn_Max.toString() }
+                                </span>
+                                <span> minutes (calculated using Δ in seconds).</span>
+
+                            </div>
+                        </div>
+                    ) : null }
+
+                    {/*  Outer container <div> of the actual Chart  */ }
+                    <div
+                        style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT, borderStyle: "solid", borderWidth: 1, borderColor: "black" } }
+                    >
+                        <div
+                            ref={this.plot_div_Ref}
+                            style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
+                        ></div>
                     </div>
+
 
                     {/*  Overlay for Creating or Updating  */}
                     { this._showCreatingMessage || this._showUpdatingMessage || this._show_NO_DATA_ForSelection_Message || this._singularFeatures_NOT_PutOnChart_ShowMessage ? (
@@ -4271,6 +3677,846 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
         );
     }
 }
+
+////////////
+
+//
+
+/**
+ *
+ * @param plotlyTrace_Label
+ * @param m_Over_Z_Window_Min
+ * @param m_Over_Z_Window_Max
+ * @param m_Over_Z_Window_Index
+ * @param scanItem_Array_SortOn_RetentionTime
+ * @param singularFeatureList_LOCAL_PossiblyFiltered
+ * @param singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId
+ * @param singularFeatureItem_Map_Key_SingularFeatureTooltip
+ * @param singularFeatures_NOT_PutOnChart_SingularFeature_IDs
+ * @param trace_Psm_Points_X
+ * @param trace_Psm_Points_Y
+ * @param trace_Psm_Points_Tooltips
+ * @private
+ */
+const _for_Component__Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component___Create_Single_PlotlyTrace_Etc__For_MZ_OR_MZ_Plus_X_Isotope = function (
+    {
+        chartCreate__IonCurrent__IonCount__Enum,
+
+        scanPeakSelect,
+        smoothingOption_Selection,
+
+        plotlyTrace_Label,
+        plotlyTrace_Color,
+
+        m_Over_Z_Window_Min,
+        m_Over_Z_Window_Max,
+        m_Over_Z_Window_Index,  // Not sure used
+
+        scanItem_Array_SortOn_RetentionTime,
+
+        psmTblData_Array__Map_Key_ProjectSearchId,
+
+        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+
+        dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId,
+
+        featureDetection_ViewPage__Chromatogram_Component_Params,
+
+        scanData_NO_Peaks_Data_Holder__ALL_SCANS,
+
+        featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results,
+
+        featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter,
+
+        //  Updated
+        singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId,
+        singularFeatureItem_Map_Key_SingularFeatureTooltip,
+        singularFeatureEntry_ToPlot_In_PointOrder_Array,
+        singularFeatures_NOT_PutOnChart_SingularFeature_IDs,
+
+        trace_SingularFeature_Points_X,
+        trace_SingularFeature_Points_Y,
+        trace_SingularFeature_Points_Tooltips,
+
+        psm_ToPlot_All
+    } : {
+        chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum
+
+        scanPeakSelect: ScanPeakSelect_Enum
+
+        smoothingOption_Selection: SmoothingOption_Enum
+
+        plotlyTrace_Label: string
+        plotlyTrace_Color: string
+
+        m_Over_Z_Window_Min: number
+        m_Over_Z_Window_Max: number
+        m_Over_Z_Window_Index: number  // Not sure used
+
+        scanItem_Array_SortOn_RetentionTime: Array<{
+            scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+            scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+            scan_RetentionTime: number
+            scanNumber: number
+            scanLevel: number
+        }>
+
+        //  ONLY if have Searches
+        psmTblData_Array__Map_Key_ProjectSearchId: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>
+
+        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
+
+        dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId: Internal_DataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId
+
+        featureDetection_ViewPage__Chromatogram_Component_Params: FeatureDetection_ViewPage__Chromatogram_Component_Params
+
+        scanData_NO_Peaks_Data_Holder__ALL_SCANS: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
+
+        featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results: FeatureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results
+
+        featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter: FeatureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter
+
+        //  Updated
+        singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId: Map<number, DataTable_DataRowEntry>
+        singularFeatureItem_Map_Key_SingularFeatureTooltip: Map<string, CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry>
+        singularFeatureEntry_ToPlot_In_PointOrder_Array: Array<Internal__SingularFeature_Entry_ToPlot>
+        singularFeatures_NOT_PutOnChart_SingularFeature_IDs: Set<number>
+
+        trace_SingularFeature_Points_X: Array<number>
+        trace_SingularFeature_Points_Y: Array<number>
+        trace_SingularFeature_Points_Tooltips: Array<string>
+
+        psm_ToPlot_All: Internal__Psm_ToPlot_All
+
+    }
+) : {
+    plotly_TraceData: Plotly.Data
+    areaUnderCurve_SingleTrace: number
+} { // return any since return plotly trace
+
+    // console.log( "START Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label )
+
+    //  Middle between m_Over_Z_Window_Min and m_Over_Z_Window_Max
+    const m_Over_Z_Window_Middle_Between_Min_Max = m_Over_Z_Window_Min + ( ( m_Over_Z_Window_Max - m_Over_Z_Window_Min ) / 2 )
+
+    const singularFeatureItem_Array_Map_Key_Associated_MS_1_ScanNumber: Map<number, Array<{ singularFeatureItem: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry, singularFeatureItem_m_Over_Z_Min_Max__Ranges_Index: number }>> = new Map()
+
+    const ms_1_ScanNumber_Map_Key_SingularFeatureId: Map<number, number> = new Map()
+
+    const scanData_NO_Peaks_Entry_Map_Key_ScanNumber: Map<number,  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map()
+
+    for ( const scanItem of dataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_For_Selected_ProjectScanFileId.data.scanData_NO_Peaks_Data_Holder__For_ALL_SingularFeatures.scanData.scansArray ) {
+
+        scanData_NO_Peaks_Entry_Map_Key_ScanNumber.set( scanItem.scanNumber, scanItem )
+    }
+
+
+    let psmItem_Array_Map_Key_Associated_MS_1_ScanNumber: Map<number, Array<{
+        psmItem: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId, psmItem_m_Over_Z_Min_Max__Ranges_Index: number, projectSearchId: number
+    }>> = undefined
+    let ms_1_ScanNumber_Map_Key_PsmId: Map<number, number> = undefined
+
+
+    if ( reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds ) {
+
+        psmItem_Array_Map_Key_Associated_MS_1_ScanNumber = new Map()
+        ms_1_ScanNumber_Map_Key_PsmId = new Map()
+
+        for ( const projectSearchId of featureDetection_ViewPage__Chromatogram_Component_Params.projectSearchIds ) {
+
+            const psmTblData_Array = psmTblData_Array__Map_Key_ProjectSearchId.get( projectSearchId )
+            if ( ! psmTblData_Array ) {
+                // NONE for projectSearchId
+                continue // EARLY CONTINUE
+            }
+
+            for ( const psmItem of psmTblData_Array ) {
+
+                const scanData_NO_Peaks_For_ScanNumber_On_PSM: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber = scanData_NO_Peaks_Data_Holder__ALL_SCANS.scanData.get_ScanData_NO_Peaks_For_ScanNumber( psmItem.scanNumber )
+                if ( ! scanData_NO_Peaks_For_ScanNumber_On_PSM ) {
+                    const msg = "scanData_NO_Peaks_Data_Holder__ALL_SCANS.scanData.get_ScanData_NO_Peaks_For_ScanNumber( psmItem.scanNumber ) returned NOTHING for psmItem.scanNumber: " + psmItem.scanNumber
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                {
+                    let precursor_M_Over_Z = psmItem.precursor_M_Over_Z
+
+                    if ( precursor_M_Over_Z === undefined || precursor_M_Over_Z == null ) {
+
+                        precursor_M_Over_Z = scanData_NO_Peaks_For_ScanNumber_On_PSM.precursor_M_Over_Z;
+                    }
+
+                    if ( precursor_M_Over_Z < m_Over_Z_Window_Min || precursor_M_Over_Z > m_Over_Z_Window_Max ) {
+                        // psmItem NOT for mz window so SKIP
+
+                        continue; // EARLY CONTINUE
+                    }
+                }
+
+                let scanData_NO_Peaks_Entry_MS_1 = scanData_NO_Peaks_For_ScanNumber_On_PSM //  Initialize to scan number on PSM and then go up parentScanNumber until get to level 1
+
+                while ( scanData_NO_Peaks_Entry_MS_1.level > 1 ) {
+                    scanData_NO_Peaks_Entry_MS_1 = scanData_NO_Peaks_Data_Holder__ALL_SCANS.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanData_NO_Peaks_Entry_MS_1.parentScanNumber )
+                    if ( ! scanData_NO_Peaks_Entry_MS_1 ) {
+                        throw Error("scanData_NO_Peaks_Data_Holder__ALL_SCANS.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanData_NO_Peaks_Entry_MS_1.parentScanNumber ) returned NOTHING for scanData_NO_Peaks_Entry_MS_1.parentScanNumber: " + scanData_NO_Peaks_Entry_MS_1.parentScanNumber + ", psmItem.scanNumber: " + psmItem.scanNumber )
+                    }
+                }
+
+                let psmItem_Array = psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.scanNumber )
+                if ( ! psmItem_Array ) {
+                    psmItem_Array = []
+                    psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.set( scanData_NO_Peaks_Entry_MS_1.scanNumber, psmItem_Array )
+                }
+
+                psmItem_Array.push({ psmItem, psmItem_m_Over_Z_Min_Max__Ranges_Index: m_Over_Z_Window_Index, projectSearchId })
+
+                ms_1_ScanNumber_Map_Key_PsmId.set( psmItem.psmId, scanData_NO_Peaks_Entry_MS_1.scanNumber )
+            }
+        }
+    }
+
+    for ( const singularFeatureItem of featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results.featureDetection_SingularFeature_Entries_For_PersistentId ) {
+
+        const m_over_z_SingularFeature = singularFeatureItem.base_isotope_peak
+        // PeptideMassCalculator.calculateMZ_From_MonoisotopicMass_Charge({
+        //     monoisotopicMass: singularFeatureItem.monoisotopic_mass,
+        //     charge: singularFeatureItem.charge
+        // })
+
+        if ( m_over_z_SingularFeature < m_Over_Z_Window_Min || m_over_z_SingularFeature > m_Over_Z_Window_Max ) {
+            // singularFeatureItem NOT for mz window so SKIP
+            continue; // EARLY CONTINUE
+        }
+
+        let scanData_NO_Peaks_Entry_MS_1 = scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( singularFeatureItem.ms_1_scan_number )
+        if ( ! scanData_NO_Peaks_Entry_MS_1 ) {
+            throw Error("scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( singularFeatureItem.ms_1_scan_number ) returned NOTHING for singularFeatureItem.ms_1_scan_number: " + singularFeatureItem.ms_1_scan_number )
+        }
+        while ( scanData_NO_Peaks_Entry_MS_1.level > 1 ) {
+            scanData_NO_Peaks_Entry_MS_1 = scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.parentScanNumber )
+            if ( ! scanData_NO_Peaks_Entry_MS_1 ) {
+                throw Error("scanData_NO_Peaks_Entry_Map_Key_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.parentScanNumber ) returned NOTHING for scanData_NO_Peaks_Entry_MS_1.parentScanNumber: " + scanData_NO_Peaks_Entry_MS_1.parentScanNumber + ", singularFeatureItem.scanNumber: " + singularFeatureItem.ms_1_scan_number )
+            }
+        }
+
+        let singularFeatureItem_Array = singularFeatureItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanData_NO_Peaks_Entry_MS_1.scanNumber )
+        if ( ! singularFeatureItem_Array ) {
+            singularFeatureItem_Array = []
+            singularFeatureItem_Array_Map_Key_Associated_MS_1_ScanNumber.set( scanData_NO_Peaks_Entry_MS_1.scanNumber, singularFeatureItem_Array )
+        }
+
+        singularFeatureItem_Array.push({ singularFeatureItem, singularFeatureItem_m_Over_Z_Min_Max__Ranges_Index: m_Over_Z_Window_Index })
+
+        ms_1_ScanNumber_Map_Key_SingularFeatureId.set( singularFeatureItem.id, scanData_NO_Peaks_Entry_MS_1.scanNumber )
+    }
+
+    //  For the SingularFeatures to go with the scans/peaks on this trace
+
+    const singularFeature_And_Its_ScanData: Array<{
+        singularFeatureItem: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry
+        scanItem: {
+            scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+            scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+            scan_RetentionTime: number
+            scanNumber: number
+        }
+        peakToUse_DisplayDataForSingularFeature_Tooltip: Internal__PeakToUse_DisplayDataForSingularFeature_Tooltip
+        y_Trace_Index: number
+    }> = []
+
+    //  For the PSMs to go with the scans/peaks on this trace
+
+    const psm_And_Its_ScanData_All: Internal__Psm_And_Its_ScanData_All = {
+        psm_And_Its_ScanData_Array: []
+    }
+
+    //  For the Scan Trace
+
+    const trace_rt_Intensity_Line_X: Array<number> = []
+    let trace_rt_Intensity_Line_Y: Array<number> = []  // 'let' to allow replace after smoothing
+    const trace_rt_Intensity_Tooltips: Array<string> = []
+
+    //  Compute 'areaUnderCurve_SingleTrace'
+
+    let areaUnderCurve_SingleTrace = 0
+
+    //  Processing for each charge value
+    {
+        let scanCount_Where_MoreThanOnePeak_InsideWindow = 0;
+
+        for ( const scanItem of scanItem_Array_SortOn_RetentionTime ) {
+
+            if ( scanItem.scan_RetentionTime === undefined || scanItem.scan_RetentionTime === null ) {
+                const msg = "( scanItem.scan_RetentionTime === undefined || scanItem.scan_RetentionTime === null ) "
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            const scan_retentionTime_Minutes = scanItem.scan_RetentionTime / 60 // convert RT to minutes
+
+            const singularFeatureItem_Array_For_Associated_MS_1_ScanNumber = singularFeatureItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanItem.scanNumber )
+
+
+            let psmItem_Array_For_Associated_MS_1_ScanNumber: Array<{
+                psmItem: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId, psmItem_m_Over_Z_Min_Max__Ranges_Index: number, projectSearchId: number
+            }> = undefined
+
+            if ( psmItem_Array_Map_Key_Associated_MS_1_ScanNumber ) {
+                psmItem_Array_For_Associated_MS_1_ScanNumber = psmItem_Array_Map_Key_Associated_MS_1_ScanNumber.get( scanItem.scanNumber )
+            }
+
+
+            let noPeak_In_M_Over_Z_Range = false
+
+            const scanItem_WithPeaks = scanItem.scan_WithPeaks
+
+            if ( ! scanItem_WithPeaks || scanItem_WithPeaks.peaks.length === 0 ) {
+
+                noPeak_In_M_Over_Z_Range = true
+
+            } else {
+
+                let peakToUse: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak = undefined
+                let peakToUse_DifferenceFrom_M_Over_Z_RangeCenter: number = undefined
+
+                for ( const peak of scanItem_WithPeaks.peaks ) {
+
+                    if ( peak.mz < m_Over_Z_Window_Min || peak.mz > m_Over_Z_Window_Max ) {
+                        // peak NOT for current mz window so SKIP
+                        continue; // EARLY CONTINUE
+                    }
+
+                    if ( peakToUse === undefined ) {
+                        peakToUse = peak
+                        peakToUse_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
+                    } else {
+                        scanCount_Where_MoreThanOnePeak_InsideWindow++
+
+                        if ( scanPeakSelect === ScanPeakSelect_Enum.MAX_PEAK_INTENSITY ) {
+                            if ( peakToUse.intensity < peak.intensity ) {
+                                peakToUse = peak
+                            }
+                        } else if ( scanPeakSelect === ScanPeakSelect_Enum.PEAK_MZ_CENTER_OF_MZ_RANGE ) {
+
+                            const peak_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
+
+                            if ( peak_DifferenceFrom_M_Over_Z_RangeCenter < peakToUse_DifferenceFrom_M_Over_Z_RangeCenter ) {
+                                peakToUse = peak
+                                peakToUse_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
+                            }
+                        } else {
+                            throw Error("Unknown value for scanPeakSelect: " + scanPeakSelect )
+                        }
+                    }
+                }
+
+                if ( ! peakToUse ) {
+                    //  NO Peak on Scan is in the mz range for this charge so Set NO Peak In M/Z range flag to true
+
+                    noPeak_In_M_Over_Z_Range = true
+
+                } else {
+
+                    let tooltip_Peak_Value_Label = "Peak Intensity"
+
+                    let lineY_Value = peakToUse.intensity
+
+                    if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+
+                        //  Ion Count
+
+                        tooltip_Peak_Value_Label = "Peak Ion Count"
+
+                        // Ion Count = total ion current (or intensity of a specific feature) * ion injection time / 1000 (because total ion current is in ions/second and ion injection time is in milliseconds).
+
+                        lineY_Value = peakToUse.intensity /  scanItem_WithPeaks.ionInjectionTime / 1000
+                    }
+
+                    const peakToUse_DisplayDataForSingularFeature_Tooltip: Internal__PeakToUse_DisplayDataForSingularFeature_Tooltip = {
+                        peak_MZ: peakToUse.mz,
+                        peak_Intensity_Or_IonCount__Label: tooltip_Peak_Value_Label,
+                        peak_Intensity_Or_IonCount__Value: lineY_Value
+                    }
+
+                    trace_rt_Intensity_Line_X.push( scan_retentionTime_Minutes )
+                    trace_rt_Intensity_Line_Y.push( lineY_Value )
+                    trace_rt_Intensity_Tooltips.push(
+                        "MS 1" +
+                        "<br><b>Scan Number</b>: " + scanItem.scanNumber +
+                        "<br><b>Scan Level</b>: " + scanItem.scanLevel +
+                        "<br><b>Peak mz</b>: " + peakToUse.mz.toFixed( _M_OVER_Z_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
+                        "<br><b>" + tooltip_Peak_Value_Label + "</b>: " + lineY_Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY ) +
+                        "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
+
+
+
+                    if ( trace_rt_Intensity_Line_X.length > 1 ) {
+
+                        const chart_Y_Average = ( trace_rt_Intensity_Line_Y[ trace_rt_Intensity_Line_Y.length - 1 ] + trace_rt_Intensity_Line_Y[ trace_rt_Intensity_Line_Y.length - 2 ] ) / 2
+
+                        const area = chart_Y_Average * ( ( trace_rt_Intensity_Line_X[ trace_rt_Intensity_Line_X.length - 1 ] - trace_rt_Intensity_Line_X[ trace_rt_Intensity_Line_X.length - 2 ] ) * 60 )  // '* 60' to change X axis values to seconds
+
+                        areaUnderCurve_SingleTrace += area
+                    }
+
+
+
+                    const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
+
+                    if ( singularFeatureItem_Array_For_Associated_MS_1_ScanNumber ) {
+                        //  Have SingularFeature Items for this MS 1 scan number
+
+                        for ( const singularFeatureItem_Array_For_Associated_MS_1_ScanNumber_Item of singularFeatureItem_Array_For_Associated_MS_1_ScanNumber ) {
+
+                            const singularFeatureItem_For_Associated_MS_1_ScanNumber = singularFeatureItem_Array_For_Associated_MS_1_ScanNumber_Item.singularFeatureItem
+
+                            singularFeature_And_Its_ScanData.push({
+                                singularFeatureItem: singularFeatureItem_For_Associated_MS_1_ScanNumber,
+                                scanItem,
+                                peakToUse_DisplayDataForSingularFeature_Tooltip,
+                                y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded
+                            })
+                        }
+                    }
+
+                    if ( psmItem_Array_For_Associated_MS_1_ScanNumber ) {
+                        //  Have PSM Items for this MS 1 scan number
+
+                        for ( const psmItem_Array_For_Associated_MS_1_ScanNumber_Item of psmItem_Array_For_Associated_MS_1_ScanNumber ) {
+
+                            const psmItem_For_Associated_MS_1_ScanNumber = psmItem_Array_For_Associated_MS_1_ScanNumber_Item.psmItem
+
+                            psm_And_Its_ScanData_All.psm_And_Its_ScanData_Array.push({
+                                psmItem: psmItem_For_Associated_MS_1_ScanNumber,
+                                scanItem,
+                                peakToUse_DisplayDataForSingularFeature_Tooltip,
+                                y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded,
+                                projectSearchId: psmItem_Array_For_Associated_MS_1_ScanNumber_Item.projectSearchId
+                            })
+                        }
+                    }
+                }
+            }
+
+            if ( noPeak_In_M_Over_Z_Range ) {
+
+                trace_rt_Intensity_Line_X.push( scan_retentionTime_Minutes )
+                trace_rt_Intensity_Line_Y.push( 0 )
+                trace_rt_Intensity_Tooltips.push(
+                    "MS 1" +
+                    "<br><b>Scan Number</b>: " + scanItem.scanNumber +
+                    "<br><b>Scan Level</b>: " + scanItem.scanLevel +
+                    "<br><b>No Scan Peak</b>" +
+                    "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
+
+                const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
+
+                if ( singularFeatureItem_Array_For_Associated_MS_1_ScanNumber ) {
+                    //  Have SingularFeature Items for this MS 1 scan number
+
+                    for ( const singularFeatureItem_Array_For_Associated_MS_1_ScanNumber_Item of singularFeatureItem_Array_For_Associated_MS_1_ScanNumber ) {
+
+                        const singularFeatureItem_For_Associated_MS_1_ScanNumber = singularFeatureItem_Array_For_Associated_MS_1_ScanNumber_Item.singularFeatureItem
+
+                        singularFeature_And_Its_ScanData.push({
+                            singularFeatureItem: singularFeatureItem_For_Associated_MS_1_ScanNumber,
+                            scanItem,
+                            peakToUse_DisplayDataForSingularFeature_Tooltip: undefined,  //  May NOT be populated
+                            y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded
+                        })
+                    }
+
+                }
+            }
+        }
+
+        // console.log( "scanCount_Where_MoreThanOnePeak_InsideWindow: " + scanCount_Where_MoreThanOnePeak_InsideWindow )
+    }
+
+    if ( trace_rt_Intensity_Line_X.length > 0 ) {
+
+        //  Scan Trace Smoothing if needed
+
+        if ( smoothingOption_Selection === SmoothingOption_Enum.SAVITZKY_GOLAY ) {
+
+            try {
+                const result = smoothSavitzkyGolay( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */ )
+
+                if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
+                    const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
+                    console.warn( msg )
+                    throw Error( msg )
+                }
+
+                for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
+
+                    if ( result.x[ index ] !== trace_rt_Intensity_Line_X[ index ] ) {
+                        const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
+                        console.warn( msg )
+                        throw Error( msg )
+                    }
+                }
+
+                trace_rt_Intensity_Line_Y = result.y
+
+            } catch ( e ) {
+                //  Eat Exception  Leave it not smoothed
+            }
+
+        } else if ( smoothingOption_Selection === SmoothingOption_Enum.LOWESS ) {
+
+            // console.log( "BEFORE call to 'smoothLowess'.  Input X array: ", trace_rt_Intensity_Line_X )
+            // console.log( "BEFORE call to 'smoothLowess'.  Input Y array: ", trace_rt_Intensity_Line_Y )
+            // console.log( "BEFORE call to 'smoothLowess'.  NO 'smoothingFactor' parameter" )
+            // console.log( "BEFORE call to 'smoothLowess'.  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id )
+
+            try {
+                const result = smoothLowess( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
+
+                // console.log( "AFTER call to 'smoothLowess'.  result: ", result )
+
+                if ( ! result ) {
+                    const msg = "smoothLowess returned nothing.  feature_detection_root__project_scnfl_mapping_tbl_Id: " + featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.feature_detection_root__project_scnfl_mapping_tbl_Id
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                if ( ! result.x ) {
+                    const msg = "smoothLowess returned an object without a property 'x'.  feature_detection_root__project_scnfl_mapping_tbl_Id: " + featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.feature_detection_root__project_scnfl_mapping_tbl_Id
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                if ( ! Array.isArray( result.x )  ) {
+                    const msg = "smoothLowess returned an object ( ! Array.isArray( result.x )  ).  feature_detection_root__project_scnfl_mapping_tbl_Id: " + featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.feature_detection_root__project_scnfl_mapping_tbl_Id
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                if ( ! Array.isArray( result.y)  ) {
+                    const msg = "smoothLowess returned an object ( ! Array.isArray( result.y )  ).  feature_detection_root__project_scnfl_mapping_tbl_Id: " + featureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Parameter.feature_detection_root__project_scnfl_mapping_tbl_Id
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                if ( result.x.length !== result.y.length ) {
+                    const msg = "( result.x.length !== result.y.length )"
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
+                    const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
+
+                    if ( result.x[index] !== trace_rt_Intensity_Line_X[index] ) {
+                        const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+                }
+
+                trace_rt_Intensity_Line_Y =  result.y
+
+            } catch ( e ) {
+                //  Eat Exception  Leave it not smoothed
+            }
+        }
+
+        //   Singular Feature Trace Additions
+
+        {
+            for ( const singularFeature_And_Its_ScanData_Entry of singularFeature_And_Its_ScanData ) {
+
+                const plot_Y_Value = trace_rt_Intensity_Line_Y[ singularFeature_And_Its_ScanData_Entry.y_Trace_Index ]
+
+                if ( plot_Y_Value === undefined ) {
+                    const msg = "( plot_Y_Value === undefined ) Singular Feature : " + singularFeature_And_Its_ScanData_Entry.singularFeatureItem.id
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                _for_Component__Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component___Plot_SingularFeature(
+                    {
+                        singularFeatureItem_ToPlot: singularFeature_And_Its_ScanData_Entry.singularFeatureItem,
+                        scanItem: singularFeature_And_Its_ScanData_Entry.scanItem,
+                        scanData_NO_Peaks_Entry_MS_1: undefined,
+                        peakToUse_DisplayDataForSingularFeature_Tooltip: singularFeature_And_Its_ScanData_Entry.peakToUse_DisplayDataForSingularFeature_Tooltip,  //  May NOT be populated
+
+                        plot_Y_Value,
+
+                        singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId,
+
+                        featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results,
+
+                        singularFeatureItem_Map_Key_SingularFeatureTooltip,
+                        singularFeatureEntry_ToPlot_In_PointOrder_Array,
+
+                        trace_SingularFeature_Points_X,
+                        trace_SingularFeature_Points_Y,
+                        trace_SingularFeature_Points_Tooltips,
+                    } )
+
+                singularFeatures_NOT_PutOnChart_SingularFeature_IDs.delete( singularFeature_And_Its_ScanData_Entry.singularFeatureItem.id )  //  Delete since did put this singular feature id on the chart
+            }
+        }
+
+        //   PSM Trace Additions
+
+        {
+            for ( const psm_And_Its_ScanData_Entry of psm_And_Its_ScanData_All.psm_And_Its_ScanData_Array ) {
+
+                const plot_Y_Value = trace_rt_Intensity_Line_Y[ psm_And_Its_ScanData_Entry.y_Trace_Index ]
+
+                if ( plot_Y_Value === undefined ) {
+                    const msg = "( plot_Y_Value === undefined ) psmId: " + psm_And_Its_ScanData_Entry.psmItem.psmId
+                    console.warn( msg )
+                    throw Error( msg )
+                }
+
+                let psm_ToPlot_For_ProjectSearchId = psm_ToPlot_All.psm_ToPlot_For_ProjectSearchId_Map_Key_ProjectSearchId.get( psm_And_Its_ScanData_Entry.projectSearchId )
+                if ( ! psm_ToPlot_For_ProjectSearchId ) {
+                    psm_ToPlot_For_ProjectSearchId = new Internal__Psm_ToPlot_For_ProjectSearchId({ projectSearchId: psm_And_Its_ScanData_Entry.projectSearchId })
+                    psm_ToPlot_All.psm_ToPlot_For_ProjectSearchId_Map_Key_ProjectSearchId.set( psm_And_Its_ScanData_Entry.projectSearchId, psm_ToPlot_For_ProjectSearchId )
+                }
+
+                psm_ToPlot_For_ProjectSearchId.psm_ToPlot_Entry_Array.push({
+                    plot_Y_Value,
+                    psm_And_Its_ScanData: psm_And_Its_ScanData_Entry
+                })
+            }
+        }
+
+        //  Scan Trace
+
+        const trace_RT_Intensity_Line: Plotly.Data = {
+            name: plotlyTrace_Label,
+            x: trace_rt_Intensity_Line_X,
+            y: trace_rt_Intensity_Line_Y,
+            // type: 'scatter',
+            mode: 'lines',
+            marker: {
+                color: plotlyTrace_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
+            },
+            //  This
+            hoverinfo: "text", //  Hover contents
+            hovertext: trace_rt_Intensity_Tooltips,
+        };
+
+        // console.log( "END Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label + ", returning a plotly trace object" )
+
+        return  {  // EARLY RETURN
+
+            plotly_TraceData: trace_RT_Intensity_Line,
+            areaUnderCurve_SingleTrace
+        }
+    }
+
+    // console.log( "END Plotly Trace for plotlyTrace_Label: " + plotlyTrace_Label + ", NOT returning a plotly trace object since NO points added to the trace" )
+
+    return null //  NO data for trace so return null
+}
+
+///////////////
+
+/**
+ *
+ * @param singularFeatureItem_ToPlot
+ * @param scanData_NO_Peaks_Entry_MS_1
+ * @param scanItem
+ * @param peakToUse_DisplayDataForSingularFeature_Tooltip
+ * @param plot_Y_Value
+ * @param singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId
+ * @param featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results
+ * @param singularFeatureItem_Map_Key_SingularFeatureTooltip
+ * @param singularFeatureEntry_ToPlot_In_PointOrder_Array
+ * @param trace_SingularFeature_Points_X
+ * @param trace_SingularFeature_Points_Y
+ * @param trace_SingularFeature_Points_Tooltips
+ */
+const _for_Component__Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component___Plot_SingularFeature = function (
+    {
+        singularFeatureItem_ToPlot,
+        scanData_NO_Peaks_Entry_MS_1,
+        scanItem,
+        peakToUse_DisplayDataForSingularFeature_Tooltip,  //  May NOT be populated
+
+        plot_Y_Value,   //  The 'Y' value for plotting.  Added to support smoothing
+
+        singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId,
+
+        featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results,
+
+        singularFeatureItem_Map_Key_SingularFeatureTooltip,
+        singularFeatureEntry_ToPlot_In_PointOrder_Array,
+
+        trace_SingularFeature_Points_X,
+        trace_SingularFeature_Points_Y,
+        trace_SingularFeature_Points_Tooltips
+    } : {
+        singularFeatureItem_ToPlot: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry
+        scanData_NO_Peaks_Entry_MS_1:  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+
+        scanItem: {
+            scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+            scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+            scan_RetentionTime: number
+            scanNumber: number
+        }
+
+        peakToUse_DisplayDataForSingularFeature_Tooltip: Internal__PeakToUse_DisplayDataForSingularFeature_Tooltip
+
+        plot_Y_Value: number
+
+        singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId: Map<number, DataTable_DataRowEntry>
+
+        featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results: FeatureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results
+
+        //  UPDATED
+
+        singularFeatureItem_Map_Key_SingularFeatureTooltip: Map<string, CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry>
+        singularFeatureEntry_ToPlot_In_PointOrder_Array: Array<Internal__SingularFeature_Entry_ToPlot>
+
+        trace_SingularFeature_Points_X: Array<number>
+        trace_SingularFeature_Points_Y: Array<number>
+        trace_SingularFeature_Points_Tooltips: Array<string>
+    }
+) {
+
+    const singularFeatureList_DataTable_DataRowEntry = singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId.get( singularFeatureItem_ToPlot.id )
+    if ( ! singularFeatureList_DataTable_DataRowEntry ) {
+        throw Error("singularFeatureList_DataTable_DataRowEntry_Map_Key_SingularFeatureId.get( singularFeatureItem_ToPlot.id ) returned NOTHING for singularFeatureItem_ToPlot.id: " + singularFeatureItem_ToPlot.id )
+    }
+
+    let singularFeatureTooltip: string = undefined
+
+    let scanNumber: number = undefined
+    let scanRetentionTime_Minutes: number = undefined
+
+    if ( scanData_NO_Peaks_Entry_MS_1 ) {
+
+        scanNumber = scanData_NO_Peaks_Entry_MS_1.scanNumber
+        scanRetentionTime_Minutes = scanData_NO_Peaks_Entry_MS_1.retentionTime_InSeconds / 60
+
+    } else if ( scanItem ) {
+
+        scanNumber = scanItem.scanNumber
+        scanRetentionTime_Minutes = scanItem.scan_RetentionTime / 60 // scan_RetentionTime is in seconds
+
+    } else {
+        const msg = "Neither Populated: scanData_NO_Peaks_Entry_MS_1 or scanItem"
+        console.warn(msg)
+        throw Error(msg)
+    }
+
+    {
+        const singularFeatureTooltipLines: Array<string> = []
+
+        if ( featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns.length !== singularFeatureList_DataTable_DataRowEntry.columnEntries.length ) {
+            throw Error("( singularFeatureList_DataTable_RootTableObject.tableDataObject.columns.length !== singularFeatureList_DataTable_DataRowEntry.columnEntries.length )")
+        }
+
+        const columnCount = featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns.length
+
+        //  Start at columnIndex 1 since index zero is link to Scan Browser page
+
+        for ( let columnIndex = 0; columnIndex < columnCount; columnIndex++  ) {
+
+            const tableColumnData = featureDetection_ViewPage__SingularFeature_DataTable_CreateChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns[ columnIndex ]
+            if ( ! tableColumnData ) {
+                throw Error("singularFeatureList_DataTable_RootTableObject.tableDataObject.columns[ columnIndex ] returned nothing for columnIndex: " + columnIndex )
+            }
+            const tableRowData_ForColumn = singularFeatureList_DataTable_DataRowEntry.columnEntries[ columnIndex ]
+            if ( ! tableRowData_ForColumn ) {
+                throw Error("singularFeatureList_DataTable_DataRowEntry.columnEntries[ columnIndex ] returned nothing for columnIndex: " + columnIndex )
+            }
+
+            if ( tableColumnData.displayName === undefined || tableColumnData.displayName === null ||
+                tableRowData_ForColumn.valueDisplay === undefined || tableRowData_ForColumn.valueDisplay === null ) {
+                //  Cannot put into tooltip if displayName or valueDisplay is undefined or null so skip
+
+                continue;
+            }
+
+            const singularFeatureTooltipLine = "<b>" + tableColumnData.displayName + "</b>: " + tableRowData_ForColumn.valueDisplay;
+            singularFeatureTooltipLines.push( singularFeatureTooltipLine )
+        }
+
+        {
+            //  Code to ensure each SingularFeature has a unique string for the SingularFeature Tooltip.
+            //     This allows using the tooltip as the key to the map singularFeatureItem_Map_Key_SingularFeatureTooltip to get the singularFeatureItem Object from the tooltip string for handing click on SingularFeature in chart
+
+            let singularFeatureTooltip_Unique = false
+
+            let singularFeatureTooltip_Unique_TryCount = 0;
+
+            const _TOOLTIP_LINE_INDENT = "   ";
+
+            while ( ! singularFeatureTooltip_Unique ) {
+
+                //  Set singularFeatureTooltip variable (declared above) here
+
+                singularFeatureTooltip = (
+                    "<b>Singular Feature Data</b>" +
+                    ":" +
+                    " ".repeat( singularFeatureTooltip_Unique_TryCount ) + //  Inserted to make unique
+                    "<br>" +
+                    _TOOLTIP_LINE_INDENT +
+                    singularFeatureTooltipLines.join("<br>" + _TOOLTIP_LINE_INDENT ) +
+                    '<br>' +
+                    '<br>' +
+                    '<b>Associated MS 1 Scan</b>: ' +
+                    '<br>' +
+                    _TOOLTIP_LINE_INDENT +
+                    '<b>MS 1 Scan Number</b>: ' +  scanNumber +
+                    '<br>' +
+                    _TOOLTIP_LINE_INDENT +
+                    '<b>MS 1 Scan RT(Min)</b>: ' + ( scanRetentionTime_Minutes ).toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
+                    "<br>" +
+                    (
+                        peakToUse_DisplayDataForSingularFeature_Tooltip ? (
+                            _TOOLTIP_LINE_INDENT +
+                            '<b>MS 1 Scan Peak M/Z</b>: ' + peakToUse_DisplayDataForSingularFeature_Tooltip.peak_MZ.toFixed( _M_OVER_Z_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
+                            '<br>' +
+                            _TOOLTIP_LINE_INDENT +
+                            '<b>MS 1 Scan ' + peakToUse_DisplayDataForSingularFeature_Tooltip.peak_Intensity_Or_IonCount__Label +
+                            '</b>: ' + peakToUse_DisplayDataForSingularFeature_Tooltip.peak_Intensity_Or_IonCount__Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY )
+                        ) : ""
+                    )
+                )
+
+                if ( ! singularFeatureItem_Map_Key_SingularFeatureTooltip.has( singularFeatureTooltip ) ) {
+
+                    //  singularFeatureTooltip string is unique in map keys
+
+                    singularFeatureItem_Map_Key_SingularFeatureTooltip.set( singularFeatureTooltip, singularFeatureItem_ToPlot )
+
+                    singularFeatureEntry_ToPlot_In_PointOrder_Array.push({
+                        singularFeatureItem: singularFeatureItem_ToPlot, singularFeature_Tooltip_String: singularFeatureTooltip
+                    } )
+
+                    singularFeatureTooltip_Unique = true;
+
+                } else {
+
+                    singularFeatureTooltip_Unique_TryCount++
+                }
+            }
+
+        }
+    }
+
+    trace_SingularFeature_Points_X.push( scanRetentionTime_Minutes )    //  SingularFeature positioned using retention time of MS 1 Scan
+    trace_SingularFeature_Points_Y.push( plot_Y_Value )
+    trace_SingularFeature_Points_Tooltips.push( singularFeatureTooltip )
+}
+
+
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -4705,8 +4951,8 @@ class Internal__MS1_Window_Size_Selection_Component extends React.Component< Int
 //    Internal Component for User change the Retention Time Min/Max
 
 class Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback_Params {
-    retentionTimeSeconds_Range_ForChart_Min: number
-    retentionTimeSeconds_Range_ForChart_Max: number
+    retentionTime_Minutes_Range_ForChart_Min: number
+    retentionTime_Minutes_Range_ForChart_Max: number
 }
 
 type Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback =
@@ -4720,11 +4966,11 @@ interface Internal__RetentionTime_Min_Max_UserEditable_Component_Props {
 
     force_SetTo_ValueFromParent: object  // On object reference change, the input values will be set to the values from Parent
 
-    retentionTimeSeconds_Range_ForChart_Min__ValueFromParent: number
-    retentionTimeSeconds_Range_ForChart_Max__ValueFromParent: number
+    retentionTime_Minutes_Range_ForChart_Min__ValueFromParent: number
+    retentionTime_Minutes_Range_ForChart_Max__ValueFromParent: number
 
-    retentionTimeSeconds_Range_ForChart_Min__DefaultValue: number
-    retentionTimeSeconds_Range_ForChart_Max__DefaultValue: number
+    retentionTime_Minutes_Range_ForChart_Min__DefaultValue: number
+    retentionTime_Minutes_Range_ForChart_Max__DefaultValue: number
 
     updatedValues_Callback: Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback
 }
@@ -4744,18 +4990,18 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
 
     private readonly _NUMBER_NOT_ASSIGNED: number = undefined
 
-    private _retentionTimeMinutes_Range_ForChart_Min__Current__Number: number
-    private _retentionTimeMinutes_Range_ForChart_Max__Current__Number: number
+    private _retentionTime_Minutes_Range_ForChart_Min__Current__Number: number
+    private _retentionTime_Minutes_Range_ForChart_Max__Current__Number: number
 
-    private _retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString: string
-    private _retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString: string
+    private _retentionTime_Minutes_Range_ForChart_Min__Current__DisplayString: string
+    private _retentionTime_Minutes_Range_ForChart_Max__Current__DisplayString: string
 
-    private _retentionTimeMinutes_Range_ForChart_Min__Current_InSeconds__Number: number
-    private _retentionTimeMinutes_Range_ForChart_Max__Current_InSeconds__Number: number
+    private _retentionTime_Minutes_Range_ForChart_Min__Current_InMinutes__Number: number
+    private _retentionTime_Minutes_Range_ForChart_Max__Current_InMinutes__Number: number
 
 
-    private _retentionTimeMinutes_Range_ForChart_Min__PrevValue: number
-    private _retentionTimeMinutes_Range_ForChart_Max__PrevValue: number
+    private _retentionTime_Minutes_Range_ForChart_Min__PrevValue: number
+    private _retentionTime_Minutes_Range_ForChart_Max__PrevValue: number
 
 
     private _updateButton_Enabled = true
@@ -4789,29 +5035,29 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
      */
     private _set_LocalProperties_On_Create_Or_SetTo_ValuesFromParent(props: Internal__RetentionTime_Min_Max_UserEditable_Component_Props) {
 
-        if ( this._retentionTimeMinutes_Range_ForChart_Min__Current_InSeconds__Number === props.retentionTimeSeconds_Range_ForChart_Min__ValueFromParent
-            && this._retentionTimeMinutes_Range_ForChart_Max__Current_InSeconds__Number === props.retentionTimeSeconds_Range_ForChart_Max__ValueFromParent ) {
+        if ( this._retentionTime_Minutes_Range_ForChart_Min__Current_InMinutes__Number === props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent
+            && this._retentionTime_Minutes_Range_ForChart_Max__Current_InMinutes__Number === props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent ) {
 
             //  Already have current values
 
             return // EARLY RETURN
         }
 
-        this._retentionTimeMinutes_Range_ForChart_Min__Current_InSeconds__Number = props.retentionTimeSeconds_Range_ForChart_Min__ValueFromParent
-        this._retentionTimeMinutes_Range_ForChart_Max__Current_InSeconds__Number = props.retentionTimeSeconds_Range_ForChart_Max__ValueFromParent
+        this._retentionTime_Minutes_Range_ForChart_Min__Current_InMinutes__Number = props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent
+        this._retentionTime_Minutes_Range_ForChart_Max__Current_InMinutes__Number = props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent
 
 
-        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this._compute_RT_Minutes_FromSeconds_ForDataFromUpstream( props.retentionTimeSeconds_Range_ForChart_Min__ValueFromParent, INTERNAL__MATH_FLOOR_CEIL.FLOOR )
-        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this._compute_RT_Minutes_FromSeconds_ForDataFromUpstream( props.retentionTimeSeconds_Range_ForChart_Max__ValueFromParent, INTERNAL__MATH_FLOOR_CEIL.CEIL )
+        this._retentionTime_Minutes_Range_ForChart_Min__Current__Number = props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent
+        this._retentionTime_Minutes_Range_ForChart_Max__Current__Number = props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent
 
-        this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number.toString()
-        this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number.toString()
+        this._retentionTime_Minutes_Range_ForChart_Min__Current__DisplayString = this._retentionTime_Minutes_Range_ForChart_Min__Current__Number.toString()
+        this._retentionTime_Minutes_Range_ForChart_Max__Current__DisplayString = this._retentionTime_Minutes_Range_ForChart_Max__Current__Number.toString()
 
-        this._retentionTimeMinutes_Range_ForChart_Min__PrevValue = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number
-        this._retentionTimeMinutes_Range_ForChart_Max__PrevValue = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number
+        this._retentionTime_Minutes_Range_ForChart_Min__PrevValue = this._retentionTime_Minutes_Range_ForChart_Min__Current__Number
+        this._retentionTime_Minutes_Range_ForChart_Max__PrevValue = this._retentionTime_Minutes_Range_ForChart_Max__Current__Number
 
-        this._retentionTimeMinutes_Range_ForChart_Min__Current_InSeconds__Number = props.retentionTimeSeconds_Range_ForChart_Min__ValueFromParent
-        this._retentionTimeMinutes_Range_ForChart_Max__Current_InSeconds__Number = props.retentionTimeSeconds_Range_ForChart_Max__ValueFromParent
+        this._retentionTime_Minutes_Range_ForChart_Min__Current_InMinutes__Number = props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent
+        this._retentionTime_Minutes_Range_ForChart_Max__Current_InMinutes__Number = props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent
 
 
         this._updateButton_Enabled = true
@@ -4822,11 +5068,11 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
      */
     private _set_LocalProperties_On_Create_Or_SetTo_Defaults() {
 
-        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this._compute_RT_Minutes_FromSeconds_ForDataFromUpstream( this.props.retentionTimeSeconds_Range_ForChart_Min__DefaultValue, INTERNAL__MATH_FLOOR_CEIL.FLOOR )
-        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this._compute_RT_Minutes_FromSeconds_ForDataFromUpstream( this.props.retentionTimeSeconds_Range_ForChart_Max__DefaultValue, INTERNAL__MATH_FLOOR_CEIL.CEIL )
+        this._retentionTime_Minutes_Range_ForChart_Min__Current__Number = this.props.retentionTime_Minutes_Range_ForChart_Min__DefaultValue
+        this._retentionTime_Minutes_Range_ForChart_Max__Current__Number = this.props.retentionTime_Minutes_Range_ForChart_Max__DefaultValue
 
-        this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number.toString()
-        this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number.toString()
+        this._retentionTime_Minutes_Range_ForChart_Min__Current__DisplayString = this._retentionTime_Minutes_Range_ForChart_Min__Current__Number.toString()
+        this._retentionTime_Minutes_Range_ForChart_Max__Current__DisplayString = this._retentionTime_Minutes_Range_ForChart_Max__Current__Number.toString()
 
         this._updateButton_Enabled = true
 
@@ -4836,38 +5082,10 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
     /**
      *
      */
-    private _compute_RT_Minutes_FromSeconds_ForDataFromUpstream( retentionTimeSeconds: number, math_FloorCeil: INTERNAL__MATH_FLOOR_CEIL ) {
-
-        const retentionTimeMinutes = ( retentionTimeSeconds / 60 )
-
-        let retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = retentionTimeMinutes * _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT__POW_10
-
-        if ( math_FloorCeil === INTERNAL__MATH_FLOOR_CEIL.FLOOR ) {
-
-            retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = Math.floor( retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil )
-
-        } else if ( math_FloorCeil === INTERNAL__MATH_FLOOR_CEIL.CEIL ) {
-
-            retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = Math.ceil( retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil )
-
-        } else {
-            const msg = "Unknown value for math_FloorCeil: " + math_FloorCeil
-            console.warn(msg)
-            throw Error(msg)
-        }
-
-        const retentionTimeMinutes_Floor_OR_Ceil_To_X_Decimal = retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil / _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT__POW_10
-
-        return retentionTimeMinutes_Floor_OR_Ceil_To_X_Decimal
-    }
-
-    /**
-     *
-     */
     private _is_AllNumbersValid() {
 
-        if ( this._retentionTimeMinutes_Range_ForChart_Min__Current__Number === this._NUMBER_NOT_ASSIGNED ||
-            this._retentionTimeMinutes_Range_ForChart_Max__Current__Number === this._NUMBER_NOT_ASSIGNED ) {
+        if ( this._retentionTime_Minutes_Range_ForChart_Min__Current__Number === this._NUMBER_NOT_ASSIGNED ||
+            this._retentionTime_Minutes_Range_ForChart_Max__Current__Number === this._NUMBER_NOT_ASSIGNED ) {
 
             return false
         }
@@ -4903,29 +5121,29 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
                 return // EARLY RETURN
             }
 
-            if ( this._retentionTimeMinutes_Range_ForChart_Min__Current__Number === this._retentionTimeMinutes_Range_ForChart_Min__PrevValue
-                && this._retentionTimeMinutes_Range_ForChart_Max__Current__Number === this._retentionTimeMinutes_Range_ForChart_Max__PrevValue ) {
+            if ( this._retentionTime_Minutes_Range_ForChart_Min__Current__Number === this._retentionTime_Minutes_Range_ForChart_Min__PrevValue
+                && this._retentionTime_Minutes_Range_ForChart_Max__Current__Number === this._retentionTime_Minutes_Range_ForChart_Max__PrevValue ) {
 
                 //  Min/Max NOT changed so no need to update
                 return // EARLY RETURN
             }
 
-            this._retentionTimeMinutes_Range_ForChart_Min__PrevValue = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number
-            this._retentionTimeMinutes_Range_ForChart_Max__PrevValue = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number
+            this._retentionTime_Minutes_Range_ForChart_Min__PrevValue = this._retentionTime_Minutes_Range_ForChart_Min__Current__Number
+            this._retentionTime_Minutes_Range_ForChart_Max__PrevValue = this._retentionTime_Minutes_Range_ForChart_Max__Current__Number
 
-            this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number.toString()
-            this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number.toString()
+            this._retentionTime_Minutes_Range_ForChart_Min__Current__DisplayString = this._retentionTime_Minutes_Range_ForChart_Min__Current__Number.toString()
+            this._retentionTime_Minutes_Range_ForChart_Max__Current__DisplayString = this._retentionTime_Minutes_Range_ForChart_Max__Current__Number.toString()
 
-            this._retentionTimeMinutes_Range_ForChart_Min__Current_InSeconds__Number = this._retentionTimeMinutes_Range_ForChart_Min__Current__Number * 60
-            this._retentionTimeMinutes_Range_ForChart_Max__Current_InSeconds__Number = this._retentionTimeMinutes_Range_ForChart_Max__Current__Number * 60
+            this._retentionTime_Minutes_Range_ForChart_Min__Current_InMinutes__Number = this._retentionTime_Minutes_Range_ForChart_Min__Current__Number
+            this._retentionTime_Minutes_Range_ForChart_Max__Current_InMinutes__Number = this._retentionTime_Minutes_Range_ForChart_Max__Current__Number
 
             this.setState({ forceRerenderObject: {} })
 
             window.setTimeout( () => {
                 try {
                     this.props.updatedValues_Callback({
-                        retentionTimeSeconds_Range_ForChart_Min: this._retentionTimeMinutes_Range_ForChart_Min__Current__Number * 60,
-                        retentionTimeSeconds_Range_ForChart_Max: this._retentionTimeMinutes_Range_ForChart_Max__Current__Number * 60
+                        retentionTime_Minutes_Range_ForChart_Min: this._retentionTime_Minutes_Range_ForChart_Min__Current__Number,
+                        retentionTime_Minutes_Range_ForChart_Max: this._retentionTime_Minutes_Range_ForChart_Max__Current__Number
                     })
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
             }, 10 )
@@ -4969,14 +5187,14 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
 
                             <span style={ { marginLeft: _MARGIN_LEFT_AFTER_HELP_SYMBOL } }> Start: </span>
                             <input
-                                value={ this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString }
+                                value={ this._retentionTime_Minutes_Range_ForChart_Min__Current__DisplayString }
                                 maxLength={ _INPUT_FIELD_MAX_LENGTH }
                                 style={ { width: _INPUT_FIELD_WIDTH } }
                                 onChange={ event => {
                                     const valueString = event.target.value
                                     if ( valueString === "" || valueString === "." || valueString === "-" ) {
-                                        this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = valueString
-                                        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this._NUMBER_NOT_ASSIGNED
+                                        this._retentionTime_Minutes_Range_ForChart_Min__Current__DisplayString = valueString
+                                        this._retentionTime_Minutes_Range_ForChart_Min__Current__Number = this._NUMBER_NOT_ASSIGNED
 
                                         this._set_UpdateButton_Enabled()
 
@@ -4989,9 +5207,9 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
                                         return; // EARLY RETURN
                                     }
 
-                                    this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = valueNumber
+                                    this._retentionTime_Minutes_Range_ForChart_Min__Current__Number = valueNumber
 
-                                    this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = valueString
+                                    this._retentionTime_Minutes_Range_ForChart_Min__Current__DisplayString = valueString
 
                                     this._set_UpdateButton_Enabled()
 
@@ -4999,14 +5217,14 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
                             />
                             <span>  End: </span>
                             <input
-                                value={ this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString }
+                                value={ this._retentionTime_Minutes_Range_ForChart_Max__Current__DisplayString }
                                 maxLength={ _INPUT_FIELD_MAX_LENGTH }
                                 style={ { width: _INPUT_FIELD_WIDTH } }
                                 onChange={ event => {
                                     const valueString = event.target.value
                                     if ( valueString === "" || valueString === "." || valueString === "-" ) {
-                                        this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = valueString
-                                        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this._NUMBER_NOT_ASSIGNED
+                                        this._retentionTime_Minutes_Range_ForChart_Max__Current__DisplayString = valueString
+                                        this._retentionTime_Minutes_Range_ForChart_Max__Current__Number = this._NUMBER_NOT_ASSIGNED
 
                                         this._set_UpdateButton_Enabled()
 
@@ -5019,9 +5237,9 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
                                         return; // EARLY RETURN
                                     }
 
-                                    this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = valueNumber
+                                    this._retentionTime_Minutes_Range_ForChart_Max__Current__Number = valueNumber
 
-                                    this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = valueString
+                                    this._retentionTime_Minutes_Range_ForChart_Max__Current__DisplayString = valueString
 
                                     this._set_UpdateButton_Enabled()
                                 } }
@@ -5084,12 +5302,49 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
+
+/**
+ * Apply Math floor or ceil to # decimal places in _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT__POW_10
+ */
+const _compute_RT_Minutes_FloorCeil_FromMinutes_Apply_Math_floor_or_ceil_To_NumberOfDecimalPlaces = function ( retentionTimeMinutes: number, math_FloorCeil: INTERNAL__MATH_FLOOR_CEIL ) {
+
+    let retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = retentionTimeMinutes * _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT__POW_10
+
+    if ( math_FloorCeil === INTERNAL__MATH_FLOOR_CEIL.FLOOR ) {
+
+        retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = Math.floor( retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil )
+
+    } else if ( math_FloorCeil === INTERNAL__MATH_FLOOR_CEIL.CEIL ) {
+
+        retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil = Math.ceil( retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil )
+
+    } else {
+        const msg = "Unknown value for math_FloorCeil: " + math_FloorCeil
+        console.warn(msg)
+        throw Error(msg)
+    }
+
+    const retentionTimeMinutes_Floor_OR_Ceil_To_X_Decimal = retentionTimeMinutes_Times_X_DecimalPlaces__Then_Math_Floor_OR_Ceil / _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAULT__POW_10
+
+    return retentionTimeMinutes_Floor_OR_Ceil_To_X_Decimal
+}
+
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+////////////////////
+////////////////////
+
+////   Internal Classes
+
 /**
  *
  */
-class Internal__RetentionTimeSeconds_Range_Min_Max {
-    readonly retentionTimeSeconds_Range_Min: number
-    readonly retentionTimeSeconds_Range_Max: number
+class Internal__RetentionTimeMinutes_Range_Min_Max {
+    readonly retentionTime_Minutes_Range_Min: number
+    readonly retentionTime_Minutes_Range_Max: number
 }
 
 /**
@@ -5106,7 +5361,7 @@ class Internal_DataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId {
 
         // readonly compute_BasedOnSingularFeatures_Compute_DataFrom_SingularFeatures_For_Single_ProjectScanFileId__Result: FeatureDetection_ViewPage__Chromatogram_Compute_DataFrom_SingularFeatures_For_Single_ProjectScanFileId__Result_Root
 
-        readonly retentionTimeSeconds_Range_Min_Max__LoadingDataFor: Internal__RetentionTimeSeconds_Range_Min_Max
+        readonly retentionTime_Minutes_Range_Min_Max__LoadingDataFor: Internal__RetentionTimeMinutes_Range_Min_Max
 
         // readonly data_BasedOnSingularFeatures_Get_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId: FeatureDetection_ViewPage__Chromatogram_Get_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_Root
     }
@@ -5124,7 +5379,7 @@ class Internal_DataFromServer_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId {
 
                 // readonly compute_BasedOnSingularFeatures_Compute_DataFrom_SingularFeatures_For_Single_ProjectScanFileId__Result: FeatureDetection_ViewPage__Chromatogram_Compute_DataFrom_SingularFeatures_For_Single_ProjectScanFileId__Result_Root
 
-                readonly retentionTimeSeconds_Range_Min_Max__LoadingDataFor: Internal__RetentionTimeSeconds_Range_Min_Max
+                readonly retentionTime_Minutes_Range_Min_Max__LoadingDataFor: Internal__RetentionTimeMinutes_Range_Min_Max
 
                 // readonly data_BasedOnSingularFeatures_Get_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId: FeatureDetection_ViewPage__Chromatogram_Get_MS1_ScanNumbers_Etc_For_Single_ProjectScanFileId_Root
             }
@@ -5340,3 +5595,12 @@ const _compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus = function (
     return ppm_Mass_For_precursor_M_Over_Z_Min_PlusMinus;
 }
 
+
+/**
+ *
+ * @param areaUnderCurve_Display
+ */
+const _areaUnderCurve_Display_FormattingFunction = function ( areaUnderCurve_Display: number ) {
+
+    return areaUnderCurve_Display.toExponential( 3 )
+}

@@ -4138,24 +4138,29 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
 
         if ( smoothingOption_Selection === SmoothingOption_Enum.SAVITZKY_GOLAY ) {
 
-            const result = smoothSavitzkyGolay( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
+            try {
+                const result = smoothSavitzkyGolay( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
 
-            if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
-                const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
-                console.warn(msg)
-                throw Error(msg)
-            }
-
-            for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
-
-                if ( result.x[index] !== trace_rt_Intensity_Line_X[index] ) {
-                    const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
+                if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
+                    const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
                     console.warn(msg)
                     throw Error(msg)
                 }
-            }
 
-            trace_rt_Intensity_Line_Y =  result.y
+                for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
+
+                    if ( result.x[index] !== trace_rt_Intensity_Line_X[index] ) {
+                        const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+                }
+
+                trace_rt_Intensity_Line_Y =  result.y
+
+            } catch ( e ) {
+                //  Eat Exception  Leave it not smoothed
+            }
 
         } else if ( smoothingOption_Selection === SmoothingOption_Enum.LOWESS ) {
 
@@ -4164,56 +4169,61 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
             // console.log( "BEFORE call to 'smoothLowess'.  NO 'smoothingFactor' parameter" )
             // console.log( "BEFORE call to 'smoothLowess'.  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id )
 
-            const result = smoothLowess( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
+            try {
+                const result = smoothLowess( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
 
-            // console.log( "AFTER call to 'smoothLowess'.  result: ", result )
+                // console.log( "AFTER call to 'smoothLowess'.  result: ", result )
 
-            if ( ! result ) {
-                const msg = "smoothLowess returned nothing.  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
-                console.warn(msg)
-                throw Error(msg)
-            }
-
-            if ( ! result.x ) {
-                const msg = "smoothLowess returned an object without a property 'x'.  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
-                console.warn(msg)
-                throw Error(msg)
-            }
-
-            if ( ! Array.isArray( result.x )  ) {
-                const msg = "smoothLowess returned an object ( ! Array.isArray( result.x )  ).  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
-                console.warn(msg)
-                throw Error(msg)
-            }
-
-            if ( ! Array.isArray( result.y)  ) {
-                const msg = "smoothLowess returned an object ( ! Array.isArray( result.y )  ).  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
-                console.warn(msg)
-                throw Error(msg)
-            }
-
-            if ( result.x.length !== result.y.length ) {
-                const msg = "( result.x.length !== result.y.length )"
-                console.warn(msg)
-                throw Error(msg)
-            }
-
-            if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
-                const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
-                console.warn(msg)
-                throw Error(msg)
-            }
-
-            for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
-
-                if ( result.x[index] !== trace_rt_Intensity_Line_X[index] ) {
-                    const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
+                if ( ! result ) {
+                    const msg = "smoothLowess returned nothing.  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
                     console.warn(msg)
                     throw Error(msg)
                 }
-            }
 
-            trace_rt_Intensity_Line_Y =  result.y
+                if ( ! result.x ) {
+                    const msg = "smoothLowess returned an object without a property 'x'.  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                if ( ! Array.isArray( result.x )  ) {
+                    const msg = "smoothLowess returned an object ( ! Array.isArray( result.x )  ).  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                if ( ! Array.isArray( result.y)  ) {
+                    const msg = "smoothLowess returned an object ( ! Array.isArray( result.y )  ).  Reported Peptide Id: " + selection_ReportedPeptide_OpenModMass_Charge.reportedPeptide_Id
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                if ( result.x.length !== result.y.length ) {
+                    const msg = "( result.x.length !== result.y.length )"
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                if ( result.x.length !== trace_rt_Intensity_Line_X.length ) {
+                    const msg = "( result.x.length !== trace_rt_Intensity_Line_X.length )"
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                for ( let index = 0; index < trace_rt_Intensity_Line_X.length; index++ ) {
+
+                    if ( result.x[index] !== trace_rt_Intensity_Line_X[index] ) {
+                        const msg = "( result.x[index] !== trace_rt_Intensity_Line_X[index] )  index: " + index
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+                }
+
+                trace_rt_Intensity_Line_Y =  result.y
+
+            } catch ( e ) {
+                //  Eat Exception  Leave it not smoothed
+            }
         }
 
 

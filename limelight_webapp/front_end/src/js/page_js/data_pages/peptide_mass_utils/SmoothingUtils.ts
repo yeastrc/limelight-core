@@ -53,6 +53,14 @@ function smoothSavitzkyGolay(
         }
 
         let ans = savitzkyGolay(yCoords, 1, options);
+
+        if ( ans === undefined ) {
+            const msg = "savitzkyGolay(yCoords, 1, options); returned undefined"
+            console.warn(msg + " for yCoords:", yCoords)
+            console.warn(msg + " xCoords:", xCoords)
+            // throw Error(msg)
+        }
+
         return {x: xCoords, y: setNegativeToZero(ans)};
     }
 
