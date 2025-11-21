@@ -358,9 +358,13 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 
 		if ( email_Contents_Control == Email_Contents_Control.FOR_OTHER ) {
 			
-			String importTrackingLine = "";
+			String importTrackingLines = "";
 			if ( fileImportTrackingDTO != null ) {
-				importTrackingLine = "\nImportTrackId: " + fileImportTrackingDTO.getId();
+				importTrackingLines = 
+						"\nImportTrackId: " + fileImportTrackingDTO.getId() 
+						+ "\nRecordSubmitDateTime: " + fileImportTrackingDTO.getRecordSubmitDateTime()
+						+ "\nImportStartDateTime: " + fileImportTrackingDTO.getImportStartDateTime()
+						+ "\nImportEndDateTime: " + fileImportTrackingDTO.getImportEndDateTime();
 			}
 			
 			String importerBaseDirLine = "";
@@ -371,14 +375,8 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 			
 			text += "\n\nThe above text was sent to email address: " + userEmailAddressParam + "\n"
 					+ "Project Id: " + fileImportTrackingDTO.getProjectId()
-					+ importTrackingLine
+					+ importTrackingLines
 					+ importerBaseDirLine;
-		}
-		
-		if ( email_Contents_Control == Email_Contents_Control.FOR_OTHER ) {
-			
-			text += "\n\nThe above text was sent to email address: " + userEmailAddressParam + "\n"
-					+ "Project Id: " + fileImportTrackingDTO.getProjectId();
 		}
 		
 		String toEmailAddress = toEmailAddressParam;
