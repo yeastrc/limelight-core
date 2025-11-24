@@ -2028,7 +2028,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			writer = new OutputStreamWriter( bos , DownloadsCharacterSetConstant.DOWNLOAD_CHARACTER_SET );
 			//  Write header line
 			writer.write( "SEARCH ID\tSEARCH NAME\tSUB GROUP NICKNAME\tSUB GROUP NAME\tSCAN NUMBER\tSPECTRUM VIEWER URLS (comma delim)\tPEPTIDE\tMODS" ); // 
-			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modification Mass\tOpen Modification Position(s)\tSCAN FILENAME\tIs Independent Decoy\tPROTEIN NAMES (comma delim)\tSPECIAL IONS (comma delim)" );
+			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tScan Total Ion Current (TIC)\tReporter Ions\tOpen Modification Mass\tOpen Modification Position(s)\tSCAN FILENAME\tIs Independent Decoy\tPROTEIN NAMES (comma delim)\tSPECIAL IONS (comma delim)" );
 			
 			if ( ! writeOutputToResponse_Per_SearchId_List.isEmpty() ) {
 				WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId = writeOutputToResponse_Per_SearchId_List.get( 0 );
@@ -2358,8 +2358,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			    				SingleScan_SubResponse scan = null;
 			    				
 			    				if ( searchHasScanData 
-			    						&& ( psmWebDisplay.getPsm_precursor_RetentionTime() == null 
-					    						|| psmWebDisplay.getPsm_precursor_MZ() == null ) ) {
+//			    						&& ( psmWebDisplay.getPsm_precursor_RetentionTime() == null 
+//					    						|| psmWebDisplay.getPsm_precursor_MZ() == null ) 
+			    						) {
 
 			    					if ( searchScanFileDTO_Entry == null ) {
 			    						String msg = "'else' of '} else if ( ( ! searchHasScanData )': ( searchScanFileDTO_Entry == null ).  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId() + ", searchScanFileDTO_Map_Key_SearchScanFileId.size(): " + searchScanFileDTO_Map_Key_SearchScanFileId.size();
@@ -2400,6 +2401,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			    					}
 			    				}
 
+			    				//  Precursor MZ
 
 			    				writer.write( "\t" );
 
@@ -2411,6 +2413,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 			    					writer.write( String.valueOf( scan.getPrecursor_M_Over_Z() ) );
 			    				}
+			    				
+			    				//  Precursor RetentionTime
 
 			    				writer.write( "\t" );
 
@@ -2423,6 +2427,18 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			    				} else if ( scan != null ) {
 
 			    					writer.write( String.valueOf( ( scan.getRetentionTime() / RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR ) ) );
+			    				}
+			    				
+			    				//  Scan TIC
+
+			    				writer.write( "\t" );
+
+			    				if ( scan != null ) {
+			    					
+			    					if ( scan.getTotalIonCurrent_ForScan() != null ) {  //  NOT all scans from Spectr have Total Ion Current so skip if null
+
+			    						writer.write( String.valueOf( scan.getTotalIonCurrent_ForScan() ) );
+			    					}
 			    				}
 			    			}
 							
