@@ -245,12 +245,21 @@ export class ScanFileBrowserViewPage_RootClass_Common {
 			renderCompleteCallbackFcn
 		);
 
-		{  //  Hide LOADING DATA message
-			const main_view_loading_data_root_containerDOM = document.getElementById("main_view_loading_data_root_container");
-			if ( ! main_view_loading_data_root_containerDOM ) {
-				throw Error("No DOM element with ID: 'main_view_loading_data_root_container'");
+		//  Remove div above that has "Loading..."
+
+		{
+			try {
+
+				const domElement = document.getElementById("main_block_loading_message_container")
+				if ( ! domElement ) {
+					console.warn( "failed to find DOM element to remove with id 'main_block_loading_message_container'")
+				} else {
+					domElement.remove()
+				}
+			} catch ( e ) {
+				console.warn( "Failed to remove DOM element with id 'main_block_loading_message_container'. exception: ", e )
+				//  Eat exception
 			}
-			main_view_loading_data_root_containerDOM.style.display = "none";
 		}
 	}
 }

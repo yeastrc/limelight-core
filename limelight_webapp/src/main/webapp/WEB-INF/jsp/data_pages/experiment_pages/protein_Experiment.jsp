@@ -41,7 +41,20 @@
 		<h1>
 			Proteins View
 		</h1>
+			
+		<%--
+			  Loading message until Javascript populates the next div.
+			  
+			  WARNING: Put NO listeners on this div or children since will not be cleaned up.
+			  			This div will be deleted with '.remove()'  
+	  	--%>
+		<div id="main_block_loading_message_container">
+			<h2>
+				Loading...
+			</h2>
+		</div>
 		
+		<!--  Main Protein View Container -->
 	   	<div id="protein_experiment_data_page_overall_enclosing_block_div">
 	   	</div>
 	</div>

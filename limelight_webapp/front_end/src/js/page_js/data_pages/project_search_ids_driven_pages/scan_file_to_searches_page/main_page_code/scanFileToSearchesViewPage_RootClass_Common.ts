@@ -519,10 +519,10 @@ export class ScanFileToSearchesViewPage_RootClass_Common {
 
 		//  Render to page:
 
-		const containerDOMElement = document.getElementById("main_peptide_view_outer_block_react_root_container");
+		const containerDOMElement = document.getElementById("main_scan_view_outer_block_react_root_container");
 
 		if ( ! containerDOMElement ) {
-			throw Error("No DOM element with id 'main_peptide_view_outer_block_react_root_container'");
+			throw Error("No DOM element with id 'main_scan_view_outer_block_react_root_container'");
 		}
 
 		//  Called on render complete
@@ -536,6 +536,22 @@ export class ScanFileToSearchesViewPage_RootClass_Common {
 			renderCompleteCallbackFcn
 		);
 
+		//  Remove div above that has "Loading..."
+
+		{
+			try {
+
+				const domElement = document.getElementById("main_block_loading_message_container")
+				if ( ! domElement ) {
+					console.warn( "failed to find DOM element to remove with id 'main_block_loading_message_container'")
+				} else {
+					domElement.remove()
+				}
+			} catch ( e ) {
+				console.warn( "Failed to remove DOM element with id 'main_block_loading_message_container'. exception: ", e )
+				//  Eat exception
+			}
+		}
 	}
 
 }

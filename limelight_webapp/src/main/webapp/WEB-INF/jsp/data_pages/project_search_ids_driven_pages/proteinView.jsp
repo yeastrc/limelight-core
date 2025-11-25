@@ -44,14 +44,18 @@
 		Proteins View
 	</h1>
 	
-	<%--  Loading message displayed until Javascript is loaded and initial search data is loaded. --%>
-	<div 
-		id="main_protein_view_loading_data_root_container" 
-		style="font-size: 18px; margin-top: 20px; margin-bottom: 20px;"
-	>
-		LOADING DATA
+	<%--
+		  Loading message until Javascript populates the next div.
+		  
+		  WARNING: Put NO listeners on this div or children since will not be cleaned up.
+		  			This div will be deleted with '.remove()'  
+  	--%>
+	<div id="main_block_loading_message_container">
+		<h2>
+			Loading...
+		</h2>
 	</div>
-		
+	
 	<!--  Main Protein View Container -->
 	<div id="main_protein_view_outer_block_react_root_container"></div>
 	

@@ -57,8 +57,21 @@
 		</c:choose>
 	</h1>
 	
+	<%--
+		  Loading message until Javascript populates the next div.
+		  
+		  WARNING: Put NO listeners on this div or children since will not be cleaned up.
+		  			This div will be deleted with '.remove()'  
+  	--%>
+	<div id="main_block_loading_message_container">
+		<h2>
+			Loading...
+		</h2>
+	</div>
+	
+	
 	<!--  Main Peptide View Container -->
-	<div id="main_peptide_view_outer_block_react_root_container"></div>
+	<div id="main_scan_view_outer_block_react_root_container"></div>
 
   
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>

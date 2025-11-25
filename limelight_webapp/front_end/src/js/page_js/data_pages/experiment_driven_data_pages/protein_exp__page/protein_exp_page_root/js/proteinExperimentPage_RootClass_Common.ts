@@ -568,6 +568,23 @@ export class ProteinExperimentPage_RootClass_Common {
 					renderCompleteCallbackFcn
 				);
 
+				//  Remove div above that has "Loading..."
+
+				{
+					try {
+
+						const domElement = document.getElementById("main_block_loading_message_container")
+						if ( ! domElement ) {
+							console.warn( "failed to find DOM element to remove with id 'main_block_loading_message_container'")
+						} else {
+							domElement.remove()
+						}
+					} catch ( e ) {
+						console.warn( "Failed to remove DOM element with id 'main_block_loading_message_container'. exception: ", e )
+						//  Eat exception
+					}
+				}
+
 			} catch( e ) {
 				console.warn("_loadCoreData_ProjectSearchIds_Based_Promise.then: exception: " + e );
 				console.warn( e );

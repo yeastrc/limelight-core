@@ -1,7 +1,7 @@
 /**
  * scanFileToSearchesPage_Display_Root_Component.tsx
  * 
- * Root of ScanFileToSearchesView Page - inserted into <div> with id 'main_peptide_view_outer_block_react_root_container' in
+ * Root of ScanFileToSearchesView Page - inserted into <div> with id 'main_scan_view_outer_block_react_root_container' in
  * 
  */
 
