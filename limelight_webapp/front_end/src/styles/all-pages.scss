@@ -422,32 +422,45 @@ div.error-message-container, div.success-message-container {
 /////////////////////////
 
 // styling of form elements and buttons
+
+
+/////////////////////////
+
+$global-button-style-font-size: $default-font-size; // 14px;
+
+$global-button-style-disabled-opacity: 0.6;
+
+$global-button-style-border-radius: 4px;
+
+// styling of form elements and buttons
 input {
-      font-size:14px;
+  font-size: $global-button-style-font-size;
 
-          //  Any change to button styling also needed for <button> styling which is next
+  //  Any change to button styling also needed for <button> styling which is next
 
-      &[type="button"], &[type="submit"] {
-          color: $color-white;
-          background-color: $site-color-dark;
-      }
+  &[type="button"], &[type="submit"] {
+    color: $color-white;
+    background-color: $site-color-dark;
+    border-radius: $global-button-style-border-radius;
+  }
 
-      &[type="button"]:disabled, &[type="submit"]:disabled {
-          opacity: 0.6;
-      }
+  &[type="button"]:disabled, &[type="submit"]:disabled {
+    opacity: $global-button-style-disabled-opacity;
+  }
 }
 
 //  Any change to button styling also needed for <input type="button" > <input type="submit" > styling which is immediately above
 
 button {
 
-  font-size:14px;
+  font-size: $global-button-style-font-size;
 
   color: $color-white;
   background-color: $site-color-dark;
+  border-radius: $global-button-style-border-radius;
 
   &:disabled {
-    opacity: 0.6;
+    opacity: $global-button-style-disabled-opacity;
   }
 }
 
