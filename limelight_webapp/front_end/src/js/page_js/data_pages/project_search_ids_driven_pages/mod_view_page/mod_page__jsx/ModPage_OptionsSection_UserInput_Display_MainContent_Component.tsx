@@ -1191,7 +1191,9 @@ export class INTERNAL__MaxCutoff_ForColorScale_Ratio_Filter_InputField_Component
 
         const newValue_Number = _inputNumberField_Compute_DecimalNumberFromFieldContents( newValue_String )
 
-        if ( newValue_String.endsWith( "." ) ) {
+
+        if ( /^[+-]?((\d+(\.\d*)?)|(\.\d+))$/.test( newValue_String ) ) {
+            //  value is a valid decimal number, based on regex
 
             this._value_ForInputField = newValue_String
 
