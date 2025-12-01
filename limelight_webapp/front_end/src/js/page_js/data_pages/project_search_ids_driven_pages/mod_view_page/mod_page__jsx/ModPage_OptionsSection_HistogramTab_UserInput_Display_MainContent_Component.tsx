@@ -796,8 +796,10 @@ export class INTERNAL__Min_Or_Max_ModMass_FilterInputField_Component extends Rea
 
                 this._value_ForInputField = newValue_Number.toString()
 
-                if ( newValue_String.endsWith( "." ) ) {
-                    this._value_ForInputField = this._value_ForInputField + "."
+                if ( /^[+-]?((\d+(\.\d*)?)|(\.\d+))$/.test( newValue_String ) ) {
+                    //  value is a valid decimal number, based on regex
+
+                    this._value_ForInputField = newValue_String
                 }
             }
         }
