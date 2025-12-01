@@ -615,10 +615,35 @@ export class ModPage_OptionsSection_HistogramTab_UserInput_Display_MainContent_C
                                                                     modMassMax_BeforeZoomOut = this.props.propsValue.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax()
                                                                 }
 
-                                                                const minMax_Diff = Math.abs( modMassMax_BeforeZoomOut - modMassMin_BeforeZoomOut )
 
-                                                                let modMassMin_AfterZoomOut = modMassMin_BeforeZoomOut - minMax_Diff
-                                                                let modMassMax_AfterZoomOut = modMassMax_BeforeZoomOut + minMax_Diff
+                                                                const minMax_BeforeZoomOut_Diff = Math.abs( modMassMax_BeforeZoomOut - modMassMin_BeforeZoomOut )
+
+                                                                let extend_MinMax_RangeValue = minMax_BeforeZoomOut_Diff
+
+                                                                if ( extend_MinMax_RangeValue === 0 ) {
+
+                                                                    //  Special case if before zoom out min same as max
+
+                                                                    const unfiltered_ModMass_Max_Diff = this.props.propsValue.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax()
+
+                                                                    const unfiltered_ModMass_Min_Diff = this.props.propsValue.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax()
+
+                                                                    if ( unfiltered_ModMass_Max_Diff === unfiltered_ModMass_Min_Diff ) {
+
+                                                                        //  Unfiltered Max same as Unfiltered Min
+
+                                                                        //  Nothing to do so exit
+
+                                                                        return  // EARLY RETURN
+                                                                    }
+
+                                                                    const unfiltered_ModMass_MinMax_Diff = unfiltered_ModMass_Max_Diff - unfiltered_ModMass_Min_Diff
+
+                                                                    extend_MinMax_RangeValue = unfiltered_ModMass_MinMax_Diff * 0.05  // 5% of diff
+                                                                }
+
+                                                                let modMassMin_AfterZoomOut = modMassMin_BeforeZoomOut - extend_MinMax_RangeValue
+                                                                let modMassMax_AfterZoomOut = modMassMax_BeforeZoomOut + extend_MinMax_RangeValue
 
                                                                 if ( modMassMin_AfterZoomOut < this.props.propsValue.modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax() ) {
                                                                     modMassMin_AfterZoomOut = undefined
