@@ -3946,6 +3946,17 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
     let trace_rt_Intensity_Line_Y: Array<number> = []  // 'let' to allow replace after smoothing
     const trace_rt_Intensity_Tooltips: Array<string> = []
 
+
+    //  Compute 'areaUnderCurve_SingleTrace'
+
+    let areaUnderCurve_SingleTrace = 0
+
+    let prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace: {
+        scan_retentionTime_Seconds: number
+        peak_Intensity: number
+    } = undefined
+
+
     //  Processing for each charge value
     {
         let scanCount_Where_MoreThanOnePeak_InsideWindow = 0;
@@ -4046,6 +4057,34 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
                         "<br><b>" + tooltip_Peak_Value_Label + "</b>: " + lineY_Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY ) +
                         "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
 
+                    //  areaUnderCurve_SingleTrace
+
+                    if ( ! prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace ) {
+
+                        prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace = {
+                            scan_retentionTime_Seconds: scanItem.scan_RetentionTime,
+                            peak_Intensity: peakToUse.intensity
+                        }
+
+                    } else {
+
+                        const scan_retentionTime_Seconds_Difference = scanItem.scan_RetentionTime - prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.scan_retentionTime_Seconds
+
+                        const peak_Intensity_Average = ( peakToUse.intensity + prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.peak_Intensity ) / 2
+
+                        const peakArea_BetweenPrevPeakAndCurrentPeak = scan_retentionTime_Seconds_Difference * peak_Intensity_Average
+
+                        areaUnderCurve_SingleTrace += peakArea_BetweenPrevPeakAndCurrentPeak
+
+                        //  Update PrevPeak Values
+
+                        prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace = {
+                            scan_retentionTime_Seconds: scanItem.scan_RetentionTime,
+                            peak_Intensity: peakToUse.intensity
+                        }
+                    }
+
+
                     const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
 
                     if ( psmItem_Array_For_Associated_MS_1_ScanNumber ) {
@@ -4102,39 +4141,6 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
 
     //  Save "NOT Smoothed" data
     const trace_rt_Intensity_Line_Y_NOT_Smoothed = trace_rt_Intensity_Line_Y
-
-    //  Compute 'areaUnderCurve_SingleTrace'
-
-    let areaUnderCurve_SingleTrace = 0
-
-
-    if ( trace_rt_Intensity_Line_X.length > 1 ) {
-
-        if ( trace_rt_Intensity_Line_X.length !== trace_rt_Intensity_Line_Y.length ) {
-            const msg = "ERROR: ( trace_rt_Intensity_Line_X.length !== trace_rt_Intensity_Line_Y.length )"
-            console.warn(msg)
-            throw Error(msg)
-        }
-
-        const chart_X_Length = trace_rt_Intensity_Line_X.length
-
-        for ( let index = 0; index < ( chart_X_Length - 1 ); index++  ) {
-
-            const chart_X = trace_rt_Intensity_Line_X[ index ]
-            const chart_Y = trace_rt_Intensity_Line_Y[ index ]
-
-            const chart_X_Index_Plus_1 = trace_rt_Intensity_Line_X[ index + 1 ]
-            const chart_Y_Index_Plus_1 = trace_rt_Intensity_Line_Y[ index + 1 ]
-
-            const chart_Y_Average = ( chart_Y + chart_Y_Index_Plus_1 ) / 2
-
-            const area = chart_Y_Average * ( ( chart_X_Index_Plus_1 - chart_X ) * 60 )  // '* 60' to change X axis values to seconds
-
-            areaUnderCurve_SingleTrace += area
-        }
-    }
-
-
 
     if ( trace_rt_Intensity_Line_X.length > 0 ) {
 

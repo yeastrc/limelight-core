@@ -3945,6 +3945,11 @@ const _for_Component__Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_
 
     let areaUnderCurve_SingleTrace = 0
 
+    let prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace: {
+        scan_retentionTime_Seconds: number
+        peak_Intensity: number
+    } = undefined
+
     //  Processing for each charge value
     {
         let scanCount_Where_MoreThanOnePeak_InsideWindow = 0;
@@ -4053,17 +4058,32 @@ const _for_Component__Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_
                         "<br><b>" + tooltip_Peak_Value_Label + "</b>: " + lineY_Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY ) +
                         "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
 
+                    //  areaUnderCurve_SingleTrace
 
+                    if ( ! prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace ) {
 
-                    if ( trace_rt_Intensity_Line_X.length > 1 ) {
+                        prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace = {
+                            scan_retentionTime_Seconds: scanItem.scan_RetentionTime,
+                            peak_Intensity: peakToUse.intensity
+                        }
 
-                        const chart_Y_Average = ( trace_rt_Intensity_Line_Y[ trace_rt_Intensity_Line_Y.length - 1 ] + trace_rt_Intensity_Line_Y[ trace_rt_Intensity_Line_Y.length - 2 ] ) / 2
+                    } else {
 
-                        const area = chart_Y_Average * ( ( trace_rt_Intensity_Line_X[ trace_rt_Intensity_Line_X.length - 1 ] - trace_rt_Intensity_Line_X[ trace_rt_Intensity_Line_X.length - 2 ] ) * 60 )  // '* 60' to change X axis values to seconds
+                        const scan_retentionTime_Seconds_Difference = scanItem.scan_RetentionTime - prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.scan_retentionTime_Seconds
 
-                        areaUnderCurve_SingleTrace += area
+                        const peak_Intensity_Average = ( peakToUse.intensity + prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.peak_Intensity ) / 2
+
+                        const peakArea_BetweenPrevPeakAndCurrentPeak = scan_retentionTime_Seconds_Difference * peak_Intensity_Average
+
+                        areaUnderCurve_SingleTrace += peakArea_BetweenPrevPeakAndCurrentPeak
+
+                        //  Update PrevPeak Values
+
+                        prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace = {
+                            scan_retentionTime_Seconds: scanItem.scan_RetentionTime,
+                            peak_Intensity: peakToUse.intensity
+                        }
                     }
-
 
 
                     const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
