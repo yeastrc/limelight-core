@@ -4115,6 +4115,37 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
                     "<br><b>No Scan Peak</b>" +
                     "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
 
+                {
+                    //  areaUnderCurve_SingleTrace
+
+                    const peakIntensity_ZERO_Since_NO_Peak = 0
+
+                    if ( ! prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace ) {
+
+                        prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace = {
+                            scan_retentionTime_Seconds: scanItem.scan_RetentionTime,
+                            peak_Intensity: peakIntensity_ZERO_Since_NO_Peak
+                        }
+
+                    } else {
+
+                        const scan_retentionTime_Seconds_Difference = scanItem.scan_RetentionTime - prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.scan_retentionTime_Seconds
+
+                        const peak_Intensity_Average = ( peakIntensity_ZERO_Since_NO_Peak + prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.peak_Intensity ) / 2
+
+                        const peakArea_BetweenPrevPeakAndCurrentPeak = scan_retentionTime_Seconds_Difference * peak_Intensity_Average
+
+                        areaUnderCurve_SingleTrace += peakArea_BetweenPrevPeakAndCurrentPeak
+
+                        //  Update PrevPeak Values
+
+                        prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace = {
+                            scan_retentionTime_Seconds: scanItem.scan_RetentionTime,
+                            peak_Intensity: peakIntensity_ZERO_Since_NO_Peak
+                        }
+                    }
+                }
+
                 const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
 
                 if ( psmItem_Array_For_Associated_MS_1_ScanNumber ) {
