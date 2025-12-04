@@ -1479,15 +1479,6 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                             <div
                                 style={ { marginTop: 20, marginBottom: 20 } }
                             >
-                                {/*  "Quant method:" etc  */ }
-                                <ModPage_OptionsSection_HistogramTab_UserInput_Display_MainContent_Component
-                                    propsValue={ {
-                                        modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                                        modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
-                                        valueChanged_Callback: this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback_BindThis
-                                    } }
-                                />
-
                                 { ( ! histogramBlock_GroupingSection_Hide ) ? (
 
                                     <>
@@ -1778,9 +1769,25 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
                                     ) : null }
 
+                                    <div style={ { paddingTop: 10 } }>
+
+                                        {/*  "Quant method:" etc  */ }
+
+                                        <ModPage_OptionsSection_HistogramTab_UserInput_Display_MainContent_Component
+                                            propsValue={ {
+                                                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                                                modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
+                                                valueChanged_Callback: this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback_BindThis
+                                            } }
+                                        />
+                                    </div>
+
+
 
                                     { this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined ||
                                     this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined ? (
+
+                                        // "Pan Left" and "Pan Right" Block
 
                                         <div style={ { marginTop: 15 } }>
                                             <span

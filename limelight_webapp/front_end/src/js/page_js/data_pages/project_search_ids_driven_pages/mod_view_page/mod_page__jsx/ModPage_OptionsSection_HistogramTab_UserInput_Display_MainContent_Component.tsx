@@ -408,7 +408,6 @@ export class ModPage_OptionsSection_HistogramTab_UserInput_Display_MainContent_C
                     {/*  Outer FlexBox -- First 4 blocks together and then Protein Filter as Second  */ }
                     <div
                         style={ {
-                            marginLeft: 15,
                             display: "flex",
                             columnGap: 15,
                             alignItems: "flex-start"  // Each item vertical is only as tall as the item, not stretched to the tallest item.  Default is "stretch".
