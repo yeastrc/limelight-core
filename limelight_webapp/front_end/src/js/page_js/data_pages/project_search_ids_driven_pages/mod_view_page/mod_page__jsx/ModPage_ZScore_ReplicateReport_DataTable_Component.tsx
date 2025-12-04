@@ -701,7 +701,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
                 title: {
                     text: chart_X_Axis_Label
                 },
-                // range: [ retentionTimeSeconds_Range_ForChart_Min / 60, retentionTimeSeconds_Range_ForChart_Max / 60 ],
+                rangemode: 'tozero',  //  Include zero in the range
 
                 exponentformat: 'e'  // https://plotly.com/javascript/tick-formatting/#using-exponentformat
             },
@@ -709,6 +709,7 @@ export class ModPage_ZScore_ReplicateReport_DataTable_Component extends React.Co
                 title: {
                     text: chart_Y_Axis_Label
                 },
+                rangemode: 'tozero',  //  Include zero in the range
                 exponentformat: 'e'
             },
             showlegend: showlegend_Local,

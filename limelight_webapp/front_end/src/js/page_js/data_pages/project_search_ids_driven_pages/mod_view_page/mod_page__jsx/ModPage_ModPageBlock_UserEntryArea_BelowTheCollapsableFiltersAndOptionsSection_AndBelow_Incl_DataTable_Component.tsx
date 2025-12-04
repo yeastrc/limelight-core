@@ -1217,8 +1217,16 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                             position: "relative",
                         } }
                     >
-
-                        <div style={ { marginTop: 20 } }>
+                        <div
+                            //  Add border on top to make the tabs stand out
+                            style={ {
+                                width: "fit-content",
+                                borderTopStyle: "solid",
+                                borderTopWidth: 10,
+                                marginTop: 20
+                            } }
+                            className=" standard-border-color-very-dark "
+                        >
                             <Tabs
                                 value={
                                     this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
