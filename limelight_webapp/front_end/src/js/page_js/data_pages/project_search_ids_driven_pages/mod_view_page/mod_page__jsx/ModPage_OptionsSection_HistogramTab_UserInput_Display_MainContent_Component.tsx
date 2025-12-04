@@ -520,7 +520,7 @@ export class ModPage_OptionsSection_HistogramTab_UserInput_Display_MainContent_C
                                     </div>
 
                                     <div>
-                                        <span style={ { fontSize: 10 } }>(Leave blank to use defaults.)</span>
+                                        <span style={ { fontSize: 10 } }>(Leave blank to not filter.)</span>
                                     </div>
 
                                     <div style={ { marginTop: 10 } }>
@@ -581,7 +581,7 @@ export class ModPage_OptionsSection_HistogramTab_UserInput_Display_MainContent_C
                                         <span style={ { fontSize: 10 } }>(Filter on Actual Values.)</span>
                                     </div>
                                     <div>
-                                        <span style={ { fontSize: 10 } }>(Leave blank to use defaults.)</span>
+                                        <span style={ { fontSize: 10 } }>(Leave blank to not filter.)</span>
                                     </div>
 
                                     <div
