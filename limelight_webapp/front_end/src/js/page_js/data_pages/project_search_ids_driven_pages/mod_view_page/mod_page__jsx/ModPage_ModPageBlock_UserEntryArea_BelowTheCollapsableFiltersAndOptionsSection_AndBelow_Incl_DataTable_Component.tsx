@@ -10,7 +10,7 @@
  */
 
 
-import React from "react";
+import React, { ChangeEvent } from "react";
 
 import {
     CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
@@ -134,6 +134,8 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
     private _modView_DataViz_Renderer_UserInputMade_Callback_BindThis = this._modView_DataViz_Renderer_UserInputMade_Callback.bind(this)
 
+    private _visualization_DisplayTab_Change_Handler_BindThis = this._visualization_DisplayTab_Change_Handler.bind(this)
+
     private _download_ModMassVisualization_SVG_And_LabelsToLeft_As_CombinedSVG_BindThis = this._download_ModMassVisualization_SVG_And_LabelsToLeft_As_CombinedSVG.bind(this)
 
     private _onMouseDown_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis = this._onMouseDown_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG.bind(this)
@@ -141,6 +143,21 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
     private _onMouseUp_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis = this._onMouseUp_Handler__ON__document__MainVisualizationHeatmap_Between_SearchNames_And_SVG.bind(this)
     //    Commented out _onMouseDoubleClick_Handler_... since currently NOT used
     // private _onMouseDoubleClick_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG_BindThis = this._onMouseDoubleClick_Handler_MainVisualizationHeatmap_Between_SearchNames_And_SVG.bind(this)
+
+    private _group_SearchesSubSearches_In_Histogram_ChangeEvent_Handler_BindThis = this._group_SearchesSubSearches_In_Histogram_ChangeEvent_Handler.bind(this)
+    private _modPage_updateSelected_Searches_Callback_Function_Handler_BindThis = this._modPage_updateSelected_Searches_Callback_Function_Handler.bind(this)
+
+    private _histogram_ChartType_Enum_Class__SEPARATE_PLOTS__ChangeEvent_Handler_BindThis = this._histogram_ChartType_Enum_Class__SEPARATE_PLOTS__ChangeEvent_Handler.bind(this)
+    private _histogram_ChartType_Enum_Class__STACKED_BAR_CHART__ChangeEvent_Handler_BindThis = this._histogram_ChartType_Enum_Class__STACKED_BAR_CHART__ChangeEvent_Handler.bind(this)
+    private _histogram_ChartType_Enum_Class__ALL_DATA_MERGED_SINGLE_PLOT__ChangeEvent_Handler_BindThis = this._histogram_ChartType_Enum_Class__ALL_DATA_MERGED_SINGLE_PLOT__ChangeEvent_Handler.bind(this)
+
+    private _display_Mean_StandardDeviation_Line_And_Number_ChangeEvent_Handler_BindThis = this._display_Mean_StandardDeviation_Line_And_Number_ChangeEvent_Handler.bind(this)
+
+    private _show_inverse_RangeDirection_Plot_2_WhenTwoPlots_ChangeEvent_Handler_BindThis = this._show_inverse_RangeDirection_Plot_2_WhenTwoPlots_ChangeEvent_Handler.bind(this)
+    private _show_DifferenceChart_WhenTwoPlots_ChangeEvent_Handler_BindThis = this._show_DifferenceChart_WhenTwoPlots_ChangeEvent_Handler.bind(this)
+
+    private _histogram_PanLeft_Click_Handler_BindThis = this._histogram_PanLeft_Click_Handler.bind(this)
+    private _histogram_PanRight_Click_Handler_BindThis = this._histogram_PanRight_Click_Handler.bind(this)
 
     private _download_Data_Table_Clicked_BindThis = this._download_Data_Table_Clicked.bind(this)
     private _download_PSM_Localization_Report_Clicked_BindThis = this._download_PSM_Localization_Report_Clicked.bind(this)
@@ -732,6 +749,45 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
         return { projectSearchIds_Or_SubSearchIds_For_DisplayOrder, projectSearchId_WhenHaveSingleSearchSubGroups }
     }
 
+    /////////////
+
+    //   Heatmap/Histogram Tabs Switching Handler
+
+    private _visualization_DisplayTab_Change_Handler( event: React.SyntheticEvent, newValue: any ) {
+        try {
+            if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
+
+                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.
+                modViewPage_DataVizOptions_VizSelections_PageStateManager.
+                set_visualization_DisplayTab( ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP )
+
+            } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM ) {
+
+                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.
+                modViewPage_DataVizOptions_VizSelections_PageStateManager.
+                set_visualization_DisplayTab( ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM )
+
+            } else {
+
+                const msg = "'<Tabs' value= { this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab() }. onChange: 'newValue' is unexpected value of " + newValue
+                console.warn( msg )
+                throw Error( msg )
+            }
+
+            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
+        }
+    }
+
+    //////////////////////////
+
+    //  Heatmap Tab handlers
+
+    ////
+
     /**
      *
      * @param event
@@ -913,6 +969,224 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
     // } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 
+    //////////////////////////
+
+    //  Histogram Tab
+
+    /**
+     *
+     */
+    private _group_SearchesSubSearches_In_Histogram_ChangeEvent_Handler( event: ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram()
+
+        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_group_SearchesSubSearches_In_Histogram( newValue )
+
+        if ( newValue ) {
+
+            modPage_SearchGroups_SubSearchGroups_Init_VizSelections_PageStateManager( {
+                projectSearchIds_AllForPage: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
+                modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
+                dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
+            } )
+        }
+
+        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _modPage_updateSelected_Searches_Callback_Function_Handler() { try {
+
+        this.setState( { forceReRender_Object: {} } )
+
+        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _histogram_ChartType_Enum_Class__SEPARATE_PLOTS__ChangeEvent_Handler( event: ChangeEvent<HTMLInputElement> ) { try {
+
+        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
+            ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS
+        )
+
+        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _histogram_ChartType_Enum_Class__STACKED_BAR_CHART__ChangeEvent_Handler( event: ChangeEvent<HTMLInputElement> ) { try {
+
+        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
+            ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART
+        )
+
+        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _histogram_ChartType_Enum_Class__ALL_DATA_MERGED_SINGLE_PLOT__ChangeEvent_Handler( event: ChangeEvent<HTMLInputElement> ) { try {
+
+        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
+            ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT
+        )
+
+        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _display_Mean_StandardDeviation_Line_And_Number_ChangeEvent_Handler( event: ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_display_Mean_StandardDeviation_Line_And_Number()
+
+        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_display_Mean_StandardDeviation_Line_And_Number( newValue )
+
+        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _show_inverse_RangeDirection_Plot_2_WhenTwoPlots_ChangeEvent_Handler( event: ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_inverse_RangeDirection_Plot_2_WhenTwoPlots()
+
+        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_show_inverse_RangeDirection_Plot_2_WhenTwoPlots( newValue )
+
+        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    private _show_DifferenceChart_WhenTwoPlots_ChangeEvent_Handler( event: ChangeEvent<HTMLInputElement> ) { try {
+
+        const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_DifferenceChart_WhenTwoPlots()
+
+        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_show_DifferenceChart_WhenTwoPlots( newValue )
+
+        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    ///   Pan Left and Right
+
+    /**
+     * Histogram Pan Left click handler
+     */
+    private _histogram_PanLeft_Click_Handler( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
+
+        const modMassCutoffMin_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+        const modMassCutoffMax_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+        if ( modMassCutoffMin_CurrentSelection !== undefined ) {
+
+            //  Min has value
+
+            const modMass_Min_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax()
+            const modMass_Max_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax()
+
+            if ( modMassCutoffMax_CurrentSelection !== undefined ) {
+
+                const minMaxDiff = modMassCutoffMax_CurrentSelection - modMassCutoffMin_CurrentSelection
+                const minMaxDiff_80Percent = minMaxDiff * .8
+
+                let minNew = modMassCutoffMin_CurrentSelection - minMaxDiff_80Percent
+                const maxNew = modMassCutoffMax_CurrentSelection - minMaxDiff_80Percent
+
+                if ( minNew < modMass_Min_Across_All_Searches ) {
+
+                    minNew = undefined
+                }
+
+                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
+                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
+
+            } else {
+
+                //  NO current Max
+
+                const minMaxDiff = modMass_Max_Across_All_Searches - modMassCutoffMin_CurrentSelection
+                const minMaxDiff_80Percent = minMaxDiff * .8
+
+                const minNew = modMassCutoffMin_CurrentSelection - minMaxDiff_80Percent
+                const maxNew = modMass_Max_Across_All_Searches - minMaxDiff_80Percent
+
+                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
+                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
+            }
+
+            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+        }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     * Histogram Pan Right click handler
+     */
+    private _histogram_PanRight_Click_Handler( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
+
+        const modMassCutoffMin_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+        const modMassCutoffMax_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
+
+        if ( modMassCutoffMax_CurrentSelection !== undefined ) {
+
+            //  Max has value
+
+            const modMass_Min_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax()
+            const modMass_Max_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax()
+
+            if ( modMassCutoffMin_CurrentSelection !== undefined ) {
+
+                const minMaxDiff = modMassCutoffMax_CurrentSelection - modMassCutoffMin_CurrentSelection
+                const minMaxDiff_80Percent = minMaxDiff * .8
+
+                const minNew = modMassCutoffMin_CurrentSelection + minMaxDiff_80Percent
+                let maxNew = modMassCutoffMax_CurrentSelection + minMaxDiff_80Percent
+
+                if ( maxNew > modMass_Max_Across_All_Searches ) {
+
+                    maxNew = undefined
+                }
+
+                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
+                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
+
+            } else {
+
+                //  NO current Min
+
+                const minMaxDiff = modMassCutoffMax_CurrentSelection - modMass_Min_Across_All_Searches
+                const minMaxDiff_80Percent = minMaxDiff * .8
+
+                const minNew = modMass_Min_Across_All_Searches + minMaxDiff_80Percent
+                const maxNew = modMassCutoffMax_CurrentSelection + minMaxDiff_80Percent
+
+                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
+                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
+            }
+
+            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
+        }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+
     ////////////////////////////////////////////////////////////////////////
 
     /**
@@ -960,6 +1234,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
+    //////////
 
     /**
      *
@@ -1231,37 +1506,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                 value={
                                     this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab()
                                 }
-                                onChange={
-                                    ( event: React.SyntheticEvent, newValue: any ) => {
-                                        try {
-                                            if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP ) {
-
-                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.
-                                                modViewPage_DataVizOptions_VizSelections_PageStateManager.
-                                                set_visualization_DisplayTab( ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HEATMAP )
-
-                                            } else if ( newValue === ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM ) {
-
-                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.
-                                                modViewPage_DataVizOptions_VizSelections_PageStateManager.
-                                                set_visualization_DisplayTab( ModViewPage_DataVizOptions_VizSelections_PageStateManager__VISUALIZATION_DISPLAY_TAB_Values_Enum.HISTOGRAM )
-
-                                            } else {
-
-                                                const msg = "'<Tabs' value= { this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_visualization_DisplayTab() }. onChange: 'newValue' is unexpected value of " + newValue
-                                                console.warn( msg )
-                                                throw Error( msg )
-                                            }
-
-                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-
-                                        } catch ( e ) {
-                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                            throw e
-                                        }
-                                    }
-
-                                }
+                                onChange={ this._visualization_DisplayTab_Change_Handler_BindThis }
                             >
 
                                 <Tab
@@ -1489,28 +1734,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                                 <input
                                                     type="checkbox"
                                                     checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram() }
-                                                    onChange={ event => {
-                                                        try {
-                                                            const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_group_SearchesSubSearches_In_Histogram()
-
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_group_SearchesSubSearches_In_Histogram( newValue )
-
-                                                            if ( newValue ) {
-
-                                                                modPage_SearchGroups_SubSearchGroups_Init_VizSelections_PageStateManager( {
-                                                                    projectSearchIds_AllForPage: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage,
-                                                                    modViewPage_DataVizOptions_VizSelections_PageStateManager: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager,
-                                                                    dataPageStateManager_DataFrom_Server: this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server
-                                                                } )
-                                                            }
-
-                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-
-                                                        } catch ( e ) {
-                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                            throw e
-                                                        }
-                                                    } }
+                                                    onChange={ this._group_SearchesSubSearches_In_Histogram_ChangeEvent_Handler_BindThis }
                                                 />
                                             </label>
                                         </div>
@@ -1531,17 +1755,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                                     modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result={ this._modView_DataViz_Compute_ColorScale_WidthHeight_Etc_Result }
 
                                                     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
-                                                    modPage_updateSelected_Searches_Callback_Function={ () => {
-                                                        try {
-                                                            this.setState( { forceReRender_Object: {} } )
-
-                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-
-                                                        } catch ( e ) {
-                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                            throw e
-                                                        }
-                                                    } }
+                                                    modPage_updateSelected_Searches_Callback_Function={ this._modPage_updateSelected_Searches_Callback_Function_Handler_BindThis }
                                                 />
                                             </div>
 
@@ -1567,19 +1781,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                                     type="radio"
                                                     checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
                                                         === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS }
-                                                    onChange={ event => {
-                                                        try {
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
-                                                                ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.SEPARATE_PLOTS
-                                                            )
-
-                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-
-                                                        } catch ( e ) {
-                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                            throw e
-                                                        }
-                                                    } }
+                                                    onChange={ this._histogram_ChartType_Enum_Class__SEPARATE_PLOTS__ChangeEvent_Handler_BindThis }
                                                 />
                                                 <span> Separate Plots</span>
                                             </label>
@@ -1589,20 +1791,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                                     type="radio"
                                                     checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
                                                         === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART }
-                                                    onChange={ event => {
-                                                        try {
-
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
-                                                                ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.STACKED_BAR_CHART
-                                                            )
-
-                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-
-                                                        } catch ( e ) {
-                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                            throw e
-                                                        }
-                                                    } }
+                                                    onChange={ this._histogram_ChartType_Enum_Class__STACKED_BAR_CHART__ChangeEvent_Handler_BindThis }
                                                 />
                                                 <span> Stacked Bar Chart</span>
                                             </label>
@@ -1612,19 +1801,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                                     type="radio"
                                                     checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_histogram_ChartType_Enum_Class()
                                                         === ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT }
-                                                    onChange={ event => {
-                                                        try {
-
-                                                            this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_histogram_ChartType_Enum_Class(
-                                                                ModViewPage_DataVizOptions_VizSelections_PageStateManager__Histogram_ChartType_Enum_Class.ALL_DATA_MERGED_SINGLE_PLOT
-                                                            )
-
-                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-                                                        } catch ( e ) {
-                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                            throw e
-                                                        }
-                                                    } }
+                                                    onChange={ this._histogram_ChartType_Enum_Class__ALL_DATA_MERGED_SINGLE_PLOT__ChangeEvent_Handler_BindThis }
                                                 />
                                                 <span> All Data Merged Single Plot </span>
                                             </label>
@@ -1656,18 +1833,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                             <input
                                                 type="checkbox"
                                                 checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_display_Mean_StandardDeviation_Line_And_Number() }
-                                                onChange={ event => {
-                                                    try {
-                                                        const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_display_Mean_StandardDeviation_Line_And_Number()
-
-                                                        this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_display_Mean_StandardDeviation_Line_And_Number( newValue )
-
-                                                        this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-                                                    } catch ( e ) {
-                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                        throw e
-                                                    }
-                                                } }
+                                                onChange={ this._display_Mean_StandardDeviation_Line_And_Number_ChangeEvent_Handler_BindThis }
                                             />
                                         </label>
                                     </div>
@@ -1708,18 +1874,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                                     <input
                                                         type="checkbox"
                                                         checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_inverse_RangeDirection_Plot_2_WhenTwoPlots() }
-                                                        onChange={ event => {
-                                                            try {
-                                                                const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_inverse_RangeDirection_Plot_2_WhenTwoPlots()
-
-                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_show_inverse_RangeDirection_Plot_2_WhenTwoPlots( newValue )
-
-                                                                this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-                                                            } catch ( e ) {
-                                                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                                throw e
-                                                            }
-                                                        } }
+                                                        onChange={ this._show_inverse_RangeDirection_Plot_2_WhenTwoPlots_ChangeEvent_Handler_BindThis }
                                                     />
                                                 </label>
                                             </div>
@@ -1750,18 +1905,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                                     <input
                                                         type="checkbox"
                                                         checked={ this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_DifferenceChart_WhenTwoPlots() }
-                                                        onChange={ event => {
-                                                            try {
-                                                                const newValue = ! this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_show_DifferenceChart_WhenTwoPlots()
-
-                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_show_DifferenceChart_WhenTwoPlots( newValue )
-
-                                                                this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-                                                            } catch ( e ) {
-                                                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                                throw e
-                                                            }
-                                                        } }
+                                                        onChange={ this._show_DifferenceChart_WhenTwoPlots_ChangeEvent_Handler_BindThis }
                                                     />
                                                 </label>
                                             </div>
@@ -1795,57 +1939,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                                     this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY() !== undefined ?
                                                         " fake-link " : " fake-link-disabled "
                                                 }
-                                                onClick={ event => {
-                                                    try {
-
-                                                        const modMassCutoffMin_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
-                                                        const modMassCutoffMax_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
-
-                                                        if ( modMassCutoffMin_CurrentSelection !== undefined ) {
-
-                                                            //  Min has value
-
-                                                            const modMass_Min_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax()
-                                                            const modMass_Max_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax()
-
-                                                            if ( modMassCutoffMax_CurrentSelection !== undefined ) {
-
-                                                                const minMaxDiff = modMassCutoffMax_CurrentSelection - modMassCutoffMin_CurrentSelection
-                                                                const minMaxDiff_80Percent = minMaxDiff * .8
-
-                                                                let minNew = modMassCutoffMin_CurrentSelection - minMaxDiff_80Percent
-                                                                const maxNew = modMassCutoffMax_CurrentSelection - minMaxDiff_80Percent
-
-                                                                if ( minNew < modMass_Min_Across_All_Searches ) {
-
-                                                                    minNew = undefined
-                                                                }
-
-                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
-                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
-
-                                                            } else {
-
-                                                                //  NO current Max
-
-                                                                const minMaxDiff = modMass_Max_Across_All_Searches - modMassCutoffMin_CurrentSelection
-                                                                const minMaxDiff_80Percent = minMaxDiff * .8
-
-                                                                const minNew = modMassCutoffMin_CurrentSelection - minMaxDiff_80Percent
-                                                                const maxNew = modMass_Max_Across_All_Searches - minMaxDiff_80Percent
-
-                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
-                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
-                                                            }
-
-                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-                                                        }
-
-                                                    } catch ( e ) {
-                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                        throw e
-                                                    }
-                                                } }
+                                                onClick={ this._histogram_PanLeft_Click_Handler_BindThis }
                                             >
                                                 Pan Left
                                             </span>
@@ -1858,61 +1952,10 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                                         " fake-link " : " fake-link-disabled "
                                                 }
                                                 style={ { marginLeft: 10 } }
-                                                onClick={ event => {
-                                                    try {
-
-                                                        const modMassCutoffMin_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
-                                                        const modMassCutoffMax_CurrentSelection = this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.get_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY()
-
-                                                        if ( modMassCutoffMax_CurrentSelection !== undefined ) {
-
-                                                            //  Max has value
-
-                                                            const modMass_Min_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Min_Across_All_Searches__Unfiltered_ModMass_MinMax()
-                                                            const modMass_Max_Across_All_Searches = this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.get_modMass_Max_Across_All_Searches__Unfiltered_ModMass_MinMax()
-
-                                                            if ( modMassCutoffMin_CurrentSelection !== undefined ) {
-
-                                                                const minMaxDiff = modMassCutoffMax_CurrentSelection - modMassCutoffMin_CurrentSelection
-                                                                const minMaxDiff_80Percent = minMaxDiff * .8
-
-                                                                const minNew = modMassCutoffMin_CurrentSelection + minMaxDiff_80Percent
-                                                                let maxNew = modMassCutoffMax_CurrentSelection + minMaxDiff_80Percent
-
-                                                                if ( maxNew > modMass_Max_Across_All_Searches ) {
-
-                                                                    maxNew = undefined
-                                                                }
-
-                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
-                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
-
-                                                            } else {
-
-                                                                //  NO current Min
-
-                                                                const minMaxDiff = modMassCutoffMax_CurrentSelection - modMass_Min_Across_All_Searches
-                                                                const minMaxDiff_80Percent = minMaxDiff * .8
-
-                                                                const minNew = modMass_Min_Across_All_Searches + minMaxDiff_80Percent
-                                                                const maxNew = modMassCutoffMax_CurrentSelection + minMaxDiff_80Percent
-
-                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMin_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( minNew )
-                                                                this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.modViewPage_DataVizOptions_VizSelections_PageStateManager.set_modMassCutoffMax_For_ACTUAL_ModMass__WhenDisplay_HISTOGRAM_ONLY( maxNew )
-                                                            }
-
-                                                            this._updateMadeTo_modViewPage_DataVizOptions_VizSelections_PageStateManager_Callback()
-                                                        }
-
-                                                    } catch ( e ) {
-                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                        throw e
-                                                    }
-                                                } }
+                                                onClick={ this._histogram_PanRight_Click_Handler_BindThis }
                                             >
                                                 Pan Right
                                             </span>
-
 
                                         </div>
 
