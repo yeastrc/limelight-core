@@ -92,8 +92,9 @@ export const qcPage_StandardChartConfig = function (
                         {
                             format: 'png',
                             filename: 'newplot_png',
-                            width: chart_DownloadWidth,
-                            height: chart_DownloadHeight
+                            //  width and height set to null to use width and height of plot on page
+                            width: null,  //  WAS chart_DownloadWidth,
+                            height: null  //  WAS chart_DownloadHeight
                         }
                         // Optional add to object: , width: 800, height: 600
                         //  width and height of displayed chart used if none specified
@@ -111,8 +112,9 @@ export const qcPage_StandardChartConfig = function (
                         {
                             format: 'svg',
                             filename: 'newplot_svg',
-                            width: chart_DownloadWidth,
-                            height: chart_DownloadHeight
+                            //  width and height set to null to use width and height of plot on page
+                            width: null,  //  WAS chart_DownloadWidth,
+                            height: null  //  WAS chart_DownloadHeight
                         }
                         // Optional add to object: , width: 800, height: 600
                         //  width and height of displayed chart used if none specified
