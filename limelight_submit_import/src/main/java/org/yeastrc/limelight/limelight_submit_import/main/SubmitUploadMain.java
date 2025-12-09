@@ -34,6 +34,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_submit_import.auth_test.AuthTest_Perform_ConnectToServer__Single_Connect_Send_GetResponse;
 import org.yeastrc.limelight.limelight_submit_import.constants.ScanFilenameConstants;
 import org.yeastrc.limelight.limelight_submit_import.constants.UploadFileSubDirConstants;
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportConfigException;
@@ -43,6 +44,7 @@ import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImpo
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportUsernamePasswordFileException;
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception;
 import org.yeastrc.limelight.limelight_submit_import.get_submitter_key.GetSubmitterKey;
+import org.yeastrc.limelight.limelight_submit_import.main.SubmitUploadMain.SubmitResult;
 import org.yeastrc.limelight.limelight_submit_import.objects.SearchTagCategory_AndItsSearchTagStrings_Object;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.call_submit_import_parameter_objects.Call_SubmitImport_UploadFile_Service_Parameters;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.Limelight_SubmitImport_Version_Constants;
@@ -206,6 +208,22 @@ public class SubmitUploadMain {
 
 				System.out.println( "Connecting to Limelight web app using URL: " + baseURL );
 				
+				//  Do Auth Check
+
+				SubmitResult submitResult_AuthCheck = 
+						AuthTest_Perform_ConnectToServer__Single_Connect_Send_GetResponse.getInstance().authTest_Perform_ConnectToServer(
+									baseURL, userSubmitImportProgramKeyFromCommandLine, projectIdString,
+									"Submit Import: " );
+				
+				if ( submitResult_AuthCheck.exitCode != PROGRAM_EXIT_CODE_NO_ERROR ) {
+					
+					submitResult.exitCode = submitResult.exitCode;
+					
+					return submitResult;  // EARLY RETURN
+				}
+				
+				/////
+								
 				boolean sendFastaFile_LOCAL = false;
 				
 				if ( fastaFile != null ) {

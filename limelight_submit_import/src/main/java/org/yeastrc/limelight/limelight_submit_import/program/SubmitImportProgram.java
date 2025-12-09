@@ -689,7 +689,7 @@ public class SubmitImportProgram {
 			
 				submitResult = 
 						AuthTest_Perform_ConnectToServer.getInstance().authTest_Perform_ConnectToServer(
-								baseURL, userSubmitImportProgramKeyFromCommandLine, projectIdString, retryCountLimit);
+								baseURL, userSubmitImportProgramKeyFromCommandLine, projectIdString );
 			
 			
 			} else if ( limelightXMLFile != null ) {
