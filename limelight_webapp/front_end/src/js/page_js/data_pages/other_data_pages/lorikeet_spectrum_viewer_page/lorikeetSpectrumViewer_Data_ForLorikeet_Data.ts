@@ -57,7 +57,8 @@ export class LorikeetSpectrumViewer_Data_ForLorikeet_Data_Root {
 
     userReporterIons: Array<number>;
 
-    massError : number; // mass tolerance (in th) for labeling peaks
+    massError : number; // mass tolerance (in th or ppm) for labeling peaks
+    massErrorUnit: "th" | "ppm" // mass tolerance error unit
 
     peakDetect: boolean = false;
 

@@ -62,7 +62,10 @@ import {
 //  Overrides for LorikeetOptions:
 
 //  Override default value for massError - Assign to lorikeetOptions.massError
-const LORIKEET_OPTIONS__MASS_ERROR = 0.01; // mass tolerance (in th) for labeling peaks
+// const LORIKEET_OPTIONS__MASS_ERROR = 0.01; // mass tolerance (in th) for labeling peaks
+
+const LORIKEET_OPTIONS__MASS_ERROR = 15; // mass tolerance (in th) for labeling peaks
+const LORIKEET_OPTIONS__MASS_ERROR_UNIT = "ppm"
 
 
 //  Size of lorikeet spectrum part of viewer
@@ -497,7 +500,8 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			width :  LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_WIDTH_PARAM,
 
 			//  Override default value for massError
-			massError : LORIKEET_OPTIONS__MASS_ERROR, // mass tolerance (in th) for labeling peaks
+			massError : LORIKEET_OPTIONS__MASS_ERROR, // mass tolerance (in th or ppm) for labeling peaks
+			massErrorUnit: LORIKEET_OPTIONS__MASS_ERROR_UNIT,
 
 			peakDetect : false,
 
