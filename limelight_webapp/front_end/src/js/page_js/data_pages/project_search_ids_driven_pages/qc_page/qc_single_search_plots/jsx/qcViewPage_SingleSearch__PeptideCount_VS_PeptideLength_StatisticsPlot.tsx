@@ -502,7 +502,8 @@ export class QcViewPage_SingleSearch__PeptideCount_VS_PeptideLength_StatisticsPl
                 chart_X_Axis_Label: "Peptide Length",
                 chart_X_Axis_IsTypeCategory: false,
                 chart_Y_Axis_Label: "Peptide Count",
-                showlegend: false
+                showlegend: false,
+                add_TickMarks_To_X_Axis_TickLabels: true
             });
 
             ////////////

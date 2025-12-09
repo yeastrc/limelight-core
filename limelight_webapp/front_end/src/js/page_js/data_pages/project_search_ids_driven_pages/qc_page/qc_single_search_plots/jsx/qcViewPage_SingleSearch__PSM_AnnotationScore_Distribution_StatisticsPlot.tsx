@@ -815,7 +815,8 @@ export class QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_Statistic
                     chart_X_Axis_Label,
                     //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram2dcontour'
                     chart_Y_Axis_Label,
-                    showlegend: false
+                    showlegend: false,
+                    add_TickMarks_To_X_Axis_TickLabels: true
                 });
 
                 //    Positioned Above create chart since width used in chart creation/computation

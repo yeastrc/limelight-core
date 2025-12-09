@@ -598,7 +598,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_M_Z_StatisticsPlot
                     chart_X_Axis_Label: "m/z",
                     //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
                     chart_Y_Axis_Label: "PSM Count",
-                    showlegend: false
+                    showlegend: false,
+                    add_TickMarks_To_X_Axis_TickLabels: true
                 });
 
                 ////////////

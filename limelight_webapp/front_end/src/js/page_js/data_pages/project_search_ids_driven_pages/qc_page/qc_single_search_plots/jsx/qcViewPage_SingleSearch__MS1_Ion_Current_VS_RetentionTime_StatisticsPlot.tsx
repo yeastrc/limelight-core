@@ -437,7 +437,8 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_VS_RetentionTime_Statistic
             chart_X_Axis_Label: "Retention Time (Minutes)",
             //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
             chart_Y_Axis_Label: "Ion Current",
-            showlegend: false
+            showlegend: false,
+            add_TickMarks_To_X_Axis_TickLabels: true
         });
 
         ////////////

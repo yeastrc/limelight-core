@@ -468,7 +468,8 @@ export class QcViewPage_SingleSearch__ScanCount_VS_IonInjectionTime_StatisticsPl
                     chart_X_Axis_Label: "Ion injection time (ms)",
                     //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
                     chart_Y_Axis_Label: "Frequency",
-                    showlegend: false
+                    showlegend: false,
+                    add_TickMarks_To_X_Axis_TickLabels: true
                 });
 
                 ////////////

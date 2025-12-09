@@ -810,7 +810,8 @@ export class QcViewPage_SingleSearch__PSM_Target_VS_Decoy_Histogram_ByAnnScore_S
                     chart_X_Axis_Label,
                     //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram2dcontour'
                     chart_Y_Axis_Label,
-                    showlegend: true
+                    showlegend: true,
+                    add_TickMarks_To_X_Axis_TickLabels: true
                 });
 
                 chart_Layout.barmode = "overlay";     //  Trace 1 bars 'overlay' Trace 2 bars

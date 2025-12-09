@@ -5,6 +5,9 @@
 
 //  Plotly ONLY imports successfully for a Build using this import
 import Plotly, { Legend, Layout } from "plotly.js-dist-min";
+import {
+    plotly_PlottingLibrary__Set_Layout_X_Axis_Add_TickMarkLines_To_TickLabels
+} from "page_js/common_all_pages/Plotly_PlottingLibrary_CommonCode/Plotly_PlottingLibrary__Set_Layout_X_Axis_Add_TickMarkLines_To_TickLabels";
 
 const _Search_SubSearch_Category_Each_MinWidth = 30;
 
@@ -90,6 +93,8 @@ export const qcPage_ChartOverlayDimensions = function() {
  * @param notMoveTitle - if true, do NOT move the Chart title
  *
  * @param hovermode_SetFalse_MayBeIgnored - Result.hovermode only set to false if this is false.  Other values ignored.  May be ignored if can find other settings so it is not required.
+ *
+ * @param add_TickMarks_To_X_Axis_TickLabels - true if add tick mark lines to the X Axis Tick labels - Use on 'Continuous' values X Axis like Histogram
  */
 export const qcPage_StandardChartLayout = function (
     {
@@ -98,7 +103,13 @@ export const qcPage_StandardChartLayout = function (
         /**
          * Result.hovermode only set to false if this is false.  Other values ignored.  May be ignored if can find other settings so it is not required.
          */
-        hovermode_OnlyProcessFalseValue_MayBeIgnored
+        hovermode_OnlyProcessFalseValue_MayBeIgnored,
+
+        /**
+         * true if add tick mark lines to the X Axis Tick labels - Use on 'Continuous' values X Axis like Histogram
+         */
+        add_TickMarks_To_X_Axis_TickLabels
+
     } : {
         chartTitle: string
         chart_X_Axis_Label: string
@@ -106,12 +117,21 @@ export const qcPage_StandardChartLayout = function (
         chart_Y_Axis_Label: string
         showlegend?: boolean // Default to false
         notMoveTitle?: boolean
-        search_SubSearch_Count_SizeFor?: number  //  Passed in for Combine Search and Sub Searches when Searches or Sub Searches are categories on Horizontal Access
+
+        /**
+         * Passed in for Combine Search and Sub Searches when Searches or Sub Searches are categories on Horizontal Access
+         */
+        search_SubSearch_Count_SizeFor?: number
 
         /**
          * Result.hovermode only set to false if this is false.  Other values ignored.  May be ignored if can find other settings so it is not required.
          */
         hovermode_OnlyProcessFalseValue_MayBeIgnored?: boolean
+
+        /**
+         * true if add tick mark lines to the X Axis Tick labels - Use on 'Continuous' values X Axis like Histogram
+         */
+        add_TickMarks_To_X_Axis_TickLabels?: boolean
 
     }) : Partial<Layout> {
 
@@ -208,6 +228,10 @@ export const qcPage_StandardChartLayout = function (
         if ( hovermode_OnlyProcessFalseValue_MayBeIgnored === false ) {
             result.hovermode = hovermode_OnlyProcessFalseValue_MayBeIgnored
         }
+    }
+
+    if ( add_TickMarks_To_X_Axis_TickLabels ) {
+        plotly_PlottingLibrary__Set_Layout_X_Axis_Add_TickMarkLines_To_TickLabels( result )
     }
 
     {

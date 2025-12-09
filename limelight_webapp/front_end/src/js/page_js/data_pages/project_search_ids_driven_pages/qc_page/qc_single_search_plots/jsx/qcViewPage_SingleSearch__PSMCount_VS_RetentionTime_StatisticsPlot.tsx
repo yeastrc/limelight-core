@@ -637,7 +637,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_RetentionTime_StatisticsPlot
                     chart_X_Axis_Label: "Retention Time (minutes)",
                     //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
                     chart_Y_Axis_Label: "PSM Count",
-                    showlegend: false
+                    showlegend: false,
+                    add_TickMarks_To_X_Axis_TickLabels: true
                 });
 
                 const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });

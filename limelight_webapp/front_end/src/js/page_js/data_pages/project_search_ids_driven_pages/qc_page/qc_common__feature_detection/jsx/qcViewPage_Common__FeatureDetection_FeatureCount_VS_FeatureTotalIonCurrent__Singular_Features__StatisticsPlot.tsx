@@ -1076,7 +1076,8 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
             chart_X_Axis_Label,
             //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
             chart_Y_Axis_Label: "Number of Features",
-            showlegend: true
+            showlegend: true,
+            add_TickMarks_To_X_Axis_TickLabels: true
         });
 
         // chart_Layout.barmode = 'stack'; //  Stack the bar charts

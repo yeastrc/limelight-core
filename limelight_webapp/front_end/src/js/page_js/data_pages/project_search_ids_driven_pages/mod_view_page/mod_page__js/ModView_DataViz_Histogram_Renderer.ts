@@ -32,6 +32,9 @@ import {
 import {
     Jstat_ExternalLibrary_Without_TypescriptDefinition_Calls
 } from "page_js/common_all_pages/external_libraries_without_typescript_definition__calls/jstat_ExternalLibrary_Without_TypescriptDefinition_Calls";
+import {
+    plotly_PlottingLibrary__Set_Layout_X_Axis_Add_TickMarkLines_To_TickLabels
+} from "page_js/common_all_pages/Plotly_PlottingLibrary_CommonCode/Plotly_PlottingLibrary__Set_Layout_X_Axis_Add_TickMarkLines_To_TickLabels";
 
 
 ///////
@@ -1990,6 +1993,8 @@ export const modView_DataViz_Histogram_Renderer = function (
         // ],
     }
 
+    plotly_PlottingLibrary__Set_Layout_X_Axis_Add_TickMarkLines_To_TickLabels( chart_Layout )
+
     if ( ! modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root.is_ContainsAnyData() ) {
 
         //  Add Center message that there is NO data
@@ -2684,6 +2689,8 @@ const _plot__data_viz_Histogram_Difference_Plot_container_DOMElement = function(
             itemsizing: 'constant' // Legend marker size will be constant
         }
     }
+
+    plotly_PlottingLibrary__Set_Layout_X_Axis_Add_TickMarkLines_To_TickLabels( chart_Layout )
 
     if ( differences_ALL_ZERO ) {
 

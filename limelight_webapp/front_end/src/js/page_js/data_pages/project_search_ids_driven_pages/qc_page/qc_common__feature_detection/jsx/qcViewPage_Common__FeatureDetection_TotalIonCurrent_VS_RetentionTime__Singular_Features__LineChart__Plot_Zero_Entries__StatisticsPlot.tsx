@@ -995,7 +995,8 @@ export class QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singu
             //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
             chart_Y_Axis_Label,
             showlegend: true,
-            hovermode_OnlyProcessFalseValue_MayBeIgnored: false   //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
+            hovermode_OnlyProcessFalseValue_MayBeIgnored: false,   //  TURN OFF Tooltips for Scatter Plot GL since get 100% CPU usage when too many points with very similar X or Y
+            add_TickMarks_To_X_Axis_TickLabels: true
         });
 
         if ( chart_Layout.yaxis ) {

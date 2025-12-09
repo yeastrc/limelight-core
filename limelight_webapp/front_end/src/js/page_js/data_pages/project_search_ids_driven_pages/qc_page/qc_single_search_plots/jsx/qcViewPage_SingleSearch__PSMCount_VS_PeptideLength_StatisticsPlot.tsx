@@ -532,7 +532,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_PeptideLength_StatisticsPlot
                 chart_X_Axis_Label: "Peptide Length",
                 chart_X_Axis_IsTypeCategory: false,
                 chart_Y_Axis_Label: "PSM Count",
-                showlegend: false
+                showlegend: false,
+                add_TickMarks_To_X_Axis_TickLabels: true
             });
 
             ////////////
