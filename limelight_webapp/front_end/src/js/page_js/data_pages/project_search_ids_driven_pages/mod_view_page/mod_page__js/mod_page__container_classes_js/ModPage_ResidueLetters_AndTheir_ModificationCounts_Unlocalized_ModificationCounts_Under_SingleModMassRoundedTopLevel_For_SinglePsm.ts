@@ -11,14 +11,19 @@ export class ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_Modi
 
     readonly proteinSequenceVersionId__WhenForSpecificProtein: number
 
-    private _modificationCount__Map_ModifiedResidueLetter: Map<string,
+    private _modificationCount_YES_Localized_Modifications__Map_ModifiedResidueLetter: Map<string,
         {
             modificationCount: number
             modifiedResidueLetter: string
         }
     > = new Map()
 
-    private _unlocalized_ModificationCount: number = 0
+    private _modificationCount_NOT_Localized_Unlocalized_Modifications__Map_ModifiedResidueLetter: Map<string,
+        {
+            modificationCount: number
+            modifiedResidueLetter: string
+        }
+    > = new Map()
 
     constructor(
         {
@@ -33,11 +38,21 @@ export class ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_Modi
     }
 
 
-    get__ModificationCount_ModifiedResidueLetter_Entries() {
-        return this._modificationCount__Map_ModifiedResidueLetter.values()
+    get_YES_Localized_Modifications__ModificationCount_ModifiedResidueLetter_Entries() {
+        return this._modificationCount_YES_Localized_Modifications__Map_ModifiedResidueLetter.values()
     }
 
-    add_modificationCount__For_ModifiedResidueLetter(
+    get_NOT_Localized_Unlocalized__Modifications__ModificationCount_ModifiedResidueLetter_Entries() {
+        return this._modificationCount_NOT_Localized_Unlocalized_Modifications__Map_ModifiedResidueLetter.values()
+    }
+
+    /**
+     * Add Localized Modification
+     *
+     * @param modificationCountToAdd
+     * @param modifiedResidueLetter
+     */
+    add_modificationCount__YES_Localized__For_ModifiedResidueLetter(
         {
             modificationCountToAdd, modifiedResidueLetter
         } : {
@@ -46,17 +61,42 @@ export class ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_Modi
         }
     ) {
 
-        let entry_for_modifiedResidueLetter = this._modificationCount__Map_ModifiedResidueLetter.get( modifiedResidueLetter )
+        let entry_for_modifiedResidueLetter = this._modificationCount_YES_Localized_Modifications__Map_ModifiedResidueLetter.get( modifiedResidueLetter )
         if ( ! entry_for_modifiedResidueLetter ) {
             entry_for_modifiedResidueLetter = {
                 modificationCount: 0, modifiedResidueLetter
             }
-            this._modificationCount__Map_ModifiedResidueLetter.set( modifiedResidueLetter, entry_for_modifiedResidueLetter )
+            this._modificationCount_YES_Localized_Modifications__Map_ModifiedResidueLetter.set( modifiedResidueLetter, entry_for_modifiedResidueLetter )
         }
 
         entry_for_modifiedResidueLetter.modificationCount += modificationCountToAdd
     }
 
+    /**
+     * Add NOT Localized (unlocalized) Modification
+     *
+     * @param modificationCountToAdd
+     * @param modifiedResidueLetter
+     */
+    add_modificationCount__NOT_Localized_Unlocalized__For_ModifiedResidueLetter(
+        {
+            modificationCountToAdd, modifiedResidueLetter
+        } : {
+            modificationCountToAdd: number
+            modifiedResidueLetter: string
+        }
+    ) {
+
+        let entry_for_modifiedResidueLetter = this._modificationCount_NOT_Localized_Unlocalized_Modifications__Map_ModifiedResidueLetter.get( modifiedResidueLetter )
+        if ( ! entry_for_modifiedResidueLetter ) {
+            entry_for_modifiedResidueLetter = {
+                modificationCount: 0, modifiedResidueLetter
+            }
+            this._modificationCount_NOT_Localized_Unlocalized_Modifications__Map_ModifiedResidueLetter.set( modifiedResidueLetter, entry_for_modifiedResidueLetter )
+        }
+
+        entry_for_modifiedResidueLetter.modificationCount += modificationCountToAdd
+    }
 
     /**
      * Add values in passed in item to current object
@@ -70,14 +110,14 @@ export class ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_Modi
             throw Error(msg)
         }
 
-        for ( const addFrom_Entry of item._modificationCount__Map_ModifiedResidueLetter.values() ) {
+        for ( const addFrom_Entry of item._modificationCount_YES_Localized_Modifications__Map_ModifiedResidueLetter.values() ) {
 
-            let entry_for_modifiedResidueLetter = this._modificationCount__Map_ModifiedResidueLetter.get( addFrom_Entry.modifiedResidueLetter )
+            let entry_for_modifiedResidueLetter = this._modificationCount_YES_Localized_Modifications__Map_ModifiedResidueLetter.get( addFrom_Entry.modifiedResidueLetter )
             if ( ! entry_for_modifiedResidueLetter ) {
                 entry_for_modifiedResidueLetter = {
                     modificationCount: 0, modifiedResidueLetter: addFrom_Entry.modifiedResidueLetter
                 }
-                this._modificationCount__Map_ModifiedResidueLetter.set( addFrom_Entry.modifiedResidueLetter, entry_for_modifiedResidueLetter )
+                this._modificationCount_YES_Localized_Modifications__Map_ModifiedResidueLetter.set( addFrom_Entry.modifiedResidueLetter, entry_for_modifiedResidueLetter )
             }
 
             // if ( entry_for_modifiedResidueLetter.modificationCount > 0 ) {
@@ -88,6 +128,22 @@ export class ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_Modi
             entry_for_modifiedResidueLetter.modificationCount += addFrom_Entry.modificationCount
         }
 
-        this._unlocalized_ModificationCount += item._unlocalized_ModificationCount
+        for ( const addFrom_Entry of item._modificationCount_NOT_Localized_Unlocalized_Modifications__Map_ModifiedResidueLetter.values() ) {
+
+            let entry_for_modifiedResidueLetter = this._modificationCount_NOT_Localized_Unlocalized_Modifications__Map_ModifiedResidueLetter.get( addFrom_Entry.modifiedResidueLetter )
+            if ( ! entry_for_modifiedResidueLetter ) {
+                entry_for_modifiedResidueLetter = {
+                    modificationCount: 0, modifiedResidueLetter: addFrom_Entry.modifiedResidueLetter
+                }
+                this._modificationCount_NOT_Localized_Unlocalized_Modifications__Map_ModifiedResidueLetter.set( addFrom_Entry.modifiedResidueLetter, entry_for_modifiedResidueLetter )
+            }
+
+            // if ( entry_for_modifiedResidueLetter.modificationCount > 0 ) {
+            //     //  Count is already > 0
+            //     var z = 0
+            // }
+
+            entry_for_modifiedResidueLetter.modificationCount += addFrom_Entry.modificationCount
+        }
     }
 }

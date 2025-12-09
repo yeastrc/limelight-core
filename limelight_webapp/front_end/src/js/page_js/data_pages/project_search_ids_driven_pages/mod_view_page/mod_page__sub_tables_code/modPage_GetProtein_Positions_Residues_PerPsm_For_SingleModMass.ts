@@ -829,7 +829,7 @@ const _process_Single__dataFor_SinglePsm__Psm_OpenModification_Unlocalized__NO_M
 
         for ( const peptideSequence_Letter of peptideSequence_For_PeptideId ) {
 
-            modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__For_ModifiedResidueLetter( {
+            modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__NOT_Localized_Unlocalized__For_ModifiedResidueLetter( {
                 modifiedResidueLetter: peptideSequence_Letter,
                 modificationCountToAdd: ( 1 / peptideSequence_For_PeptideId.length )
             } )
@@ -864,7 +864,7 @@ const _process_Single__dataFor_SinglePsm__Psm_OpenModification_Unlocalized__NO_M
 
             const modificationCountToAdd = 1 / peptideSequence_For_PeptideId.length
 
-            modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__For_ModifiedResidueLetter( {
+            modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__NOT_Localized_Unlocalized__For_ModifiedResidueLetter( {
                 modifiedResidueLetter: peptideSequence_Letter,
                 modificationCountToAdd
             } )
@@ -1131,7 +1131,7 @@ const _process_Single__dataFor_SinglePsm__Psm_OpenModification_Localized__YES_Mo
 
             const modificationCountToAdd = 1 / openMod_MassEntry_PositionCount
 
-            modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__For_ModifiedResidueLetter( {
+            modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__YES_Localized__For_ModifiedResidueLetter( {
                 modifiedResidueLetter: peptideSequence_Letter,
                 modificationCountToAdd
             } )
@@ -1368,7 +1368,7 @@ const _process_Single__dataFor_SinglePsm__Psm_Level_VariableModifications = func
 
                 const modificationCountToAdd = 1 / _PSM_VARIABLE_MOD_POSITION_COUNT_ALWAYS_ONE
 
-                modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__For_ModifiedResidueLetter( {
+                modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__YES_Localized__For_ModifiedResidueLetter( {
                     modifiedResidueLetter: peptideSequence_Letter,
                     modificationCountToAdd
                 } )
@@ -1604,7 +1604,7 @@ const _process_Single__dataFor_SinglePsm__ReportedPeptide_Level_VariableModifica
 
                 const modificationCountToAdd = 1 / _REPORTED_PEPTIDE_VARIABLE_MOD_POSITION_COUNT_ALWAYS_ONE
 
-                modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__For_ModifiedResidueLetter( {
+                modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__YES_Localized__For_ModifiedResidueLetter( {
                     modifiedResidueLetter: peptideSequence_Letter,
                     modificationCountToAdd
                 } )
@@ -1936,7 +1936,7 @@ const _compute_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_Mo
         const modificationCountToAdd = fraction
         const modifiedResidueLetter = peptideSequence_For_PeptideId.substring( modificationPosition - 1, modificationPosition ) //  Start at 'modificationPosition - 1' since modificationPosition is 1 based
 
-        modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__For_ModifiedResidueLetter( {
+        modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__NOT_Localized_Unlocalized__For_ModifiedResidueLetter( {
             modificationCountToAdd,
             modifiedResidueLetter
         })

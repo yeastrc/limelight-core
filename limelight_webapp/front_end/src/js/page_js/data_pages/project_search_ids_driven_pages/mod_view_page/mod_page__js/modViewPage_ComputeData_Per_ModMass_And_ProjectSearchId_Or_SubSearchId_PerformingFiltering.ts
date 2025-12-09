@@ -2228,6 +2228,7 @@ const _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPos
         }
 
         const modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm = _compute_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__FROM__modificationPositions_OnPeptide_ThatPassFilters({
+            modificationPositions_YES_Localized: true,
             modificationPositions_OnPeptide_ThatPassFilters, modificationPositions_OnPeptide, psmTblData, peptideIds_For_MainFilters_Holder, peptideSequences_For_MainFilters_Holder
         })
 
@@ -2401,6 +2402,7 @@ const _filterOn_Modification_YES_Localized_ModificationPositionsOnPeptide_ModPos
     //  Made it through all filters AND modificationPositions_OnPeptide_ThatPassFilters.size !== 0 so return true
 
     const modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm = _compute_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__FROM__modificationPositions_OnPeptide_ThatPassFilters({
+        modificationPositions_YES_Localized: true,
         modificationPositions_OnPeptide_ThatPassFilters, modificationPositions_OnPeptide, psmTblData, peptideIds_For_MainFilters_Holder, peptideSequences_For_MainFilters_Holder
     })
 
@@ -2472,6 +2474,7 @@ const _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePosition
         //  Pass ALL Modification Positions to function '_compute_modPage_ResidueLetters_And...'
 
         const modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm = _compute_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__FROM__modificationPositions_OnPeptide_ThatPassFilters({
+            modificationPositions_YES_Localized: false,
             modificationPositions_OnPeptide_ThatPassFilters, modificationPositions_OnPeptide, psmTblData, peptideIds_For_MainFilters_Holder, peptideSequences_For_MainFilters_Holder
         })
 
@@ -2681,6 +2684,7 @@ const _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePosition
     }
 
     const modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm = _compute_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__FROM__modificationPositions_OnPeptide_ThatPassFilters({
+        modificationPositions_YES_Localized: false,
         modificationPositions_OnPeptide_ThatPassFilters, modificationPositions_OnPeptide, psmTblData, peptideIds_For_MainFilters_Holder, peptideSequences_For_MainFilters_Holder
     })
 
@@ -2703,11 +2707,15 @@ const _filterOn_Modification_NOT_Localized__ModPositionInProtein_PeptidePosition
  */
 const _compute_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm__FROM__modificationPositions_OnPeptide_ThatPassFilters = function (
     {
+        modificationPositions_YES_Localized,
+
         modificationPositions_OnPeptide_ThatPassFilters,
         modificationPositions_OnPeptide,
         psmTblData,
         peptideIds_For_MainFilters_Holder, peptideSequences_For_MainFilters_Holder
     } : {
+        modificationPositions_YES_Localized: boolean
+
         modificationPositions_OnPeptide_ThatPassFilters: Set<number>
         modificationPositions_OnPeptide: Array<number>
         psmTblData: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
@@ -2739,10 +2747,20 @@ const _compute_modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_Mo
         const modificationCountToAdd = fraction
         const modifiedResidueLetter = peptideSequence_For_PeptideId.substring( modificationPosition - 1, modificationPosition ) //  Start at 'modificationPosition - 1' since modificationPosition is 1 based
 
-        modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__For_ModifiedResidueLetter( {
-            modificationCountToAdd,
-            modifiedResidueLetter
-        })
+        if ( modificationPositions_YES_Localized ) {
+
+            modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__YES_Localized__For_ModifiedResidueLetter( {
+                modificationCountToAdd,
+                modifiedResidueLetter
+            } )
+
+        } else {
+
+            modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm.add_modificationCount__NOT_Localized_Unlocalized__For_ModifiedResidueLetter( {
+                modificationCountToAdd,
+                modifiedResidueLetter
+            } )
+        }
     }
 
     return modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_Under_SingleModMassRoundedTopLevel_For_SinglePsm

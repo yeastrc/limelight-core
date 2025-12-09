@@ -24,7 +24,8 @@ import {
 import { tooltipClasses } from "@mui/material/Tooltip";
 
 
-const _BAR_COLOR = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_very_dark
+const _BAR_COLOR__YES_LOCALIZED = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_very_dark
+const _BAR_COLOR__NOT_LOCALIZED_UNLOCALIZED = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_orange
 
 
 const _BAR_HEIGHT_MAX = 20
@@ -84,17 +85,15 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
     }
 ) : JSX.Element {
 
+    //  Compute Max Value
+
     const _MIN_MAX_NOT_SET: number = undefined
 
-    let count_MAX_VALUE = _MIN_MAX_NOT_SET
-
-    let have_Letter_With_PsmCount_Zero = false
+    let count_Localized_Unlocalized_Combined_MAX_VALUE = _MIN_MAX_NOT_SET
 
     if ( modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.is_No_ResidueLetters() ) {
 
-        count_MAX_VALUE = 0
-
-        have_Letter_With_PsmCount_Zero = true
+        count_Localized_Unlocalized_Combined_MAX_VALUE = 0
 
     } else {
 
@@ -102,24 +101,32 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
 
             const residueLetter = LIMELIGHT__RESIDUE_LETTERS_ALL_IN_ALPHA_ORDER_CONSTANT[ letterIndex ]
 
-            let count_Entry = modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.get_ModificationCount_For_ResidueLetter( residueLetter )
-            if ( ! count_Entry ) {
-                count_Entry = 0
+            let count_Localized_Unlocalized_Combined = 0
+
+            {
+                let count_Entry = modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.get_ModificationCount_For_ResidueLetter__YES_Localized_Modifications( residueLetter )
+                if ( count_Entry ) {
+                    count_Localized_Unlocalized_Combined += count_Entry
+                }
+            }
+            {
+                let count_Entry = modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.get_ModificationCount_For_ResidueLetter__NOT_Localized_Unlocalized( residueLetter )
+                if ( count_Entry ) {
+                    count_Localized_Unlocalized_Combined += count_Entry
+                }
             }
 
-            if ( count_Entry === 0 ) {
-                have_Letter_With_PsmCount_Zero = true
-            }
-
-            if ( count_MAX_VALUE === _MIN_MAX_NOT_SET ) {
-                count_MAX_VALUE = count_Entry
+            if ( count_Localized_Unlocalized_Combined_MAX_VALUE === _MIN_MAX_NOT_SET ) {
+                count_Localized_Unlocalized_Combined_MAX_VALUE = count_Localized_Unlocalized_Combined
             } else {
-                if ( count_MAX_VALUE < count_Entry ) {
-                    count_MAX_VALUE = count_Entry
+                if ( count_Localized_Unlocalized_Combined_MAX_VALUE < count_Localized_Unlocalized_Combined ) {
+                    count_Localized_Unlocalized_Combined_MAX_VALUE = count_Localized_Unlocalized_Combined
                 }
             }
         }
     }
+
+    // Process to produce JSX Elements
 
     ///////
 
@@ -131,50 +138,85 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
 
         const residueLetter = LIMELIGHT__RESIDUE_LETTERS_ALL_IN_ALPHA_ORDER_CONSTANT[ letterIndex ]
 
-        let count = modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.get_ModificationCount_For_ResidueLetter( residueLetter )
-        if ( ! count ) {
-            count = 0
+        let count__YES_Localized = 0
+        let count__NOT_Localized_Unlocalized = 0
+
+        {
+            let count_Entry = modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.get_ModificationCount_For_ResidueLetter__YES_Localized_Modifications( residueLetter )
+            if ( count_Entry ) {
+                count__YES_Localized += count_Entry
+            }
+        }
+        {
+            let count_Entry = modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.get_ModificationCount_For_ResidueLetter__NOT_Localized_Unlocalized( residueLetter )
+            if ( count_Entry ) {
+                count__NOT_Localized_Unlocalized += count_Entry
+            }
         }
 
-        let barHeight = _BAR_HEIGHT_MAX
+        let barHeight__YES_Localized: number = undefined
 
-        let count_FractionOfMaxCount = 0
+        let count_FractionOfMaxCount__YES_Localized = 0
 
-        if ( count === 0 ) {
+        {
+            if ( count__YES_Localized === 0 ) {
 
-            barHeight = 0
+                barHeight__YES_Localized = 0
 
-        } else {
+            } else {
 
-            count_FractionOfMaxCount = count / count_MAX_VALUE
+                count_FractionOfMaxCount__YES_Localized = count__YES_Localized / count_Localized_Unlocalized_Combined_MAX_VALUE
 
-            barHeight = Math.ceil( count_FractionOfMaxCount * _BAR_HEIGHT_MAX )
+                barHeight__YES_Localized = Math.ceil( count_FractionOfMaxCount__YES_Localized * _BAR_HEIGHT_MAX )
 
-            if ( barHeight < _BAR_HEIGHT_MIN ) {
-                barHeight = _BAR_HEIGHT_MIN  // count not zero so barHeight Must be at least _BAR_HEIGHT_MIN
+                if ( barHeight__YES_Localized < _BAR_HEIGHT_MIN ) {
+                    barHeight__YES_Localized = _BAR_HEIGHT_MIN  // count not zero so barHeight Must be at least _BAR_HEIGHT_MIN
+                }
+            }
+        }
+
+        let barHeight__NOT_Localized_Unlocalized: number = undefined
+
+        let count_FractionOfMaxCount__NOT_Localized_Unlocalized = 0
+
+        {
+            if ( count__NOT_Localized_Unlocalized === 0 ) {
+
+                barHeight__NOT_Localized_Unlocalized = 0
+
+            } else {
+
+                count_FractionOfMaxCount__NOT_Localized_Unlocalized = count__NOT_Localized_Unlocalized / count_Localized_Unlocalized_Combined_MAX_VALUE
+
+                barHeight__NOT_Localized_Unlocalized = Math.ceil( count_FractionOfMaxCount__NOT_Localized_Unlocalized * _BAR_HEIGHT_MAX )
+
+                if ( barHeight__NOT_Localized_Unlocalized < _BAR_HEIGHT_MIN ) {
+                    barHeight__NOT_Localized_Unlocalized = _BAR_HEIGHT_MIN  // count not zero so barHeight Must be at least _BAR_HEIGHT_MIN
+                }
             }
         }
 
         tooltipRowValues_Array.push({
             residueLetter: residueLetter,
-            count: count,
-            count_FractionOfMaxCount: count_FractionOfMaxCount,
-            barHeight
+            count__YES_Localized,
+            count_FractionOfMaxCount__YES_Localized,
+            barHeight__YES_Localized,
+            //  NOT Localized - Unlocalized
+            count__NOT_Localized_Unlocalized,
+            count_FractionOfMaxCount__NOT_Localized_Unlocalized,
+            barHeight__NOT_Localized_Unlocalized
         })
 
-        if ( Number.isNaN( barHeight ) ) {
-            var z = 0
-        }
+        // if ( Number.isNaN( barHeight ) ) {
+        //     var z = 0
+        // }
 
-        if ( barHeight < 0 ) {
-            var z = 0
-        }
+        // if ( barHeight < 0 ) {
+        //     var z = 0
+        // }
 
         const letter_X_Position = Math.floor( ( letterIndex * _SINGLE_LETTER_WIDTH ) + ( _SINGLE_LETTER_WIDTH / 2 ) )
         const letter_Y_Position = _BAR_HEIGHT_MAX + _SINGLE_LETTER_Y_OFFSET_FROM_BAR
-
-        // const height_CoverRect = _SINGLE_LETTER_HEIGHT + _SINGLE_LETTER_Y_OFFSET_FROM_BAR + _BAR_HEIGHT_MAX
-
 
         const element = (
 
@@ -203,38 +245,25 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
                     </tspan>
                 </text>
 
-                <rect
-                    x={ ( letterIndex * _SINGLE_LETTER_WIDTH ) + 1 }
-                    y={ _BAR_HEIGHT_MAX - barHeight }
-                    width={ _SINGLE_LETTER_WIDTH - 2 }
-                    height={ barHeight }
-                    style={ { fill: _BAR_COLOR } }
-                />
-
-                {/*  Cover Rect for tooltip  */}
-                {/*
-                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                    title={
-                        <div>
-                            <div>
-                                Residue Letter: { residueLetter }
-                            </div>
-                            <div>
-                                PSM Count: { count }
-                            </div>
-                        </div>
-                    }
-                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                >
+                { barHeight__YES_Localized !== 0 ? (
                     <rect
-                        x={ ( letterIndex * _SINGLE_LETTER_WIDTH ) }
-                        y={ 0 }
-                        width={ _SINGLE_LETTER_WIDTH }
-                        height={ height_CoverRect }
-                        style={ { fillOpacity: 0 } }
+                        x={ ( letterIndex * _SINGLE_LETTER_WIDTH ) + 1 }
+                        y={ _BAR_HEIGHT_MAX - barHeight__YES_Localized }
+                        width={ _SINGLE_LETTER_WIDTH - 2 }
+                        height={ barHeight__YES_Localized }
+                        style={ { fill: _BAR_COLOR__YES_LOCALIZED } }
                     />
-                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                */}
+                ) : null }
+
+                { barHeight__NOT_Localized_Unlocalized !== 0 ? (
+                    <rect
+                        x={ ( letterIndex * _SINGLE_LETTER_WIDTH ) + 1 }
+                        y={ _BAR_HEIGHT_MAX - barHeight__YES_Localized - barHeight__NOT_Localized_Unlocalized }
+                        width={ _SINGLE_LETTER_WIDTH - 2 }
+                        height={ barHeight__NOT_Localized_Unlocalized }
+                        style={ { fill: _BAR_COLOR__NOT_LOCALIZED_UNLOCALIZED } }
+                    />
+                ) : null }
 
             </React.Fragment>
         )
@@ -280,6 +309,14 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
                     open_ModPage_ModifiedResidue__Overlay( { params: { modifiedResidue_RowValues: tooltipRowValues_Array } } )
                 } }
             >
+
+                {/*  Render the tooltip on the main page for testing only  */}
+
+                {/*<div style={ { marginTop: 10 } }>*/}
+                {/*    REMOVE*/}
+                {/*    { _get_SVG_Overall_Tooltip( { tooltipRowValues_Array } ) }*/}
+                {/*</div>*/}
+
                 <svg
                     width={ _SVG_WIDTH }
                     height={ _SVG_HEIGHT }
@@ -289,11 +326,11 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
 
                 {/*  Cover shown when on hover of parent  */ }
 
-                {/*  Bottom of cover.  black background 0.5 opacity  */}
+                {/*  Bottom of cover.  black background 0.5 opacity  */ }
                 <div
                     className=" standard-on-hover-show-cover-div-contents--shown-cover-root-element standard-black-background-point-5-opacity "
                 ></div>
-                {/*  Top of cover.  white background centered text  */}
+                {/*  Top of cover.  white background centered text  */ }
                 <div
                     className=" standard-on-hover-show-cover-div-contents--shown-cover-root-element "
                     style={ {
@@ -336,53 +373,118 @@ const _get_SVG_Overall_Tooltip = function (
 
     const entries_ForLetters_Tooltip_Overall_JSX: Array<JSX.Element> = []
 
+    const _BAR_HEIGHT = "80%"
+
+    let max__barHeight__YES_Localized = 0
+    let max__barHeight__NOT_Localized_Unlocalized = 0
+
+    for ( const rowValue of tooltipRowValues_Array ) {
+
+        if ( max__barHeight__YES_Localized < rowValue.barHeight__YES_Localized ) {
+            max__barHeight__YES_Localized = rowValue.barHeight__YES_Localized
+        }
+        if ( max__barHeight__NOT_Localized_Unlocalized < rowValue.barHeight__NOT_Localized_Unlocalized ) {
+            max__barHeight__NOT_Localized_Unlocalized = rowValue.barHeight__NOT_Localized_Unlocalized
+        }
+    }
+
     for ( const rowValue of tooltipRowValues_Array ) {
 
         // entries_ForLetters_TextLines_ForLogging.push( rowValue.residueLetter + "\t" + rowValue.count )
 
-        entries_ForLetters_Tooltip_Overall_JSX.push(
-            <div
-                key={ rowValue.residueLetter + "_letter" }
-                style={ { textAlign: "right", fontFamily: "monospace", marginRight: _LETTERS_MARGIN_RIGHT,  marginBottom: _DATA_ROWS_MARGIN_BOTTOM, paddingLeft: 10 } }
+        const rowElement = (
+            <React.Fragment
+                key={ rowValue.residueLetter }
             >
-                { rowValue.residueLetter  }
-            </div>
-        )
-        entries_ForLetters_Tooltip_Overall_JSX.push(
-            <div
-                key={ rowValue.residueLetter + "_count" }
-                style={ { textAlign: "right", marginRight: _COUNT_MARGIN_RIGHT,  marginBottom: _DATA_ROWS_MARGIN_BOTTOM } }
-            >
-                { rowValue.count.toLocaleString()  }
-            </div>
-        )
-
-        const _BAR_HEIGHT = "80%"
-
-        //  Insert a bar the same width of the
-        entries_ForLetters_Tooltip_Overall_JSX.push(
-            <div
-                key={ rowValue.residueLetter + "_bar" }
-                style={
-                    {
-                        marginBottom: _DATA_ROWS_MARGIN_BOTTOM, marginRight: 15,
-                        display: "flex", alignItems: "center"
-                    }
-                }
-            >
-                {/*  Actual Bar */}
+                {/*  Localized Data  */ }
+                <div
+                    style={ {
+                        textAlign: "right",
+                        // marginRight: _COUNT_MARGIN_RIGHT,
+                        // marginBottom: _DATA_ROWS_MARGIN_BOTTOM
+                    } }
+                >
+                    { rowValue.count__YES_Localized.toLocaleString() }
+                </div>
                 <div
                     style={
                         {
-                            height: _BAR_HEIGHT,
-                            width: rowValue.barHeight,  //  Using barHeight since that is named for the main page rendering
-                            backgroundColor: _BAR_COLOR
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "right",
+                            // width: max__barHeight__YES_Localized,
+                            // textAlign: "right",
+                            // marginBottom: _DATA_ROWS_MARGIN_BOTTOM,
+                            // marginRight: 15,
                         }
                     }
                 >
+                    {/*  Actual Bar */ }
+                    <div
+                        style={
+                            {
+                                // display: "inline-block",
+                                // fontSize: _BAR_HEIGHT,
+                                height: _BAR_HEIGHT,
+                                width: rowValue.barHeight__YES_Localized,  //  Using barHeight since that is named for the main page rendering
+                                backgroundColor: _BAR_COLOR__YES_LOCALIZED
+                            }
+                        }
+                    >
+                        &nbsp;
+                    </div>
                 </div>
-            </div>
+
+                {/*  Residue Letter  */ }
+                <div
+                    style={ {
+                        textAlign: "center",
+                        fontFamily: "monospace",
+                        fontWeight: "bold",
+                        // paddingLeft: 10,
+                        // paddingRight: 10,
+                        // paddingBottom: _DATA_ROWS_MARGIN_BOTTOM,
+                    } }
+                >
+                    { rowValue.residueLetter }
+                </div>
+
+                {/*  Unlocalized Data  */ }
+
+                <div
+                    style={
+                        {
+                            // marginBottom: _DATA_ROWS_MARGIN_BOTTOM,
+                            // marginRight: 15,
+                            display: "flex", alignItems: "center"
+                        }
+                    }
+                >
+                    {/*  Actual Bar */ }
+                    <div
+                        style={
+                            {
+                                height: _BAR_HEIGHT,
+                                width: rowValue.barHeight__NOT_Localized_Unlocalized,  //  Using barHeight since that is named for the main page rendering
+                                backgroundColor: _BAR_COLOR__NOT_LOCALIZED_UNLOCALIZED
+                            }
+                        }
+                    >
+                    </div>
+                </div>
+                <div
+                    style={ {
+                        // marginBottom: _DATA_ROWS_MARGIN_BOTTOM
+                    } }
+                >
+                    { rowValue.count__NOT_Localized_Unlocalized.toLocaleString() }
+                </div>
+
+            </React.Fragment>
         )
+
+
+        entries_ForLetters_Tooltip_Overall_JSX.push( rowElement )
     }
 
     // entries_ForLetters_TextLines_ForLogging.push("")
@@ -390,44 +492,41 @@ const _get_SVG_Overall_Tooltip = function (
 
     return (
         <div>
-            {/*<div style={ { marginTop: 10, marginBottom: 10, textAlign: "center" } }>*/}
-            {/*    <span*/}
-            {/*        style={ {*/}
-            {/*            fontWeight: "bold",*/}
-            {/*            // borderStyle: "solid", borderWidth: 2*/}
-            {/*            textDecoration: "underline"*/}
-            {/*        } }*/}
-            {/*        // className=" standard-border-color-very-dark "*/}
-            {/*    >*/}
-            {/*        Click for info*/}
-            {/*    </span>*/}
-            {/*</div>*/}
-            <div style={ { marginBottom: 10 } }>
-                Residue and Modification Count
+            <div style={ { textAlign: "center", fontWeight: "bold", marginBottom: 8 } }>
+                Modified Residue Counts
             </div>
-            <div style={ { display: "flex", flexDirection: "row", alignItems: "center" } }>
-                <div
-                    style={ {
-                        display: "grid",
-                        // columnGap: 10, rowGap: 3,
-                        gridTemplateColumns: "max-content max-content max-content",
-                        marginLeft: "auto", marginRight: "auto"
-                    } }
-                >
-                    {/*<div*/ }
-                    {/*    style={ { textAlign: "right", marginRight: _LETTERS_MARGIN_RIGHT } }*/ }
-                    {/*>*/ }
-                    {/*    Residue*/ }
-                    {/*</div>*/ }
-                    {/*<div style={ { textAlign: "right", marginRight: _COUNT_MARGIN_RIGHT, marginBottom: 10 } }>*/ }
-                    {/*    Count*/ }
-                    {/*</div>*/ }
-
-                    {/* Column for bars */ }
-                    {/*<div></div>*/ }
-
-                    { entries_ForLetters_Tooltip_Overall_JSX }
+            <div
+                style={ {
+                    display: "grid",
+                    columnGap: 10, rowGap: 3,
+                    gridTemplateColumns: "auto " + max__barHeight__YES_Localized + "px" + " max-content " + max__barHeight__NOT_Localized_Unlocalized + "px" + " auto"
+                    //  Columns:  'Yes localized Count' 'Yes localized bar' 'residue' 'Not localized bar' 'Not localized Count'
+                    // marginLeft: "auto", marginRight: "auto"
+                } }
+            >
+                {/*  Columns 1, 2  */ }
+                <div style={ {
+                    textAlign: "right",
+                    // marginRight: _COUNT_MARGIN_RIGHT,
+                    // marginBottom: 10,
+                    gridColumn: " 1 / 3 "
+                } }>
+                    Localized
                 </div>
+                <div
+                    // style={ { textAlign: "right", marginRight: _LETTERS_MARGIN_RIGHT } }
+                >
+                    {/*Residue*/}
+                </div>
+                {/*  Columns 4, 5  */ }
+                <div style={ {
+                    // marginBottom: 10,
+                    gridColumn: " 4 / 6 "
+                } }>
+                    Unlocalized
+                </div>
+
+                { entries_ForLetters_Tooltip_Overall_JSX }
             </div>
         </div>
     )
@@ -438,7 +537,12 @@ const _get_SVG_Overall_Tooltip = function (
 class INTERNAL__SVG_OVERALL_TOOLTIP_ROW_Values {
 
     residueLetter: string
-    count: number
-    count_FractionOfMaxCount: number
-    barHeight: number
+    //  YES Localized
+    count__YES_Localized: number
+    count_FractionOfMaxCount__YES_Localized: number
+    barHeight__YES_Localized: number
+    //  NOT Localized - Unlocalized
+    count__NOT_Localized_Unlocalized: number
+    count_FractionOfMaxCount__NOT_Localized_Unlocalized: number
+    barHeight__NOT_Localized_Unlocalized: number
 }

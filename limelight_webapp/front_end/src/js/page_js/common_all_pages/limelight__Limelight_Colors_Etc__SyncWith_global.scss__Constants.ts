@@ -62,6 +62,8 @@ export const limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants = {
     site_color_gray: "#d3d3d3",
     site_color_gray_text: "#a3a3a3",
 
+    site_color_orange: "#FF9C00",
+
     link_color_unvisited: "#005606",
     link_color_visited: "#005606",
     link_color_hover: site_color_dark,
@@ -88,7 +90,7 @@ export const limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants = {
 //  Default font size (Applied to <body> in all_pages.scss)
     default_font_size_number,
     default_font_size_string_px
-}
+} as const
 
 // Prevent changes
 Object.freeze( limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants )
