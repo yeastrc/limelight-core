@@ -44,7 +44,6 @@ import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImpo
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportUsernamePasswordFileException;
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception;
 import org.yeastrc.limelight.limelight_submit_import.get_submitter_key.GetSubmitterKey;
-import org.yeastrc.limelight.limelight_submit_import.main.SubmitUploadMain.SubmitResult;
 import org.yeastrc.limelight.limelight_submit_import.objects.SearchTagCategory_AndItsSearchTagStrings_Object;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.call_submit_import_parameter_objects.Call_SubmitImport_UploadFile_Service_Parameters;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.Limelight_SubmitImport_Version_Constants;
@@ -816,10 +815,15 @@ public class SubmitUploadMain {
 				
 			} catch ( LimelightSubmitImportWebserviceCallErrorException e ) {
 				
-				if ( retryCountLimit == 0 || retryCount > retryCountLimit ) {
+				if ( ( ( ! e.isConnectToServerError() ) && ( ! e.isHttpStatusCode_Is_404_NotFound() ) )
+						|| retryCountLimit == 0 || retryCount > retryCountLimit ) {
+					
+					// ( NOT Connect Error AND NOT 404 Status Code ) OR ( retry limit is zero or retry limit exceeded ) 
 					
 					throw e;
 				}
+				
+				//  Only continue if HTTP Status code is 404 
 				
 				//  Retry
 				

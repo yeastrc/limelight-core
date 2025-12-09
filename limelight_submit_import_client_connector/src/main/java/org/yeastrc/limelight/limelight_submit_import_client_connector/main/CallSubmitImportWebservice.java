@@ -71,6 +71,8 @@ public class CallSubmitImportWebservice {
 	private static final int HTTP_RETURN_CODE__ERROR_REDIRECT = 302;
 
 	private static final int HTTP_RETURN_CODE__ERROR_BAD_INPUT = 400;
+
+	private static final int HTTP_RETURN_CODE__ERROR_NOT_FOUND = 404;
 	
 	private static final String CONTENT_TYPE_SEND_RECEIVE = "application/xml";
 	
@@ -577,7 +579,8 @@ public class CallSubmitImportWebservice {
 				httpURLConnection.connect();
 			} catch ( IOException e ) {
 				LimelightSubmitImportWebserviceCallErrorException wcee = new LimelightSubmitImportWebserviceCallErrorException( "Exception connecting to server at URL: " + webserviceURL, e );
-				wcee.setServerURLError(true);
+				wcee.setConnectToServerError(true);
+				wcee.setServerURLError(true);  // Set true since previously set this true here
 				wcee.setWebserviceURL( webserviceURL );
 				throw wcee;
 			}
@@ -690,6 +693,12 @@ public class CallSubmitImportWebservice {
 										+ " connecting to server at URL: " + webserviceURL + msgForStatusCode );
 						wcee.setBadHTTPStatusCode(true);
 						wcee.setHttpStatusCode( httpResponseCode );
+						
+						if ( httpResponseCode == HTTP_RETURN_CODE__ERROR_NOT_FOUND ) {
+							
+							wcee.setHttpStatusCode_Is_404_NotFound(true);	
+						}
+						
 						wcee.setWebserviceURL( webserviceURL );
 						wcee.setErrorStreamContents( errorStreamContents );
 						throw wcee;

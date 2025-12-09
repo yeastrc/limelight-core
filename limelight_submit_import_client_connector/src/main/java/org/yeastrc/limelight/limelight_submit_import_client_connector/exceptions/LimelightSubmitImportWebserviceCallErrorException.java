@@ -31,12 +31,13 @@ public class LimelightSubmitImportWebserviceCallErrorException extends Exception
 	
 	private boolean badHTTPStatusCode;
 	private boolean serverURLError;
-	private boolean serverSendReceiveDataError;
 	private boolean connectToServerError;
+	private boolean serverSendReceiveDataError;
 	private boolean failToEncodeDataToSendToServer;
 	private boolean failToDecodeDataReceivedFromServer;
 	
 	private Integer httpStatusCode;
+	private boolean httpStatusCode_Is_404_NotFound;
 	private String webserviceURL;
 	
 	private byte[] serverResponseByteArray;  // Received from server
@@ -163,6 +164,14 @@ public class LimelightSubmitImportWebserviceCallErrorException extends Exception
 
 	public void setServerResponseByteArray(byte[] serverResponseByteArray) {
 		this.serverResponseByteArray = serverResponseByteArray;
+	}
+
+	public boolean isHttpStatusCode_Is_404_NotFound() {
+		return httpStatusCode_Is_404_NotFound;
+	}
+
+	public void setHttpStatusCode_Is_404_NotFound(boolean httpStatusCode_Is_404_NotFound) {
+		this.httpStatusCode_Is_404_NotFound = httpStatusCode_Is_404_NotFound;
 	}
 
 
