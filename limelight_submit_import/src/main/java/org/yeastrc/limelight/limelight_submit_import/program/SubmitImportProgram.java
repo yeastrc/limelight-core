@@ -71,6 +71,8 @@ public class SubmitImportProgram {
 	 */
 	public static void main(String[] args) throws Exception {
 		
+		System.out.println( "Submit Import Program Version: " + Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
+		
 		if ( args.length == 0 ) {
 			System.out.println( "Run with '-h' to view help" );
 			System.exit( 1 );
@@ -256,6 +258,8 @@ public class SubmitImportProgram {
 				System.err.println( FOR_HELP_STRING );
 				System.exit( PROGRAM_EXIT_CODE_INVALID_INPUT );
 			}
+			
+			System.out.println( "First 2 characters of parameter '--" + USER_SUBMIT_IMPORT_KEY_PARAM_STRING + "=' are '" + userSubmitImportProgramKeyFromCommandLine.substring( 0, 2 ) + "'" );
 
 			String limelightWebappURL_CommandLineString = (String)cmdLineParser.getOptionValue( limelightWebappURLFromCommandLineCommandLineOpt );
 			
@@ -381,6 +385,8 @@ public class SubmitImportProgram {
 					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
 				}
 			}
+			
+			System.out.println( "Project id: " + projectId );
 			
 			if ( StringUtils.isNotEmpty(retryCountLimitString)) {
 				try {
