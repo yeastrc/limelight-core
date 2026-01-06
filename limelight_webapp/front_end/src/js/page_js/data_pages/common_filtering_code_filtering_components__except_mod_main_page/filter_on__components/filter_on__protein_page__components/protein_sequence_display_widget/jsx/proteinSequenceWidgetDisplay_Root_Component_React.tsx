@@ -284,25 +284,28 @@ export class ProteinSequenceWidgetDisplay_Root_Component_React extends React.Com
             <div>
 
                 <div>
-                    <span style={ { fontSize: 18, fontWeight: "bold" } }>Sequence Coverage: </span>
+                    <span style={ { fontSize: 18 } }>
+                        <span style={ { fontWeight: "bold" } }>Sequence Coverage: </span>
 
-                    { display_SequenceCoveragePercentage !== undefined ? (
-                        <>
-                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                title={ sequenceCoveragePercentage_TooltipContents }
-                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                            >
-                                <span className="  protein-sequence-formatted-sequence-data-block  ">
-                                    {/*  A <div> so that the class name will work  */}
-                                    <span className={ display_SequenceCoveragePercentage_CSS_Class }>{ display_SequenceCoveragePercentage }%</span>
-                                </span>
-                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        { display_SequenceCoveragePercentage !== undefined ? (
+                            <>
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={ sequenceCoveragePercentage_TooltipContents }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <span className="  protein-sequence-formatted-sequence-data-block  ">
+                                        {/*  A <div> so that the class name will work  */ }
+                                        <span
+                                            className={ display_SequenceCoveragePercentage_CSS_Class }>{ display_SequenceCoveragePercentage }%</span>
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
-                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                title={ sequenceCoveragePercentage_TooltipContents }
-                            />
-                        </>
-                    ) : null }
+                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                    title={ sequenceCoveragePercentage_TooltipContents }
+                                />
+                            </>
+                        ) : null }
+                    </span>
                 </div>
 
                 <div
