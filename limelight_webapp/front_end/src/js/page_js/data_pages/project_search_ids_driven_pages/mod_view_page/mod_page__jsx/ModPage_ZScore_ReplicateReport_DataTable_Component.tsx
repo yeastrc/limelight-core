@@ -1063,6 +1063,8 @@ const _create_DataTable_Data = function (
         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
+    const tooltip_Text_Indent_MarginLeft = 40
+
     const quantTypeString_With_Count_String = quantTypeString + " Count"
 
     {
@@ -1115,6 +1117,16 @@ const _create_DataTable_Data = function (
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     { quantTypeString_With_Count_String }
                 </div>
+
+                <div style={ { marginBottom: 6, marginLeft: tooltip_Text_Indent_MarginLeft } }>
+                    <div>
+                        The number of { quantTypeString } with modifications in group 1
+                    </div>
+                    <div>
+                        that round to the value in the "<b>Mod Mass</b>" column
+                    </div>
+                </div>
+
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     Group 1 { searchesOrSubSearches_Label_String }:
                 </div>
@@ -1189,6 +1201,16 @@ const _create_DataTable_Data = function (
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     { quantTypeString_With_Count_String }
                 </div>
+
+                <div style={ { marginBottom: 6, marginLeft: tooltip_Text_Indent_MarginLeft } }>
+                    <div>
+                        The number of { quantTypeString } with modifications in group 2
+                    </div>
+                    <div>
+                        that round to the value in the "<b>Mod Mass</b>" column
+                    </div>
+                </div>
+
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     Group 2 { searchesOrSubSearches_Label_String }:
                 </div>
@@ -1204,19 +1226,23 @@ const _create_DataTable_Data = function (
             id: "count_2", // Used for tracking sort order. Keep short
             displayName,
             columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
-            width : 85,
-            sortable : true
-        });
+            width: 85,
+            sortable: true
+        } );
         dataTableColumns.push( dataTableColumn );
 
         const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
-    const quantTypeString_With_Ratio_String = quantTypeString + " Ratio"
+    ////////////
+
+    //   "Ratio Columns"
+
+    const ratio_String = "Ratio"
 
     {
-        const displayName = quantTypeString_With_Ratio_String + " " + group_1_ColumnHeader_Addition;
+        const displayName = quantTypeString + " " + ratio_String + " " + group_1_ColumnHeader_Addition;
 
         let searchesOrSubSearches_Label_String = "Searches"
 
@@ -1263,7 +1289,32 @@ const _create_DataTable_Data = function (
         const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
             <div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
-                    { quantTypeString_With_Ratio_String }
+                    { quantTypeString + " " + ratio_String }
+                </div>
+                <div style={ { marginBottom: 6, marginLeft: tooltip_Text_Indent_MarginLeft } }>
+                    <div style={ { marginBottom: 6 } }>
+                        <div>
+                            The number of { quantTypeString } with modifications in group 1
+                        </div>
+                        <div>
+                            that round to the value in the "<b>Mod Mass</b>" column
+                        </div>
+                        <div>
+                            divided by the total number of { quantTypeString } in group 1.
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            NOTE:
+                        </div>
+                        <div>
+                            If "Use filtered PSMs to calculate Z-Score" is checked,
+                        </div>
+                        <div>
+                            then it is divided by the total number
+                            of { quantTypeString } in group 1 that pass the filters.
+                        </div>
+                    </div>
                 </div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     Group 1 { searchesOrSubSearches_Label_String }:
@@ -1280,17 +1331,17 @@ const _create_DataTable_Data = function (
             id: "ratio_1", // Used for tracking sort order. Keep short
             displayName,
             columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
-            width : 85,
-            sortable : true
-        });
+            width: 85,
+            sortable: true
+        } );
         dataTableColumns.push( dataTableColumn );
 
-        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     {
-        const displayName = quantTypeString_With_Ratio_String + " " + group_2_ColumnHeader_Addition;
+        const displayName = quantTypeString + " " + ratio_String + " " + group_2_ColumnHeader_Addition;
 
         let searchesOrSubSearches_Label_String = "Searches"
 
@@ -1337,7 +1388,32 @@ const _create_DataTable_Data = function (
         const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
             <div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
-                    { quantTypeString_With_Ratio_String }
+                    { quantTypeString + " " + ratio_String }
+                </div>
+                <div style={ { marginBottom: 6, marginLeft: tooltip_Text_Indent_MarginLeft } }>
+                    <div style={ { marginBottom: 6 } }>
+                        <div>
+                            The number of { quantTypeString } with modifications in group 2
+                        </div>
+                        <div>
+                            that round to the value in the "<b>Mod Mass</b>" column
+                        </div>
+                        <div>
+                            divided by the total number of { quantTypeString } in group 2.
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            NOTE:
+                        </div>
+                        <div>
+                            If "Use filtered PSMs to calculate Z-Score" is checked,
+                        </div>
+                        <div>
+                            then it is divided by the total number
+                            of { quantTypeString } in group 2 that pass the filters.
+                        </div>
+                    </div>
                 </div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     Group 2 { searchesOrSubSearches_Label_String }:
@@ -1354,36 +1430,51 @@ const _create_DataTable_Data = function (
             id: "ratio_2", // Used for tracking sort order. Keep short
             displayName,
             columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
-            width : 85,
-            sortable : true
-        });
+            width: 85,
+            sortable: true
+        } );
         dataTableColumns.push( dataTableColumn );
 
-        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     {
         const displayName = "z-score";
 
-        const dataTableColumn = new DataTable_Column({
-            id : "z-score", // Used for tracking sort order. Keep short
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
+            <div>
+                Calculated using the canonical two-sample proportion Z-test<br/>
+                comparing the ratio of PSMs with a given modification in the two groups.
+            </div>
+        )
+
+        const dataTableColumn = new DataTable_Column( {
+            id: "z-score", // Used for tracking sort order. Keep short
             displayName,
-            width : 130,
-            sortable : true
-        });
+            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
+            width: 130,
+            sortable: true
+        } );
         dataTableColumns.push( dataTableColumn );
 
-        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
     {
         const displayName = "p-value";
 
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
+            <div>
+                A two-tailed p-value calculated from the Z-score.
+            </div>
+        )
+
         const dataTableColumn = new DataTable_Column({
             id : "p-value", // Used for tracking sort order. Keep short
             displayName,
+            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
             width : 130,
             sortable : true
         });
