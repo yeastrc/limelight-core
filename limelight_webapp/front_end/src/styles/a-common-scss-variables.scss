@@ -52,6 +52,11 @@ $filtering-display-color: $site-color-gentle-notification;
 $filtering-display-background-color: $filtering-display-color; //  Background color for Data Page "Filtering On" and other uses
 $filtering-display-border-color: $filtering-display-color;
 
+
+//  color for filtering on Single Protein - Protein Sequence
+
+$filtering-color--single-protein-protein-sequence: #ff0000;
+
 //  Search Details Block PSM/Peptide Filter
 
 $search-details-block-filter-background-color-not-default-filter-value: #F2DC84;  // Background color for Search Details Block Filter Value when NOT search default value
@@ -64,7 +69,7 @@ $peptide-filter--not-border-color: red;
 
 $color-light-red-for-background: #FFD8D8;
 
-//  Light Red for background
+//  Light Blue for background
 
 $color-light-blue-for-background: #D8DCFF;
 

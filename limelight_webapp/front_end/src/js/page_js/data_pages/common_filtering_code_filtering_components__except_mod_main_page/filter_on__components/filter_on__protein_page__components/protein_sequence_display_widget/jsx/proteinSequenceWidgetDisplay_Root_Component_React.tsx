@@ -25,6 +25,13 @@ import {
     ProteinSequenceWidgetDisplay__PositionClicked_Callback_Params,
     ProteinSequenceWidgetDisplay_AllMainLines_Component_React
 } from './proteinSequenceWidgetDisplay_AllMainLines_Component_React';
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 const _MAX_PROTEIN_LENGTH_TO_DISPLAY = 100000
@@ -219,24 +226,89 @@ export class ProteinSequenceWidgetDisplay_Root_Component_React extends React.Com
 
                 return (
                     <div style={ { marginTop: 10 } }>
+
                         <div>
-                            Unable to display sequence coverage for proteins with length greater than { _MAX_PROTEIN_LENGTH_TO_DISPLAY.toLocaleString() }.
+                            <span style={ { fontSize: 18, fontWeight: "bold" } }>Sequence Coverage: </span>
+                        </div>
+
+                        <div>
+                            Unable to display sequence coverage for proteins with length greater
+                            than { _MAX_PROTEIN_LENGTH_TO_DISPLAY.toLocaleString() }.
                         </div>
                         <div style={ { marginTop: 5 } }>
-                            Length of current protein sequence is { this.props.proteinSequenceWidgetDisplay_Component_Data.dataPerSequencePosition.length.toLocaleString() }.
+                            Length of current protein sequence
+                            is { this.props.proteinSequenceWidgetDisplay_Component_Data.dataPerSequencePosition.length.toLocaleString() }.
                         </div>
                     </div>
                 )
             }
         }
 
-        return (                                            
+        let sequenceCoveragePercentage_TooltipContents_FilteredAddition: JSX.Element = undefined
 
-            <div >
-            
-                <div className=" protein-sequence-formatted-sequence-data-block protein-sequence-formatted-sequence-data-block-actual-sequence-font protein-sequence-formatted-sequence-data-block-actual-sequence-text-formatting " >
-                                        
-                    <ProteinSequenceWidgetDisplay_HeaderLine_Component_React 
+        let display_SequenceCoveragePercentage = this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_AllPeptides
+
+        let display_SequenceCoveragePercentage_CSS_Class = " covered-and-not-filtered-not-a-position "
+
+        if ( this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_FilteredPeptides !== undefined ) {
+
+            display_SequenceCoveragePercentage = this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_FilteredPeptides
+
+            display_SequenceCoveragePercentage_CSS_Class = " covered-and-filtered-not-a-position "
+
+            sequenceCoveragePercentage_TooltipContents_FilteredAddition = (
+                <div>
+                    For the filtered residues.
+                </div>
+            )
+        }
+
+        if ( display_SequenceCoveragePercentage !== undefined ) {
+            display_SequenceCoveragePercentage = Math.round( display_SequenceCoveragePercentage )
+        }
+
+
+        const sequenceCoveragePercentage_TooltipContents = (
+
+            <div>
+                <div>
+                    Sequence Coverage Percentage
+                </div>
+                { sequenceCoveragePercentage_TooltipContents_FilteredAddition }
+            </div>
+        )
+
+
+        return (
+
+            <div>
+
+                <div>
+                    <span style={ { fontSize: 18, fontWeight: "bold" } }>Sequence Coverage: </span>
+
+                    { display_SequenceCoveragePercentage !== undefined ? (
+                        <>
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={ sequenceCoveragePercentage_TooltipContents }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <span className="  protein-sequence-formatted-sequence-data-block  ">
+                                    {/*  A <div> so that the class name will work  */}
+                                    <span className={ display_SequenceCoveragePercentage_CSS_Class }>{ display_SequenceCoveragePercentage }%</span>
+                                </span>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={ sequenceCoveragePercentage_TooltipContents }
+                            />
+                        </>
+                    ) : null }
+                </div>
+
+                <div
+                    className=" protein-sequence-formatted-sequence-data-block protein-sequence-formatted-sequence-data-block-actual-sequence-font protein-sequence-formatted-sequence-data-block-actual-sequence-text-formatting ">
+
+                    <ProteinSequenceWidgetDisplay_HeaderLine_Component_React
                         dataPerSequencePosition_length={ this.props.proteinSequenceWidgetDisplay_Component_Data.dataPerSequencePosition.length }
                     />
 
@@ -247,9 +319,9 @@ export class ProteinSequenceWidgetDisplay_Root_Component_React extends React.Com
 
                 </div>
 
-                <ProteinSequenceWidgetDisplay_Legend_Component_React />
+                <ProteinSequenceWidgetDisplay_Legend_Component_React/>
             </div>
-            
+
         );
     }
 

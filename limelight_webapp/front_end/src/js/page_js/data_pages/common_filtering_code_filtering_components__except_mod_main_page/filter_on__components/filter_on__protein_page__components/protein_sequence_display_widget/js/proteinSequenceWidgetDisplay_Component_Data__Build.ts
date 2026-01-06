@@ -94,6 +94,9 @@ export const proteinSequenceWidgetDisplay_Component_Data__Build = function({
         staticModificationMassesToFilterOn = undefined;
     }
 
+    let proteinPosition_Covered_AllPeptides_Count = 0
+    let proteinPosition_Covered_UserSelectedPeptides_Count = 0
+
     const proteinSequence_AsArray = proteinSequenceString.split("");
 
     const dataPerSequencePosition : Array<ProteinSequenceWidgetDisplay_Component_DataPerSequencePositionEntry> = [];
@@ -102,6 +105,14 @@ export const proteinSequenceWidgetDisplay_Component_Data__Build = function({
     for ( const proteinSequence_Entry of proteinSequence_AsArray ) {
 
         proteinSequencePosition++;
+
+        if ( proteinCoverageArrayOfBoolean[ proteinSequencePosition ] ) {
+            proteinPosition_Covered_AllPeptides_Count++
+        }
+        if ( proteinCoverageArrayOfBoolean_UserSelectedPeptides && proteinCoverageArrayOfBoolean_UserSelectedPeptides[ proteinSequencePosition ] ) {
+            proteinPosition_Covered_UserSelectedPeptides_Count++
+        }
+
 
         const sequencePosition_Flags = new ProteinSequenceWidget_SinglePositionFlags();
 
@@ -199,11 +210,26 @@ export const proteinSequenceWidgetDisplay_Component_Data__Build = function({
         dataPerSequencePosition.push( resultEntry );
     }
 
+    const sequenceCoverage_Percentage_AllPeptides = proteinPosition_Covered_AllPeptides_Count / proteinSequenceString.length * 100
+
+    /**
+     * undefined if no filtering
+     */
+    let sequenceCoverage_Percentage_FilteredPeptides: number = undefined
+
+    if ( proteinCoverageArrayOfBoolean_UserSelectedPeptides ) {
+
+        sequenceCoverage_Percentage_FilteredPeptides = proteinPosition_Covered_UserSelectedPeptides_Count / proteinSequenceString.length * 100
+    }
+
     const proteinSequenceWidgetDisplay_Component_Data = new ProteinSequenceWidgetDisplay_Component_Data();
 
     proteinSequenceWidgetDisplay_Component_Data.dataPerSequencePosition = dataPerSequencePosition;
     proteinSequenceWidgetDisplay_Component_Data.selectedProteinSequencePositions = proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions();
-    
+
+    proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_AllPeptides = sequenceCoverage_Percentage_AllPeptides
+    proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_FilteredPeptides = sequenceCoverage_Percentage_FilteredPeptides
+
     return proteinSequenceWidgetDisplay_Component_Data;
 }
 

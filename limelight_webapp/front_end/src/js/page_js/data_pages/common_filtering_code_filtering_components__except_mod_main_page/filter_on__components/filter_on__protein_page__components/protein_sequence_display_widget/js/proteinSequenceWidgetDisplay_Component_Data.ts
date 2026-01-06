@@ -14,7 +14,14 @@ export class ProteinSequenceWidgetDisplay_Component_Data {
     dataPerSequencePosition : Array<ProteinSequenceWidgetDisplay_Component_DataPerSequencePositionEntry>;
     selectedProteinSequencePositions : Set<number>;
 
-    selectedVariableModifications : Set<number>
+    sequenceCoverage_Percentage_AllPeptides: number
+
+    /**
+     * undefined if no filtering
+     */
+    sequenceCoverage_Percentage_FilteredPeptides: number
+
+    // selectedVariableModifications : Set<number>
 
     /**
      * 

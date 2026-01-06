@@ -1079,7 +1079,7 @@ body.data-page {
             }
 
             &.pos-covered-within-filter-nomod {  // covered residue, not modded, covered by filtered peptide list
-				color: #ff0000;
+				color: $filtering-color--single-protein-protein-sequence;  //  Keep color in sync with below class 'covered-and-filtered-not-a-position'
 				font-weight: bold;
             }
 
@@ -1087,7 +1087,7 @@ body.data-page {
             &.pos-covered-within-filter-mod-no-filter, // covered residue,  covered by filtered peptide list, mod, no mod filter
             &.pos-covered-within-filter-mod-within-filter {  // modded residue in filtered peptide list, has a mod == a mod filter
 	            color: white;
-				background-color: #ff0000; 
+				background-color: $filtering-color--single-protein-protein-sequence;
             }
             &.pos-covered-within-filter-mod-outside-filter {  // modded residue in filtered peptide list, does not have a mod in mod filter 
 	            color: white;
@@ -1100,6 +1100,17 @@ body.data-page {
             }
 
 		}
+
+      .covered-and-not-filtered-not-a-position {
+        font-weight: bold;
+      }
+
+      .covered-and-filtered-not-a-position {
+        font-weight: bold;
+        color: $filtering-color--single-protein-protein-sequence;
+      }
+
+
     } // end .protein-sequence-formatted-sequence-data-block
 
     	//  Protein Sequence Font - Only applied to the actual sequence, and surrounding numbers for positions AND to Example Text in Legend

@@ -3323,10 +3323,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
                 </div>
 
-                <div >
-                    <span style={ { fontSize: 18, fontWeight: "bold" } }>Sequence Coverage: </span>
-                </div>
-
                 <div style={ { display: "inline-block" } } ref={ this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
 
                     <div style={ { position: "relative" }}>
