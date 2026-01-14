@@ -151,10 +151,13 @@ const _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_USER_SELECTION__DEFAUL
 const _MAX_VALUE_FOR_GET_FROM_SERVER__retentionTime_Minutes_ExtendRange_AddSubtract_ToMinMaxValues = 0.5;  //   30 seconds
 const _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues = 25;
 
+const _DEFAULT_VALUE__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues = 15
+
 const _MAX_GET_SCAN_DATA_WITH_PEAKS_PARALLEL_BATCH_SIZE = 3;  //  The common Webservice call code has a max parallel call so anything larger than that will just queue there which isn't good.
 
 const _SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues = [
     10,
+    _DEFAULT_VALUE__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues,
     _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues  // MUST include _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues as LAST and Max value
 ]
 
@@ -4938,7 +4941,7 @@ interface Internal__MS1_Window_Size_Selection_Component_State {
  */
 class Internal__MS1_Window_Size_Selection_Component extends React.Component< Internal__MS1_Window_Size_Selection_Component_Props, Internal__MS1_Window_Size_Selection_Component_State > {
 
-    private _precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection = _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues  //  Set default
+    private _precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection = _DEFAULT_VALUE__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues  //  Set default
 
     /**
      *
