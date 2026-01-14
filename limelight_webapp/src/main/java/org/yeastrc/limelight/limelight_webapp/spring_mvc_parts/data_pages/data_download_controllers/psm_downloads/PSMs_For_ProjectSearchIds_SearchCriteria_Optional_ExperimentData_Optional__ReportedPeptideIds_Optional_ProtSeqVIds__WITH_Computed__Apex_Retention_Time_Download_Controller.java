@@ -1,0 +1,3996 @@
+/*
+* Original author: Daniel Jaschob <djaschob .at. uw.edu>
+*                  
+* Copyright 2018 University of Washington - Seattle, WA
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_download_controllers.psm_downloads;
+
+import java.io.BufferedOutputStream;
+import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
+import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchSubGroupDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchProgramsPerSearchDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchSubGroupDTO;
+import org.yeastrc.limelight.limelight_shared.dto.StaticModDTO;
+import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesRootLevel;
+import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
+import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightDatabaseException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.LimelightWebappDataException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Forbidden_Exception;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
+import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParamsRoot;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_ProjectSearchIds;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Psm_DescriptiveAnnotationData_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Psm_FilterableAnnotationData_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.searchers.Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeId_Searcher.Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
+import org.yeastrc.limelight.limelight_webapp.searchers.AnnotationTypeListForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchSubGroupDTOForProjectSearchIdSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinAnnotations_For_SearchID_ProteinVersionId_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ReportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchHasScanDataForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchMinimalForProjectSearchIdSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchProgramsPerSearchListForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchScanFile_For_SearchIds_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubGroupDTOForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.StaticModDTOForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher.PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem;
+import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinSequenceVersionAnnotationItem;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
+import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF;
+import org.yeastrc.limelight.limelight_webapp.services.Support_DataDownloadControllers_Service_IF;
+import org.yeastrc.limelight.limelight_webapp.services.Support_DataDownloadControllers_Service.DownloadStatus_DataDownloadControllers_Enum;
+import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_MaxScanCountToReturn_SpectralStorageWebservice_IF;
+import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
+import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanNumbers_SpectralStorageWebserviceIF;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_download_controllers.AA_DataDownloadControllersPaths_Constants;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_download_controllers.DownloadsCharacterSetConstant;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.LorikeetSpectrumViewer_PageController;
+import org.yeastrc.limelight.limelight_webapp.web_utils.SearchNameReturnDefaultIfNull;
+import org.yeastrc.limelight.limelight_webapp.web_utils.SearchSubGroup_Name_Display_Computation_Util;
+import org.yeastrc.limelight.limelight_webapp.web_utils.UnmarshalJSON_ToObject;
+import org.yeastrc.proteomics.mass.MassUtils;
+import org.yeastrc.proteomics.peptide.peptide.Peptide;
+import org.yeastrc.proteomics.peptide.peptide.PeptideMassCalculator;
+import org.yeastrc.limelight.limelight_webapp.web_utils.SearchSubGroup_Name_Display_Computation_Util.SearchSubGroup_Name_Display_Computation_Entry;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanDataFromScanNumbers_IncludeParentScans;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_ExcludeReturnScanPeakData;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_IncludeReturnIonInjectionTimeData;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_IncludeReturnScanLevelTotalIonCurrentData;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.main.Get_ScanDataFromScanNumbers_Request;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.Get_ScanDataFromScanNumbers_M_Over_Z_Range_SubRequest;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScanPeak_SubResponse;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
+
+/**
+ * New PSM Download Controller
+ * 
+ * Download PSMs for Project Search Ids And Search Criteria (searchDataLookupParams_For_Single_ProjectSearchId)
+ * 
+ * Optional Reported Peptide Ids per Project Search Id - Use Provided reported Peptide Ids and not query for them 
+ *    (Performance is better if provided)
+ *    
+ * Optional Protein Sequence Version Ids - restrict reported Peptide Ids to Provided Protein Sequence Version Ids
+ * 
+ * Optional Experiment Data for Mapping of Search Id to Condition Group label / Condition label information 
+ * 
+ * Form Field Name: 'requestJSONString'
+ */
+@Controller
+public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Optional__ReportedPeptideIds_Optional_ProtSeqVIds__WITH_Computed__Apex_Retention_Time_Download_Controller 
+
+
+implements
+InitializingBean // InitializingBean is Spring Interface for triggering running method afterPropertiesSet() 
+{
+
+	private static final Logger log = LoggerFactory.getLogger( PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Optional__ReportedPeptideIds_Optional_ProtSeqVIds__WITH_Computed__Apex_Retention_Time_Download_Controller.class );
+	
+	private static final String CONTROLLER_PATH =
+			AA_DataDownloadControllersPaths_Constants.PATH_START_ALL
+			+ AA_DataDownloadControllersPaths_Constants.PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_OPTIONAL_EXPERIMENT_DATA__WITH_COMPUTED_APEX_RETENTION_TIME__DOWNLOAD_CONTROLLER;
+	
+	private static final int EXPECTED_REQUEST_VERSION  = 4;   // Keep in sync with Javascript   const EXPECTED_REQUEST_VERSION
+	
+	private static final String SPECTRUM_VIEWER_OPEN_MOD_POSITION__N_TERM = "n";
+	private static final String SPECTRUM_VIEWER_OPEN_MOD_POSITION__C_TERM = "c";
+	
+	private static final String OPEN_MOD_POSITION_URL_ADDITION = "?openmod-position=";  //  Change in Client side code as well if change this string
+	
+
+	private static final int MINIMUM_NUMBER_OF_PSMS_PER_REPORTED_PEPTIDE = 1; // TODO standard minimum # PSMs
+	
+	
+
+	private static final double PROTON_MASS    = 1.00727647;
+	private static final double C13_MASS_DELTA = 1.0033548352;
+
+
+	//	!!!   NUMBER OF ISOTOPES to DISPLAY
+	private static final int  _ISOTOPE_MAX__FOR_FIND_MS_1_SCAN_PEAK = 3;  //  Show Lines in Plot for 'Monoisotopic' and then +1, +2, ... Up To Isotope Max
+	
+
+
+	private static final int MS1_WINDOW_HARD_CODED_PPM = 15;  // Value Alex requested
+
+	//  TODO  TEMP CHANGE to match webapp code 
+//	private static final int MS1_WINDOW_HARD_CODED_PPM = 25;
+	
+
+	
+	private static final int RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR = 60;
+	private static final BigDecimal RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR_BD = new BigDecimal( RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR );
+
+	@Autowired
+	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
+
+	@Autowired
+	private Support_DataDownloadControllers_Service_IF support_DataDownloadControllers_Service;
+	
+	@Autowired
+	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
+	
+	@Autowired
+	private SearchMinimalForProjectSearchIdSearcher_IF searchMinimalForProjectSearchIdSearcher;
+
+	@Autowired
+	private ProjectSearchSubGroupDTOForProjectSearchIdSearcher_IF projectSearchSubGroupDTOForProjectSearchIdSearcher;
+	
+	@Autowired
+	private SearchSubGroupDTOForSearchIdSearcherIF searchSubGroupDTOForSearchIdSearcher;
+	
+	@Autowired
+	private SearchNameReturnDefaultIfNull searchNameReturnDefaultIfNull;
+
+	@Autowired
+	private SearchSubGroup_Name_Display_Computation_Util searchSubGroup_Name_Display_Computation_Util;
+	
+	@Autowired
+	private SearchHasScanDataForSearchIdSearcherIF searchHasScanDataForSearchIdSearcher;
+	
+	@Autowired
+	private SearchFlagsForSearchIdSearcherIF searchFlagsForSearchIdSearcher;
+	
+	@Autowired
+	private SearchScanFile_For_SearchIds_Searcher_IF searchScanFile_For_SearchIds_Searcher;
+
+	@Autowired
+	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
+
+	@Autowired
+	private AnnotationTypeListForSearchIdSearcherIF annotationTypeListForSearchIdSearcher;
+
+	@Autowired
+	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
+
+	@Autowired
+	private ReportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds_Searcher_IF reportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds_Searcher;
+
+	@Autowired
+	private StaticModDTOForSearchIdSearcherIF staticModDTOForSearchIdSearcher;
+	
+	@Autowired
+	private DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher;
+	
+	@Autowired
+	private PeptideStringForSearchIdReportedPeptideIdSearcherIF peptideStringForSearchIdReportedPeptideIdSearcher;
+	
+	@Autowired
+	private ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_IF proteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher;
+	
+	@Autowired
+	private ProteinAnnotations_For_SearchID_ProteinVersionId_SearcherIF proteinAnnotations_For_SearchID_ProteinVersionId_Searcher;
+	
+	@Autowired
+	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
+	
+	@Autowired
+	private PsmWebDisplaySearcherIF psmWebDisplaySearcher;
+	
+	@Autowired
+	private ScanFileDAO_IF scanFileDAO;
+	
+	@Autowired
+	private Psm_FilterableAnnotationData_SearcherIF psm_FilterableAnnotationData_Searcher;
+	
+	@Autowired
+	private Psm_DescriptiveAnnotationData_SearcherIF psm_DescriptiveAnnotationData_Searcher;
+	
+	@Autowired
+	private Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_IF get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher;
+	
+	@Autowired
+	private SearchProgramsPerSearchListForSearchIdSearcherIF searchProgramsPerSearchListForSearchIdSearcher;
+	
+	@Autowired
+	private PsmSearchSubGroupIdsForPsmIdsSearcher_IF psmSearchSubGroupIdsForPsmIdsSearcher;
+	
+	@Autowired
+	private ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF reporterIonMasses_PsmLevel_ForPsmIds_Searcher;
+	
+	@Autowired
+	private OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF openModificationMasses_PsmLevel_ForPsmIds_Searcher;
+
+	@Autowired
+	private OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF openModificationPositions_PsmLevel_ForOpenModIds_Searcher;
+	
+	@Autowired
+	private Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice;
+
+	@Autowired
+	Call_Get_ScanNumbers_SpectralStorageWebserviceIF call_Get_ScanNumbers_SpectralStorageWebservice;
+
+	@Autowired
+	Call_Get_MaxScanCountToReturn_SpectralStorageWebservice_IF call_Get_MaxScanCountToReturn_SpectralStorageWebservice;
+
+	@Autowired
+	private ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup;
+
+	@Autowired
+	private UnmarshalJSON_ToObject unmarshalJSON_ToObject;
+
+	
+	private boolean parallelStream_DefaultThreadPool_Java_Processing_Enabled_True;
+
+
+	/* 
+	 * Spring LifeCycle Method
+	 * 
+	 * (non-Javadoc)
+	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		try {
+			
+			{
+				ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response response = 
+						parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.get_ParallelStream_Java_Processing_Enable_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup();
+				
+				this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True = response.isParallelStream_DefaultThreadPool_Java_Processing_Enabled_True();
+			}
+			
+			//  TEMP Hard Code to false
+//			this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True = false;
+			
+		} catch (Exception e) {
+			String msg = "In afterPropertiesSet(): Exception in processing";
+			log.error(msg);
+			throw e;
+		}
+	}
+	
+	
+	/**
+	 * @param postRequestParameters
+	 * @param httpServletRequest
+	 * @param httpServletResponse
+	 */
+	@PostMapping( CONTROLLER_PATH )
+	public void controllerMainMethod(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse ) {
+		
+//		log.warn( "httpServletRequest.getContentLengthLong(): " + httpServletRequest.getContentLengthLong() );
+
+		String requestJSONString = httpServletRequest.getParameter( "requestJSONString" ); // From Form POST fields
+
+		if ( StringUtils.isEmpty( requestJSONString ) ) {
+			
+			String msg =  "httpServletRequest.getParameter( \"requestJSONString\" ) returned null or empty string. Possible causes are (1) 'requestJSONString' is not populated field in form POST  (2) the request is too large for getParameter to return it so returns null. httpServletRequest.getContentLengthLong(): " + httpServletRequest.getContentLengthLong();
+			log.warn( msg );
+			//  TODO Maybe do something different
+			throw new LimelightInternalErrorException( msg );
+		}
+		
+		String requestURL_Base__Before__ControllerPath = null;
+		
+		{
+			String requestURL = httpServletRequest.getRequestURL().toString();
+			
+			int controllerPathStart_Index = requestURL.indexOf( 
+					AA_DataDownloadControllersPaths_Constants.PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_OPTIONAL_EXPERIMENT_DATA_DOWNLOAD_CONTROLLER );
+			
+			if ( controllerPathStart_Index < 0 ) {
+				throw new LimelightInternalErrorException( "request url 'httpServletRequest.getRequestURL().toString()' does NOT contain controller path '"
+						+ AA_DataDownloadControllersPaths_Constants.PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_OPTIONAL_EXPERIMENT_DATA_DOWNLOAD_CONTROLLER 
+						+ "'" );
+			}
+			
+			requestURL_Base__Before__ControllerPath = requestURL.substring(0, controllerPathStart_Index );
+		}
+		
+		RequestJSONParsed webserviceRequest = null;
+
+
+		try {
+			//  Have internal_Request_Converted_Request_Root since have to convert some data for usage
+			Internal_Request_Converted_Request_Root internal_Request_Converted_Request_Root = new Internal_Request_Converted_Request_Root(); 
+			
+			
+			webserviceRequest = unmarshalJSON_ToObject.getObjectFromJSONString( requestJSONString, RequestJSONParsed.class );
+			
+			if ( webserviceRequest.requestVersion == null || webserviceRequest.requestVersion.intValue() != EXPECTED_REQUEST_VERSION ) {
+				log.warn( " webserviceRequest.requestVersion is not Expected Version: " + EXPECTED_REQUEST_VERSION + ", webserviceRequest.requestVersion: " + webserviceRequest.requestVersion );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+
+			if ( StringUtils.isEmpty( webserviceRequest.downloadIdentifier ) ) {
+				log.warn( "No webserviceRequest.webserviceRequest" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
+			support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.IN_PROGRESS );
+			
+			internal_Request_Converted_Request_Root.proteinSequenceVersionIds = webserviceRequest.proteinSequenceVersionIds;
+			internal_Request_Converted_Request_Root.experimentId = webserviceRequest.experimentId;
+			internal_Request_Converted_Request_Root.searchDataLookupParamsRoot = webserviceRequest.searchDataLookupParamsRoot;
+			
+			List<RequestJSONParsed_PerProjectSearchId> projectSearchIdsReportedPeptideIdsPsmIds = webserviceRequest.projectSearchIdsReportedPeptideIdsPsmIds;
+
+			if ( projectSearchIdsReportedPeptideIdsPsmIds == null || projectSearchIdsReportedPeptideIdsPsmIds.isEmpty() ) {
+				log.warn( "No projectSearchIdsReportedPeptideIdsPsmIds entries" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			if ( StringUtils.isEmpty( webserviceRequest.psmId_SeparatorString ) ) {
+				log.warn( "webserviceRequest.psmId_SeparatorString is null or empty string" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			if ( StringUtils.isEmpty( webserviceRequest.reportedPeptideId_To_PsmId_SeparatorString ) ) {
+				log.warn( "webserviceRequest.reportedPeptideId_To_PsmId_SeparatorString is null or empty string" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			if ( StringUtils.isEmpty( webserviceRequest.reportedPeptideId_Block_SeparatorString ) ) {
+				log.warn( "webserviceRequest.reportedPeptideId_Block_SeparatorString is null or empty string" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			if ( webserviceRequest.reportedPeptideId_PsmId_NumberEncoding_Radix == null ) {
+				log.warn( "webserviceRequest.reportedPeptideId_PsmId_NumberEncoding_Radix is null" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
+			List<Internal_Request_Converted_PerProjectSearchId> internal_Request_Converted_PerProjectSearchId_List = new ArrayList<>( projectSearchIdsReportedPeptideIdsPsmIds.size() );
+			internal_Request_Converted_Request_Root.projectSearchIdsReportedPeptideIdsPsmIds = internal_Request_Converted_PerProjectSearchId_List;
+			
+			
+			List<Integer> proteinSequenceVersionIds = webserviceRequest.proteinSequenceVersionIds;
+			
+			Integer experimentId = webserviceRequest.experimentId; // Optional for when Experiment
+			
+			List<Integer> projectSearchIds = new ArrayList<>( projectSearchIdsReportedPeptideIdsPsmIds.size() );
+			
+			for ( RequestJSONParsed_PerProjectSearchId entry : projectSearchIdsReportedPeptideIdsPsmIds ) {
+				if ( entry.projectSearchId == null ) {
+					log.warn( "No Project Search Id in projectSearchIdsReportedPeptideIdsPsmIds entry" );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				projectSearchIds.add( entry.projectSearchId );
+				
+				Internal_Request_Converted_PerProjectSearchId internal_Request_Converted_PerProjectSearchId = new Internal_Request_Converted_PerProjectSearchId();
+				internal_Request_Converted_PerProjectSearchId_List.add(internal_Request_Converted_PerProjectSearchId);
+				
+				internal_Request_Converted_PerProjectSearchId.projectSearchId = entry.projectSearchId;
+				internal_Request_Converted_PerProjectSearchId.experimentDataForSearch = entry.experimentDataForSearch;
+				internal_Request_Converted_PerProjectSearchId.searchSubGroup_Ids_Selected = entry.searchSubGroup_Ids_Selected;
+				
+				if ( proteinSequenceVersionIds != null ) {
+					//  Have proteinSequenceVersionIds so cannot have reportedPeptideIdsAndTheirPsmIds
+//					if ( entry.reportedPeptideIdsAndTheirPsmIds != null ) {
+//						log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, proteinSequenceVersionIds is populated so entry.reportedPeptideIdsAndTheirPsmIds being populated is not allowed " );
+//						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//					}
+					if ( entry.reportedPeptideIdsAndTheirPsmIds__Encoded != null ) {
+						log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, proteinSequenceVersionIds is populated so entry.reportedPeptideIdsAndTheirPsmIds__Encoded being populated is not allowed " );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+				}
+//				if ( entry.reportedPeptideIdsAndTheirPsmIds != null ) {
+//					for ( RequestJSONParsed_PerReportedPeptideId reportedPeptideIdAndItsPsmIds : entry.reportedPeptideIdsAndTheirPsmIds ) {
+//						Integer reportedPeptideId = reportedPeptideIdAndItsPsmIds.reportedPeptideId;
+//						if ( reportedPeptideId == null ) {
+//							log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, reportedPeptideId == null" );
+//							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//						}
+//					}
+//				}
+				
+
+				if ( entry.reportedPeptideIdsAndTheirPsmIds__Encoded != null ) {
+					
+
+					///////  Decode reportedPeptideIds and possibly their PSMs in request
+					
+					List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = new ArrayList<>();
+					internal_Request_Converted_PerProjectSearchId.reportedPeptideIdsAndTheirPsmIds_InternalClass = reportedPeptideIdsAndTheirPsmIds;
+					
+					String[] reportedPeptideIdsAndTheirPsmIds__Encoded_Split = entry.reportedPeptideIdsAndTheirPsmIds__Encoded.split( webserviceRequest.reportedPeptideId_Block_SeparatorString );
+					
+					
+					int reportedPeptideId_Prev_NOT_SET = Integer.MIN_VALUE;
+					int reportedPeptideId_Prev = reportedPeptideId_Prev_NOT_SET;
+				
+					for ( String reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry : reportedPeptideIdsAndTheirPsmIds__Encoded_Split ) {
+
+						Internal_Request_Converted_PerReportedPeptideId internal_Request_Converted_PerReportedPeptideId = new Internal_Request_Converted_PerReportedPeptideId();
+						reportedPeptideIdsAndTheirPsmIds.add(internal_Request_Converted_PerReportedPeptideId);
+						
+						String[] reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry.split( webserviceRequest.reportedPeptideId_To_PsmId_SeparatorString );
+						
+						if ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length > 2 ) {
+							log.warn( "Input Data Encoding Error: ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length > 2 ) reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry: " + reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+
+						String reportedPeptideId_String = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split[ 0 ];
+						try {
+							int reportedPeptideId = Integer.parseInt( reportedPeptideId_String, webserviceRequest.reportedPeptideId_PsmId_NumberEncoding_Radix );
+							
+							if ( reportedPeptideId_Prev != reportedPeptideId_Prev_NOT_SET ) {
+								//  NOT First so reportedPeptideId_String is an offset from previous value
+								reportedPeptideId += reportedPeptideId_Prev;
+							}
+
+							reportedPeptideId_Prev = reportedPeptideId;
+
+							internal_Request_Converted_PerReportedPeptideId.reportedPeptideId = reportedPeptideId;
+							 
+						} catch ( Exception ex ) {
+							log.warn( "Integer.parseInt( reportedPeptideId_String ) Threw Error.  reportedPeptideId_String: " + reportedPeptideId_String );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+						
+						if ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length == 2 ) {
+							//  Have PSM Ids
+							String psmIds_Encoded = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split[ 1 ];
+							String[] psmIds_Encoded_Split = psmIds_Encoded.split( webserviceRequest.psmId_SeparatorString );
+							
+							if ( entry.minimum_PSM_ID_InRequest_For_Search == null ) {
+								log.warn( "Input Data Encoding Error: reportedPeptideIdsAndTheirPsmIds__Encoded has PSM Ids and minimum_PSM_ID_InRequest_For_Search is null.  " );;
+								throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+							}
+							
+							internal_Request_Converted_PerReportedPeptideId.psmIds_Include = new ArrayList<>( psmIds_Encoded_Split.length );
+
+							long psmId_Prev_NOT_SET = Long.MIN_VALUE;
+							long psmId_Prev = psmId_Prev_NOT_SET;
+						
+							for ( String psmId_String : psmIds_Encoded_Split ) {
+								try {
+									long psmId = Long.parseLong( psmId_String, webserviceRequest.reportedPeptideId_PsmId_NumberEncoding_Radix );
+
+									if ( psmId_Prev == psmId_Prev_NOT_SET ) {
+										//  YES First so psmId_String is an offset from Minimum PSM ID for Search in request
+										psmId += entry.minimum_PSM_ID_InRequest_For_Search;
+									} else {
+										//  NOT First so psmId_String is an offset from previous value
+										psmId += psmId_Prev;
+									}
+									
+									psmId_Prev = psmId;
+
+									internal_Request_Converted_PerReportedPeptideId.psmIds_Include.add( psmId );
+									
+								} catch ( Exception ex ) {
+									log.warn( " Long.parseLong( psmId_String ); Threw Error.  psmId_String: " + psmId_String );
+									throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+								}
+								
+							}
+						}
+					}
+				}
+				
+				List<List<BigDecimal>> scanPeak_M_Over_Z__Selections_List_Per_PSM_List = null;
+				
+				Set<Integer> scanPeak_M_Over_Z__Selections_List_Per_PSM_List_IndexesSetToNull = new HashSet<>();
+
+
+				if ( entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded != null ) {
+
+					Map<Long, Internal_Request_Converted_Per_PsmId> data_Per_PsmId_Map_Key_PsmId_InternalClass = new HashMap<>();
+					internal_Request_Converted_PerProjectSearchId.data_Per_PsmId_Map_Key_PsmId_InternalClass = data_Per_PsmId_Map_Key_PsmId_InternalClass;
+					
+
+					///////  Decode scanPeak_M_Over_Z__Selections in request
+					
+					//  Must also have these values
+					
+					if ( entry.scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array == null  ) {
+						log.warn( " Have 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded' but NOT 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array' " );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+					if ( entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix == null  ) {
+						log.warn( " Have 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded' but NOT 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix' " );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+					if ( entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength == null  ) {
+						log.warn( " Have 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded' but NOT 'entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength' " );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+					
+					int scanPeak_M_Over_Z__Selections_List_Per_PSM_List_NumberOfEntries_Computed = entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded.length() / entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength.intValue();
+
+					scanPeak_M_Over_Z__Selections_List_Per_PSM_List = new ArrayList<>( scanPeak_M_Over_Z__Selections_List_Per_PSM_List_NumberOfEntries_Computed );
+					
+					{
+						String totalString_IndexValues = entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded;
+						int individualEntryLength = entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength.intValue();
+						
+						int entry_IndexValue_EncodedWithRadix_RadixValue = entry.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix;
+
+						final String spacesEntry_ForNoIndex = StringUtils.repeat( " ", individualEntryLength );
+						
+						// Loop over totalString to get individual entries parsed to int and looked up in the unique values 
+						for ( int entryStart = 0; 
+								entryStart < totalString_IndexValues.length(); 
+								entryStart += individualEntryLength ) {
+							
+							String entry_IndexValue_EncodedWithRadixString = totalString_IndexValues.substring( entryStart, entryStart + individualEntryLength );
+														
+							if ( spacesEntry_ForNoIndex.equals( entry_IndexValue_EncodedWithRadixString ) ) {
+								
+								//  Index Value is spaces for 'No Index' and no selections for PSM ID
+								
+								//    Insert null to list
+								
+								scanPeak_M_Over_Z__Selections_List_Per_PSM_List.add( null );
+								
+								scanPeak_M_Over_Z__Selections_List_Per_PSM_List_IndexesSetToNull.add( entryStart / individualEntryLength );
+								
+								continue; // EARLY CONTINUE
+							} 
+							
+							int entry_IndexValues_Number = -1;
+							
+							try {
+								entry_IndexValues_Number = Integer.parseInt( entry_IndexValue_EncodedWithRadixString, entry_IndexValue_EncodedWithRadix_RadixValue );
+							} catch ( Exception e ) {
+								log.warn( "String extracted from 'scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded' failed to parse. String: " + entry_IndexValue_EncodedWithRadixString );
+								throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+							}
+							
+							// Actual scanPeak_M_Over_Z__Selections for this PSM ID
+							List<BigDecimal> scanPeak_M_Over_Z__Selections_UniqueValues_Array = entry.scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array.get( entry_IndexValues_Number );
+							
+							scanPeak_M_Over_Z__Selections_List_Per_PSM_List.add( scanPeak_M_Over_Z__Selections_UniqueValues_Array );
+						}
+					}
+					
+					
+					List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = new ArrayList<>();
+					internal_Request_Converted_PerProjectSearchId.reportedPeptideIdsAndTheirPsmIds_InternalClass = reportedPeptideIdsAndTheirPsmIds;
+					
+					String[] reportedPeptideIdsAndTheirPsmIds__Encoded_Split = entry.reportedPeptideIdsAndTheirPsmIds__Encoded.split( webserviceRequest.reportedPeptideId_Block_SeparatorString );
+					
+					
+					int reportedPeptideId_Prev_NOT_SET = Integer.MIN_VALUE;
+					int reportedPeptideId_Prev = reportedPeptideId_Prev_NOT_SET;
+					
+					int psm_Overall_Index = 0;
+				
+					for ( String reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry : reportedPeptideIdsAndTheirPsmIds__Encoded_Split ) {
+
+						Internal_Request_Converted_PerReportedPeptideId internal_Request_Converted_PerReportedPeptideId = new Internal_Request_Converted_PerReportedPeptideId();
+						reportedPeptideIdsAndTheirPsmIds.add(internal_Request_Converted_PerReportedPeptideId);
+						
+						String[] reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry.split( webserviceRequest.reportedPeptideId_To_PsmId_SeparatorString );
+						
+						if ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length > 2 ) {
+							log.warn( "Input Data Encoding Error: ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length > 2 ) reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry: " + reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+
+						String reportedPeptideId_String = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split[ 0 ];
+						try {
+							int reportedPeptideId = Integer.parseInt( reportedPeptideId_String, webserviceRequest.reportedPeptideId_PsmId_NumberEncoding_Radix );
+							
+							if ( reportedPeptideId_Prev != reportedPeptideId_Prev_NOT_SET ) {
+								//  NOT First so reportedPeptideId_String is an offset from previous value
+								reportedPeptideId += reportedPeptideId_Prev;
+							}
+
+							reportedPeptideId_Prev = reportedPeptideId;
+
+							internal_Request_Converted_PerReportedPeptideId.reportedPeptideId = reportedPeptideId;
+							 
+						} catch ( Exception ex ) {
+							log.warn( "Integer.parseInt( reportedPeptideId_String ) Threw Error.  reportedPeptideId_String: " + reportedPeptideId_String );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+						
+						if ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length == 2 ) {
+							//  Have PSM Ids
+							String psmIds_Encoded = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split[ 1 ];
+							String[] psmIds_Encoded_Split = psmIds_Encoded.split( webserviceRequest.psmId_SeparatorString );
+							
+							if ( entry.minimum_PSM_ID_InRequest_For_Search == null ) {
+								log.warn( "Input Data Encoding Error: reportedPeptideIdsAndTheirPsmIds__Encoded has PSM Ids and minimum_PSM_ID_InRequest_For_Search is null.  " );;
+								throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+							}
+							
+							internal_Request_Converted_PerReportedPeptideId.psmIds_Include = new ArrayList<>( psmIds_Encoded_Split.length );
+
+							long psmId_Prev_NOT_SET = Long.MIN_VALUE;
+							long psmId_Prev = psmId_Prev_NOT_SET;
+						
+							for ( String psmId_String : psmIds_Encoded_Split ) {
+								try {
+									long psmId = Long.parseLong( psmId_String, webserviceRequest.reportedPeptideId_PsmId_NumberEncoding_Radix );
+
+									if ( psmId_Prev == psmId_Prev_NOT_SET ) {
+										//  YES First so psmId_String is an offset from Minimum PSM ID for Search in request
+										psmId += entry.minimum_PSM_ID_InRequest_For_Search;
+									} else {
+										//  NOT First so psmId_String is an offset from previous value
+										psmId += psmId_Prev;
+									}
+									
+									psmId_Prev = psmId;
+
+									Internal_Request_Converted_Per_PsmId psmId_Entry_Include_Item = new Internal_Request_Converted_Per_PsmId();
+									
+									psmId_Entry_Include_Item.psmId = psmId;
+									
+									if ( psmId == 4405307 || psmId == 4405313 ) {
+										int z = 0;
+									}
+
+									if ( ! scanPeak_M_Over_Z__Selections_List_Per_PSM_List_IndexesSetToNull.contains( psm_Overall_Index ) ) {
+										
+										List<BigDecimal> scanPeak_M_Over_Z__Selections_List_For_PSM = scanPeak_M_Over_Z__Selections_List_Per_PSM_List.get( psm_Overall_Index );
+										
+										if ( scanPeak_M_Over_Z__Selections_List_For_PSM == null ) {
+											String msg = "( ! scanPeak_M_Over_Z__Selections_List_Per_PSM_List_IndexesSetToNull.contains( psm_Overall_Index ) ) AND scanPeak_M_Over_Z__Selections_List_Per_PSM_List.get( psm_Overall_Index ); returned null. psm_Overall_Index: " + psm_Overall_Index;
+											log.error( msg );
+											throw new LimelightInternalErrorException(msg);
+										}
+										
+										psmId_Entry_Include_Item.scanPeak_M_Over_Z__Selections_List_For_PSM = scanPeak_M_Over_Z__Selections_List_For_PSM;
+									}
+									
+									data_Per_PsmId_Map_Key_PsmId_InternalClass.put( psmId_Entry_Include_Item.psmId, psmId_Entry_Include_Item );
+
+									internal_Request_Converted_PerReportedPeptideId.psmIds_Include.add( psmId );
+									
+									psm_Overall_Index++;
+									
+								} catch ( Exception ex ) {
+									log.warn( " Long.parseLong( psmId_String ); Threw Error.  psmId_String: " + psmId_String );
+									throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+								}
+								
+							}
+						}
+					}
+				}
+				
+				if ( entry.searchSubGroup_Ids_Selected != null && entry.searchSubGroup_Ids_Selected.isEmpty() ) {
+					log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, entry.searchSubGroup_Ids_Selected != null && entry.searchSubGroup_Ids_Selected.isEmpty()" );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+			}
+
+			if ( experimentId != null ) {
+
+				//  Is for Experiment
+
+				//  Is for Experiment, validate that 
+				//      List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch
+				//  is the same length and has same Condition Group Labels in all entries
+				
+				List<RequestJSONParsed_PerConditionGroupConditionData> first_experimentDataForSearch = null; 
+				
+				for ( RequestJSONParsed_PerProjectSearchId entry : projectSearchIdsReportedPeptideIdsPsmIds ) {
+				//  Have experimentId so must have experimentDataForSearch
+					if ( entry.experimentDataForSearch == null ) {
+						log.error( "In projectSearchIdsReportedPeptideIdsPsmIds entry, experimentId is populated so experimentDataForSearch must populated " );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+	
+					//  Is for Experiment, validate that 
+					//      List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch
+					//  is the same length and has same Condition Group Labels in all entries
+					
+					if ( first_experimentDataForSearch == null ) {
+						first_experimentDataForSearch = entry.experimentDataForSearch; //  First entry to save it
+					} else {
+						//  Not first entry so compare it
+						if ( entry.experimentDataForSearch.size() != first_experimentDataForSearch.size() ) {
+							log.error( "In projectSearchIdsReportedPeptideIdsPsmIds entry, experimentDataForSearch.size() does not match first_experimentDataForSearch.size() " );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+		
+						for ( int index = 0; index <  first_experimentDataForSearch.size(); index++ ) {
+							RequestJSONParsed_PerConditionGroupConditionData first_experimentDataForSearch_Entry = first_experimentDataForSearch.get( index );
+							RequestJSONParsed_PerConditionGroupConditionData experimentDataForSearch_Entry = entry.experimentDataForSearch.get( index );
+							if ( ! first_experimentDataForSearch_Entry.conditionGroupLabel.equals( experimentDataForSearch_Entry.conditionGroupLabel ) ) {
+								log.error( "In projectSearchIdsReportedPeptideIdsPsmIds entry, first_experimentDataForSearch_Entry.conditionGroupLabel != experimentDataForSearch_Entry.conditionGroupLabel " );
+								throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+							}
+						}
+					}
+				}
+			}
+
+			if ( projectSearchIds == null || projectSearchIds.isEmpty() ) {
+				log.warn( "No Project Search Ids" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
+			SearchDataLookupParamsRoot searchDataLookupParamsRoot = webserviceRequest.getSearchDataLookupParamsRoot();
+
+			if ( searchDataLookupParamsRoot == null ) {
+				log.warn( "No searchDataLookupParamsRoot" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+		
+			SearchDataLookupParams_For_ProjectSearchIds searchDataLookupParams_For_ProjectSearchIds = searchDataLookupParamsRoot.getParamsForProjectSearchIds();
+
+			if ( searchDataLookupParams_For_ProjectSearchIds == null ) {
+				log.warn( "No searchDataLookupParams_For_ProjectSearchIds" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
+			//  Validate PSM Annotation data for Ann Type Display is populated
+			
+			List<SearchDataLookupParams_For_Single_ProjectSearchId> paramsForProjectSearchIdsList = searchDataLookupParams_For_ProjectSearchIds.getParamsForProjectSearchIdsList();
+
+			if ( paramsForProjectSearchIdsList == null || paramsForProjectSearchIdsList.isEmpty() ) {
+				log.warn( "No paramsForProjectSearchIdsList" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
+    		//  Validate that Project Search Ids provided are in paramsForProjectSearchIdsList
+
+			for ( Integer projectSearchId : projectSearchIds ) {
+	    		
+				boolean found_projectSearchId = false;
+    			for ( SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchIdInList : paramsForProjectSearchIdsList ) { 
+    				
+    				if ( searchDataLookupParams_For_Single_ProjectSearchIdInList.getProjectSearchId() == projectSearchId.intValue() ) {
+    					found_projectSearchId = true;
+    					break;
+    				}
+    			}
+    			if ( ! found_projectSearchId ) {
+    				log.warn( "paramsForProjectSearchIdsList does not contain projectSearchId: " + projectSearchId );
+    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+    		}
+    		
+			for ( SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId : paramsForProjectSearchIdsList ) { 
+				
+				List<Integer> psmAnnTypeDisplay = searchDataLookupParams_For_Single_ProjectSearchId.getPsmAnnTypeDisplay();
+	
+				if ( psmAnnTypeDisplay == null ) {
+					log.warn( "No psmAnnTypeDisplay. ProjectSearchId: " + searchDataLookupParams_For_Single_ProjectSearchId.getProjectSearchId() );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				if ( psmAnnTypeDisplay.isEmpty() ) {
+					log.warn( "psmAnnTypeDisplay is empty. ProjectSearchId: " + searchDataLookupParams_For_Single_ProjectSearchId.getProjectSearchId() );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+			}
+			
+			////////////////
+
+			//  AUTH - validate access
+
+			//  throws an exception if access is not valid that is turned into a webservice response by Spring
+
+			try {
+				//  Comment out result since not use it
+				//		ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result =
+				validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIds, httpServletRequest );
+
+			} catch ( Limelight_WS_AuthError_Unauthorized_Exception e ) {
+
+				//  TODO  No User session and not public project
+
+				//  Forward to page stating No User Session
+
+    			final String mainErrorPageControllerURL =
+    					AA_DataDownloadControllersPaths_Constants.PATH_START_ALL 
+    					+ AA_DataDownloadControllersPaths_Constants.NO_SESSION_NOT_PUBLIC_PROJECT_DOWNLOAD_CONTROLLER;
+
+				log.warn( "Limelight_WS_AuthError_Unauthorized_Exception: Forwarding to Error Msg Controller: " + mainErrorPageControllerURL
+						+ ", exception.toString(): "+ e.toString() );
+
+    			RequestDispatcher requestDispatcher = 
+    					httpServletRequest.getServletContext().getRequestDispatcher( mainErrorPageControllerURL );
+
+    			log.warn( "Limelight_WS_AuthError_Unauthorized_Exception: Forwarding to error msg page for no session. " );
+
+    			requestDispatcher.forward( httpServletRequest, httpServletResponse );
+
+				return;  //  EARLY EXIT
+			}
+
+    		//  END Auth
+    		
+    		/////////////////////
+
+    		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
+    		List<Integer> searchIds = new ArrayList<>( projectSearchIds.size() );
+    		Map<Integer, SearchItemMinimal> searchItemMinimal_Key_projectSearchId = new HashMap<>();
+    		Map<Integer,Boolean> searchHasScanDataMap_Key_projectSearchId = new HashMap<>();
+
+    		Map<Integer, Map<Integer, SearchScanFileDTO>> searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId = new HashMap<>();
+    		
+    		for ( Integer projectSearchId : projectSearchIds ) {
+    		
+	    		Integer searchId = searchIdForProjectSearchIdSearcher.getSearchListForProjectId( projectSearchId );
+				if ( searchId == null ) {
+					String msg = "No searchId for projectSearchId: " + projectSearchId;
+					log.warn( msg );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				
+				searchIds.add(searchId);
+				
+				SearchItemMinimal searchItemMinimal = searchMinimalForProjectSearchIdSearcher.getSearchListForProjectSearchId( projectSearchId );
+				if ( searchItemMinimal == null ) {
+					String msg = "No searchItemMinimal for projectSearchId: " + projectSearchId;
+					log.warn( msg );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				searchItemMinimal_Key_projectSearchId.put( projectSearchId, searchItemMinimal );
+				
+				Boolean searchHasScanData = searchHasScanDataForSearchIdSearcher.getSearchHasScanDataForSearchId( searchId );
+				if ( searchHasScanData == null ) {
+					String msg = "searchHasScanData == null for searchId: " + searchId;
+					log.warn( msg );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				
+	    		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
+	    		searchHasScanDataMap_Key_projectSearchId.put( projectSearchId, searchHasScanData );
+	    		
+	    		{
+
+	        		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId = new HashMap<>();
+	        		
+	        		searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.put( projectSearchId, searchScanFileDTO_Map_Key_SearchScanFileId );
+	        		
+		    		List<Integer> searchIds_Single = new ArrayList<>(1);
+		    		searchIds_Single.add( searchId );
+		    		
+		    		List<SearchScanFileDTO> searchScanFileDTO_For_SearchId_List = 
+		    				searchScanFile_For_SearchIds_Searcher.getSearchScanFile_For_SearchIds(searchIds_Single);
+		    		
+		    		for ( SearchScanFileDTO entry : searchScanFileDTO_For_SearchId_List ) {
+		    			
+		    			searchScanFileDTO_Map_Key_SearchScanFileId.put( entry.getId(), entry );
+		    		}
+	    		}
+    		}
+    		
+    		SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result = searchFlagsForSearchIdSearcher.getSearchFlags_ForSearchIds(searchIds);
+    		
+    		{
+    			Set<Integer> searchIds_ForTrack_Results = new HashSet<>( searchIds );
+
+    			for ( SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item : searchFlagsForSearchIdSearcher_Result.getResultItems() ) {
+    				
+    				Integer searchId = searchFlagsForSearchIdSearcher_Result_Item.getSearchId();
+    				
+    				if ( ! searchIds_ForTrack_Results.remove(searchId) ) {  //  Remove to check for all found and for duplicates
+    					String msg = "searchId was not requested or duplicate in result in searchFlagsForSearchIdSearcher_Result. searchId : " + searchId;
+    					log.error(msg);
+    					throw new LimelightWebappDataException(msg);
+    				}
+    				
+    				if ( ! searchFlagsForSearchIdSearcher_Result_Item.isHasScanData() ) {
+    					String msg =  "Invalid request to this code since search does NOT have scan data.  searchId : " + searchId ;
+    					log.error( msg );
+        				throw new LimelightWebappDataException(msg);
+    				}
+    				if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_DynamicModifications() ) {
+    					String msg =  "Invalid request to this code since search does have anyPsmHas_DynamicModifications.  searchId : " + searchId ;
+    					log.error( msg );
+        				throw new LimelightWebappDataException(msg);
+    				}
+    				if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_OpenModifications() ) {
+    					String msg =  "Invalid request to this code since search does have anyPsmHas_OpenModifications.  searchId : " + searchId ;
+    					log.error( msg );
+        				throw new LimelightWebappDataException(msg);
+    				}
+    			}	
+
+    			if ( ! searchIds_ForTrack_Results.isEmpty() ) {
+    				String msg = "SearchIds were not found in : searchFlagsForSearchIdSearcher_Result.  searchIds: " + StringUtils.join( searchIds_ForTrack_Results, "," );
+    				log.error(msg);
+    				throw new LimelightWebappDataException(msg);
+    			}
+        		
+    		}
+    		
+    		//  SearcherCutoffValues_Factory.SkipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId.YES
+    		//     since user may filter to limit to less than all the searches in the experiment.
+    		
+    		SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel =
+    				searcherCutoffValuesRootLevel_Factory
+    				.createSearcherCutoffValuesRootLevel_From_WebserviceRequestCutoffs(
+    						projectSearchIdMapToSearchId, 
+    						searchDataLookupParamsRoot,
+    						SearcherCutoffValues_Factory.SkipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId.YES );
+    						
+    		//  Validate that Project Search Ids provided are in searcherCutoffValuesRootLevel
+
+    		for ( Map.Entry<Integer,Integer> projectSearchIdMapToSearchIdEntry : projectSearchIdMapToSearchId.entrySet() ){
+	    		
+    			Integer projectSearchId = projectSearchIdMapToSearchIdEntry.getKey();
+    			// Integer searchId = projectSearchIdMapToSearchIdEntry.getValue();
+    			
+    			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = searcherCutoffValuesRootLevel.getPerSearchCutoffs( projectSearchId );
+    			
+    			if ( searcherCutoffValuesSearchLevel == null ) {
+					String msg = "No searcherCutoffValuesSearchLevel for projectSearchId: " + projectSearchId;
+					log.warn( msg );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+    		}
+    		
+    		//  Get Data for all the searches:
+    		
+    		// Create list to pass to writeOutputToResponse
+    		List<WriteOutputToResponse_Per_SearchId> writeOutputToResponse_Per_SearchId_List = new ArrayList<>( projectSearchIdMapToSearchId.size() ); 
+    		
+    		for ( Internal_Request_Converted_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds : internal_Request_Converted_PerProjectSearchId_List ) {
+    			
+    			Integer projectSearchId = singleprojectSearchId_ReportedPeptideIdsPsmIds.projectSearchId;
+    			SearchItemMinimal searchItemMinimal = searchItemMinimal_Key_projectSearchId.get( projectSearchId );
+    			if ( searchItemMinimal == null ) {
+    				String msg = "searchItemMinimal_Key_projectSearchId.get( projectSearchId ) returned null before call create_WriteOutputToResponse_Per_SearchId__For_SingleSearch. projectSearchId: " + projectSearchId;
+    				log.error( msg );
+    				throw new LimelightInternalErrorException(msg);
+    			}
+    			
+    			SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = null;
+    			{
+    				for ( SearchFlagsForSearchIdSearcher_Result_Item resultItem : searchFlagsForSearchIdSearcher_Result.getResultItems() ) {
+    					if ( resultItem.getSearchId() == searchItemMinimal.getSearchId() ) {
+    						
+    						searchFlagsForSearchIdSearcher_Result_Item = resultItem;
+    						break;
+    					}
+    				}
+    				if ( searchFlagsForSearchIdSearcher_Result_Item == null ) {
+    					String msg = "searchFlagsForSearchIdSearcher_Result.getResultItems() Not contain entry for searchItemMinimal.getSearchId() before call create_WriteOutputToResponse_Per_SearchId__For_SingleSearch. projectSearchId: " + projectSearchId + ", searchItemMinimal.getSearchId(): " + searchItemMinimal.getSearchId();
+        				log.error( msg );
+        				throw new LimelightInternalErrorException(msg);
+    				}
+    			}
+    			
+        		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId = searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.get( projectSearchId );
+        		if ( searchScanFileDTO_Map_Key_SearchScanFileId == null ) {
+    				String msg = "searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.get( projectSearchId ) returned null before call create_WriteOutputToResponse_Per_SearchId__For_SingleSearch. projectSearchId: " + projectSearchId;
+    				log.error( msg );
+    				throw new LimelightInternalErrorException(msg);
+    			}
+    			
+    			WriteOutputToResponse_Per_SearchId writeOutputToResponse_Per_SearchId =
+    					create_WriteOutputToResponse_Per_SearchId__For_SingleSearch(
+    							internal_Request_Converted_Request_Root, 
+    							paramsForProjectSearchIdsList, 
+    							projectSearchIdMapToSearchId,
+    							searchItemMinimal,
+    							searchFlagsForSearchIdSearcher_Result_Item,
+    							searchHasScanDataMap_Key_projectSearchId, 
+    							searcherCutoffValuesRootLevel,
+    							searchScanFileDTO_Map_Key_SearchScanFileId,
+    							singleprojectSearchId_ReportedPeptideIdsPsmIds );
+    			
+    			writeOutputToResponse_Per_SearchId_List.add( writeOutputToResponse_Per_SearchId );
+    		}
+    		
+    		_compute_MS_1_Scan_Apex_Peak_ForAll_MZ_Ranges( writeOutputToResponse_Per_SearchId_List, searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId );
+			
+    		writeOutputToResponse(
+    				webserviceRequest,
+    				searcherCutoffValuesRootLevel,
+    				requestURL_Base__Before__ControllerPath,
+    				experimentId,
+    				searchItemMinimal_Key_projectSearchId,
+    				searchFlagsForSearchIdSearcher_Result,
+    				writeOutputToResponse_Per_SearchId_List,
+    				searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId,
+					httpServletResponse );
+    		
+    		support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.SUCCESS );
+    		
+		} catch ( Limelight_WS_BadRequest_InvalidParameter_Exception e ) {
+
+			try {
+				support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+					
+			log.warn( "Limelight_WS_BadRequest_InvalidParameter_Exception: " + e.toString() );
+
+			throw new RuntimeException();
+    		
+		} catch ( Limelight_WS_AuthError_Unauthorized_Exception e ) {
+
+			try {
+				support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+					
+			log.warn( "Limelight_WS_AuthError_Unauthorized_Exception: " + e.toString() );
+
+			//  TODO  No User session and not public project
+			throw new RuntimeException();
+			
+		} catch ( Limelight_WS_AuthError_Forbidden_Exception e ) {
+
+			try {
+				support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+					
+			log.warn( "Limelight_WS_AuthError_Forbidden_Exception: " + e.toString() );
+
+			//  TODO  User Auth Error
+			throw new RuntimeException();
+			
+		} catch ( Throwable e ) {
+
+			try {
+				support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+					
+			log.error( "Exception: " + e.toString(), e );
+			throw new RuntimeException();
+		}
+	}
+	
+	////////////////////
+	////////////////////
+	////////////////////
+
+	//  create WriteOutputToResponse_Per_SearchId  For Single Search
+	
+	/**
+	 * @param webserviceRequest_Converted_Root
+	 * @param paramsForProjectSearchIdsList
+	 * @param projectSearchIdMapToSearchId
+	 * @param searchHasScanDataMap_Key_projectSearchId
+	 * @param searcherCutoffValuesRootLevel
+	 * @param singleprojectSearchId_ReportedPeptideIdsPsmIds
+	 * @return
+	 * @throws SQLException
+	 * @throws Exception
+	 */
+	private WriteOutputToResponse_Per_SearchId create_WriteOutputToResponse_Per_SearchId__For_SingleSearch(
+			
+			Internal_Request_Converted_Request_Root webserviceRequest_Converted_Root,
+			List<SearchDataLookupParams_For_Single_ProjectSearchId> paramsForProjectSearchIdsList,
+			Map<Integer, Integer> projectSearchIdMapToSearchId,
+			SearchItemMinimal searchItemMinimal,
+			SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item,
+			Map<Integer, Boolean> searchHasScanDataMap_Key_projectSearchId,
+			SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel,
+    		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId,
+			Internal_Request_Converted_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds )
+			throws SQLException, Exception {
+		
+		Integer projectSearchId = singleprojectSearchId_ReportedPeptideIdsPsmIds.projectSearchId;
+		Integer searchId = projectSearchIdMapToSearchId.get( projectSearchId );
+		
+		if ( searchId == null ) {
+			String msg = "searchId == null for projectSearchId: " + projectSearchId;
+			log.error( msg );
+			throw new LimelightInternalErrorException(msg);
+		}
+		
+		Boolean searchHasScanData = searchHasScanDataMap_Key_projectSearchId.get( projectSearchId );
+		
+		boolean searchHasSubgroups = searchItemMinimal.isSearchHasSubgroups();
+		
+		Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId = null;
+		
+		if ( searchHasSubgroups ) {
+
+			//  Get DB Search Sub Groups from search ids
+			
+			searchSubGroupData_KeyedOn_SearchSubGroupId = new HashMap<>();
+			
+			List<Integer> searchIdList = new ArrayList<>( 2 );
+			searchIdList.add(searchId);
+			
+			List<Integer> projectSearchIdList = new ArrayList<>( 2 );
+			projectSearchIdList.add(projectSearchId);
+
+			List<SearchSubGroupDTO> searchSubGroupsDBList = 
+					searchSubGroupDTOForSearchIdSearcher.getListForSearchId( searchIdList );
+
+			List<ProjectSearchSubGroupDTO> projectSearchSubGroupsDBList = 
+					projectSearchSubGroupDTOForProjectSearchIdSearcher.getListForProjectSearchIds( projectSearchIdList );
+			
+			Map<Integer, ProjectSearchSubGroupDTO> projectSearchSubGroupDTO_Map_Key_SubGroupId = new HashMap<>();
+			
+			for ( ProjectSearchSubGroupDTO item : projectSearchSubGroupsDBList ) {
+				
+				Integer searchSubGroupId = item.getSearchSubGroupId();
+				ProjectSearchSubGroupDTO existingMapEntry = projectSearchSubGroupDTO_Map_Key_SubGroupId.put( searchSubGroupId, item );
+				if ( existingMapEntry != null ) {
+					String msg = "projectSearchSubGroupDTO_Map_Key_SubGroupId aleady has map entry for searchSubGroupId: " + searchSubGroupId 
+							+ ", searchId: " + searchId;
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+			}
+			
+			List<SearchSubGroup_Name_Display_Computation_Entry> nameDisplayComputeEntyList = new ArrayList<>( searchSubGroupsDBList.size() );
+			
+
+			for ( SearchSubGroupDTO entry : searchSubGroupsDBList ) {
+
+				
+				ProjectSearchSubGroupDTO projectSearchSubGroupDTO = null;
+				{ // projectSearchSubGroupDTO may be null after this block
+					projectSearchSubGroupDTO = projectSearchSubGroupDTO_Map_Key_SubGroupId.get( entry.getSearchSubGroupId() );
+				}
+				SearchSubGroup_Name_Display_Computation_Entry result_SearchSubgroupItem = new SearchSubGroup_Name_Display_Computation_Entry();
+				result_SearchSubgroupItem.setSearchSubGroupId( entry.getSearchSubGroupId() );
+				result_SearchSubgroupItem.setSubgroupName_fromImportFile( entry.getSubgroupName_fromImportFile() );
+				if ( projectSearchSubGroupDTO != null ) {
+					result_SearchSubgroupItem.setDisplayOrder( projectSearchSubGroupDTO.getDisplayOrder() );
+    				result_SearchSubgroupItem.setSubgroupName_Display_FromServer_IfUserEnteredAValue( projectSearchSubGroupDTO.getSubgroupName_Display() );
+				}
+
+				nameDisplayComputeEntyList.add( result_SearchSubgroupItem );
+			}
+			
+			searchSubGroup_Name_Display_Computation_Util.searchSubGroup_Name_Display_Computation__SortOn_DisplayOrder_SubGroupNameDisplay__Util( nameDisplayComputeEntyList );
+			
+			for ( SearchSubGroup_Name_Display_Computation_Entry name_Display_Computation_Entry : nameDisplayComputeEntyList ) {
+				
+				WriteOutputToResponse_Per_SearchSubGroupId response_Per_SearchSubGroupId = new WriteOutputToResponse_Per_SearchSubGroupId();
+				response_Per_SearchSubGroupId.subgroupName_fromImportFile = name_Display_Computation_Entry.getSubgroupName_fromImportFile();
+				response_Per_SearchSubGroupId.subgroupName_Display = name_Display_Computation_Entry.getSubgroupName_Display();
+				
+				searchSubGroupData_KeyedOn_SearchSubGroupId.put( name_Display_Computation_Entry.getSearchSubGroupId(), response_Per_SearchSubGroupId );
+			}
+		}
+
+		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = searcherCutoffValuesRootLevel.getPerSearchCutoffs( projectSearchId );
+		
+		SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId = null;
+
+		for ( SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchIdInList : paramsForProjectSearchIdsList ) { 
+			
+			if ( searchDataLookupParams_For_Single_ProjectSearchIdInList.getProjectSearchId() == projectSearchId.intValue() ) {
+				searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchIdInList;
+				break;
+			}
+		}
+		if ( searchDataLookupParams_For_Single_ProjectSearchId == null ) {
+			//  Should never throw this since checked for above
+			log.warn( "paramsForProjectSearchIdsList does not contain projectSearchId: " + projectSearchId );
+			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+		}
+		
+		List<Integer> psmAnnTypeDisplay = searchDataLookupParams_For_Single_ProjectSearchId.getPsmAnnTypeDisplay();
+		List<Integer> psmPeptidePositionAnnTypeDisplay = searchDataLookupParams_For_Single_ProjectSearchId.getPsmPeptidePosition_AnnTypeDisplay();
+		
+		//  All Ann Type for search id
+		List<AnnotationTypeDTO> annotationTypeDTO_AllForSearchId = annotationTypeListForSearchIdSearcher.getAnnotationTypeListForSearchId( searchId );
+		
+		//  Ann Type for display
+		Map<Integer, AnnotationTypeDTO> annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = new HashMap<>();
+		
+		for ( Integer psmAnnTypeDisplayItem : psmAnnTypeDisplay ) {
+			AnnotationTypeDTO annotationTypeDTO_ForDisplay = null;
+			for ( AnnotationTypeDTO annotationTypeDTO_AllForSearchId_Item : annotationTypeDTO_AllForSearchId ) {
+				if ( psmAnnTypeDisplayItem.intValue() == annotationTypeDTO_AllForSearchId_Item.getId() ) {
+					annotationTypeDTO_ForDisplay = annotationTypeDTO_AllForSearchId_Item;
+					break;
+				}
+			}
+			if ( annotationTypeDTO_ForDisplay == null ) {
+				String msg = "No Ann Type for id: " +  psmAnnTypeDisplayItem + " for searchId: " + searchId;
+				log.warn( msg );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.put( annotationTypeDTO_ForDisplay.getId(), annotationTypeDTO_ForDisplay );
+		}
+		
+
+		//  PSM Peptide Position Ann Type for display
+		Map<Integer, AnnotationTypeDTO> psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = new HashMap<>();
+
+		if ( psmPeptidePositionAnnTypeDisplay != null ) {
+
+			for ( Integer annTypeDisplayItem : psmPeptidePositionAnnTypeDisplay ) {
+				AnnotationTypeDTO annotationTypeDTO_ForDisplay = null;
+				for ( AnnotationTypeDTO annotationTypeDTO_AllForSearchId_Item : annotationTypeDTO_AllForSearchId ) {
+					if ( annTypeDisplayItem.intValue() == annotationTypeDTO_AllForSearchId_Item.getId() ) {
+						annotationTypeDTO_ForDisplay = annotationTypeDTO_AllForSearchId_Item;
+						break;
+					}
+				}
+				if ( annotationTypeDTO_ForDisplay == null ) {
+					String msg = "No Ann Type for id: " +  annTypeDisplayItem + " for searchId: " + searchId;
+					log.warn( msg );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.put( annotationTypeDTO_ForDisplay.getId(), annotationTypeDTO_ForDisplay );
+			}
+		}
+		
+
+		List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds = null;
+		Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> mods_Key_ReportedPeptideId = null;
+
+		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = null;
+
+		//  Passed from client - Optional
+		List<Integer> searchSubGroup_Ids_Selected = singleprojectSearchId_ReportedPeptideIdsPsmIds.searchSubGroup_Ids_Selected;
+		
+		//  Passed from client - Optional
+		List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = singleprojectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIdsAndTheirPsmIds_InternalClass;
+		
+		//  Process reportedPeptideIds in request, or retrieve reportedPeptideIds for cutoffs and Process
+		
+		List<Integer> reportedPeptideIds_ForAdditionalProcessing = null;
+		
+		if ( reportedPeptideIdsAndTheirPsmIds != null ) {
+
+			// Process reportedPeptideIds and possibly their PSMs in request
+			
+			//  Have reportedPeptideIds from client for this Project Search Id to process
+			
+			//  Get PSM core data for all Reported Peptide Ids
+
+			reportedPeptideIds_ForAdditionalProcessing = new ArrayList<>( reportedPeptideIdsAndTheirPsmIds.size() );
+			
+			psmWebDisplayListForReportedPeptideIds = new ArrayList<>( reportedPeptideIdsAndTheirPsmIds.size() );
+
+			for ( Internal_Request_Converted_PerReportedPeptideId reportedPeptideIdAndItsPsmIds : reportedPeptideIdsAndTheirPsmIds ) {
+				
+				Integer reportedPeptideId = reportedPeptideIdAndItsPsmIds.reportedPeptideId;
+				List<Long> psmIds_Include = reportedPeptideIdAndItsPsmIds.psmIds_Include;
+				
+				reportedPeptideIds_ForAdditionalProcessing.add( reportedPeptideId );
+
+				List<Long> psmId_List_For_psmWebDisplayList = psmIds_Include;
+				
+				if ( psmId_List_For_psmWebDisplayList == null || psmId_List_For_psmWebDisplayList.isEmpty() ) {
+
+					//  No PSM IDs passed in to webservice so get PSM IDs from cutoffs and reportedPeptideId for searchId
+					
+					psmId_List_For_psmWebDisplayList =
+							psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher
+							.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+				}
+				
+				List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
+						psmWebDisplaySearcher.getPsmsWebDisplay( 
+								searchId, 
+								searchSubGroup_Ids_Selected, 
+								psmId_List_For_psmWebDisplayList );
+
+				transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
+						psmWebDisplayListForReportedPeptideIds, 
+						reportedPeptideId,
+						psmWebDisplayList,
+						singleprojectSearchId_ReportedPeptideIdsPsmIds.data_Per_PsmId_Map_Key_PsmId_InternalClass,
+						searchSubGroupData_KeyedOn_SearchSubGroupId );
+			}
+
+		} else {
+
+			//  Reported Peptide Ids not provided, get all for Project Search Id and Criteria
+
+			//   retrieve reportedPeptideIds for cutoffs and Process
+		
+			//  Get initial Reported Peptide Id list (maybe include Num PSMs) based on search criteria
+
+			List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> peptideMinimalObjectsList = 
+					reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service
+					.getPeptideDataList( searchId, searcherCutoffValuesSearchLevel, MINIMUM_NUMBER_OF_PSMS_PER_REPORTED_PEPTIDE );
+
+			reportedPeptideIds_ForAdditionalProcessing = new ArrayList<>( peptideMinimalObjectsList.size() );
+			
+			for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry entry : peptideMinimalObjectsList ) {
+				reportedPeptideIds_ForAdditionalProcessing.add( entry.getReportedPeptideId() );
+			}
+						
+			if ( webserviceRequest_Converted_Root.proteinSequenceVersionIds != null && ( ! webserviceRequest_Converted_Root.proteinSequenceVersionIds.isEmpty() ) ) {
+				
+				//  If protein sequence version id restriction, filter Reported Peptide Ids to those protein sequence version ids
+				
+				Set<Integer> reportedPeptideIdsFiltered = 
+						reportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds_Searcher.
+						get_ReportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds(
+								searchId, 
+								webserviceRequest_Converted_Root.proteinSequenceVersionIds, 
+								reportedPeptideIds_ForAdditionalProcessing );
+				
+				reportedPeptideIds_ForAdditionalProcessing = new ArrayList<>( reportedPeptideIdsFiltered );
+			}
+
+			if ( reportedPeptideIds_ForAdditionalProcessing != null && ( ! reportedPeptideIds_ForAdditionalProcessing.isEmpty() ) ) {
+				
+				//  Have reportedPeptideIds for this Project Search Id to process
+
+				//  Get PSM core data for all Reported Peptide Ids
+
+				psmWebDisplayListForReportedPeptideIds = new ArrayList<>( reportedPeptideIds_ForAdditionalProcessing.size() );
+
+				for ( Integer reportedPeptideId : reportedPeptideIds_ForAdditionalProcessing ) {
+
+					List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
+							psmWebDisplaySearcher.getPsmsWebDisplay( 
+									searchId, 
+									searchSubGroup_Ids_Selected, 
+									null );
+
+					transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
+							psmWebDisplayListForReportedPeptideIds, 
+							reportedPeptideId,
+							psmWebDisplayList,
+							singleprojectSearchId_ReportedPeptideIdsPsmIds.data_Per_PsmId_Map_Key_PsmId_InternalClass,
+							searchSubGroupData_KeyedOn_SearchSubGroupId );
+				}
+			}
+		}
+		
+		if ( psmWebDisplayListForReportedPeptideIds != null && (  ! psmWebDisplayListForReportedPeptideIds.isEmpty() ) ) {
+			
+			//  Have PSMs
+
+			//  Get Mods for Reported Peptides
+
+			DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result =
+					modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher
+					.getDynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIds( searchId, reportedPeptideIds_ForAdditionalProcessing );
+			mods_Key_ReportedPeptideId =
+					modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result.getResults_Key_ReportedPeptideId();
+
+			//  Get Scan Data if search has scans
+
+			if ( searchHasScanData ) {
+				//  Get Scan Data from Spectral Storage Service
+				scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId =
+						getScanDataFromSpectralStorageService( psmWebDisplayListForReportedPeptideIds, searchScanFileDTO_Map_Key_SearchScanFileId );
+			}
+
+			if ( searchHasScanData ) {
+				//  Validate all PSMs have scan data
+				validate_All_PSMs_haveScanData( psmWebDisplayListForReportedPeptideIds, scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId, searchScanFileDTO_Map_Key_SearchScanFileId );
+			}
+		}
+		
+		_compute_PeptideMass_WithMods_FOR_ScanPeak_MZ_Ranges(
+				searchId,
+				psmWebDisplayListForReportedPeptideIds,
+				mods_Key_ReportedPeptideId,
+
+				scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId
+				);
+		
+//		Add processing here:
+//			
+//			Process ALL Reported Peptide Ids and their PSMs
+//				To compute mass min/max ranges of Peptide with mods for Chromatogram Monoisotopic and +1, +2, +3
+//				Store these per search scan file for retrieval from the scan file(s)
+//				Store these per the reported peptide id / charge so can look them up while writing the output to the response 
+		
+		WriteOutputToResponse_Per_SearchId writeOutputToResponse_Per_SearchId = new WriteOutputToResponse_Per_SearchId();
+		
+		writeOutputToResponse_Per_SearchId.searchId = searchId;
+		writeOutputToResponse_Per_SearchId.projectSearchId = projectSearchId;
+		writeOutputToResponse_Per_SearchId.searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSearchIdSearcher_Result_Item;
+		writeOutputToResponse_Per_SearchId.searchHasScanData = searchHasScanData;
+		writeOutputToResponse_Per_SearchId.searchHasSubgroups = searchHasSubgroups;
+		writeOutputToResponse_Per_SearchId.searchSubGroupData_KeyedOn_SearchSubGroupId = searchSubGroupData_KeyedOn_SearchSubGroupId;
+		writeOutputToResponse_Per_SearchId.annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
+		writeOutputToResponse_Per_SearchId.psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
+		writeOutputToResponse_Per_SearchId.psmWebDisplayListForReportedPeptideIds = psmWebDisplayListForReportedPeptideIds;
+		writeOutputToResponse_Per_SearchId.mods_Key_ReportedPeptideId = mods_Key_ReportedPeptideId;
+		writeOutputToResponse_Per_SearchId.scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId;
+		
+		writeOutputToResponse_Per_SearchId.experimentDataForSearch = singleprojectSearchId_ReportedPeptideIdsPsmIds.experimentDataForSearch;
+		
+		return writeOutputToResponse_Per_SearchId;
+	}
+
+	///////////////////
+	
+	//  TEMP Test Code
+	
+	/**
+	 * @param psmWebDisplayListForReportedPeptideIds
+	 * @param mods_Key_ReportedPeptideId
+	 * @param scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId
+	 * @throws SQLException 
+	 */
+	private void _compute_PeptideMass_WithMods_FOR_ScanPeak_MZ_Ranges(
+			
+			int searchId,
+			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds,
+			Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> dynamicMods_Key_ReportedPeptideId,
+
+			Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId
+
+			) throws SQLException {
+		
+		List<StaticModDTO> staticModDTO_List  = staticModDTOForSearchIdSearcher.getListForSearchId( searchId );
+		
+		for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideId : psmWebDisplayListForReportedPeptideIds ) {
+
+			int reportedPeptideId = psmWebDisplayListForReportedPeptideId.reportedPeptideId;
+			
+
+			String peptideString =
+					peptideStringForSearchIdReportedPeptideIdSearcher
+					.getPeptideSequenceStringForSearchIdReportedPeptideId( searchId, reportedPeptideId );
+
+			if ( peptideString == null ) {
+				String msg = "Peptide String not found for searchId: " + searchId + ", reportedPeptideId: " + reportedPeptideId;
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+
+			Map<Integer, Double> mods_ForPeptideMass = new HashMap<>();
+
+			{ //  Process Dynamic/Variable Mods
+
+				if ( dynamicMods_Key_ReportedPeptideId != null ) {
+
+					List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item> modsList = dynamicMods_Key_ReportedPeptideId.get( reportedPeptideId );
+					if ( ( modsList != null ) && ( ! modsList.isEmpty() ) ) {
+
+						for ( DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item mod : modsList ) {
+
+							int modPosition = mod.getPosition();
+							
+							if ( mod.isIs_N_Terminal() ) {
+								modPosition = 0;
+							}
+							if ( mod.isIs_C_Terminal() ) {
+								modPosition = peptideString.length() + 1;
+							}
+							
+							mods_ForPeptideMass.put( modPosition, mod.getMass() );
+						}
+					}
+				}
+			}
+
+			{ //  Process Static Mods
+				
+				if ( ! staticModDTO_List.isEmpty() ) {
+
+					for ( int sequencePosition = 1; sequencePosition <= peptideString.length(); sequencePosition++ ) {
+
+						String peptideString_At_SequencePosition = peptideString.substring( sequencePosition - 1, sequencePosition ); //  '- 1' since sequencePosition is one based and substring is zero based 
+
+						for ( StaticModDTO staticModDTO : staticModDTO_List ) {
+
+							if ( peptideString_At_SequencePosition.equals( staticModDTO.getResidue() ) ) {
+
+								Double existingModMass_InMap = mods_ForPeptideMass.get( sequencePosition );
+
+								if ( existingModMass_InMap != null ) {
+
+									mods_ForPeptideMass.put( sequencePosition, staticModDTO.getMass().doubleValue() + existingModMass_InMap );
+								} else {
+									mods_ForPeptideMass.put( sequencePosition, staticModDTO.getMass().doubleValue() );
+								}
+							}
+						}
+					}
+				}
+			}
+
+			Peptide peptideObj = new Peptide( peptideString, mods_ForPeptideMass );
+						
+			double massForPeptide_MonoisotopicMass = PeptideMassCalculator.getInstance().getMassForPeptide( peptideObj, MassUtils.MassType.MONOISOTOPIC );
+			
+			
+			///
+			
+			Map<Integer, Map<Integer, INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge>> scanPeak_MZ_Ranges_Map_Key_Charge_Map_Key_SearchScanFileId = new HashMap<>();
+			psmWebDisplayListForReportedPeptideId.scanPeak_MZ_Ranges_Map_Key_ScanCharge_Map_Key_SearchScanFileId = scanPeak_MZ_Ranges_Map_Key_Charge_Map_Key_SearchScanFileId;
+			
+			Map<Integer, Set<Integer>> chargeValues_Unique_Set_Key_SearchScanFileId = new HashMap<>();
+			
+			for ( PsmEntry_InternalClass psmEntry_InternalClass : psmWebDisplayListForReportedPeptideId.psmEntry_InternalClass_List ) {
+				
+				Set<Integer> chargeValues_Unique_Set = chargeValues_Unique_Set_Key_SearchScanFileId.get( psmEntry_InternalClass.psmWebDisplayWebServiceResult.getSearchScanFileId() );
+				if ( chargeValues_Unique_Set == null ) {
+					chargeValues_Unique_Set = new HashSet<>();
+					chargeValues_Unique_Set_Key_SearchScanFileId.put( psmEntry_InternalClass.psmWebDisplayWebServiceResult.getSearchScanFileId(), chargeValues_Unique_Set );
+				}
+
+				chargeValues_Unique_Set.add( psmEntry_InternalClass.psmWebDisplayWebServiceResult.getCharge() );
+			}
+			
+			for ( Map.Entry<Integer, Set<Integer>> mapEntry : chargeValues_Unique_Set_Key_SearchScanFileId.entrySet() ) {
+				
+				Integer searchScanFileId = mapEntry.getKey();
+				Set<Integer> chargeValues_Unique_Set = mapEntry.getValue();
+				
+				Map<Integer, INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge> scanPeak_MZ_Ranges_Map_Key_Charge = new HashMap<>();
+				scanPeak_MZ_Ranges_Map_Key_Charge_Map_Key_SearchScanFileId.put( searchScanFileId, scanPeak_MZ_Ranges_Map_Key_Charge );
+				
+				for ( Integer charge : chargeValues_Unique_Set ) {
+
+					double m_over_z_Peptide_And_Mods = ( massForPeptide_MonoisotopicMass + ( PROTON_MASS * charge ) ) / charge;
+					
+					List<INTERNAL__ScanPeak_MZ_SingleRange> scanPeak_MZ_SingleRange_For_Single_ReportedPeptideId_AND_Charge_List = new ArrayList<>();
+
+
+	                //  LOOP For Isotopes: up to _ISOTOPE_MAX__FOR_CHART_TRACES.  
+					
+					//    Start at zero for monoisotopic 
+
+	                for ( int isotope_Number = 0; isotope_Number <= _ISOTOPE_MAX__FOR_FIND_MS_1_SCAN_PEAK; isotope_Number++ ) {  //  Window:  m/z window for main m/z + X isotope
+
+
+	                    double isotope_M_Over_Z_Addition = isotope_Number * C13_MASS_DELTA / charge;
+
+	                    double m_over_z_Peptide_And_Mods__Plus_X_Isotope = m_over_z_Peptide_And_Mods + isotope_M_Over_Z_Addition;
+
+	                    double ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus =
+	                    		m_over_z_Peptide_And_Mods__Plus_X_Isotope // m_Over_Z_Mass 
+	                    		* MS1_WINDOW_HARD_CODED_PPM // ppm_ExtendRange_AddSubtract_ToMinMaxValues 
+	                    		/ 1000000;  //  1000000d is for 1E6;
+	                    		
+	                    double m_Over_Z_Window_Min = m_over_z_Peptide_And_Mods__Plus_X_Isotope - ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus;
+	                    double m_Over_Z_Window_Max = m_over_z_Peptide_And_Mods__Plus_X_Isotope + ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus;
+
+	            		
+	            		INTERNAL__ScanPeak_MZ_SingleRange scanPeak_MZ_SingleRange = new INTERNAL__ScanPeak_MZ_SingleRange();
+	            		
+	            		scanPeak_MZ_SingleRange.mz_Range_Min = m_Over_Z_Window_Min;
+	            		scanPeak_MZ_SingleRange.mz_Range_Max = m_Over_Z_Window_Max;
+	            		
+	            		scanPeak_MZ_SingleRange_For_Single_ReportedPeptideId_AND_Charge_List.add( scanPeak_MZ_SingleRange );
+	                }
+
+					
+					INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge scanPeak_MZ_Ranges_For_Single_ReportedPeptideId_AND_Charge = new INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge();
+					scanPeak_MZ_Ranges_For_Single_ReportedPeptideId_AND_Charge.scanPeak_MZ_SingleRange_For_Single_ReportedPeptideId_AND_Charge_List = scanPeak_MZ_SingleRange_For_Single_ReportedPeptideId_AND_Charge_List;					
+					scanPeak_MZ_Ranges_Map_Key_Charge.put( charge, scanPeak_MZ_Ranges_For_Single_ReportedPeptideId_AND_Charge );
+				}
+			}
+		}
+	}
+	
+	///////////////////
+
+	/**
+	 * @param psmWebDisplayListForReportedPeptideIds
+	 * @param reportedPeptideId
+	 * @param psmWebDisplayList
+	 * @throws SQLException
+	 * @throws LimelightWebappDataException 
+	 */
+	private void transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
+			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds, 
+			Integer reportedPeptideId,
+			List<PsmWebDisplayWebServiceResult> psmWebDisplayList,
+			Map<Long, Internal_Request_Converted_Per_PsmId> data_Per_PsmId_Map_Key_PsmId_InternalClass,
+			Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId ) throws SQLException, LimelightWebappDataException {
+		
+		if ( psmWebDisplayList.isEmpty() ) {
+			
+			//  No PSMs so exit early
+			
+			return;  // EARLY RETURN
+		}
+		
+		List<PsmEntry_InternalClass> psmEntry_InternalClass_List = new ArrayList<>( psmWebDisplayList.size() );
+		for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayList ) {
+			PsmEntry_InternalClass psmEntry_InternalClass = new PsmEntry_InternalClass();
+			
+			psmEntry_InternalClass.psmWebDisplayWebServiceResult = psmWebDisplay;
+		
+			psmEntry_InternalClass.data_FromRequest_For_PsmId = null;
+			
+			if ( data_Per_PsmId_Map_Key_PsmId_InternalClass != null ) {
+				psmEntry_InternalClass.data_FromRequest_For_PsmId = data_Per_PsmId_Map_Key_PsmId_InternalClass.get( psmWebDisplay.getPsmId() );
+			}
+			
+			psmEntry_InternalClass_List.add(psmEntry_InternalClass);
+		}
+		
+		if ( searchSubGroupData_KeyedOn_SearchSubGroupId != null ) {
+
+			populate_SubGroup_Nickname_Name_ForPSMs( psmEntry_InternalClass_List, searchSubGroupData_KeyedOn_SearchSubGroupId );
+		}
+		
+		populateReporterIonMassesForPSMs( psmEntry_InternalClass_List );
+		
+		populateOpenModificationMassesForPSMs( psmEntry_InternalClass_List );
+		
+		PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId = new PSMsForSingleReportedPeptideId();
+		psmsForSingleReportedPeptideId.reportedPeptideId = reportedPeptideId;
+		psmsForSingleReportedPeptideId.psmEntry_InternalClass_List = psmEntry_InternalClass_List;
+		
+		psmWebDisplayListForReportedPeptideIds.add( psmsForSingleReportedPeptideId );
+	}
+	
+	//////////////////////////////////////
+	
+	/**
+	 * @param psmEntry_InternalClass_List
+	 * @param searchSubGroupData_KeyedOn_SearchSubGroupId
+	 * @throws SQLException 
+	 */
+	private void populate_SubGroup_Nickname_Name_ForPSMs( 
+			List<PsmEntry_InternalClass> psmEntry_InternalClass_List,
+			Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId ) throws SQLException {
+		
+		List<Long> psmIds = new ArrayList<>( psmEntry_InternalClass_List.size() );
+		for ( PsmEntry_InternalClass psmEntry_InternalClass : psmEntry_InternalClass_List ) {
+			psmIds.add( psmEntry_InternalClass.psmWebDisplayWebServiceResult.getPsmId() );
+		}
+		
+		List<PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem> psmId_SubGroupId_Mapping_List = 
+				psmSearchSubGroupIdsForPsmIdsSearcher.getPsmSearchSubGroupIdsForPsmIds( psmIds );
+		
+		Map<Long, PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem> psmId_SubGroupId_MappingMap_Key_PsmId = new HashMap<>( psmId_SubGroupId_Mapping_List.size() );
+		
+		for ( PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem dbResult : psmId_SubGroupId_Mapping_List ) {
+			psmId_SubGroupId_MappingMap_Key_PsmId.put( dbResult.getPsmId(), dbResult );
+		}
+		
+		for ( PsmEntry_InternalClass psmEntry_InternalClass : psmEntry_InternalClass_List ) {
+			
+			Long psmId = psmEntry_InternalClass.psmWebDisplayWebServiceResult.getPsmId();
+			PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem psmId_SubGroupId_Mapping = psmId_SubGroupId_MappingMap_Key_PsmId.get( psmId  );
+			if ( psmId_SubGroupId_Mapping == null ) {
+				String msg = "No entry in psmId_SubGroupId_MappingMap_Key_PsmId for psmId: " + psmId ;
+				log.error(msg);
+				throw new LimelightDatabaseException(msg);
+			}
+			
+			Integer searchSubGroupId = psmId_SubGroupId_Mapping.getSearchSubGroupId();
+			
+			WriteOutputToResponse_Per_SearchSubGroupId searchSubGroupData = searchSubGroupData_KeyedOn_SearchSubGroupId.get(searchSubGroupId);
+			if ( searchSubGroupData == null ) {
+				String msg = "No entry in searchSubGroupData_KeyedOn_SearchSubGroupId for searchSubGroupId: " + searchSubGroupId ;
+				log.error(msg);
+				throw new LimelightDatabaseException(msg);
+			}
+			
+			psmEntry_InternalClass.subGroup_Nickname = searchSubGroupData.subgroupName_Display;
+			psmEntry_InternalClass.subGroup_Name = searchSubGroupData.subgroupName_fromImportFile;
+		}
+	}
+
+    /**
+     * @param psmWebDisplayList
+     * @return 
+     * @throws SQLException 
+     */
+    private void populateReporterIonMassesForPSMs( List<PsmEntry_InternalClass> psmEntry_InternalClass_List ) throws SQLException {
+
+    	if ( psmEntry_InternalClass_List.isEmpty() ) {
+    		//  No Input entries so return 
+    		return; // EARLY RETURN
+    	}
+    	
+    	List<Long> psmIds_ContainingReporterIonMasses = new ArrayList<>( psmEntry_InternalClass_List.size() );
+    	
+    	for ( PsmEntry_InternalClass entry : psmEntry_InternalClass_List ) {
+    		if ( entry.psmWebDisplayWebServiceResult.isHasReporterIons() ) {
+    			psmIds_ContainingReporterIonMasses.add( entry.psmWebDisplayWebServiceResult.getPsmId() );
+    		}
+    	}
+
+    	List<ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem> reporterIonMassesSearcherResult = 
+    			reporterIonMasses_PsmLevel_ForPsmIds_Searcher
+    			.get_ReporterIonMasses_PsmLevel_ForPsmIds( psmIds_ContainingReporterIonMasses );
+
+    	//  Copy into Set in Map
+    	
+    	Map<Long, Set<BigDecimal>> reporterIonMassesSet_Key_PsmId = new HashMap<>();
+    	
+    	for ( ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem item : reporterIonMassesSearcherResult ) {
+    		
+    		Long psmId = item.getPsmId();
+    		Set<BigDecimal> reporterIonMassesSet_For_PsmId = reporterIonMassesSet_Key_PsmId.get( psmId );
+    		if ( reporterIonMassesSet_For_PsmId == null ) {
+    			reporterIonMassesSet_For_PsmId = new HashSet<>();
+    			reporterIonMassesSet_Key_PsmId.put( psmId, reporterIonMassesSet_For_PsmId );
+    		}
+    		reporterIonMassesSet_For_PsmId.add( item.getReporterIonMass() );
+    	}
+    	
+    	for ( PsmEntry_InternalClass psmEntry_InternalClass_Entry : psmEntry_InternalClass_List ) {
+    		
+    		PsmWebDisplayWebServiceResult entry = psmEntry_InternalClass_Entry.psmWebDisplayWebServiceResult;
+    		if ( entry.isHasReporterIons() ) {
+    			Long psmId = entry.getPsmId();
+    			Set<BigDecimal> reporterIonMassesSet_For_PsmId = reporterIonMassesSet_Key_PsmId.get( psmId );
+    			if ( reporterIonMassesSet_For_PsmId == null ) {
+    				log.warn( "No entry in reporterIonMassesSet_Key_PsmId when entry.isHasReporterIons() is true. psmId: "
+    						+ psmId );
+    			}
+    			if ( reporterIonMassesSet_For_PsmId != null ) {
+    				List<BigDecimal> reporterIonMassesList = new ArrayList<>( reporterIonMassesSet_For_PsmId );
+    				Collections.sort( reporterIonMassesList );
+    				psmEntry_InternalClass_Entry.reporterIonMassList = reporterIonMassesList;
+    			}
+    		}
+    	}
+    }
+
+	//////////////////////////////////////
+
+
+    /**
+     * @param psmWebDisplayList
+     * @return 
+     * @throws SQLException 
+     * @throws LimelightWebappDataException 
+     */
+    private void populateOpenModificationMassesForPSMs( List<PsmEntry_InternalClass> psmEntry_InternalClass_List ) throws SQLException, LimelightWebappDataException {
+
+    	if ( psmEntry_InternalClass_List.isEmpty() ) {
+    		//  No Input entries so return 
+    		return; // EARLY RETURN
+    	}
+    	
+    	List<Long> psmIds_Containing_OpenModification_Masses = new ArrayList<>( psmEntry_InternalClass_List.size() );
+
+    	for ( PsmEntry_InternalClass entry : psmEntry_InternalClass_List ) {
+    		if ( entry.psmWebDisplayWebServiceResult.isHasOpenModifications() ) {
+    			psmIds_Containing_OpenModification_Masses.add( entry.psmWebDisplayWebServiceResult.getPsmId() );
+    		}
+    	}
+
+    	List<PsmOpenModificationDTO> openModificationMassesSearcherResult = 
+    			openModificationMasses_PsmLevel_ForPsmIds_Searcher
+    			.get_OpenModificationMasses_PsmLevel_ForPsmIds( psmIds_Containing_OpenModification_Masses );
+    	
+    	List<Long> psmOpenModificationIdList = new ArrayList<>( openModificationMassesSearcherResult.size() );
+    	for ( PsmOpenModificationDTO item : openModificationMassesSearcherResult ) {
+    		psmOpenModificationIdList.add( item.getId() );
+    	}
+    	
+    	List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList =
+    			openModificationPositions_PsmLevel_ForOpenModIds_Searcher
+    			.get_OpenModificationMasses_PsmLevel_For_psmOpenModificationIds( psmOpenModificationIdList );
+    	
+    	Map<Long,List<PsmOpenModificationPositionDTO>> psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId = new HashMap<>();
+    	for ( PsmOpenModificationPositionDTO item : psmOpenModificationPositionDTOList ) {
+    		Long psmOpenModificationId = item.getPsmOpenModificationId();
+    		List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_InMap = 
+    				psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId.get( psmOpenModificationId );
+    		if ( psmOpenModificationPositionDTOList_InMap == null ) {
+    			psmOpenModificationPositionDTOList_InMap = new ArrayList<>();
+    			psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId.put( psmOpenModificationId, psmOpenModificationPositionDTOList_InMap );
+    		}
+    		psmOpenModificationPositionDTOList_InMap.add( item );
+    	}
+
+    	//  Copy into List in Map in Map
+    	
+    	Map<Long, Map<Double,List<PsmOpenModificationPositionDTO>>> openModificationPositionsList_Key_OpenModMass_Key_PsmId = new HashMap<>();
+    	
+    	for ( PsmOpenModificationDTO item : openModificationMassesSearcherResult ) {
+    		
+    		Long psmOpenModificationId = item.getId();
+    		Long psmId = item.getPsmId();
+    		Double openModMass = item.getMass();
+    		Map<Double,List<PsmOpenModificationPositionDTO>> openModificationPositionsList_Key_OpenModMass_For_PsmId = openModificationPositionsList_Key_OpenModMass_Key_PsmId.get( psmId );
+    		if ( openModificationPositionsList_Key_OpenModMass_For_PsmId == null ) {
+    			openModificationPositionsList_Key_OpenModMass_For_PsmId = new HashMap<>();
+    			openModificationPositionsList_Key_OpenModMass_Key_PsmId.put( psmId, openModificationPositionsList_Key_OpenModMass_For_PsmId );
+    		}
+    		List<PsmOpenModificationPositionDTO> openModificationPositionsList = openModificationPositionsList_Key_OpenModMass_For_PsmId.get( openModMass );
+    		if ( openModificationPositionsList == null ) {
+    			openModificationPositionsList = new ArrayList<>();
+    			openModificationPositionsList_Key_OpenModMass_For_PsmId.put( openModMass, openModificationPositionsList );
+    		}
+    		
+    		//  get positions (optional)
+    		List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_MapEntry = psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId.get( psmOpenModificationId );
+    		if ( psmOpenModificationPositionDTOList_MapEntry != null ) {
+    			openModificationPositionsList.addAll( psmOpenModificationPositionDTOList_MapEntry );
+    		}
+    	}
+    	
+    	for ( PsmEntry_InternalClass psmEntry_InternalClass_Entry : psmEntry_InternalClass_List ) {
+    		
+    		PsmWebDisplayWebServiceResult entry = psmEntry_InternalClass_Entry.psmWebDisplayWebServiceResult;
+    		if ( entry.isHasOpenModifications() ) {
+    			Long psmId = entry.getPsmId();
+    			Map<Double,List<PsmOpenModificationPositionDTO>> openModificationPositionsList_Key_OpenModMass_For_PsmId = openModificationPositionsList_Key_OpenModMass_Key_PsmId.get( psmId );
+    			if ( openModificationPositionsList_Key_OpenModMass_For_PsmId == null ) {
+    				log.warn( "No entry in openModificationPositionsList_Key_OpenModMass_Key_PsmId when entry.isHasOpenModifications() is true. psmId: "
+    						+ psmId );
+    			}
+    			if ( openModificationPositionsList_Key_OpenModMass_For_PsmId != null ) {
+
+    				if ( openModificationPositionsList_Key_OpenModMass_For_PsmId.isEmpty() ) {
+    					String msg = "openModificationPositionsList_Key_OpenModMass_For_PsmId.isEmpty() ):  Open Mod mass Map Empty for PSM.  MUST NOT be at this point.  psmId: " + psmId;
+    					log.error(msg);
+    					throw new LimelightWebappDataException(msg);
+    				}
+    				
+    				if ( openModificationPositionsList_Key_OpenModMass_For_PsmId.size() > 1 ) {
+    					String msg = "( openModificationPositionsList_Key_OpenModMass_For_PsmId.size() > 1 ): More than 1 Open Mod mass for PSM.  psmId: " + psmId;
+    					log.error(msg);
+    					throw new LimelightWebappDataException(msg);
+    				}
+    				
+    				Map.Entry<Double,List<PsmOpenModificationPositionDTO>> openModificationPositionsList_Key_OpenModMass_For_PsmId_OnlyMapEntry = openModificationPositionsList_Key_OpenModMass_For_PsmId.entrySet().iterator().next();
+
+					Double openModMass = openModificationPositionsList_Key_OpenModMass_For_PsmId_OnlyMapEntry.getKey();
+					
+    				//  Process Map entries into result display string for Open Mod Masses and positions
+    				
+    				psmEntry_InternalClass_Entry.openModificationMassString = openModMass.toString();
+    				psmEntry_InternalClass_Entry.openModificationMassPositions_String = ""; //  Default
+    				
+    				//  
+    				StringBuilder openModificationMassPositions_StringSB = new StringBuilder( 100000 );
+
+    				List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_ForEntry = openModificationPositionsList_Key_OpenModMass_For_PsmId_OnlyMapEntry.getValue();
+    				if ( psmOpenModificationPositionDTOList_ForEntry != null && ( ! psmOpenModificationPositionDTOList_ForEntry.isEmpty() ) ) {
+    					
+    					psmEntry_InternalClass_Entry.openModificationMassPosition_List = new ArrayList<>( psmOpenModificationPositionDTOList_ForEntry.size() + 1 );
+    					
+    					boolean is_N_Terminal = false;
+    					boolean is_C_Terminal = false;
+    					List<Integer> positions = new ArrayList<>( psmOpenModificationPositionDTOList_ForEntry.size() );
+    					for ( PsmOpenModificationPositionDTO psmOpenModificationPositionDTO : psmOpenModificationPositionDTOList_ForEntry ) {
+    						if ( psmOpenModificationPositionDTO.isIs_N_Terminal() ) {
+    							is_N_Terminal = true;
+    						} else if ( psmOpenModificationPositionDTO.isIs_C_Terminal() ) {
+    							is_C_Terminal = true;
+    						}
+    						if ( ( ! psmOpenModificationPositionDTO.isIs_N_Terminal() ) && ( ! psmOpenModificationPositionDTO.isIs_C_Terminal() ) ) {
+    							positions.add( psmOpenModificationPositionDTO.getPosition() );
+    						}
+    					}
+    					Collections.sort( positions );
+    					boolean firstPositionEntry = true;
+    					if ( is_N_Terminal ) {
+    						firstPositionEntry = false;
+    						openModificationMassPositions_StringSB.append( "n-term" );
+    						psmEntry_InternalClass_Entry.openModificationMassPosition_List.add( SPECTRUM_VIEWER_OPEN_MOD_POSITION__N_TERM );
+    					}
+    					for ( Integer position : positions ) {
+    						if ( ! firstPositionEntry ) {
+    							openModificationMassPositions_StringSB.append( ", " );
+    						}
+    						firstPositionEntry = false;
+    						openModificationMassPositions_StringSB.append( position );
+    						psmEntry_InternalClass_Entry.openModificationMassPosition_List.add( String.valueOf( position ) );
+    					}
+    					if ( is_C_Terminal ) {
+    						if ( ! firstPositionEntry ) {
+    							openModificationMassPositions_StringSB.append( ", " );
+    						}
+    						openModificationMassPositions_StringSB.append( "c-term" );
+    						psmEntry_InternalClass_Entry.openModificationMassPosition_List.add( SPECTRUM_VIEWER_OPEN_MOD_POSITION__C_TERM );
+    					}
+    				}
+    				
+    				String openModificationMassPositions_String = openModificationMassPositions_StringSB.toString();
+
+    				psmEntry_InternalClass_Entry.openModificationMassPositions_String = openModificationMassPositions_String;
+    			}
+    		}
+    	}
+    }
+    
+	//////////////////////////////////////
+
+	/**
+	 * @param psmWebDisplayListForReportedPeptideIds
+	 * @param scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId
+	 */
+	private void validate_All_PSMs_haveScanData(
+			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds,
+			Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId,
+    		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId ) {
+		
+		for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
+			for ( PsmEntry_InternalClass psmEntry_InternalClass : psmWebDisplayListForReportedPeptideIdsEntry.psmEntry_InternalClass_List ) {
+
+				PsmWebDisplayWebServiceResult psmWebDisplay = psmEntry_InternalClass.psmWebDisplayWebServiceResult;
+
+				SearchScanFileDTO searchScanFileDTO_Entry = null;
+    			{
+    				if ( psmWebDisplay.getSearchScanFileId() != null ) {
+
+    					searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() );
+						if ( searchScanFileDTO_Entry == null ) {
+							String msg = "( psmWebDisplay.getSearchScanFileId() != null ) BUT searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() ) returned null.  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId();
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
+						}
+    				} else {
+    					if ( searchScanFileDTO_Map_Key_SearchScanFileId.size() == 1 ) {
+    						
+    						searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.values().iterator().next();
+    					}
+    				}
+    			}
+    			
+				Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
+						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( searchScanFileDTO_Entry.getScanFileId() );
+				if ( scanData_KeyedOn_ScanNumber == null ) {
+					String msg = "ScanFileId not found in lookup map: " + searchScanFileDTO_Entry.getScanFileId();
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+				SingleScan_SubResponse scan = scanData_KeyedOn_ScanNumber.get( psmWebDisplay.getScanNumber() );
+				if ( scan == null ) {
+					String msg = "ScanNumber not found in lookup map: ScanNumber: " + psmWebDisplay.getScanNumber()
+					+ ", ScanFileId: " + searchScanFileDTO_Entry.getScanFileId();
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+			}
+		}
+	}
+	
+	//////////////////////////////////////
+	//////////////////////////////////////
+	//////////////////////////////////////
+
+	////  Get Scan Data From Spectral Storage Service
+	
+	/**
+	 * Get Scan Data from Spectral Storage Service
+	 * 
+	 * @param searchHasScanData
+	 * @param psmWebDisplayList
+	 * @param scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId
+	 * @throws SQLException
+	 * @throws Exception
+	 */
+	private Map<Integer, Map<Integer, SingleScan_SubResponse>> getScanDataFromSpectralStorageService(
+			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds,
+    		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId )
+					throws SQLException, Exception {
+
+ 		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = new HashMap<>();
+			
+ 		//  Get Scan Info from Spectral Storage Service
+
+ 		//   First get scan file ids and assoc scan numbers
+
+
+ 		Map<Integer, Set<Integer>> scanNumbers_KeyedOn_ScanFileId = new HashMap<>();
+
+ 		for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
+			for ( PsmEntry_InternalClass psmEntry_InternalClass : psmWebDisplayListForReportedPeptideIdsEntry.psmEntry_InternalClass_List ) {
+
+				PsmWebDisplayWebServiceResult psmWebDisplay = psmEntry_InternalClass.psmWebDisplayWebServiceResult;
+
+				SearchScanFileDTO searchScanFileDTO_Entry = null;
+    			{
+    				if ( psmWebDisplay.getSearchScanFileId() != null ) {
+
+    					searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() );
+						if ( searchScanFileDTO_Entry == null ) {
+							String msg = "( psmWebDisplay.getSearchScanFileId() != null ) BUT searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() ) returned null.  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId();
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
+						}
+    				} else {
+    					if ( searchScanFileDTO_Map_Key_SearchScanFileId.size() == 1 ) {
+    						
+    						searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.values().iterator().next();
+    					}
+    				}
+    			}
+    			
+ 				Integer scanNumber = psmWebDisplay.getScanNumber();
+ 				
+ 				if ( searchScanFileDTO_Entry != null && scanNumber != null ) {
+ 					Set<Integer> scanNumbers = scanNumbers_KeyedOn_ScanFileId.get( searchScanFileDTO_Entry.getScanFileId() );
+ 					if ( scanNumbers == null ) {
+ 						scanNumbers = new HashSet<>();
+ 						scanNumbers_KeyedOn_ScanFileId.put( searchScanFileDTO_Entry.getScanFileId(), scanNumbers );
+ 					}
+ 					scanNumbers.add( scanNumber );
+ 				}
+ 			}
+ 		}
+
+ 		for ( Map.Entry<Integer, Set<Integer>> entry : scanNumbers_KeyedOn_ScanFileId.entrySet() ) {
+
+ 			Integer scanFileId = entry.getKey();
+ 			Set<Integer> scanNumbersSet = entry.getValue();
+
+ 			String scanFileAPIKey = scanFileDAO.getSpectralStorageAPIKeyById( scanFileId );
+ 			if ( StringUtils.isEmpty( scanFileAPIKey ) ) {
+ 				String msg = "No value for scanFileAPIKey for scan file id: " + scanFileId;
+ 				log.error( msg );
+ 				throw new LimelightInternalErrorException( msg );
+ 			}
+
+ 			List<Integer> scanNumbersList = new ArrayList<>( scanNumbersSet );
+
+ 			List<SingleScan_SubResponse> scans = 
+ 					call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice
+ 					.getScanDataFromSpectralStorageService(
+ 							scanNumbersList, 
+ 							Get_ScanDataFromScanNumbers_IncludeParentScans.NO,
+ 							Get_ScanData_ExcludeReturnScanPeakData.YES,
+ 							scanFileAPIKey );
+
+ 			Set<Integer> scanNumbersSetForConfirmRetrieved = new HashSet<>( scanNumbersSet );
+
+ 			Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber = new HashMap<>();
+
+ 			for ( SingleScan_SubResponse scan : scans ) {
+ 				Integer scanNumber = scan.getScanNumber();
+ 				scanData_KeyedOn_ScanNumber.put( scanNumber, scan );
+ 				//  Validate all scan numbers found:
+ 				if( ! scanNumbersSetForConfirmRetrieved.remove( scanNumber ) ) {
+ 					String msg = "Scan number in result but not in request or is in result more than once: scanNumber: " + scanNumber
+ 							+ ", scanFileId: " + scanFileId;
+ 					log.error(msg);
+ 					throw new LimelightInternalErrorException(msg);
+ 				}
+ 			}
+
+ 			if ( ! scanNumbersSetForConfirmRetrieved.isEmpty() ) {
+ 				String msg = "Scan numbers are in request but not in result: scanFileId: " + scanFileId
+ 						+ ", Scan numbers are in request but not in result: " + scanNumbersSetForConfirmRetrieved;
+ 				log.error(msg);
+ 				throw new LimelightInternalErrorException(msg);
+ 			}
+
+ 			scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.put( scanFileId, scanData_KeyedOn_ScanNumber );
+ 		}
+
+		return scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId;
+	}
+	
+	
+	
+	//////////////////////
+	
+	/**
+	 * @param writeOutputToResponse_Per_SearchId_List
+	 * @param searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId
+	 * @throws Exception 
+	 */
+	private void _compute_MS_1_Scan_Apex_Peak_ForAll_MZ_Ranges(
+			
+			List<WriteOutputToResponse_Per_SearchId> writeOutputToResponse_Per_SearchId_List,
+    		Map<Integer, Map<Integer, SearchScanFileDTO>> searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId
+			
+			) throws Exception {
+		
+		
+		Map<Integer, List<INTERNAL__ScanPeak_MZ_SingleRange>> scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId = new HashMap<>();
+		
+		//  Accumulate all Scan Peak MZ ranges Per Scan File Id
+		
+		for ( WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId : writeOutputToResponse_Per_SearchId_List ) {
+			
+			
+			Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId = searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.get( writeOutputToResponse_For_SearchId.projectSearchId );
+			if ( searchScanFileDTO_Map_Key_SearchScanFileId == null ) {
+				String msg = "searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.get( writeOutputToResponse_For_SearchId.projectSearchId ); returned null for writeOutputToResponse_For_SearchId.projectSearchId: " + writeOutputToResponse_For_SearchId.projectSearchId;
+				log.error(msg);
+ 				throw new LimelightInternalErrorException(msg);
+			}
+			
+			for ( PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId : writeOutputToResponse_For_SearchId.psmWebDisplayListForReportedPeptideIds ) {
+				
+				for ( Map.Entry<Integer, Map<Integer, INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge>> scanPeak_MZ_Ranges_Map_Key_ScanCharge_Map_Key_SearchScanFileId_MapEntry : psmsForSingleReportedPeptideId.scanPeak_MZ_Ranges_Map_Key_ScanCharge_Map_Key_SearchScanFileId.entrySet() ) {
+					
+					int searchScanFileId = scanPeak_MZ_Ranges_Map_Key_ScanCharge_Map_Key_SearchScanFileId_MapEntry.getKey();
+					Map<Integer, INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge> scanPeak_MZ_Ranges_Map_Key_ScanCharge = scanPeak_MZ_Ranges_Map_Key_ScanCharge_Map_Key_SearchScanFileId_MapEntry.getValue();
+					
+					SearchScanFileDTO searchScanFileDTO = searchScanFileDTO_Map_Key_SearchScanFileId.get( searchScanFileId );
+					if ( searchScanFileDTO == null ) {
+						String msg = "searchScanFileDTO_Map_Key_SearchScanFileId.get( searchScanFileId ); returned null for searchScanFileId: " + searchScanFileId;
+						log.error(msg);
+		 				throw new LimelightInternalErrorException(msg);
+					}
+					if ( searchScanFileDTO.getScanFileId() == null ) {
+						String msg = "( searchScanFileDTO.getScanFileId() == null ) for searchScanFileId: " + searchScanFileId;
+						log.error(msg);
+		 				throw new LimelightInternalErrorException(msg);
+					}
+					
+					Integer scanFileId = searchScanFileDTO.getScanFileId();
+					
+					List<INTERNAL__ScanPeak_MZ_SingleRange> scanPeak_MZ_SingleRange_WithOverlappingEntries_List = scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId.get( scanFileId );
+					if ( scanPeak_MZ_SingleRange_WithOverlappingEntries_List == null ) {
+						scanPeak_MZ_SingleRange_WithOverlappingEntries_List = new ArrayList<>();
+						scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId.put( scanFileId, scanPeak_MZ_SingleRange_WithOverlappingEntries_List );
+					}
+					
+					for ( Map.Entry<Integer, INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge> scanPeak_MZ_Ranges_Map_Key_ScanCharge_MapEntry : scanPeak_MZ_Ranges_Map_Key_ScanCharge.entrySet() ) {
+						
+						INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge scanPeak_MZ_Ranges = scanPeak_MZ_Ranges_Map_Key_ScanCharge_MapEntry.getValue();
+						
+						scanPeak_MZ_SingleRange_WithOverlappingEntries_List.addAll( scanPeak_MZ_Ranges.scanPeak_MZ_SingleRange_For_Single_ReportedPeptideId_AND_Charge_List );
+					}
+				}
+			}
+		}
+		
+		//	Merge MZ Ranges
+		
+		List<Map.Entry<Integer, List<INTERNAL__ScanPeak_MZ_SingleRange>>> scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId_Entries_List =
+				new ArrayList<>( scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId.entrySet() );
+
+		for ( Map.Entry<Integer, List<INTERNAL__ScanPeak_MZ_SingleRange>> scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId_MapEntry : scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId_Entries_List ) {
+		
+			Integer scanFileId = scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId_MapEntry.getKey();
+			List<INTERNAL__ScanPeak_MZ_SingleRange> scanPeak_MZ_SingleRange_WithOverlappingEntries_List = scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId_MapEntry.getValue();
+
+			//  Sort by Min then Max
+			Collections.sort( scanPeak_MZ_SingleRange_WithOverlappingEntries_List, new Comparator<INTERNAL__ScanPeak_MZ_SingleRange>() {
+				@Override
+				public int compare( INTERNAL__ScanPeak_MZ_SingleRange o1, INTERNAL__ScanPeak_MZ_SingleRange o2) {
+					
+					if ( o1.mz_Range_Min < o2.mz_Range_Min ) {
+						return -1;
+					}
+					if ( o1.mz_Range_Min > o2.mz_Range_Min ) {
+						return 1;
+					}
+
+					if ( o1.mz_Range_Max < o2.mz_Range_Max ) {
+						return -1;
+					}
+					if ( o1.mz_Range_Max > o2.mz_Range_Max ) {
+						return 1;
+					}
+					return 0;
+				} } );
+			
+			List<INTERNAL__ScanPeak_MZ_SingleRange> scanPeak_MZ_SingleRange_WithOverlappingEntries_List__RANGES_MERGED = new ArrayList<>( scanPeak_MZ_SingleRange_WithOverlappingEntries_List.size() );
+			
+			INTERNAL__ScanPeak_MZ_SingleRange prev_RangeEntry_ToOutput = null;
+			
+			for ( INTERNAL__ScanPeak_MZ_SingleRange scanPeak_MZ_SingleRange_WithOverlappingEntries_Entry : scanPeak_MZ_SingleRange_WithOverlappingEntries_List ) {
+				
+				if ( prev_RangeEntry_ToOutput == null ) {
+					scanPeak_MZ_SingleRange_WithOverlappingEntries_List__RANGES_MERGED.add( scanPeak_MZ_SingleRange_WithOverlappingEntries_Entry );
+					prev_RangeEntry_ToOutput = scanPeak_MZ_SingleRange_WithOverlappingEntries_Entry;
+				} else {
+					
+					if ( prev_RangeEntry_ToOutput.mz_Range_Max >= scanPeak_MZ_SingleRange_WithOverlappingEntries_Entry.mz_Range_Max ) {
+						//  Prev range entry fully encloses this entry so skip
+					} else {
+						if ( prev_RangeEntry_ToOutput.mz_Range_Max >= scanPeak_MZ_SingleRange_WithOverlappingEntries_Entry.mz_Range_Min ) {
+							//	Prev range entry overlaps this entry so combine
+							
+							prev_RangeEntry_ToOutput.mz_Range_Max = scanPeak_MZ_SingleRange_WithOverlappingEntries_Entry.mz_Range_Max;
+							
+						} else {
+							
+							//  No overlay so add this entry
+
+							scanPeak_MZ_SingleRange_WithOverlappingEntries_List__RANGES_MERGED.add( scanPeak_MZ_SingleRange_WithOverlappingEntries_Entry );
+							prev_RangeEntry_ToOutput = scanPeak_MZ_SingleRange_WithOverlappingEntries_Entry;
+						}
+					}
+				}
+			}
+			
+			//  Save Updated List
+			
+			scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId.put( scanFileId, scanPeak_MZ_SingleRange_WithOverlappingEntries_List__RANGES_MERGED );
+		}
+		
+		//  Get Scan Peaks from Spectr using ranges
+		
+		for ( Map.Entry<Integer, List<INTERNAL__ScanPeak_MZ_SingleRange>> scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId_MapEntry : scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId.entrySet() ) {
+
+ 			Integer scanFileId = scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId_MapEntry.getKey();
+ 			List<INTERNAL__ScanPeak_MZ_SingleRange> scanPeak_MZ_SingleRange_WithOverlappingEntries_List = scanPeak_MZ_SingleRange_WithOverlappingEntries_List__Map_Key_ScanFileId_MapEntry.getValue();
+ 			
+ 			
+ 			Map<Integer, Integer> searchScanFileId_Map_Key_ProjectSearchId = new HashMap<>();
+ 			
+ 			for ( Map.Entry<Integer, Map<Integer, SearchScanFileDTO>> searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId_MapEntry : searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.entrySet() ) {
+ 				
+ 				Integer projectSearchId = searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId_MapEntry.getKey();
+ 				
+ 				for ( SearchScanFileDTO searchScanFileDTO : searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId_MapEntry.getValue().values() ) {
+ 					
+ 					if ( scanFileId.equals( searchScanFileDTO.getScanFileId() ) ) {
+ 					
+ 						searchScanFileId_Map_Key_ProjectSearchId.put( projectSearchId, searchScanFileDTO.getId() );
+ 					}
+ 				}
+ 			}
+			
+
+ 			String scanFileAPIKey = scanFileDAO.getSpectralStorageAPIKeyById( scanFileId );
+ 			if ( StringUtils.isEmpty( scanFileAPIKey ) ) {
+ 				String msg = "No value for scanFileAPIKey for scan file id: " + scanFileId;
+ 				log.error( msg );
+ 				throw new LimelightInternalErrorException( msg );
+ 			}
+ 			
+ 			int maxScanCountToReturnFromSpectralStorageService = call_Get_MaxScanCountToReturn_SpectralStorageWebservice.get_MaxScanCountToReturnFromSpectralStorageService();
+ 			
+ 			List<Integer> scanLevelsToInclude = new ArrayList<>();
+			List<Integer> scanLevelsToExclude = null;
+			
+			scanLevelsToInclude.add( 1 );  // All level 1 scan numbers
+			
+			List<Integer> scanNumbersList_Level_1 =
+					call_Get_ScanNumbers_SpectralStorageWebservice
+					.getScanNumbersFromSpectralStorageService( scanLevelsToInclude, scanLevelsToExclude, scanFileAPIKey );
+			
+			//  Break Scan Numbers into blocks to process, based on maxScanCountToReturnFromSpectralStorageService
+			
+			
+			List<List<Integer>> scanNumbersList_Level_1_InBlocks = new ArrayList<>( ( scanNumbersList_Level_1.size() / maxScanCountToReturnFromSpectralStorageService ) + 2 );
+
+			{
+				List<Integer> scanNumbersList_Level_1_InBlocks_CurrentList = new ArrayList<>( maxScanCountToReturnFromSpectralStorageService );
+				
+				for ( Integer scanNumber : scanNumbersList_Level_1 ) {
+
+					if ( scanNumbersList_Level_1_InBlocks_CurrentList.size() >= maxScanCountToReturnFromSpectralStorageService ) {
+						
+						scanNumbersList_Level_1_InBlocks.add( scanNumbersList_Level_1_InBlocks_CurrentList );
+						scanNumbersList_Level_1_InBlocks_CurrentList = new ArrayList<>( maxScanCountToReturnFromSpectralStorageService );
+					}
+
+					scanNumbersList_Level_1_InBlocks_CurrentList.add( scanNumber );
+				}
+				if ( scanNumbersList_Level_1_InBlocks_CurrentList.size() >= 0 ) {
+					//  Add last one
+					scanNumbersList_Level_1_InBlocks.add( scanNumbersList_Level_1_InBlocks_CurrentList );
+				}
+			}
+
+        	{
+        		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
+        		
+        		List<Throwable> thrownInsideStream_List = Collections.synchronizedList(new ArrayList<>());
+        		
+
+	    		if ( this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True ) {
+	
+	    			//  YES execute in parallel
+
+	    			scanNumbersList_Level_1_InBlocks.parallelStream().forEach( scanNumbersList_Level_1_CurrentBlock -> { 
+
+        				try {
+
+        					_compute_MS_1_Scan_Apex_Peak_ForAll_MZ_Ranges_For_Single_ScansBlock( 
+        							scanNumbersList_Level_1_CurrentBlock,
+        							scanPeak_MZ_SingleRange_WithOverlappingEntries_List,
+        							writeOutputToResponse_Per_SearchId_List,
+        							scanFileAPIKey,
+        							searchScanFileId_Map_Key_ProjectSearchId );
+
+
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing scanNumbersList_Level_1_InBlocks: scanNumbersList_Level_1_CurrentBlock.get(0): " + scanNumbersList_Level_1_CurrentBlock.get(0), t);
+
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        				}
+        			});
+
+        		} else {
+        			
+        			//  NOT execute in parallel
+
+        			scanNumbersList_Level_1_InBlocks.forEach( scanNumbersList_Level_1_CurrentBlock -> { 
+
+        				try {
+
+        					_compute_MS_1_Scan_Apex_Peak_ForAll_MZ_Ranges_For_Single_ScansBlock( 
+        							scanNumbersList_Level_1_CurrentBlock,
+        							scanPeak_MZ_SingleRange_WithOverlappingEntries_List,
+        							writeOutputToResponse_Per_SearchId_List,
+        							scanFileAPIKey,
+        							searchScanFileId_Map_Key_ProjectSearchId );
+
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing scanNumbersList_Level_1_InBlocks.  Rethrow in class LimelightInternalErrorException: scanNumbersList_Level_1_CurrentBlock.get(0)" + scanNumbersList_Level_1_CurrentBlock.get(0), t);
+        					
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        					
+        					throw new LimelightInternalErrorException( t );
+        				}
+        			});
+        		}
+
+        		if ( anyThrownInsideStreamProcessing.get() ) {
+        			
+        			throw new LimelightInternalErrorException( "At least 1 exception processing webserviceRequest.reportedPeptideIds" );
+        		}
+        	}
+		}
+	}
+
+
+	/**
+	 * @param writeOutputToResponse_Per_SearchId_List
+	 * @param searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId
+	 * @throws Exception 
+	 */
+	private void _compute_MS_1_Scan_Apex_Peak_ForAll_MZ_Ranges_For_Single_ScansBlock(
+
+			List<Integer> scanNumbersList_Level_1_CurrentBlock,
+			List<INTERNAL__ScanPeak_MZ_SingleRange> scanPeak_MZ_SingleRange_WithOverlappingEntries_List,
+			List<WriteOutputToResponse_Per_SearchId> writeOutputToResponse_Per_SearchId_List,
+			String scanFileAPIKey,
+			Map<Integer, Integer> searchScanFileId_Map_Key_ProjectSearchId
+			) throws Exception {
+
+		List<Get_ScanDataFromScanNumbers_M_Over_Z_Range_SubRequest> m_Over_Z_Range_Filters = null;
+
+		{
+			m_Over_Z_Range_Filters = new ArrayList<>( scanPeak_MZ_SingleRange_WithOverlappingEntries_List.size() );
+			for ( INTERNAL__ScanPeak_MZ_SingleRange single_M_Over_Z_Range : scanPeak_MZ_SingleRange_WithOverlappingEntries_List ) {
+
+				Get_ScanDataFromScanNumbers_M_Over_Z_Range_SubRequest m_over_Z_Range_Out = new Get_ScanDataFromScanNumbers_M_Over_Z_Range_SubRequest();
+
+				m_over_Z_Range_Out.setMzLowCutoff(single_M_Over_Z_Range.mz_Range_Min);
+				m_over_Z_Range_Out.setMzHighCutoff(single_M_Over_Z_Range.mz_Range_Max);
+
+				m_Over_Z_Range_Filters.add(m_over_Z_Range_Out);
+			}
+		}
+		
+		Get_ScanDataFromScanNumbers_Request get_ScanDataFromScanNumbers_Request = new Get_ScanDataFromScanNumbers_Request();
+		get_ScanDataFromScanNumbers_Request.setScanFileAPIKey( scanFileAPIKey );
+		get_ScanDataFromScanNumbers_Request.setScanNumbers( scanNumbersList_Level_1_CurrentBlock );
+		
+		//  get_ScanDataFromScanNumbers_Request.setReturnScanPeakWithMaxIntensityIgnoringSanPeakFilters( true );
+		
+		get_ScanDataFromScanNumbers_Request.setIncludeParentScans( Get_ScanDataFromScanNumbers_IncludeParentScans.NO );
+		get_ScanDataFromScanNumbers_Request.setExcludeReturnScanPeakData( Get_ScanData_ExcludeReturnScanPeakData.NO );
+		
+		get_ScanDataFromScanNumbers_Request.setIncludeReturnScanLevelTotalIonCurrentData(Get_ScanData_IncludeReturnScanLevelTotalIonCurrentData.YES);
+		get_ScanDataFromScanNumbers_Request.setIncludeReturnIonInjectionTimeData(Get_ScanData_IncludeReturnIonInjectionTimeData.YES);
+		
+		get_ScanDataFromScanNumbers_Request.setM_Over_Z_Range_Filters(m_Over_Z_Range_Filters);
+		
+		
+		List<SingleScan_SubResponse> scans = 
+				call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice
+				.getScanDataFromSpectralStorageService_NativeSpectralStorageServiceRequestObject(
+						get_ScanDataFromScanNumbers_Request,
+						scanFileAPIKey );
+		
+		for ( SingleScan_SubResponse scan : scans ) {
+
+			for ( SingleScanPeak_SubResponse scanPeak : scan.getPeaks() ) {
+
+				_compute_MS_1_Scan_Apex_Peak_ForAll_MZ_Ranges_For_Single_ScanPeak( scanPeak, scan, writeOutputToResponse_Per_SearchId_List, searchScanFileId_Map_Key_ProjectSearchId );
+			}
+		}
+
+		int z = 0;
+	}
+	
+	/**
+	 * @param writeOutputToResponse_Per_SearchId_List
+	 * @param searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId
+	 */
+	private void _compute_MS_1_Scan_Apex_Peak_ForAll_MZ_Ranges_For_Single_ScanPeak(
+			
+			SingleScanPeak_SubResponse scanPeak,
+			SingleScan_SubResponse scan,
+			List<WriteOutputToResponse_Per_SearchId> writeOutputToResponse_Per_SearchId_List,
+			Map<Integer, Integer> searchScanFileId_Map_Key_ProjectSearchId
+			) {
+		
+
+		for ( WriteOutputToResponse_Per_SearchId writeOutputToResponse_Per_SearchId : writeOutputToResponse_Per_SearchId_List ) {
+			
+			
+			Integer searchScanFileId = searchScanFileId_Map_Key_ProjectSearchId.get( writeOutputToResponse_Per_SearchId.projectSearchId );
+			if ( searchScanFileId == null ) {
+				
+				//  NO entry for writeOutputToResponse_Per_SearchId.projectSearchId so SKIP
+				
+				continue;  // EARLY CONTINUE
+				
+//				String msg = "searchScanFileId_Map_Key_ProjectSearchId.get( writeOutputToResponse_Per_SearchId.projectSearchId ); returned null. writeOutputToResponse_Per_SearchId.projectSearchId: " + writeOutputToResponse_Per_SearchId.projectSearchId;
+//				log.error(msg);
+// 				throw new LimelightInternalErrorException( msg );
+			}
+			
+			for ( PSMsForSingleReportedPeptideId psmsForSingleReportedPeptideId : writeOutputToResponse_Per_SearchId.psmWebDisplayListForReportedPeptideIds ) {
+				
+				
+				Map<Integer, INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge> scanPeak_MZ_Ranges_Map_Key_ScanCharge = psmsForSingleReportedPeptideId.scanPeak_MZ_Ranges_Map_Key_ScanCharge_Map_Key_SearchScanFileId.get( searchScanFileId );
+				
+				if ( scanPeak_MZ_Ranges_Map_Key_ScanCharge == null ) {
+					
+					//  NO values for searchScanFileId so SKIP
+					
+					continue;  // EARLY CONTINUE
+										
+//					String msg = "psmsForSingleReportedPeptideId.scanPeak_MZ_Ranges_Map_Key_ScanCharge_Map_Key_SearchScanFileId.get( searchScanFileId ); returned null. searchScanFileId: " + searchScanFileId;
+//					log.error(msg);
+//	 				throw new LimelightInternalErrorException( msg );
+				}
+				
+				for ( INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge scanPeak_MZ_Ranges : scanPeak_MZ_Ranges_Map_Key_ScanCharge.values() ) {
+					
+					if ( parallelStream_DefaultThreadPool_Java_Processing_Enabled_True ) {
+
+						//  'synchronized' so only process 1 thread at a time for this instance of scanPeak_MZ_Ranges
+						synchronized (scanPeak_MZ_Ranges) {
+
+							_compute_MS_1_Scan_Apex_Peak_ForAll_MZ_Ranges_For_Single_ScanPeak__Single_scanPeak_MZ_Ranges(
+
+									scanPeak_MZ_Ranges,
+									scanPeak,
+									scan,
+									writeOutputToResponse_Per_SearchId_List,
+									searchScanFileId_Map_Key_ProjectSearchId );
+						}
+					} else {
+
+						//  NOT Parallel computing so skip 'synchronized'
+
+						_compute_MS_1_Scan_Apex_Peak_ForAll_MZ_Ranges_For_Single_ScanPeak__Single_scanPeak_MZ_Ranges(
+
+								scanPeak_MZ_Ranges,
+								scanPeak,
+								scan,
+								writeOutputToResponse_Per_SearchId_List,
+								searchScanFileId_Map_Key_ProjectSearchId );
+					}
+				}
+			}
+		}
+		
+		int z = 0;
+				
+	}
+	
+	/**
+	 * @param writeOutputToResponse_Per_SearchId_List
+	 * @param searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId
+	 */
+	private void _compute_MS_1_Scan_Apex_Peak_ForAll_MZ_Ranges_For_Single_ScanPeak__Single_scanPeak_MZ_Ranges(
+			
+			INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge scanPeak_MZ_Ranges,
+			SingleScanPeak_SubResponse scanPeak,
+			SingleScan_SubResponse scan,
+			List<WriteOutputToResponse_Per_SearchId> writeOutputToResponse_Per_SearchId_List,
+			Map<Integer, Integer> searchScanFileId_Map_Key_ProjectSearchId
+			) {
+		
+
+		for ( INTERNAL__ScanPeak_MZ_SingleRange scanPeak_MZ_SingleRange : scanPeak_MZ_Ranges.scanPeak_MZ_SingleRange_For_Single_ReportedPeptideId_AND_Charge_List ) {
+
+			if ( scanPeak_MZ_SingleRange.mz_Range_Min <= scanPeak.getMz() && scanPeak.getMz() <= scanPeak_MZ_SingleRange.mz_Range_Max ) {
+
+				boolean saveNewValue = false;
+				
+				if ( scanPeak_MZ_Ranges.apex_MS_1_ScanData == null ) {
+
+					scanPeak_MZ_Ranges.apex_MS_1_ScanData = new INTERNAL__APEX_MS_1_ScanData();
+					
+					scanPeak_MZ_Ranges.apex_MS_1_ScanData.numberOfScansWithThis_ScanPeak_Intensity = 1;  // Initialize to 1
+					
+					saveNewValue = true;
+					
+				} else {
+					if ( scanPeak_MZ_Ranges.apex_MS_1_ScanData.ms_1_ScanPeak_Intensity == scanPeak.getIntensity() ) {
+
+						//  SAME Intensity. 
+						
+						scanPeak_MZ_Ranges.apex_MS_1_ScanData.numberOfScansWithThis_ScanPeak_Intensity++;  //  Increment
+						
+						if ( scanPeak_MZ_Ranges.apex_MS_1_ScanData.ms_1_ScanNumber > scan.getScanNumber() ) {
+							
+							//   Keep scan with smaller scan number
+
+							saveNewValue = true;
+						}
+						
+					} else if ( scanPeak_MZ_Ranges.apex_MS_1_ScanData.ms_1_ScanPeak_Intensity < scanPeak.getIntensity() ) {
+
+						scanPeak_MZ_Ranges.apex_MS_1_ScanData.numberOfScansWithThis_ScanPeak_Intensity = 1; // Reset to 1
+						
+						saveNewValue = true;
+					}
+
+				}
+
+				if ( saveNewValue ) {
+
+					scanPeak_MZ_Ranges.apex_MS_1_ScanData.ms_1_ScanPeak_Intensity = scanPeak.getIntensity();
+					scanPeak_MZ_Ranges.apex_MS_1_ScanData.ms_1_ScanPeak_MZ = scanPeak.getMz();
+					scanPeak_MZ_Ranges.apex_MS_1_ScanData.ms_1_ScanNumber = scan.getScanNumber();
+					scanPeak_MZ_Ranges.apex_MS_1_ScanData.ms_1_RetentionTime_Seconds = scan.getRetentionTime();
+				}
+			}
+		}
+	}
+	
+	
+	
+	//////////////////////////////////////
+	//////////////////////////////////////
+	//////////////////////////////////////
+
+	////  Write Output to Response
+	
+	//   Things retrieved from DB in this method:
+	
+	//			Peptide Sequence String from peptide_tbl: PeptideStringForSearchIdReportedPeptideIdSearcher
+	
+	//			PSM Annotation Data per Single PSM (Filterable and Descriptive)
+	
+	/**
+	 * @param writeOutputToResponse_Per_SearchId_List
+	 * @param httpServletResponse
+	 * @throws Exception
+	 */
+	private void writeOutputToResponse(
+			RequestJSONParsed webserviceRequest,
+			SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel,
+			String requestURL_Base__Before__ControllerPath,
+			Integer experimentId,
+			Map<Integer, SearchItemMinimal> searchItemMinimal_Key_projectSearchId,
+			SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result,
+			List<WriteOutputToResponse_Per_SearchId> writeOutputToResponse_Per_SearchId_List,
+			Map<Integer, Map<Integer, SearchScanFileDTO>> searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId,
+			HttpServletResponse httpServletResponse )
+			throws Exception {
+		
+
+		//  all Search Programs Per Search records
+		Map<Integer, String> searchProgramsPerSearch_Ids_to_Names = new HashMap<>();
+		
+		//  PSM Annotations
+		
+		//  Get All Unique Annotation Type Names and their Search Program Names
+		
+		List<String> unique_AnnotationTypeNames_and_their_SearchProgramNames_InOrder = null;
+		Map<String,Integer> unique_AnnotationTypeNames_and_their_SearchProgramNames_PositionIndex = new HashMap<>();
+		{
+			//  Get all Search Programs Per Search records
+			
+			{
+				for ( WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId : writeOutputToResponse_Per_SearchId_List ) {
+		
+					int searchId = writeOutputToResponse_For_SearchId.searchId;
+					
+					List<SearchProgramsPerSearchDTO> entries = searchProgramsPerSearchListForSearchIdSearcher.getSearchProgramsPerSearchForSearchId( searchId );
+					for ( SearchProgramsPerSearchDTO entry : entries ) {
+						searchProgramsPerSearch_Ids_to_Names.put( entry.getId(), entry.getDisplayName() );
+					}
+				}
+			}
+			
+			//  Construct AnnotationTypeNames_and_their_SearchProgramNames for all searches
+			Set<String> unique_AnnotationTypeNames_and_their_SearchProgramNames = new HashSet<>();
+	
+			for ( WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId : writeOutputToResponse_Per_SearchId_List ) {
+	
+//				int searchId = writeOutputToResponse_For_SearchId.searchId;
+				Map<Integer, AnnotationTypeDTO> annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = writeOutputToResponse_For_SearchId.annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
+				
+				for ( Map.Entry<Integer, AnnotationTypeDTO>  mapEntry : annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.entrySet() ) {
+					AnnotationTypeDTO psmAnnotationTypeDTO = mapEntry.getValue();
+					String searchProgramsPerSearch_Name = searchProgramsPerSearch_Ids_to_Names.get( psmAnnotationTypeDTO.getSearchProgramsPerSearchId() );
+					if ( searchProgramsPerSearch_Name == null ) {
+						String msg = "Failed to get searchProgramsPerSearch_Name for psmAnnotationTypeDTO.getSearchProgramsPerSearchId(): " 
+								+ psmAnnotationTypeDTO.getSearchProgramsPerSearchId()
+								+ ", psmAnnotationTypeDTO.getId(): "
+								+ psmAnnotationTypeDTO.getId();
+						log.error( msg );
+						throw new LimelightInternalErrorException( msg );
+					}
+					String annotationTypeAndSearchProgramString = buildAnnotationTypeAndSearchProgramString( psmAnnotationTypeDTO.getName(), searchProgramsPerSearch_Name );
+					unique_AnnotationTypeNames_and_their_SearchProgramNames.add(annotationTypeAndSearchProgramString);
+				}
+			}
+			
+			unique_AnnotationTypeNames_and_their_SearchProgramNames_InOrder = new ArrayList<>( unique_AnnotationTypeNames_and_their_SearchProgramNames );
+			Collections.sort( unique_AnnotationTypeNames_and_their_SearchProgramNames_InOrder ); // Sort for consistency
+			
+			{ //  Copy to Map so can look up string to get order position
+				int index = 0;
+				for ( String entry : unique_AnnotationTypeNames_and_their_SearchProgramNames_InOrder ) {
+					
+					unique_AnnotationTypeNames_and_their_SearchProgramNames_PositionIndex.put( entry, index );
+					index++;
+				}
+			}
+		}
+		
+		//    PSM Peptide Position Annotations
+
+		//  Get All Unique Annotation Type Names and their Search Program Names
+		
+		List<String> unique_PSM_PeptidePosition_AnnotationTypeNames_and_their_SearchProgramNames_InOrder = null;
+		Map<String,Integer> unique_PSM_PeptidePosition_AnnotationTypeNames_and_their_SearchProgramNames_PositionIndex = new HashMap<>();
+		{
+			//  Get all Search Programs Per Search records
+			
+			//  Skip since have above for PSM Annotations
+//			{
+//				for ( WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId : writeOutputToResponse_Per_SearchId_List ) {
+//		
+//					int searchId = writeOutputToResponse_For_SearchId.searchId;
+//					
+//					List<SearchProgramsPerSearchDTO> entries = searchProgramsPerSearchListForSearchIdSearcher.getSearchProgramsPerSearchForSearchId( searchId );
+//					for ( SearchProgramsPerSearchDTO entry : entries ) {
+//						searchProgramsPerSearch_Ids_to_Names.put( entry.getId(), entry.getDisplayName() );
+//					}
+//				}
+//			}
+			
+			//  Construct PSM_PeptidePosition AnnotationTypeNames_and_their_SearchProgramNames for all searches
+			Set<String> unique_PSM_PeptidePosition_AnnotationTypeNames_and_their_SearchProgramNames = new HashSet<>();
+	
+			for ( WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId : writeOutputToResponse_Per_SearchId_List ) {
+	
+//				int searchId = writeOutputToResponse_For_SearchId.searchId;
+				Map<Integer, AnnotationTypeDTO> annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = writeOutputToResponse_For_SearchId.psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
+				
+				for ( Map.Entry<Integer, AnnotationTypeDTO>  mapEntry : annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.entrySet() ) {
+					AnnotationTypeDTO annotationTypeDTO = mapEntry.getValue();
+					String searchProgramsPerSearch_Name = searchProgramsPerSearch_Ids_to_Names.get( annotationTypeDTO.getSearchProgramsPerSearchId() );
+					if ( searchProgramsPerSearch_Name == null ) {
+						String msg = "Failed to get searchProgramsPerSearch_Name for annotationTypeDTO.getSearchProgramsPerSearchId(): " 
+								+ annotationTypeDTO.getSearchProgramsPerSearchId()
+								+ ", annotationTypeDTO.getId(): "
+								+ annotationTypeDTO.getId();
+						log.error( msg );
+						throw new LimelightInternalErrorException( msg );
+					}
+					String annotationTypeAndSearchProgramString = buildAnnotationTypeAndSearchProgramString( annotationTypeDTO.getName(), searchProgramsPerSearch_Name );
+					unique_PSM_PeptidePosition_AnnotationTypeNames_and_their_SearchProgramNames.add(annotationTypeAndSearchProgramString);
+				}
+			}
+			
+			unique_PSM_PeptidePosition_AnnotationTypeNames_and_their_SearchProgramNames_InOrder = new ArrayList<>( unique_PSM_PeptidePosition_AnnotationTypeNames_and_their_SearchProgramNames );
+			Collections.sort( unique_PSM_PeptidePosition_AnnotationTypeNames_and_their_SearchProgramNames_InOrder ); // Sort for consistency
+			
+			{ //  Copy to Map so can look up string to get order position
+				int index = 0;
+				for ( String entry : unique_PSM_PeptidePosition_AnnotationTypeNames_and_their_SearchProgramNames_InOrder ) {
+					
+					unique_PSM_PeptidePosition_AnnotationTypeNames_and_their_SearchProgramNames_PositionIndex.put( entry, index );
+					index++;
+				}
+			}
+		}
+		
+		
+		
+		
+		//  If for Experiment, validate that 
+		//      List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch
+		//  is the same length and has same Condition Group Labels in all entries
+		
+		////////////
+
+		// generate file name
+		
+		List<Integer> searchIds = new ArrayList<>( writeOutputToResponse_Per_SearchId_List.size() );
+		
+		for ( WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId : writeOutputToResponse_Per_SearchId_List ) {
+			searchIds.add( writeOutputToResponse_For_SearchId.searchId );
+		}
+
+        //Get current date time
+        LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		String nowFormatted = now.format( dateTimeFormatter );
+		
+		String filenamePart = "";
+		if ( experimentId != null ) {
+		
+			filenamePart = "-experiment-" + experimentId;
+		}
+		
+		String filename = "limelight-psms-WITH-MS-1-APEX"
+				+ filenamePart
+				+ "-searches-" 
+				+ StringUtils.join( searchIds, '-' )
+				+ "-" + nowFormatted
+				+ ".txt";
+		
+
+		
+		
+		httpServletResponse.setContentType("application/x-download");
+		httpServletResponse.setHeader("Content-Disposition", "attachment; filename=" + filename);
+		
+
+		OutputStreamWriter writer = null;
+		try {
+			
+			ServletOutputStream out = httpServletResponse.getOutputStream();
+			BufferedOutputStream bos = new BufferedOutputStream(out);
+			writer = new OutputStreamWriter( bos , DownloadsCharacterSetConstant.DOWNLOAD_CHARACTER_SET );
+			
+			//  Write header lines
+			
+			writer.write( "#  Lines that start with '#' are comment lines" );
+			writer.write( "\n" );
+			writer.write( "#  " );
+			writer.write( "\n" );
+			writer.write( "#  Fields that start with 'MS 1 APEX' are a computation to find the MS 1 scan peak within the m/z computed from the peptide sequence, static and variable modifications and PSM charge.  The window PPM is " + MS1_WINDOW_HARD_CODED_PPM );
+			writer.write( "\n" );
+			writer.write( "#  " );
+			writer.write( "\n" );
+			
+			writer.write( "SEARCH ID\tSEARCH NAME\tSUB GROUP NICKNAME\tSUB GROUP NAME\tSCAN NUMBER\tSPECTRUM VIEWER URLS (comma delim)\tPEPTIDE\tMODS" ); // 
+			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tScan Total Ion Current (TIC)\tReporter Ions\tOpen Modification Mass\tOpen Modification Position(s)\tSCAN FILENAME\tIs Independent Decoy\tPROTEIN NAMES (comma delim)\tSPECIAL IONS (comma delim)" );
+			writer.write( "\tMS 1 APEX SCAN PEAK SCAN NUMBER\tMS 1 APEX SCAN RETENTION TIME (MINUTES)\tMS 1 APEX SCAN PEAK INTENSITY\tMS 1 APEX SCAN PEAK MZ\tMS 1 APEX SCAN - NUMBER OF SCANS WITH THIS SCAN PEAK INTENSITY (Scan data for smallest scan number is displayed)" );
+			
+			if ( ! writeOutputToResponse_Per_SearchId_List.isEmpty() ) {
+				WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId = writeOutputToResponse_Per_SearchId_List.get( 0 );
+				List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch = writeOutputToResponse_For_SearchId.experimentDataForSearch;
+				if ( experimentDataForSearch != null ) {
+					for ( RequestJSONParsed_PerConditionGroupConditionData entry : experimentDataForSearch ) {
+						
+						if ( entry.conditionGroupLabel == null ) {
+							String msg = "( entry.conditionGroupLabel == null ) so Unable to write it." + entry.conditionLabel;
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
+						}
+						
+						writer.write( "\t" );
+						writer.write( entry.conditionGroupLabel );
+					}
+				}
+			}
+			
+			
+			for ( String annotationTypeNames_and_its_SearchProgramName : unique_AnnotationTypeNames_and_their_SearchProgramNames_InOrder ) {
+
+				writer.write( "\t" );
+				writer.write( annotationTypeNames_and_its_SearchProgramName );
+			}
+			
+
+			for ( String annotationTypeNames_and_its_SearchProgramName : unique_PSM_PeptidePosition_AnnotationTypeNames_and_their_SearchProgramNames_InOrder ) {
+
+				writer.write( "\t" );
+				writer.write( "PSM Peptide Position Annotation: " );
+				writer.write( annotationTypeNames_and_its_SearchProgramName );
+				writer.write( ".  Field Format: comma delimited. Each position: <position>:<value>" );
+			}
+			
+			writer.write( "\n" );
+			
+			//   END of Header Line
+			
+			//////////////////
+
+			for ( int listIndexCurrentlyOutputting = 0; listIndexCurrentlyOutputting < writeOutputToResponse_Per_SearchId_List.size(); listIndexCurrentlyOutputting++ ) {
+	
+				WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId = writeOutputToResponse_Per_SearchId_List.get( listIndexCurrentlyOutputting );
+				
+				int searchId = writeOutputToResponse_For_SearchId.searchId;
+				int projectSearchId = writeOutputToResponse_For_SearchId.projectSearchId;
+				SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = writeOutputToResponse_For_SearchId.searchFlagsForSearchIdSearcher_Result_Item;
+				Boolean searchHasScanData = writeOutputToResponse_For_SearchId.searchHasScanData; 
+//				Boolean searchHasSubgroups = writeOutputToResponse_For_SearchId.searchHasSubgroups;
+//				Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId = writeOutputToResponse_For_SearchId.searchSubGroupData_KeyedOn_SearchSubGroupId;
+
+				Map<Integer, AnnotationTypeDTO> annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = writeOutputToResponse_For_SearchId.annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
+				Map<Integer, AnnotationTypeDTO> psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = writeOutputToResponse_For_SearchId.psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
+				
+				
+				List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds = writeOutputToResponse_For_SearchId.psmWebDisplayListForReportedPeptideIds;
+				Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> mods_Key_ReportedPeptideId = writeOutputToResponse_For_SearchId.mods_Key_ReportedPeptideId;
+				Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = writeOutputToResponse_For_SearchId.scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId;
+	
+				SearchItemMinimal searchItemMinimal = searchItemMinimal_Key_projectSearchId.get( projectSearchId );
+				if ( searchItemMinimal == null ) {
+					String msg = "searchItemMinimal_Key_projectSearchId does not contain projectSearchId: " + projectSearchId;
+					log.error( msg );
+					throw new LimelightInternalErrorException(msg);
+				}
+				
+				String searchNameDisplay = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchItemMinimal.getName(), searchItemMinimal.getSearchId() );
+				
+				
+				Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId = searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.get( projectSearchId );
+				if ( searchScanFileDTO_Map_Key_SearchScanFileId == null ) {
+					String msg = "searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId does not contain projectSearchId: " + projectSearchId;
+					log.error( msg );
+					throw new LimelightInternalErrorException(msg);
+				}
+				
+				
+				Set<Integer> annTypeIdsToRetrieve = new HashSet<>();
+				
+				for ( Map.Entry<Integer, AnnotationTypeDTO>  mapEntry : annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.entrySet() ) {
+					AnnotationTypeDTO psmAnnotationTypeDTO = mapEntry.getValue();
+					annTypeIdsToRetrieve.add( psmAnnotationTypeDTO.getId() );
+				}
+
+				
+
+				Set<Integer> psmPeptidePosition_AnnTypeIdsToRetrieve = new HashSet<>();
+				
+				for ( Map.Entry<Integer, AnnotationTypeDTO>  mapEntry : psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.entrySet() ) {
+					AnnotationTypeDTO annotationTypeDTO = mapEntry.getValue();
+					psmPeptidePosition_AnnTypeIdsToRetrieve.add( annotationTypeDTO.getId() );
+				}
+
+				
+				if ( psmWebDisplayListForReportedPeptideIds != null && ( ! psmWebDisplayListForReportedPeptideIds.isEmpty() ) ) {
+					
+					//  Get Protein Names for Reported Peptide Ids
+
+					Map<Integer, List<String>> proteinNames_List__Map_Key_ReportedPeptideId = new HashMap<>();
+					
+					{
+
+						SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = searcherCutoffValuesRootLevel.getPerSearchCutoffs( projectSearchId );
+
+						List<Integer> reportedPeptideIds = new ArrayList<>();
+
+						for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
+							reportedPeptideIds.add( psmWebDisplayListForReportedPeptideIdsEntry.reportedPeptideId );
+						}
+						
+						ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result proteinCoverage_Result =
+								proteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher.getProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIds(
+										searchId, reportedPeptideIds, searcherCutoffValuesSearchLevel);
+						
+						Set<Integer> proteinSequenceVersionId_Set = new HashSet<>();
+
+						for ( ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result_Item proteinCoverage_ResultItem : proteinCoverage_Result.getResults() ) {
+							proteinSequenceVersionId_Set.add( proteinCoverage_ResultItem.getProteinSequenceVersionId() );
+						}
+						
+						Map<Integer, List<ProteinSequenceVersionAnnotationItem>> proteinAnnotationDBList__Map_Key_ProteinSequenceVersionId = new HashMap<>();
+						
+						for ( Integer proteinSequenceVersionId : proteinSequenceVersionId_Set ) {
+							List<ProteinSequenceVersionAnnotationItem> proteinAnnotationDBList = 
+									proteinAnnotations_For_SearchID_ProteinVersionId_Searcher.getProteinAnnotations_For_SearchID_ProteinVersionId_Searcher(searchId, proteinSequenceVersionId);
+							proteinAnnotationDBList__Map_Key_ProteinSequenceVersionId.put( proteinSequenceVersionId,  proteinAnnotationDBList );
+						}
+
+						Map<Integer, Set<String>> proteinNames_Set__Map_Key_ReportedPeptideId = new HashMap<>();
+						
+						for ( ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result_Item proteinCoverage_ResultItem : proteinCoverage_Result.getResults() ) {
+							
+							Set<String> proteinNames_Set = proteinNames_Set__Map_Key_ReportedPeptideId.get( proteinCoverage_ResultItem.getReportedPeptideId() );
+							if ( proteinNames_Set == null ) {
+								proteinNames_Set = new HashSet<>();
+								proteinNames_Set__Map_Key_ReportedPeptideId.put( proteinCoverage_ResultItem.getReportedPeptideId(), proteinNames_Set );
+							}
+							
+							
+							List<ProteinSequenceVersionAnnotationItem> proteinAnnotationDBList = proteinAnnotationDBList__Map_Key_ProteinSequenceVersionId.get( proteinCoverage_ResultItem.getProteinSequenceVersionId() );
+							if ( proteinAnnotationDBList == null ) {
+								String msg = "proteinAnnotationDBList__Map_Key_ProteinSequenceVersionId.get( proteinCoverage_ResultItem.getProteinSequenceVersionId() ); returned null for proteinCoverage_ResultItem.getProteinSequenceVersionId(): " + proteinCoverage_ResultItem.getProteinSequenceVersionId();
+								log.error(msg);
+								throw new LimelightInternalErrorException(msg);
+							}
+							
+							for ( ProteinSequenceVersionAnnotationItem proteinAnnotationDBItem : proteinAnnotationDBList ) {
+								proteinNames_Set.add( proteinAnnotationDBItem.getName() );
+							}
+						}
+						
+						//  Transfer proteinNames_Set to List and Sort
+						
+						for ( Map.Entry<Integer, Set<String>> mapEntry : proteinNames_Set__Map_Key_ReportedPeptideId.entrySet() ) {
+							
+							List<String> proteinNames_List = new ArrayList<>( mapEntry.getValue() );
+							Collections.sort( proteinNames_List );
+							
+							proteinNames_List__Map_Key_ReportedPeptideId.put( mapEntry.getKey(), proteinNames_List );
+						}
+					}
+					
+					for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
+						
+						//  Get Peptide String and Mods for Reported Peptide Id
+
+						Integer reportedPeptideId = psmWebDisplayListForReportedPeptideIdsEntry.reportedPeptideId;
+
+						String peptideString =
+								peptideStringForSearchIdReportedPeptideIdSearcher
+								.getPeptideSequenceStringForSearchIdReportedPeptideId( searchId, reportedPeptideId );
+
+						if ( peptideString == null ) {
+							String msg = "Peptide String not found for searchId: " + searchId + ", reportedPeptideId: " + reportedPeptideId;
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
+						}
+						
+						///////////
+						
+
+						String modString = null;
+						
+						if ( mods_Key_ReportedPeptideId != null ) {
+
+							List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item> modsList = mods_Key_ReportedPeptideId.get( reportedPeptideId );
+							if ( modsList == null || modsList.isEmpty() ) {
+								modString = "";
+							} else {
+								Collections.sort( modsList, new Comparator<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>() {
+									@Override
+									public int compare(DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item o1,
+											DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item o2) {
+										if ( o1.getPosition() < o2.getPosition() ) {
+											return -1;
+										}
+										if ( o1.getPosition() > o2.getPosition() ) {
+											return 1;
+										}
+										return 0;
+									}
+								});
+								StringBuilder modStringSB = new StringBuilder( 1000 );
+								for ( DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item mod : modsList ) {
+									if ( modStringSB.length() != 0 ) {
+										modStringSB.append( "," );
+									}
+									modStringSB.append( mod.getPosition() );
+									modStringSB.append( "(" );
+									modStringSB.append( mod.getMass() );
+									modStringSB.append( ")" );
+								}
+								modString = modStringSB.toString();
+							}
+						}
+
+						//  Process PSMs
+						for ( PsmEntry_InternalClass psmEntry_InternalClass : psmWebDisplayListForReportedPeptideIdsEntry.psmEntry_InternalClass_List ) {
+
+							PsmWebDisplayWebServiceResult psmWebDisplay = psmEntry_InternalClass.psmWebDisplayWebServiceResult;
+							
+							writer.write( String.valueOf( searchId ) );
+							writer.write( "\t" );
+							writer.write( searchNameDisplay );
+							writer.write( "\t" );
+							if ( psmEntry_InternalClass.subGroup_Nickname != null ) {
+								writer.write( psmEntry_InternalClass.subGroup_Nickname );
+							}
+							writer.write( "\t" );
+							if ( psmEntry_InternalClass.subGroup_Name != null ) {
+								writer.write( psmEntry_InternalClass.subGroup_Name );
+							}
+							writer.write( "\t" );
+							writer.write( String.valueOf( psmWebDisplay.getScanNumber() ) );
+
+							//  IF search has scan data: Link(s) to Spectrum Viewer (Lorikeet)
+							
+							writer.write( "\t" );
+							
+							if ( searchHasScanData ) {
+								
+								if ( scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId == null ) {
+									String msg = "( searchHasScanData )  AND ( scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId == null )";
+									log.error(msg);
+									throw new LimelightInternalErrorException(msg);
+								}
+								
+								//  Link(s) to Spectrum Viewer (Lorikeet)
+								
+								String spectrumViewerURLs = null;
+								
+								String spectrumViewer_BaseURL = 
+										requestURL_Base__Before__ControllerPath 
+										+ AA_PageControllerPaths_Constants.LORIKEET_SPECTRUM_VIEWER_PAGE_CONTROLLER
+										+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
+										+ LorikeetSpectrumViewer_PageController.PATH_PART_PROJECT_SEARCH_ID_LABEL
+										+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
+										+ projectSearchId
+										+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
+										+ LorikeetSpectrumViewer_PageController.PATH_PART_PSM_ID_LABEL
+										+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
+										+ psmWebDisplay.getPsmId();
+										
+								
+								if ( psmEntry_InternalClass.openModificationMassPosition_List != null && ( ! psmEntry_InternalClass.openModificationMassPosition_List.isEmpty() ) ) {
+
+									//  YES Open Mod positions so create URL Link for each position
+
+									StringBuilder spectrumViewerURLsSB = new StringBuilder( psmEntry_InternalClass.openModificationMassPosition_List.size() * 100 );
+									
+									boolean firstEntry = true;
+									
+									for ( String openModificationMassPosition : psmEntry_InternalClass.openModificationMassPosition_List ) {
+										
+										if ( firstEntry ) {
+											firstEntry = false;
+										} else {
+											spectrumViewerURLsSB.append( ", " );
+										}
+										
+										String spectrumViewerURL = spectrumViewer_BaseURL + OPEN_MOD_POSITION_URL_ADDITION + openModificationMassPosition;
+										
+										spectrumViewerURLsSB.append( spectrumViewerURL );
+									}
+									
+									spectrumViewerURLs = spectrumViewerURLsSB.toString();
+									
+								} else {
+									
+									//  NO Open Mod positions so create single URL Link
+									
+									spectrumViewerURLs = spectrumViewer_BaseURL;
+								}
+
+								writer.write( spectrumViewerURLs );
+								
+							} else {
+								
+								//  NO Scan Data
+								
+							}
+							
+							writer.write( "\t" );
+							writer.write( peptideString );
+							writer.write( "\t" );
+							writer.write( modString );
+							writer.write( "\t" );
+
+							writer.write( String.valueOf( psmWebDisplay.getCharge() ) );
+							
+							
+
+							SearchScanFileDTO searchScanFileDTO_Entry = null;
+			    			{
+			    				if ( psmWebDisplay.getSearchScanFileId() != null ) {
+
+			    					searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() );
+									if ( searchScanFileDTO_Entry == null ) {
+										String msg = "( psmWebDisplay.getSearchScanFileId() != null ) BUT searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() ) returned null.  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId();
+										log.error(msg);
+										throw new LimelightInternalErrorException(msg);
+									}
+			    				} else {
+			    					if ( searchScanFileDTO_Map_Key_SearchScanFileId.size() == 1 ) {
+			    						
+			    						searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.values().iterator().next();
+			    					}
+			    				}
+			    			}
+			    			
+			    			{ // precursor_MZ and precursor_RetentionTime
+			    				
+			    				SingleScan_SubResponse scan = null;
+			    				
+			    				if ( searchHasScanData 
+//			    						&& ( psmWebDisplay.getPsm_precursor_RetentionTime() == null 
+//					    						|| psmWebDisplay.getPsm_precursor_MZ() == null ) 
+			    						) {
+
+			    					if ( searchScanFileDTO_Entry == null ) {
+			    						String msg = "'else' of '} else if ( ( ! searchHasScanData )': ( searchScanFileDTO_Entry == null ).  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId() + ", searchScanFileDTO_Map_Key_SearchScanFileId.size(): " + searchScanFileDTO_Map_Key_SearchScanFileId.size();
+			    						log.error(msg);
+			    						throw new LimelightInternalErrorException(msg);
+			    					}
+
+			    					if ( scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId == null ) {
+			    						String msg = "'else' of '} else if ( ( ! searchHasScanData )' AND ( scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId == null ) .  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId() + ", searchScanFileDTO_Map_Key_SearchScanFileId.size(): " + searchScanFileDTO_Map_Key_SearchScanFileId.size();
+			    						log.error(msg);
+			    						throw new LimelightInternalErrorException(msg);
+			    					}
+
+			    					if ( searchScanFileDTO_Entry.getScanFileId() == null ) {
+			    						String msg = "'else' of '} else if ( ( ! searchHasScanData )' AND ( searchScanFileDTO_Entry.getScanFileId() == null ) .  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId() + ", searchScanFileDTO_Map_Key_SearchScanFileId.size(): " + searchScanFileDTO_Map_Key_SearchScanFileId.size();
+			    						log.error(msg);
+			    						throw new LimelightInternalErrorException(msg);
+			    					}
+
+			    					Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
+			    							scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( searchScanFileDTO_Entry.getScanFileId() );
+			    					if ( scanData_KeyedOn_ScanNumber == null ) {
+			    						String msg = "ScanFileId not found in lookup map: " 
+			    								+ searchScanFileDTO_Entry.getScanFileId()
+			    								+ ", search id: " + searchId;
+			    						log.error(msg);
+			    						throw new LimelightInternalErrorException(msg);
+			    					}
+			    					
+			    					scan = scanData_KeyedOn_ScanNumber.get( psmWebDisplay.getScanNumber() );
+			    					if ( scan == null ) {
+			    						String msg = "ScanNumber not found in lookup map: ScanNumber: " 
+			    								+ psmWebDisplay.getScanNumber()
+			    								+ ", ScanFileId: " + searchScanFileDTO_Entry.getScanFileId()
+			    								+ ", search id: " + searchId;
+			    						log.error(msg);
+			    						throw new LimelightInternalErrorException(msg);
+			    					}
+			    				}
+
+			    				//  Precursor MZ
+
+			    				writer.write( "\t" );
+
+			    				if ( psmWebDisplay.getPsm_precursor_MZ() != null ) {
+
+			    					writer.write( String.valueOf( psmWebDisplay.getPsm_precursor_MZ() ) );
+
+			    				} else if ( scan != null ) {
+
+			    					writer.write( String.valueOf( scan.getPrecursor_M_Over_Z() ) );
+			    				}
+			    				
+			    				//  Precursor RetentionTime
+
+			    				writer.write( "\t" );
+
+			    				if ( psmWebDisplay.getPsm_precursor_RetentionTime() != null ) {
+
+			    					BigDecimal retentionTimeMinutes = 
+			    							psmWebDisplay.getPsm_precursor_RetentionTime().divide( RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR_BD, RoundingMode.HALF_UP );
+			    					writer.write( String.valueOf( retentionTimeMinutes ) );
+
+			    				} else if ( scan != null ) {
+
+			    					writer.write( String.valueOf( ( scan.getRetentionTime() / RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR ) ) );
+			    				}
+			    				
+			    				//  Scan TIC
+
+			    				writer.write( "\t" );
+
+			    				if ( scan != null ) {
+			    					
+			    					if ( scan.getTotalIonCurrent_ForScan() != null ) {  //  NOT all scans from Spectr have Total Ion Current so skip if null
+
+			    						writer.write( String.valueOf( scan.getTotalIonCurrent_ForScan() ) );
+			    					}
+			    				}
+			    			}
+							
+							writer.write( "\t" );
+							{
+								List<BigDecimal> reporterIonMassList = psmEntry_InternalClass.reporterIonMassList;
+								if ( reporterIonMassList != null && ( ! reporterIonMassList.isEmpty() ) ) {
+									StringBuilder reporterIonMassAsStringSB = new StringBuilder( 10000 );
+									boolean first = true;
+									for ( BigDecimal reporterIonMass : reporterIonMassList ) {
+										String reporterIonMassString = reporterIonMass.toPlainString();
+										if ( reporterIonMassString.contains( "." ) ) {
+											//  reporterIonMassString constains '.' so strip trailing zeros
+											reporterIonMassString = StringUtils.stripEnd(reporterIonMassString, "0" );
+										}
+										if ( first ) {
+											first = false;
+										} else {
+											reporterIonMassAsStringSB.append( ", " );
+										}
+										reporterIonMassAsStringSB.append( reporterIonMassString );
+									}
+									String reporterIonMassAsString = reporterIonMassAsStringSB.toString();
+									writer.write( String.valueOf( reporterIonMassAsString ) );
+								}
+							}
+							
+							writer.write( "\t" );
+							{
+								String openModificationMassString = psmEntry_InternalClass.openModificationMassString;
+								if ( openModificationMassString != null ) {
+
+									writer.write( String.valueOf( openModificationMassString ) );
+								}
+							}
+							writer.write( "\t" );
+							{
+								String openModificationMassPositions_String = psmEntry_InternalClass.openModificationMassPositions_String;
+								if ( openModificationMassPositions_String != null ) {
+
+									writer.write( String.valueOf( openModificationMassPositions_String ) );
+								}
+							}
+
+							writer.write( "\t" );
+							if ( searchScanFileDTO_Entry != null && searchScanFileDTO_Entry.getFilename() != null ) {
+								writer.write( searchScanFileDTO_Entry.getFilename() );
+							}
+
+							writer.write( "\t" );
+							if ( psmWebDisplay.isPsmIs_IndependentDecoy() ) {
+								writer.write( "true" );
+							} else {
+								writer.write( "false" );
+							}
+							
+							{
+								writer.write( "\t" );
+								
+								if ( ! searchFlagsForSearchIdSearcher_Result_Item.isSearchNotContainProteins() ) {
+								
+									List<String> proteinNames_List = proteinNames_List__Map_Key_ReportedPeptideId.get( reportedPeptideId );
+									if ( proteinNames_List == null ) {
+										String msg = "proteinNames_List__Map_Key_ReportedPeptideId.get( reportedPeptideId ); returned null for reportedPeptideId: " + reportedPeptideId;
+										log.error(msg);
+										throw new LimelightInternalErrorException(msg);
+									}
+									String proteinNames_String = StringUtils.join( proteinNames_List, ", " );
+
+									writer.write( proteinNames_String );
+								}
+							}
+
+							
+							
+							{  //  Output  'scanPeak_M_Over_Z__Selections_List_For_PSM' AKA Special Ion filters
+
+								writer.write( "\t" );
+								if ( psmEntry_InternalClass.data_FromRequest_For_PsmId != null
+										&& psmEntry_InternalClass.data_FromRequest_For_PsmId.scanPeak_M_Over_Z__Selections_List_For_PSM != null  ) {
+
+									String scanPeak_M_Over_Z__Selections_List_CommaDelim = StringUtils.join( psmEntry_InternalClass.data_FromRequest_For_PsmId.scanPeak_M_Over_Z__Selections_List_For_PSM, "," );
+									writer.write( scanPeak_M_Over_Z__Selections_List_CommaDelim );
+								}
+							}
+
+							{  //   MS 1 Scan data for Apex Peak based on Peptide Sequence and Reported Peptide Level Variable Mods and Static Mods
+
+								if ( psmWebDisplay.getSearchScanFileId() == null ) {
+									String msg = "( psmWebDisplay.getSearchScanFileId() == null )"
+											+ ", psmWebDisplay.getPsmId(): " + psmWebDisplay.getPsmId();
+									log.error(msg);
+									throw new LimelightInternalErrorException(msg);
+								}
+
+								Map<Integer, INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge> scanPeak_MZ_Ranges_Map_Key_ScanCharge =
+										psmWebDisplayListForReportedPeptideIdsEntry.scanPeak_MZ_Ranges_Map_Key_ScanCharge_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() );
+								if ( scanPeak_MZ_Ranges_Map_Key_ScanCharge == null ) {
+									String msg = "psmWebDisplayListForReportedPeptideIdsEntry.scanPeak_MZ_Ranges_Map_Key_ScanCharge_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() ); returned null. psmWebDisplay.getSearchScanFileId(): " 
+											+ psmWebDisplay.getSearchScanFileId() 
+											+ ", psmWebDisplay.getPsmId(): " + psmWebDisplay.getPsmId();
+									log.error(msg);
+									throw new LimelightInternalErrorException(msg);
+								}
+
+								INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge scanPeak_MZ_Ranges = scanPeak_MZ_Ranges_Map_Key_ScanCharge.get( psmWebDisplay.getCharge() );
+								if ( scanPeak_MZ_Ranges == null ) {
+									String msg = "scanPeak_MZ_Ranges_Map_Key_ScanCharge.get( psmWebDisplay.getCharge() ); returned null. psmWebDisplay.getCharge(): " + psmWebDisplay.getCharge()
+									+ ", psmWebDisplay.getPsmId(): " + psmWebDisplay.getPsmId();
+									log.error(msg);
+									throw new LimelightInternalErrorException(msg);
+								}
+
+								if ( scanPeak_MZ_Ranges.apex_MS_1_ScanData == null ) {
+									String msg = "scanPeak_MZ_Ranges_Map_Key_ScanCharge.get( psmWebDisplay.getCharge() ); returned null. psmWebDisplay.getCharge(): " + psmWebDisplay.getCharge()
+									+ ", psmWebDisplay.getPsmId(): " + psmWebDisplay.getPsmId();
+									log.error(msg);
+									throw new LimelightInternalErrorException(msg);
+								}
+
+								writer.write( "\t" );
+								if ( scanPeak_MZ_Ranges.apex_MS_1_ScanData != null ) {
+									writer.write( String.valueOf( scanPeak_MZ_Ranges.apex_MS_1_ScanData.ms_1_ScanNumber ) );
+								}
+								writer.write( "\t" );
+								if ( scanPeak_MZ_Ranges.apex_MS_1_ScanData != null ) {
+									writer.write( String.valueOf( scanPeak_MZ_Ranges.apex_MS_1_ScanData.ms_1_RetentionTime_Seconds / RETENTION_TIME_SECONDS_TO_MINUTES_DIVISOR ) );
+								}
+								writer.write( "\t" );
+								if ( scanPeak_MZ_Ranges.apex_MS_1_ScanData != null ) {
+									writer.write( String.valueOf( scanPeak_MZ_Ranges.apex_MS_1_ScanData.ms_1_ScanPeak_Intensity ) );
+								}
+								writer.write( "\t" );
+								if ( scanPeak_MZ_Ranges.apex_MS_1_ScanData != null ) {
+									writer.write( String.valueOf( scanPeak_MZ_Ranges.apex_MS_1_ScanData.ms_1_ScanPeak_MZ ) );
+								}
+								writer.write( "\t" );
+								if ( scanPeak_MZ_Ranges.apex_MS_1_ScanData != null ) {
+									writer.write( String.valueOf( scanPeak_MZ_Ranges.apex_MS_1_ScanData.numberOfScansWithThis_ScanPeak_Intensity ) );
+								}
+							}
+							
+							
+							
+							
+							//   Experiment Labels
+							
+							List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch = writeOutputToResponse_For_SearchId.experimentDataForSearch;
+							if ( experimentDataForSearch != null ) {
+								for ( RequestJSONParsed_PerConditionGroupConditionData entry : experimentDataForSearch ) {
+									writer.write( "\t" );
+									writer.write( entry.conditionLabel );
+								}
+							}
+
+
+							//   TODO  Optimize this
+							{
+
+								//  Store PSM Annotation Values Key "AnnotationTypeName (Search Program Name)"
+
+								Map<String, String> psmAnnotationValues_Key_AnnotationTypeNames_and_their_SearchProgramNames = new HashMap<>();
+
+								//  Add in PSM Annotation data for Ann Type Display
+								{
+			    					List<Long> psmList = new ArrayList<>( 1 );
+			    					psmList.add( psmWebDisplay.getPsmId() );
+			    					
+									//  Filterable Ann Types
+									List<PsmFilterableAnnotationDTO> psmFilterableAnnotationDTOList =
+											psm_FilterableAnnotationData_Searcher
+											.getPsmFilterableAnnotationDTOList( 
+													psmList, annTypeIdsToRetrieve );
+
+									for ( PsmFilterableAnnotationDTO item : psmFilterableAnnotationDTOList ) {
+										
+										AnnotationTypeDTO annotationTypeDTO  = annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.get( item.getAnnotationTypeId() );
+										if ( annotationTypeDTO == null ) {
+											String msg = "No value in annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId for AnnotationTypeId: " + item.getAnnotationTypeId();
+											log.error( msg );
+											throw new LimelightInternalErrorException(msg);
+										}
+										
+										String searchProgramsPerSearch_Name = searchProgramsPerSearch_Ids_to_Names.get( annotationTypeDTO.getSearchProgramsPerSearchId() );
+										if ( searchProgramsPerSearch_Name == null ) {
+											String msg = "No value in searchProgramsPerSearch_Ids_to_Names for annotationTypeDTO.getSearchProgramsPerSearchId(): "
+													+ annotationTypeDTO.getSearchProgramsPerSearchId()
+													+ ", for AnnotationTypeId: " + item.getAnnotationTypeId();
+											log.error( msg );
+											throw new LimelightInternalErrorException(msg);
+										}
+										
+										String annotationTypeAndSearchProgramString = buildAnnotationTypeAndSearchProgramString( annotationTypeDTO.getName(), searchProgramsPerSearch_Name );
+
+										psmAnnotationValues_Key_AnnotationTypeNames_and_their_SearchProgramNames.put( annotationTypeAndSearchProgramString, item.getValueString() );
+									}
+								}
+
+								{
+									//  Descriptive Ann Types
+									List<PsmDescriptiveAnnotationDTO> psmDescriptiveAnnotationDTOList =
+											psm_DescriptiveAnnotationData_Searcher
+											.getPsmDescriptiveAnnotationDTOList( 
+													psmWebDisplay.getPsmId(),  annTypeIdsToRetrieve );
+
+									for ( PsmDescriptiveAnnotationDTO item : psmDescriptiveAnnotationDTOList ) {
+
+										AnnotationTypeDTO annotationTypeDTO  = annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.get( item.getAnnotationTypeId() );
+										if ( annotationTypeDTO == null ) {
+											String msg = "No value in annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId for AnnotationTypeId: " + item.getAnnotationTypeId();
+											log.error( msg );
+											throw new LimelightInternalErrorException(msg);
+										}
+										
+										String searchProgramsPerSearch_Name = searchProgramsPerSearch_Ids_to_Names.get( annotationTypeDTO.getSearchProgramsPerSearchId() );
+										if ( searchProgramsPerSearch_Name == null ) {
+											String msg = "No value in searchProgramsPerSearch_Ids_to_Names for annotationTypeDTO.getSearchProgramsPerSearchId(): "
+													+ annotationTypeDTO.getSearchProgramsPerSearchId()
+													+ ", for AnnotationTypeId: " + item.getAnnotationTypeId();
+											log.error( msg );
+											throw new LimelightInternalErrorException(msg);
+										}
+										
+										String annotationTypeAndSearchProgramString = buildAnnotationTypeAndSearchProgramString( annotationTypeDTO.getName(), searchProgramsPerSearch_Name );
+
+										psmAnnotationValues_Key_AnnotationTypeNames_and_their_SearchProgramNames.put( annotationTypeAndSearchProgramString, item.getValueString() );
+									}
+								}
+								
+								//  Write out Annotation Data
+								
+								for ( String annotationTypeName_and_its_SearchProgramName : unique_AnnotationTypeNames_and_their_SearchProgramNames_InOrder ) {
+									
+									writer.write( "\t" );
+									String annValue = psmAnnotationValues_Key_AnnotationTypeNames_and_their_SearchProgramNames.get( annotationTypeName_and_its_SearchProgramName );
+									if ( annValue != null ) {
+										writer.write( annValue );
+									}
+								}
+							}
+
+							if ( ! psmPeptidePosition_AnnTypeIdsToRetrieve.isEmpty() ) {
+
+								//  Store PSM Peptide Position Annotation Values Key "AnnotationTypeName (Search Program Name)"
+
+								Map<String, List<Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result>> psmPeptidePosition_AnnotationValues_Key_AnnotationTypeNames_and_their_SearchProgramNames = new HashMap<>();
+
+								//  Add in PSM Peptide Position Data
+								{
+			    					List<Long> psmList = new ArrayList<>( 1 );
+			    					psmList.add( psmWebDisplay.getPsmId() );
+			    					
+			    					List<Integer> annotationTypeIds = new ArrayList<>( psmPeptidePosition_AnnTypeIdsToRetrieve );
+			    					
+									//  Filterable Ann Types
+			    					
+			    					List<Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result> dbResultList = 
+			    							get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher
+			    							.get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds( 
+			    									searchId, annotationTypeIds, psmList );
+
+									for ( Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result item : dbResultList ) {
+										
+										AnnotationTypeDTO annotationTypeDTO  = psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId.get( item.getAnnotationTypeId() );
+										if ( annotationTypeDTO == null ) {
+											String msg = "No value in annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId for AnnotationTypeId: " + item.getAnnotationTypeId();
+											log.error( msg );
+											throw new LimelightInternalErrorException(msg);
+										}
+										
+										String searchProgramsPerSearch_Name = searchProgramsPerSearch_Ids_to_Names.get( annotationTypeDTO.getSearchProgramsPerSearchId() );
+										if ( searchProgramsPerSearch_Name == null ) {
+											String msg = "No value in searchProgramsPerSearch_Ids_to_Names for annotationTypeDTO.getSearchProgramsPerSearchId(): "
+													+ annotationTypeDTO.getSearchProgramsPerSearchId()
+													+ ", for AnnotationTypeId: " + item.getAnnotationTypeId();
+											log.error( msg );
+											throw new LimelightInternalErrorException(msg);
+										}
+										
+										String annotationTypeAndSearchProgramString = buildAnnotationTypeAndSearchProgramString( annotationTypeDTO.getName(), searchProgramsPerSearch_Name );
+
+										List<Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result> itemList_For_annotationTypeAndSearchProgramString =
+												psmPeptidePosition_AnnotationValues_Key_AnnotationTypeNames_and_their_SearchProgramNames.get( annotationTypeAndSearchProgramString );
+										
+										if ( itemList_For_annotationTypeAndSearchProgramString == null ) {
+											itemList_For_annotationTypeAndSearchProgramString = new ArrayList<>();
+											psmPeptidePosition_AnnotationValues_Key_AnnotationTypeNames_and_their_SearchProgramNames.put( annotationTypeAndSearchProgramString, itemList_For_annotationTypeAndSearchProgramString );
+										}
+
+										itemList_For_annotationTypeAndSearchProgramString.add( item );
+									}
+			    					
+								}
+								
+								//  NO Descriptive Ann Types supported
+								
+
+								//  Write out Annotation Data
+								
+								for ( String annotationTypeName_and_its_SearchProgramName : unique_PSM_PeptidePosition_AnnotationTypeNames_and_their_SearchProgramNames_InOrder ) {
+									
+									writer.write( "\t" );
+									
+									List<Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result> itemList_For_annotationTypeAndSearchProgramString = psmPeptidePosition_AnnotationValues_Key_AnnotationTypeNames_and_their_SearchProgramNames.get( annotationTypeName_and_its_SearchProgramName );
+									 
+									if ( itemList_For_annotationTypeAndSearchProgramString != null ) {
+										
+										//  Sort itemList_For_annotationTypeAndSearchProgramString by Position ascending
+										
+										Collections.sort( itemList_For_annotationTypeAndSearchProgramString, 
+												new Comparator<Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result>() { 
+													
+														@Override
+														public int compare(
+																Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result o1,
+																Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result o2) {
+															
+															if ( o1.getPeptidePosition() < o2.getPeptidePosition() ) {
+																return -1;
+															}
+															if ( o1.getPeptidePosition() > o2.getPeptidePosition() ) {
+																return 1;
+															}
+															
+															// Should never get here. ONLY compare valueDouble for consistent sort if gets here.
+															
+															if ( o1.getValueDouble() < o2.getValueDouble() ) {
+																return -1;
+															}
+															if ( o1.getValueDouble() > o2.getValueDouble() ) {
+																return 1;
+															}
+															
+															return 0;
+														} } );
+										
+										//  Output Comma delimited with each position is ":" delimited
+										//		<position>:<value>,<position>:<value>
+
+										List<String> entriesForPositions = new ArrayList<>( itemList_For_annotationTypeAndSearchProgramString.size() );
+										
+										for ( Get_PsmPeptidePositionFilterableAnnotationDTO_List_For_PsmIds_SearchId_AnnotationTypeIds_Searcher_Result item : itemList_For_annotationTypeAndSearchProgramString ) {
+											
+											entriesForPositions.add( item.getPeptidePosition() + ":" + item.getValueDouble() );
+										}
+										String finalValue = StringUtils.join( entriesForPositions, "," );
+												
+										writer.write( String.valueOf( finalValue ) );
+									}
+								}
+							}
+
+							writer.write( "\n" );
+						}
+					}
+				}
+			}
+			
+		} catch ( Throwable e ) {
+			
+			try {
+
+				writer.write( "\n" );
+				writer.write( "\n" );
+				writer.write( "\n" );
+				
+
+				writer.write( "ERROR creating file.  Please contact the Limelight administrator." );
+
+				writer.write( "\n" );
+				
+			} catch( Throwable t ) {
+				
+				//  Eat Exception
+			}
+			
+			throw e;
+
+		} finally {
+			try {
+				if ( writer != null ) {
+					writer.close();
+				}
+			} catch ( Exception ex ) {
+
+				try {
+					support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+				} catch ( Throwable t ) {
+					//  Eat Exception
+				}
+						
+				log.error( "writer.close():Exception " + ex.toString(), ex );
+			}
+			try {
+				httpServletResponse.flushBuffer();
+			} catch ( Exception ex ) {
+
+				try {
+					support_DataDownloadControllers_Service.updateDownload_Identifier_Status( webserviceRequest.downloadIdentifier, DownloadStatus_DataDownloadControllers_Enum.FAIL );
+				} catch ( Throwable t ) {
+					//  Eat Exception
+				}
+						
+				log.error( "httpServletResponse.flushBuffer():Exception " + ex.toString(), ex );
+			}
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private String buildAnnotationTypeAndSearchProgramString( String annotationTypeName, String searchProgramName ) {
+		
+		String result = annotationTypeName + " (" + searchProgramName + ")";
+		return result;
+	}
+	
+	
+	
+	///////////////////////////////
+	///////////////////////////////
+	
+	///////   Internal Classes While Processing
+	
+
+
+	/**
+	 * Internal APEX Scan Data Storage - APEX Scan is the scan with highest intensity scan peak for a given mz range
+	 */
+	private static class INTERNAL__APEX_MS_1_ScanData {
+
+		volatile int ms_1_ScanNumber;
+		volatile float ms_1_RetentionTime_Seconds;
+		volatile double ms_1_ScanPeak_MZ;
+		volatile float ms_1_ScanPeak_Intensity;
+		volatile int numberOfScansWithThis_ScanPeak_Intensity;
+	}
+
+	/**
+	 * Internal PSMs for Single Reported Peptide Id
+	 */
+	private static class PSMsForSingleReportedPeptideId {
+
+		private Integer reportedPeptideId;
+		
+		List<PsmEntry_InternalClass> psmEntry_InternalClass_List;
+		
+
+		Map<Integer, Map<Integer, INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge>> scanPeak_MZ_Ranges_Map_Key_ScanCharge_Map_Key_SearchScanFileId;
+		
+	}
+
+
+	/**
+	 * Internal Scan Peak M/Z ranges for Single Reported Peptide Id and Charge
+	 */
+	private static class INTERNAL_ScnPk_MZ_Rngs_Fr_Sngl_RptdPptdId_AND_Charge {
+		
+		List<INTERNAL__ScanPeak_MZ_SingleRange> scanPeak_MZ_SingleRange_For_Single_ReportedPeptideId_AND_Charge_List;
+
+		//   Stored Best MS 1 Scan Data for this Reported Peptide Id and Charge
+	
+		volatile INTERNAL__APEX_MS_1_ScanData apex_MS_1_ScanData;
+	}
+	
+	/**
+	 * Internal Scan Peak M/Z SINGLE Range
+	 */
+	private static class INTERNAL__ScanPeak_MZ_SingleRange {
+		
+		double mz_Range_Min;
+		double mz_Range_Max;
+	}
+	
+	/**
+	 * Internal PSM
+	 *
+	 */
+	private static class PsmEntry_InternalClass {
+		
+		private PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult;
+		
+		private Internal_Request_Converted_Per_PsmId data_FromRequest_For_PsmId;
+		
+		private String subGroup_Nickname; //  Computed or User Entered;
+		private String subGroup_Name; //  From Imported Search
+
+		private List<BigDecimal> reporterIonMassList;
+		private String openModificationMassString;
+		private String openModificationMassPositions_String;
+		private List<String> openModificationMassPosition_List;
+	}
+	
+	
+	
+	////////////////////////
+	
+	/**
+	 * Internal Data for writeOutputToResponse Per Search Id
+	 */
+	private static class WriteOutputToResponse_Per_SearchId {
+
+		int projectSearchId;
+		int searchId;
+		
+		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item;
+		
+		Boolean searchHasScanData; 
+		Boolean searchHasSubgroups;
+		
+		
+		Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId;
+		
+		Map<Integer, AnnotationTypeDTO> annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
+		Map<Integer, AnnotationTypeDTO> psmPeptidePosition_AnnotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
+		
+		List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds;
+		Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> mods_Key_ReportedPeptideId;
+		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId;
+		
+		List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch;
+	}
+	/**
+	 * Internal Data for writeOutputToResponse Per Search Sub Group Id
+	 */
+	private static class WriteOutputToResponse_Per_SearchSubGroupId {
+
+		String subgroupName_fromImportFile;
+		String subgroupName_Display; // null until user enters a value
+	}
+	
+
+	
+	///////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////
+	
+	///////   Internal Classes Convert Request Object To
+	
+
+	/**
+	 * Converted From Request
+	 */
+	public static class Internal_Request_Converted_Request_Root {
+
+		private List<Internal_Request_Converted_PerProjectSearchId> projectSearchIdsReportedPeptideIdsPsmIds;
+		private SearchDataLookupParamsRoot searchDataLookupParamsRoot;
+		
+		private List<Integer> proteinSequenceVersionIds; // optional
+		
+		private Integer experimentId;
+	}
+
+	/**
+	 * Converted From Request
+	 */
+	public static class Internal_Request_Converted_PerProjectSearchId {
+		
+		private Integer projectSearchId;
+		
+		private List<Integer> searchSubGroup_Ids_Selected; //  Optional
+		
+		private List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch; //  Optional
+
+		/**
+		 * Converted From Request
+		 */
+		private List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds_InternalClass; //  Optional
+		
+		private Map<Long, Internal_Request_Converted_Per_PsmId> data_Per_PsmId_Map_Key_PsmId_InternalClass;
+	}
+	
+	/**
+	 * Converted From Request
+	 */
+	public static class Internal_Request_Converted_PerReportedPeptideId {
+		
+		private Integer reportedPeptideId;
+		private List<Long> psmIds_Include;
+	}
+	
+	private static class Internal_Request_Converted_Per_PsmId {
+		
+		long psmId;
+		List<BigDecimal> scanPeak_M_Over_Z__Selections_List_For_PSM;
+	}
+
+
+	///////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////
+	
+	///////   Request Object 
+	
+
+	////////////////
+
+	/**
+	 * Request JSON Parsed representation
+	 */
+	public static class RequestJSONParsed {
+		
+		private Integer requestVersion;
+		private String downloadIdentifier;
+
+		private List<RequestJSONParsed_PerProjectSearchId> projectSearchIdsReportedPeptideIdsPsmIds;
+		private SearchDataLookupParamsRoot searchDataLookupParamsRoot;
+		
+		private List<Integer> proteinSequenceVersionIds; // optional
+		
+		private Integer experimentId;
+
+        private String psmId_SeparatorString;
+        private String reportedPeptideId_To_PsmId_SeparatorString;
+        private String reportedPeptideId_Block_SeparatorString;
+        private Integer reportedPeptideId_PsmId_NumberEncoding_Radix;
+        
+
+		public void setProjectSearchIdsReportedPeptideIdsPsmIds(
+				List<RequestJSONParsed_PerProjectSearchId> projectSearchIdsReportedPeptideIdsPsmIds) {
+			this.projectSearchIdsReportedPeptideIdsPsmIds = projectSearchIdsReportedPeptideIdsPsmIds;
+		}
+		public void setSearchDataLookupParamsRoot(SearchDataLookupParamsRoot searchDataLookupParamsRoot) {
+			this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
+		}
+		public void setProteinSequenceVersionIds(List<Integer> proteinSequenceVersionIds) {
+			this.proteinSequenceVersionIds = proteinSequenceVersionIds;
+		}
+		public List<RequestJSONParsed_PerProjectSearchId> getProjectSearchIdsReportedPeptideIdsPsmIds() {
+			return projectSearchIdsReportedPeptideIdsPsmIds;
+		}
+		public SearchDataLookupParamsRoot getSearchDataLookupParamsRoot() {
+			return searchDataLookupParamsRoot;
+		}
+		public List<Integer> getProteinSequenceVersionIds() {
+			return proteinSequenceVersionIds;
+		}
+		public void setExperimentId(Integer experimentId) {
+			this.experimentId = experimentId;
+		}
+		public void setPsmId_SeparatorString(String psmId_SeparatorString) {
+			this.psmId_SeparatorString = psmId_SeparatorString;
+		}
+		public void setReportedPeptideId_To_PsmId_SeparatorString(String reportedPeptideId_To_PsmId_SeparatorString) {
+			this.reportedPeptideId_To_PsmId_SeparatorString = reportedPeptideId_To_PsmId_SeparatorString;
+		}
+		public void setReportedPeptideId_Block_SeparatorString(String reportedPeptideId_Block_SeparatorString) {
+			this.reportedPeptideId_Block_SeparatorString = reportedPeptideId_Block_SeparatorString;
+		}
+		public void setReportedPeptideId_PsmId_NumberEncoding_Radix(Integer reportedPeptideId_PsmId_NumberEncoding_Radix) {
+			this.reportedPeptideId_PsmId_NumberEncoding_Radix = reportedPeptideId_PsmId_NumberEncoding_Radix;
+		}
+		public void setRequestVersion(Integer requestVersion) {
+			this.requestVersion = requestVersion;
+		}
+		public void setDownloadIdentifier(String downloadIdentifier) {
+			this.downloadIdentifier = downloadIdentifier;
+		}
+	}
+	
+	public static class RequestJSONParsed_PerProjectSearchId {
+		
+		private Integer projectSearchId;
+		
+		private List<Integer> searchSubGroup_Ids_Selected; //  Optional
+		
+		//  Replaced with reportedPeptideIdsAndTheirPsmIds__Encoded
+//		private List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds; //  Optional
+		
+		private String reportedPeptideIdsAndTheirPsmIds__Encoded;  //  Optional
+		
+		//  Special Ion Selections.  Unique selections on PSMs
+		
+		private List<List<BigDecimal>> scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array;
+		
+		private String scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded;
+		
+		private Integer scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength;
+		
+		private Integer scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix;
+
+        //     //  Each sub array is the unique values for m/z from scanPeak_M_Over_Z__Intensity_Selection_FoundPeaksFor_Array_ArrayInOrderOfPsmIds
+        //     let scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array: Array<Array<number>> = undefined
+        //
+        // //  Pad start with zeros or if undefined then replace with spaces to max length
+        //
+        // let scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded: string = undefined
+        //
+        // scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_MaxIndividualLength: number = undefined
+
+
+		
+		private Long minimum_PSM_ID_InRequest_For_Search;
+		
+		private List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch; //  Optional
+		
+		
+		
+		public void setProjectSearchId(Integer projectSearchId) {
+			this.projectSearchId = projectSearchId;
+		}
+//		public void setReportedPeptideIdsAndTheirPsmIds( List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds) {
+//			this.reportedPeptideIdsAndTheirPsmIds = reportedPeptideIdsAndTheirPsmIds;
+//		}
+		public void setExperimentDataForSearch(List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch) {
+			this.experimentDataForSearch = experimentDataForSearch;
+		}
+		public void setSearchSubGroup_Ids_Selected(List<Integer> searchSubGroup_Ids_Selected) {
+			this.searchSubGroup_Ids_Selected = searchSubGroup_Ids_Selected;
+		}
+		public void setReportedPeptideIdsAndTheirPsmIds__Encoded(String reportedPeptideIdsAndTheirPsmIds__Encoded) {
+			this.reportedPeptideIdsAndTheirPsmIds__Encoded = reportedPeptideIdsAndTheirPsmIds__Encoded;
+		}
+		public void setMinimum_PSM_ID_InRequest_For_Search(Long minimum_PSM_ID_InRequest_For_Search) {
+			this.minimum_PSM_ID_InRequest_For_Search = minimum_PSM_ID_InRequest_For_Search;
+		}
+		public void setScanPeak_M_Over_Z__Selections_UniqueValues_Array_Array(
+				List<List<BigDecimal>> scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array) {
+			this.scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array = scanPeak_M_Over_Z__Selections_UniqueValues_Array_Array;
+		}
+		public void setScanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix(
+				Integer scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix) {
+			this.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix = scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_EncodingRadix;
+		}
+		public void setScanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded(
+				String scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded) {
+			this.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded = scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_Padded__Encoded;
+		}
+		public void setScanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength(
+				Integer scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength) {
+			this.scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength = scanPeak_M_Over_Z__Selections_UniqueValues_IndexValues_Per_PSM_EntriesAsString_EncodedToRadix_IndividualEntryLength;
+		}
+	}
+
+//	public static class RequestJSONParsed_PerReportedPeptideId {
+//		
+//		private Integer reportedPeptideId;
+//		private List<Long> psmIds_Include;
+//		
+//		public void setReportedPeptideId(Integer reportedPeptideId) {
+//			this.reportedPeptideId = reportedPeptideId;
+//		}
+//		public void setPsmIds_Include(List<Long> psmIds_Include) {
+//			this.psmIds_Include = psmIds_Include;
+//		}
+//	}
+
+	public static class RequestJSONParsed_PerConditionGroupConditionData {
+
+	    private String conditionGroupLabel;
+	    private String conditionLabel;
+	    
+		public void setConditionGroupLabel(String conditionGroupLabel) {
+			this.conditionGroupLabel = conditionGroupLabel;
+		}
+		public void setConditionLabel(String conditionLabel) {
+			this.conditionLabel = conditionLabel;
+		}
+		
+	}
+
+}

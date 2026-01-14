@@ -292,6 +292,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
     private _downloadPeptides_Shown_ClickHandler_BindThis = this._downloadPeptides_Shown_ClickHandler.bind(this);
     private _downloadPsms_Shown_ClickHandler_BindThis = this._downloadPsms_Shown_ClickHandler.bind(this);
+    private _downloadPSMs_With_ApexRetentionTime_ClickHandler_BindThis = this._downloadPSMs_With_ApexRetentionTime_ClickHandler.bind(this)
     private _download_Blib_Spectral_Library_BindThis = this._download_Blib_Spectral_Library.bind(this);
 
     private _NOT_CALLED_Function() {
@@ -1483,12 +1484,21 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
+    /**
+     * Download PSMs with Apex Retention Time computed
+     * @private
+     */
+    private _downloadPSMs_With_ApexRetentionTime_ClickHandler() {
+
+        this._downloadPsms_Shown_ClickHandler( true /* include_ApexRetentionTime */ )
+    }
+
 	/**
 	 * Download PSMs for Shown Reported Peptides for Protein based on current cutoff/filter criteria.  
 	 * 
 	 * Open URL in new window to download from server
 	 */   
-    _downloadPsms_Shown_ClickHandler() : void {
+    _downloadPsms_Shown_ClickHandler( include_ApexRetentionTime? : boolean ) : void {
         try {
             const projectSearchIds = this.props.propsValue.projectSearchIds;
 
@@ -1657,7 +1667,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 );
             }
             
-            this._downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds } );
+            this._downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds, include_ApexRetentionTime } );
 
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -1670,18 +1680,19 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 	 * 
 	 * Don't have all PSMs in memory and may be many so open URL in new window to download from server
 	 */
-	_downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds } : {
+	_downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds, include_ApexRetentionTime } : {
 
         projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry>
+        include_ApexRetentionTime : boolean
     } ) {
         download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds( {  // External Function
             experimentId : undefined,
 			projectSearchIdsReportedPeptideIdsPsmIds,
 			searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot,
-			proteinSequenceVersionIds : undefined  //  Peptide page
+			proteinSequenceVersionIds : undefined,  //  Peptide page
+            include_ApexRetentionTime
 		} );
     }
-
 
     /**
      *
@@ -3027,6 +3038,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                                 downloadPeptides_Shown_ClickHandler={ this._downloadPeptides_Shown_ClickHandler_BindThis }
                                 downloadPsms_Shown_ClickHandler={ this._downloadPsms_Shown_ClickHandler_BindThis }
+                                downloadPSMs_With_ApexRetentionTime_ClickHandler={ this._downloadPSMs_With_ApexRetentionTime_ClickHandler_BindThis }
                                 download_Blib_Spectral_Library_ClickHandler={ this._download_Blib_Spectral_Library_BindThis }
 
                             />

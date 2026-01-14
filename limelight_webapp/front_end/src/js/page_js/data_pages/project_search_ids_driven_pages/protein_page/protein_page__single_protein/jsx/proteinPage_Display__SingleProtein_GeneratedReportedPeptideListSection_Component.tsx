@@ -35,6 +35,7 @@ import {
 
 export type ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback = () => void;
 export type ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback = () => void;
+export type ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_With_ApexRetentionTime_ClickHandler_Callback = () => void;
 
 /**
  * 
@@ -63,6 +64,7 @@ export interface ProteinPage_Display__SingleProtein_GeneratedReportedPeptideList
     // For Peptide Page
     downloadPeptides_Shown_ClickHandler? : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback
     downloadPsms_Shown_ClickHandler? : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback
+    downloadPSMs_With_ApexRetentionTime_ClickHandler? : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_With_ApexRetentionTime_ClickHandler_Callback
     download_Blib_Spectral_Library_ClickHandler?: () => void
 }
 
@@ -260,6 +262,7 @@ export class ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSect
                         proteinName_Clicked_Callback_Function={ this.props.proteinName_Clicked_Callback_Function }
                         downloadPeptides_Shown_ClickHandler={ this.props.downloadPeptides_Shown_ClickHandler }
                         downloadPsms_Shown_ClickHandler={ this.props.downloadPsms_Shown_ClickHandler }
+                        downloadPSMs_With_ApexRetentionTime_ClickHandler={ this.props.downloadPSMs_With_ApexRetentionTime_ClickHandler }
                         download_Blib_Spectral_Library_ClickHandler={ this.props.download_Blib_Spectral_Library_ClickHandler }
                     />
                 </div>
@@ -295,6 +298,7 @@ export interface ReportedPeptideList_Component_Props {
 
     downloadPeptides_Shown_ClickHandler : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback
     downloadPsms_Shown_ClickHandler : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback
+    downloadPSMs_With_ApexRetentionTime_ClickHandler: ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_With_ApexRetentionTime_ClickHandler_Callback
     download_Blib_Spectral_Library_ClickHandler: () => void
 }
 
@@ -312,14 +316,37 @@ interface ReportedPeptideList_Component_State {
  */
 class ReportedPeptideList_Component extends React.Component< ReportedPeptideList_Component_Props, ReportedPeptideList_Component_State > {
 
+    private _show_downloadPSMs_With_ApexRetentionTime_Link = true
+
     /**
      * 
      */    
-    constructor(props : ReportedPeptideList_Component_Props) {
+    constructor(props : ReportedPeptideList_Component_Props) { try {
         super(props);
 
+        {
+            const common_Searches_Flags = props.dataPageStateManager.get_DataPage_common_Searches_Flags()
+
+            for ( const projectSearchId of props.projectSearchIds ) {
+
+                const common_Flags_SingleSearch_ForProjectSearchId = common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId )
+                if ( ! common_Flags_SingleSearch_ForProjectSearchId ) {
+                    throw Error( "common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                }
+
+                if ( common_Flags_SingleSearch_ForProjectSearchId.anyPsmHas_OpenModifications || common_Flags_SingleSearch_ForProjectSearchId.anyPsmHas_DynamicModifications
+                    || ( ! common_Flags_SingleSearch_ForProjectSearchId.hasScanData ) )  {
+
+                    this._show_downloadPSMs_With_ApexRetentionTime_Link = false
+
+                    break
+                }
+            }
+        }
+
         this.state = {};
-    }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
     /**
      * @returns true if should update, false otherwise
@@ -468,6 +495,17 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                                   onClick={ this.props.downloadPsms_Shown_ClickHandler }
                             >Download All PSMs</span>
                         ) : null }
+
+                        {/*  Keep next option commented out unless deploy on an alt URL for a specific user.  This is very slow when have more than a small number of peptides.  */}
+                        {/*
+                            { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && this.props.downloadPSMs_With_ApexRetentionTime_ClickHandler && this._show_downloadPSMs_With_ApexRetentionTime_Link ) ? (
+                                // PSM Download Link  With_ApexRetentionTime  Special Version.  See 'this._show_downloadPSMs_With_ApexRetentionTime_Link' for when NOT shown
+                                <span className=" fake-link "
+                                      onClick={ this.props.downloadPSMs_With_ApexRetentionTime_ClickHandler }
+                                >Download All PSMs with APEX Retention Time (Much Slower)  "MS1 Window hard coded: 15ppm (View downloaded file for actual 'ppm' value used since may be 25 for comparison to web app) "</span>
+                                // '15ppm' hard coded in Java property 'MS1_WINDOW_HARD_CODED_PPM'
+                            ) : null }
+                        */}
 
                         { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && this.props.download_Blib_Spectral_Library_ClickHandler ) ? (
                             <Blib_SpectralLibrary_File_Download__MainPage_Link_Component

@@ -78,13 +78,13 @@ class DownloadPSMs_PerConditionGroupConditionData {
  */
 const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds = function(
     {
-        searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId
+        searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId, include_ApexRetentionTime
     } : {
         searchDataLookupParamsRoot : SearchDataLookupParameters_Root
         projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry>
         proteinSequenceVersionIds : Array<number>
         experimentId : number
-
+        include_ApexRetentionTime? : boolean
     }  ) : void {
 
 
@@ -104,6 +104,7 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
         try {
             _doActual__download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds({
                 searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId,
+                include_ApexRetentionTime,
                 downloadIdentifier: responseData.downloadIdentifier
             })
 
@@ -117,14 +118,14 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
 
 const _doActual__download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds = function(
     {
-        searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId, downloadIdentifier
+        searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId, include_ApexRetentionTime, downloadIdentifier
     } : {
         searchDataLookupParamsRoot : SearchDataLookupParameters_Root
         projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry>
         proteinSequenceVersionIds : Array<number>
         experimentId : number
+        include_ApexRetentionTime : boolean
         downloadIdentifier: string
-
     }  ) : void {
 
     //  Encode projectSearchIdsReportedPeptideIdsPsmIds
@@ -495,6 +496,15 @@ const _doActual__download_Psms_For_projectSearchIds_FilterCriteria_ExperimentDat
         }
     }
 
+    ////////////
+
+    let url = "d/dnld/psb/psms-for-project-search-ids-search-criteria-experiment-data"
+
+    if ( include_ApexRetentionTime ) {
+
+        url = "d/dnld/psb/psms-for-project-search-ids-search-criteria-experiment-data--with-computed-apex-retention-time"
+    }
+
     const EXPECTED_REQUEST_VERSION = 4 // Keep in sync with server
 
     const requestJSONObject = {
@@ -519,7 +529,7 @@ const _doActual__download_Psms_For_projectSearchIds_FilterCriteria_ExperimentDat
     form.style.display = "none"
 
     form.setAttribute( "method", "post" );
-    form.setAttribute( "action", "d/dnld/psb/psms-for-project-search-ids-search-criteria-experiment-data" );
+    form.setAttribute( "action", url );
     form.setAttribute( "target", "_blank" );
 
     const requestJSONStringField = document.createElement( "textarea" );

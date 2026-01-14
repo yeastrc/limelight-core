@@ -97,6 +97,15 @@ public class AA_DataDownloadControllersPaths_Constants {
 	public static final String PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_OPTIONAL_EXPERIMENT_DATA_DOWNLOAD_CONTROLLER = 
 			"d/dnld/psb/psms-for-project-search-ids-search-criteria-experiment-data";
 
+
+	/**
+	 * Download PSMs for Project Search Ids and Search Criteria. Optional Single Protein. Optional Experiment Data.  WITH computed "Apex Retention Time".
+	 * 
+	 * Used on Experiment Protein Page, Single Protein Overlay.  May be used on Protein Page, Single Protein Overlay in place of previous controller. 
+	 */
+	public static final String PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_OPTIONAL_EXPERIMENT_DATA__WITH_COMPUTED_APEX_RETENTION_TIME__DOWNLOAD_CONTROLLER = 
+			"d/dnld/psb/psms-for-project-search-ids-search-criteria-experiment-data--with-computed-apex-retention-time";
+
 	
 
 	public static final String BLIB_SPECTRAL_LIBRARY_DOWNLOAD__GET_CREATED_FILE__DOWNLOAD_CONTROLLER = "d/dnld/psb/blib-spectral-library-download--get-created-file";
