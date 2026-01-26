@@ -1,10 +1,8 @@
 /**
- * download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds.ts
+ * download_Psms__With_APEX_MS1_Data__For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds.ts
  * 
- * Javascript for download PSM data
- *
- * Use different URL if 'include_ApexRetentionTime' is true
- *
+ * Javascript for download PSM data - Adds APEX MS1 Scan Data
+ * 
  */
 
 //  JavaScript directive:   all variables have to be declared with "var", maybe other things
@@ -28,21 +26,21 @@ import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorT
 /**
  * 
  */
-class DownloadPSMs_PerProjectSearchId_Entry {
+class DownloadPSMs_PerProjectSearchId__With_APEX_MS1_Data__Entry {
 
     projectSearchId : number;
 
     searchSubGroup_Ids_Selected? : Array<number>; // Optional
 		
-    reportedPeptideIdsAndTheirPsmIds? : Array<DownloadPSMs_PerReportedPeptideId>;  // Optional
+    reportedPeptideIdsAndTheirPsmIds? : Array<DownloadPSMs_PerReportedPeptideId__With_APEX_MS1_Data>;  // Optional
 
-    experimentDataForSearch? : Array<DownloadPSMs_PerConditionGroupConditionData>;  // Optional
+    experimentDataForSearch? : Array<DownloadPSMs_PerConditionGroupConditionData__With_APEX_MS1_Data>;  // Optional
 }
 
 /**
  * 
  */
-class DownloadPSMs_PerReportedPeptideId {
+class DownloadPSMs_PerReportedPeptideId__With_APEX_MS1_Data {
     reportedPeptideId : number;
 
     /**
@@ -63,7 +61,7 @@ class DownloadPSMs_PerReportedPeptideId {
 /**
  * 
  */
-class DownloadPSMs_PerConditionGroupConditionData {
+class DownloadPSMs_PerConditionGroupConditionData__With_APEX_MS1_Data {
 
     conditionGroupLabel : string;
     conditionLabel : string;
@@ -71,26 +69,21 @@ class DownloadPSMs_PerConditionGroupConditionData {
 
 /**
  * Download PSMs for Project Search Ids, Filter Criteria, Experiment Data and Optional Reported Peptide Ids and/or Optional Protein Sequence Version Ids.
- *
- * Use different URL if 'include_ApexRetentionTime' is true
  * 
  * Open URL in new window to download from server
  * 
  * @param projectSearchIdsReportedPeptideIdsPsmIds - JS Array of { projectSearchId, Experiment Data per projectSearchId, and optionally reportedPeptideIdsAndTheirPsmIds }
  * @param searchDataLookupParamsRoot - 
  * @param proteinSequenceVersionIds - optional
- * @param experimentId - optional
- * @param include_ApexRetentionTime - optional - Use different URL if 'include_ApexRetentionTime' is true
  */
-const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds = function(
+const download_Psms__With_APEX_MS1_Data__For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds = function(
     {
-        searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId, include_ApexRetentionTime
+        searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId
     } : {
         searchDataLookupParamsRoot : SearchDataLookupParameters_Root
-        projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry>
+        projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId__With_APEX_MS1_Data__Entry>
         proteinSequenceVersionIds : Array<number>
         experimentId : number
-        include_ApexRetentionTime? : boolean
     }  ) : void {
 
 
@@ -110,7 +103,6 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
         try {
             _doActual__download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds({
                 searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId,
-                include_ApexRetentionTime,
                 downloadIdentifier: responseData.downloadIdentifier
             })
 
@@ -124,13 +116,12 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
 
 const _doActual__download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds = function(
     {
-        searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId, include_ApexRetentionTime, downloadIdentifier
+        searchDataLookupParamsRoot, projectSearchIdsReportedPeptideIdsPsmIds, proteinSequenceVersionIds, experimentId, downloadIdentifier
     } : {
         searchDataLookupParamsRoot : SearchDataLookupParameters_Root
-        projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry>
+        projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId__With_APEX_MS1_Data__Entry>
         proteinSequenceVersionIds : Array<number>
         experimentId : number
-        include_ApexRetentionTime : boolean
         downloadIdentifier: string
     }  ) : void {
 
@@ -504,12 +495,7 @@ const _doActual__download_Psms_For_projectSearchIds_FilterCriteria_ExperimentDat
 
     ////////////
 
-    let url = "d/dnld/psb/psms-for-project-search-ids-search-criteria-experiment-data"
-
-    if ( include_ApexRetentionTime ) {
-
-        url = "d/dnld/psb/psms-for-project-search-ids-search-criteria-experiment-data--with-computed-apex-retention-time"
-    }
+    const url = "d/dnld/psb/psms-for-project-search-ids-search-criteria-experiment-data--with-computed-apex-retention-time"
 
     const EXPECTED_REQUEST_VERSION = 4 // Keep in sync with server
 
@@ -652,8 +638,8 @@ const _getDownloadStatus_AfterSubmitForm = function (
 ///////////////////
 
 export { 
-    download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds,
-    DownloadPSMs_PerProjectSearchId_Entry, 
-    DownloadPSMs_PerReportedPeptideId,
-    DownloadPSMs_PerConditionGroupConditionData
+    download_Psms__With_APEX_MS1_Data__For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds,
+    DownloadPSMs_PerProjectSearchId__With_APEX_MS1_Data__Entry,
+    DownloadPSMs_PerReportedPeptideId__With_APEX_MS1_Data,
+    DownloadPSMs_PerConditionGroupConditionData__With_APEX_MS1_Data
 }

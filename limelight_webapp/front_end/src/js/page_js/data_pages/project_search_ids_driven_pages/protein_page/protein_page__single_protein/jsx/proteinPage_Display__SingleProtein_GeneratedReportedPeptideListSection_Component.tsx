@@ -498,13 +498,23 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
 
                         {/*  Keep next option commented out unless deploy on an alt URL for a specific user.  This is very slow when have more than a small number of peptides.  */}
                         {/*
+                        * /}
                             { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && this.props.downloadPSMs_With_ApexRetentionTime_ClickHandler && this._show_downloadPSMs_With_ApexRetentionTime_Link ) ? (
-                                // PSM Download Link  With_ApexRetentionTime  Special Version.  See 'this._show_downloadPSMs_With_ApexRetentionTime_Link' for when NOT shown
-                                <span className=" fake-link "
-                                      onClick={ this.props.downloadPSMs_With_ApexRetentionTime_ClickHandler }
-                                >Download All PSMs with APEX Retention Time (Much Slower)  "MS1 Window hard coded: 15ppm (View downloaded file for actual 'ppm' value used since may be 25 for comparison to web app) "</span>
-                                // '15ppm' hard coded in Java property 'MS1_WINDOW_HARD_CODED_PPM'
+                                <>
+                                    <span style={ { paddingLeft: 10 } }>&nbsp;</span>
+
+                                     {
+                                     // PSM Download Link  With_ApexRetentionTime  Special Version.  See 'this._show_downloadPSMs_With_ApexRetentionTime_Link' for when NOT shown
+                                     }
+                                    <span className=" fake-link "
+                                          onClick={ this.props.downloadPSMs_With_ApexRetentionTime_ClickHandler }
+                                    >Download All PSMs with APEX Retention Time (Much Slower)  "MS1 m/z Window hard coded: 15ppm. MS1 RT Window hard coded 0.5 min before first PSM to 0.5 min after last PSM for a Peptide for each Peptide row shown in table below "</span>
+                                     {
+                                      // '15ppm' hard coded in Java property 'MS1_WINDOW_HARD_CODED_PPM'
+                                      }
+                                </>
                             ) : null }
+                        {/*
                         */}
 
                         { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && this.props.download_Blib_Spectral_Library_ClickHandler ) ? (
