@@ -498,3 +498,28 @@ button {
     }
   }
 }
+
+///////////////
+
+.standard-on-hover-show-specific-child-element-div-contents--root-element {
+
+  .standard-on-hover-show-specific-child-element-div-contents--child-element-container {
+
+    //  hide on NOT hover
+
+    //display: none;
+    width: 0px; // make not clickable by setting zero width.  Difficult to transition from display:none so use this instead.
+    opacity: 0; // make not visible.  set opacity so can transition to opacity: 1
+  }
+
+  &:hover .standard-on-hover-show-specific-child-element-div-contents--child-element-container {
+
+    //  show on YES hover
+
+    //display: block;
+    width: 100%;
+    opacity: 1;
+    transition: opacity 0.5s ease-in; // No transition on width so immediately full width.
+  }
+}
+

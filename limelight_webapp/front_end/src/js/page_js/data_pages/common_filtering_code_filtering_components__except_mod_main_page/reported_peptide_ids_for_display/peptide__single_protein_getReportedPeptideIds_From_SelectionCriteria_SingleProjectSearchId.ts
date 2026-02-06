@@ -70,6 +70,7 @@ import {
 import {
     CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered_Holder
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered";
+import { GetReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_SingleProtein_ProteinPositions_ProteinPosition_StartEnd_Selections } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_SingleProtein_ProteinPositions_ProteinPosition_StartEnd_Selections";
 
 
 /////////   Returned Classes
@@ -663,6 +664,11 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
     private _peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Explicit__ALL_AND__Selections__INTERSECTION_Together_Class: Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Explicit__ALL_AND__Selections__INTERSECTION_Together_Class
 
     /**
+     *  ALL/AND processing - Explicit.
+     */
+    private _getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_SingleProtein_ProteinPositions_ProteinPosition_StartEnd_Selections: GetReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_SingleProtein_ProteinPositions_ProteinPosition_StartEnd_Selections
+
+    /**
      * ALL/AND processing - Implicit
      */
     private _peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Implicit__ALL_AND__Selections__INTERSECTION_Together_Class: Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Implicit__ALL_AND__Selections__INTERSECTION_Together_Class
@@ -703,6 +709,11 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
 
         this._peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Explicit__ALL_AND__Selections__INTERSECTION_Together_Class =
             Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Explicit__ALL_AND__Selections__INTERSECTION_Together_Class.getNewInstance({
+                projectSearchId, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+            })
+
+        this._getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_SingleProtein_ProteinPositions_ProteinPosition_StartEnd_Selections =
+            GetReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_SingleProtein_ProteinPositions_ProteinPosition_StartEnd_Selections.getNewInstance({
                 projectSearchId, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
             })
 
@@ -1096,7 +1107,26 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
             }
         }
 
-        { //  "ALL"/"AND" - Explicit "ALL"/"AND" filtering
+        { //   filtering in Single Protein on Protein Position entries and/or Protein Start/End entries
+
+            const resultArray =
+                this._getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_SingleProtein_ProteinPositions_ProteinPosition_StartEnd_Selections.
+                getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_SingleProtein_ProteinPositions_ProteinPosition_StartEnd_Selections({
+                    reportedPeptideIds_ProteinId_Params_PassedIn: filtering_Params_Main.reportedPeptideIds_ProteinId_Params_PassedIn,
+                    proteinSequenceWidget_StateObject: filtering_Params_Main.proteinSequenceWidget_StateObject,
+                });
+
+            for (const result of resultArray) {
+                if (!result) {
+                    const msg = "Element of resultArray is null or undefined from peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Explicit__ALL_AND__Selections__INTERSECTION_Together(...)";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS__Array.push(result);
+            }
+        }
+
+        { //  "ALL"/"AND" - Implicit "ALL"/"AND" filtering
             const resultArray =
                 this._peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Implicit__ALL_AND__Selections__INTERSECTION_Together_Class.
                 peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Implicit__ALL_AND__Selections__INTERSECTION_Together({
@@ -1111,11 +1141,9 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                     peptideUnique_UserSelection_StateObject: filtering_Params_Main.peptideUnique_UserSelection_StateObject,
                     peptideSequence_UserSelections_StateObject: filtering_Params_Main.peptideSequence_UserSelections_StateObject,
                     peptideSequence_MissedCleavageCount_UserSelections_StateObject: filtering_Params_Main.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
-                    proteinSequenceWidget_StateObject: filtering_Params_Main.proteinSequenceWidget_StateObject,
                     proteinPositionFilter_UserSelections_StateObject: filtering_Params_Main.proteinPositionFilter_UserSelections_StateObject,
                     proteinPosition_Of_Modification_Filter_UserSelections_StateObject: filtering_Params_Main.proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: filtering_Params_Main.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: filtering_Params_Main.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
                 });
 
             for (const result of resultArray) {

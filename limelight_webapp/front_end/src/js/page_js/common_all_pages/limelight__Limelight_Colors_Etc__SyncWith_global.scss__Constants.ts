@@ -18,6 +18,8 @@ const site_color_dark = "#32cd32"
 const site_color_medium = "#e4f9e4"
 const site_color_light = "#f0f7f0"
 
+const site_standard_background_color = color_white
+
 //  color for "Filtering"
 const filtering_display_color = "#FEDD00"
 
@@ -38,7 +40,7 @@ const default_font_size_string_px = default_font_size_number + "px"
 export const limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants = {
 
     color_white,
-    site_standard_background_color: color_white,
+    site_standard_background_color: site_standard_background_color,
 
     font_color_dark: font_color_dark,
 

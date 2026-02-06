@@ -186,6 +186,8 @@ import {
 // Min width for outer container. Increase to 1120 to fit 5 digits.
 const _OUTERMOST_CONTAINER_MIN_WIDTH = 1120; 
 
+const _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH = 787
+
 const _BOXES_ON_RIGHT_CONTAINER_WIDTH__SUMMARY_ETC = 229;
 const _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC = 20;
 // const _BOXES_ON_RIGHT_CONTAINER_PADDING_RIGHT__SUMMARY_ETC = 10;
@@ -263,8 +265,6 @@ export interface ProteinExperimentPage_SingleProtein_MainContent_Component_Props
  */
 interface ProteinExperimentPage_SingleProtein_MainContent_Component_State {
 
-    widthOf_proteinSequenceWidgetDisplay_Component? : number; // Width of <ProteinSequenceWidgetDisplay_Root_Component_React> (assumed to not change after this component mounts)
-    
     projectSearchIds_PossiblyFiltered? : Array<number>;
 
     linksToExternalResources? : ProteinExperimentPage_SingleProtein_MainContent_Component_LinksToExternalResources;
@@ -385,7 +385,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
     private _div_MainGridAtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Main <div> containing grid of left and on right the boxes Summary ...
     private _div_MainContent_LeftGridEntry_AtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Left <div> inside this._div_MainGridAtTop_Ref
 
-    private _proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinSequenceWidgetDisplay_Root_Component_React>
+    private _proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinSequenceWidgetDisplay_Root_Component_React>
 
     private _proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component>
 
@@ -437,7 +437,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
         this._div_MainGridAtTop_Ref = React.createRef<HTMLDivElement>();
         this._div_MainContent_LeftGridEntry_AtTop_Ref = React.createRef<HTMLDivElement>();
-        this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
+
+        this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref = React.createRef<HTMLDivElement>()
 
         this._proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
@@ -655,7 +656,6 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         }
 
         this.state = { 
-            widthOf_proteinSequenceWidgetDisplay_Component : 787, // Initial Width for component to handle sequence length of 1500
             projectSearchIds_PossiblyFiltered,
             graphicRepresentation_SelectedCells,
             modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects,
@@ -1063,25 +1063,6 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
      *
      */
     private _update_Overlay_Add_Listeners__After_MainPaint() {
-
-        //  Get width of contained <ProteinSequenceWidgetDisplay_Root_Component_React>  (assumed to not change after this component mounts)
-
-        const proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM = this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref.current;
-
-        const containerRect = proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM.getBoundingClientRect();
-
-        const containerRect_Width = Math.ceil( containerRect.width );
-        // const containerRect_Height = containerRect.height;
-
-        this.setState( (state: ProteinExperimentPage_SingleProtein_MainContent_Component_State, props: ProteinExperimentPage_SingleProtein_MainContent_Component_Props ) : ProteinExperimentPage_SingleProtein_MainContent_Component_State => {
-
-            if ( state.widthOf_proteinSequenceWidgetDisplay_Component >= containerRect_Width ) {
-                //  Already >= containerRect_Width so no change
-                return null;
-            }
-
-            return { widthOf_proteinSequenceWidgetDisplay_Component : containerRect_Width }
-        });
 
         this._resize_OverlayWidth_BasedOnReportedPeptidesTableWidth();
 
@@ -2917,16 +2898,45 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
 		//  Adjust overlay width to fit reported peptide list
 
-        const proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
+        let container_Width_MaxOfValues: number = undefined
 
-        const containerRect_GeneratedReportedPeptideListSection = proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
-        
+        {
+            // reported peptide list
+            const proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
+
+            const containerRect_GeneratedReportedPeptideListSection = proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
+
+            container_Width_MaxOfValues = containerRect_GeneratedReportedPeptideListSection.width;
+        }
+
+        {
+            // Protein Sequence or other Tabs in same group Block
+
+            const proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM =
+                this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref.current;
+
+            if ( proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM ) {
+
+                const containerRect = proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM.getBoundingClientRect();
+
+                const container_Width = containerRect.width;
+
+                if ( ( ! container_Width_MaxOfValues ) || container_Width_MaxOfValues < container_Width ) {
+                    container_Width_MaxOfValues = container_Width
+                }
+            }
+        }
+
+        if ( ! container_Width_MaxOfValues ) {
+            //  NO value set to exit
+            return // EARLY RETURN
+        }
+
+
         // width includes the padding-left for the space for the expand icon.  This is the desired result.
 
-		const reported_peptides_data_table_container_Width = containerRect_GeneratedReportedPeptideListSection.width; 
-			
-		let overlayWidth = (
-            reported_peptides_data_table_container_Width 
+        let overlayWidth = (
+            container_Width_MaxOfValues
             + this.props.view_single_protein_overlay_body_PaddingLeft 
             + this.props.view_single_protein_overlay_body_PaddingRight
             + 2 //  Little Extra
@@ -2935,9 +2945,9 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 			overlayWidth = _OUTERMOST_CONTAINER_MIN_WIDTH; // Min width
         }
         
-        if ( overlayWidth !== this._updated_OverlayWidth ) {
+        if ( ( ! this._updated_OverlayWidth ) || this._updated_OverlayWidth < overlayWidth ) {
 
-            //  overlayWidth has changed
+            //  this._updated_OverlayWidth not set or this._updated_OverlayWidth < new overlay width
 
             this.props.setWidth__view_single_protein_inner_overlay_div({ width : overlayWidth });
 
@@ -3054,9 +3064,6 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             )
         }
 
-        //  Main block without boxes on right for Summary Statistics, etc
-        const width_mainBlockAbovePeptideList = this.state.widthOf_proteinSequenceWidgetDisplay_Component;
-
         let saveView_Component = undefined;
 
         if ( this.state.saveView_Component_React ) {
@@ -3084,32 +3091,34 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         return (
             <React.Fragment>
 
-                    {/* Apply a width to this <div> so that the boxes on right stay within viewport when main overlay is widened to exceed viewport.
-                        Need to take into account padding in class="view-single-protein-overlay-body" which is currently 20px or read that from DOM element */}
+                {/* Apply a width to this <div> so that the boxes on right stay within viewport when main overlay is widened to exceed viewport.
+                        Need to take into account padding in class="view-single-protein-overlay-body" which is currently 20px or read that from DOM element */ }
 
-                    {/* Fake 'width' so that grid width not auto fill to width 100%.  Grid will exceed the 80px width to fill the width of the 2 columns.
-                            This keeps boxes on right in viewport when main overlay width > viewport width. */}
+                {/* Fake 'width' so that grid width not auto fill to width 100%.  Grid will exceed the 80px width to fill the width of the 2 columns.
+                            This keeps boxes on right in viewport when main overlay width > viewport width. */ }
 
-                <div style={ { display: "grid", gridTemplateColumns: "auto min-content", width: 80 } } ref={ this._div_MainGridAtTop_Ref } >
-                
-                    {/* display of data above Reported Peptides  */}
+                <div style={ { display: "grid", gridTemplateColumns: "auto min-content", width: 80 } }
+                     ref={ this._div_MainGridAtTop_Ref }>
 
-                    <div ref={ this._div_MainContent_LeftGridEntry_AtTop_Ref } 
-                        style={ { 
-                            display: "inline-block",
-                            width : width_mainBlockAbovePeptideList,
-                            minWidth : width_mainBlockAbovePeptideList,
-                            maxWidth : width_mainBlockAbovePeptideList
-                        } } >  
-                    
-                        {/* Main Content above Reported Peptides  */}
+                    {/* display of data above Reported Peptides  */ }
+
+                    <div ref={ this._div_MainContent_LeftGridEntry_AtTop_Ref }
+                         style={ {
+                             display: "inline-block",
+                             width: _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH,
+                             minWidth: _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH,
+                             maxWidth: _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH
+                         } }>
+
+                        {/* Main Content above Reported Peptides  */ }
 
                         <h3 style={ { fontSize: 24, marginBlockStart: 0, marginBlockEnd: 10 } }>
-                            Experiment: <span style={ { overflowWrap : "break-word" } }>{ this.props.propsValue.experimentName }</span>
+                            Experiment: <span
+                            style={ { overflowWrap: "break-word" } }>{ this.props.propsValue.experimentName }</span>
                         </h3>
 
-                        <div style={ { marginBottom: 20, overflowX : "auto" } } >
-                            <Experiment_SingleExperiment_ConditionsGraphicRepresentation 
+                        <div style={ { marginBottom: 20, overflowX: "auto" } }>
+                            <Experiment_SingleExperiment_ConditionsGraphicRepresentation
                                 data={ this._experimentConditions_GraphicRepresentation_PropsData_Local_PossiblyUpdated }
                                 mainCellClickHandler={ undefined }
                                 mainCell_getHoverContents={ this._mainCell_getHoverContents_BindThis }
@@ -3137,9 +3146,10 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                             />
                         </div>
 
-                    </div>  {/* END: Content to left of block in Upper Right with "External Links:"  */}
+                    </div>
+                    {/* END: Content to left of block in Upper Right with "External Links:"  */ }
 
-                    {/* Display of Boxes to right of Top Content including Protein Name (External Links) */}
+                    {/* Display of Boxes to right of Top Content including Protein Name (External Links) */ }
 
                     <div style={ {
                         position: "relative",
@@ -3150,13 +3160,14 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                         paddingRight: 0, // _BOXES_ON_RIGHT_CONTAINER_PADDING_RIGHT__SUMMARY_ETC,
                         marginBottom: 15
                     } }>
-                        <div className="single-protein-box-on-right" style={ { marginTop: 15 } }> {/*  External Links: */}
+                        <div className="single-protein-box-on-right"
+                             style={ { marginTop: 15 } }> {/*  External Links: */ }
                             <div className="header-label">
                                 External Links:
                             </div>
 
-                            <div className="box-contents" >
-                                <div className="box-line" >
+                            <div className="box-contents">
+                                <div className="box-line">
                                     NCBI Blast
                                     <a href={ this.state.linksToExternalResources.NCBI_Blast_URL }
                                        target="_blank"
@@ -3166,7 +3177,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                     />
                                     </a>
                                 </div>
-                                <div className="box-line"  >
+                                <div className="box-line">
                                     UniProtKB Search
                                     <a href={ this.state.linksToExternalResources.UniProtKB_Search_URL }
                                        target="_blank"
@@ -3176,7 +3187,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                     />
                                     </a>
                                 </div>
-                                <div className="box-line"  >
+                                <div className="box-line">
                                     NCBI Search
                                     <a href={ this.state.linksToExternalResources.NCBI_Search_URL }
                                        target="_blank"
@@ -3191,26 +3202,27 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                     </div>
 
-                </div>  {/*  End of 2 column grid to position "External Links:" in upper right  */}
+                </div>
+                {/*  End of 2 column grid to position "External Links:" in upper right  */ }
 
-                {/*  Start of block that is under the block that has "External Links:" in the upper right   */}
+                {/*  Start of block that is under the block that has "External Links:" in the upper right   */ }
 
-                {/*   Rest is full width of Single Protein 'Overlay'   */}
+                {/*   Rest is full width of Single Protein 'Overlay'   */ }
 
-                <div style={ { marginBottom: 10 } } >
+                <div style={ { marginBottom: 10 } }>
 
                     <div className=" filter-common-block-selection-container-block yes-section-labels ">
 
-                        {/* Display of User Selected filtering on  */}
+                        {/* Display of User Selected filtering on  */ }
 
                         <SingleProtein_FiltersDisplay
                             singleProtein_FiltersDisplay_ComponentData={ this.state.singleProtein_FiltersDisplay_ComponentData }
                             clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
                         />
 
-                        {/* Filter On ... */}
+                        {/* Filter On ... */ }
 
-                        <FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component>   {/*  Show/Hide the filters */}
+                        <FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component>   {/*  Show/Hide the filters */ }
 
                             { (
                                 this._anySearches_Have_ScanFilenames
@@ -3221,12 +3233,12 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                                 <React.Fragment>
 
-                                    {/*  Section Label  */}
+                                    {/*  Section Label  */ }
 
                                     <div className=" section-label " style={ { gridColumn: "1/-1" } }>Search Filters
                                     </div>
 
-                                    {/*  Show Scan Filename Selector  */}
+                                    {/*  Show Scan Filename Selector  */ }
 
                                     <ScanFilenameId_On_PSM_Filter_UserSelection_Component
                                         allSearches_Have_ScanFilenames={ this._allSearches_Have_ScanFilenames }
@@ -3239,9 +3251,9 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                                 </React.Fragment>
 
-                            ): null}
+                            ) : null }
 
-                            {/*  Section Label  */}
+                            {/*  Section Label  */ }
 
                             <div className=" section-label " style={ { gridColumn: "1/-1" } }>Modification Filters
                             </div>
@@ -3264,7 +3276,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                 update_modificationMass_UserSelections_ComponentData_Callback={ this._modificationMass_Update_modificationMass_UserSelections_ComponentData_Callback_BindThis } // create new this.state.modificationMass_UserSelections_ComponentData
                             />
 
-                            {/*  Section Label  */}
+                            {/*  Section Label  */ }
 
                             <div className=" section-label " style={ { gridColumn: "1/-1" } }>PSM Filters
                             </div>
@@ -3286,7 +3298,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                     updateMadeTo_scan_RetentionTime_MZ_UserSelections_StateObject_Callback={ this._updateMadeTo_Scan_RetentionTime_MZ_UserSelections_StateObject_Callback_BindThis }
                                 />
 
-                            ): null}
+                            ) : null }
 
                             <Psm_Charge_Filter_UserSelection_Container_Component
                                 projectSearchIds={ this.props.propsValue.projectSearchIds }
@@ -3318,7 +3330,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                 }
                             />
 
-                            {/*  Show Scan Number with Scan Filename or Search Selector  */}
+                            {/*  Show Scan Number with Scan Filename or Search Selector  */ }
 
                             <ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection__Component
                                 projectSearchIds={ this.props.propsValue.projectSearchIds }
@@ -3329,9 +3341,10 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                 updateMadeTo_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_Callback_BindThis }
                             />
 
-                            {/*  Section Label  */}
+                            {/*  Section Label  */ }
 
-                            <div className=" section-label " style={ { gridColumn: "1/-1" } }>Peptide and Protein Filters
+                            <div className=" section-label " style={ { gridColumn: "1/-1" } }>Peptide and Protein
+                                Filters
                             </div>
 
                             <PeptideUnique_UserSelection
@@ -3368,9 +3381,18 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                 </div>
 
-                <div style={ { display: "inline-block" } } ref={ this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
 
-                    <div style={ { position: "relative" }}>
+                {/*  Block for Tabs for Sequence Coverage Widget, Protein Bar, Protein Structure  */}
+
+                <div style={ { display: "inline-block" } } ref={ this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref }>
+
+                    <div style={ { position: "relative" } }>
+
+                        <div>
+                            WARNING:  TESTING ONLY:
+                            div above component ProteinSequenceWidgetDisplay_Root_Component_React
+                            ProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_React
+                        </div>
 
                         <ProteinSequenceWidgetDisplay_Root_Component_React
                             proteinSequenceWidgetDisplay_Component_Data={ this.state.proteinSequenceWidgetDisplay_Component_Data }
@@ -3407,7 +3429,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                 {/* Display of Reported Peptides  */}
 
-                                    
+
                 <div style={ { display: "inline-block" } }  //  display: "inline-block" so can measure width of this div, including width of Peptide table and sub-tables
                     ref={ this._proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
 
@@ -3415,7 +3437,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                         showUpdatingMessage={ this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList }
                         showGettingDataMessage={ this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds }
-                    
+
                         create_GeneratedReportedPeptideListData_Result={ this.state.create_GeneratedReportedPeptideListData_Result }
 
                         conditionGroupsContainer={ this._conditionGroupsContainer_Local_PossiblyUpdated }

@@ -17,9 +17,6 @@ import {
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 import {PeptideSequence_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_StateObject";
 import {ProteinPositionFilter_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
-import {ProteinSequenceWidget_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_display_widget/js/proteinSequenceWidget_StateObject";
-import {UserSearchString_LocationsOn_ProteinSequence_Root} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/userSearchString_LocationsOn_ProteinSequence/userSearchString_LocationsOn_ProteinSequence_ComponentData";
-import {Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_COMMON} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_COMMON";
 import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
 import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
@@ -47,8 +44,7 @@ import {CommonData_LoadedFromServer_SingleSearch__StaticModifications_Holder} fr
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {DataPage_common_Flags_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
 import {
-    Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn,
-    Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum
+    Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_DataClasses";
 import { CommonData_LoadedFromServer_SingleSearch__ScanData_WholeSearch_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanData_WholeSearch_NO_Peaks_Data";
 import {
@@ -174,7 +170,6 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
         {
             reportedPeptideIds_ProteinId_Params_PassedIn,
             dataPage_common_Flags_SingleSearch,
-            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
             scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
@@ -184,14 +179,12 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
             peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject,
             peptideSequence_MissedCleavageCount_UserSelections_StateObject,
-            proteinSequenceWidget_StateObject,
             proteinPositionFilter_UserSelections_StateObject,
             proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
         }: {
             reportedPeptideIds_ProteinId_Params_PassedIn: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn
             dataPage_common_Flags_SingleSearch: DataPage_common_Flags_SingleSearch
-            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
             scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
@@ -201,7 +194,6 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
             peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject
             peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject
             peptideSequence_MissedCleavageCount_UserSelections_StateObject : PeptideSequence_MissedCleavageCount_UserSelections_StateObject
-            proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
             proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
             proteinPosition_Of_Modification_Filter_UserSelections_StateObject : ProteinPosition_Of_Modification_Filter_UserSelections_StateObject
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
@@ -290,14 +282,6 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
                 dataPage_common_Flags_SingleSearch,
                 proteinPosition_Of_Modification_Filter_UserSelections_StateObject,
                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-            });
-            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS__Array.push( result );
-        }
-        {
-            const result = this._getFor__selectedProteinSequencePositions({
-                reportedPeptideIds_ProteinId_Params_PassedIn,
-                proteinSequenceWidget_StateObject,
-                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
             });
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS__Array.push( result );
         }
@@ -1975,59 +1959,6 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
 
         return resultData;
     }
-
-    /**
-     * User has selected Protein Positions to filter on (Single Protein view) (Requires Single proteinSequenceVersionId)
-     *
-     */
-    private _getFor__selectedProteinSequencePositions(
-        {
-            reportedPeptideIds_ProteinId_Params_PassedIn,
-            proteinSequenceWidget_StateObject,
-            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
-        }: {
-            reportedPeptideIds_ProteinId_Params_PassedIn: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn
-            proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
-            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
-
-        }): Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS {
-
-        if ( ( ! proteinSequenceWidget_StateObject )
-            || ( ! proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition() ) ) {
-
-            //  NO Filtering
-
-            const resultData = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS({
-                noFilter_OR_FilterHasNoData: true, includeAll_ReportedPeptideIds: false
-            });
-            const result : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS = {
-                result: resultData,
-                promise: undefined
-            };
-
-            return result; // EARLY RETURN
-        }
-
-        const proteinSequenceVersionId: number = reportedPeptideIds_ProteinId_Params_PassedIn.get_proteinSequenceVersionId()
-
-        const selectedProteinSequencePositions = proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions();
-
-        const dataForPositions_ForEnteredSequence: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS =
-            Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_COMMON.getReportedPeptideIdsForDisplay_ProteinPositionsSelected({
-                selectedProteinSequencePositions,
-                proteinSequenceVersionId,
-                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
-            });
-
-        if ( ! dataForPositions_ForEnteredSequence ) {
-            const msg = "( ! dataForPositions_ForEnteredSequence )";
-            console.warn(msg)
-            throw Error(msg)
-        }
-
-        return dataForPositions_ForEnteredSequence;
-    }
-
 }
 
 

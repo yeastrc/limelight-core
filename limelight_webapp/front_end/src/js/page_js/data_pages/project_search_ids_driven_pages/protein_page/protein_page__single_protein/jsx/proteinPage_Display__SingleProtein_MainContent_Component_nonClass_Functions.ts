@@ -784,6 +784,7 @@ const create_ProteinSequenceWidgetDisplay_Component_Data = async function({
             || peptideSequence_MissedCleavageCount_UserSelections_StateObject.is_Any_FilterHaveValue()
             || proteinPositions_CoveredBy_PeptideSearchStrings
             || proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition()
+            || proteinSequenceWidget_StateObject.is_Any_selected_Protein_StartEnd_Position()
             || peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject.get_PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelection() !== PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject__SelectionEnum.NONE
             || ( peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.get_PSM_CountFilter() !== undefined && peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.get_PSM_CountFilter() !== null )
             || ( ! scanFilenameId_On_PSM_Filter_UserSelection_StateObject.areAllSelected__scanFilenameIds() )

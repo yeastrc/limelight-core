@@ -8,6 +8,10 @@
  */
 
 import React from 'react'
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+
+
 
 import {reportWebErrorToServer} from 'page_js/common_all_pages/reportWebErrorToServer';
 
@@ -125,7 +129,6 @@ import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "pa
 import {PeptideSequence_MissedCleavageCount_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/jsx/peptideSequence_MissedCleavageCount_UserSelections_Component";
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component";
-import { ProteinDisplayData_From_createProteinDisplayData_ProteinList } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes";
 import {
     CommonData_LoadedFromServer_SingleSearch__Protein_Filterable_AnnotationValues_For_ProteinId,
     CommonData_LoadedFromServer_SingleSearch__Protein_Filterable_AnnotationValues_Holder
@@ -166,10 +169,19 @@ import {
 import {
     Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__SingleReportedPeptideId_ForSinglePsmId
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
+import { limelight__IsVariableAString } from "page_js/common_all_pages/limelight__IsVariableAString";
+import {
+    ProteinSequence_Bar_WidgetDisplay__SearchBased__Root_Component
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_bar_widget/jsx/proteinSequence_Bar_WidgetDisplay__SearchBased__Root_Component";
+import { ProteinSequence_Bar_Widget_StateObject } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_bar_widget/js/proteinSequence_Bar_Widget_StateObject";
+import { Limelight_AnyFilter__HasFilterValue } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/any_filter__has_filter_value/Limelight_AnyFilter__HasFilterValue";
+import { limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants } from "page_js/common_all_pages/limelight__Limelight_Colors_Etc__SyncWith_global.scss__Constants";
+import { Protein_Structure_WidgetDisplay__SearchBased__Root_Component } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/jsx/protein_Structure_WidgetDisplay__SearchBased__Root_Component";
+import { SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject, SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject";
+import { Limelight_MaterialUI_Tab_WrappedWith_Tooltip } from "page_js/common_all_pages/material_ui_library__limelight_extensions_additions/Limelight_MaterialUI_Tab_WrappedWith_Tooltip";
 
 
 ////
-
 
 /////////////////////////
 
@@ -177,6 +189,8 @@ import {
 
 // Min width for outer container. Increase to 1120 to fit 5 digits.
 const _OUTERMOST_CONTAINER_MIN_WIDTH = 1120; 
+
+const _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH = 787
 
 const _BOXES_ON_RIGHT_CONTAINER_WIDTH__SUMMARY_ETC = 229;
 const _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC = 20;
@@ -223,11 +237,15 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
     peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
     peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject;
     proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject;
+    proteinSequence_Bar_Widget_StateObject : ProteinSequence_Bar_Widget_StateObject
     scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
     scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
     scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
     scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
     psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
+    singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject: SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject
+
+    limelight_AnyFilter__HasFilterValue : Limelight_AnyFilter__HasFilterValue
 
     dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory
 }
@@ -252,8 +270,6 @@ export interface ProteinPage_Display__SingleProtein_MainContent_Component_Props 
  * 
  */
 interface ProteinPage_Display__SingleProtein_MainContent_Component_State {
-
-    widthOf_proteinSequenceWidgetDisplay_Component? : number; // Width of <ProteinSequenceWidgetDisplay_Root_Component_React> (assumed to not change after this component mounts)
 
     searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue? : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 
@@ -316,9 +332,9 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
     private _searchSubGroup_SelectionsChanged_Callback_BindThis = this._searchSubGroup_SelectionsChanged_Callback.bind(this);
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback_BindThis = this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback.bind(this);
 
-    private _downloadPeptides_All_ClickHandler_BindThis = this._downloadPeptides_All_ClickHandler.bind(this);
+    // private _downloadPeptides_All_ClickHandler_BindThis = this._downloadPeptides_All_ClickHandler.bind(this);
     private _downloadPeptides_Shown_ClickHandler_BindThis = this._downloadPeptides_Shown_ClickHandler.bind(this);
-    private _downloadPsms_All_ClickHandler_BindThis = this._downloadPsms_All_ClickHandler.bind(this);
+    // private _downloadPsms_All_ClickHandler_BindThis = this._downloadPsms_All_ClickHandler.bind(this);
     private _downloadPsms_Shown_ClickHandler_BindThis = this._downloadPsms_Shown_ClickHandler.bind(this);
 
     private _clearAllSelections_BindThis = this._clearAllSelections.bind(this);
@@ -353,6 +369,8 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
     private _updateMadeTo_peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject_Callback_BindThis : () => void = this._updateMadeTo_peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject_Callback.bind(this);
 
+    private _tabs_SequenceCoverage_SequenceBar_ProteinStructure_OnChange_EventHandler_BindThis = this._tabs_SequenceCoverage_SequenceBar_ProteinStructure_OnChange_EventHandler.bind(this)
+
     private _NOT_CALLED_Function() {
 
         //  Test function cast
@@ -364,13 +382,14 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
     private _div_MainGridAtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Main <div> containing grid of left and on right the boxes Summary ...
     private _div_MainContent_LeftGridEntry_AtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Left <div> inside this._div_MainGridAtTop_Ref
 
-    private _proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinSequenceWidgetDisplay_Root_Component_React>
-
     private _proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component>
     private _proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component>
 
+    private _proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinSequenceWidgetDisplay_Root_Component_React>
+
     private _domMutationObserver_reported_peptides_outer_container : MutationObserver;
     private _domMutationObserver_ProteinAnnotationDataEtc_outer_container : MutationObserver;
+    private _domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container : MutationObserver;
 
     private _updated_OverlayWidth: number = undefined;  // Updated whenever call function in parent Component to update width of overlay
 
@@ -397,6 +416,9 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
     private _searchesContains_OpenModifications = false;
     private _searchesContains_StaticModifications = false;
 
+    private _tabs_SequenceCoverage_SequenceBar_ProteinStructure__Tab_Protein_Sequence_Bar__EverChosen = false
+    private _tabs_SequenceCoverage_SequenceBar_ProteinStructure__Tab_ProteinStructure__EverChosen = false
+
     /**
      * 
      */    
@@ -406,12 +428,23 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         this._div_MainGridAtTop_Ref = React.createRef<HTMLDivElement>();
         this._div_MainContent_LeftGridEntry_AtTop_Ref = React.createRef<HTMLDivElement>();
 
-        this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
-
         this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
         this._proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
+        this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref = React.createRef<HTMLDivElement>();
+
+        {
+            if ( props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.get_selected_Tab_Value() === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_BAR ) {
+
+                this._tabs_SequenceCoverage_SequenceBar_ProteinStructure__Tab_Protein_Sequence_Bar__EverChosen = true
+            }
+
+            if ( props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.get_selected_Tab_Value() === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_STRUCTURE ) {
+
+                this._tabs_SequenceCoverage_SequenceBar_ProteinStructure__Tab_ProteinStructure__EverChosen = true
+            }
+        }
         {
             this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({
                 valueChangedCallback: this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis
@@ -537,7 +570,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         }
 
         this.state = {
-            widthOf_proteinSequenceWidgetDisplay_Component : 787, // Initial Width for component to handle sequence length of 1500
             modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects,
             modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections,
             saveView_Component_React,
@@ -576,6 +608,8 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
             this._remove_MutationObserver_From_reported_peptides_outer_container();
 
             this._remove_MutationObserver_From_ProteinAnnotationDataEtc_Table_Container()
+
+            this._remove_MutationObserver_From_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container()
 
         } catch( e ) {
             console.log("Exception caught in componentWillUnmount()");
@@ -976,35 +1010,13 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
      */
     private _update_Overlay_Add_Listeners__After_MainPaint() {
 
-        //  Get width of contained <ProteinSequenceWidgetDisplay_Root_Component_React>  (assumed to not change after this component mounts)
-
-        {
-            const proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM = this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref.current;
-
-            if ( proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM ) {
-
-                const containerRect = proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM.getBoundingClientRect();
-
-                const containerRect_Width = Math.ceil( containerRect.width );
-                // const containerRect_Height = containerRect.height;
-
-                this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
-
-                    if ( state.widthOf_proteinSequenceWidgetDisplay_Component >= containerRect_Width ) {
-                        //  Already >= containerRect_Width so no change
-                        return null;
-                    }
-
-                    return { widthOf_proteinSequenceWidgetDisplay_Component : containerRect_Width }
-                });
-            }
-        }
-
         this._resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width();
 
         this._add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded();
 
         this._add_MutationObserver_To_ProteinAnnotationDataEtc_Table_Container_For_MakingWidthChangesAsNeeded()
+
+        this._add_MutationObserver_To_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container()
 
         // this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
 
@@ -1121,115 +1133,115 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         });
     }
 
-	/**
-	 * 
-	 */
-	_downloadPeptides_All_ClickHandler( event : React.MouseEvent<HTMLHeadingElement, MouseEvent> ) : void {
-	    try {
-	        this._downloadPeptides_All()
-
-        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-    }
-
-    /**
-     *
-     */
-    async _downloadPeptides_All() {  //  async to allow await
-        try {
-            let searchSubGroup_Ids_Selected : Set<number> = undefined;
-
-            //   Code setting searchSubGroup_Ids_Selected not needed since searchSubGroup_Ids_Selected === undefined same as 'ALL'
-
-            if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
-
-                //  Only display for 1 search
-
-                const projectSearchId = this.props.propsValue.projectSearchIds[ 0 ];
-
-                const searchSubGroups_ForProjectSearchId = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
-                if ( ! searchSubGroups_ForProjectSearchId ) {
-                    const msg = "returned nothing: props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
-                    console.warn( msg )
-                    throw Error( msg )
-                }
-
-                //  Set searchSubGroup_Ids_Selected to ALL searchSubGroup_Ids
-
-                searchSubGroup_Ids_Selected = new Set();
-
-                for ( const searchSubGroup of searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
-                    searchSubGroup_Ids_Selected.add( searchSubGroup.searchSubGroup_Id );
-                }
-            }
-
-            const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result =
-                await this.props.propsValue.getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object.
-                getReportedPeptideIdsForDisplay_AllProjectSearchIds_ReturnPromise({ // External Function Call
-
-                    not_filtered_position_modification_selections : true, //  Required to be true for Download "All"
-                    proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
-                    searchSubGroup_Ids_Selected,
-
-                    //  Passed since required but not used since passing not_filtered_position_modification_selections : true
-
-                    proteinSequenceWidget_StateObject : this.props.propsValue.proteinSequenceWidget_StateObject,
-                    modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-                    reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
-                    scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
-                    scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
-                    scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
-                    scan_RetentionTime_MZ_UserSelection_StateObject: this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
-                    psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
-                    peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
-                    peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
-                    peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
-                    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
-                    userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
-                    proteinPositionFilter_UserSelections_StateObject : undefined,
-                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
-                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
-                });
-
-            let create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = undefined;
-
-            {
-                const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
-
-                create_GeneratedReportedPeptideListData_Result = await create_GeneratedReportedPeptideListData__SingleProtein({
-
-                    forPeptidePage: false,
-
-                    psmMinimumCount_Filter_UserEntry: undefined,  // No Value Passed since download "ALL"
-
-                    searchSubGroup_Ids_Selected,
-                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-
-                    generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-                    dataPageStateManager: this.props.propsValue.dataPageStateManager,
-
-                    proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
-                    projectSearchIds : this.props.propsValue.projectSearchIds,
-                    conditionGroupsContainer: undefined,     // Only populated for experiment Page
-                    conditionGroupsDataContainer: undefined, // Only populated for experiment Page
-                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root : this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-                } );
-            }
-
-            const peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList
-
-            const reportedPeptideDisplayDownloadDataAsString : string = this.createReportedPeptideDisplayDownloadDataAsString({
-                peptideList
-            });
-
-            StringDownloadUtils.downloadStringAsFile({ stringToDownload : reportedPeptideDisplayDownloadDataAsString, filename: 'peptides_for_protein.txt' });
-
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-	}
+	// /**
+	//  *
+	//  */
+	// _downloadPeptides_All_ClickHandler( event : React.MouseEvent<HTMLHeadingElement, MouseEvent> ) : void {
+	//     try {
+	//         this._downloadPeptides_All()
+    //
+    //     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    // }
+    //
+    // /**
+    //  *
+    //  */
+    // async _downloadPeptides_All() {  //  async to allow await
+    //     try {
+    //         let searchSubGroup_Ids_Selected : Set<number> = undefined;
+    //
+    //         //   Code setting searchSubGroup_Ids_Selected not needed since searchSubGroup_Ids_Selected === undefined same as 'ALL'
+    //
+    //         if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
+    //
+    //             //  Only display for 1 search
+    //
+    //             const projectSearchId = this.props.propsValue.projectSearchIds[ 0 ];
+    //
+    //             const searchSubGroups_ForProjectSearchId = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
+    //             if ( ! searchSubGroups_ForProjectSearchId ) {
+    //                 const msg = "returned nothing: props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
+    //                 console.warn( msg )
+    //                 throw Error( msg )
+    //             }
+    //
+    //             //  Set searchSubGroup_Ids_Selected to ALL searchSubGroup_Ids
+    //
+    //             searchSubGroup_Ids_Selected = new Set();
+    //
+    //             for ( const searchSubGroup of searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
+    //                 searchSubGroup_Ids_Selected.add( searchSubGroup.searchSubGroup_Id );
+    //             }
+    //         }
+    //
+    //         const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result =
+    //             await this.props.propsValue.getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object.
+    //             getReportedPeptideIdsForDisplay_AllProjectSearchIds_ReturnPromise({ // External Function Call
+    //
+    //                 not_filtered_position_modification_selections : true, //  Required to be true for Download "All"
+    //                 proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
+    //                 searchSubGroup_Ids_Selected,
+    //
+    //                 //  Passed since required but not used since passing not_filtered_position_modification_selections : true
+    //
+    //                 proteinSequenceWidget_StateObject : this.props.propsValue.proteinSequenceWidget_StateObject,
+    //                 modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
+    //                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+    //                 reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
+    //                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+    //                 scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+    //                 scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
+    //                 scan_RetentionTime_MZ_UserSelection_StateObject: this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
+    //                 psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
+    //                 peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
+    //                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
+    //                 peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+    //                 peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
+    //                 userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
+    //                 proteinPositionFilter_UserSelections_StateObject : undefined,
+    //                 proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
+    //                 psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
+    //             });
+    //
+    //         let create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = undefined;
+    //
+    //         {
+    //             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
+    //
+    //             create_GeneratedReportedPeptideListData_Result = await create_GeneratedReportedPeptideListData__SingleProtein({
+    //
+    //                 forPeptidePage: false,
+    //
+    //                 psmMinimumCount_Filter_UserEntry: undefined,  // No Value Passed since download "ALL"
+    //
+    //                 searchSubGroup_Ids_Selected,
+    //                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+    //
+    //                 generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject,
+    //                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+    //                 dataPageStateManager: this.props.propsValue.dataPageStateManager,
+    //
+    //                 proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
+    //                 projectSearchIds : this.props.propsValue.projectSearchIds,
+    //                 conditionGroupsContainer: undefined,     // Only populated for experiment Page
+    //                 conditionGroupsDataContainer: undefined, // Only populated for experiment Page
+    //                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root : this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    //             } );
+    //         }
+    //
+    //         const peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList
+    //
+    //         const reportedPeptideDisplayDownloadDataAsString : string = this.createReportedPeptideDisplayDownloadDataAsString({
+    //             peptideList
+    //         });
+    //
+    //         StringDownloadUtils.downloadStringAsFile({ stringToDownload : reportedPeptideDisplayDownloadDataAsString, filename: 'peptides_for_protein.txt' });
+    //
+    //     } catch( e ) {
+    //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+    //         throw e;
+    //     }
+	// }
 
 	/**
 	 * 
@@ -1327,95 +1339,95 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 	}
 
 
-    /**
-     * Download ALL PSMs for Protein based on current cutoff/filter criteria.
-     *
-     * Open URL in new window to download from server
-     */
-    _downloadPsms_All_ClickHandler( event : React.MouseEvent<HTMLHeadingElement, MouseEvent> ) : void {
-        try {
-            this._downloadPsms_All();
-
-        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-    }
-
-    /**
-     * Download ALL PSMs for Protein based on current cutoff/filter criteria.  
-	 * 
-	 * Open URL in new window to download from server
-     */    
-    async _downloadPsms_All()  {
-        try {
-            const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result =
-                await this.props.propsValue.getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object.
-                getReportedPeptideIdsForDisplay_AllProjectSearchIds_ReturnPromise({ // External Function Call
-                    not_filtered_position_modification_selections : true,
-                    proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
-                    searchSubGroup_Ids_Selected : undefined,
-                    proteinSequenceWidget_StateObject : this.props.propsValue.proteinSequenceWidget_StateObject,
-                    modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-                    reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
-                    scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
-                    scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
-                    scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
-                    scan_RetentionTime_MZ_UserSelection_StateObject: this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
-                    psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
-                    peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
-                    peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
-                    peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
-                    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
-                    userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
-                    proteinPositionFilter_UserSelections_StateObject : undefined,
-                    proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
-                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
-                });
-
-            const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
-
-            //  Build data for serializing to JSON
-
-            const projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry> = [];
-
-            for ( const projectSearchId of reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_ProjectSearchIds() ) {
-
-                const reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId = reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId )
-                const reportedPeptideIdsForDisplayData = reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId.get_reportedPeptideIds();
-
-                const reportedPeptideIdsAndTheirPsmIds = [];
-
-                for ( const reportedPeptideId of reportedPeptideIdsForDisplayData ) {
-
-                    const reportedPeptideIdsAndTheirPsmIdsEntry = { reportedPeptideId };
-                    reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdsAndTheirPsmIdsEntry );
-                }
-
-                if ( reportedPeptideIdsAndTheirPsmIds.length === 0 ) {
-
-                    //  NO entries in reportedPeptideIdsAndTheirPsmIds so SKIP projectSearchId
-
-                    continue  // EARLY CONTINUE
-                }
-
-                const projectSearchIdsReportedPeptideIdsPsmIds_Entry = { projectSearchId, reportedPeptideIdsAndTheirPsmIds };
-                projectSearchIdsReportedPeptideIdsPsmIds.push( projectSearchIdsReportedPeptideIdsPsmIds_Entry );
-            }
-
-            if ( projectSearchIdsReportedPeptideIdsPsmIds.length === 0 ) {
-                throw Error(
-                    "_downloadPsmsClickHandler_All: No reportedPeptideIds for any projectSearchIds for proteinSequenceVersionId: " 
-                    + this.props.propsValue.proteinSequenceVersionId 
-                    + ", projectSearchIds: " + this.props.propsValue.projectSearchIds.join(",") 
-                );
-            }
-            
-            this._downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds } );
-
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    }
+    // /**
+    //  * Download ALL PSMs for Protein based on current cutoff/filter criteria.
+    //  *
+    //  * Open URL in new window to download from server
+    //  */
+    // _downloadPsms_All_ClickHandler( event : React.MouseEvent<HTMLHeadingElement, MouseEvent> ) : void {
+    //     try {
+    //         this._downloadPsms_All();
+    //
+    //     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    // }
+    //
+    // /**
+    //  * Download ALL PSMs for Protein based on current cutoff/filter criteria.
+	//  *
+	//  * Open URL in new window to download from server
+    //  */
+    // async _downloadPsms_All()  {
+    //     try {
+    //         const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result =
+    //             await this.props.propsValue.getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object.
+    //             getReportedPeptideIdsForDisplay_AllProjectSearchIds_ReturnPromise({ // External Function Call
+    //                 not_filtered_position_modification_selections : true,
+    //                 proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
+    //                 searchSubGroup_Ids_Selected : undefined,
+    //                 proteinSequenceWidget_StateObject : this.props.propsValue.proteinSequenceWidget_StateObject,
+    //                 modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
+    //                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+    //                 reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
+    //                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+    //                 scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+    //                 scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : this.props.propsValue.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
+    //                 scan_RetentionTime_MZ_UserSelection_StateObject: this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
+    //                 psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
+    //                 peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
+    //                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
+    //                 peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+    //                 peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
+    //                 userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
+    //                 proteinPositionFilter_UserSelections_StateObject : undefined,
+    //                 proteinPosition_Of_Modification_Filter_UserSelections_StateObject: undefined,
+    //                 psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
+    //             });
+    //
+    //         const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
+    //
+    //         //  Build data for serializing to JSON
+    //
+    //         const projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry> = [];
+    //
+    //         for ( const projectSearchId of reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_ProjectSearchIds() ) {
+    //
+    //             const reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId = reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId )
+    //             const reportedPeptideIdsForDisplayData = reportedPeptideIds_AndTheir_PSM_IDs__ForProjectSearchId.get_reportedPeptideIds();
+    //
+    //             const reportedPeptideIdsAndTheirPsmIds = [];
+    //
+    //             for ( const reportedPeptideId of reportedPeptideIdsForDisplayData ) {
+    //
+    //                 const reportedPeptideIdsAndTheirPsmIdsEntry = { reportedPeptideId };
+    //                 reportedPeptideIdsAndTheirPsmIds.push( reportedPeptideIdsAndTheirPsmIdsEntry );
+    //             }
+    //
+    //             if ( reportedPeptideIdsAndTheirPsmIds.length === 0 ) {
+    //
+    //                 //  NO entries in reportedPeptideIdsAndTheirPsmIds so SKIP projectSearchId
+    //
+    //                 continue  // EARLY CONTINUE
+    //             }
+    //
+    //             const projectSearchIdsReportedPeptideIdsPsmIds_Entry = { projectSearchId, reportedPeptideIdsAndTheirPsmIds };
+    //             projectSearchIdsReportedPeptideIdsPsmIds.push( projectSearchIdsReportedPeptideIdsPsmIds_Entry );
+    //         }
+    //
+    //         if ( projectSearchIdsReportedPeptideIdsPsmIds.length === 0 ) {
+    //             throw Error(
+    //                 "_downloadPsmsClickHandler_All: No reportedPeptideIds for any projectSearchIds for proteinSequenceVersionId: "
+    //                 + this.props.propsValue.proteinSequenceVersionId
+    //                 + ", projectSearchIds: " + this.props.propsValue.projectSearchIds.join(",")
+    //             );
+    //         }
+    //
+    //         this._downloadPsms( { projectSearchIdsReportedPeptideIdsPsmIds } );
+    //
+    //     } catch( e ) {
+    //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+    //         throw e;
+    //     }
+    // }
 
 
 	/**
@@ -1640,6 +1652,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
             //     In ProteinViewPage_RootClass_Common, the data in private _proteinSequenceWidget_StateObject is transferred to object of class SingleProtein_CentralStateManagerObjectClass which interfaces with centralPageStateManager
             
             this.props.propsValue.proteinSequenceWidget_StateObject.clear_selectedProteinSequencePositions();
+            this.props.propsValue.proteinSequenceWidget_StateObject.clearAll_Selections_Protein_StartEnd_Position()
 
             this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.clearAll();
             this.props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.clearAll();
@@ -2364,6 +2377,52 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
     }
 
     /**
+     *
+     * @param event
+     * @param newValue
+     * @private
+     */
+    private _tabs_SequenceCoverage_SequenceBar_ProteinStructure_OnChange_EventHandler( event: React.SyntheticEvent, newValue: unknown ) { try {
+
+        if ( ! limelight__IsVariableAString( newValue ) ) {
+            const msg = "_tabs_SequenceCoverage_SequenceBar_ProteinStructure_OnChange_EventHandler: newValue is not a string.  newValue: " + newValue
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        if ( newValue === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_SEQUENCE.label ) {
+
+            this.props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.set_selected_Tab_Value( SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_SEQUENCE )
+
+            this._updateRestOfPage_ForUserInteraction();
+
+
+        } else if ( newValue === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_BAR.label ) {
+
+            this.props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.set_selected_Tab_Value( SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_BAR )
+
+            this._tabs_SequenceCoverage_SequenceBar_ProteinStructure__Tab_Protein_Sequence_Bar__EverChosen = true
+
+            this._updateRestOfPage_ForUserInteraction();
+
+        } else if ( newValue === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_STRUCTURE.label ) {
+
+            this.props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.set_selected_Tab_Value( SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_STRUCTURE )
+
+            this._tabs_SequenceCoverage_SequenceBar_ProteinStructure__Tab_ProteinStructure__EverChosen = true
+
+            this._updateRestOfPage_ForUserInteraction();
+
+        } else {
+
+            const msg = "_tabs_SequenceCoverage_SequenceBar_ProteinStructure_OnChange_EventHandler: '<Tabs' 'newValue' is unexpected value of " + newValue
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+    } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
+
+    /**
      * Change to protein sequence position selection
      */ 
     _updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback() : void {
@@ -2495,7 +2554,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 		const widgetEncodedStateData = this.props.propsValue.proteinSequenceWidget_StateObject.getEncodedStateData();
 		this.props.propsValue.singleProtein_CentralStateManagerObject.setProteinSequenceFormattedDisplayWidgetEncodedStateData( { proteinSequenceFormattedDisplayWidgetEncodedStateData : widgetEncodedStateData } );
     }
-    
+
     ////////////////////////////////////////
 
     //  Handle Update Rest of the page beyond what the user manipulated
@@ -2883,6 +2942,98 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         }
     }
 
+    ///
+
+    //
+
+    /**
+     * called by this.componentWillUnmount
+     */
+    _remove_MutationObserver_From_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container() {
+        {
+            //  Remove _domMutationObserver_ProteinAnnotationDataEtc_outer_container if set
+            // stop observing
+            try {
+                if ( this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container ) {
+                    this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container.disconnect();
+                }
+            } catch ( e ) {
+                var z = 0;
+            }
+            this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container = undefined;
+        }
+    }
+
+    /**
+     * called by this._update_Overlay_Add_Listeners__After_MainPaint()
+     */
+    _add_MutationObserver_To_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container() {
+        {
+            //  Remove _domMutationObserver_reported_peptides_outer_container if set
+            // stop observing
+            try {
+                if ( this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container ) {
+                    this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container.disconnect();
+                }
+            } catch ( e ) {
+                var z = 0;
+            }
+            this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container = undefined;
+        }
+
+
+        // *** NOTE:  Added to 'config':   'attributes: true' since Only attributes change when change 'Width Scale Selection:' which changes width of SVG.
+
+        // Options for the observer (which mutations to observe)
+        // const config = { attributes: true, childList: true, subtree: true };
+        const config = { attributes: true, childList: true, subtree: true };
+
+        let timeoutId: number = null;
+
+        // Callback function to execute when mutations are observed
+        const domMutationCallback = ( mutationsList: any, observer: any ) => {
+
+            const foundChildListMutation = true  //  Hard code to true to always force resize on any DOM change
+
+            // let foundChildListMutation = false;
+            //
+            // for ( const mutation of mutationsList ) {
+            //     if  ( mutation.type == 'childList' ) {
+            //         foundChildListMutation = true;
+            //     }
+            //     // else if ( mutation.type == 'attributes' ) {
+            //     // 	console.log( 'The ' + mutation.attributeName + ' attribute was modified.' );
+            //     // }
+            // }
+
+            if ( foundChildListMutation ) {
+                if ( timeoutId ) {
+                    window.clearTimeout( timeoutId );
+                }
+                timeoutId = window.setTimeout( () => {
+                    timeoutId = null;
+                    // console.log('At least 1 child node has been added or removed.');
+                    this._resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width();
+                }, 200 );
+            }
+        };
+
+
+        // Create an observer instance linked to the callback function
+        this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container = new MutationObserver( domMutationCallback );
+
+
+        const proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM =
+            this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref.current;
+
+        if ( proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM ) {
+
+            // Start observing the target node for configured mutations
+            this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container.
+            observe( proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM, config );
+        }
+    }
+
     /////
 
     /**
@@ -2924,6 +3075,23 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                 }
             }
         }
+        {
+            // Protein Sequence or other Tabs in same group Block
+
+            const proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM =
+                this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref.current;
+
+            if ( proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM ) {
+
+                const containerRect = proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM.getBoundingClientRect();
+
+                const container_Width = containerRect.width;
+
+                if ( ( ! container_Width_MaxOfValues ) || container_Width_MaxOfValues < container_Width ) {
+                    container_Width_MaxOfValues = container_Width
+                }
+            }
+        }
 
         if ( ! container_Width_MaxOfValues ) {
             //  NO value set to exit
@@ -2940,9 +3108,9 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
             overlayWidth = _OUTERMOST_CONTAINER_MIN_WIDTH; // Min width
         }
 
-        if ( overlayWidth !== this._updated_OverlayWidth ) {
+        if ( ( ! this._updated_OverlayWidth ) || this._updated_OverlayWidth < overlayWidth ) {
 
-            //  overlayWidth has changed and is wider
+            //  this._updated_OverlayWidth not set or this._updated_OverlayWidth < new overlay width
 
             this.props.setWidth__view_single_protein_inner_overlay_div({ width : overlayWidth });
 
@@ -2970,9 +3138,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                 </div>
             )
         }
-
-        //  Main block without boxes on right for Summary Statistics, etc
-        const width_mainBlockAbovePeptideList = this.state.widthOf_proteinSequenceWidgetDisplay_Component;
 
         let saveView_Component = undefined;
 
@@ -3043,9 +3208,9 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                     <div ref={ this._div_MainContent_LeftGridEntry_AtTop_Ref } 
                         style={ { 
                             display: "inline-block",
-                            width : width_mainBlockAbovePeptideList,
-                            minWidth : width_mainBlockAbovePeptideList,
-                            maxWidth : width_mainBlockAbovePeptideList
+                            width : _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH,
+                            minWidth : _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH,
+                            maxWidth : _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH
                         } } >  
                     
                         {/* Main Content above Reported Peptides  */}
@@ -3323,32 +3488,334 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
                 </div>
 
-                <div style={ { display: "inline-block" } } ref={ this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
+                {/*  Block for Tabs for Sequence Coverage Widget, Protein Bar, Protein Structure  */}
 
-                    <div style={ { position: "relative" }}>
+                <div style={ { display: "inline-block" } }
+                     ref={ this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref }>
 
-                        <ProteinSequenceWidgetDisplay_Root_Component_React
-                            proteinSequenceWidgetDisplay_Component_Data={ this.state.proteinSequenceWidgetDisplay_Component_Data }
-                            proteinSequenceWidget_StateObject={ this.props.propsValue.proteinSequenceWidget_StateObject }
-                            updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback_BindThis }
-                        />
+                    {/*
+                        NOTE:  Tooltip on Tabs:
 
-                        { ( this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList ) ? (
+                        It appears that the ONLY way to get the whole Tab to have the tooltip is to create my own Tabs or create some hack to work with MUI Tabs and Tab
+                    */}
 
-                            <div  className=" block-updating-overlay-container " >
-                                Updating Peptide List
+                    {/*  Try 1 of Tabs Formatting - Standard Formatting  */}
+
+                    {/*
+                    <div
+                         // Add border on top to make the tabs stand out
+                        style={ {
+                            width: "fit-content",
+                            borderTopStyle: "solid",
+                            borderTopWidth: 10
+                        } }
+                        className=" standard-border-color-very-dark "
+                    >
+                        <Tabs
+                            value={ this.props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.get_selected_Tab_Value().label }
+                            onChange={ this._tabs_SequenceCoverage_SequenceBar_ProteinStructure_OnChange_EventHandler_BindThis }
+                        >
+                            <Tab
+                                label="PROTEIN SEQUENCE"
+                                value={ SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_SEQUENCE.label } // Passed to <Tabs onChange newValue
+                            />
+
+                            <Tab
+                                label={
+
+                                    //  Tooltips Must be put on the label.  Then only the Label shows the tooltip, no the surrounding button.
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <div>
+                                                Try 1: Display the protein sequence coverage in an image.
+                                            </div>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <span>PROTEIN BAR</span>
+
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                }
+                                value={ SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_BAR.label } // Passed to <Tabs onChange newValue
+                            />
+                            <Tab
+                                label="PROTEIN STRUCTURE"
+                                value={ SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_STRUCTURE.label } // Passed to <Tabs onChange newValue
+                            />
+                        </Tabs>
+                    </div>
+
+                    */}
+
+                    {/*  Try 2 of Tabs Formatting - Special Formatting  */}
+
+                    <div
+                        style={ { marginTop: 10 } }
+                    >
+                        <Tabs
+                            // remove the bottom border
+                            sx={ {
+                                '.MuiTabs-indicator': {
+                                    display: 'none', // Hides the bottom indicator line
+                                },
+                            } }
+                            value={ this.props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.get_selected_Tab_Value().label }
+                            onChange={ this._tabs_SequenceCoverage_SequenceBar_ProteinStructure_OnChange_EventHandler_BindThis }
+                        >
+                            {/*  NOTE:  the <Tab> MUST be directly children of <Tabs> */}
+
+                            <Limelight_MaterialUI_Tab_WrappedWith_Tooltip
+                                //  Tab Content
+                                tab_use_LimelightStandardFormatting={ true }
+                                tabLabel={
+                                    <span>PROTEIN SEQUENCE</span>
+                                }
+                                value={ SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_SEQUENCE.label }// Passed to <Tabs onChange newValue
+                                //  Tooltip content
+                                tooltipTitle={
+                                    <div>
+                                        { this.props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.get_selected_Tab_Value() === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_SEQUENCE ? (
+                                            <div>
+                                                Selected Tab
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                Click to select this tab
+                                            </div>
+                                        ) }
+                                        <div style={ { marginTop: 10 } }>
+                                            Display protein sequence coverage on a text representation of the protein sequence.
+                                        </div>
+                                    </div>
+                                }
+                            />
+
+                            <Limelight_MaterialUI_Tab_WrappedWith_Tooltip
+                                //  Tab Content
+                                tab_use_LimelightStandardFormatting={ true }
+                                tabLabel={
+                                    <span>PROTEIN BAR</span>
+                                }
+                                value={ SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_BAR.label }// Passed to <Tabs onChange newValue
+                                //  Tooltip content
+                                tooltipTitle={
+                                    <div>
+                                        { this.props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.get_selected_Tab_Value() === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_BAR ? (
+                                            <div>
+                                                Selected Tab
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                Click to select this tab
+                                            </div>
+                                        ) }
+                                        <div style={ { marginTop: 10 } }>
+                                            Display protein sequence coverage graphically using protein and peptide bars.
+                                        </div>
+                                    </div>
+                                }
+                            />
+
+                            {/*
+
+
+                                Commented out since not developed yet
+
+                                 PROTEIN STRUCTURE
+
+
+                            <Limelight_MaterialUI_Tab_WrappedWith_Tooltip
+                                //  Tab Content
+                                tab_use_LimelightStandardFormatting={ true }
+                                tabLabel={
+                                    <span>PROTEIN STRUCTURE</span>
+                                }
+                                value={ SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_STRUCTURE.label }// Passed to <Tabs onChange newValue
+                                //  Tooltip content
+                                tooltipTitle={
+                                    <div>
+                                        { this.props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.get_selected_Tab_Value() === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_STRUCTURE ? (
+                                            <div>
+                                                Selected Tab
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                Click to select this tab
+                                            </div>
+                                        ) }
+                                        <div style={ { marginTop: 10 } }>
+                                            Display protein sequence coverage on a rendering of the protein 3D structure.
+                                        </div>
+                                    </div>
+                                }
+                            />
+
+                             */}
+                            
+                        </Tabs>
+
+                    </div>
+
+                    <div style={ { marginTop: 10 } }>    {/* marginTop is distance from tabs to tab contents  */ }
+
+                        {/*  Start of display of contents based on tab selection  */ }
+
+                        {/*  Tab Protein Sequence  */ }
+                        <div
+                            hidden={ ! ( this.props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.get_selected_Tab_Value() === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_SEQUENCE ) }
+                        >
+
+                            <div style={ { position: "relative" } }>
+
+                                {/*<div>*/ }
+                                {/*WARNING:  TESTING ONLY: */ }
+                                {/*    div above component ProteinSequenceWidgetDisplay_Root_Component_React ProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_React*/ }
+                                {/*</div>*/ }
+
+                                <ProteinSequenceWidgetDisplay_Root_Component_React
+                                    proteinSequenceWidgetDisplay_Component_Data={ this.state.proteinSequenceWidgetDisplay_Component_Data }
+                                    proteinSequenceWidget_StateObject={ this.props.propsValue.proteinSequenceWidget_StateObject }
+                                    updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback_BindThis }
+                                />
+
+                                { ( this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList ) ? (
+
+                                    <div className=" block-updating-overlay-container ">
+                                        Updating Peptide List
+                                    </div>
+                                ) : ( this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds ) ? (
+
+                                    <div className=" block-updating-overlay-container ">
+                                        Loading Data to show Peptides
+                                    </div>
+                                ) : null }
+
                             </div>
-                        ) : ( this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds ) ? (
+                        </div>
 
-                            <div  className=" block-updating-overlay-container " >
-                                Loading Data to show Peptides
+                        {/*  *************************  */ }
+
+                        {/*  Tab Protein Sequence Bar  */ }
+
+                        { this._tabs_SequenceCoverage_SequenceBar_ProteinStructure__Tab_Protein_Sequence_Bar__EverChosen ? (
+
+                            <div
+                                hidden={ ! ( this.props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.get_selected_Tab_Value() === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_BAR ) }
+                            >
+
+                                <ProteinSequence_Bar_WidgetDisplay__SearchBased__Root_Component
+
+                                    proteinSequence_Bar_Widget_StateObject={ this.props.propsValue.proteinSequence_Bar_Widget_StateObject }
+
+                                    proteinSequenceWidget_StateObject={ this.props.propsValue.proteinSequenceWidget_StateObject }
+
+                                    modificationMass_UserSelections_StateObject={ this.props.propsValue.modificationMass_UserSelections_StateObject }
+
+                                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass }
+
+                                    limelight_AnyFilter__HasFilterValue={ this.props.propsValue.limelight_AnyFilter__HasFilterValue }
+
+                                    proteinSequenceWidgetDisplay_Component_Data={ this.state.proteinSequenceWidgetDisplay_Component_Data }
+
+                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                    proteinSequenceVersionId={ this.props.propsValue.proteinSequenceVersionId }
+                                    proteinNames={ this.props.propsValue.proteinNames }
+                                    proteinDescriptions={ this.props.propsValue.proteinDescriptions }
+                                    proteinSequenceString={ this.props.propsValue.proteinSequenceString }
+
+                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+
+                                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds={ this.state.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList }
+
+                                    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder={ this.props.propsValue.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder }
+
+                                    dataPageStateManager={ this.props.propsValue.dataPageStateManager }
+                                    dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay={ this.props.propsValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay }
+                                    searchDetailsBlockDataMgmtProcessing={ this.props.propsValue.searchDetailsBlockDataMgmtProcessing }
+
+                                    searchNamesMap_KeyProjectSearchId={ this.props.propsValue.searchNamesMap_KeyProjectSearchId }
+                                    searchDataLookupParamsRoot={ this.props.propsValue.searchDataLookupParamsRoot }
+
+                                    updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback_BindThis }
+                                />
+
+                                { ( this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList ) ? (
+
+                                    <div className=" block-updating-overlay-container ">
+                                        Updating Peptide List
+                                    </div>
+                                ) : ( this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds ) ? (
+
+                                    <div className=" block-updating-overlay-container ">
+                                        Loading Data to show Peptides
+                                    </div>
+                                ) : null }
                             </div>
+
+                        ) : null }
+
+                        {/*  *************************  */ }
+
+                        {/*  Tab Protein Structure  */ }
+
+                        { this._tabs_SequenceCoverage_SequenceBar_ProteinStructure__Tab_ProteinStructure__EverChosen ? (
+
+                            <div
+                                hidden={ ! ( this.props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.get_selected_Tab_Value() === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_STRUCTURE ) }
+                            >
+                                <Protein_Structure_WidgetDisplay__SearchBased__Root_Component
+
+                                    proteinSequence_Bar_Widget_StateObject={ this.props.propsValue.proteinSequence_Bar_Widget_StateObject }
+
+                                    proteinSequenceWidget_StateObject={ this.props.propsValue.proteinSequenceWidget_StateObject }
+
+                                    modificationMass_UserSelections_StateObject={ this.props.propsValue.modificationMass_UserSelections_StateObject }
+
+                                    limelight_AnyFilter__HasFilterValue={ this.props.propsValue.limelight_AnyFilter__HasFilterValue }
+
+                                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass }
+
+                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                    proteinSequenceVersionId={ this.props.propsValue.proteinSequenceVersionId }
+                                    proteinNames={ this.props.propsValue.proteinNames }
+                                    proteinDescriptions={ this.props.propsValue.proteinDescriptions }
+                                    proteinSequenceString={ this.props.propsValue.proteinSequenceString }
+
+                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+
+                                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds={ this.state.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList }
+
+                                    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder={ this.props.propsValue.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder }
+
+                                    dataPageStateManager={ this.props.propsValue.dataPageStateManager }
+                                    dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay={ this.props.propsValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay }
+                                    searchDetailsBlockDataMgmtProcessing={ this.props.propsValue.searchDetailsBlockDataMgmtProcessing }
+
+                                    searchNamesMap_KeyProjectSearchId={ this.props.propsValue.searchNamesMap_KeyProjectSearchId }
+                                    searchDataLookupParamsRoot={ this.props.propsValue.searchDataLookupParamsRoot }
+
+                                    updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback_BindThis }
+                                />
+
+                                { ( this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList ) ? (
+
+                                    <div className=" block-updating-overlay-container ">
+                                        Updating Peptide List
+                                    </div>
+                                ) : ( this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds ) ? (
+
+                                    <div className=" block-updating-overlay-container ">
+                                        Loading Data to show Peptides
+                                    </div>
+                                ) : null }
+                            </div>
+
                         ) : null }
 
                     </div>
 
+                    {/*  End of display of contents based on tab selection  */ }
                 </div>
-
 
                 <div className=" filter-common-block-selection-container-block no-section-labels ">
 
@@ -3357,7 +3824,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                         searchContains_VariableModifications={ this._searchesContains_VariableModifications }
                         searchContains_OpenModifications={ this._searchesContains_OpenModifications }
                         searchContains_StaticModifications={ this._searchesContains_StaticModifications }
-                        updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback={ this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis  }
+                        updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback={ this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis }
                     />
                 </div>
 
@@ -3372,14 +3839,14 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                     </div>
                 </div>
 
-                {/* Display of Reported Peptides  */}
+                {/* Display of Reported Peptides  */ }
 
-                {/*{ ( this.state.create_GeneratedReportedPeptideListData_Result ) ? (*/}
+                {/*{ ( this.state.create_GeneratedReportedPeptideListData_Result ) ? (*/ }
 
                 <div>
 
                     <div style={ { display: "inline-block" } }  //  display: "inline-block" so can measure width of this div, including width of Peptide table and sub-tables
-                        ref={ this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
+                         ref={ this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref }> {/* ref to allow measuring width of component */ }
 
                         <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component
 
@@ -3406,7 +3873,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
                 </div>
 
-                {/*): null }*/}
+                {/*): null }*/ }
 
             </React.Fragment>
 
@@ -3427,7 +3894,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
  */
 interface Internal__ProteinLevel_DataDisplay_AnnotationsEtc_Props {
 
-    propsValue_To_MainComponent : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
+    propsValue_To_MainComponent: ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
 }
 
 /**
@@ -3441,7 +3908,7 @@ interface Internal__ProteinLevel_DataDisplay_AnnotationsEtc_State {
 /**
  *
  */
-class Internal__ProteinLevel_DataDisplay_AnnotationsEtc extends React.Component< Internal__ProteinLevel_DataDisplay_AnnotationsEtc_Props, Internal__ProteinLevel_DataDisplay_AnnotationsEtc_State > {
+class Internal__ProteinLevel_DataDisplay_AnnotationsEtc extends React.Component<Internal__ProteinLevel_DataDisplay_AnnotationsEtc_Props, Internal__ProteinLevel_DataDisplay_AnnotationsEtc_State> {
 
     private _render_Component = false
 
@@ -3457,11 +3924,11 @@ class Internal__ProteinLevel_DataDisplay_AnnotationsEtc extends React.Component<
 
         for ( const projectSearchId of this.props.propsValue_To_MainComponent.projectSearchIds ) {
 
-            const annotationTypeItems_For_ProjectSearchId = this.props.propsValue_To_MainComponent.dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get(projectSearchId)
+            const annotationTypeItems_For_ProjectSearchId = this.props.propsValue_To_MainComponent.dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId )
             if ( ! annotationTypeItems_For_ProjectSearchId ) {
                 const msg = "No entry in dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map for projectSearchId: " + projectSearchId;
-                console.warn(msg)
-                throw Error(msg)
+                console.warn( msg )
+                throw Error( msg )
             }
 
             if ( ( annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes && annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes.size > 0 )

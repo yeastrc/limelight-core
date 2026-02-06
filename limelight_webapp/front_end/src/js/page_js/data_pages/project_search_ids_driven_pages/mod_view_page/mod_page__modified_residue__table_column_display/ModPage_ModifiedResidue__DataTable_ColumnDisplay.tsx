@@ -231,6 +231,7 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
                         fontSize: _SINGLE_LETTER_FONT_SIZE,
                         textAnchor: "middle",
                     } }
+
                 >
                     <tspan
                         textAnchor="middle"

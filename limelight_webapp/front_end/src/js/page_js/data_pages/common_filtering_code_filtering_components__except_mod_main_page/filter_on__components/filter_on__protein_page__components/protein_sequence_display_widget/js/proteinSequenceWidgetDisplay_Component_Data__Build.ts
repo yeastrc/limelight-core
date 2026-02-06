@@ -228,7 +228,9 @@ export const proteinSequenceWidgetDisplay_Component_Data__Build = function({
     proteinSequenceWidgetDisplay_Component_Data.selectedProteinSequencePositions = proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions();
 
     proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_AllPeptides = sequenceCoverage_Percentage_AllPeptides
+    proteinSequenceWidgetDisplay_Component_Data.proteinPosition_Covered_AllPeptides_Count = proteinPosition_Covered_AllPeptides_Count
     proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_FilteredPeptides = sequenceCoverage_Percentage_FilteredPeptides
+    proteinSequenceWidgetDisplay_Component_Data.proteinPosition_Covered_UserSelectedPeptides_Count = proteinPosition_Covered_UserSelectedPeptides_Count
 
     return proteinSequenceWidgetDisplay_Component_Data;
 }
