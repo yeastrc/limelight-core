@@ -6,9 +6,9 @@
 import React from "react";
 import {dataTable_React_DataObjects_Validator} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects_Validator";
 
-type DataTable_UniqueId = string | number;
+export type DataTable_UniqueId = string | number;
 
-type DataTable_ColumnId = string;
+export type DataTable_ColumnId = string;
 
 ////
 
@@ -265,7 +265,7 @@ class DataTable_Column_sortFunction_Param {
 
 type DataTable_Column_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element = () => JSX.Element;
 
-type DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element = () => JSX.Element;
+export type DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element = () => JSX.Element;
 
 /**
  * A column in the Table.  Data for how to process the column and header content
@@ -903,21 +903,21 @@ class DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Pa
 /**
  * No Properties from DataTable_DataRowEntry will be passed.  This will stay empty until some value HAS to be passed
  */
-interface DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params {
+export interface DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params {
     rowDOM_Rect : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Param_RowDOM_Rect
     clickEventData : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Param_ClickEventData
 }
 
-type DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough = ( params : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params ) => void;
+export type DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough = ( params : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params ) => void;
 
 ////////////
 
-interface DataTable_DataRowEntry__GetChildTableData_CallbackParams {  }
+export interface DataTable_DataRowEntry__GetChildTableData_CallbackParams {  }
 
 ////
 
 //  function called to get Child DataTable. Callback returns DataTable_RootTableObject. No properties passed from this object.
-type DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject =
+export type DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject =
     ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) => DataTable_RootTableObject;
 
 ////
@@ -934,19 +934,19 @@ interface DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableOb
     dataTable_RootTableObject? : never                       //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
 }
 
-type DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue = (
+export type DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue = (
     DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue_Object
     | DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue_Promise
 )
 
 //  function called to get Child DataTable. Callback returns an object. No properties passed from this object.
-type DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject =
+export type DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject =
     ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) => DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue
 
 /////
 
 //  function called to get Child Table.  Callback returns Promise<DataTable_RootTableObject> to be compatible with 'async' functions.  No properties passed from this object.
-type DataTable_DataRowEntry__GetChildTableData_Return_Promise_DataTable_RootTableObject = ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) => Promise<DataTable_RootTableObject>
+export type DataTable_DataRowEntry__GetChildTableData_Return_Promise_DataTable_RootTableObject = ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) => Promise<DataTable_RootTableObject>
 
 /////////////////
 
@@ -954,12 +954,12 @@ type DataTable_DataRowEntry__GetChildTableData_Return_Promise_DataTable_RootTabl
 
 //  Params passed to function called to get Child Content (Used for all function callbacks for get Child Content)
 
-interface DataTable_DataRowEntry__Get_RowChildContent_CallParams {  }
+export interface DataTable_DataRowEntry__Get_RowChildContent_CallParams {  }
 
 ////////  Callback to Function to get Child Content
 
 //  function called to get Child Table.  Callback returns Promise<ChildContent> to be compatible with 'async' functions.  No properties passed from this object.
-type DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent = ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) => JSX.Element
+export type DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent = ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) => JSX.Element
 
 ////////  Callback to get Child Content or Promise that contains Function that returns Child Content
 
@@ -967,30 +967,30 @@ type DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent = ( params 
 
 //  The follow interface and type result in a return value that contains exactly one of the 2 properties (childContent...  promise...)
 
-interface DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Base {}
-interface DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Object extends DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Base {
+export interface DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Base {}
+export interface DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Object extends DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Base {
     getchildContentCallback : DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent
     promise_Containing_GetChildContentCallback? : never    //  Need "?" since 'never'.  'never' so can NOT be populated when childContent is populated
 }
-interface DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Promise extends DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Base {
+export interface DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Promise extends DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Base {
     promise_Containing_GetChildContentCallback : Promise<DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent>
     getchildContentCallback? : never                       //  Need "?" since 'never'.  'never' so can NOT be populated when promise_Containing_ChildContent is populated
 }
 
 //  Final definition of allowed result from callback to get Child Content or Promise that contains Function that returns Child Content
-type DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue = (
+export type DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue = (
     DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Object
     | DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue_Promise
 )
 
 //  function called to get Child DataTable. Callback returns an object. No properties passed from this object.
-type DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent =
+export type DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent =
     ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) => DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue
 
 ////////  Callback to Promise that contains Function to get Child Content
 
 //  function called to get Child Table.  Callback returns Promise<GetChildContentCallback> to be compatible with 'async' functions.  No properties passed from this object.
-type DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent = ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) => Promise<DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent>
+export type DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent = ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) => Promise<DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent>
 
 
 
@@ -1183,13 +1183,13 @@ class DataTable_DataRow_ColumnEntry {
 
 //  Type declarations used in the class
 
-interface DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params {   }
+export interface DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params {   }
 
-type DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) => JSX.Element;
+export type DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) => JSX.Element;
 
-interface DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params {  }
+export interface DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params {  }
 
-type DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = ( params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) => JSX.Element;
+export type DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = ( params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) => JSX.Element;
 
 
 ///////////////////
@@ -1223,9 +1223,10 @@ class DataTable_DataRow_ColumnEntry_SearchTableData {
 
 ////////////////////////////////////
 
+
+//   Some Exports above
+
 export {
-    DataTable_UniqueId,
-    DataTable_ColumnId,
 
     DataTable_RootTableObject,
 
@@ -1234,7 +1235,6 @@ export {
     DataTable_TableOptions,
 
     DataTable_Column,
-    DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element,
     DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum,
     DataTable_Column_sortFunction_Param,
     DataTable_Column_DownloadTable,
@@ -1244,25 +1244,9 @@ export {
     DataTable_DataRowEntry,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Param_RowDOM_Rect,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Param_ClickEventData,
-    DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params,
-    DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough,
-    DataTable_DataRowEntry__GetChildTableData_CallbackParams,
-    DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject,
-    DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue,
-    DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject,
     DataTable_DataRowEntry_DownloadTable,
     DataTable_DataRowEntry_DownloadTable_SingleColumn,
     DataTable_DataRow_ColumnEntry,
-    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
-    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
-    DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
-    DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
-    DataTable_DataRow_ColumnEntry_SearchTableData,
-    DataTable_DataRowEntry__GetChildTableData_Return_Promise_DataTable_RootTableObject,
-    DataTable_DataRowEntry__Get_RowChildContent_CallParams,
-    DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent,
-    DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_OR_Promise_ChildContent_ReturnValue,
-    DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent,
-    DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent
+    DataTable_DataRow_ColumnEntry_SearchTableData
 }
 

@@ -9,8 +9,8 @@ const _MODIFICATION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT = 2;
  
 const _10_POWER_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT = Math.pow( 10, _MODIFICATION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT );
 
-type modificationMass_CommonRounding_ReturnNumber_Function = ( modificationMass : number ) => number;
-type modificationMass_CommonRounding_ReturnString_Function = ( modificationMass : number ) => string;
+export type modificationMass_CommonRounding_ReturnNumber_Function = ( modificationMass : number ) => number;
+export type modificationMass_CommonRounding_ReturnString_Function = ( modificationMass : number ) => string;
 
 /**
 * @param modificationMass
@@ -70,10 +70,10 @@ const modificationMass_CommonRounding_Needed = function ( modificationMass : num
 
 //////////////
 
+//   Some Exports above
+
 export { 
-    modificationMass_CommonRounding_ReturnNumber_Function,
-    modificationMass_CommonRounding_ReturnString_Function,
-    modificationMass_CommonRounding_ReturnNumber, 
+    modificationMass_CommonRounding_ReturnNumber,
     modificationMass_CommonRounding_ReturnString,
     modificationMass_CommonRounding_Needed
 }
