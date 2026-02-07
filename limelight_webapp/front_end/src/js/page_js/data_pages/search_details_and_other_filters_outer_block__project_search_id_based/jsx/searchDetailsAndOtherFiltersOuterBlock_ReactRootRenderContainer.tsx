@@ -14,7 +14,7 @@ import React from 'react'
  */
 export interface SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer_Props {
 
-    // placeholder?
+    readonly children: React.ReactNode
 }
 
 /**

@@ -19,6 +19,8 @@ import {CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_
  */
 export interface FilterOn_SearchProgramsGroup_ConditionalRender_Component_Props {
 
+    readonly children: React.ReactNode
+
     //  Render control for SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
 
     searchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData

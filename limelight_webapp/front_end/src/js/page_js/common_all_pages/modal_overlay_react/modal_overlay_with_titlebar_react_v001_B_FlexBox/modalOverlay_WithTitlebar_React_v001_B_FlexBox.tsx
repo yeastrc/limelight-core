@@ -26,6 +26,8 @@ enum Internal__PositionToUse_Fixed_Absolute_Enum {
  */
 export class ModalOverlay_Limelight_Component_v001_B_FlexBox_Props {
 
+    readonly children: React.ReactNode
+
     readonly set_CSS_Position_Fixed? : boolean  //  USE WITH CARE:  Setting position: flex;  eliminates the ability to use browser scrollbars to get to parts of modal dialog outside of the viewport
     readonly heightMaximum : number
     readonly heightMinimum : number

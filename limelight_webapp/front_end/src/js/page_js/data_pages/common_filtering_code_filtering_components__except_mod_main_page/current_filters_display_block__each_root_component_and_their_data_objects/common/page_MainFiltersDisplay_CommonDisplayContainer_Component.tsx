@@ -12,6 +12,8 @@ import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToS
 
 export interface Page_MainFiltersDisplay_CommonDisplayContainer_Component_Props {
 
+    readonly children: React.ReactNode
+
     clearAllFiltersClickHandler: () => void
 }
 

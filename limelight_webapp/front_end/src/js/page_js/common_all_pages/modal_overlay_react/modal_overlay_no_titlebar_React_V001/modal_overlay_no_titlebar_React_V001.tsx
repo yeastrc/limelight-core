@@ -17,25 +17,14 @@ import React from 'react'
  */
 export class ModalOverlay_No_Titlebar_Limelight_Component_v001_Props {
 
+    readonly children: React.ReactNode
+
     set_CSS_Position_Fixed? : boolean  //  USE WITH CARE:  Setting position: flex;  eliminates the ability to use browser scrollbars to get to parts of modal dialog outside of the viewport
     heightMaximum : number
     heightMinimum : number
     widthMaximum : number
     widthMinimum : number
     callbackOnClicked_Background : () => void;
-
-    constructor( { heightMaximum, heightMinimum, widthMaximum, callbackOnClicked_Background } : {
-        heightMaximum : number
-        heightMinimum : number
-        widthMaximum : number
-        hideOnBackgroundClick : boolean
-        callbackOnClicked_Background : () => void;
-    }) {
-        this.heightMaximum = heightMaximum
-        this.heightMinimum = heightMinimum
-        this.widthMaximum = widthMaximum
-        this.callbackOnClicked_Background = callbackOnClicked_Background
-    }
 }
 
 interface ModalOverlay_No_Titlebar_Limelight_Component_v001_State {
