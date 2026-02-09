@@ -3351,11 +3351,11 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                     <div style={ { position: "relative" } }>
 
-                        <div>
-                            WARNING:  TESTING ONLY:
-                            div above component ProteinSequenceWidgetDisplay_Root_Component_React
-                            ProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_React
-                        </div>
+                        {/*<div>*/}
+                        {/*    WARNING:  TESTING ONLY:*/}
+                        {/*    div above component ProteinSequenceWidgetDisplay_Root_Component_React*/}
+                        {/*    ProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_React*/}
+                        {/*</div>*/}
 
                         <ProteinSequenceWidgetDisplay_Root_Component_React
                             proteinSequenceWidgetDisplay_Component_Data={ this.state.proteinSequenceWidgetDisplay_Component_Data }
