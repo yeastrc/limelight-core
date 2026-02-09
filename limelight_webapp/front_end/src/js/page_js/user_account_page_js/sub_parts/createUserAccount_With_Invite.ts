@@ -2,7 +2,8 @@
  * createUserAccount_With_Invite.ts
  * 
  * Javascript for creating a user account from an Invite  
- * 
+ *
+ * Currently SKIPPED for upgrade 'ReactDOM.render' call
  */
 
 //////////////////////////////////

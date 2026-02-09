@@ -13,11 +13,10 @@
 //  module imports
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
 
 import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
-
-import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { getExperimentDataFromServer } from './projPg_Expermnts_Load_ExperimentData';
 
@@ -56,6 +55,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 	private _scrollBeforeHideMainDiv: { scrollX : number, scrollY : number };
 
 	private _create_Update_Experiment_addedDivElementDOM: HTMLDivElement;
+	private _create_Update_Experiment__ReactRoot_InDOMElement: Root_ReactDOM_Client
 
 	/**
 	 * 
@@ -82,8 +82,6 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 	 * Called when "Create New Experiment" button is clicked on main Experiment list
 	 */
 	createNewExperimentButtonClicked({ event }: { event: any }) {
-
-		const target = event.target;
 
 		this._create_Update_Experiment_Clicked({ experimentId : undefined, makeClone : false });
 
@@ -250,8 +248,6 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 
 		this._create_Update_Experiment_addedDivElementDOM = addedDivElementDOM;
 
-		const renderCompletecallbackFcn = ( ) => { };
-
 		const projectPage_Experiments_SingleExperimentMaint_OverlayContainer_Component = (
 			React.createElement(
 				ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer,
@@ -260,11 +256,9 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 			)
 		)
 
-		const renderedReactComponent = ReactDOM.render( 
-			projectPage_Experiments_SingleExperimentMaint_OverlayContainer_Component, 
-			addedDivElementDOM,
-			renderCompletecallbackFcn 
-		);
+		this._create_Update_Experiment__ReactRoot_InDOMElement = createRoot_ReactDOM_Client( addedDivElementDOM! )
+
+		this._create_Update_Experiment__ReactRoot_InDOMElement.render( projectPage_Experiments_SingleExperimentMaint_OverlayContainer_Component )
 	}
 
 	/**
@@ -281,7 +275,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 			return; // EARLY RETURN
 		}
 
-		ReactDOM.unmountComponentAtNode( this._create_Update_Experiment_addedDivElementDOM );
+		this._create_Update_Experiment__ReactRoot_InDOMElement.unmount()
 
 		this._create_Update_Experiment_addedDivElementDOM.remove();
 

@@ -6,9 +6,10 @@
  *
  */
 
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
 
-import ReactDOM from "react-dom";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+
 
 /**
  *
@@ -26,45 +27,42 @@ export const limelight_add_ReactComponent_JSX_Element_To_DocumentBody = function
 
     documentBody.appendChild( addedDivElementDOM );
 
-    // console.log( "mainCellMouseEnter: this._tooltip_addedDivElementDOM:" );
+    // console.log( "limelight_add_ReactComponent_JSX_Element_To_DocumentBody: this._tooltip_addedDivElementDOM:" );
     // console.log( this._tooltip_addedDivElementDOM );
 
-    const renderCompletecallbackFcn = ( ) => { };
 
-    const renderedReactComponent = ReactDOM.render(
-        componentToAdd,
-        addedDivElementDOM,
-        renderCompletecallbackFcn
-    );
+    const reactRoot_InDOMElement = createRoot_ReactDOM_Client( addedDivElementDOM )
 
-    const result = new Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder({ addedDivElementDOM: addedDivElementDOM });
+    reactRoot_InDOMElement.render( componentToAdd )
+
+    const result = new Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF({
+        addedDivElementDOM, reactRoot_InDOMElement
+    });
 
     return result;
 }
 
 
 /**
- * interface of class returned from limelight_add_ReactComponent_JSX_Element_To_DocumentBody
+ * class returned from limelight_add_ReactComponent_JSX_Element_To_DocumentBody
  *
+ * Leave it named 'Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF' to reduce code churn
  */
-export interface Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF {
-
-    /**
-     * Remove the React Component / JSX Element  rendered on page by limelight_add_ReactComponent_JSX_Element_To_DocumentBody
-     *
-     */
-    removeContents_AndContainer_FromDOM: () => void
-}
-
-/**
- *
- */
-class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder implements Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF {
+export class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF {
 
     private _addedDivElementDOM : HTMLElement
+    private _reactRoot_InDOMElement: Root_ReactDOM_Client
 
-    constructor({ addedDivElementDOM } : { addedDivElementDOM : HTMLElement }) {
+    constructor(
+        {
+            addedDivElementDOM, reactRoot_InDOMElement
+        } : {
+            addedDivElementDOM : HTMLElement
+            reactRoot_InDOMElement: Root_ReactDOM_Client
+        }) {
+
         this._addedDivElementDOM = addedDivElementDOM;
+        this._reactRoot_InDOMElement = reactRoot_InDOMElement
     }
 
     /**
@@ -95,7 +93,7 @@ class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder implement
 
                     //  React Unmount
 
-                    ReactDOM.unmountComponentAtNode( addedDivElementDOM_Local );
+                    this._reactRoot_InDOMElement.unmount()
 
                     //  Remove containing <div> from DOM
 

@@ -11,6 +11,9 @@
  * 		place default URL on page and redirect to it if coming from another page
  */
 
+import React from "react";
+import { createRoot as createRoot_ReactDOM_Client } from "react-dom/client";
+
 /**
  * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
  */
@@ -91,8 +94,6 @@ import {
 import {
 	SearchSubGroup_CentralStateManagerObjectClass
 } from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
-import React from "react";
-import ReactDOM from "react-dom";
 import {
 	ModViewPage_Display_Root_Component, ModViewPage_Display_Root_Component_Props
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_Display_Root_Component";
@@ -111,11 +112,6 @@ import {
 import {
 	ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ModViewPage_Display_All_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root";
-import {
-	SearchDataLookupParameters_Root
-} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
-
-//  From data_pages_common
 
 
 
@@ -674,7 +670,7 @@ export class ModViewPage_RootClass_Common {
 			propsValue
 		}
 
-		const projectPage_ExperimentsSectionRoot_Component = (
+		const component = (
 			React.createElement(
 				ModViewPage_Display_Root_Component,
 				props,
@@ -690,16 +686,10 @@ export class ModViewPage_RootClass_Common {
 			throw Error("No DOM element with id 'main_mod_view_outer_block_react_root_container'");
 		}
 
-		//  Called on render complete
-		const renderCompleteCallbackFcn = () => {
 
-		};
+		const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
 
-		const renderedReactComponent = ReactDOM.render(
-			projectPage_ExperimentsSectionRoot_Component,
-			containerDOMElement,
-			renderCompleteCallbackFcn
-		);
+		reactRoot_InDOMElement.render( component )
 
 		//  Remove div above that has "Loading..."
 

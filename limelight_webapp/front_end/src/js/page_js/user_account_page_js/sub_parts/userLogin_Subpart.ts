@@ -1,7 +1,10 @@
 /**
  * userLogin_Subpart.ts
  * 
- * Javascript for logging in a user  
+ * Javascript for logging in a user
+ *
+ *
+ * Currently SKIPPED for upgrade 'ReactDOM.render' call
  * 
  */
 

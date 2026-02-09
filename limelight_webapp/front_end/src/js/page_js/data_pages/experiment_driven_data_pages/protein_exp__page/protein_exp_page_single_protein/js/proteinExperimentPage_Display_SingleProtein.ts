@@ -7,7 +7,7 @@
 
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
 
 import {reportWebErrorToServer} from 'page_js/common_all_pages/reportWebErrorToServer';
 
@@ -58,6 +58,7 @@ import {
 import {
 	ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
+
 
 
 /**
@@ -151,6 +152,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 
 	private _singleProteinContainer_addedDivElementDOM:  HTMLDivElement;
+	private _singleProteinContainer__ReactRoot_InDOMElement: Root_ReactDOM_Client
 
 	private _renderedReactComponent_ProteinExperimentPage_Root_Component: ProteinExperimentPage_SingleProtein_Root_Component;
 	
@@ -758,8 +760,13 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
         this._singleProteinContainer_addedDivElementDOM = addedDivElementDOM;
 
-        //  Called on render complete
-        const renderCompleteCallbackFcn = () => {
+		const component_OnInstantiate_Pass_Self_Callback = ( self: ProteinExperimentPage_SingleProtein_Root_Component ) => {
+
+			this._renderedReactComponent_ProteinExperimentPage_Root_Component  = self
+		}
+
+		//  Called on main component mount
+        const component_OnMount_Callback = () => {
 
             this._resizeWindow_Handler_Attach();
 
@@ -778,6 +785,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
 		const standard_Page_Header_Height = this._get_Standard_Page_Header_Height();
 
 		const props : ProteinExperimentPage_SingleProtein_Root_Component_Props = {
+			component_OnInstantiate_Pass_Self_Callback,
+			component_OnMount_Callback,
 			closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis,
 			standard_Page_Header_Height,
 			proteinNames,
@@ -794,12 +803,11 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			)
 		);
 
-		this._renderedReactComponent_ProteinExperimentPage_Root_Component = ReactDOM.render( 
-			proteinExperimentPage_SingleProtein_Root_Component,
-			this._singleProteinContainer_addedDivElementDOM,
-            renderCompleteCallbackFcn
-		);
+		this._singleProteinContainer__ReactRoot_InDOMElement = createRoot_ReactDOM_Client( this._singleProteinContainer_addedDivElementDOM )
 
+		this._singleProteinContainer__ReactRoot_InDOMElement.render(
+			proteinExperimentPage_SingleProtein_Root_Component
+		);
 	}
 
 	/**
@@ -974,9 +982,13 @@ export class ProteinExperimentPage_Display_SingleProtein {
 		try {
 			//  remove From page:
 
+			if ( this._singleProteinContainer__ReactRoot_InDOMElement ) {
+
+				this._singleProteinContainer__ReactRoot_InDOMElement.unmount()
+			}
+
 			if ( this._singleProteinContainer_addedDivElementDOM ) {
-				ReactDOM.unmountComponentAtNode( this._singleProteinContainer_addedDivElementDOM );
-			
+
 				this._singleProteinContainer_addedDivElementDOM.remove();
 			}
 

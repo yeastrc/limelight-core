@@ -2,7 +2,8 @@
  * createUserAccount_NO_Invite.ts
  * 
  * Javascript for creating a user account WITHOUT an Invite
- * 
+ *
+ * Currently SKIPPED for upgrade 'ReactDOM.render' call
  */
 
 //////////////////////////////////

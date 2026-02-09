@@ -13,11 +13,12 @@
 
 //  module import 
 
+import { createRoot as createRoot_ReactDOM_Client } from "react-dom/client";
+
 import {navigation_dataPages_Maint_Component_Create_JSX} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint_Component_Create_JSX";
 import {
 	Navigation_dataPages_Maint__NavigationType_Enum, Navigation_dataPages_Maint_Root_Component_Props_PropsValue
 } from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint_Component";
-import ReactDOM from "react-dom";
 
 /**
  * 
@@ -49,13 +50,9 @@ class Navigation_dataPages_Maint {
 			throw Error("No DOM element with id 'data_pages_nav_links_page_container'");
 		}
 
-		const renderCompletecallbackFcn = ( ) => { };
+		const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement! )
 
-		const renderedReactComponent = ReactDOM.render(
-			navigation_dataPages_Maint_Root_Component,
-			containerDOMElement,
-			renderCompletecallbackFcn
-		);
+		reactRoot_InDOMElement.render( navigation_dataPages_Maint_Root_Component )
 	}
 
 	updateNavLinks() {

@@ -7,7 +7,7 @@
 
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
 
 import {reportWebErrorToServer} from 'page_js/common_all_pages/reportWebErrorToServer';
 //   Modification Mass Rounding to provide some level of commonality between searches
@@ -67,7 +67,6 @@ import {
 import { ProteinSequence_Bar_Widget_StateObject } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_bar_widget/js/proteinSequence_Bar_Widget_StateObject";
 import { Limelight_AnyFilter__HasFilterValue } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/any_filter__has_filter_value/Limelight_AnyFilter__HasFilterValue";
 import { SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject";
-
 
 /**
  * 
@@ -164,6 +163,7 @@ export class ProteinPage_Display__SingleProtein_Root {
 
 
 	private _singleProteinContainer_addedDivElementDOM : HTMLElement;
+	private _singleProteinContainer__ReactRoot_InDOMElement: Root_ReactDOM_Client
 
 	private _renderedReactComponent_ProteinPage_Display__SingleProtein_Root_Component : ProteinPage_Display__SingleProtein_Root_Component;
 	
@@ -808,8 +808,13 @@ export class ProteinPage_Display__SingleProtein_Root {
 
         this._singleProteinContainer_addedDivElementDOM = addedDivElementDOM;
 
-        //  Called on render complete
-        const renderCompleteCallbackFcn = () => {
+		const component_OnInstantiate_Pass_Self_Callback = ( self: ProteinPage_Display__SingleProtein_Root_Component ) => {
+
+			this._renderedReactComponent_ProteinPage_Display__SingleProtein_Root_Component  = self
+		}
+
+		//  Called on main component mount
+        const component_OnMount_Callback = () => {
 
             this._resizeWindow_Handler_Attach();
 
@@ -827,6 +832,8 @@ export class ProteinPage_Display__SingleProtein_Root {
 		const standard_Page_Header_Height = this._get_Standard_Page_Header_Height();
 
 		const props : ProteinPage_Display__SingleProtein_Root_Component_Props = {
+			component_OnInstantiate_Pass_Self_Callback,
+			component_OnMount_Callback,
 			closeOverlayClickHandler : this._closeOverlayClickHandler_BindThis,
 			standard_Page_Header_Height,
 			proteinNames,
@@ -834,8 +841,8 @@ export class ProteinPage_Display__SingleProtein_Root {
 		}
 
 		//  Create React component instance using React.createElement(...) so don't have to make this file .tsx
-		
-		const proteinExperimentPage_SingleProtein_Root_Component = (
+
+		const proteinPage_SingleProtein_Root_Component = (
 			React.createElement(
 				ProteinPage_Display__SingleProtein_Root_Component,
 				props,
@@ -843,12 +850,11 @@ export class ProteinPage_Display__SingleProtein_Root {
 			)
 		);
 
-		this._renderedReactComponent_ProteinPage_Display__SingleProtein_Root_Component = ReactDOM.render( 
-			proteinExperimentPage_SingleProtein_Root_Component,
-			this._singleProteinContainer_addedDivElementDOM,
-            renderCompleteCallbackFcn
-		);
+		this._singleProteinContainer__ReactRoot_InDOMElement = createRoot_ReactDOM_Client( this._singleProteinContainer_addedDivElementDOM )
 
+		this._singleProteinContainer__ReactRoot_InDOMElement.render(
+			proteinPage_SingleProtein_Root_Component
+		);
 	}
 
 	/**
@@ -1062,8 +1068,12 @@ export class ProteinPage_Display__SingleProtein_Root {
 				try {
 					//  Remove Single Protein From page:
 
+					if ( this._singleProteinContainer__ReactRoot_InDOMElement ) {
+
+						this._singleProteinContainer__ReactRoot_InDOMElement.unmount()
+					}
+
 					if ( this._singleProteinContainer_addedDivElementDOM ) {
-						ReactDOM.unmountComponentAtNode( this._singleProteinContainer_addedDivElementDOM );
 
 						this._singleProteinContainer_addedDivElementDOM.remove();
 					}

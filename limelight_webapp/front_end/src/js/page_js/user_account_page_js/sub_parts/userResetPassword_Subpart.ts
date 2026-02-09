@@ -2,7 +2,8 @@
  * userResetPassword_Subpart.ts
  * 
  * Javascript for user forgot password  
- * 
+ *
+ * Currently SKIPPED for upgrade 'ReactDOM.render' call
  */
 
 

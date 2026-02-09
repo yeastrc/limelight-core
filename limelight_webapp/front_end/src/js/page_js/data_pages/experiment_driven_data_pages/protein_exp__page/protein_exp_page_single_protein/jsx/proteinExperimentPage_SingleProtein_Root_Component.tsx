@@ -50,6 +50,9 @@ export interface ProteinExperimentPage_SingleProtein_Root_Component_closeOverlay
  */
 export interface ProteinExperimentPage_SingleProtein_Root_Component_Props {
 
+    component_OnInstantiate_Pass_Self_Callback: ( self: ProteinExperimentPage_SingleProtein_Root_Component  ) => void
+    component_OnMount_Callback: () => void
+
     closeOverlayClickHandler : ProteinExperimentPage_SingleProtein_Root_Component_closeOverlayClickHandler;
 
     standard_Page_Header_Height: number
@@ -101,6 +104,8 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
         this.view_single_protein_overlay_header_inner_container_Ref = React.createRef<HTMLDivElement>();
         this._view_single_protein_overlay_body_Ref = React.createRef<HTMLDivElement>();
 
+        this.props.component_OnInstantiate_Pass_Self_Callback( this )
+
         this.state = { 
             proteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop : null
         };
@@ -146,6 +151,10 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
      * 
      */   
     componentDidMount() {
+
+        {
+            this.props.component_OnMount_Callback()
+        }
 
         {
             //  this._view_single_protein_inner_overlay_div_Ref

@@ -2,7 +2,8 @@
  * userAccountManagementPage_Root.ts
  * 
  * Javascript for userAccountManagement.jsp page  
- * 
+ *
+ * Currently SKIPPED for upgrade 'ReactDOM.render' call
  */
 
 

@@ -835,7 +835,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             window.setTimeout( () => {
 
                 this._update_Overlay_Add_Listeners__After_MainPaint()
-            });
+            }, 10 );
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
@@ -2880,9 +2880,12 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             // reported peptide list
             const proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
 
-            const containerRect_GeneratedReportedPeptideListSection = proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
+            if ( proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM ) {
 
-            container_Width_MaxOfValues = containerRect_GeneratedReportedPeptideListSection.width;
+                const containerRect_GeneratedReportedPeptideListSection = proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
+
+                container_Width_MaxOfValues = containerRect_GeneratedReportedPeptideListSection.width;
+            }
         }
 
         {

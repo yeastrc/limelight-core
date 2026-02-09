@@ -7,11 +7,12 @@
  */
 
 import React from 'react'
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
+
 import {limelight__IsTextSelected} from "page_js/common_all_pages/limelight__IsTextSelected";
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
-import ReactDOM from "react-dom";
 import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -579,9 +580,14 @@ const INTERNAL__filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Cre
 
     const overlay_addedDivElementDOM = document.createElement("div");
 
-    var documentBody = document.querySelector('body');
+    const documentBody = document.querySelector('body');
 
     documentBody.appendChild( overlay_addedDivElementDOM );
+
+    /**
+     * Have here so can call 'unmount'
+     */
+    let reactRoot_InDOMElement: Root_ReactDOM_Client
 
     const close_Selected_Callback = () => {
 
@@ -589,14 +595,12 @@ const INTERNAL__filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Cre
 
         //  React Unmount
 
-        ReactDOM.unmountComponentAtNode( overlay_addedDivElementDOM );
+        reactRoot_InDOMElement.unmount()
 
         //  Remove containing <div> from DOM
 
         overlay_addedDivElementDOM.remove();
     }
-
-    const renderCompletecallbackFcn = ( ) => { };
 
     const overlay_ComponentElement = (
         React.createElement(
@@ -613,11 +617,10 @@ const INTERNAL__filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Cre
             null
         )
     );
-    const overlay_Component = ReactDOM.render(
-        overlay_ComponentElement,
-        overlay_addedDivElementDOM,
-        renderCompletecallbackFcn
-    );
+
+    reactRoot_InDOMElement = createRoot_ReactDOM_Client( overlay_addedDivElementDOM )
+
+    reactRoot_InDOMElement.render( overlay_ComponentElement )
 }
 
 /**

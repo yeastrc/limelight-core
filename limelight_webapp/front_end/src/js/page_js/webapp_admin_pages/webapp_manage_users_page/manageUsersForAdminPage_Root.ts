@@ -2,7 +2,8 @@
  * manageUsersForAdminPage_Root.ts
  * 
  * Javascript for webappAdminManageUsers.jsp page  
- * 
+ *
+ * Currently SKIPPED for upgrade 'ReactDOM.render' call
  */
 
 import React from "react";

@@ -11,7 +11,8 @@
  */
 
 import React from "react";
-import ReactDOM from "react-dom";
+
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
 
 import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
@@ -36,6 +37,13 @@ import { Spinner_Limelight_Component } from "page_js/common_all_pages/spinner_Re
 import {
     SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
 } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
+
+/**
+ * Track since can only call this function once
+ */
+let functionHasBeenCalled__Function__add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component = false
+
+
 
 export class ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params {
     projectIdentifierFromURL: string
@@ -82,6 +90,16 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
     }
 ) {
 
+    if ( functionHasBeenCalled__Function__add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component ) {
+
+        const msg = "can only call function 'add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component' once"
+        console.warn(msg)
+        throw Error(msg)
+    }
+
+    functionHasBeenCalled__Function__add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component = true
+
+
     let projectIdentifier = projectIdentifierFromURL;
 
     {
@@ -89,10 +107,6 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
         if ( ! containerDOMElement ) {
             throw Error("NO DOM Element with id 'project_page_rest_of_sections__contents_block'")
         }
-
-        //  Remove existing React Node, if one exists
-        ReactDOM.unmountComponentAtNode(containerDOMElement);
-
 
         const projectPage_ROOT_Container_Containing_MultipleSections_Component_Props : ProjectPage_ROOT_Container_Containing_MultipleSections_Component_Props = {
             projectIdentifier, projectIsLocked, for_PublicUser, projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions,
@@ -116,16 +130,9 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
             )
         );
 
-        const renderCompletecallbackFcn_Local = ( ) => {
+        const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
 
-        }
-
-        const renderedReactComponent = ReactDOM.render(
-            projectPage_SearchesSection_ROOT_Component,
-            containerDOMElement,
-            renderCompletecallbackFcn_Local
-        );
-
+        reactRoot_InDOMElement.render( projectPage_SearchesSection_ROOT_Component )
     }
 
 };
@@ -136,7 +143,7 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
 /**
  *
  */
-export interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent_Props {
+interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent_Props {
     mainProps: ProjectPage_ROOT_Container_Containing_MultipleSections_Component_Props
 }
 

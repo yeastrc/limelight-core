@@ -8,9 +8,10 @@
  */
 
 import React from 'react'
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
+
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
-import ReactDOM from "react-dom";
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 import {filter_selection_item__any__all__selection_item_TooltipText__Buttons} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_TooltipText__Selected_and_Buttons";
 import {
@@ -46,9 +47,14 @@ export const filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create
 
     const overlay_addedDivElementDOM = document.createElement("div");
 
-    var documentBody = document.querySelector('body');
+    const documentBody = document.querySelector('body');
 
     documentBody.appendChild( overlay_addedDivElementDOM );
+
+    /**
+     * Hold here for use in callback function
+     */
+    let overlay_reactRoot_InDOMElement: Root_ReactDOM_Client
 
     const close_Selected_Callback = () => {
 
@@ -56,14 +62,13 @@ export const filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create
 
         //  React Unmount
 
-        ReactDOM.unmountComponentAtNode( overlay_addedDivElementDOM );
+        overlay_reactRoot_InDOMElement.unmount()
 
         //  Remove containing <div> from DOM
 
         overlay_addedDivElementDOM.remove();
     }
 
-    const renderCompletecallbackFcn = ( ) => { };
 
     const overlay_ComponentElement = (
         React.createElement(
@@ -82,11 +87,11 @@ export const filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create
             null
         )
     );
-    const overlay_Component = ReactDOM.render(
-        overlay_ComponentElement,
-        overlay_addedDivElementDOM,
-        renderCompletecallbackFcn
-    );
+
+
+    overlay_reactRoot_InDOMElement = createRoot_ReactDOM_Client( overlay_addedDivElementDOM )
+
+    overlay_reactRoot_InDOMElement.render( overlay_ComponentElement )
 }
 
 /**

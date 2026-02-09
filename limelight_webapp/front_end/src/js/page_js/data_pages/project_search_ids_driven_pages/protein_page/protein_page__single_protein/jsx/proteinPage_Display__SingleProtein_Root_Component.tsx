@@ -42,6 +42,9 @@ export interface ProteinPage_Display__SingleProtein_Root_Component_closeOverlayC
  */
 export interface ProteinPage_Display__SingleProtein_Root_Component_Props {
 
+    component_OnInstantiate_Pass_Self_Callback: ( self: ProteinPage_Display__SingleProtein_Root_Component ) => void
+    component_OnMount_Callback: () => void
+
     closeOverlayClickHandler : ProteinPage_Display__SingleProtein_Root_Component_closeOverlayClickHandler;
 
     standard_Page_Header_Height: number
@@ -97,7 +100,9 @@ export class ProteinPage_Display__SingleProtein_Root_Component extends React.Com
         this.view_single_protein_overlay_header_inner_container_Ref = React.createRef<HTMLDivElement>();
         this._view_single_protein_overlay_body_Ref = React.createRef<HTMLDivElement>();
 
-        this.state = { 
+        this.props.component_OnInstantiate_Pass_Self_Callback( this )
+
+        this.state = {
             proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop : null
         };
     }
@@ -140,6 +145,11 @@ export class ProteinPage_Display__SingleProtein_Root_Component extends React.Com
      * 
      */   
     componentDidMount() {
+
+        {
+            this.props.component_OnMount_Callback()
+        }
+
         {
             //  Add a scroll event handler to hide the tooltip on scroll
             window.addEventListener( "scroll", this._update_OnScroll_BindThis, { passive: true } );

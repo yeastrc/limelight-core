@@ -11,7 +11,9 @@
 
 
 import React from "react";
-import ReactDOM from "react-dom";
+
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
+
 import {
     Project_OrganizeSearches_ROOT_Component,
     Project_OrganizeSearches_ROOT_Component_Props
@@ -73,15 +75,7 @@ import {Project_OrganizeSearches_Main_Component_Props_Prop} from "page_js/data_p
         throw Error(msg);
     }
 
-    //  Called on render complete
-    const renderCompleteCallbackFcn = () => {
+    const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
 
-    };
-
-    const renderedReactComponent = ReactDOM.render(
-        projectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component,
-        containerDOMElement,
-        renderCompleteCallbackFcn
-    );
-
+    reactRoot_InDOMElement.render( projectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component )
 }
