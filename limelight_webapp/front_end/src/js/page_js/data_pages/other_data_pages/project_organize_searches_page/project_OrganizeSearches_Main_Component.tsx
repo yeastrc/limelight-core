@@ -11,6 +11,7 @@
 
 import React from "react";
 
+import { DragDropContext, Draggable, Droppable } from "@adaptabletools/react-beautiful-dnd";
 
 import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
@@ -29,7 +30,6 @@ import {
     Project_OrganizeSearches_Re_Order_Searches_Overlay_OuterContainer_Component__Callback_update_OrderOf_Searches,
     Project_OrganizeSearches_Re_Order_Searches_Overlay_OuterContainer_Component__Callback_update_OrderOf_Searches_Params
 } from "page_js/data_pages/other_data_pages/project_organize_searches_page/project_OrganizeSearches__Re_Order_Searches_OverlayComponent";
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import {
     open_Project_OrganizeSearches_Folder_Add_Change_SearchesInFolder_Overlay,
     Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent__Callback_update_SearchesInFolder

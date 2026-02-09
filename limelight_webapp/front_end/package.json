@@ -11,7 +11,7 @@
     "@babel/preset-react": "^7.27.1",
     "@types/jquery": "^3.3.31",
     "@types/plotly.js-dist-min": "^2.3.4",
-    "@types/react-dom": "^17.0.2",
+    "@types/react-dom": "^18.3.7",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "css-loader": "^6.11.0",
     "eslint": "^9.32.0",
@@ -34,22 +34,21 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@adaptabletools/react-beautiful-dnd": "^14.0.8",
     "@babel/polyfill": "^7.12.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^7.1.0",
     "@stdlib/stats-lowess": "^0.0.6",
     "@types/d3": "^7.4.3",
-    "@types/react": "^17.0.2",
-    "@types/react-beautiful-dnd": "^11.0.3",
+    "@types/react": "^18.3.28",
     "babel-loader": "^10.0.0",
     "caniuse-lite": "^1.0.30001753",
     "d3": "^7.8.5",
     "jstat": "^1.9.1",
     "ml-savitzky-golay": "^5.0.0",
     "plotly.js-dist-min": "^3.0.1",
-    "react": "^17.0.2",
-    "react-beautiful-dnd": "^13.1.1",
-    "react-dom": "^17.0.2"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }

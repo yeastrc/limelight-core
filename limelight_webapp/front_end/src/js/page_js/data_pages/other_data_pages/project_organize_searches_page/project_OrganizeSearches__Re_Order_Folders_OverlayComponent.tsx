@@ -6,22 +6,22 @@
  *
  */
 
-import React from 'react'
-
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-
-import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
-import {
-    limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
-    Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
-} from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
-import {
-    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
-    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleFolder_Data
-} from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
-
-/////
-
+// import React from 'react'
+//
+// import { DragDropContext, Draggable, Droppable } from "@adaptabletools/react-beautiful-dnd";
+//
+// import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
+// import {
+//     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
+//     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
+// } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
+// import {
+//     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
+//     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleFolder_Data
+// } from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
+//
+// /////
+//
 // const _Overlay_Title = "Change the display order of the folders"
 //
 // const _Overlay_Width_Min = 500;

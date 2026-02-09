@@ -20,11 +20,6 @@ import {StringDownloadUtils} from 'page_js/data_pages/data_pages_common/download
 import {DataPageStateManager, SearchNames_AsMap} from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 import {DataPages_LoggedInUser_CommonObjectsFactory} from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
 
-import {
-    SaveView_Create_Component_React_Result,
-    SaveView_Create_Component_React_Type
-} from 'page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate'
-
 import {SharePage_Component} from 'page_js/data_pages/sharePage_React/sharePage_Component_React';
 //   Modification Mass Rounding to provide some level of commonality between searches
 import {modificationMass_CommonRounding_ReturnNumber} from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
@@ -175,10 +170,10 @@ import {
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_bar_widget/jsx/proteinSequence_Bar_WidgetDisplay__SearchBased__Root_Component";
 import { ProteinSequence_Bar_Widget_StateObject } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_bar_widget/js/proteinSequence_Bar_Widget_StateObject";
 import { Limelight_AnyFilter__HasFilterValue } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/any_filter__has_filter_value/Limelight_AnyFilter__HasFilterValue";
-import { limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants } from "page_js/common_all_pages/limelight__Limelight_Colors_Etc__SyncWith_global.scss__Constants";
 import { Protein_Structure_WidgetDisplay__SearchBased__Root_Component } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/jsx/protein_Structure_WidgetDisplay__SearchBased__Root_Component";
 import { SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject, SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject";
 import { Limelight_MaterialUI_Tab_WrappedWith_Tooltip } from "page_js/common_all_pages/material_ui_library__limelight_extensions_additions/Limelight_MaterialUI_Tab_WrappedWith_Tooltip";
+import { Get_SaveView_Component_React_Type, SaveView_Component_React_Params } from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
 
 
 ////
@@ -315,9 +310,6 @@ interface ProteinPage_Display__SingleProtein_MainContent_Component_State {
     //
     modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects? : ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
     modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections? : ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
-
-    saveView_Component_React?: any //  React Component for Save View
-    saveView_Component_Props_Prop?: any //  Object passed to saveView_Component_React as property propsValue
 }
 
 /**
@@ -553,27 +545,9 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
         }
 
-        let saveView_Component_React = undefined;
-        let saveView_Component_Props_Prop = undefined;
-
-        if ( props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory ) {
-
-            if ( props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps ) {
-                const saveView_Create_Component_React_Type : SaveView_Create_Component_React_Type = (
-                    props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps()
-                );
-
-                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : props.propsValue.projectSearchIds, experimentId : undefined });
-                saveView_Component_React = result.saveView_Component_React
-                saveView_Component_Props_Prop = result.saveView_Component_Props_Prop
-            }
-        }
-
         this.state = {
             modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects,
             modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections,
-            saveView_Component_React,
-            saveView_Component_Props_Prop,
             scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject: {},
             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject: {},
             scanPeak_M_Over_Z__Intensity_Filter_UserSelection_Object_Force_ResetToStateObject: {},
@@ -760,22 +734,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_Final = create_GeneratedReportedPeptideListData_Result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
 
-            let saveView_Component_React = undefined;
-            let saveView_Component_Props_Prop = undefined;
-
-            if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory ) {
-
-                if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps ) {
-                    const saveView_Create_Component_React_Type : SaveView_Create_Component_React_Type = (
-                        this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps()
-                    );
-
-                    const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : this.props.propsValue.projectSearchIds, experimentId : undefined });
-                    saveView_Component_React = result.saveView_Component_React
-                    saveView_Component_Props_Prop = result.saveView_Component_Props_Prop
-                }
-            }
-
             await this._get_searchesContains_StaticVariableOpenMods();
 
             this.setState({
@@ -796,9 +754,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                 sequenceCoverageBooleanArray_Unfiltered,
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_Final,
                 create_GeneratedReportedPeptideListData_Result,
-                singleProtein_FiltersDisplay_ComponentData,
-                saveView_Component_React,
-                saveView_Component_Props_Prop
+                singleProtein_FiltersDisplay_ComponentData
             });
 
             window.setTimeout( () => {
@@ -3141,26 +3097,13 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
         let saveView_Component = undefined;
 
-        if ( this.state.saveView_Component_React ) {
+        if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory ) {
 
-            //  Create "Save View" Component
+            const get_SaveView_Component_React : Get_SaveView_Component_React_Type =
+                this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_Component_React();
 
-            //  variable must start with Constant "S" since is React Component
-            const SaveView_Component_React = this.state.saveView_Component_React;
-            const saveView_Component_Props_Prop = this.state.saveView_Component_Props_Prop;
-
-            saveView_Component = (
-
-                <React.Fragment>
-
-                    <SaveView_Component_React 
-                        propsValue={ saveView_Component_Props_Prop }
-                    />
-
-                    <span >&nbsp;</span>
-
-                </React.Fragment>
-            );
+            const param = new SaveView_Component_React_Params({ projectSearchIds : this.props.propsValue.projectSearchIds });
+            saveView_Component = get_SaveView_Component_React( param )
         }
 
         let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;

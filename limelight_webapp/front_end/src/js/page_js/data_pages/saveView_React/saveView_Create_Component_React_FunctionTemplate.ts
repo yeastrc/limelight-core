@@ -8,34 +8,27 @@
  *
  *
  */
-import {SaveView_Component_Props_Prop} from "page_js/data_pages/saveView_React/saveView_Component_React";
-import React from "react";
 
-export class SaveView_Create_Component_React_Result {
-    saveView_Component_React : React.ReactNode
-    saveView_Component_Props_Prop : SaveView_Component_Props_Prop //  The object to pass to prop 'propValues'
-
-    constructor({ saveView_Component_React, saveView_Component_Props_Prop } : {
-
-        saveView_Component_React : React.ReactNode,
-        saveView_Component_Props_Prop : SaveView_Component_Props_Prop })
-    {
-        this.saveView_Component_React = saveView_Component_React;
-        this.saveView_Component_Props_Prop = saveView_Component_Props_Prop;
-    }
-}
-
-export type SaveView_Create_Component_React_Type = ({ projectSearchIds, experimentId } : {
-
-    projectSearchIds : Array<number>
-    experimentId : number
-}) => SaveView_Create_Component_React_Result
 
 /**
  *
  */
-export type SaveView_Get_Component_React_Type = ({ projectSearchIds, experimentId } : {
+export class SaveView_Component_React_Params {
 
-    projectSearchIds : Array<number>
+    projectSearchIds : Array<number>;
     experimentId? : number
-}) => JSX.Element
+
+    constructor({ projectSearchIds, experimentId } : {
+
+        projectSearchIds : Array<number>;
+        experimentId? : number
+    }) {
+        this.projectSearchIds = projectSearchIds
+        this.experimentId = experimentId
+    }
+
+    private _DO_NOT_Call() {} // Only here to force use of constructor
+}
+
+
+export type Get_SaveView_Component_React_Type = ( params : SaveView_Component_React_Params ) => JSX.Element

@@ -12,7 +12,7 @@
 
 import React from 'react'
 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable } from "@adaptabletools/react-beautiful-dnd";
 
 import { Experiment_ConditionGroup, Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import {

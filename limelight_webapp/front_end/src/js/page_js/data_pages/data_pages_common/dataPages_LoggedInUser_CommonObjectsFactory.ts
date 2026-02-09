@@ -10,10 +10,6 @@
 
  //  Imports
 
-import {
-    SaveView_Create_Component_React_Type
-} from 'page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate'
-import { saveView_Create_Component_React } from 'page_js/data_pages/saveView_React/saveView_Create_Component_React';
 import {Get_SetDefaultView_Component_React_Type} from "page_js/data_pages/setDefaultView_React/setDefaultView_Create_Component_React_FunctionTemplate";
 import {setDefaultView_Create_Component_React} from "page_js/data_pages/setDefaultView_React/setDefaultView_Component_React";
 import {searchName_and_SearchShortName_Change_Component__openOverlay} from "page_js/data_pages/common_components__react/search_name_and_search_short_name__user_change_overlay/searchName_and_SearchShortName_Change_Component_and_WebserviceCall";
@@ -39,6 +35,8 @@ import {
 import {
     searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers__WebLink__Add__OpenOverlay
 } from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers__WebLink__Add_Overlay";
+import { Get_SaveView_Component_React_Type } from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
+import { get_SaveView_Component } from "page_js/data_pages/saveView_React/saveView_Component_React";
 
 /**
  * 
@@ -73,9 +71,9 @@ export class DataPages_LoggedInUser_CommonObjectsFactory {
      * Create object of class SaveView_dataPages
      * 
      */
-    getFunctionToGet_SaveView_dataPages_ComponentAndProps() : SaveView_Create_Component_React_Type {
+    getFunctionToGet_SaveView_dataPages_Component_React() : Get_SaveView_Component_React_Type {
 
-        return saveView_Create_Component_React;
+        return get_SaveView_Component;
     }
 
     getFunction_searchName_and_SearchShortName_Change_Component__openOverlay() {

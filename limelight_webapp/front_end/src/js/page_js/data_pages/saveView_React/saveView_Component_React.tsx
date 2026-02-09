@@ -10,7 +10,7 @@
 
 
 import React from 'react'
-import {SaveView_Get_Component_React_Type} from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
+import { Get_SaveView_Component_React_Type, SaveView_Component_React_Params } from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
 import {saveView_dataPages_MainPage_ProcessRequest_Common} from "page_js/data_pages/data_pages_common/saveView_dataPages_Common";
 
 /**
@@ -18,20 +18,12 @@ import {saveView_dataPages_MainPage_ProcessRequest_Common} from "page_js/data_pa
  * @param projectSearchIds
  * @param experimentId
  */
-export const getSaveView_Component : SaveView_Get_Component_React_Type = function (
-    {
-        projectSearchIds, experimentId
-    } : {
-        projectSearchIds : Array<number>;
-        experimentId? : number
-
-    }) : JSX.Element {
-
-    const propsValue = new SaveView_Component_Props_Prop({ projectSearchIds, experimentId })
+export const get_SaveView_Component : Get_SaveView_Component_React_Type = function (
+   params: SaveView_Component_React_Params ) : JSX.Element {
 
     return (
         <SaveView_Component
-          propsValue={ propsValue }
+          propsValue={ params }
         />
     )
 }
@@ -39,27 +31,9 @@ export const getSaveView_Component : SaveView_Get_Component_React_Type = functio
 /**
  * 
  */
-export class SaveView_Component_Props_Prop {
-
-    projectSearchIds : Array<number>;
-    experimentId? : number
-
-    constructor({ projectSearchIds, experimentId } : {
-
-        projectSearchIds : Array<number>;
-        experimentId? : number
-    }) {
-        this.projectSearchIds = projectSearchIds
-        this.experimentId = experimentId
-    }
-}
-
-/**
- * 
- */
 export class SaveView_Component_Props {
 
-    propsValue : SaveView_Component_Props_Prop
+    propsValue : SaveView_Component_React_Params
 }
 
 /**
@@ -67,7 +41,7 @@ export class SaveView_Component_Props {
  */
 class SaveView_Component_State {
 
-    _placeholder: any  // Used so don't put anything in the state
+    _placeholder: unknown  // Used so don't put anything in the state
 }
 
 
@@ -86,8 +60,8 @@ export class SaveView_Component extends React.Component< SaveView_Component_Prop
     constructor(props : SaveView_Component_Props) {
         super(props);
 
-        if ( ! ( props.propsValue instanceof SaveView_Component_Props_Prop ) ) {
-            const msg = "SaveView_Component: props.propsValue NOT instanceof SaveView_Component_Props_Prop";
+        if ( ! ( props.propsValue instanceof SaveView_Component_React_Params ) ) {
+            const msg = "SaveView_Component: props.propsValue NOT instanceof SaveView_Component_React_Params";
             console.warn( msg );
             throw Error( msg );
         }
@@ -112,11 +86,14 @@ export class SaveView_Component extends React.Component< SaveView_Component_Prop
     render() {
 
         return (
-            <div className=" save-view-container ">
-                <input type="button" value="Save to Highlighted Results"
-                    onClick={ this._saveViewButton_ClickHandler_BindThis }
-                />
-            </div>
+            <React.Fragment>
+                <div className=" save-view-container ">
+                    <input type="button" value="Save to Highlighted Results"
+                           onClick={ this._saveViewButton_ClickHandler_BindThis }
+                    />
+                </div>
+                <span>&nbsp;</span>
+            </React.Fragment>
         );
 
     }

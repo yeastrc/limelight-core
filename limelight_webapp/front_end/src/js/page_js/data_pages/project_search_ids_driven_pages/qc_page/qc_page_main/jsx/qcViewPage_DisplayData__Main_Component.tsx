@@ -40,10 +40,6 @@ import {
     ModificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinator_Class";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
-import {
-    SaveView_Create_Component_React_Result,
-    SaveView_Create_Component_React_Type
-} from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {PeptidePage_Display_MainContent_Component_nonClass_Functions} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptidePage_Display_MainContent_Component_nonClass_Functions";
 import {PeptidePage_Display_MainContent_Component_Props_Prop} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptidePage_Display_MainContent_Component";
@@ -111,6 +107,7 @@ import {
 import {
     WebserviceCallStandardPost_RejectObject_Class
 } from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
+import { Get_SaveView_Component_React_Type, SaveView_Component_React_Params } from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
 
 
 /**
@@ -247,9 +244,6 @@ interface QcViewPage_DisplayData__Main_Component_State {
     //
     modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects? : ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
     modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections? : ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
-
-    saveView_Component_React?: any //  React Component for Save View
-    saveView_Component_Props_Prop?: any //  Object passed to saveView_Component_React as property propsValue
 
     qcViewPage_CommonData_To_AllComponents_From_MainComponent?: QcViewPage_CommonData_To_AllComponents_From_MainComponent //  Updated and passed to child components
 }
@@ -449,22 +443,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue.limelight_Colors_For_MultipleSearches = Limelight_Colors_For_MultipleSearches.getInstance({projectSearchIds: props.propsValue.projectSearchIds});
         }
 
-        let saveView_Component_React = undefined;
-        let saveView_Component_Props_Prop = undefined;
-
-        if ( props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory ) {
-
-            if ( props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps ) {
-                const saveView_Create_Component_React_Type : SaveView_Create_Component_React_Type = (
-                    props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_ComponentAndProps()
-                );
-
-                const result : SaveView_Create_Component_React_Result = saveView_Create_Component_React_Type({ projectSearchIds : props.propsValue.projectSearchIds, experimentId : undefined });
-                saveView_Component_React = result.saveView_Component_React
-                saveView_Component_Props_Prop = result.saveView_Component_Props_Prop
-            }
-        }
-
         let allSearches_Have_ScanFilenames = true;
         let allSearches_Have_ScanData = true;
         let allSearches_Have_PSM_RetentionTime_Precursor_MZ = true;
@@ -551,8 +529,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root__NO_FILTERING,
             getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING,
 
-            saveView_Component_React,
-            saveView_Component_Props_Prop,
             modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects,
             modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections,
             proteinPositionFilter_UserSelections_Component_Force_ReRender_Object: {},
@@ -2248,26 +2224,13 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
         let saveView_Component : JSX.Element = undefined;
 
-        if ( this.state.saveView_Component_React ) {
+        if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory ) {
 
-            //  Create "Save View" Component
+            const get_SaveView_Component_React : Get_SaveView_Component_React_Type =
+                this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SaveView_dataPages_Component_React();
 
-            //  variable must start with Constant "S" since is React Component
-            const SaveView_Component_React = this.state.saveView_Component_React;
-            const saveView_Component_Props_Prop = this.state.saveView_Component_Props_Prop;
-
-            saveView_Component = (
-
-                <React.Fragment>
-
-                    <SaveView_Component_React
-                        propsValue={ saveView_Component_Props_Prop }
-                    />
-
-                    <span >&nbsp;</span>
-
-                </React.Fragment>
-            );
+            const param = new SaveView_Component_React_Params({ projectSearchIds : this.props.propsValue.projectSearchIds });
+            saveView_Component = get_SaveView_Component_React( param )
         }
 
         //  Only create these once main display data is loaded

@@ -7,7 +7,9 @@
  */
 
 import React from 'react'
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
+
+import { DragDropContext, Draggable, Droppable } from "@adaptabletools/react-beautiful-dnd";
+
 import {
     searchSubGroup_Manage_GroupNames_UpdateServer,
     SearchSubGroup_Manage_GroupNames_UpdateServer_Entry

@@ -6,6 +6,9 @@
  */
 
 import React from 'react'
+
+import { DragDropContext, Draggable, Droppable } from "@adaptabletools/react-beautiful-dnd";
+
 import {
     SearchDataLookupParameters_Root
 } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
@@ -16,7 +19,6 @@ import {
     DataPageStateManager, SearchProgramsPerSearchItem
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
