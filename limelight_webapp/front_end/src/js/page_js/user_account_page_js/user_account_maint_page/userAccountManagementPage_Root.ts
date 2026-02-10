@@ -3,7 +3,6 @@
  * 
  * Javascript for userAccountManagement.jsp page  
  *
- * Currently SKIPPED for upgrade 'ReactDOM.render' call
  */
 
 
@@ -15,6 +14,10 @@
 
 ///////////////////////////////////////////
 
+import React from "react";
+import { createRoot as createRoot_ReactDOM_Client } from "react-dom/client";
+
+
 /**
  * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
  */
@@ -25,8 +28,7 @@ import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorT
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/common_all_pages/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
-import ReactDOM from "react-dom";
-import React from "react";
+
 import {
 	UserAccountManagementPage_MainPage_Component,
 	UserAccountManagementPage_MainPage_Component_Props
@@ -78,15 +80,9 @@ class UserAccountManagementPage {
 			)
 		);
 
+		const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
 
-		const renderCompletecallbackFcn = ( ) => { };
-
-		const renderedReactComponent = ReactDOM.render(
-			component,
-			containerDOMElement,
-			renderCompletecallbackFcn
-		);
-
+		reactRoot_InDOMElement.render( component )
 	}
 }
 

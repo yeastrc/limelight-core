@@ -12,12 +12,11 @@
 
 //  module import
 
-import ReactDOM from "react-dom";
 import React from "react";
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
 
 
-import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
-import {UserLoginPage_Root} from "page_js/user_account_page_js/root_parts/userLoginPage_Root";
+
 import {
 	User_login_form_public_access_code_Component, User_login_form_public_access_code_Component_Props
 } from "page_js/user_account_page_js/sub_parts/user_login_form_public_access_code_Component";
@@ -30,17 +29,26 @@ export class UserEnter_PublicAccessCode_Subpart {
 
 	private _initialized = false;
 
-	private _userLoginPage_Root : UserLoginPage_Root
+	private _reactRoot_InDOMElement: Root_ReactDOM_Client
 
 	/**
 	 * 
 	 */
-	constructor( userLoginPage_Root : UserLoginPage_Root ) {
+	constructor() {
 		this._initialized = false;
 
-		this._userLoginPage_Root = userLoginPage_Root;
-
 		this._initialized = true;
+	}
+
+	/**
+	 *
+	 */
+	removeFromPage() {
+
+		if ( this._reactRoot_InDOMElement ) {
+
+			this._reactRoot_InDOMElement.unmount()
+		}
 	}
 
 	/**
@@ -49,32 +57,15 @@ export class UserEnter_PublicAccessCode_Subpart {
 	showOnPage(
 		{
 			containerHTMLElement,
-			inviteTrackingCode
+			showLoginForm_Callback
 		} : {
 			containerHTMLElement: HTMLElement
-			inviteTrackingCode: any
+			showLoginForm_Callback: () => void
 		} ) {
-
-
-		//  React Unmount
-
-		ReactDOM.unmountComponentAtNode( containerHTMLElement )
-
-		let $containerHTMLElement = $( containerHTMLElement );
-
-		$containerHTMLElement.empty();
 
 		const props: User_login_form_public_access_code_Component_Props = {
 
-			openSignin_Link_Clicked_Callback: () => {
-				try {
-					this._userLoginPage_Root._showLoginForm()
-
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			}
+			openSignin_Link_Clicked_Callback: showLoginForm_Callback
 		}
 
 		const root_Component = (
@@ -85,16 +76,9 @@ export class UserEnter_PublicAccessCode_Subpart {
 			)
 		);
 
-		//  Called on render complete
-		const renderCompleteCallbackFcn = () => {
+		const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerHTMLElement )
 
-		};
-
-		const renderedReactComponent = ReactDOM.render(
-			root_Component,
-			containerHTMLElement,
-			renderCompleteCallbackFcn
-		);
+		reactRoot_InDOMElement.render( root_Component )
 	};
 
 };

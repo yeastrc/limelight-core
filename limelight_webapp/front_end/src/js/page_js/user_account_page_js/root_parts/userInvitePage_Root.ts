@@ -12,9 +12,8 @@
 
 //module import 
 
-import ReactDOM from "react-dom";
 import React from "react";
-
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
 
 /**
  * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
@@ -41,6 +40,16 @@ class UserInvitePage {
 
 	private _userLogin_Subpart = new UserLogin_Subpart();
 	private _userCreateAccount_With_Invite_Subpart = new UserCreateAccount_With_Invite_Subpart();
+
+	private _user_invite__invite_landing_Component__ReactRoot_InDOMElement: Root_ReactDOM_Client
+
+
+	private _currentlyShowing = {
+		userLogin_Subpart: false,
+		_userCreateAccount_With_Invite_Subpart: false,
+		_user_invite__invite_landing_Component: false
+	}
+
 
 	private invite_landing_invite_code: string
 	private invite_landing_invite_project_id: number
@@ -69,21 +78,13 @@ class UserInvitePage {
 
 		let containerHTMLElement = document.getElementById( "main_container_below_logo" );
 
-		try {
+		//  Called on component mount
+		const callback_On_Mount = () => {
 
-			//  React Unmount
+			this._initialize_After_Render ()
+		};
 
-			ReactDOM.unmountComponentAtNode( containerHTMLElement )
-
-		} catch ( e ) {
-			//  Ignore Exception
-		}
-
-		let $containerHTMLElement = $( containerHTMLElement );
-
-		$containerHTMLElement.empty();
-
-		const props: User_invite__invite_landing_Component_Props = { inviteProjectTitle: this.invite_landing_invite_project_title };
+		const props: User_invite__invite_landing_Component_Props = { inviteProjectTitle: this.invite_landing_invite_project_title, callback_On_Mount };
 
 		const root_Component = (
 			React.createElement(
@@ -93,17 +94,12 @@ class UserInvitePage {
 			)
 		);
 
-		//  Called on render complete
-		const renderCompleteCallbackFcn = () => {
 
-			this._initialize_After_Render ()
-		};
+		this._user_invite__invite_landing_Component__ReactRoot_InDOMElement = createRoot_ReactDOM_Client( containerHTMLElement )
 
-		const renderedReactComponent = ReactDOM.render(
-			root_Component,
-			containerHTMLElement,
-			renderCompleteCallbackFcn
-		);
+		this._user_invite__invite_landing_Component__ReactRoot_InDOMElement.render( root_Component )
+
+		this._currentlyShowing._user_invite__invite_landing_Component = true
 	 }
 
 	 private _initialize_After_Render () {
@@ -260,14 +256,25 @@ class UserInvitePage {
 
 		let containerHTMLElement = document.getElementById( "main_container_below_logo" );
 
-		//  React Unmount
+		if ( this._currentlyShowing._user_invite__invite_landing_Component ) {
 
-		ReactDOM.unmountComponentAtNode( containerHTMLElement )
+			if ( this._user_invite__invite_landing_Component__ReactRoot_InDOMElement ) {
 
-		let $containerHTMLElement = $( containerHTMLElement );
-		
-		$containerHTMLElement.empty();
-		
+				this._user_invite__invite_landing_Component__ReactRoot_InDOMElement.unmount()
+
+				this._user_invite__invite_landing_Component__ReactRoot_InDOMElement = undefined
+			}
+
+			this._currentlyShowing._user_invite__invite_landing_Component = false
+		}
+
+		if ( this._currentlyShowing._userCreateAccount_With_Invite_Subpart ) {
+
+			this._userCreateAccount_With_Invite_Subpart.removeFromPage()
+
+			this._currentlyShowing._userCreateAccount_With_Invite_Subpart = false
+		}
+
 		this._userLogin_Subpart.showOnPage( { 
 			containerHTMLElement, 
 			inviteTrackingCode : this.invite_landing_invite_code } );
@@ -280,14 +287,25 @@ class UserInvitePage {
 
 		let containerHTMLElement = document.getElementById( "main_container_below_logo" );
 
-		//  React Unmount
+		if ( this._currentlyShowing._user_invite__invite_landing_Component ) {
 
-		ReactDOM.unmountComponentAtNode( containerHTMLElement )
+			if ( this._user_invite__invite_landing_Component__ReactRoot_InDOMElement ) {
 
-		let $containerHTMLElement = $( containerHTMLElement );
-		
-		$containerHTMLElement.empty();
-		
+				this._user_invite__invite_landing_Component__ReactRoot_InDOMElement.unmount()
+
+				this._user_invite__invite_landing_Component__ReactRoot_InDOMElement = undefined
+			}
+
+			this._currentlyShowing._user_invite__invite_landing_Component = false
+		}
+
+		if ( this._currentlyShowing.userLogin_Subpart ) {
+
+			this._userLogin_Subpart.removeFromPage()
+
+			this._currentlyShowing.userLogin_Subpart = false
+		}
+
 		this._userCreateAccount_With_Invite_Subpart.showOnPage( { 
 			containerHTMLElement, 
 			inviteTrackingCode : this.invite_landing_invite_code
@@ -299,7 +317,7 @@ class UserInvitePage {
 
 ///////////////
 
-$(document).ready(function() {
+{
 
 	//Instance of class
 	var userInvitePage = new UserInvitePage();
@@ -312,4 +330,4 @@ $(document).ready(function() {
 		throw e;
 	}
 
-});
+}

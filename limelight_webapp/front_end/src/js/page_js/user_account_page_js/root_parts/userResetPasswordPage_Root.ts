@@ -175,8 +175,7 @@ class UserResetPasswordPage {
 
 ///////////////
 
-$(document).ready(function() {
-
+{
 	//Instance of class
 	var userResetPasswordPage = new UserResetPasswordPage();
 
@@ -188,4 +187,4 @@ $(document).ready(function() {
 		throw e;
 	}
 
-});
+}

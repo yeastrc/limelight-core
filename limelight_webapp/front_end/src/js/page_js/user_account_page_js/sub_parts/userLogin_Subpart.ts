@@ -3,9 +3,6 @@
  * 
  * Javascript for logging in a user
  *
- *
- * Currently SKIPPED for upgrade 'ReactDOM.render' call
- * 
  */
 
 //////////////////////////////////
@@ -14,8 +11,8 @@
 
 //module import 
 
-import ReactDOM from "react-dom";
 import React from "react";
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
 
 
 import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
@@ -29,6 +26,8 @@ import {
 	User_login_form_main_display_Component
 } from "page_js/user_account_page_js/sub_parts/user_login_form_main_display_Component";
 
+
+let constructorCalled_UserLogin_Subpart = false
 		
 /**
  * 
@@ -40,13 +39,35 @@ export class UserLogin_Subpart {
 	private inviteTrackingCode: string
 	private _termsOfServiceKey: string
 
+	private _reactRoot_InDOMElement: Root_ReactDOM_Client
+
 	/**
 	 * 
 	 */
 	constructor() {
-		this._initialized = false;
+		if ( constructorCalled_UserLogin_Subpart ) {
+
+			const msg = "ERROR: constructor Called for class UserLogin_Subpart more than once"
+			console.warn(msg)
+			throw Error(msg)
+		}
+
+		constructorCalled_UserLogin_Subpart = true
 
 		this._initialized = true;
+	}
+
+	/**
+	 *
+	 */
+	removeFromPage() {
+
+		if ( this._reactRoot_InDOMElement ) {
+
+			this._reactRoot_InDOMElement.unmount()
+		}
+
+		this._reactRoot_InDOMElement = undefined
 	}
 
 	/**
@@ -61,35 +82,32 @@ export class UserLogin_Subpart {
 			inviteTrackingCode: string
 		} ) {
 
+		//  Assume Already Empty
+
 		//  React Unmount
 
-		ReactDOM.unmountComponentAtNode( containerHTMLElement )
+		// ReactDOM.unmountComponentAtNode( containerHTMLElement )
+		//
+		// let $containerHTMLElement = $( containerHTMLElement );
+		//
+		// $containerHTMLElement.empty();
 
-		let $containerHTMLElement = $( containerHTMLElement );
+		const callback_On_Mount : () => void = () => {
 
-		$containerHTMLElement.empty();
-
+			this._showOnPage_AfterRender({ inviteTrackingCode })
+		}
 
 		const root_Component = (
 			React.createElement(
 				User_login_form_main_display_Component,
-				null,
+				{ callback_On_Mount },
 				null
 			)
 		);
 
-		//  Called on render complete
-		const renderCompleteCallbackFcn = () => {
+		this._reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerHTMLElement )
 
-			this._showOnPage_AfterRender({ inviteTrackingCode })
-		};
-
-		const renderedReactComponent = ReactDOM.render(
-			root_Component,
-			containerHTMLElement,
-			renderCompleteCallbackFcn
-		);
-
+		this._reactRoot_InDOMElement.render( root_Component )
 	}
 
 	private _showOnPage_AfterRender(

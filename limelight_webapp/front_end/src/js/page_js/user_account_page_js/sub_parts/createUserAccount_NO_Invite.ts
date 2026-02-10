@@ -3,7 +3,6 @@
  * 
  * Javascript for creating a user account WITHOUT an Invite
  *
- * Currently SKIPPED for upgrade 'ReactDOM.render' call
  */
 
 //////////////////////////////////
@@ -15,7 +14,7 @@
 ///////////////////////////////////////////
 
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot as createRoot_ReactDOM_Client } from "react-dom/client";
 
 import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 import { showErrorMsg, hideAllErrorMessages } from 'page_js/common_all_pages/showHideErrorMessage';
@@ -206,13 +205,14 @@ export class UserCreateAccount_NO_Invite_Subpart {
 		try {
 			const google_RecaptchaSiteKey = this._google_RecaptchaSiteKey;
 
-			ReactDOM.unmountComponentAtNode( containerHTMLElement )
+			//  Called on component mount
+			const componentDidMount_Callback = () => {
 
-			let $containerHTMLElement = $( containerHTMLElement );
+				this.showOnPage_Internal_After_ReactRender({ containerHTMLElement })
+			};
 
-			$containerHTMLElement.empty();
 
-			const props: CreateUserAccount_Main_Common_Component_Props = { createFor_YES_Invite: false, showInvitedMessage: false, google_RecaptchaSiteKey };
+			const props: CreateUserAccount_Main_Common_Component_Props = { createFor_YES_Invite: false, showInvitedMessage: false, google_RecaptchaSiteKey, componentDidMount_Callback };
 
 			const root_Component = (
 				React.createElement(
@@ -222,23 +222,14 @@ export class UserCreateAccount_NO_Invite_Subpart {
 				)
 			);
 
-			//  Called on render complete
-			const renderCompleteCallbackFcn = () => {
+			const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerHTMLElement )
 
-				this.showOnPage_Internal_After_ReactRender({ containerHTMLElement })
-			};
-
-			const renderedReactComponent = ReactDOM.render(
-				root_Component,
-				containerHTMLElement,
-				renderCompleteCallbackFcn
-			);
+			reactRoot_InDOMElement.render( root_Component )
 
 		} catch ( e ) {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
 			throw e;
 		}
-
 	}
 
 	private showOnPage_Internal_After_ReactRender(
