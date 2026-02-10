@@ -835,7 +835,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             window.setTimeout( () => {
 
                 this._update_Overlay_Add_Listeners__After_MainPaint()
-            }, 10 );
+            }, 50 );
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }

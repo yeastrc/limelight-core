@@ -760,7 +760,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
             window.setTimeout( () => {
 
                 this._update_Overlay_Add_Listeners__After_MainPaint()
-            });
+            }, 50 );
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
@@ -2938,6 +2938,16 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         }
 
 
+        const proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM =
+            this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref.current;
+
+        if ( ! proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM ) {
+
+            console.warn('ref.current does NOT have a value: this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref.current: in: _add_MutationObserver_To_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container()');
+
+            return // EARLY RETURN
+        }
+
         // *** NOTE:  Added to 'config':   'attributes: true' since Only attributes change when change 'Width Scale Selection:' which changes width of SVG.
 
         // Options for the observer (which mutations to observe)
@@ -2968,7 +2978,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                 }
                 timeoutId = window.setTimeout( () => {
                     timeoutId = null;
-                    // console.log('At least 1 child node has been added or removed.');
+                    //  console.log('window.setTimeout called: in: domMutationCallback called: In: _add_MutationObserver_To_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container()');
                     this._resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width();
                 }, 200 );
             }
@@ -2978,16 +2988,9 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         // Create an observer instance linked to the callback function
         this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container = new MutationObserver( domMutationCallback );
 
-
-        const proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM =
-            this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref.current;
-
-        if ( proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM ) {
-
-            // Start observing the target node for configured mutations
-            this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container.
-            observe( proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM, config );
-        }
+        // Start observing the target node for configured mutations
+        this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container.
+        observe( proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM, config );
     }
 
     /////
