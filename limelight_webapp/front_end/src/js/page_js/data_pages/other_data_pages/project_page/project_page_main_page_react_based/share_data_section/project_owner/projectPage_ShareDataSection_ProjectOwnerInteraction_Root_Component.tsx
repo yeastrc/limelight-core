@@ -140,7 +140,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Compon
     /**
      *
      */
-    private _get_ExpandedBodyContents() : JSX.Element {
+    private _get_ExpandedBodyContents() : React.JSX.Element {
 
         return (
             <div >

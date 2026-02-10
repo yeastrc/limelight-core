@@ -394,8 +394,8 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
 
         let havePeptideDataTableContentsForDownload : boolean = false;
 
-        let noPeptidesMessage : JSX.Element = undefined;
-        let peptideListTable : JSX.Element = undefined;
+        let noPeptidesMessage : React.JSX.Element = undefined;
+        let peptideListTable : React.JSX.Element = undefined;
 
         if ( this.props.peptideList_Empty ) {
 

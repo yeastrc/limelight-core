@@ -10,7 +10,7 @@ import React from "react";
 /**
  *
  */
-const uniqueColumnHeader_Tooltip_Create = function () : JSX.Element {
+const uniqueColumnHeader_Tooltip_Create = function () : React.JSX.Element {
 
     return (
 

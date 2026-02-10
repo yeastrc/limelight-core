@@ -34,7 +34,7 @@ export class ModalOverlay_Limelight_Component_v001_B_FlexBox_Props {
     readonly widthMaximum : number
     readonly widthMinimum : number
     readonly title : string                  // No Title if null or undefined
-    readonly title_Component_Callback? : () => JSX.Element   //  ONLY evaluated if 'title' is null or undefined
+    readonly title_Component_Callback? : () => React.JSX.Element   //  ONLY evaluated if 'title' is null or undefined
     readonly close_OnBackgroundClick : boolean
     readonly callbackOnClicked_Close : () => void;    //  Don't show "X" if callbackOnClicked_Close is not populated
     readonly titleBar_LeaveSpaceFor_CloseX?: boolean  //  In formatting the title bar, leave space for the Close "X" even if don't show it

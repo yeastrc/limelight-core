@@ -22,7 +22,7 @@ export const currentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserS
     } : {
         psm_Exclude_IndependentDecoy_PSMs_UserSelections_StateObject : Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject;
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! psm_Exclude_IndependentDecoy_PSMs_UserSelections_StateObject ) ) {
         //  Nothing to display
@@ -46,7 +46,7 @@ export const currentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserS
 /**
  *
  */
-const CurrentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserSelections = function() : JSX.Element {
+const CurrentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserSelections = function() : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 

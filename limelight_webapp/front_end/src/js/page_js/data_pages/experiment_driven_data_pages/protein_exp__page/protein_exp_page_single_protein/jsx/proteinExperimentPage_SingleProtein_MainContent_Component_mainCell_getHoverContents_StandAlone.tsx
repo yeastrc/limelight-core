@@ -22,7 +22,7 @@ import { SearchNames_AsMap } from 'page_js/data_pages/data_pages_common/dataPage
 
 
 export class MainCell_getHoverContents_StandAlone_Result {
-    hoverContent: JSX.Element
+    hoverContent: React.JSX.Element
 }
 
 /**

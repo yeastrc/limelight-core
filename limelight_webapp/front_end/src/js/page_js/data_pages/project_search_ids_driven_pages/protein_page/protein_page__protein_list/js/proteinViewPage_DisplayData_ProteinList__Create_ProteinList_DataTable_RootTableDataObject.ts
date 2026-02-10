@@ -294,7 +294,7 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = get_proteinViewPage_DisplayData__SearchSubGroup_SequenceCoverage_Header_Text_DataTable_Component({ searchSubGroup });
 
-                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => {
 
                     return get_proteinViewPage_DisplayData__SearchSubGroup_SequenceCoverage_Header_Tooltip_DataTable_Component({ searchSubGroup });
                 }
@@ -482,7 +482,7 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = get_proteinViewPage_DisplayData__SearchSubGroup_PSM_Count_Header_Text_DataTable_Component({ searchSubGroup });
 
-                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => {
 
                     return get_proteinViewPage_DisplayData__SearchSubGroup_PSM_Count_Header_Tooltip_DataTable_Component({ searchSubGroup });
                 }
@@ -515,7 +515,7 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = get_proteinViewPage_DisplayData__SearchSubGroup_NSAF_Header_Text_DataTable_Component({ searchSubGroup });
 
-                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => {
 
                     return get_proteinViewPage_DisplayData__SearchSubGroup_NSAF_Header_Tooltip_DataTable_Component({ searchSubGroup });
                 }
@@ -548,7 +548,7 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = get_proteinViewPage_DisplayData__SearchSubGroup_Adjusted_Spectral_Count_ABACUS_Header_Text_DataTable_Component({ searchSubGroup });
 
-                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => {
 
                     return get_proteinViewPage_DisplayData__SearchSubGroup_Adjusted_Spectral_Count_ABACUS_Header_Tooltip_DataTable_Component({ searchSubGroup });
                 }
@@ -581,7 +581,7 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = get_proteinViewPage_DisplayData__SearchSubGroup_NSAF__Using_Adjusted_Spectral_Count_ABACUS_Header_Text_DataTable_Component({ searchSubGroup });
 
-                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => {
 
                     return get_proteinViewPage_DisplayData__SearchSubGroup_NSAF__Using__Adjusted_Spectral_Count_ABACUS_Header_Tooltip_DataTable_Component({ searchSubGroup });
                 }
@@ -616,7 +616,7 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = get_proteinViewPage_DisplayData__SearchSubGroup_Peptide_Count_Header_Text_DataTable_Component({searchSubGroup});
 
-                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = (): JSX.Element => {
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = (): React.JSX.Element => {
 
                     return get_proteinViewPage_DisplayData__SearchSubGroup_Peptide_Count_Header_Tooltip_DataTable_Component({searchSubGroup});
                 }
@@ -642,7 +642,7 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = get_proteinViewPage_DisplayData__SearchSubGroup_PeptideUnique_Count_Header_Text_DataTable_Component({searchSubGroup});
 
-                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = (): JSX.Element => {
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = (): React.JSX.Element => {
 
                     return get_proteinViewPage_DisplayData__SearchSubGroup_PeptideUnique_Count_Header_Tooltip_DataTable_Component({searchSubGroup});
                 }
@@ -1179,7 +1179,7 @@ const _createProteinItem_DataTableEntry = function(
         }
 
         const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-            ( params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+            ( params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                 return get_ProteinName_ProteinDescription_Tooltip_Contents({ proteinNameDescriptionForToolip })
             }
@@ -1205,7 +1205,7 @@ const _createProteinItem_DataTableEntry = function(
         }
 
         const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-            ( params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+            ( params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                 return get_ProteinName_ProteinDescription_Tooltip_Contents({ proteinNameDescriptionForToolip })
             }

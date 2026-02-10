@@ -174,7 +174,7 @@ class QcViewPage_SingleSearch__PSMCount_VS_M_Z_OverlayContainer extends React.Co
      */
     render() {
 
-        const searchScanFileData_Entries_OptionEntriesJSX: Array<JSX.Element> = []
+        const searchScanFileData_Entries_OptionEntriesJSX: Array<React.JSX.Element> = []
 
         if ( ( ! this.state.loadingData ) && ( ! this.state.searchScanFileData_NoEntries ) && ( ! this.state.searchScanFileData_OnlyOne ) ) {
 

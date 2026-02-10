@@ -24,7 +24,7 @@ export const currentFiltersDisplayBlock__Peptide_QC__PeptideSequence_UserSelecti
     } : {
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject;
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! peptideSequence_UserSelections_StateObject ) ) {
         //  Nothing to display
@@ -59,7 +59,7 @@ const CurrentFiltersDisplayBlock__Peptide_QC__PeptideSequence_UserSelections = f
     } : {
         peptideSearchString: string
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 

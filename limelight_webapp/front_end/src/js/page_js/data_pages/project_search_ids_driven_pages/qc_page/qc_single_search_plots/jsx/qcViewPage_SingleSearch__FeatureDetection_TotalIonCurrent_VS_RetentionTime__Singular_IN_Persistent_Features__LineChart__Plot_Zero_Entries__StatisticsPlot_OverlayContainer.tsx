@@ -187,7 +187,7 @@
 //                 this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection = null;  // reset to null since not currently selected id
 //             }
 //
-//             let noData_Element: JSX.Element = null;
+//             let noData_Element: React.JSX.Element = null;
 //
 //             if ( this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection ) {
 //

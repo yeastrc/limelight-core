@@ -232,7 +232,7 @@ export class ProjectPage_UploadData_MainPage_Main_Component extends React.Compon
     /**
      *
      */
-    private _get_ExpandedBodyContents() : JSX.Element {
+    private _get_ExpandedBodyContents() : React.JSX.Element {
 
         return (
             <div>

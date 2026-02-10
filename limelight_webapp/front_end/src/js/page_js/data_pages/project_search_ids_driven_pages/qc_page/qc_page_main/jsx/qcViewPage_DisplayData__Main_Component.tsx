@@ -2211,7 +2211,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
      */
     render() {
 
-        let setDefaultView_Component : JSX.Element = undefined;
+        let setDefaultView_Component : React.JSX.Element = undefined;
 
         if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory &&  this.props.propsValue.projectSearchIds.length === 1 ) {
 
@@ -2222,7 +2222,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             setDefaultView_Component = get_SetDefaultView_Component_React( param )
         }
 
-        let saveView_Component : JSX.Element = undefined;
+        let saveView_Component : React.JSX.Element = undefined;
 
         if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory ) {
 
@@ -2235,7 +2235,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
         //  Only create these once main display data is loaded
 
-        let filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section : JSX.Element = null;
+        let filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section : React.JSX.Element = null;
 
         if ( this.state.mainDisplayData_Loaded ) {
 
@@ -2387,7 +2387,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
         } : {
             display_ShowAsSingleSearchOption: boolean
         }
-    ) : JSX.Element{
+    ) : React.JSX.Element{
 
         let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;
 

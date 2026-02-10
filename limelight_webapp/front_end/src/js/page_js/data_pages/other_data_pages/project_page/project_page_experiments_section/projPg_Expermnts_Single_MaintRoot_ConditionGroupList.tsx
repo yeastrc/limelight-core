@@ -228,7 +228,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainRoot_ConditionGroupLis
             return null;
         }
 
-        const conditionEntryComponentsList: Array<JSX.Element> = [];
+        const conditionEntryComponentsList: Array<React.JSX.Element> = [];
         {
             let index = 0
 

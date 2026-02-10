@@ -950,7 +950,7 @@ const _get_DataTable_DataRowEntries = function(
             //  View MS 1 Scan link (if ajaxResponse.searchHasScanData is true)
 
             const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                     return get_PsmList_MS_1_Scan_TableCell_ExternalReactComponent({
                         psmListItem,
@@ -1012,7 +1012,7 @@ const _get_DataTable_DataRowEntries = function(
             }
 
             const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                     let scanPeaks_That_PassFilters_Array__For_PsmId: ReadonlyArray<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak> = undefined
 

@@ -825,7 +825,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
         //  Create Header Row Components
 
-        let headerColumnsReactComponents: JSX.Element[] = undefined;
+        let headerColumnsReactComponents: React.JSX.Element[] = undefined;
 
         {
             let no_Columns_Are_Sortable = true;

@@ -310,9 +310,9 @@ class Set_ProjectWide_DefaultFilter_Cutoffs_Overrides__Overlay_Component extends
     /**
      *
      */
-    private _getMainDisplayArea() : JSX.Element {
+    private _getMainDisplayArea() : React.JSX.Element {
 
-        const elements : Array<JSX.Element> = []
+        const elements : Array<React.JSX.Element> = []
 
         for ( const data_For_SearchProgram of this.state.mainData.data_Per_SearchProgram_Array ) {
 
@@ -335,7 +335,7 @@ class Set_ProjectWide_DefaultFilter_Cutoffs_Overrides__Overlay_Component extends
     /**
      *
      */
-    private _getMainDisplayArea_For_SearchProgram( data_For_SearchProgram: Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result_Per_SearchProgram ) : JSX.Element {
+    private _getMainDisplayArea_For_SearchProgram( data_For_SearchProgram: Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result_Per_SearchProgram ) : React.JSX.Element {
 
         const psmPeptide_Indent = 10;
 
@@ -411,7 +411,7 @@ class Set_ProjectWide_DefaultFilter_Cutoffs_Overrides__Overlay_Component extends
         data_Per_Type_PSM_Peptide_Protein: Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result_Per_Type_PSM_Peptide_Protein,
         parentkey: string
 
-    ) : JSX.Element {
+    ) : React.JSX.Element {
 
         if ( ( ! data_Per_Type_PSM_Peptide_Protein ) || ( ! data_Per_Type_PSM_Peptide_Protein.data_Per_AnnotationType_Name_Array ) ) {
             // NO object or property
@@ -422,7 +422,7 @@ class Set_ProjectWide_DefaultFilter_Cutoffs_Overrides__Overlay_Component extends
 
         //  Currently 3 column Grid
 
-        const elements : Array<JSX.Element> = []
+        const elements : Array<React.JSX.Element> = []
 
         for ( const data_Per_AnnotationType_Name of data_Per_Type_PSM_Peptide_Protein.data_Per_AnnotationType_Name_Array ) {
 

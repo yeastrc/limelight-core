@@ -1820,7 +1820,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                 }
 
                 const dataRow_Get_RowChildContent_Return_ChildContent: DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent =
-                    ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) : JSX.Element => {
+                    ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) : React.JSX.Element => {
 
                         const componentPropsProp: ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component_Props_Prop = {
                             projectSearchIds: this.props.propsValue.projectSearchIds,
@@ -3392,7 +3392,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
      */    
     render() {
 
-        let setDefaultView_Component : JSX.Element = undefined;
+        let setDefaultView_Component : React.JSX.Element = undefined;
 
         if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory &&  this.props.propsValue.projectSearchIds.length === 1 ) {
 
@@ -3403,7 +3403,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
             setDefaultView_Component = get_SetDefaultView_Component_React( param )
         }
 
-        let saveView_Component : JSX.Element = undefined;
+        let saveView_Component : React.JSX.Element = undefined;
 
         if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory ) {
 
@@ -3416,7 +3416,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
         //  Only create these once main display data is loaded
 
-        // let filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section : JSX.Element = null;
+        // let filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section : React.JSX.Element = null;
         //
         // if ( this.state.mainDisplayData_Loaded ) {
         //
@@ -3660,12 +3660,12 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
     private _render_Selections_By_SearchName() {
 
 
-        let scanFiles_TheirSearches_FullSearches_CurrentlyDisplayed_Message: JSX.Element = undefined
+        let scanFiles_TheirSearches_FullSearches_CurrentlyDisplayed_Message: React.JSX.Element = undefined
 
         {
             const searchScanFileIdSelections_Set__FromStateObject = this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileId_Selections_Set()
 
-            const element_PerSearch_Array: Array<JSX.Element> = []
+            const element_PerSearch_Array: Array<React.JSX.Element> = []
 
 
             for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
@@ -3890,7 +3890,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
     //  */
     // private _render_filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section(
     //     {}: {}
-    // ): JSX.Element {
+    // ): React.JSX.Element {
     //
     //     let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;
     //

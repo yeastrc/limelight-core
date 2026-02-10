@@ -672,7 +672,7 @@ export class ModPage_DataViz_Selections__Text_ClearLink__MainContent_Component e
         }: {
             modificationInfo_Single: INTERNAL__ModificationInfo_Single
         }
-    ): JSX.Element {
+    ): React.JSX.Element {
 
         return (
             <span>

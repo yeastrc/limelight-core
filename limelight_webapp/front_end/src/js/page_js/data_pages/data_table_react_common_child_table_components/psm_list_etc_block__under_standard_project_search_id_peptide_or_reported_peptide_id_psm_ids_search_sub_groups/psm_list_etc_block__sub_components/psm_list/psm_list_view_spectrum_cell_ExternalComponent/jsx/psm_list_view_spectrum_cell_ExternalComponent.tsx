@@ -33,7 +33,7 @@
 //         // Maybe null or undefined
 //         scanPeaks_That_PassFilters_Array__For_PsmId: Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>
 //
-//     }) : JSX.Element {
+//     }) : React.JSX.Element {
 //
 //     return (
 //         <PsmList_ViewSpectrumCell_ExternalReactComponent

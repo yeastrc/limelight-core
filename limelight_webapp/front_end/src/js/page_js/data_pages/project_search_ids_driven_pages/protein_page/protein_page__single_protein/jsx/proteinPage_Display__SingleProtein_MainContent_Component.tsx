@@ -4000,11 +4000,11 @@ class Internal__ProteinLevel_DataDisplay_AnnotationsEtc__MultipleSearches extend
      */
     render() {
         try {
-            let section_Expanded_Contents: JSX.Element
+            let section_Expanded_Contents: React.JSX.Element
 
             if ( this._section_EverExpanded ) {
 
-                const entryPerSearch_Array: Array<JSX.Element> = []
+                const entryPerSearch_Array: Array<React.JSX.Element> = []
 
                 for ( const projectSearchId of this.props.propsValue_To_MainComponent.projectSearchIds ) {
 

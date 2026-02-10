@@ -59,7 +59,7 @@ export const get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout = fun
         callbackOn_Cancel_Close_Clicked : () => void;
         callback_updateSelected_Searches : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component

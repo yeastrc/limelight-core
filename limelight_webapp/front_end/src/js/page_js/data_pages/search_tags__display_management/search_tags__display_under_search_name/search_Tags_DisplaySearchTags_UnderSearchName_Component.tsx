@@ -201,13 +201,13 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
 
         const categoryLabel_Style: React.CSSProperties = { marginTop: 4, marginRight: 6, fontWeight: "bold", whiteSpace: "nowrap" }
 
-        const categoriesAndTheirSearchTags_Elements: Array<JSX.Element> = [];
+        const categoriesAndTheirSearchTags_Elements: Array<React.JSX.Element> = [];
 
-        let uncategorizedSearchTags_Element: JSX.Element = null;
+        let uncategorizedSearchTags_Element: React.JSX.Element = null;
 
-        let searchTagsOnly_Element: JSX.Element = null
+        let searchTagsOnly_Element: React.JSX.Element = null
 
-        let add_Change_Tags_Element: JSX.Element
+        let add_Change_Tags_Element: React.JSX.Element
 
         if ( this.props.searchTagIds_OnSearch_Set && this.props.searchTagIds_OnSearch_Set.size > 0 ) {
             //  Have Search Tags on This Search
@@ -233,8 +233,8 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
                     //     continue; // EARLY CONTINUE
                     // }
 
-                    const searchTags_Elements: Array<JSX.Element> = [];
-                    let searchTags_Elements_NONE: JSX.Element
+                    const searchTags_Elements: Array<React.JSX.Element> = [];
+                    let searchTags_Elements_NONE: React.JSX.Element
 
                     if ( searchHasAtLeastOneTagInThisCategory ) {
                         for (const tagEntry of categoryEntry.all_SearchTags_InCategory_In_DisplayOrder) {
@@ -277,7 +277,7 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
                 {
                     if ( this.state.searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder.length > 0 ) {
 
-                        const searchTags_Elements: Array<JSX.Element> = [];
+                        const searchTags_Elements: Array<React.JSX.Element> = [];
 
                         for ( const tagEntry of this.state.searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder ) {
 
@@ -313,7 +313,7 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
 
                 if ( this.state.searchTagData_Display_Root.searchTags_All_Array_In_DisplayOrder.length > 0 ) {
 
-                    const searchTag_ElementArray: Array<JSX.Element> = []
+                    const searchTag_ElementArray: Array<React.JSX.Element> = []
 
                     if ( this.state.searchTagData_Display_Root.searchTagCategory_Array_In_DisplayOrder ) {
                         for ( const categoryEntry of this.state.searchTagData_Display_Root.searchTagCategory_Array_In_DisplayOrder ) {
@@ -443,7 +443,7 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
         } : {
             tag_Internal: INTERNAL__Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTag_Entry
             category_label: string
-        }) : JSX.Element {
+        }) : React.JSX.Element {
 
         const tag_Entry = tag_Internal.tag_Entry
 

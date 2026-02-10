@@ -190,7 +190,7 @@ class ModPage_Download_PSM_Localization_Report__DownloadForEachSearchIndividuall
      */
     render(): React.ReactNode { try {
 
-        const searchNames_Elements: Array<JSX.Element> = []
+        const searchNames_Elements: Array<React.JSX.Element> = []
 
         for ( const projectSearchId of this.props.props_value.projectSearchIds ) {
 

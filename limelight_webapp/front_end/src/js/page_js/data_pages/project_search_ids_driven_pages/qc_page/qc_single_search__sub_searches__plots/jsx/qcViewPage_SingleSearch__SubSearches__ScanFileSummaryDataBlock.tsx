@@ -656,7 +656,7 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
      */
     render() {
 
-        let dataDisplay: JSX.Element = null;
+        let dataDisplay: React.JSX.Element = null;
 
         if ( this.state.dataComputed  ) {
 
@@ -670,15 +670,15 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
 
             const dataPerSubSearchArray = this.state.dataComputed.dataPerSubSearchArray;
 
-            const perSearch_HeaderRow: Array<JSX.Element> = [];
+            const perSearch_HeaderRow: Array<React.JSX.Element> = [];
 
             const perSearch_HeaderRow_Download: Array<string> = [];
 
-            const perLevel_TotalIonCurrent_DisplayRows: Array<JSX.Element> = [];
+            const perLevel_TotalIonCurrent_DisplayRows: Array<React.JSX.Element> = [];
             const perLevel_TotalIonCurrent_DisplayRows_DownloadRows: Array<Array<string>> = [];
 
 
-            const perLevel_Count_DisplayRows: Array<JSX.Element> = [];
+            const perLevel_Count_DisplayRows: Array<React.JSX.Element> = [];
 
             const perLevel_Count_DisplayRows_DownloadRows: Array<Array<string>> = [];
 
@@ -704,7 +704,7 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
             }
 
             {
-                const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+                const perLevel_TotalIonCurrent_DisplayEntries: Array<React.JSX.Element> = [];
 
                 const perLevel_TotalIonCurrent_DisplayEntries_DownloadCells: Array<string> = [];
 
@@ -817,7 +817,7 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                 const style_Value: React.CSSProperties = { textAlign: "right", paddingBottom: paddingBottom, paddingLeft: paddingLeft_Values };
 
                 {
-                    const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+                    const perLevel_TotalIonCurrent_DisplayEntries: Array<React.JSX.Element> = [];
 
                     const perLevel_TotalIonCurrent_DisplayEntries_DownloadCells: Array<string> = [];
 
@@ -896,7 +896,7 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                 if ( display__totalIonCurrent_ForScanLevel_FilteredScans__Row ) {
 
                     {
-                        const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+                        const perLevel_TotalIonCurrent_DisplayEntries: Array<React.JSX.Element> = [];
 
                         const perLevel_TotalIonCurrent_DisplayEntries_DownloadCells: Array<string> = [];
 
@@ -996,7 +996,7 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                 }
 
                 {
-                    const perLevel_Count_DisplayEntries: Array<JSX.Element> = [];
+                    const perLevel_Count_DisplayEntries: Array<React.JSX.Element> = [];
 
                     const perLevel_Count_DisplayEntries_DownloadCells: Array<string> = [];
 
@@ -1075,12 +1075,12 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                 }
             }
 
-            let scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow: JSX.Element = undefined
+            let scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow: React.JSX.Element = undefined
 
             let scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow_DownloadRow: Array<string> = undefined
 
             {
-                const scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells: Array<JSX.Element> = [];
+                const scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells: Array<React.JSX.Element> = [];
 
                 const scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells_DownloadCells: Array<string> = [];
 

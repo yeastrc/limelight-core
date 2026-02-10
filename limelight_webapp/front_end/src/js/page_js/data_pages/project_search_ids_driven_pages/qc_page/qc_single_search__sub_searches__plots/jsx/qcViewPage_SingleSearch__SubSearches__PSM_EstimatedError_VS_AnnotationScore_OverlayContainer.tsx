@@ -248,7 +248,7 @@ class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError_VS_AnnotationScor
             return null; // EARLY RETURN
         }
 
-        const annotationNames_SelectOptionEntries: Array<JSX.Element> = [];
+        const annotationNames_SelectOptionEntries: Array<React.JSX.Element> = [];
         {
             const projectSearchId = this.props.params.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.projectSearchId;
 
@@ -303,7 +303,7 @@ class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError_VS_AnnotationScor
             }
         }
 
-        const searchScanFileData_Entries_OptionEntriesJSX: Array<JSX.Element> = []
+        const searchScanFileData_Entries_OptionEntriesJSX: Array<React.JSX.Element> = []
 
         if ( ( ! this.state.loadingData ) && ( ! this.state.searchScanFileData_NoEntries ) && ( ! this.state.searchScanFileData_OnlyOne ) ) {
 

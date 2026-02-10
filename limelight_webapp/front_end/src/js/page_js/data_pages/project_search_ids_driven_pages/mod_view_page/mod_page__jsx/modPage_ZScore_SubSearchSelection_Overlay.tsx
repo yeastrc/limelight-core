@@ -214,11 +214,11 @@ class ModPage_ZScore_SubSearchSelection_Overlay_OuterContainer_Component extends
      */
     render(): React.ReactNode {
 
-        const group_1_SearchNames_Elements: Array<JSX.Element> = []
+        const group_1_SearchNames_Elements: Array<React.JSX.Element> = []
 
-        const group_2_SearchNames_Elements: Array<JSX.Element> = []
+        const group_2_SearchNames_Elements: Array<React.JSX.Element> = []
 
-        const notIn_Group_SearchNames_Elements: Array<JSX.Element> = []
+        const notIn_Group_SearchNames_Elements: Array<React.JSX.Element> = []
 
         for ( const searchSubGroup of this._searchSubGroups_Array ) {
 

@@ -25,7 +25,7 @@ export const currentFiltersDisplayBlock__PeptideMeetsDigestion_AKA_TrypticPeptid
     } : {
         peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject ) ) {
         //  Nothing to display
@@ -58,7 +58,7 @@ const CurrentFiltersDisplayBlock__PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_U
     } : {
         peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject;
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 

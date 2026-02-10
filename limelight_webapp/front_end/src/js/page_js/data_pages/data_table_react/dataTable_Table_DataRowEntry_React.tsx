@@ -253,7 +253,7 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
       //  React auto escapes '"' to &quot; for contents of 'title' property
 
       let valueDisplay_ForCell = valueDisplay;
-      let cellDisplayContents_FromCallback : JSX.Element = null;
+      let cellDisplayContents_FromCallback : React.JSX.Element = null;
       if ( valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough ) {
           const params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params = {
 

@@ -28,7 +28,7 @@ export const get_SearchDetailsAndFilterBlock_Re_Order_Searches_UpdateInProgress_
     } : {
         // callbackOnClicked_Background : () => void;
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <SearchDetailsAndFilterBlock_Re_Order_Searches_UpdateInProgress_OverlayLayout_OuterContainer_Component

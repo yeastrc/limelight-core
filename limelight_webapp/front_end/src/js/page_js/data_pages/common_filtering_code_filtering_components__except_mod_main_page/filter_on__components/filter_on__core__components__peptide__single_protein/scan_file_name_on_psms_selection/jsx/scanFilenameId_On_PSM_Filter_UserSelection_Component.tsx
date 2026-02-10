@@ -152,7 +152,7 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
      */
     render() {
         try {
-            let selectionsElementBlock: JSX.Element = undefined;
+            let selectionsElementBlock: React.JSX.Element = undefined;
             let show_ShowingAll_Message : boolean = false;
 
             if ( this.props.allSearches_Have_ScanFilenames ) {
@@ -244,9 +244,9 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
      *
      *
      */
-    private _render_ScanFilename_Selections() : JSX.Element {
+    private _render_ScanFilename_Selections() : React.JSX.Element {
 
-        const selectionsElements: Array<JSX.Element> = [];
+        const selectionsElements: Array<React.JSX.Element> = [];
 
         const multipleSearches = this.props.projectSearchIds.length > 1;
 

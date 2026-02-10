@@ -34,7 +34,7 @@ export const qc_GoldStandard_MatchedData_Table_Create = function (
         goldStandard_FileContents_Entry_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents_Entry>
         qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     const projectSearchIds_Filtered_To_Have_MatchesTable_Data: Array<number> = []
 
@@ -99,10 +99,10 @@ export const qc_GoldStandard_MatchedData_Table_Create = function (
     const tableCell_DataCell_Style: React.CSSProperties = { verticalAlign: "top" }
 
 
-    let table_Header_Components: JSX.Element = undefined
+    let table_Header_Components: React.JSX.Element = undefined
 
     {
-        const matched_And_PsmData_Driven_Per_Search_Elements: Array<JSX.Element> = []
+        const matched_And_PsmData_Driven_Per_Search_Elements: Array<React.JSX.Element> = []
 
         for ( const projectSearchId of projectSearchIds_Filtered_To_Have_MatchesTable_Data ) {
 
@@ -172,7 +172,7 @@ export const qc_GoldStandard_MatchedData_Table_Create = function (
     }
 
 
-    const tableRows: Array<JSX.Element> = []
+    const tableRows: Array<React.JSX.Element> = []
 
     let  goldStandard_FileContents_Entry__From_Random_ProjectSearchId: CommonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents_Entry
 
@@ -204,7 +204,7 @@ export const qc_GoldStandard_MatchedData_Table_Create = function (
         }
 
 
-        let column_For_Modification_On_GoldStandard_Element: JSX.Element = undefined
+        let column_For_Modification_On_GoldStandard_Element: React.JSX.Element = undefined
 
         {
 
@@ -230,7 +230,7 @@ export const qc_GoldStandard_MatchedData_Table_Create = function (
             )
         }
 
-        const columns_For_Searches_Elements: Array<JSX.Element> = []
+        const columns_For_Searches_Elements: Array<React.JSX.Element> = []
 
         {
             for ( const projectSearchId of projectSearchIds_Filtered_To_Have_MatchesTable_Data ) {
@@ -254,7 +254,7 @@ export const qc_GoldStandard_MatchedData_Table_Create = function (
                     throw Error(msg)
                 }
 
-                const psm_All_GeneratedPeptideStrings_ElementsArray: Array<JSX.Element> = []
+                const psm_All_GeneratedPeptideStrings_ElementsArray: Array<React.JSX.Element> = []
 
                 let psmIds_All = ""
 

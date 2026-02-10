@@ -46,7 +46,7 @@ export const currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserS
         proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
         currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback: CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! proteinPositionFilter_UserSelections_StateObject ) ) {
         //  Nothing to display
@@ -230,8 +230,8 @@ export class CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserS
      */
     render() {
 
-        let proteinPositionFilter_JSX_Entries : Array<JSX.Element> = null;
-        let loadingMessage: JSX.Element = null;
+        let proteinPositionFilter_JSX_Entries : Array<React.JSX.Element> = null;
+        let loadingMessage: React.JSX.Element = null;
 
         if ( this.state.proteinPosition_SelectionDisplay_Entries ) {
             proteinPositionFilter_JSX_Entries = _create_RenderElements({proteinPosition_SelectionDisplay_Entries: this.state.proteinPosition_SelectionDisplay_Entries});
@@ -383,14 +383,14 @@ const _create_RenderElements = function(
     } : {
         proteinPosition_SelectionDisplay_Entries? : Array<ProteinPositionFilter_UserSelections_Component_SelectionDisplay_Entry>
     }
-) : Array<JSX.Element> {
+) : Array<React.JSX.Element> {
 
-    const proteinPositionFilter_JSX_Entries : Array<JSX.Element> = [];
+    const proteinPositionFilter_JSX_Entries : Array<React.JSX.Element> = [];
     {
         let index = 0;
         for (const proteinPosition_SelectionDisplay_Entry of proteinPosition_SelectionDisplay_Entries) {
 
-            let orSeparator : JSX.Element = null;
+            let orSeparator : React.JSX.Element = null;
             if ( index !== 0 ) {
                 //  Add separator "OR"
                 const separatorKey = "separator_" + index;

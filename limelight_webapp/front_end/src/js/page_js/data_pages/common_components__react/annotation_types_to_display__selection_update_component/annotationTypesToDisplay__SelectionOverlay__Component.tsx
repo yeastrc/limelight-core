@@ -790,8 +790,8 @@ class Internal__PerType_PSM_Peptide_Protein__Section__Component extends React.Co
             return 0;
         });
 
-        const annotationTypeItems_Displayed_JSX: Array<JSX.Element> = [];
-        const annotationTypeItems_NOT_Displayed_JSX: Array<JSX.Element> = [];
+        const annotationTypeItems_Displayed_JSX: Array<React.JSX.Element> = [];
+        const annotationTypeItems_NOT_Displayed_JSX: Array<React.JSX.Element> = [];
 
         //  JSX for Currently Displayed
         {

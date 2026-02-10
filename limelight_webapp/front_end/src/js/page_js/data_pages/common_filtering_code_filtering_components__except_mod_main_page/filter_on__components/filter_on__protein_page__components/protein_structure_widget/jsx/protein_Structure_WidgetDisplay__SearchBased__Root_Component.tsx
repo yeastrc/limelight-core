@@ -372,7 +372,7 @@ export class Protein_Structure_WidgetDisplay__SearchBased__Root_Component extend
 
         const searchName_Select_MenuItem_MaxWidth = 900
 
-        let searchNameOptions_ElementArray: Array<JSX.Element> = undefined
+        let searchNameOptions_ElementArray: Array<React.JSX.Element> = undefined
 
         if ( this._projectSearchIds_WithData_ForThis_ProteinSequenceVersionId && ( this._projectSearchIds_WithData_ForThis_ProteinSequenceVersionId.length > 1 ) ) {
 

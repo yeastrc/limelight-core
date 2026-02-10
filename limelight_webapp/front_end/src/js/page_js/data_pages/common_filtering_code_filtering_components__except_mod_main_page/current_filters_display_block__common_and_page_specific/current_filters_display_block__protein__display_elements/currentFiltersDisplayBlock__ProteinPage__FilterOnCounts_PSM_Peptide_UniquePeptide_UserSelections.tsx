@@ -22,7 +22,7 @@ export const currentFiltersDisplayBlock__ProteinPage__FilterOnCounts_PSM_Peptide
     } : {
         proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject : ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject ) ) {
         //  Nothing to display
@@ -67,7 +67,7 @@ const CurrentFiltersDisplayBlock__ProteinPage__FilterOnCounts_PSM_Peptide_Unique
         peptide_CountFilter: number
         uniquePeptide_CountFilter: number
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 

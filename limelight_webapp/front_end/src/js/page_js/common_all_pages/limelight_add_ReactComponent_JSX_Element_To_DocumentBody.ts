@@ -17,7 +17,7 @@ import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToS
  */
 export const limelight_add_ReactComponent_JSX_Element_To_DocumentBody = function({ componentToAdd } : {
 
-    componentToAdd : JSX.Element
+    componentToAdd : React.JSX.Element
 
 }) : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF {
 

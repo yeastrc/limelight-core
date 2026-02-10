@@ -330,7 +330,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
     render() {
 
         let no_ScanFiles_Found = false;
-        const scanFile_Element_List: Array<JSX.Element> = [];
+        const scanFile_Element_List: Array<React.JSX.Element> = [];
 
         if ( this.state.scanFile_Entry_CombinedEntries_Array ) {
 
@@ -1433,7 +1433,7 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
      */
     render() {
 
-        let searchElements: Array<JSX.Element> = undefined
+        let searchElements: Array<React.JSX.Element> = undefined
 
         if ( this.state.scanFile_Details_FromServer_Root
             && this.state.scanFile_Details_FromServer_Root.projectSearchIds_ForScanFile_List

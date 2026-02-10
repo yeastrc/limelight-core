@@ -2716,7 +2716,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
 
         let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;
 
-        let saveView_Component : JSX.Element = undefined;
+        let saveView_Component : React.JSX.Element = undefined;
 
         if ( this.props.propsValue.experiment_DataPages_LoggedInUser_CommonObjectsFactory ) {
 
@@ -2730,7 +2730,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
 
         //  Only create this once main display data is loaded
 
-        let options_Filter_Block: JSX.Element = null;
+        let options_Filter_Block: React.JSX.Element = null;
 
         if ( this.state.mainDisplayData_Loaded ) {
 

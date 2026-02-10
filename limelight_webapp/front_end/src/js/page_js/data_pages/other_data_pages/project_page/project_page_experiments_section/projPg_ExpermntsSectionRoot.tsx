@@ -523,7 +523,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
             );
         }
 
-        let experimentsListSection_Draft_NonDraft : JSX.Element = undefined;
+        let experimentsListSection_Draft_NonDraft : React.JSX.Element = undefined;
         if ( draftExperiments || experimentsNonDraft_Label || experimentsListSection ) {
 
             experimentsListSection_Draft_NonDraft = (
@@ -978,8 +978,8 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
         let name_className = " ";
         let name_onClick = undefined;
 
-        let editIcon : JSX.Element = undefined;
-        let cloneIcon : JSX.Element = undefined;
+        let editIcon : React.JSX.Element = undefined;
+        let cloneIcon : React.JSX.Element = undefined;
 
         if ( this.props.experiment.canEdit && this.props.experimentEditClicked ) {
             name_className += " clickable ";
@@ -1058,9 +1058,9 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
 
         //  Experiment Details:
 
-        let expandCollapsePointerIcon : JSX.Element = undefined;
+        let expandCollapsePointerIcon : React.JSX.Element = undefined;
 
-        let experimentDetailsComponentContainer : JSX.Element = undefined;
+        let experimentDetailsComponentContainer : React.JSX.Element = undefined;
 
         if ( ! this.state.showExperimentDetails ) {
 

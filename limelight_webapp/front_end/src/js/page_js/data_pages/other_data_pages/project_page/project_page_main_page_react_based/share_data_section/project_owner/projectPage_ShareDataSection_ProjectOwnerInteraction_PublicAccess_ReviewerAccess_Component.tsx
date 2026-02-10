@@ -236,7 +236,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction__PublicAcce
     /**
      *
      */
-    private _get_publicAccess_MainContent() : JSX.Element {
+    private _get_publicAccess_MainContent() : React.JSX.Element {
 
         return (
             <div >
@@ -257,7 +257,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction__PublicAcce
     /**
      *
      */
-    private _get_reviewerAccess_MainContent() : JSX.Element {
+    private _get_reviewerAccess_MainContent() : React.JSX.Element {
 
         let reviewer_access_code_ClassNames_Disabled = "";
         if ( ! this.state.reviewerAccessEnabled ) {
@@ -408,7 +408,7 @@ interface PublicAccess_OR_PublicAccessCode_ReviewerMode_Maint_Component_Props {
 
     label_Primary: string
     enabled: boolean
-    mainContent: JSX.Element
+    mainContent: React.JSX.Element
 
     toggle_enable_disable_Callback: () => void
 }

@@ -62,7 +62,7 @@ export const Limelight_MaterialUI_Tab_WrappedWith_Tooltip: FC<TabWithTooltipProp
         ...restTabProps
     })  {
 
-    let result: JSX.Element = undefined
+    let result: React.JSX.Element = undefined
 
     if ( tab_use_LimelightStandardFormatting ) {
         result =  (

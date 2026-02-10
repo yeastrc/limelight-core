@@ -182,7 +182,7 @@ export class ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelecti
                 return null
             }
 
-            let selectionsElements: Array<JSX.Element> = undefined;
+            let selectionsElements: Array<React.JSX.Element> = undefined;
 
             if ( this.props.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.is_AnySelections() ) {
 

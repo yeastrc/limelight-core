@@ -57,7 +57,7 @@ export const ModPage_ModifiedResidue__DataTable_ColumnDisplay = {
         } : {
             modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
         }
-    ) : JSX.Element {
+    ) : React.JSX.Element {
 
         return _get_DataTable_ModifiedResidues_Column_Contents({
             modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
@@ -83,7 +83,7 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
     } : {
         modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  Compute Max Value
 
@@ -130,7 +130,7 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
 
     ///////
 
-    const entries_ForLetters_JSX: Array<JSX.Element> = []
+    const entries_ForLetters_JSX: Array<React.JSX.Element> = []
 
     const tooltipRowValues_Array: Array<INTERNAL__SVG_OVERALL_TOOLTIP_ROW_Values> = []
 
@@ -363,7 +363,7 @@ const _get_SVG_Overall_Tooltip = function (
     }: {
         tooltipRowValues_Array: Array<INTERNAL__SVG_OVERALL_TOOLTIP_ROW_Values>
     }
-): JSX.Element {
+): React.JSX.Element {
 
     const _LETTERS_MARGIN_RIGHT = 20
     const _COUNT_MARGIN_RIGHT = 8
@@ -372,7 +372,7 @@ const _get_SVG_Overall_Tooltip = function (
 
     // const entries_ForLetters_TextLines_ForLogging: Array<string> = []
 
-    const entries_ForLetters_Tooltip_Overall_JSX: Array<JSX.Element> = []
+    const entries_ForLetters_Tooltip_Overall_JSX: Array<React.JSX.Element> = []
 
     const _BAR_HEIGHT = "80%"
 

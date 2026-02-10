@@ -204,7 +204,7 @@ export class Psm_Charge_Filter_UserSelection_Component extends React.Component< 
      */
     render() {
         try {
-            let selectionsElements: Array<JSX.Element> = undefined;
+            let selectionsElements: Array<React.JSX.Element> = undefined;
             let show_ShowingAll_Message : boolean = false;
 
             const chargeValues_OnPSMs_Selected = this.props.psm_Charge_Filter_UserSelection_StateObject.get__chargeValues_OnPSMs_Selected();
@@ -299,9 +299,9 @@ export class Psm_Charge_Filter_UserSelection_Component extends React.Component< 
      *
      *
      */
-    private _render_ChargeValues_Selections() : Array<JSX.Element> {
+    private _render_ChargeValues_Selections() : Array<React.JSX.Element> {
 
-        const selectionsElements: Array<JSX.Element> = [];
+        const selectionsElements: Array<React.JSX.Element> = [];
 
         const chargeValues_Array : Array<number> = [];
 

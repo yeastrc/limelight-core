@@ -20,7 +20,7 @@ export const get_Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer 
         textLabel : string
         current_selection_SelectionType : SingleProtein_Filter_SelectionType
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer

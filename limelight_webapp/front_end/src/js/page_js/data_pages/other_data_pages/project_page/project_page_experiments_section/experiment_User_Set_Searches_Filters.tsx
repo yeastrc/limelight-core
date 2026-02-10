@@ -861,9 +861,9 @@ const _getFilters_SingleFilterableType_Components = function({
     filterDataMap_KeyAnnTypeId:  Map<number, Internal__FilterData_ForType_PsmReportedPeptideEtc>
     searchProgramsPerSearch_Key_searchProgramsPerSearchId:  Map<number, SearchProgramsPerSearchItem>
     userUpdatedInputValue_Callback: any
-}): Array<JSX.Element> {
+}): Array<React.JSX.Element> {
 
-    let result: Array<JSX.Element> = undefined;
+    let result: Array<React.JSX.Element> = undefined;
 
     for ( const entry of filterableAnnotationTypes ) {
 

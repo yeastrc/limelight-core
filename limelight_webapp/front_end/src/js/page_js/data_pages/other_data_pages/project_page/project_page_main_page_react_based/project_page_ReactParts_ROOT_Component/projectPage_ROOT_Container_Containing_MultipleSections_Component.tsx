@@ -57,7 +57,7 @@ export class ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_
 }
 
 export type ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Function =
-    ( params: ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params ) => JSX.Element;
+    ( params: ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params ) => React.JSX.Element;
 
 /**
  *

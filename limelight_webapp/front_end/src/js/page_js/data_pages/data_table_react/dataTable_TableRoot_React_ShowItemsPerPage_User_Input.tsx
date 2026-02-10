@@ -136,7 +136,7 @@ export class DataTable_TableRoot__ShowItemsPerPage_Select_Component extends Reac
     render() {
 
 
-        const selectEntries : Array<JSX.Element> = [];
+        const selectEntries : Array<React.JSX.Element> = [];
 
         for ( const selectValue of this.props.showItemsPerPage_SelectValue_Options ) {
 

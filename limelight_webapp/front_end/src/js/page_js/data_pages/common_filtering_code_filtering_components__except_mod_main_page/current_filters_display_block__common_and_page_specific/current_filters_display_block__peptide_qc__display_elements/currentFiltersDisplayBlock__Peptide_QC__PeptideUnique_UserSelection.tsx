@@ -24,7 +24,7 @@ export const currentFiltersDisplayBlock__Peptide_QC__PeptideUnique_UserSelection
     } : {
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! peptideUnique_UserSelection_StateObject ) ) {
         //  Nothing to display
@@ -48,7 +48,7 @@ export const currentFiltersDisplayBlock__Peptide_QC__PeptideUnique_UserSelection
 /**
  *
  */
-const CurrentFiltersDisplayBlock__Peptide_QC__PeptideUnique_UserSelection = function() : JSX.Element {
+const CurrentFiltersDisplayBlock__Peptide_QC__PeptideUnique_UserSelection = function() : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 

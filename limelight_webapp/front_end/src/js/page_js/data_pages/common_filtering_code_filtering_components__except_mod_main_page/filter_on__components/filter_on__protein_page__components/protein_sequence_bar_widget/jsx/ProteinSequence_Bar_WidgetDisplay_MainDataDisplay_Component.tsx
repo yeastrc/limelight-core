@@ -547,7 +547,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
 
         //  Modifications
 
-        const modificationLine_Elements_Array: Array<JSX.Element> = []
+        const modificationLine_Elements_Array: Array<React.JSX.Element> = []
 
         //  Populate all grey first
         this._populate__modificationLine_Elements_Array({
@@ -570,7 +570,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
 
         //  Display Selections of Protein Positions - Change to be computed internally in this file
 
-        let selected_ProteinPosition_SVG_Elements: Array<JSX.Element> = undefined
+        let selected_ProteinPosition_SVG_Elements: Array<React.JSX.Element> = undefined
 
         if ( this.props.proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition() ) {
 
@@ -668,7 +668,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
 
         //  Trypsin Cut Points
 
-        const trypsin_CutPoints_For_ProteinSequence_Elements_Array: Array<JSX.Element> = []
+        const trypsin_CutPoints_For_ProteinSequence_Elements_Array: Array<React.JSX.Element> = []
 
         if (
             this.props.proteinSequence_Bar_Widget_StateObject.get_show_TrypsinCutPoints()
@@ -1602,12 +1602,12 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
         } : {
 
             populate__modifications_Passes_ALL_Filters__hasAny_Modifications__OnlyTrue: boolean
-            modificationLine_Elements_Array: Array<JSX.Element>
+            modificationLine_Elements_Array: Array<React.JSX.Element>
             anyFilter__HasFilterValue: boolean
             top_Of_Section__Modifications: number
         }) {
 
-        // const proteinSequence_Residues_Elements_Array: Array<JSX.Element> = []
+        // const proteinSequence_Residues_Elements_Array: Array<React.JSX.Element> = []
 
         if ( this._mainData_Computed_For_ComponentsInThisFile_Root_Result ) {
 
@@ -1920,7 +1920,7 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY_Component extend
      */
     render() { try {
 
-        const proteinCoverage_Rects_Elements_Array: Array<JSX.Element> = []
+        const proteinCoverage_Rects_Elements_Array: Array<React.JSX.Element> = []
 
         {  //  First put light grey for all protein positions that are NOT covered
 
@@ -2026,7 +2026,7 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY_Component extend
             }
         }
 
-        const trypsin_CutPoints_For_ProteinSequence_Elements_Array: Array<JSX.Element> = []
+        const trypsin_CutPoints_For_ProteinSequence_Elements_Array: Array<React.JSX.Element> = []
 
         if ( this.props.proteinSequence_Bar_Widget_StateObject.get_show_TrypsinCutPoints()
             && this.props.trypsin_CutPoints_For_ProteinSequence_Set ) {

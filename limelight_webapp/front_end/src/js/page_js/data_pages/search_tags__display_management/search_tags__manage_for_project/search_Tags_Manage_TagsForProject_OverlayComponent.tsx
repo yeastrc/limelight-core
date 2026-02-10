@@ -120,7 +120,7 @@ const get_Search_Tags_Manage_TagsForProject_OverlayComponent_Overlay_Layout = fu
         callback_TagsUpdated : () => void;
         callbackOn_Cancel_Close_Clicked : () => void;
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <Search_Tags_Manage_TagsForProject_OverlayComponent

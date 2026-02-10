@@ -245,7 +245,7 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
 
         const peptideSequence_UserSelection = this.state.peptideSequence_UserSelection;
 
-        let notFoundMessage : JSX.Element = undefined;
+        let notFoundMessage : React.JSX.Element = undefined;
 
         if ( this.state.userSearchString_LocationsOn_ProteinSequence_Root ) {
 

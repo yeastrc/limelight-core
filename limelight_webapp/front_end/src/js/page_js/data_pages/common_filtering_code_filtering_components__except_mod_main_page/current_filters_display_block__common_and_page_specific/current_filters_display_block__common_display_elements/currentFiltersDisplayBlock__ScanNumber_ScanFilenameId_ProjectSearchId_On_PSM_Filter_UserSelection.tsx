@@ -38,7 +38,7 @@ export const currentFiltersDisplayBlock__ScanNumber_ScanFilenameId_ProjectSearch
         dataPageStateManager : DataPageStateManager
         commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder //  Use with scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject ) ) {
         //  Nothing to display
@@ -92,11 +92,11 @@ const CurrentFiltersDisplayBlock__ScanNumber_ScanFilenameId_ProjectSearchId_On_P
         dataPageStateManager : DataPageStateManager
         commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder //  Use with scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 
-    const selectionsElements: Array<JSX.Element> = [];
+    const selectionsElements: Array<React.JSX.Element> = [];
 
     for ( const scanNumber_ScanFilenameIds_ProjectSearchIds_Selection_Entry of scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.get__scanNumber_ScanFilenameIds_ProjectSearchIds_Selections() ) {
 

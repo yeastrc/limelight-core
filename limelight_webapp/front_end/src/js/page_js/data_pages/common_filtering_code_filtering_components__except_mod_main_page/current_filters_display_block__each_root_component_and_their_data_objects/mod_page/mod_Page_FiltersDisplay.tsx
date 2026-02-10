@@ -113,7 +113,7 @@ export class Mod_Page_FiltersDisplay extends React.Component< Mod_Page_FiltersDi
     render() {
         try {
 
-            const currentFiltersArray : Array<JSX.Element> = []
+            const currentFiltersArray : Array<React.JSX.Element> = []
 
             {  //  scanFilenameId_On_PSM_Filter_UserSelection
 

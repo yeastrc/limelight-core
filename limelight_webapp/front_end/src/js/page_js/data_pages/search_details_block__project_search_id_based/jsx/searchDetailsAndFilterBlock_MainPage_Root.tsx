@@ -318,7 +318,7 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
         //  filtersAnnTypeDisplayPerProjectSearchIds is an array in the same order as projectSearchIds
         const filtersAnnTypeDisplayPerProjectSearchIds = paramsForProjectSearchIds.paramsForProjectSearchIdsList;
 
-        let single_multiple_Root : JSX.Element = undefined
+        let single_multiple_Root : React.JSX.Element = undefined
 
         if ( filtersAnnTypeDisplayPerProjectSearchIds.length > 1 ) {
 
@@ -480,7 +480,7 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
             throw Error("No searchProgramsPerSearchDataForProjectSearchId for projectSearchId: " + projectSearchId );
         }
 
-        let changeSearchesJSX : JSX.Element = undefined
+        let changeSearchesJSX : React.JSX.Element = undefined
 
         if ( ( ! this.props.propValue.displayOnly ) && ( ! this.props.propValue.do_NOT_Display_ChangeSearches_Link ) ) {
 
@@ -640,7 +640,7 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
         //  filtersAnnTypeDisplayPerProjectSearchIds is an array in the same order as projectSearchIds
         const filtersAnnTypeDisplayPerProjectSearchIds = paramsForProjectSearchIds.paramsForProjectSearchIdsList;
 
-        const singleSearchesInsideSearchesBlock : Array<JSX.Element> = [];
+        const singleSearchesInsideSearchesBlock : Array<React.JSX.Element> = [];
 
         for ( const filtersAnnTypeDisplayPerProjectSearchId of filtersAnnTypeDisplayPerProjectSearchIds ) {
 
@@ -703,7 +703,7 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
         }
 
 
-        let changeSearchesJSX : JSX.Element = undefined
+        let changeSearchesJSX : React.JSX.Element = undefined
 
         if ( ( ! this.props.propValue.displayOnly ) && ( ! this.props.propValue.do_NOT_Display_ChangeSearches_Link ) ) {
 
@@ -724,7 +724,7 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
         }
 
 
-        let reorderSearchesJSX : JSX.Element = undefined
+        let reorderSearchesJSX : React.JSX.Element = undefined
 
         if ( ( ! this.props.propValue.displayOnly ) && ( ! this.props.propValue.do_NOT_Display_Re_Order_Searches_Link ) ) {
 
@@ -1397,10 +1397,10 @@ class Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Comp
 
         const annotationTypeDataForProjectSearchId : AnnotationTypeItems_PerProjectSearchId = this.props.annotationTypeDataForProjectSearchId
 
-        let psmFilters : JSX.Element = undefined;
-        let peptideFilters : JSX.Element = undefined;
-        let proteinFilters : JSX.Element = undefined;
-        let modificationPositionFilters : JSX.Element = undefined;
+        let psmFilters : React.JSX.Element = undefined;
+        let peptideFilters : React.JSX.Element = undefined;
+        let proteinFilters : React.JSX.Element = undefined;
+        let modificationPositionFilters : React.JSX.Element = undefined;
 
         if ( annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes && annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes.size > 0 ) {
 
@@ -1569,7 +1569,7 @@ class Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends Rea
 
         const cutoffs_ForType = this.props.cutoffs_ForType;
 
-        let cutoffEntryComponents : Array<JSX.Element> = undefined;
+        let cutoffEntryComponents : Array<React.JSX.Element> = undefined;
 
         if ( cutoffs_ForType && cutoffs_ForType.length > 0 ) {
 
@@ -1783,7 +1783,7 @@ class SingleFilterEntryDisplay_Root extends React.Component< SingleFilterEntryDi
             </div>
         )
 
-        let tooltip_Element__Type_label_TooltipText_Addition: JSX.Element = undefined
+        let tooltip_Element__Type_label_TooltipText_Addition: React.JSX.Element = undefined
 
         if ( this.props.type_label_TooltipText_Addition ) {
 
@@ -1796,7 +1796,7 @@ class SingleFilterEntryDisplay_Root extends React.Component< SingleFilterEntryDi
             )
         }
 
-        let tooltip_Element_Addition_For_NonDefault: JSX.Element = undefined
+        let tooltip_Element_Addition_For_NonDefault: React.JSX.Element = undefined
 
         if ( filterableAnnotation_ForId.defaultFilterValue !== cutoffItem.value ) {
 

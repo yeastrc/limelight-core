@@ -1276,7 +1276,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                 visualization_ColorScaleLegend_LabelText = labelText
             }
 
-            let searchNames_Or_SearchSubGroupNames_Block: JSX.Element = undefined
+            let searchNames_Or_SearchSubGroupNames_Block: React.JSX.Element = undefined
             let numberOf_Searches_Or_Subsearches: number = undefined
 
             if ( this._modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root ) {
@@ -1305,7 +1305,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                         throw Error(msg)
                     }
 
-                    const elements: Array<JSX.Element> = []
+                    const elements: Array<React.JSX.Element> = []
                     numberOf_Searches_Or_Subsearches = 0
 
                     for ( const searchSubGroup of searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {

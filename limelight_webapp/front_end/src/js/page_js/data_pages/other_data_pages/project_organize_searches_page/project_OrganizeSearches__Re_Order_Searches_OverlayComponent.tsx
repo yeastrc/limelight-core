@@ -212,7 +212,7 @@ class Project_OrganizeSearches_Re_Order_Searches_Overlay_OuterContainer_Componen
      */
     render(): React.ReactNode {
 
-        const searchDisplayList : Array<JSX.Element> = [];
+        const searchDisplayList : Array<React.JSX.Element> = [];
 
         {
             let index = 0

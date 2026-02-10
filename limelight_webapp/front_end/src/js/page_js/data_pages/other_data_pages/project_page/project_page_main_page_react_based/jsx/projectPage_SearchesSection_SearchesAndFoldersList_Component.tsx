@@ -412,7 +412,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
      */
     private _render_NO_Folders(): React.ReactNode {
 
-        const searchDisplayList : Array<JSX.Element> = [];
+        const searchDisplayList : Array<React.JSX.Element> = [];
 
         for ( const projectSearchId of this.props.searchesSearchTagsFolders_Result_Root.get_searches_ProjectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder() ) {
 
@@ -477,7 +477,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
      */
     private _render_YES_Folders(): React.ReactNode {
 
-        const folderDisplayList : Array<JSX.Element> = [];
+        const folderDisplayList : Array<React.JSX.Element> = [];
 
         {
             for ( const folderEntry of this.props.searchesSearchTagsFolders_Result_Root.get_allFolders_Data_InDisplayOrder() ) {
@@ -521,7 +521,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
             }
         }
 
-        const searchDisplayList : Array<JSX.Element> = [];
+        const searchDisplayList : Array<React.JSX.Element> = [];
 
         for ( const projectSearchId of this.props.searchesSearchTagsFolders_Result_Root.get_searches_ProjectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder() ) {
 
@@ -812,8 +812,8 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
     render(): React.ReactNode {
 
         let anySearchSelected = false;
-        const searchDisplayList : Array<JSX.Element> = [];
-        let emptyFolderMessage : JSX.Element = null;
+        const searchDisplayList : Array<React.JSX.Element> = [];
+        let emptyFolderMessage : React.JSX.Element = null;
 
         const folderExpanded = this.props.folderIds_ExpandedFolders_InProgress.has( this.props.folderEntry.folderId );
 

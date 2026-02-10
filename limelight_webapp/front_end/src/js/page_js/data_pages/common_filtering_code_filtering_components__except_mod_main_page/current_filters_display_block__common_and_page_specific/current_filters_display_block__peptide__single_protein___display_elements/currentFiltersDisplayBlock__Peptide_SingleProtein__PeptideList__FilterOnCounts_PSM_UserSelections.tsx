@@ -24,7 +24,7 @@ export const currentFiltersDisplayBlock__Peptide_SingleProtein__PeptideList__Fil
     } : {
         peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject ) ) {
         //  Nothing to display
@@ -58,7 +58,7 @@ const CurrentFiltersDisplayBlock__Peptide_SingleProtein__PeptideList__FilterOnCo
     } : {
         psm_CountFilter: number
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 

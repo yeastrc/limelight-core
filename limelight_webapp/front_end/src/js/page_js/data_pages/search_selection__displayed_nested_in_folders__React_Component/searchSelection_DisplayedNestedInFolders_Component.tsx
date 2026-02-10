@@ -541,7 +541,7 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
         }
 
 
-        const folderDisplayList : Array<JSX.Element> = [];
+        const folderDisplayList : Array<React.JSX.Element> = [];
 
         {
             for ( const folderEntry of this._searchesSearchTagsFolders_Result_Root.get_allFolders_Data_InDisplayOrder() ) {
@@ -585,7 +585,7 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
 
         //  Searches NOT in any folder
 
-        const searches_NOT_in_ANY_Folder_DisplayList : Array<JSX.Element> = [];
+        const searches_NOT_in_ANY_Folder_DisplayList : Array<React.JSX.Element> = [];
 
         for ( const projectSearchId of this._searchesSearchTagsFolders_Result_Root.get_searches_ProjectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder() ) {
 
@@ -941,7 +941,7 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
             selectedOtherCellClass = " selected-other-cell "
         }
 
-        let tooltipContents_RootDiv: JSX.Element = undefined
+        let tooltipContents_RootDiv: React.JSX.Element = undefined
 
         if ( search_selectedInOtherCell ) {
             tooltipContents_RootDiv = (
@@ -958,12 +958,12 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
 
         const searchNameDisplay = "(" + this.props.searchDisplayListItem.searchId + ") " + this.props.searchDisplayListItem.searchName;
 
-        let searchTags_Block: JSX.Element = undefined
+        let searchTags_Block: React.JSX.Element = undefined
 
         { //  Search Tags
             if ( this.props.searchDisplayListItem.searchTagIds_Set && this.props.searchDisplayListItem.searchTagIds_Set.size > 0 ) {
                 //  Have Search Tags for Search
-                const searchTagDisplay_Array: Array<JSX.Element> = []
+                const searchTagDisplay_Array: Array<React.JSX.Element> = []
 
                 for ( const searchTag of this.props.searchesSearchTagsFolders_Result_Root.get_all_SearchTags_InProject_Iterator() ) {
                     if ( ! this.props.searchDisplayListItem.searchTagIds_Set.has( searchTag.tagId ) ) {
@@ -1234,7 +1234,7 @@ class Internal_Component__FolderEntry extends React.Component< FolderEntry_Props
     render(): React.ReactNode {
 
         let anySearchSelected = false;
-        const searchDisplayList : Array<JSX.Element> = [];
+        const searchDisplayList : Array<React.JSX.Element> = [];
 
         if ( this.state.folderExpanded ) {
 

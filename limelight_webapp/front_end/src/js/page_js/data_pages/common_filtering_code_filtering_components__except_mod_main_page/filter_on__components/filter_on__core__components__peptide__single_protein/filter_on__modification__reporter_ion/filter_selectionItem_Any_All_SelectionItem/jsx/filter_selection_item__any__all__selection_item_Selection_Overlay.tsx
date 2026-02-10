@@ -392,7 +392,7 @@ class OverlayUpdateButton extends React.Component< OverlayUpdateButton_Props, Ov
             buttonDisabled = true
         }
 
-        let tooltipContents : JSX.Element = undefined
+        let tooltipContents : React.JSX.Element = undefined
         if ( this.props.isCurrentSelection && this.props.buttonTooltip_WhenCurrentSelectionText ) {
             tooltipContents = (
                 <div >

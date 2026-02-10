@@ -263,9 +263,9 @@ class DataTable_Column_sortFunction_Param {
     sortValue_B : unknown  //  From DataTable_DataRow_ColumnEntry.valueSort
 }
 
-type DataTable_Column_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element = () => JSX.Element;
+type DataTable_Column_HeaderArea_Display_Contents_Fcn_NoInputParam_Return_JSX_Element = () => React.JSX.Element;
 
-export type DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element = () => JSX.Element;
+export type DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element = () => React.JSX.Element;
 
 /**
  * A column in the Table.  Data for how to process the column and header content
@@ -303,7 +303,7 @@ class DataTable_Column {
     //  These provide 2 different options for show a tooltip on mouseover of the text in that Column Header. Only 1 is allowed to be populated.
 
     columnHeader_Tooltip_HTML_TitleAttribute?: string //  Added to the HTML element that contains the 'displayName' value as the 'title' attribute.
-    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element  // Function that takes no params and returns JSX.Element
+    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element  // Function that takes no params and returns React.JSX.Element
 
     sortable?: boolean  // Assumed false if missing
 
@@ -346,7 +346,7 @@ class DataTable_Column {
 
             //  These provide 2 different options for show a tooltip on mouseover of the text in that Column Header. Only 1 is allowed to be populated.
             columnHeader_Tooltip_HTML_TitleAttribute, //  Added to the HTML element that contains the 'displayName' value as the 'title' attribute.
-            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,  // Function that takes no params and returns JSX.Element
+            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,  // Function that takes no params and returns React.JSX.Element
 
             //  If true, then in the first DataRow of a Group will the valueDisplay be shown in the table.  In other rows the table cell will be empty
             onlyShow_ValueDisplay_FirstRowOfGroup,
@@ -386,7 +386,7 @@ class DataTable_Column {
              * Column Header Tooltip string.  NO Longer put in HTML title attribute so \n new lines are not recognized.
              */
             columnHeader_Tooltip_HTML_TitleAttribute?: string
-            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element  // Function that takes no params and returns JSX.Element
+            columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element?: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element  // Function that takes no params and returns React.JSX.Element
 
             //  If true, then in the first DataRow of a Group will the valueDisplay be shown in the table.  In other rows the table cell will be empty
             onlyShow_ValueDisplay_FirstRowOfGroup?: boolean;
@@ -959,7 +959,7 @@ export interface DataTable_DataRowEntry__Get_RowChildContent_CallParams {  }
 ////////  Callback to Function to get Child Content
 
 //  function called to get Child Table.  Callback returns Promise<ChildContent> to be compatible with 'async' functions.  No properties passed from this object.
-export type DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent = ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) => JSX.Element
+export type DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent = ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) => React.JSX.Element
 
 ////////  Callback to get Child Content or Promise that contains Function that returns Child Content
 
@@ -1185,11 +1185,11 @@ class DataTable_DataRow_ColumnEntry {
 
 export interface DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params {   }
 
-export type DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) => JSX.Element;
+export type DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) => React.JSX.Element;
 
 export interface DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params {  }
 
-export type DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = ( params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) => JSX.Element;
+export type DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = ( params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) => React.JSX.Element;
 
 
 ///////////////////

@@ -205,7 +205,7 @@ export class Search_Tags_SelectSearchTags_Component extends React.Component< Sea
 
         const categoryLabel_Style: React.CSSProperties = { marginTop: 7, marginRight: 6, fontWeight: "bold", whiteSpace: "nowrap" }
 
-        const categoriesAndTheirSearchTags_Elements: Array<JSX.Element> = [];
+        const categoriesAndTheirSearchTags_Elements: Array<React.JSX.Element> = [];
 
         {
             for ( const categoryEntry of this.state.searchTagData_Display_Root.searchTagCategory_Array_In_DisplayOrder ) {
@@ -235,7 +235,7 @@ export class Search_Tags_SelectSearchTags_Component extends React.Component< Sea
             }
         }
 
-        let uncategorizedSearchTags_Elements: JSX.Element = null;
+        let uncategorizedSearchTags_Elements: React.JSX.Element = null;
 
         {
             if ( this.state.searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder.length > 0 ) {
@@ -281,7 +281,7 @@ export class Search_Tags_SelectSearchTags_Component extends React.Component< Sea
      * @param tag_Internal
      * @private
      */
-    private _render_SingleSearchTag( tag_Internal: INTERNAL__Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry ) : JSX.Element {
+    private _render_SingleSearchTag( tag_Internal: INTERNAL__Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry ) : React.JSX.Element {
 
         return (
             <INTERNAL__Search_Tag_SINGLE_Component
@@ -408,7 +408,7 @@ export class INTERNAL__Search_Tag_SINGLE_Component extends React.Component< INTE
         let className_Addition_Inner = "";
 
         //   WARNING:  'tooltip_Inner' MUST BE SET
-        let tooltip_Inner: JSX.Element = undefined
+        let tooltip_Inner: React.JSX.Element = undefined
 
         if ( this.props.search_Tags_Selections_Object.searchTagIdsSelected_Boolean__AND.has( tag_Entry.tagId ) ) {
 
@@ -1108,7 +1108,7 @@ class INTERNAL__OverlayUpdateButton extends React.Component< INTERNAL__OverlayUp
             buttonDisabled = true
         }
 
-        let tooltipContents : JSX.Element = undefined
+        let tooltipContents : React.JSX.Element = undefined
         if ( this.props.isCurrentSelection && this.props.buttonTooltip_WhenCurrentSelectionText ) {
             tooltipContents = (
                 <div >

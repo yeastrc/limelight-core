@@ -19,7 +19,7 @@ import {saveView_dataPages_MainPage_ProcessRequest_Common} from "page_js/data_pa
  * @param experimentId
  */
 export const get_SaveView_Component : Get_SaveView_Component_React_Type = function (
-   params: SaveView_Component_React_Params ) : JSX.Element {
+   params: SaveView_Component_React_Params ) : React.JSX.Element {
 
     return (
         <SaveView_Component

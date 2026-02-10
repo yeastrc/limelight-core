@@ -341,8 +341,8 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
 
         // const data_ProjectPage_Experiments_SingleExperiment_MainCellMaint = this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint;
 
-        let searches_Assigned_ToCell : Array<JSX.Element> = undefined;
-        let no_searches_Assigned_ToCell_msg : JSX.Element = undefined;
+        let searches_Assigned_ToCell : Array<React.JSX.Element> = undefined;
+        let no_searches_Assigned_ToCell_msg : React.JSX.Element = undefined;
         let addChangeSearchesButton_Label : string = undefined;
 
         if ( this.state.searches_Selected && this.state.searches_Selected.length !== 0 ) {
@@ -676,7 +676,7 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
 
             const searchTitle = "(" + search.searchId + ") " + search.searchName;
 
-            let psmFilters : JSX.Element = undefined;
+            let psmFilters : React.JSX.Element = undefined;
 
             if ( this.props.searchSelectedEntry.psmFilters ) {
 
@@ -690,7 +690,7 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
                 );
             }
 
-            let peptideFilters : JSX.Element = undefined;
+            let peptideFilters : React.JSX.Element = undefined;
 
             if ( this.props.searchSelectedEntry.reportedPeptideFilters ) {
 
@@ -704,7 +704,7 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
                 );
             }
 
-            let matchedProteinFilters : JSX.Element = undefined;
+            let matchedProteinFilters : React.JSX.Element = undefined;
 
             if ( this.props.searchSelectedEntry.matchedProteinFilters ) {
 
@@ -718,7 +718,7 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
                 );
             }
 
-            let modificationPositionFilters : JSX.Element = undefined;
+            let modificationPositionFilters : React.JSX.Element = undefined;
 
             if ( this.props.searchSelectedEntry.modificationPositionFilters ) {
 
@@ -953,7 +953,7 @@ class Search_Assigned_FilterData_ForType_SingleEntry extends React.Component< Se
                 </div>
             )
 
-            let tooltip_Element_Addition_For_NonDefault: JSX.Element = undefined
+            let tooltip_Element_Addition_For_NonDefault: React.JSX.Element = undefined
 
             if ( this.props.filterableAnnotationType.defaultFilterValue !== this.props.filter.value ) {
 

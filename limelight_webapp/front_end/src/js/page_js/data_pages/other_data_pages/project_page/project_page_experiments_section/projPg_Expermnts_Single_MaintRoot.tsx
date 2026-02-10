@@ -2163,12 +2163,12 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
         // let addDelete_conditionGroups_Allowed = true;
 
-        let timePointsAddLinkBlock : JSX.Element = undefined;
-        let timePointsMaintBlock : JSX.Element = undefined;
+        let timePointsAddLinkBlock : React.JSX.Element = undefined;
+        let timePointsMaintBlock : React.JSX.Element = undefined;
 
-        let conditionGroupAddLinkBlock : JSX.Element = undefined;
+        let conditionGroupAddLinkBlock : React.JSX.Element = undefined;
 
-        let singleConditionGroup_Maint_Overlay : JSX.Element = undefined;
+        let singleConditionGroup_Maint_Overlay : React.JSX.Element = undefined;
 
         let enabled_GoTo_Step_2_Button = false;
 
@@ -2272,7 +2272,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             </div>
         );
         
-        let conditionGroupEntriesBlock : JSX.Element = undefined;
+        let conditionGroupEntriesBlock : React.JSX.Element = undefined;
 
         {
             //  List the Condition Groups
@@ -2299,7 +2299,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             }
         }
 
-        let experiment_Layout_Container_ConditionsGraphicRepresentation : JSX.Element = undefined;
+        let experiment_Layout_Container_ConditionsGraphicRepresentation : React.JSX.Element = undefined;
 
         if ( this.state.show_Experiment_SingleExperiment_ConditionsGraphicRepresentation && this.state.experimentConditions_GraphicRepresentation_PropsData ) {
 
@@ -2337,7 +2337,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             );
         }
 
-        let dataMaint_ForConditionGroupEntry : JSX.Element = undefined;
+        let dataMaint_ForConditionGroupEntry : React.JSX.Element = undefined;
 
         if ( this.state.data_ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint ) {
 
@@ -2353,7 +2353,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         }
 
 
-        let saveAsDraftButton : JSX.Element = undefined;
+        let saveAsDraftButton : React.JSX.Element = undefined;
         if ( this.state.draftExperiment ) {
             
             saveAsDraftButton = (
@@ -2380,7 +2380,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             );
         }
 
-        let saveButton : JSX.Element = undefined;
+        let saveButton : React.JSX.Element = undefined;
         if ( ! this.state.draftExperiment ) {
 
             saveButton = (
@@ -2407,7 +2407,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             );
         }
 
-        const replicatesCountOptions : Array<JSX.Element> = [];
+        const replicatesCountOptions : Array<React.JSX.Element> = [];
         {  //  Create <options> for "Number of Biological Replicates" and  "Number of Technical Replicates"
             {
                 const option = <option key={ _NUMBER_OF_REPLICATES_ZERO } value={ _NUMBER_OF_REPLICATES_ZERO }>{ _REPLICATES_ZERO_DISPLAY_LABEL }</option>;
@@ -2527,7 +2527,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
                             style={ { marginRight: 10 } } />
         );
 
-        let experiment_Layout_Container_ConditionsGraphicRepresentation : JSX.Element = undefined;
+        let experiment_Layout_Container_ConditionsGraphicRepresentation : React.JSX.Element = undefined;
 
         if ( this.state.show_Experiment_SingleExperiment_ConditionsGraphicRepresentation && this.state.experimentConditions_GraphicRepresentation_PropsData ) {
 
@@ -2572,10 +2572,10 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             );
         }
 
-        let saveAsDraftButton : JSX.Element = undefined;
+        let saveAsDraftButton : React.JSX.Element = undefined;
 
-        let publishExperimentButton : JSX.Element = undefined;  // For New or Draft Experiments 
-        let saveButton : JSX.Element = undefined;               // For Existing Published (Non-Draft) Experiments 
+        let publishExperimentButton : React.JSX.Element = undefined;  // For New or Draft Experiments
+        let saveButton : React.JSX.Element = undefined;               // For Existing Published (Non-Draft) Experiments
 
         if ( this.state.draftExperiment ) {
             
@@ -2651,7 +2651,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             );
         }
 
-        let dataMaint_ForMainCellEntry : JSX.Element = undefined;
+        let dataMaint_ForMainCellEntry : React.JSX.Element = undefined;
 
         if ( this.state.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint ) {
 

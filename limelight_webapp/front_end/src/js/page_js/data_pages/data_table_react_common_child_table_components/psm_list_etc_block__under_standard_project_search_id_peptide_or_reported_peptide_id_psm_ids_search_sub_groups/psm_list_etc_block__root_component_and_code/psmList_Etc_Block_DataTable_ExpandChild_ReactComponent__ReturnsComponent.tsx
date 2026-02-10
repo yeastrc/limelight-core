@@ -50,7 +50,7 @@ export const psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComp
         promise.then( psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results => { try {
 
             const get_RowChildContent_Return_ChildContent: DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent =
-                ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) : JSX.Element => {
+                ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) : React.JSX.Element => {
 
                     return (
                         <Internal_ReportedPeptide_SingleExpanded_ChildReactComponent

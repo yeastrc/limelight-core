@@ -1372,7 +1372,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
         } : {
             searchTags_Array: Internal_SearchTagEntry[]
         }
-    ) : JSX.Element {
+    ) : React.JSX.Element {
 
         return (
 

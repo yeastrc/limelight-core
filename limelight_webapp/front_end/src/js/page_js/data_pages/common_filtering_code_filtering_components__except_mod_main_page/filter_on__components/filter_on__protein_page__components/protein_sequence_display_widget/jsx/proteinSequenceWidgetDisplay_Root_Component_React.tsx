@@ -244,7 +244,7 @@ export class ProteinSequenceWidgetDisplay_Root_Component_React extends React.Com
             }
         }
 
-        let sequenceCoveragePercentage_TooltipContents_FilteredAddition: JSX.Element = undefined
+        let sequenceCoveragePercentage_TooltipContents_FilteredAddition: React.JSX.Element = undefined
 
         let display_SequenceCoveragePercentage = this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_AllPeptides
 

@@ -2511,7 +2511,7 @@ export class ModViewPage_Display_MainContent_Component extends React.Component< 
      */
     render() {
 
-        let setDefaultView_Component : JSX.Element = undefined;
+        let setDefaultView_Component : React.JSX.Element = undefined;
 
         if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory &&  this.props.propsValue.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.projectSearchIds_AllForPage.length === 1 ) {
 
@@ -2522,7 +2522,7 @@ export class ModViewPage_Display_MainContent_Component extends React.Component< 
             setDefaultView_Component = get_SetDefaultView_Component_React( param )
         }
 
-        let saveView_Component : JSX.Element = undefined;
+        let saveView_Component : React.JSX.Element = undefined;
 
         if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory ) {
 
@@ -2535,7 +2535,7 @@ export class ModViewPage_Display_MainContent_Component extends React.Component< 
 
         //  Only create these once main display data is loaded
 
-        let filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section : JSX.Element = null;
+        let filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section : React.JSX.Element = null;
 
         if ( this.state.mainDisplayData_Loaded ) {
 
@@ -2658,7 +2658,7 @@ export class ModViewPage_Display_MainContent_Component extends React.Component< 
      */
     private _render_filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section(
         {}: {}
-    ): JSX.Element{
+    ): React.JSX.Element{
 
         let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;
 

@@ -357,7 +357,7 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
             }
         }
 
-        const numberedPages_JSX_Array : Array<JSX.Element> = [];
+        const numberedPages_JSX_Array : Array<React.JSX.Element> = [];
 
         for ( let pageNumber = pageNumber_List_Start; pageNumber <= pageNumber_List_End; pageNumber++ ) {
 
@@ -381,7 +381,7 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
             numberedPages_JSX_Array.push( numberedPage_JSX );
         }
 
-        let pageSelectionOverlay : JSX.Element = null;
+        let pageSelectionOverlay : React.JSX.Element = null;
 
         if ( this.state.show_pageSelectionOverlay ) {
 
@@ -630,9 +630,9 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
      *
      *
      */
-    private _create_pageSelectionOverlay() : JSX.Element{
+    private _create_pageSelectionOverlay() : React.JSX.Element{
 
-        const entries : Array<JSX.Element> = [];
+        const entries : Array<React.JSX.Element> = [];
 
         if ( this.props.tableDataObject_INTERNAL.dataTable_DataGroupRowEntries__INTERNAL_CurrentlyShowing_Paged ) {
 
@@ -697,7 +697,7 @@ export class DataTable_TableRoot_React_Table_PageNavigation_Component extends Re
             rangeStart : number
             rangeEnd : number
 
-        }) : JSX.Element{
+        }) : React.JSX.Element{
 
         const entry = (
             <div

@@ -19,7 +19,7 @@ import {
 
 
 export const get_PsmList_ScanNumber_AND_ViewSpectrum_TableCell_ExternalReactComponent = function (
-    inputParams: Internal__PsmList_ViewSpectrumCell_ExternalReactComponent_InputParams) : JSX.Element {
+    inputParams: Internal__PsmList_ViewSpectrumCell_ExternalReactComponent_InputParams) : React.JSX.Element {
 
     return (
         <Internal__PsmList_ViewSpectrumCell_ExternalReactComponent

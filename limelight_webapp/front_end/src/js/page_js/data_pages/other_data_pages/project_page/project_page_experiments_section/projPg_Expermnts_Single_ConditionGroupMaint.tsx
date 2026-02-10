@@ -730,9 +730,9 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
             label_Conditions = "Time Points";
         }
 
-        let addButton : JSX.Element = undefined;
-        let saveButton : JSX.Element = undefined;
-        let labelTypeEntry : JSX.Element = undefined;
+        let addButton : React.JSX.Element = undefined;
+        let saveButton : React.JSX.Element = undefined;
+        let labelTypeEntry : React.JSX.Element = undefined;
 
         {
             let conditionHasEmptyLabel = false;
@@ -758,7 +758,7 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
 
             if ( this.props.data_ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint.add ) {
                 
-                let disabledCoverDiv : JSX.Element = undefined;
+                let disabledCoverDiv : React.JSX.Element = undefined;
                 if ( addSave_Disabled_Flag ) {
 
                     let title: string = undefined;
@@ -800,7 +800,7 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
 
             if ( this.props.data_ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint.save ) {
 
-                let disabledCoverDiv : JSX.Element = undefined;
+                let disabledCoverDiv : React.JSX.Element = undefined;
                 if ( addSave_Disabled_Flag ) {
                     let title = "The label must be populated and at least 1 condition added before the Condition Group can be saved";
                     if ( this.props.data_ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint.isTimePoints ) {
@@ -850,10 +850,10 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
             }
         }
 
-        let initialAddBlock : JSX.Element = undefined;
-        let conditionsBlockLabel : JSX.Element = undefined;
-        let conditionsBlock  : JSX.Element= undefined;
-        let conditionsBlockAddConditionLink : JSX.Element = undefined;
+        let initialAddBlock : React.JSX.Element = undefined;
+        let conditionsBlockLabel : React.JSX.Element = undefined;
+        let conditionsBlock  : React.JSX.Element= undefined;
+        let conditionsBlockAddConditionLink : React.JSX.Element = undefined;
 
         if ( this.state.initialAdd ) {
 
@@ -1007,7 +1007,7 @@ class ConditionsTopLevelBlock extends React.Component< ConditionsTopLevelBlock_P
 
     render() {
 
-        const conditionEntryComponentsList: Array<JSX.Element> = [];
+        const conditionEntryComponentsList: Array<React.JSX.Element> = [];
         {
             let index = 0;
             for ( const conditionContainer of this.props.conditionContainers ) {
@@ -1225,8 +1225,8 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
         
         const conditionContainer = this.props.conditionContainer;
 
-        let labelDisplay : JSX.Element = undefined;
-        let labelInput : JSX.Element = undefined;
+        let labelDisplay : React.JSX.Element = undefined;
+        let labelInput : React.JSX.Element = undefined;
 
         if ( this.state.editLabel ) {
 
@@ -1260,7 +1260,7 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
             );
         } else {
 
-            let title: JSX.Element = undefined;
+            let title: React.JSX.Element = undefined;
             if ( this.props.isTimePoints ) {
                 if ( this.state.emptyConditionString ) {
                     title = (
@@ -1352,7 +1352,7 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
             );
         }
 
-        let deleteIconComponent : JSX.Element = undefined;
+        let deleteIconComponent : React.JSX.Element = undefined;
         if ( this.props.deleteConditionHandler ) {
             
             let title = "Delete Condition";

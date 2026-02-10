@@ -632,7 +632,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                     { //  Open Scan Number Fake Link
 
                         const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+                            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                                 return (
                                     <span className="table-data-cell-property-value fake-link"

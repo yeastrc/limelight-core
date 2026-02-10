@@ -258,8 +258,8 @@ class QcViewPage_SingleSearch__PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnn
             return null; // EARLY RETURN
         }
 
-        const annotationNames_SelectOptionEntries: Array<JSX.Element> = [];
-        const annotationNames_SelectOptionEntries__Plus_NoEntrySelected: Array<JSX.Element> = [];
+        const annotationNames_SelectOptionEntries: Array<React.JSX.Element> = [];
+        const annotationNames_SelectOptionEntries__Plus_NoEntrySelected: Array<React.JSX.Element> = [];
 
         {
             const option = (
@@ -322,7 +322,7 @@ class QcViewPage_SingleSearch__PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnn
             }
         }
 
-        const searchScanFileData_Entries_OptionEntriesJSX: Array<JSX.Element> = []
+        const searchScanFileData_Entries_OptionEntriesJSX: Array<React.JSX.Element> = []
 
         if ( ( ! this.state.loadingData ) && ( ! this.state.searchScanFileData_NoEntries ) && ( ! this.state.searchScanFileData_OnlyOne ) ) {
 
@@ -342,7 +342,7 @@ class QcViewPage_SingleSearch__PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnn
             }
         }
 
-        const selectElements: Array<JSX.Element> = [];
+        const selectElements: Array<React.JSX.Element> = [];
 
         for (let index = 0; index < _NUMBER_OF_Select_Score_To_Render; index++) {
 

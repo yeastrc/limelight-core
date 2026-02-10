@@ -37,7 +37,7 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_Peptide_Count_Heade
 
     searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 
-}  ) : JSX.Element {
+}  ) : React.JSX.Element {
 
     return (
         <div >
@@ -75,7 +75,7 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_PeptideUnique_Count
 
     searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 
-}  ) : JSX.Element {
+}  ) : React.JSX.Element {
 
     return (
         <div>

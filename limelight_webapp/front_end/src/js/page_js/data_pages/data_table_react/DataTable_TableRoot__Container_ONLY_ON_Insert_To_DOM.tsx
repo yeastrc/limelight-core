@@ -84,9 +84,9 @@ export class DataTable_TableRoot__Container_ONLY_ON_Insert_To_DOM extends React.
      */
     render() {
 
-        let component_SubTree_ErrorMessage : JSX.Element = undefined;
+        let component_SubTree_ErrorMessage : React.JSX.Element = undefined;
 
-        let mainContent : JSX.Element = undefined;
+        let mainContent : React.JSX.Element = undefined;
 
 
         if ( this.state.component_SubTree_Has_Error ) {

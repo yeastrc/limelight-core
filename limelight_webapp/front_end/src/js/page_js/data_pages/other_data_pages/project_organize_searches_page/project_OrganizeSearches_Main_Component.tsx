@@ -367,7 +367,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *
      */
-    private _render_MainData() : JSX.Element {
+    private _render_MainData() : React.JSX.Element {
 
         if ( this._searchesSearchTagsFolders_Result_Root.is_NO_Searches_In_Project() ) {
             //  NO Searches
@@ -391,7 +391,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *
      */
-    private _render_Folders_MainPage() : JSX.Element {
+    private _render_Folders_MainPage() : React.JSX.Element {
 
         return (
             <>
@@ -728,7 +728,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *
      */
-    private _render_AllSearches_MainPage() : JSX.Element {
+    private _render_AllSearches_MainPage() : React.JSX.Element {
 
         return (
             <>
@@ -813,7 +813,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *
      */
-    private _render_YES_Searches_NO_Folders() : JSX.Element {
+    private _render_YES_Searches_NO_Folders() : React.JSX.Element {
 
         return (
             <div>
@@ -839,7 +839,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *
      */
-    private _render_NoSearchesNoFolders() : JSX.Element {
+    private _render_NoSearchesNoFolders() : React.JSX.Element {
 
         return (
             <div>

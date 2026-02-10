@@ -159,9 +159,9 @@ export class GeneratedPeptideContents_UserSelections_Root_Component extends Reac
             return null // EARLY RETURN
         }
 
-        let variableModsSelection : JSX.Element = undefined;
-        let openModsSelection : JSX.Element = undefined;
-        let staticModsSelection : JSX.Element = undefined;
+        let variableModsSelection : React.JSX.Element = undefined;
+        let openModsSelection : React.JSX.Element = undefined;
+        let staticModsSelection : React.JSX.Element = undefined;
 
         if ( this.props.searchContains_VariableModifications ) {
             variableModsSelection = (

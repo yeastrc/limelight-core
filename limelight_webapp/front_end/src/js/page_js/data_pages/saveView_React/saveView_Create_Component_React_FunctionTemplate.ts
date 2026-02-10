@@ -31,4 +31,4 @@ export class SaveView_Component_React_Params {
 }
 
 
-export type Get_SaveView_Component_React_Type = ( params : SaveView_Component_React_Params ) => JSX.Element
+export type Get_SaveView_Component_React_Type = ( params : SaveView_Component_React_Params ) => React.JSX.Element

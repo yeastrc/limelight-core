@@ -26,7 +26,7 @@ export const currentFiltersDisplayBlock__ScanPeak_M_Over_Z__Intensity_Filter_Use
     } : {
         scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject ) ) {
         //  Nothing to display
@@ -59,11 +59,11 @@ const CurrentFiltersDisplayBlock__ScanNumber_ScanFilenameId_ProjectSearchId_On_P
     } : {
         scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 
-    const selectionsElements: Array<JSX.Element> = [];
+    const selectionsElements: Array<React.JSX.Element> = [];
 
     for ( const selection_Entry of scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections() ) {
 

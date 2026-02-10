@@ -17,7 +17,7 @@ export const DataTable__HeaderTooltip__Partial_For_SubSearch_SearchSubGroup_Comp
 
     searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 
-}  ) : JSX.Element {
+}  ) : React.JSX.Element {
 
     return (
         <div>

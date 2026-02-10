@@ -107,7 +107,7 @@
 //         callback_TagsUpdated : () => void;
 //         callbackOn_Cancel_Close_Clicked : () => void;
 //
-//     }) : JSX.Element {
+//     }) : React.JSX.Element {
 //
 //     return (
 //         <Search_Tags_Manage_TagsForSearch_OverallTags_OverlayComponent

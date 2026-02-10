@@ -555,7 +555,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         }
 
 
-        let childTableShowHideIcon: JSX.Element = undefined;
+        let childTableShowHideIcon: React.JSX.Element = undefined;
 
         if (
             this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject ||

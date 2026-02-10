@@ -3150,7 +3150,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
         let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;
 
-        let setDefaultView_Component : JSX.Element = undefined;
+        let setDefaultView_Component : React.JSX.Element = undefined;
 
         if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory &&  this.props.propsValue.projectSearchIds.length === 1 ) {
 
@@ -3161,7 +3161,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             setDefaultView_Component = get_SetDefaultView_Component_React( param )
         }
 
-        let saveView_Component : JSX.Element = undefined;
+        let saveView_Component : React.JSX.Element = undefined;
 
         if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory ) {
 
@@ -3175,7 +3175,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
         //  Only create this once main display data is loaded
 
-        let options_Filter_Block: JSX.Element = null;
+        let options_Filter_Block: React.JSX.Element = null;
 
         if ( this.state.mainDisplayData_Loaded ) {
 

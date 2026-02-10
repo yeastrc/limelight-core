@@ -235,7 +235,7 @@ export class Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Compo
             div_TopLevel_Style.padding = 3
         }
 
-        let display_AND_OR_NOT: Array<JSX.Element> = []
+        let display_AND_OR_NOT: Array<React.JSX.Element> = []
 
         {  //  AND
 
@@ -330,11 +330,11 @@ const render_OR_AND_or_NOT__ReactComponent = function(
         searchTagData_Display_Root: INTERNAL__SearchTagData_Display_Root
         enum__OR__AND__NOT: INTERNAL_ENUM__OR__AND__NOT
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     const categoryLabel_Style: React.CSSProperties = { marginTop: 4, marginRight: 6, fontWeight: "bold", whiteSpace: "nowrap" }
 
-    const categoriesAndTheirSearchTags_Elements: Array<JSX.Element> = [];
+    const categoriesAndTheirSearchTags_Elements: Array<React.JSX.Element> = [];
 
     {
         for ( const categoryEntry of searchTagData_Display_Root.searchTagCategory_Array_In_DisplayOrder ) {
@@ -401,7 +401,7 @@ const render_OR_AND_or_NOT__ReactComponent = function(
         }
     }
 
-    let uncategorizedSearchTags_Elements: JSX.Element = null;
+    let uncategorizedSearchTags_Elements: React.JSX.Element = null;
 
     {
         if ( searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder.length > 0 ) {
@@ -499,7 +499,7 @@ const _render_SingleSearchTag = function(
             search_Tags_Selections_Object: Search_Tags_Selections_Object
             enum__OR__AND__NOT: INTERNAL_ENUM__OR__AND__NOT
         }
-) : JSX.Element {
+) : React.JSX.Element {
 
     const tag_Entry = tag_Internal.tag_Entry
 

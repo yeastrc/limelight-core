@@ -196,7 +196,7 @@ class ModPage_ModifiedResidue__Overlay_Component extends React.Component< ModPag
 
         // const entries_ForLetters_TextLines_ForLogging: Array<string> = []
 
-        const entries_For_ResidueLetters_JSX: Array<JSX.Element> = []
+        const entries_For_ResidueLetters_JSX: Array<React.JSX.Element> = []
 
         for ( const rowValue of this.props.params.modifiedResidue_RowValues ) {
 

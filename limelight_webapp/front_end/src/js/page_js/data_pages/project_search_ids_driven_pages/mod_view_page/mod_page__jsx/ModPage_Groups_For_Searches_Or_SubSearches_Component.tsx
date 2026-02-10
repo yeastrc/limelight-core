@@ -376,15 +376,15 @@ export class ModPage_Groups_For_Searches_Or_SubSearches_Component extends React.
             )
         }
 
-        let buttonTo_Change_Searches_Or_SubSearches: JSX.Element = undefined
+        let buttonTo_Change_Searches_Or_SubSearches: React.JSX.Element = undefined
 
         const group_1_ProjectSearchIds_OR_SubSearchIds: Array<number> = []
         const group_2_ProjectSearchIds_OR_SubSearchIds: Array<number> = []
 
-        const group_1_SearchNames_OR_SubSearchLabels_Elements: Array<JSX.Element> = []
-        const group_2_SearchNames_OR_SubSearchLabels_Elements: Array<JSX.Element> = []
+        const group_1_SearchNames_OR_SubSearchLabels_Elements: Array<React.JSX.Element> = []
+        const group_2_SearchNames_OR_SubSearchLabels_Elements: Array<React.JSX.Element> = []
 
-        const notIn_Any_Group_SearchNames_OR_SubSearchLabels_Elements: Array<JSX.Element> = []
+        const notIn_Any_Group_SearchNames_OR_SubSearchLabels_Elements: Array<React.JSX.Element> = []
 
         if ( searchGroups.projectSearchIds_Or_SubSearchIds_Enum === ModViewPage_DataVizOptions_VizSelections_PageStateManager__SearchGroups_For_ZScore_Selections__ProjectSearchIds_Or_SubSearchIds_Enum.SUB_SEARCH_IDS ) {
 

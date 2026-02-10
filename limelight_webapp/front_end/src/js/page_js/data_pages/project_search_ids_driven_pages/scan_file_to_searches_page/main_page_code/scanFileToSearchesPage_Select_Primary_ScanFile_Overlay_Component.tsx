@@ -212,7 +212,7 @@
 //
 //
 //
-//         const scanFileSelectionElements: Array<JSX.Element> = []
+//         const scanFileSelectionElements: Array<React.JSX.Element> = []
 //
 //         let elementCounter = 0
 //

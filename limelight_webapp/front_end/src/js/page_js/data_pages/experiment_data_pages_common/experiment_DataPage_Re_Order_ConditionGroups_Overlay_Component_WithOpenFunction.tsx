@@ -354,7 +354,7 @@ class Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component extends Rea
      */
     render(): React.ReactNode {
 
-        const conditionGroupDisplayList : Array<JSX.Element> = [];
+        const conditionGroupDisplayList : Array<React.JSX.Element> = [];
 
         {
             let index = 0

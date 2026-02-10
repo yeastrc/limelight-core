@@ -18,7 +18,7 @@ interface QcPage_UpdatingData_BlockCover_Props {
 /**
  *  Parent <div> MUST have position: relative
  */
-export const QcPage_UpdatingData_BlockCover : React.FC<QcPage_UpdatingData_BlockCover_Props> = function ( props: QcPage_UpdatingData_BlockCover_Props ) : JSX.Element {
+export const QcPage_UpdatingData_BlockCover : React.FC<QcPage_UpdatingData_BlockCover_Props> = function ( props: QcPage_UpdatingData_BlockCover_Props ) : React.JSX.Element {
 
     return (
 

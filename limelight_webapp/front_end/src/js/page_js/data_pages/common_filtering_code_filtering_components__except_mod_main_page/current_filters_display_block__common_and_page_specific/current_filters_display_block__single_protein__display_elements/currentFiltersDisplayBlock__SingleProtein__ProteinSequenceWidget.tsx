@@ -26,7 +26,7 @@ export const currentFiltersDisplayBlock__SingleProtein__ProteinSequenceWidget = 
     } : {
         proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject;
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  Must return null if nothing to display.  Parent component uses that to determine if surrounding elements are displayed
 
@@ -36,7 +36,7 @@ export const currentFiltersDisplayBlock__SingleProtein__ProteinSequenceWidget = 
         return null;  // EARLY RETURN
     }
 
-    let selectedProteinSequencePositions_Element: JSX.Element = undefined
+    let selectedProteinSequencePositions_Element: React.JSX.Element = undefined
 
     {
         const selectedProteinSequencePositionsSet = proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions()
@@ -51,7 +51,7 @@ export const currentFiltersDisplayBlock__SingleProtein__ProteinSequenceWidget = 
         }
     }
 
-    let allSelections_Protein_StartEnd_Position_Element: JSX.Element = undefined
+    let allSelections_Protein_StartEnd_Position_Element: React.JSX.Element = undefined
 
     {
         const allSelections_Protein_StartEnd_Position_Size = proteinSequenceWidget_StateObject.get_AllSelections_Protein_StartEnd_Position_Size()
@@ -99,7 +99,7 @@ const CurrentFiltersDisplayBlock__SingleProtein__ProteinSequenceWidget = functio
     } : {
         selectedProteinSequencePositionsSet: Set<number>
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     const selectedProteinSequencePositions_DisplayString = _userSelectionDisplay_CombineArrayIntoFormattedString({ selectedProteinSequencePositionsSet });
 
@@ -158,7 +158,7 @@ const CurrentFiltersDisplayBlock__SingleProtein__ProteinSequenceWidget__AllSelec
     } : {
         proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject;
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     const elements = _userSelectionDisplay_Combine_AllSelections_Protein_StartEnd_Position_Create_ElementArray({ proteinSequenceWidget_StateObject });
 
@@ -181,9 +181,9 @@ const _userSelectionDisplay_Combine_AllSelections_Protein_StartEnd_Position_Crea
     } : {
         proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject;
     }
-) : Array<JSX.Element> {
+) : Array<React.JSX.Element> {
 
-    const result_ElementArray: Array<JSX.Element> = []
+    const result_ElementArray: Array<React.JSX.Element> = []
 
     const protein_StartEnd_Position_Selections_Array = Array.from( proteinSequenceWidget_StateObject.get_AllSelections_Protein_StartEnd_Position() )
 

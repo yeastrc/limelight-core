@@ -107,7 +107,7 @@ export class SingleProtein_FiltersDisplay extends React.Component< SingleProtein
     render() {
         try {
 
-            const currentFiltersArray : Array<JSX.Element> = []
+            const currentFiltersArray : Array<React.JSX.Element> = []
 
             {  //  scanFilenameId_On_PSM_Filter_UserSelection
 
