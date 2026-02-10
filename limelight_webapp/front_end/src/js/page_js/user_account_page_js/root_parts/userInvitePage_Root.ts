@@ -1,9 +1,7 @@
 /**
  * userInvitePage_Root.js
  * 
- * Javascript for inviteLandingPage.jsp page  
- *
- * Currently SKIPPED for upgrade 'ReactDOM.render' call
+ * Javascript for inviteLandingPage.jsp page
  */
 
 //////////////////////////////////

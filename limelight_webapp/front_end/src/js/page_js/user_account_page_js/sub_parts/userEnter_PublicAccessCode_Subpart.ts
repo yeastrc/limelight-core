@@ -2,8 +2,6 @@
  * userEnter_PublicAccessCode_Subpart.ts
  * 
  * Javascript for a user enter a Public Access Code
- *
- * Currently SKIPPED for upgrade 'ReactDOM.render' call
  */
 
 //////////////////////////////////
