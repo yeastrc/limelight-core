@@ -725,7 +725,7 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                                             reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
                                                             throw e;
                                                         }
-                                                    });
+                                                    }, 50 );
                                                 } catch (e) {
                                                     reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
                                                     throw e;

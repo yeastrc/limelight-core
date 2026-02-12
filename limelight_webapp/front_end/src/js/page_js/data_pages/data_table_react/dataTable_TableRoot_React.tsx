@@ -516,12 +516,17 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
             this.setState({ show_updatingTable_Message: true });
 
-            window.setTimeout( () => {
+            window.setTimeout( () => { try {
 
                 this.setState({ show_updatingTable_Message: false });
 
                 this._showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback__MainPart( newValue );
-            })
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+            }, 50 )
 
         } else {
 

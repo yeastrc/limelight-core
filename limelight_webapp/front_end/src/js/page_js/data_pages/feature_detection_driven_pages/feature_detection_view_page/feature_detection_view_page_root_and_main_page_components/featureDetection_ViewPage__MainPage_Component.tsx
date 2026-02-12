@@ -1579,7 +1579,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                                                 reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
                                                 throw e
                                             }
-                                        } )
+                                        }, 50 )
                                     } }
                                 />
                             </div>
