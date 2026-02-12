@@ -74,3 +74,14 @@ npm install eslint-plugin-standard@latest --save-dev
 		npm install eslint-config-standard@latest --save-dev
 
 
+=================
+
+2026-02-12
+
+Installed latest React 19
+
+    npm install react@^19.0.0 react-dom@^19.0.0
+    npm install @types/react@^19.0.0 @types/react-dom@^19.0.0
+
+    Installed:  "react": "^19.2.4",    "react-dom": "^19.2.4",  "@types/react": "^19.2.13", "@types/react-dom": "^19.2.3",
+
