@@ -101,9 +101,10 @@ export class ModPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_Modi
 
         // console.warn("is_No_ResidueLetters() needs to be replaced or otherwise rewritten")
 
-        return
-        this._modificationCount__YES_Localized_Modifications__Map_Key_ModifiedResidueLetter.size === 0 &&
-        this._modificationCount__NOT_Localized_Unlocalized_Modifications__Map_Key_ModifiedResidueLetter.size === 0
+        return (
+            this._modificationCount__YES_Localized_Modifications__Map_Key_ModifiedResidueLetter.size === 0 &&
+            this._modificationCount__NOT_Localized_Unlocalized_Modifications__Map_Key_ModifiedResidueLetter.size === 0
+        )
     }
 
     /**
