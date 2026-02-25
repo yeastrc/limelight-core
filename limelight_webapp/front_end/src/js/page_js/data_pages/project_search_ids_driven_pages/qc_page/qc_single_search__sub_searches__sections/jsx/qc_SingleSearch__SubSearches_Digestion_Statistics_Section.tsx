@@ -219,7 +219,9 @@ export class Qc_SingleSearch__SubSearches_Digestion_Statistics_Section extends R
 
                     this.setState( (prevState, props) => {
                         if ( prevState.compute_MissedCleavages_Data_Result_Root !== null ) {
-                            return { compute_MissedCleavages_Data_Result_Root: null }
+
+                            const newState: Qc_SingleSearch__SubSearches_Digestion_Statistics_Section_State = { compute_MissedCleavages_Data_Result_Root: null }
+                            return newState
                         }
                         return null;
                     });
