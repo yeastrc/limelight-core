@@ -36,7 +36,9 @@ import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_BestPsm
  * 
  *   search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl		- For PSMs that are Target
  *   search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl - For PSMs that are Target or Independent Decoy
- *   search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl	- For PSMs that are Target or Independent Decoy or Decoy
+ *   
+ *
+ *	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
  */
 public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 
@@ -51,7 +53,10 @@ public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 	 *
 	 */
 	public enum DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType {
-		TARGET, TARGET_INDEPENDENT_DECOY, TARGET_INDEPENDENT_DECOY_DECOY
+		TARGET, TARGET_INDEPENDENT_DECOY, 
+		
+		//  Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+//		TARGET_INDEPENDENT_DECOY_DECOY
 	}
 
 	
@@ -65,9 +70,10 @@ public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 	private static int totalRecordsSavedCount_saveToDatabase__TARGET_INDEPENDENT_DECOY = 0;
 	
 
-	private static long totalElapsedTime_saveToDatabase_InMilliSeconds__TARGET_INDEPENDENT_DECOY_DECOY = 0;
-	private static int totalCallCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY= 0;
-	private static int totalRecordsSavedCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY = 0;
+	//  Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+//	private static long totalElapsedTime_saveToDatabase_InMilliSeconds__TARGET_INDEPENDENT_DECOY_DECOY = 0;
+//	private static int totalCallCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY= 0;
+//	private static int totalRecordsSavedCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY = 0;
 
 	/**
 	 * @throws Exception 
@@ -116,27 +122,27 @@ public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 			
 			Importer_Stats_PerTable_DAO.getInstance().save(importer_Stats_PerTable_DTO);
 		}
-		{
-			double elapsedTimeSeconds = totalElapsedTime_saveToDatabase_InMilliSeconds__TARGET_INDEPENDENT_DECOY_DECOY / 1000.0;
-			double elapsedTimeMinutes = ( elapsedTimeSeconds ) / 60.0;
-			log.warn( "Total Elapsed Time (includes commit): Save to search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl: "
-					+ elapsedTimeSeconds + " seconds, or "
-					+ elapsedTimeMinutes + " minutes.  "
-					+ "# method calls: " + totalCallCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY
-					+ ", # records saved: " + totalRecordsSavedCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY);
-			
-			Importer_Stats_PerTable_DTO importer_Stats_PerTable_DTO = new Importer_Stats_PerTable_DTO();
-			
-			importer_Stats_PerTable_DTO.setSearchId( search.getId() );
-			
-			importer_Stats_PerTable_DTO.setTableManipulationType( Importer_Stats_PerTable_Table__SqlManipulationType_Values_Enum.INSERT );
-			importer_Stats_PerTable_DTO.setTable_names( "search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl" );
-			importer_Stats_PerTable_DTO.setSqlCalls_TotalElapsedTime_Milliseconds(totalElapsedTime_saveToDatabase_InMilliSeconds__TARGET_INDEPENDENT_DECOY_DECOY);
-			importer_Stats_PerTable_DTO.setSqlCallCount( totalCallCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY );
-			importer_Stats_PerTable_DTO.setTotalRecords( totalRecordsSavedCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY );
-			
-			Importer_Stats_PerTable_DAO.getInstance().save(importer_Stats_PerTable_DTO);
-		}
+//		{
+//			double elapsedTimeSeconds = totalElapsedTime_saveToDatabase_InMilliSeconds__TARGET_INDEPENDENT_DECOY_DECOY / 1000.0;
+//			double elapsedTimeMinutes = ( elapsedTimeSeconds ) / 60.0;
+//			log.warn( "Total Elapsed Time (includes commit): Save to search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl: "
+//					+ elapsedTimeSeconds + " seconds, or "
+//					+ elapsedTimeMinutes + " minutes.  "
+//					+ "# method calls: " + totalCallCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY
+//					+ ", # records saved: " + totalRecordsSavedCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY);
+//			
+//			Importer_Stats_PerTable_DTO importer_Stats_PerTable_DTO = new Importer_Stats_PerTable_DTO();
+//			
+//			importer_Stats_PerTable_DTO.setSearchId( search.getId() );
+//			
+//			importer_Stats_PerTable_DTO.setTableManipulationType( Importer_Stats_PerTable_Table__SqlManipulationType_Values_Enum.INSERT );
+//			importer_Stats_PerTable_DTO.setTable_names( "search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl" );
+//			importer_Stats_PerTable_DTO.setSqlCalls_TotalElapsedTime_Milliseconds(totalElapsedTime_saveToDatabase_InMilliSeconds__TARGET_INDEPENDENT_DECOY_DECOY);
+//			importer_Stats_PerTable_DTO.setSqlCallCount( totalCallCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY );
+//			importer_Stats_PerTable_DTO.setTotalRecords( totalRecordsSavedCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY );
+//			
+//			Importer_Stats_PerTable_DAO.getInstance().save(importer_Stats_PerTable_DTO);
+//		}
 	}
 
 	
@@ -175,11 +181,13 @@ public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 			totalCallCount_saveToDatabase__TARGET_INDEPENDENT_DECOY++;
 			totalRecordsSavedCount_saveToDatabase__TARGET_INDEPENDENT_DECOY += itemList.size();
 			
-		} else if ( tableType == DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY_DECOY ) {
-
-			totalElapsedTime_saveToDatabase_InMilliSeconds__TARGET_INDEPENDENT_DECOY_DECOY += ( elapsedTimeNanoSeconds / 1000000 );
-			totalCallCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY++;
-			totalRecordsSavedCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY += itemList.size();
+			//  Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+			
+//		} else if ( tableType == DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY_DECOY ) {
+//
+//			totalElapsedTime_saveToDatabase_InMilliSeconds__TARGET_INDEPENDENT_DECOY_DECOY += ( elapsedTimeNanoSeconds / 1000000 );
+//			totalCallCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY++;
+//			totalRecordsSavedCount_saveToDatabase__TARGET_INDEPENDENT_DECOY_DECOY += itemList.size();
 			 
 		} else {
 			String msg = "tableType is not an expected value.  is: " + tableType;
@@ -194,7 +202,8 @@ public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 
 	private static final String TABLE_NAME_TARGET_INDEPENDENT_DECOY = "search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl";
 
-	private static final String TABLE_NAME_TARGET_INDEPENDENT_DECOY_DECOY = "search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl";
+	//  Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+//	private static final String TABLE_NAME_TARGET_INDEPENDENT_DECOY_DECOY = "search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl";
 
 
 	private static final String MAIN_SAVE_SQL =
@@ -226,9 +235,12 @@ public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 			
 			tableName = TABLE_NAME_TARGET_INDEPENDENT_DECOY;
 			
-		} else if ( tableType == DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY_DECOY ) {
 			
-			tableName = TABLE_NAME_TARGET_INDEPENDENT_DECOY_DECOY;
+		// Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+			
+//		} else if ( tableType == DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY_DECOY ) {
+//			
+//			tableName = TABLE_NAME_TARGET_INDEPENDENT_DECOY_DECOY;
 			 
 		} else {
 			String msg = "tableType is not an expected value.  is: " + tableType;

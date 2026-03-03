@@ -86,7 +86,8 @@ public class ProcessPSMsForReportedPeptide {
 
 	private static final int PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__INDEPENDENTDECOY = 2;
 
-	private static final int PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY = 3;
+	//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+//	private static final int PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY = 3;
 
 
 
@@ -183,8 +184,11 @@ public class ProcessPSMsForReportedPeptide {
 					//  Independent Decoy order: 2
 					psmSortingContainer.target_IndependentDecoy_Decoy_Order = PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__INDEPENDENTDECOY;
 				} else if ( psm.isIsDecoy() != null && psm.isIsDecoy() ) {
+					
+					//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
 					//  Decoy order: 3
-					psmSortingContainer.target_IndependentDecoy_Decoy_Order = PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY;
+//					psmSortingContainer.target_IndependentDecoy_Decoy_Order = PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY;
+					
 				} else {
 					//  Target order: 1
 					psmSortingContainer.target_IndependentDecoy_Decoy_Order = PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__TARGET;
@@ -226,8 +230,11 @@ public class ProcessPSMsForReportedPeptide {
 		BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets = BestPsmFilterableAnnotationProcessing.getInstance( filterablePsmAnnotationTypesOnId );
 		//  For PSMs that are Targets and Independent Decoys (flag on PSM)
 		BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys = BestPsmFilterableAnnotationProcessing.getInstance( filterablePsmAnnotationTypesOnId );
+		
+		//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+		
 		//  For PSMs that are Targets and Independent Decoys and Decoys (flags on PSM)
-		BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys = BestPsmFilterableAnnotationProcessing.getInstance( filterablePsmAnnotationTypesOnId );
+//		BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys = BestPsmFilterableAnnotationProcessing.getInstance( filterablePsmAnnotationTypesOnId );
 		
 		boolean saveAnyPSMs = false;
 
@@ -338,9 +345,11 @@ public class ProcessPSMsForReportedPeptide {
 					
 					firstSavedPsmId_Is_IndependentDecoy = psmId;
 					
-				} else if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order == PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY ) {
+					//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
 					
-					firstSavedPsmId_Is_Decoy = psmId;
+//				} else if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order == PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY ) {
+//					
+//					firstSavedPsmId_Is_Decoy = psmId;
 					
 				} else {
 					String msg = "psmSortingContainer.target_IndependentDecoy_Decoy_Order value not expected.  value: " + psmSortingContainer.target_IndependentDecoy_Decoy_Order;
@@ -853,9 +862,11 @@ public class ProcessPSMsForReportedPeptide {
 			if ( psmDTO.isDecoy() ) {
 
 				//  Is Decoy PSM
+				
+				//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
 
 				//  Update: For PSMs that are Targets and Independent Decoys and Decoys (flags on PSM)
-				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
+//				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
 				
 			} else if ( psmDTO.isIndependentDecoy() ) {
 
@@ -864,9 +875,11 @@ public class ProcessPSMsForReportedPeptide {
 				//  Update: For PSMs that are Targets and Independent Decoys (flag on PSM)
 				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
 
+				//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+				
 				//  Update since is part of that group as well
 				//     Update: For PSMs that are Targets and Independent Decoys and Decoys (flags on PSM)
-				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
+//				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
 				
 			} else {
 				//  Not any Decoy so is Target PSM
@@ -878,9 +891,11 @@ public class ProcessPSMsForReportedPeptide {
 				//     Update: For PSMs that are Targets and Independent Decoys (flag on PSM)
 				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
 
+				//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+				
 				//  Update since is part of that group as well
 				//     Update: For PSMs that are Targets and Independent Decoys and Decoys (flags on PSM)
-				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
+//				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
 			}
 
 			
@@ -941,7 +956,9 @@ public class ProcessPSMsForReportedPeptide {
 		
 		psmStatisticsAndBestValues.setBestPsmFilterableAnnotationProcessing_PSM_Targets(bestPsmFilterableAnnotationProcessing_PSM_Targets);
 		psmStatisticsAndBestValues.setBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys(bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys);
-		psmStatisticsAndBestValues.setBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys(bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys);
+		
+		//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+//		psmStatisticsAndBestValues.setBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys(bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys);
 				
 		if ( ! psmOpenModification_UniqueMassesRounded.isEmpty() ) {
 			psmStatisticsAndBestValues.setPsmOpenModification_UniqueMassesRounded( psmOpenModification_UniqueMassesRounded );
