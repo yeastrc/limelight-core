@@ -6,7 +6,7 @@ End-to-end tests for the Limelight web frontend using [Playwright](https://playw
 
 1. **Node.js** v20+ and npm v10.3+
 2. **Playwright browsers** installed (see Setup)
-3. **Limelight server** running at `http://localhost:8080/limelight`
+3. **Limelight server** running at `http://127.0.0.1:8080/limelight/`
 
 ## Setup
 
