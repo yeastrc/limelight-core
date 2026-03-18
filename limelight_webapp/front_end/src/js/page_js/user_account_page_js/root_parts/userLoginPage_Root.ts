@@ -33,11 +33,19 @@ import {UserEnter_PublicAccessCode_Subpart} from "page_js/user_account_page_js/s
  */
 export class UserLoginPage_Root {
 
+	private _showLoginForm_BindThis = this._showLoginForm.bind(this)
+
 	private _initializeCalled = false;
 
 	private _userLogin_Subpart = new UserLogin_Subpart();
 	private _userResetPassword_Subpart = new UserResetPassword_Subpart();
-	private _userEnter_PublicAccessCode_Subpart = new UserEnter_PublicAccessCode_Subpart( this );
+	private _userEnter_PublicAccessCode_Subpart = new UserEnter_PublicAccessCode_Subpart();
+
+	private _currentlyShowing = {
+		userLogin_Subpart: false,
+		userResetPassword_Subpart: false,
+		userEnter_PublicAccessCode_Subpart: false
+	}
 
 	/**
 	 * 
@@ -49,10 +57,10 @@ export class UserLoginPage_Root {
 	/**
 	 *
 	 */
-	switch_To_Login_From_Enter_PublicAccessCode() {
-
-		this._showLoginForm();
-	}
+	// switch_To_Login_From_Enter_PublicAccessCode() {
+	//
+	// 	this._showLoginForm();
+	// }
 
 	/**
 	 * initialize the page (Add element listeners like onClick, ...)
@@ -147,6 +155,22 @@ export class UserLoginPage_Root {
 		}
 		$signin_tab.hide();
 
+		if ( this._currentlyShowing.userEnter_PublicAccessCode_Subpart ) {
+
+			this._userEnter_PublicAccessCode_Subpart.removeFromPage()
+
+			this._currentlyShowing.userEnter_PublicAccessCode_Subpart = false
+		}
+
+		if ( this._currentlyShowing.userResetPassword_Subpart ) {
+
+			this._userResetPassword_Subpart.removeFromPage()
+
+			this._currentlyShowing.userResetPassword_Subpart = false
+		}
+
+		this._currentlyShowing.userLogin_Subpart = true
+
 		this._userLogin_Subpart.showOnPage( { containerHTMLElement : main_container_below_logo, inviteTrackingCode : undefined } );
 	}
 
@@ -154,7 +178,24 @@ export class UserLoginPage_Root {
 
 		const main_container_below_logo = this._get_main_container_below_logo();
 
-		this._userEnter_PublicAccessCode_Subpart.showOnPage( { containerHTMLElement : main_container_below_logo, inviteTrackingCode : undefined } );
+
+		if ( this._currentlyShowing.userLogin_Subpart ) {
+
+			this._userLogin_Subpart.removeFromPage()
+
+			this._currentlyShowing.userLogin_Subpart = false
+		}
+
+		if ( this._currentlyShowing.userResetPassword_Subpart ) {
+
+			this._userResetPassword_Subpart.removeFromPage()
+
+			this._currentlyShowing.userResetPassword_Subpart = false
+		}
+
+		this._currentlyShowing.userEnter_PublicAccessCode_Subpart = true
+
+		this._userEnter_PublicAccessCode_Subpart.showOnPage( { containerHTMLElement : main_container_below_logo, showLoginForm_Callback: this._showLoginForm_BindThis } );
 	}
 
 	/**
@@ -175,6 +216,23 @@ export class UserLoginPage_Root {
 			throw Error("No element with id 'reset_password_tab'");
 		}
 		$reset_password_tab.hide();
+
+
+		if ( this._currentlyShowing.userLogin_Subpart ) {
+
+			this._userLogin_Subpart.removeFromPage()
+
+			this._currentlyShowing.userLogin_Subpart = false
+		}
+
+		if ( this._currentlyShowing.userEnter_PublicAccessCode_Subpart ) {
+
+			this._userEnter_PublicAccessCode_Subpart.removeFromPage()
+
+			this._currentlyShowing.userEnter_PublicAccessCode_Subpart = false
+		}
+
+		this._currentlyShowing.userResetPassword_Subpart = true
 
 		this._userResetPassword_Subpart.showOnPage( { containerHTMLElement : main_container_below_logo } );
 	}

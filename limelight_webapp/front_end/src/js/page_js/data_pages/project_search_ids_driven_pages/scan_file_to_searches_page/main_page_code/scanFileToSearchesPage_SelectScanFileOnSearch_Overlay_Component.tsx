@@ -110,7 +110,7 @@ class ScanFileToSearchesPage_SelectScanFileOnSearch_Overlay_Component_Component 
 
     render() {  try {
 
-        const scanFileElements_Array: Array<JSX.Element> = []
+        const scanFileElements_Array: Array<React.JSX.Element> = []
 
         for ( const searchScanFileData of this.props.params.scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename() ) {
 

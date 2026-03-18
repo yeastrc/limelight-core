@@ -34,4 +34,4 @@ export class SetDefaultView_Component_React_Params {
 }
 
 
-export type Get_SetDefaultView_Component_React_Type = ( params : SetDefaultView_Component_React_Params ) => JSX.Element
+export type Get_SetDefaultView_Component_React_Type = ( params : SetDefaultView_Component_React_Params ) => React.JSX.Element

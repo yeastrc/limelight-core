@@ -7,11 +7,12 @@
  */
 
 import React from 'react'
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
+
 import {limelight__IsTextSelected} from "page_js/common_all_pages/limelight__IsTextSelected";
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
-import ReactDOM from "react-dom";
 import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -204,7 +205,7 @@ export class Search_Tags_SelectSearchTags_Component extends React.Component< Sea
 
         const categoryLabel_Style: React.CSSProperties = { marginTop: 7, marginRight: 6, fontWeight: "bold", whiteSpace: "nowrap" }
 
-        const categoriesAndTheirSearchTags_Elements: Array<JSX.Element> = [];
+        const categoriesAndTheirSearchTags_Elements: Array<React.JSX.Element> = [];
 
         {
             for ( const categoryEntry of this.state.searchTagData_Display_Root.searchTagCategory_Array_In_DisplayOrder ) {
@@ -234,7 +235,7 @@ export class Search_Tags_SelectSearchTags_Component extends React.Component< Sea
             }
         }
 
-        let uncategorizedSearchTags_Elements: JSX.Element = null;
+        let uncategorizedSearchTags_Elements: React.JSX.Element = null;
 
         {
             if ( this.state.searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder.length > 0 ) {
@@ -280,7 +281,7 @@ export class Search_Tags_SelectSearchTags_Component extends React.Component< Sea
      * @param tag_Internal
      * @private
      */
-    private _render_SingleSearchTag( tag_Internal: INTERNAL__Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry ) : JSX.Element {
+    private _render_SingleSearchTag( tag_Internal: INTERNAL__Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry ) : React.JSX.Element {
 
         return (
             <INTERNAL__Search_Tag_SINGLE_Component
@@ -407,7 +408,7 @@ export class INTERNAL__Search_Tag_SINGLE_Component extends React.Component< INTE
         let className_Addition_Inner = "";
 
         //   WARNING:  'tooltip_Inner' MUST BE SET
-        let tooltip_Inner: JSX.Element = undefined
+        let tooltip_Inner: React.JSX.Element = undefined
 
         if ( this.props.search_Tags_Selections_Object.searchTagIdsSelected_Boolean__AND.has( tag_Entry.tagId ) ) {
 
@@ -579,9 +580,14 @@ const INTERNAL__filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Cre
 
     const overlay_addedDivElementDOM = document.createElement("div");
 
-    var documentBody = document.querySelector('body');
+    const documentBody = document.querySelector('body');
 
     documentBody.appendChild( overlay_addedDivElementDOM );
+
+    /**
+     * Have here so can call 'unmount'
+     */
+    let reactRoot_InDOMElement: Root_ReactDOM_Client
 
     const close_Selected_Callback = () => {
 
@@ -589,14 +595,12 @@ const INTERNAL__filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Cre
 
         //  React Unmount
 
-        ReactDOM.unmountComponentAtNode( overlay_addedDivElementDOM );
+        reactRoot_InDOMElement.unmount()
 
         //  Remove containing <div> from DOM
 
         overlay_addedDivElementDOM.remove();
     }
-
-    const renderCompletecallbackFcn = ( ) => { };
 
     const overlay_ComponentElement = (
         React.createElement(
@@ -613,11 +617,10 @@ const INTERNAL__filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Cre
             null
         )
     );
-    const overlay_Component = ReactDOM.render(
-        overlay_ComponentElement,
-        overlay_addedDivElementDOM,
-        renderCompletecallbackFcn
-    );
+
+    reactRoot_InDOMElement = createRoot_ReactDOM_Client( overlay_addedDivElementDOM )
+
+    reactRoot_InDOMElement.render( overlay_ComponentElement )
 }
 
 /**
@@ -1105,7 +1108,7 @@ class INTERNAL__OverlayUpdateButton extends React.Component< INTERNAL__OverlayUp
             buttonDisabled = true
         }
 
-        let tooltipContents : JSX.Element = undefined
+        let tooltipContents : React.JSX.Element = undefined
         if ( this.props.isCurrentSelection && this.props.buttonTooltip_WhenCurrentSelectionText ) {
             tooltipContents = (
                 <div >

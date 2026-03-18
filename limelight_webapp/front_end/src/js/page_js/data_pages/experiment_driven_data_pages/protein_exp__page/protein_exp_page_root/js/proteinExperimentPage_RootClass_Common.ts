@@ -17,7 +17,7 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot as createRoot_ReactDOM_Client } from "react-dom/client";
 
 
 
@@ -541,7 +541,7 @@ export class ProteinExperimentPage_RootClass_Common {
 					propsValue
 				}
 
-				const projectPage_ExperimentsSectionRoot_Component = (
+				const component = (
 					React.createElement(
 						ProteinExperimentPage_Display_Root_Component,
 						props,
@@ -557,16 +557,9 @@ export class ProteinExperimentPage_RootClass_Common {
 					throw Error("No DOM element with id 'protein_experiment_data_page_overall_enclosing_block_div'");
 				}
 
-				//  Called on render complete
-				const renderCompleteCallbackFcn = () => {
+				const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
 
-				};
-
-				const renderedReactComponent = ReactDOM.render(
-					projectPage_ExperimentsSectionRoot_Component,
-					containerDOMElement,
-					renderCompleteCallbackFcn
-				);
+				reactRoot_InDOMElement.render( component )
 
 				//  Remove div above that has "Loading..."
 

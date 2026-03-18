@@ -12,7 +12,7 @@ export const proteinView__ProteinList_ColumnHeader__Tooltip_Text = {
     NSAF: "Normalized Spectral Abundance Factor for a protein. This is calculated as: SAF = PSM count / length of protein. Then, NSAF = SAF / sum(SAF for all proteins in the sample).",
 
     Adjusted_Spectral_Count__ABACUS__ReturnComponent:
-        () : JSX.Element  => {
+        () : React.JSX.Element  => {
         return (
             <span>
                 The adjusted spectral count for a protein as calculated by ABACUS (<a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/21360675/">https://pubmed.ncbi.nlm.nih.gov/21360675/</a>).

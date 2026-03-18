@@ -712,11 +712,11 @@ export class ScanPeaks_Like_GenericViewer_Root_Component extends React.Component
         }
 
         try {
-            const svg_VerticalAxis_TickMarks: Array<JSX.Element> = [];
+            const svg_VerticalAxis_TickMarks: Array<React.JSX.Element> = [];
 
-            const svg_HorizontalAxis_TickMarks: Array<JSX.Element> = [];
+            const svg_HorizontalAxis_TickMarks: Array<React.JSX.Element> = [];
 
-            const svg_ScanMaxLines: Array<JSX.Element> = [];
+            const svg_ScanMaxLines: Array<React.JSX.Element> = [];
 
             {
                 {  //  Tick Marks on Vertical Axis
@@ -1126,7 +1126,7 @@ export class ScanPeaks_Like_GenericViewer_Root_Component extends React.Component
 
             //  Line at Selected Position
 
-            let lineAt_SelectedPosition_X_Element: JSX.Element
+            let lineAt_SelectedPosition_X_Element: React.JSX.Element
 
             if ( this.state.binned_Entries && this.state.selected_Index_InState !== undefined && this.state.selected_Index_InState !== null ) {
 

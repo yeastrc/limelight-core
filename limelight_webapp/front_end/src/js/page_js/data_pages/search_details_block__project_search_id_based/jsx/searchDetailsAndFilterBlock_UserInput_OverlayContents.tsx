@@ -87,7 +87,7 @@ export const get_SearchDetailsAndFilterBlock_UserInputInOverlay_Container = func
         callbackOn_Cancel_Close_Clicked : () => void;
         callback_SearchesFilters_Changed : ( param : SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param ) => void
 
-}) : JSX.Element {
+}) : React.JSX.Element {
 
     return (
         <SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component
@@ -707,9 +707,9 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
     /**
      *
      */
-    render () : JSX.Element {
+    render () : React.JSX.Element {
 
-        const filtersPerSearches : Array<JSX.Element> = [];
+        const filtersPerSearches : Array<React.JSX.Element> = [];
 
         for ( const projectSearchId of this.props.projectSearchIds ) {
 
@@ -1329,9 +1329,9 @@ const _getFilters_SingleFilterableType_Components = function(
         pass_top_of_SubElement_To_ScrollTo : Pass_top_of_SubElement_To_ScrollTo
         userUpdatedInputValue_Callback : UserUpdatedInputValue_Callback
 
-    }) : Array<JSX.Element> {
+    }) : Array<React.JSX.Element> {
 
-    let result : Array<JSX.Element> = undefined;
+    let result : Array<React.JSX.Element> = undefined;
 
     for ( const entry of filterableAnnotationTypesMap_KeyAnnotationTypeId ) {
 

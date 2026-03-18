@@ -15,6 +15,8 @@ import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorT
  */
 export interface SearchDetailsAndOtherFiltersOuterBlock_Layout_Props {
 
+    readonly children: React.ReactNode
+
     projectSearchIds: Array<number>
 }
 

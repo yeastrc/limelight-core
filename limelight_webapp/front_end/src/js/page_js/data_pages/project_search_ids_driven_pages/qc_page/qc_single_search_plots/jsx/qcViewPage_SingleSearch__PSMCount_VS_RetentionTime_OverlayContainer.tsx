@@ -182,7 +182,7 @@ class QcViewPage_SingleSearch__PSMCount_VS_RetentionTime_OverlayContainer extend
             return null; // EARLY RETURN
         }
 
-        const searchScanFileData_Entries_OptionEntriesJSX: Array<JSX.Element> = []
+        const searchScanFileData_Entries_OptionEntriesJSX: Array<React.JSX.Element> = []
 
         if ( ( ! this.state.loadingData ) && ( ! this.state.searchScanFileData_NoEntries ) && ( ! this.state.searchScanFileData_OnlyOne ) ) {
 

@@ -27,7 +27,7 @@ export const currentFiltersDisplayBlock__PSB__SearchSubGroups = function (
         searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean;
         searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData;  // Use to determine which Search Sub Groups Selected along with the display name
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! searchSubGroup_PropValue )  // searchSubGroup_PropValue not be populated when either No Sub Groups or > 1 search or is Experiment page
         || searchSubGroup_Are_All_SearchSubGroupIds_Selected ) {  // true if all selected.  Nothing to display if all are selected
@@ -55,7 +55,7 @@ const CurrentFiltersDisplayBlock__SearchSubGroups = function (
     } : {
         searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData;  // Use to determine which Search Sub Groups Selected along with the display name
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 

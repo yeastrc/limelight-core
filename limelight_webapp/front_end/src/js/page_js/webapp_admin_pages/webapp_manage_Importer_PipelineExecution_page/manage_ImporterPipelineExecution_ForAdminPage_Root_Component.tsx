@@ -687,7 +687,7 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
             }
         }
 
-        let currentStatus: JSX.Element
+        let currentStatus: React.JSX.Element
 
         if ( currentStatus_Paused ) {
 
@@ -766,7 +766,7 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
         const currentStatus_Paused_AnyPauseType = currentStatus_Paused || currentStatus_Paused_WaitingConfirmation || currentStatus_Paused_WaitingJobsComplete
 
 
-        const addSchedule_StartHourOptions : Array<JSX.Element> = []
+        const addSchedule_StartHourOptions : Array<React.JSX.Element> = []
 
         for ( let hour = 0; hour < 24; hour++ ) {
 
@@ -815,20 +815,20 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
             }
         }
 
-        let display_CurrentSchedule_Element: JSX.Element = null
+        let display_CurrentSchedule_Element: React.JSX.Element = null
 
         if ( this._webserviceCall_Schedule_Get_Response && this._webserviceCall_Schedule_Get_Response.scheduleJSON_Root && this._webserviceCall_Schedule_Get_Response.scheduleJSON_Root.schedulePauseItemList ) {
 
             const schedulePauseItemList = this._webserviceCall_Schedule_Get_Response.scheduleJSON_Root.schedulePauseItemList;
             const schedulePauseItemList_Length = schedulePauseItemList.length
 
-            const display_CurrentSchedule_Elements: Array<JSX.Element> = []
+            const display_CurrentSchedule_Elements: Array<React.JSX.Element> = []
 
             for ( let pauseItem_index = 0; pauseItem_index < schedulePauseItemList_Length; pauseItem_index++ ) {
 
                 const pauseItem = schedulePauseItemList[ pauseItem_index ]
 
-                const dayList_Elements: Array<JSX.Element> = []
+                const dayList_Elements: Array<React.JSX.Element> = []
 
                 for ( const dayList_Item of pauseItem.dayList ) {
 
@@ -871,7 +871,7 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
                     dayList_Elements.push( dayList_Element );
                 }
 
-                let startTime_24HourClock_Element: JSX.Element
+                let startTime_24HourClock_Element: React.JSX.Element
 
                 if ( pauseItem.startTime_24HourClock === 0 ) {
 
@@ -1353,7 +1353,7 @@ const get_UserSelect_PauseType_OverlayComponent_Overlay_Layout = function(
         callback_Close : () => void;
         callbackOn_Cancel_Close_Clicked : () => void;
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <UserSelect_PauseType_OverlayComponent

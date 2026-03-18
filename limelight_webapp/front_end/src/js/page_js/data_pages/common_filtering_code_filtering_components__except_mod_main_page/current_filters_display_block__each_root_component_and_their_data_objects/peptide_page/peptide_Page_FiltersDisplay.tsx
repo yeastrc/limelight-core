@@ -108,7 +108,7 @@ export class Peptide_Page_FiltersDisplay extends React.Component< Peptide_Page_F
     render() {
         try {
 
-            const currentFiltersArray : Array<JSX.Element> = []
+            const currentFiltersArray : Array<React.JSX.Element> = []
 
             {  //  scanFilenameId_On_PSM_Filter_UserSelection
 

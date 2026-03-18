@@ -355,7 +355,7 @@ const _create_AfterDataLoaded = function (
 
         if ( show_Peptide_Unique ) {
 
-            const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+            const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => {
                 return proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___uniqueColumnHeader_Tooltip_Create();
             }
 
@@ -456,7 +456,7 @@ const _create_AfterDataLoaded = function (
 
                 const displayName = get_proteinPage_Display__SingleProtein_SearchSubGroup_PSM_Count_Header_Text_DataTable_Component({ searchSubGroup });
 
-                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => {
 
                     return get_proteinPage_Display__SingleProtein_SearchSubGroup_PSM_Count_Header_Tooltip_DataTable_Component({ searchSubGroup });
                 }
@@ -958,7 +958,7 @@ const _create_AfterDataLoaded = function (
                         }
 
                     const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                        ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+                        ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                             return proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinNames_Column_Content({
                                 proteinNames_Array, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinName_Clicked_Callback

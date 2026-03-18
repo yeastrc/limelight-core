@@ -674,7 +674,7 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
      */
     render() {
 
-        let dataDisplay: JSX.Element = null;
+        let dataDisplay: React.JSX.Element = null;
 
         if ( this.state.dataComputed  ) {
 
@@ -688,13 +688,13 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
 
             const dataPerSearchArray = this.state.dataComputed.dataPerSearchArray;
 
-            const perSearch_HeaderRow: Array<JSX.Element> = [];
+            const perSearch_HeaderRow: Array<React.JSX.Element> = [];
             const perSearch_HeaderRow_DownloadCells: Array<string> = [];
 
-            const perLevel_TotalIonCurrent_DisplayRows: Array<JSX.Element> = [];
+            const perLevel_TotalIonCurrent_DisplayRows: Array<React.JSX.Element> = [];
             const perLevel_TotalIonCurrent_DisplayRows_DownloadRows: Array<Array<string>> = [];
 
-            const perLevel_Count_DisplayRows: Array<JSX.Element> = [];
+            const perLevel_Count_DisplayRows: Array<React.JSX.Element> = [];
             const perLevel_Count_DisplayRows_DownloadRows: Array<Array<string>> = [];
 
             const qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc_Result =
@@ -727,7 +727,7 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
             }
 
             {
-                const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+                const perLevel_TotalIonCurrent_DisplayEntries: Array<React.JSX.Element> = [];
 
                 const perLevel_TotalIonCurrent_DisplayEntries_DownloadCells: Array<string> = [];
 
@@ -849,7 +849,7 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
 
 
                 {
-                    const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+                    const perLevel_TotalIonCurrent_DisplayEntries: Array<React.JSX.Element> = [];
 
                     const perLevel_TotalIonCurrent_DisplayEntries_DownloadCells: Array<string> = [];
 
@@ -937,7 +937,7 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
 
 
                     {
-                        const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+                        const perLevel_TotalIonCurrent_DisplayEntries: Array<React.JSX.Element> = [];
 
                         const perLevel_TotalIonCurrent_DisplayEntries_DownloadCells: Array<string> = [];
 
@@ -1047,7 +1047,7 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
                 }
 
                 {
-                    const perLevel_Count_DisplayEntries: Array<JSX.Element> = [];
+                    const perLevel_Count_DisplayEntries: Array<React.JSX.Element> = [];
 
                     const perLevel_Count_DisplayEntries_DownloadCells: Array<string> = [];
 
@@ -1135,12 +1135,12 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
                 }
             }
 
-            let scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow: JSX.Element = undefined
+            let scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRow: React.JSX.Element = undefined
 
             const scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells_DownloadCells: Array<string> = [];
 
             {
-                const scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells: Array<JSX.Element> = [];
+                const scanNumbersCount_For_FilteredPSMs_Percentage_JSX_SingleRowCells: Array<React.JSX.Element> = [];
 
                 const label = " Scans with a PSM meeting filters"
 

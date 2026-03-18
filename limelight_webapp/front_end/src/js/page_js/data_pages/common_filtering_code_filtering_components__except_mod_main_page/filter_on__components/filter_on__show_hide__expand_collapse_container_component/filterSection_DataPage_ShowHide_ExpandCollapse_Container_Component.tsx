@@ -12,6 +12,7 @@ import React from "react";
  */
 export interface FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component_Props {
 
+    readonly children: React.ReactNode
 }
 
 

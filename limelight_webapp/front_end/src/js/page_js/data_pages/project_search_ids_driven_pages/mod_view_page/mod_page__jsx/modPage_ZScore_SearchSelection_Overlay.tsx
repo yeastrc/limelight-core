@@ -185,11 +185,11 @@ class ModPage_ZScore_SearchSelection_Overlay_OuterContainer_Component extends Re
      */
     render(): React.ReactNode {
 
-        const group_1_SearchNames_Elements: Array<JSX.Element> = []
+        const group_1_SearchNames_Elements: Array<React.JSX.Element> = []
 
-        const group_2_SearchNames_Elements: Array<JSX.Element> = []
+        const group_2_SearchNames_Elements: Array<React.JSX.Element> = []
 
-        const notIn_Group_SearchNames_Elements: Array<JSX.Element> = []
+        const notIn_Group_SearchNames_Elements: Array<React.JSX.Element> = []
 
         for ( const projectSearchId of this.props.props_value.projectSearchIds_All ) {
 

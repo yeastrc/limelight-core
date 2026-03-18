@@ -22,7 +22,7 @@ export const currentFiltersDisplayBlock__Scan_RetentionTime_MZ_UserSelections = 
     } : {
         scan_RetentionTime_MZ_UserSelections_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject;
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! scan_RetentionTime_MZ_UserSelections_StateObject ) ) {
         //  Nothing to display
@@ -55,7 +55,7 @@ const CurrentFiltersDisplayBlock__Scan_RetentionTime_MZ_UserSelections = functio
     } : {
         scan_RetentionTime_MZ_UserSelections_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject;
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 

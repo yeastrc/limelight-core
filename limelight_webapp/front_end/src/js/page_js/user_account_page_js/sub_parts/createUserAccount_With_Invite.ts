@@ -2,7 +2,6 @@
  * createUserAccount_With_Invite.ts
  * 
  * Javascript for creating a user account from an Invite  
- * 
  */
 
 //////////////////////////////////
@@ -12,7 +11,7 @@
 //  module import 
 
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
 
 import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 import { showErrorMsg, hideAllErrorMessages } from 'page_js/common_all_pages/showHideErrorMessage';
@@ -40,12 +39,27 @@ export class UserCreateAccount_With_Invite_Subpart {
 
 	private _termsOfServiceKey: string;
 
+	private _reactRoot_InDOMElement: Root_ReactDOM_Client
+
 	/**
 	 * 
 	 */
 	constructor() {
 
 		this._initialized = true;
+	}
+
+	/**
+	 *
+	 */
+	removeFromPage() {
+
+		if ( this._reactRoot_InDOMElement ) {
+
+			this._reactRoot_InDOMElement.unmount()
+		}
+
+		this._reactRoot_InDOMElement = undefined
 	}
 
 	/**
@@ -70,21 +84,12 @@ export class UserCreateAccount_With_Invite_Subpart {
 			// 	promiseArray.push(promise);
 			// }
 
-			try {
+			const componentDidMount_Callback : () => void = () => {
 
-				//  React Unmount
-
-				ReactDOM.unmountComponentAtNode( containerHTMLElement )
-
-			} catch ( e ) {
-				//  Ignore Exception
+				this.showOnPage_Internal_After_ReactRender({ containerHTMLElement, inviteTrackingCode })
 			}
 
-			let $containerHTMLElement = $( containerHTMLElement );
-
-			$containerHTMLElement.empty();
-
-			const props: CreateUserAccount_Main_Common_Component_Props = { createFor_YES_Invite: true, showInvitedMessage: true, google_RecaptchaSiteKey: undefined };
+			const props: CreateUserAccount_Main_Common_Component_Props = { createFor_YES_Invite: true, showInvitedMessage: true, google_RecaptchaSiteKey: undefined, componentDidMount_Callback };
 
 			const root_Component = (
 				React.createElement(
@@ -94,17 +99,9 @@ export class UserCreateAccount_With_Invite_Subpart {
 				)
 			);
 
-			//  Called on render complete
-			const renderCompleteCallbackFcn = () => {
+			this._reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerHTMLElement )
 
-				this.showOnPage_Internal_After_ReactRender({ containerHTMLElement, inviteTrackingCode })
-			};
-
-			const renderedReactComponent = ReactDOM.render(
-				root_Component,
-				containerHTMLElement,
-				renderCompleteCallbackFcn
-			);
+			this._reactRoot_InDOMElement.render( root_Component )
 
 		} catch ( e ) {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
@@ -399,7 +396,9 @@ export class UserCreateAccount_With_Invite_Subpart {
 				showErrorMsg( $element );
 			} else if ( responseData.inviteTrackingCodeNotValidReason !== undefined &&
 					responseData.inviteTrackingCodeNotValidReason !== null ) {
+
 				this._displayInviteTrackingNotValidMsg( { inviteTrackingCodeNotValidReason : responseData.inviteTrackingCodeNotValidReason} );
+
 			} else {
 				var $element = $("#error_message_system_error");
 				showErrorMsg( $element );
@@ -424,19 +423,7 @@ export class UserCreateAccount_With_Invite_Subpart {
 		} ) {
 
 
-		try {
-
-			//  React Unmount
-
-			ReactDOM.unmountComponentAtNode( this.containerHTMLElement )
-
-		} catch ( e ) {
-			//  Ignore Exception
-		}
-
-		let $containerHTMLElement = $( this.containerHTMLElement );
-
-		$containerHTMLElement.empty();
+		this.removeFromPage()
 
 		const props: User_invite__invite_validation_error_Component_Props = { inviteTrackingCodeNotValidReason };
 
@@ -448,16 +435,9 @@ export class UserCreateAccount_With_Invite_Subpart {
 			)
 		);
 
-		//  Called on render complete
-		const renderCompleteCallbackFcn = () => {
+		this._reactRoot_InDOMElement = createRoot_ReactDOM_Client( this.containerHTMLElement )
 
-		};
-
-		const renderedReactComponent = ReactDOM.render(
-			root_Component,
-			this.containerHTMLElement,
-			renderCompleteCallbackFcn
-		);
+		this._reactRoot_InDOMElement.render( root_Component )
 	}
 
 };

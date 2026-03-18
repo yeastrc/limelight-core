@@ -24,7 +24,7 @@
 //         columnHeightInitial : number
 //         proteinExperiment__CreateProteinDataTable_ChartColumn_Class : ProteinExperiment__CreateProteinDataTable_ChartColumn_Class
 //
-//     }) : JSX.Element {
+//     }) : React.JSX.Element {
 //
 //     return (
 //         <ProteinExperimentPage_PSMs_Per_Condition_GoogleChart_Component

@@ -118,7 +118,7 @@ export class ProjectPage_PublicAccessSection_ResearcherInteraction_ROOT_Componen
     /**
      *
      */
-    private _get_ExpandedBodyContents() : JSX.Element {
+    private _get_ExpandedBodyContents() : React.JSX.Element {
 
         return (
             <div >

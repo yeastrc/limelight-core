@@ -8,6 +8,7 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 /**
  *
@@ -19,6 +20,7 @@ export interface CreateUserAccount_Main_Common_Component_Props {
     showInvitedMessage: boolean
     google_RecaptchaSiteKey: string
 
+    componentDidMount_Callback: () => void
 }
 
 /**
@@ -62,6 +64,32 @@ export class CreateUserAccount_Main_Common_Component extends React.Component< Cr
 
         this.state = { force_Rerender_Object: {} }
     }
+
+
+    /**
+     *
+     */
+    componentDidMount() { try {
+
+        window.setTimeout( () => { try {
+
+            if ( this.props.componentDidMount_Callback ) {
+
+                this.props.componentDidMount_Callback()
+            }
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+
+        }, 10 )
+
+    } catch( e ) {
+        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        throw e;
+    }
+    }
+
 
     /**
      *

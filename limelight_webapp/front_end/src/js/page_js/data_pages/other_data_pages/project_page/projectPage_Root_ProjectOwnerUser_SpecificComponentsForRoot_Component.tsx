@@ -19,7 +19,7 @@ import {
  *
  * @param props
  */
-export const getComponent_ProjectPage_Root_ProjectOwnerUser_SpecificComponentsForRoot_Component = function( props: ProjectPage_SearchesSection_MainBlock_Component_Props ) : JSX.Element {
+export const getComponent_ProjectPage_Root_ProjectOwnerUser_SpecificComponentsForRoot_Component = function( props: ProjectPage_SearchesSection_MainBlock_Component_Props ) : React.JSX.Element {
 
     return (
         <ProjectPage_Root_ProjectOwnerUser_SpecificComponentsForRoot_Component

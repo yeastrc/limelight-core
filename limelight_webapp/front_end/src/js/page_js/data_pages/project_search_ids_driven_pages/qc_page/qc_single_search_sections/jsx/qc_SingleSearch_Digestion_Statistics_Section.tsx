@@ -219,7 +219,9 @@ export class Qc_SingleSearch_Digestion_Statistics_Section extends React.Componen
 
                     this.setState( (prevState, props) => {
                         if ( prevState.compute_MissedCleavages_Data_Result_Root !== null ) {
-                            return { compute_MissedCleavages_Data_Result_Root: null }
+                            
+                            const newState: Qc_SingleSearch_Digestion_Statistics_Section_State = { compute_MissedCleavages_Data_Result_Root: null }
+                            return newState
                         }
                         return null;
                     });
@@ -299,7 +301,9 @@ export class Qc_SingleSearch_Digestion_Statistics_Section extends React.Componen
 
                     this.setState( (prevState, props) => {
                         if ( prevState.compute_MissedCleavages_Data_Result_Root !== null ) {
-                            return { compute_MissedCleavages_Data_Result_Root: null }
+
+                            const newState: Qc_SingleSearch_Digestion_Statistics_Section_State = { compute_MissedCleavages_Data_Result_Root: null }
+                            return newState
                         }
                         return null;
                     });

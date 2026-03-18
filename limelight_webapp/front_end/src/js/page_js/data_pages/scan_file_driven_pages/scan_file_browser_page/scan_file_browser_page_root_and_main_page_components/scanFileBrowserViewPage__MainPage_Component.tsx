@@ -380,7 +380,9 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
             if ( prevState.showScanNumber_ErrorMessage === undefined || prevState.showScanNumber_ErrorMessage === null ) {
                 return null;
             }
-            return { showScanNumber_ErrorMessage: null} // clear error message
+
+            const newState: ScanFileBrowserViewPage__MainPage_Component_State = { showScanNumber_ErrorMessage: null }  // clear error message
+            return newState
         })
 
         if ( this._scanNumber_CurrentlyShown === scanNumber ) {

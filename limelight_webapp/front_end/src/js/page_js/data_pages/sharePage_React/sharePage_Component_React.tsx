@@ -25,7 +25,7 @@ export const getSharePage_MainPage_Component = function (
     experimentId? : number
     projectSearchIds : Array<number>;
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <SharePage_Component

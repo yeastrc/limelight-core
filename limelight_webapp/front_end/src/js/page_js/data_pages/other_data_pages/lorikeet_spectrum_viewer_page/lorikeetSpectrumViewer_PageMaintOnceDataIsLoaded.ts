@@ -18,6 +18,10 @@
 
 //  module import
 
+import React from "react";
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
+
+
 import {reportWebErrorToServer} from 'page_js/common_all_pages/reportWebErrorToServer';
 
 // @ts-ignore
@@ -39,7 +43,6 @@ import {
 	DataTable_RootTableObject,
 	DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
-import {create_dataTable_Root_React} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React_Create_Remove_Table_DOM";
 import {
 	LorikeetSpectrumViewer_Data_ForLorikeet_Data_Root
 } from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_Data_ForLorikeet_Data";
@@ -58,6 +61,7 @@ import {
 import {
 	limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function
 } from "page_js/common_all_pages/limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function";
+import { DataTable_TableRoot__Container_ONLY_ON_Insert_To_DOM, DataTable_TableRoot__Container_ONLY_ON_Insert_To_DOM_Props } from "page_js/data_pages/data_table_react/DataTable_TableRoot__Container_ONLY_ON_Insert_To_DOM";
 
 //  Overrides for LorikeetOptions:
 
@@ -76,6 +80,7 @@ const LORIKEET_VIEWER_SIZE_PARAM_FOR_NEW_WINDOW_HEIGHT_PARAM = 700;
 //  Variables visible in this file/module  
 let itemsAddedTo_jQuery = false;
 
+let constructorCalled__LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded = false
 
 /**
  * 
@@ -97,6 +102,9 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 
 	private _lorikeet_ScanData_RetentionTime_PrecursorMZ: any = undefined;
 
+
+	private _dataTable__ReactRoot_InDOMElement: Root_ReactDOM_Client
+
 	/**
 	 * 
 	 */
@@ -109,6 +117,16 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			openmodPosition: number | string
 			dataPageStateManager_DataFrom_Server: DataPageStateManager
 		}) {
+
+		if ( constructorCalled__LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded ) {
+			const msg = "Error to call constructor on class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded more than once"
+			console.warn(msg)
+			throw Error(msg)
+		}
+
+		constructorCalled__LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded = true
+
+		////////
 
 		this._projectSearchId = projectSearchId;
 		this._psmId_Displayed = psmId;
@@ -224,19 +242,39 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 	 */
 	private _insertPsmTableOnPage({ dataTable_RootTableDataObject } : { dataTable_RootTableDataObject : DataTable_RootTableDataObject }) : void {
 
-		const containerDOMElement = document.getElementById("psms_peptides_for_scan_number")
-		if ( ! containerDOMElement ) {
-			const msg = "Failed to get DOM element with id 'psms_peptides_for_scan_number'"
-			console.warn( msg )
-			throw Error( msg )
-		}
 		this._dataTable_RootTableDataObject_PutOnDOM = dataTable_RootTableDataObject
 
 		const dataTable_TableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: false});
 
 		const dataTable_RootTableObject = new DataTable_RootTableObject({ tableDataObject : dataTable_RootTableDataObject, dataTableId : "PSM List Under Lorikeet Spectrum Viewer", tableOptions : dataTable_TableOptions })
 
-		create_dataTable_Root_React({ tableObject : dataTable_RootTableObject, containerDOMElement, renderCompleteCallbackFcn : undefined })
+
+		const props : DataTable_TableRoot__Container_ONLY_ON_Insert_To_DOM_Props = {
+			tableObject: dataTable_RootTableObject
+		}
+
+		const component = (
+			React.createElement(
+				DataTable_TableRoot__Container_ONLY_ON_Insert_To_DOM,
+				props,
+				null
+			)
+		);
+
+
+		if ( ! this._dataTable__ReactRoot_InDOMElement ) {
+
+			const containerDOMElement = document.getElementById("psms_peptides_for_scan_number")
+			if ( ! containerDOMElement ) {
+				const msg = "Failed to get DOM element with id 'psms_peptides_for_scan_number'"
+				console.warn( msg )
+				throw Error( msg )
+			}
+
+			this._dataTable__ReactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
+		}
+
+		this._dataTable__ReactRoot_InDOMElement.render( component )
 	}
 
 	/**

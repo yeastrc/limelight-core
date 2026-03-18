@@ -160,7 +160,7 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
      */
     render() {
 
-        const selectionsElements: Array<JSX.Element>  = []
+        const selectionsElements: Array<React.JSX.Element>  = []
 
         {
             let counter = 0

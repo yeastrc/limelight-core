@@ -734,7 +734,7 @@ class Qc_MultipleSearches_GoldStandard_Statistics_Section__ShowDetails_Overlay_C
      */
     render() {
 
-        let matchedTableContents: JSX.Element = undefined
+        let matchedTableContents: React.JSX.Element = undefined
 
         if ( ( ! this.state.show_LoadingData_Message ) && this._getData_And_Compute_Precision_And_Recall_For_MultipleSearches_Result_Map_Key_ProjectSearchId ) {
 

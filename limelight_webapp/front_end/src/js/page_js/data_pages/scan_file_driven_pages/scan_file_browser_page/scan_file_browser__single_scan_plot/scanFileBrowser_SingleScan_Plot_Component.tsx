@@ -1527,11 +1527,11 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
                     }
                 }
 
-                const svg_VerticalAxis_TickMarks: Array<JSX.Element> = [];
+                const svg_VerticalAxis_TickMarks: Array<React.JSX.Element> = [];
 
-                const svg_HorizontalAxis_TickMarks: Array<JSX.Element> = [];
+                const svg_HorizontalAxis_TickMarks: Array<React.JSX.Element> = [];
 
-                const svg_ScanMaxLines: Array<JSX.Element> = [];
+                const svg_ScanMaxLines: Array<React.JSX.Element> = [];
 
                 {
                     {  //  Tick Marks on Vertical Axis
@@ -2227,7 +2227,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
                 //  Highlighted Legend
 
-                let highlightedPeaks_Legend: JSX.Element = undefined
+                let highlightedPeaks_Legend: React.JSX.Element = undefined
 
                 if ( ! this.props.zoomVisualization_Instance ) {
 
@@ -2241,8 +2241,8 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
                         const line_Y = Math.floor( svg_height / 2 )
 
-                        const legend_Entries_Lines: Array<JSX.Element> = []
-                        const legend_Entries_Squares: Array<JSX.Element> = []
+                        const legend_Entries_Lines: Array<React.JSX.Element> = []
+                        const legend_Entries_Squares: Array<React.JSX.Element> = []
 
                         let index = -1
                         for ( const mz_Range_To_Color of mz_Ranges_To_Color ) {
@@ -2309,7 +2309,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
                 }
 
 
-                let zoomRange__ZoomVisualization_Instance_For_RectOnTop_Graphic_Element: JSX.Element = undefined
+                let zoomRange__ZoomVisualization_Instance_For_RectOnTop_Graphic_Element: React.JSX.Element = undefined
 
                 { //  Zoom Range Rectangle for "Zoom Visualization" render of this component
 

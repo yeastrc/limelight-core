@@ -16,6 +16,9 @@ import {
  *
  */
 export interface QcPage_ChartBorder_Props {
+
+    readonly children: React.ReactNode
+
     width_OverrideStandard?: number
     height_OverrideStandard?: number
     no_Min_Height?: boolean

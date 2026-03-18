@@ -276,7 +276,7 @@ class ModPage_Download_ModPositionInProtein_Report__DownloadForSingleModMassRoun
      */
     render(): React.ReactNode { try {
 
-        const modMass_Rounded_Elements: Array<JSX.Element> = []
+        const modMass_Rounded_Elements: Array<React.JSX.Element> = []
 
         if ( this._modMasses_ONLY_With_ModificationPositions ) {
 

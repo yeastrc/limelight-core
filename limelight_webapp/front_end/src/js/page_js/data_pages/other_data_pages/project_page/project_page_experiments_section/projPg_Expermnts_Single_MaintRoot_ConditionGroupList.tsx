@@ -12,7 +12,7 @@
 
 import React from 'react'
 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable } from "@adaptabletools/react-beautiful-dnd";
 
 import { Experiment_ConditionGroup, Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import {
@@ -228,7 +228,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainRoot_ConditionGroupLis
             return null;
         }
 
-        const conditionEntryComponentsList: Array<JSX.Element> = [];
+        const conditionEntryComponentsList: Array<React.JSX.Element> = [];
         {
             let index = 0
 

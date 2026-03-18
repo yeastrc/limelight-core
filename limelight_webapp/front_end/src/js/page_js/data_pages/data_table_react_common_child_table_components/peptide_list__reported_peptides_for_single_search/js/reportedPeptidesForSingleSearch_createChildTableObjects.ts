@@ -229,7 +229,7 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
 
             if ( allSearches_HaveProteins ) {
 
-                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => {
                     return reportedPeptidesForSingleSearch_ChildReactComponents_Other.uniqueColumnHeader_Tooltip_Create();
                 }
 

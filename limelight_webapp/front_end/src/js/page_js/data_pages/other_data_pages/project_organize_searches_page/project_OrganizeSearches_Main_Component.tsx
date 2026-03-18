@@ -11,6 +11,7 @@
 
 import React from "react";
 
+import { DragDropContext, Draggable, Droppable } from "@adaptabletools/react-beautiful-dnd";
 
 import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
@@ -29,7 +30,6 @@ import {
     Project_OrganizeSearches_Re_Order_Searches_Overlay_OuterContainer_Component__Callback_update_OrderOf_Searches,
     Project_OrganizeSearches_Re_Order_Searches_Overlay_OuterContainer_Component__Callback_update_OrderOf_Searches_Params
 } from "page_js/data_pages/other_data_pages/project_organize_searches_page/project_OrganizeSearches__Re_Order_Searches_OverlayComponent";
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import {
     open_Project_OrganizeSearches_Folder_Add_Change_SearchesInFolder_Overlay,
     Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent__Callback_update_SearchesInFolder
@@ -367,7 +367,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *
      */
-    private _render_MainData() : JSX.Element {
+    private _render_MainData() : React.JSX.Element {
 
         if ( this._searchesSearchTagsFolders_Result_Root.is_NO_Searches_In_Project() ) {
             //  NO Searches
@@ -391,7 +391,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *
      */
-    private _render_Folders_MainPage() : JSX.Element {
+    private _render_Folders_MainPage() : React.JSX.Element {
 
         return (
             <>
@@ -728,7 +728,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *
      */
-    private _render_AllSearches_MainPage() : JSX.Element {
+    private _render_AllSearches_MainPage() : React.JSX.Element {
 
         return (
             <>
@@ -813,7 +813,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *
      */
-    private _render_YES_Searches_NO_Folders() : JSX.Element {
+    private _render_YES_Searches_NO_Folders() : React.JSX.Element {
 
         return (
             <div>
@@ -839,7 +839,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
     /**
      *
      */
-    private _render_NoSearchesNoFolders() : JSX.Element {
+    private _render_NoSearchesNoFolders() : React.JSX.Element {
 
         return (
             <div>

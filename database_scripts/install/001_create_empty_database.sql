@@ -2746,35 +2746,6 @@ CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept__psm_t
 
 
 -- -----------------------------------------------------
--- Table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
--- -----------------------------------------------------
-CREATE TABLE  search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl (
-  search_id MEDIUMINT UNSIGNED NOT NULL,
-  reported_peptide_id INT UNSIGNED NOT NULL,
-  annotation_type_id INT UNSIGNED NOT NULL,
-  best_psm_value_for_ann_type_id DOUBLE NOT NULL,
-  psm_id_for_best_value__non_fk BIGINT UNSIGNED NOT NULL,
-  PRIMARY KEY (search_id, reported_peptide_id, annotation_type_id),
-  CONSTRAINT srch_rp_bst_psm_vl_t_id_d_rp_fk
-    FOREIGN KEY (reported_peptide_id)
-    REFERENCES reported_peptide_tbl (id)
-    ON DELETE CASCADE
-    ON UPDATE RESTRICT,
-  CONSTRAINT srch_rp_bst_psm_vl_t_id_d_sh_fk
-    FOREIGN KEY (search_id)
-    REFERENCES search_tbl (id)
-    ON DELETE CASCADE
-    ON UPDATE RESTRICT)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COMMENT = 'For PSMs that are Target or Independent Decoy or Decoy';
-
-CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl (reported_peptide_id ASC) VISIBLE;
-
-CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC) VISIBLE;
-
-
--- -----------------------------------------------------
 -- Table search_details_tbl
 -- -----------------------------------------------------
 CREATE TABLE  search_details_tbl (

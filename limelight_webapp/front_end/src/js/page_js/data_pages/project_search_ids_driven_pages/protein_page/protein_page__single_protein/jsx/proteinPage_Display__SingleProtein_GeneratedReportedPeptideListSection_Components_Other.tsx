@@ -36,7 +36,7 @@ export type ProteinPage_Display_MultipleSearches__SingleProtein_GeneratedReporte
 /**
  *
  */
-export const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___uniqueColumnHeader_Tooltip_Create = function () : JSX.Element {
+export const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___uniqueColumnHeader_Tooltip_Create = function () : React.JSX.Element {
 
     return (
 
@@ -59,13 +59,13 @@ export const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSect
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry_MultipleSearches>>
         proteinName_Clicked_Callback: ProteinPage_Display_MultipleSearches__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinName_Clicked_Callback_Function
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     if ( ! proteinName_Clicked_Callback ) {
         throw Error("( ! proteinName_Clicked_Callback )")
     }
 
-    const elements : Array<JSX.Element> = [];
+    const elements : Array<React.JSX.Element> = [];
 
     let entryCounter = 1;
 
@@ -198,7 +198,7 @@ class SingleProteinName_Entry_Component extends React.Component< SingleProteinNa
 /**
  *
  */
-const _getTooltipText = function( proteinNameDescriptionForToolip : Array<ProteinNameDescriptionCacheEntry_MultipleSearches> ) : JSX.Element {
+const _getTooltipText = function( proteinNameDescriptionForToolip : Array<ProteinNameDescriptionCacheEntry_MultipleSearches> ) : React.JSX.Element {
 
     return (
         <div style={ { marginBottom: 10 } } className="isTooltip">

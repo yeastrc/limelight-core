@@ -763,11 +763,11 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
         }
 
         try {
-            const svg_VerticalAxis_TickMarks: Array<JSX.Element> = [];
+            const svg_VerticalAxis_TickMarks: Array<React.JSX.Element> = [];
 
-            const svg_HorizontalAxis_TickMarks: Array<JSX.Element> = [];
+            const svg_HorizontalAxis_TickMarks: Array<React.JSX.Element> = [];
 
-            const svg_ScanMaxLines: Array<JSX.Element> = [];
+            const svg_ScanMaxLines: Array<React.JSX.Element> = [];
 
             {
                 {  //  Tick Marks on Vertical Axis
@@ -1200,7 +1200,7 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
 
             //  Line at Selected Scan Number
 
-            let lineAt_SelectedPosition_X_Element: JSX.Element
+            let lineAt_SelectedPosition_X_Element: React.JSX.Element
 
             if ( this.state.binned_Entries && this.props.scanNumber_Selected !== undefined && this.props.scanNumber_Selected !== null ) {
 

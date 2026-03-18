@@ -278,7 +278,7 @@ class ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection__Use
      */
     render() {
 
-        const selectionsElements: Array<JSX.Element>  = []
+        const selectionsElements: Array<React.JSX.Element>  = []
 
         for ( const projectSearchId of this.props.projectSearchIds ) {
 
@@ -512,7 +512,7 @@ class INTERNAL__SingleSearch_Component extends React.Component< INTERNAL__Single
             throw Error("this.props.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
         }
 
-        let scanFiles_ForSearch_Elements: Array<JSX.Element> = undefined
+        let scanFiles_ForSearch_Elements: Array<React.JSX.Element> = undefined
 
         if ( this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
 

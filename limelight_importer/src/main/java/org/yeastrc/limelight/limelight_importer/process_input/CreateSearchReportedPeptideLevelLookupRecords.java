@@ -64,7 +64,9 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 		
 		private List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets;
 		private List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys;
-		private List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys;
+		
+		//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+//		private List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys;
 
 		public Search_ReportedPeptide__Lookup__DTO getSearch_ReportedPeptide__Lookup__DTO() {
 			return search_ReportedPeptide__Lookup__DTO;
@@ -75,9 +77,11 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 		public List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys() {
 			return search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys;
 		}
-		public List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys() {
-			return search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys;
-		}
+		
+		//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+//		public List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys() {
+//			return search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys;
+//		}
 	}
 
 	/**
@@ -247,8 +251,9 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 		methodResult.search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys =
 				psmStatisticsAndBestValues.getBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys().getBestPsmValues( search_ReportedPeptide__Lookup__DTO );
 
-		methodResult.search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys =
-				psmStatisticsAndBestValues.getBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys().getBestPsmValues( search_ReportedPeptide__Lookup__DTO );
+		//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+//		methodResult.search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys =
+//				psmStatisticsAndBestValues.getBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys().getBestPsmValues( search_ReportedPeptide__Lookup__DTO );
 
 		return methodResult;
 	}

@@ -8,7 +8,7 @@ import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorT
 
 export const get_Psm_list_psmPeptidePositionAnnotation_cell_HeaderTooltip_ExternalComponent = function (
     inputParams: Internal__Psm_list_psmPeptidePositionAnnotation_cell_HeaderTooltip_ExternalComponent_InputParams
-): JSX.Element {
+): React.JSX.Element {
 
     return (
         <Internal__Psm_list_psmPeptidePositionAnnotation_cell_HeaderTooltip_ExternalComponent

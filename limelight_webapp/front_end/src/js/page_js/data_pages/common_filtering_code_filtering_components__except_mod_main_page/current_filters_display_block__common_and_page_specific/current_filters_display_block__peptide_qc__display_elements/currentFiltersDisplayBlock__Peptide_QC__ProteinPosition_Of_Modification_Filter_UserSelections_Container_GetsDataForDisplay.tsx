@@ -36,7 +36,7 @@ export const currentFiltersDisplayBlock__Peptide_QC__ProteinPosition_Of_Modifica
         proteinPosition_Of_Modification_Filter_UserSelections_StateObject_Changed_ForceRebuildRender_Object: object
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! proteinPosition_Of_Modification_Filter_UserSelections_StateObject ) ) {
         //  Nothing to display

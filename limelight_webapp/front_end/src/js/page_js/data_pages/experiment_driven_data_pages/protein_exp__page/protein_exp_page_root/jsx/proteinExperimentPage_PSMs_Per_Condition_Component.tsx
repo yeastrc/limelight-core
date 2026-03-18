@@ -38,7 +38,7 @@
 //         proteinDescription : string
 //         proteinSequenceVersionId : number
 //
-//     }) : JSX.Element {
+//     }) : React.JSX.Element {
 //
 //     return (
 //         <ProteinExperimentPage_PSMs_Per_Condition_Component
@@ -131,7 +131,7 @@
 //
 //                 return { displayChart : true };
 //             });
-//         }, 0 );
+//         }, 10 );
 //     }
 //
 //     /**

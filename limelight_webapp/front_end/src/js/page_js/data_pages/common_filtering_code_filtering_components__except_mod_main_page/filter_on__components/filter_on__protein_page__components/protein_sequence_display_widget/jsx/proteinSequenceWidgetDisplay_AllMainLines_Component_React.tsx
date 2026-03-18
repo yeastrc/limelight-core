@@ -371,7 +371,7 @@ const _createProteinSequence_Components_ForLine = function({
     positionClicked_Callback : ProteinSequenceWidgetDisplay__PositionClicked_Callback
 }) {
     
-    const proteinSequenceLine_Components: Array<JSX.Element> = [];
+    const proteinSequenceLine_Components: Array<React.JSX.Element> = [];
 
     {
         // Display Start Position
@@ -445,7 +445,7 @@ const _addProteinSequenceLineStartOrEndLabelToContainer = function(
     }: {
         linePosition: number
         proteinLength_StringLength: number
-        proteinSequenceLine_Components: Array<JSX.Element>
+        proteinSequenceLine_Components: Array<React.JSX.Element>
     }) {
     
     const number = linePosition;
@@ -481,7 +481,7 @@ const _addProteinSequenceGroupToContainer = function({
     proteinSequenceForGroupEndIndex: number
     dataPerSequencePosition: ProteinSequenceWidgetDisplay_Component_DataPerSequencePositionEntry[]
     selectedProteinSequencePositions : Set<number>,
-    proteinSequenceLine_Components: Array<JSX.Element>
+    proteinSequenceLine_Components: Array<React.JSX.Element>
     positionClicked_Callback : ProteinSequenceWidgetDisplay__PositionClicked_Callback
 }) {
     
@@ -621,10 +621,10 @@ const ProteinSequenceWidgetDisplay_AllMainLines_Component_React__TooltipContents
         data_At_SequencePosition : ProteinSequenceWidgetDisplay_Component_DataPerSequencePositionEntry;
         position : number
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
-    let variableModificationsDisplay : JSX.Element = undefined;
-    let staticModificationsDisplay : JSX.Element = undefined;
+    let variableModificationsDisplay : React.JSX.Element = undefined;
+    let staticModificationsDisplay : React.JSX.Element = undefined;
 
     if ( props.data_At_SequencePosition.variableModifications && props.data_At_SequencePosition.variableModifications.length > 0 ) {
 

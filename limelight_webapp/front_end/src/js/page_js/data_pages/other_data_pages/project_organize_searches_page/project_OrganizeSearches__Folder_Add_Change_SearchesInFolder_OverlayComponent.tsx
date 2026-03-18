@@ -424,7 +424,7 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
      */
     render(): React.ReactNode {
 
-        const searchDisplayList : Array<JSX.Element> = [];
+        const searchDisplayList : Array<React.JSX.Element> = [];
 
         if ( ! this._add_Folder ) {
 
@@ -908,7 +908,7 @@ class SearchEntryComponent extends React.Component< SearchEntry_Props, SearchEnt
 
         const searchNameDisplay = "(" + this.props.searchDisplayListItem.searchId + ") " + this.props.searchDisplayListItem.searchName;
 
-        let searchTagsBlock: JSX.Element = null
+        let searchTagsBlock: React.JSX.Element = null
 
         { //  Search Tags
 

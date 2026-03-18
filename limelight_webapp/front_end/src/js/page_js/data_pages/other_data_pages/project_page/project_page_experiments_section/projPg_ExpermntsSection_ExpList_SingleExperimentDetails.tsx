@@ -433,7 +433,7 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
             )
         }
 
-        let experiment_Layout_Container_ConditionsGraphicRepresentation : JSX.Element = undefined;
+        let experiment_Layout_Container_ConditionsGraphicRepresentation : React.JSX.Element = undefined;
 
         if (  this.state.experimentConditions_GraphicRepresentation_PropsData ) {
 

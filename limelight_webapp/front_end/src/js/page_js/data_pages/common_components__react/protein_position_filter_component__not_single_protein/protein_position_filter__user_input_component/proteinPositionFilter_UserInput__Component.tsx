@@ -605,8 +605,8 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
             )
         }
 
-        let noFiltersMsg : JSX.Element = null;
-        let current_SelectedProteinsAndTheirRanges : JSX.Element = null;
+        let noFiltersMsg : React.JSX.Element = null;
+        let current_SelectedProteinsAndTheirRanges : React.JSX.Element = null;
 
         let noFilters = false
 
@@ -663,7 +663,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
     /**
      *
      */
-    private _render_SelectedProteinsAndTheirRanges() : JSX.Element {
+    private _render_SelectedProteinsAndTheirRanges() : React.JSX.Element {
 
         if ( this._userSelections_Map_Key_proteinSequenceVersionId.size === 0 ) {
             //  NO Selected Proteins
@@ -680,7 +680,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
             userSelections_proteinSequenceVersionIds_SET__NOT_FOUND_IN__Proteins_Array.add( userSelection.proteinSequenceVersionId )
         }
 
-        const proteinDisplayEntries : Array<JSX.Element> = [];
+        const proteinDisplayEntries : Array<React.JSX.Element> = [];
 
         for ( const protein of this._proteinData_Local.proteins ) {
 
@@ -700,8 +700,8 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
             }
 
 
-            let fullProteinMsg : JSX.Element = null;
-            let rangeDisplay : JSX.Element = null;
+            let fullProteinMsg : React.JSX.Element = null;
+            let rangeDisplay : React.JSX.Element = null;
 
             if ( ! userSelection_SingleProtein.ranges ) {
 
@@ -812,7 +812,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
             proteinDisplayEntries.push( proteinDisplayEntry );
         }
 
-        const proteinSelection_UnknownProtein_ProteinSequenceVersionId_NotFound_Elements: Array<JSX.Element> = []
+        const proteinSelection_UnknownProtein_ProteinSequenceVersionId_NotFound_Elements: Array<React.JSX.Element> = []
 
         const userSelections_proteinSequenceVersionIds_Array__NOT_FOUND_IN__Proteins_Array = Array.from( userSelections_proteinSequenceVersionIds_SET__NOT_FOUND_IN__Proteins_Array )
         limelight__Sort_ArrayOfNumbers_SortArrayInPlace( userSelections_proteinSequenceVersionIds_Array__NOT_FOUND_IN__Proteins_Array )
@@ -951,11 +951,11 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
             userSelection_SingleProtein: ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein
             protein: ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein
 
-        }) : Array<JSX.Element> {
+        }) : Array<React.JSX.Element> {
 
         const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer();
 
-        const rangeDisplayArray : Array<JSX.Element> = [];
+        const rangeDisplayArray : Array<React.JSX.Element> = [];
 
         for ( const range of userSelection_SingleProtein.ranges ) {
 
@@ -1228,11 +1228,11 @@ class ProteinPositionFilter_UserInputOverlay__AddRange_Component extends React.C
 
     render() {
 
-        let inputPositionsErrorMessage_JSX : JSX.Element = null;
+        let inputPositionsErrorMessage_JSX : React.JSX.Element = null;
         let inputPositionsErrorMessage_String : string = null;
 
         {
-            let inputPositionsErrorMessage_InnerPart: JSX.Element = null;
+            let inputPositionsErrorMessage_InnerPart: React.JSX.Element = null;
 
             if (this.state.proteinRange_From_inputField_Value_ErrorMessage) {
 

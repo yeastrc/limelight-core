@@ -65,7 +65,7 @@ const projectPage_UploadData_SubmitImportProgramInfo__OpenOverlay__GetComponent 
     } : {
         projectIdentifierFromURL: any
         callbackOn_Close_Clicked: ()=>void
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     const controller_path = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
     const urlFullPath = window.location.href;

@@ -17,8 +17,7 @@
  */
 
 import React from "react";
-
-import ReactDOM from 'react-dom';
+import { createRoot as createRoot_ReactDOM_Client } from "react-dom/client";
 
 /**
  * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
@@ -589,16 +588,9 @@ export class QcViewPage_RootClass_Common {
 			throw Error("No DOM element with id 'main_qc_view_outer_block_react_root_container'");
 		}
 
-		//  Called on render complete
-		const renderCompleteCallbackFcn = () => {
+		const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
 
-		};
-
-		const renderedReactComponent = ReactDOM.render(
-			component,
-			containerDOMElement,
-			renderCompleteCallbackFcn
-		);
+		reactRoot_InDOMElement.render( component )
 
 		//  Remove div above that has "Loading..."
 

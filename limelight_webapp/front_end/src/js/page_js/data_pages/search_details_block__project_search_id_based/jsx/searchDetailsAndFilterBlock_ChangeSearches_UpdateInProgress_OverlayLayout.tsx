@@ -28,7 +28,7 @@ export const get_SearchDetailsAndFilterBlock_ChangeSearches_UpdateInProgress_Ove
     } : {
         // callbackOnClicked_Background : () => void;
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <SearchDetailsAndFilterBlock_ChangeSearches_UpdateInProgress_OverlayLayout_OuterContainer_Component

@@ -23,7 +23,7 @@ import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_M
 /**
  *
  */
- type ModificationMass_UserSelections_ComponentData = {
+ export type ModificationMass_UserSelections_ComponentData = {
     variableModificationsData : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData
     open_ModificationsData : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData
     staticModificationsData : ModificationMass_UserSelections_ComponentData_StaticModificationsData
@@ -77,9 +77,11 @@ class ModificationMass_UserSelections_ComponentData_StaticModificationsData {
 }
 
 
+//   Some Exports above
+
 export {
-    ModificationMass_UserSelections_ComponentData,
     ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData,
     ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData_Entry,
     ModificationMass_UserSelections_ComponentData_StaticModificationsData,
-    ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry }
+    ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry
+}

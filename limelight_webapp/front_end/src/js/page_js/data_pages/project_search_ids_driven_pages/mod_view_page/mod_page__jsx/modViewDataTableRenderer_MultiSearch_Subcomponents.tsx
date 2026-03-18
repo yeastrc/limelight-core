@@ -22,7 +22,7 @@ export const modViewDataTableRenderer_MultiSearch_Subcomponents__Cell_ExternalMo
         modMass
     } : {
         modMass: number
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     const roundedModMass = Math.round(modMass);
     const lowerEnd = roundedModMass - 0.5;

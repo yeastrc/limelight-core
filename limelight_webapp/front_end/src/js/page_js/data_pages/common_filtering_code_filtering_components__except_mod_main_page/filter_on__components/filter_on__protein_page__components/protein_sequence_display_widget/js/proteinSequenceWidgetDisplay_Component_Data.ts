@@ -16,10 +16,17 @@ export class ProteinSequenceWidgetDisplay_Component_Data {
 
     sequenceCoverage_Percentage_AllPeptides: number
 
+    proteinPosition_Covered_AllPeptides_Count: number
+
     /**
      * undefined if no filtering
      */
     sequenceCoverage_Percentage_FilteredPeptides: number
+
+    /**
+     * undefined if no filtering
+     */
+    proteinPosition_Covered_UserSelectedPeptides_Count: number
 
     // selectedVariableModifications : Set<number>
 

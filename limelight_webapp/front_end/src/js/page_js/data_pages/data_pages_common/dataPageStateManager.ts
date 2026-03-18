@@ -376,7 +376,7 @@ class PageState_InternalData_Properties {
 
 //  Types and Classes for what is stored in DataPageStateManager
 
-type SearchNames_AsMap_Entry = {
+export type SearchNames_AsMap_Entry = {
 	projectSearchId : number
 	searchId : number
 	name : string
@@ -387,7 +387,7 @@ type SearchNames_AsMap_Entry = {
 	searchHasSubgroups : boolean
 } ;
 
-type SearchNames_AsMap = Map<number, SearchNames_AsMap_Entry> ;
+export type SearchNames_AsMap = Map<number, SearchNames_AsMap_Entry> ;
 
 ////////
 
@@ -806,11 +806,11 @@ class AnnotationTypeItem {
 
 }
 
+//   Some Exports above
 
 export { 
 	DataPageStateManager,
 	SearchData_SearchName_Etc_Root__DataPageStateManagerEntry, SearchData_SearchName_Etc_SingleSearchEntry__DataPageStateManagerEntry,
-	SearchNames_AsMap, SearchNames_AsMap_Entry,
 	SearchSubGroups_Root__DataPageStateManagerEntry, SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry,
 	SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry,
 	SearchTags_SearchTagCategories_Root__DataPageStateManagerEntry,

@@ -15,7 +15,7 @@ import {
  * Contents for cell Positions
  */
 export const modPage_DataTable_Display_Positions_Cell_ReturnComponent = function (
-    props : Cell_ModificationPositions_DataTable_Cell_Contents_Component_Props) : JSX.Element { try {
+    props : Cell_ModificationPositions_DataTable_Cell_Contents_Component_Props) : React.JSX.Element { try {
 
     return (
         <Cell_ModificationPositions_DataTable_Cell_Contents_Component
@@ -55,7 +55,7 @@ class Cell_ModificationPositions_DataTable_Cell_Contents_Component extends React
      */
     render() { try {
 
-        const positionElementsArray: Array<JSX.Element> = []
+        const positionElementsArray: Array<React.JSX.Element> = []
 
         if ( this.props.positions && this.props.positions.length > 0 ) {
 

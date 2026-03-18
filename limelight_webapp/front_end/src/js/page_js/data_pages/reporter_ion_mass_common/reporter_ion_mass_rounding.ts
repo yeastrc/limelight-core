@@ -10,8 +10,8 @@ const _REPORTER_ION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT = 2;
 const _10_POWER_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT = Math.pow( 10, _REPORTER_ION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT );
 
 
-type reporterIonMass_CommonRounding_ReturnNumber_Function = ( reporterIonMass : number ) => number;
-type reporterIonMass_CommonRounding_ReturnString_Function = ( reporterIonMass : number ) => string;
+export type reporterIonMass_CommonRounding_ReturnNumber_Function = ( reporterIonMass : number ) => number;
+export type reporterIonMass_CommonRounding_ReturnString_Function = ( reporterIonMass : number ) => string;
 
 
 /**
@@ -74,9 +74,7 @@ const reporterIonMass_CommonRounding_Needed = function ( reporterIonMass : numbe
 ////////////////////////////////
 
 export { 
-    reporterIonMass_CommonRounding_ReturnNumber_Function,
-    reporterIonMass_CommonRounding_ReturnString_Function,
-    reporterIonMass_CommonRounding_ReturnNumber, 
+    reporterIonMass_CommonRounding_ReturnNumber,
     reporterIonMass_CommonRounding_ReturnString,
     reporterIonMass_CommonRounding_Needed,
     _REPORTER_ION_MASS_DECIMAL_PLACE_ROUNDING_NORMAL_DEFAULT 

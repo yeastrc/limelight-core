@@ -107,7 +107,7 @@ const get_Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponen
         // callback_TagsUpdated : () => void;
         callbackOn_Close : () => void;
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent
@@ -656,7 +656,7 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
                                     <ul>
                                     { this._searchList.map((searchItem, index) => {
 
-                                        let searchShortNameDisplayElement: JSX.Element
+                                        let searchShortNameDisplayElement: React.JSX.Element
 
                                         if ( searchItem.searchShortName ) {
                                             searchShortNameDisplayElement = (
@@ -747,7 +747,7 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
 
         const div_title__SecondLineMarginTop = 10
 
-        let div_title: JSX.Element = undefined
+        let div_title: React.JSX.Element = undefined
 
         if ( tagEntry.tag_Selected === Internal__TagSelected.YES_SELECTED__ALL_SEARCHES ) {
 

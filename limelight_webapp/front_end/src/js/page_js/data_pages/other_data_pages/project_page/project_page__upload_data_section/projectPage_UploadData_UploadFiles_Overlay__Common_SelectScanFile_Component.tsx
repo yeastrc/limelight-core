@@ -141,7 +141,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Common_SelectScanFile_C
     render() {
 
         let no_ScanFiles_Found = false;
-        const scanFile_Element_List: Array<JSX.Element> = [];
+        const scanFile_Element_List: Array<React.JSX.Element> = [];
 
         if ( this.state.scanFile_List_FromServer_Root ) {
 

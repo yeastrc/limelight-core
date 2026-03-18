@@ -35,7 +35,7 @@ let _page_auth_access_level_project_owner_allowed_DOMElement_Found: Page_auth_ac
 /**
  * @returns null if not Project Owner
  */
-export const setDefaultView_Create_Component_React : Get_SetDefaultView_Component_React_Type = function( params : SetDefaultView_Component_React_Params ) : JSX.Element {
+export const setDefaultView_Create_Component_React : Get_SetDefaultView_Component_React_Type = function( params : SetDefaultView_Component_React_Params ) : React.JSX.Element {
 
     if ( _page_auth_access_level_project_owner_allowed_DOMElement_Found === _valueNOTSET ) {
 

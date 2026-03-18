@@ -2,7 +2,9 @@
  * download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds.ts
  * 
  * Javascript for download PSM data
- * 
+ *
+ * Use different URL if 'include_ApexRetentionTime' is true
+ *
  */
 
 //  JavaScript directive:   all variables have to be declared with "var", maybe other things
@@ -69,12 +71,16 @@ class DownloadPSMs_PerConditionGroupConditionData {
 
 /**
  * Download PSMs for Project Search Ids, Filter Criteria, Experiment Data and Optional Reported Peptide Ids and/or Optional Protein Sequence Version Ids.
+ *
+ * Use different URL if 'include_ApexRetentionTime' is true
  * 
  * Open URL in new window to download from server
  * 
  * @param projectSearchIdsReportedPeptideIdsPsmIds - JS Array of { projectSearchId, Experiment Data per projectSearchId, and optionally reportedPeptideIdsAndTheirPsmIds }
  * @param searchDataLookupParamsRoot - 
  * @param proteinSequenceVersionIds - optional
+ * @param experimentId - optional
+ * @param include_ApexRetentionTime - optional - Use different URL if 'include_ApexRetentionTime' is true
  */
 const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds = function(
     {

@@ -22,7 +22,7 @@ export const currentFiltersDisplayBlock__PeptideSequence_MissedCleavageCount_Use
     } : {
         peptideSequence_MissedCleavageCount_UserSelections_StateObject : PeptideSequence_MissedCleavageCount_UserSelections_StateObject;
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! peptideSequence_MissedCleavageCount_UserSelections_StateObject ) ) {
         //  Nothing to display
@@ -55,7 +55,7 @@ const CurrentFiltersDisplayBlock__PeptideSequence_MissedCleavageCount_UserSelect
     } : {
         peptideSequence_MissedCleavageCount_UserSelections_StateObject : PeptideSequence_MissedCleavageCount_UserSelections_StateObject;
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 

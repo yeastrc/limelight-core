@@ -148,7 +148,8 @@ public class SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Reco
 		
 		insert_All_Search_ReportedPeptide_BestPsmValue_Lookup__DTO__TARGET_INDEPENDENT_DECOY(search);
 		
-		insert_All_Search_ReportedPeptide_BestPsmValue_Lookup__DTO__TARGET_INDEPENDENT_DECOY_DECOY(search);
+		//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+//		insert_All_Search_ReportedPeptide_BestPsmValue_Lookup__DTO__TARGET_INDEPENDENT_DECOY_DECOY(search);
 
 		
 		DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO.logTotalElapsedTimeAndCallCounts_SaveToImporterStatsTable(search);
@@ -259,59 +260,61 @@ public class SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Reco
 		}
 	}
 	
+	
+	//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
 
-	/**
-	 * @param search
-	 * @throws Exception 
-	 */
-	private void insert_All_Search_ReportedPeptide_BestPsmValue_Lookup__DTO__TARGET_INDEPENDENT_DECOY_DECOY(SearchDTO_Importer search) throws Exception {
-		
-//		Need to Insert for Target, Independent Decoy, and Decoy
-
-		DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO dao = DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO.getInstance();
-		
-
-		List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> search_ReportedPeptide_BestPsmValue_Lookup__DTO_List = new ArrayList<>( INSERT_BLOCK_SIZE + 5 );
-
-		int searchImportInProgress_Counter = 0; // NOT a total counter. Is reset to zero.
-
-		for ( SearchReportedPeptideLevelLookupRecords_Create_Result searchReportedPeptideLevelLookupRecords_Create_Result: this.searchReportedPeptideLevelLookupRecords_Create_Result__All_ReportedPeptides ) {
-
-			//  Importer Alive tracking
-
-			{
-				searchImportInProgress_Counter++;
-				if ( searchImportInProgress_Counter > 100000 ) {
-					//  at 10th save, Updates 'heart beat'
-					Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().saveOrUpdate_ForSearchId(search.getId());
-				
-					searchImportInProgress_Counter = 0;  	//  reset
-				}
-			}
-		
-			if ( searchReportedPeptideLevelLookupRecords_Create_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys() != null 
-					&& ( ! searchReportedPeptideLevelLookupRecords_Create_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys().isEmpty() ) ) {
-				
-				for ( Search_ReportedPeptide_BestPsmValue_Lookup__DTO search_ReportedPeptide_BestPsmValue_Lookup__DTO : searchReportedPeptideLevelLookupRecords_Create_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys() ) {
-
-					insert_All_Search_ReportedPeptide_BestPsmValue_Lookup__DTO__Target_Ind_Decoy_OR_Decoy(
-							search_ReportedPeptide_BestPsmValue_Lookup__DTO, 
-							DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY_DECOY,
-							search_ReportedPeptide_BestPsmValue_Lookup__DTO_List,
-							dao );
-				}
-			}
-		}
-		
-		if ( search_ReportedPeptide_BestPsmValue_Lookup__DTO_List.size() > 0 ) {
-			
-			// Insert final block  
-
-			dao.saveToDatabase_AUTOCOMMIT_AfterInsert__NotUse_InsertControlCommitConnection( 
-					search_ReportedPeptide_BestPsmValue_Lookup__DTO_List,
-					DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY_DECOY );
-		}
-	}
+//	/**
+//	 * @param search
+//	 * @throws Exception 
+//	 */
+//	private void insert_All_Search_ReportedPeptide_BestPsmValue_Lookup__DTO__TARGET_INDEPENDENT_DECOY_DECOY(SearchDTO_Importer search) throws Exception {
+//		
+////		Need to Insert for Target, Independent Decoy, and Decoy
+//
+//		DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO dao = DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO.getInstance();
+//		
+//
+//		List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> search_ReportedPeptide_BestPsmValue_Lookup__DTO_List = new ArrayList<>( INSERT_BLOCK_SIZE + 5 );
+//
+//		int searchImportInProgress_Counter = 0; // NOT a total counter. Is reset to zero.
+//
+//		for ( SearchReportedPeptideLevelLookupRecords_Create_Result searchReportedPeptideLevelLookupRecords_Create_Result: this.searchReportedPeptideLevelLookupRecords_Create_Result__All_ReportedPeptides ) {
+//
+//			//  Importer Alive tracking
+//
+//			{
+//				searchImportInProgress_Counter++;
+//				if ( searchImportInProgress_Counter > 100000 ) {
+//					//  at 10th save, Updates 'heart beat'
+//					Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().saveOrUpdate_ForSearchId(search.getId());
+//				
+//					searchImportInProgress_Counter = 0;  	//  reset
+//				}
+//			}
+//		
+//			if ( searchReportedPeptideLevelLookupRecords_Create_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys() != null 
+//					&& ( ! searchReportedPeptideLevelLookupRecords_Create_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys().isEmpty() ) ) {
+//				
+//				for ( Search_ReportedPeptide_BestPsmValue_Lookup__DTO search_ReportedPeptide_BestPsmValue_Lookup__DTO : searchReportedPeptideLevelLookupRecords_Create_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys() ) {
+//
+//					insert_All_Search_ReportedPeptide_BestPsmValue_Lookup__DTO__Target_Ind_Decoy_OR_Decoy(
+//							search_ReportedPeptide_BestPsmValue_Lookup__DTO, 
+//							DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY_DECOY,
+//							search_ReportedPeptide_BestPsmValue_Lookup__DTO_List,
+//							dao );
+//				}
+//			}
+//		}
+//		
+//		if ( search_ReportedPeptide_BestPsmValue_Lookup__DTO_List.size() > 0 ) {
+//			
+//			// Insert final block  
+//
+//			dao.saveToDatabase_AUTOCOMMIT_AfterInsert__NotUse_InsertControlCommitConnection( 
+//					search_ReportedPeptide_BestPsmValue_Lookup__DTO_List,
+//					DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY_DECOY );
+//		}
+//	}
 	
 	////
 	

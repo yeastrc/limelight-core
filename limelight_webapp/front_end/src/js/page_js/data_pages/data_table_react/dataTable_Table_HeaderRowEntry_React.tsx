@@ -207,7 +207,7 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
           className_InnermostDiv_Column_DisplayName = " display-name-container " + classesAdditions
       }
 
-      let column_Title_Element: JSX.Element = (
+      let column_Title_Element: React.JSX.Element = (
 
           <div style={ styleDisplayNameDiv } className={ className_InnermostDiv_Column_DisplayName }>
 

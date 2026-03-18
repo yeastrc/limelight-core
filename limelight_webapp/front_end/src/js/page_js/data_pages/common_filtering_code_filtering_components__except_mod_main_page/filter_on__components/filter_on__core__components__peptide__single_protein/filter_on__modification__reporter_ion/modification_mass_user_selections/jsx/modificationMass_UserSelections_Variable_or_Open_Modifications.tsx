@@ -300,7 +300,7 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
         const showChange_Variable_or_Open_ModificationsSelectionLink = this.state.showChange_Variable_or_Open_ModificationsSelectionLink;
         
 
-        let singleModification_Entries: Array<JSX.Element> = [];
+        let singleModification_Entries: Array<React.JSX.Element> = [];
 
         if ( variable_or_Open_ModificationEntries ) {
 

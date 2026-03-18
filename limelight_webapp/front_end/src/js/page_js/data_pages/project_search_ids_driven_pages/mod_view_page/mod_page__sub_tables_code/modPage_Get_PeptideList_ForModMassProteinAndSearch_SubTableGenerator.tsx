@@ -436,7 +436,7 @@ const _getDataTableRows = async function (
             }
 
             const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => { try {
+                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => { try {
 
                     return modPage_DataTable_Display_Positions_Cell_ReturnComponent({ positions })
 

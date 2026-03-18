@@ -123,7 +123,7 @@ const _computeWidthTotal = function (
 
 export const get_Psm_list_psmPeptidePositionAnnotation_cell_ExternalComponent = function (
     inputParams: Internal__Psm_list_psmPeptidePositionAnnotation_cell_ExternalComponent_InputParams
-): JSX.Element {
+): React.JSX.Element {
 
     return (
         <Internal__Psm_list_psmPeptidePositionAnnotation_cell_ExternalComponent

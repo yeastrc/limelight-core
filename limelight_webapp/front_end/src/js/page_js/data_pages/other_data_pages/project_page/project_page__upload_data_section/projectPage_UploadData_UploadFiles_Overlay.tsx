@@ -132,7 +132,7 @@ const projectPage_UploadData_UploadFiles__OpenOverlay__GetComponent = function (
     } : {
         mainParams: ProjectPage_UploadData_UploadFiles__Params
         callbackOn_Close_Clicked: ()=>void
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <UploadData_UploadFiles_Overlay_Component
@@ -510,7 +510,7 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
 
                                         { this.state.accepted_ScanFilename_Suffix_List.map( ((value, index, array) => {
 
-                                            let commaSeparator_Element: JSX.Element = null
+                                            let commaSeparator_Element: React.JSX.Element = null
                                             if ( index < ( array.length - 1 ) ) {  // add ", " after all but last one
                                                 commaSeparator_Element = (
                                                     <span>, </span>

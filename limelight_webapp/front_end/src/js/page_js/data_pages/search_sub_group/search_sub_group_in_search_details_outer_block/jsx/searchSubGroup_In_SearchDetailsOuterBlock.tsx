@@ -210,7 +210,7 @@ export class SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_EmbedInSearchDet
             return null;  //  EARLY RETURN
         }
 
-        const searchSubGroupsJSX = new Array<JSX.Element>()
+        const searchSubGroupsJSX = new Array<React.JSX.Element>()
 
         for ( const searchSubGroupEntry of this.props.displayData.searchSubGroupEntryArray ) {
 
@@ -393,7 +393,7 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
             return null;  //  EARLY RETURN
         }
 
-        const searchSubGroupsJSX = new Array<JSX.Element>();
+        const searchSubGroupsJSX = new Array<React.JSX.Element>();
 
         for ( const searchSubGroupEntry of this.props.displayData.searchSubGroupEntryArray ) {
 

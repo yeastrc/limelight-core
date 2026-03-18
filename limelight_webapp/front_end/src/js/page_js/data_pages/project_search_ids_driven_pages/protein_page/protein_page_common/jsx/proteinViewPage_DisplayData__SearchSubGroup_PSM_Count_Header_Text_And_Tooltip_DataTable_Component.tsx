@@ -35,7 +35,7 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_SequenceCoverage_He
 
     searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 
-}  ) : JSX.Element {
+}  ) : React.JSX.Element {
 
     return (
         <div>
@@ -70,7 +70,7 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_NSAF_Header_Tooltip
 
     searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 
-}  ) : JSX.Element {
+}  ) : React.JSX.Element {
 
     return (
         <div>
@@ -104,7 +104,7 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_Adjusted_Spectral_C
 
     searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 
-}  ) : JSX.Element {
+}  ) : React.JSX.Element {
 
     return (
         <div>
@@ -140,7 +140,7 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_NSAF__Using__Adjust
 
     searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 
-}  ) : JSX.Element {
+}  ) : React.JSX.Element {
 
     return (
         <div >
@@ -176,7 +176,7 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_PSM_Count_Header_To
 
     searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 
-}  ) : JSX.Element {
+}  ) : React.JSX.Element {
 
     return (
         <div >

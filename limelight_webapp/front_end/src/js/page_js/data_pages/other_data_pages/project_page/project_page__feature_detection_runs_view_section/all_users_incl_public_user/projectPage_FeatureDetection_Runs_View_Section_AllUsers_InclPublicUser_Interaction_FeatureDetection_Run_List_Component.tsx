@@ -282,7 +282,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_FeatureDete
     render() {
 
         let no_FeatureDetection_Runs_Found = false;
-        const featureDetection_Run_Element_List: Array<JSX.Element> = [];
+        const featureDetection_Run_Element_List: Array<React.JSX.Element> = [];
 
         if ( this.state.featureDetection_Run_Entry_CombinedEntries_Array ) {
 
@@ -1140,7 +1140,7 @@ class Internal__FeatureDetection_Run_Details_Component extends React.Component< 
      */
     render() {
 
-        let searchElements: Array<JSX.Element> = undefined
+        let searchElements: Array<React.JSX.Element> = undefined
 
         if ( this.state.featureDetection_Run_Details_FromServer_Root
             && this.state.featureDetection_Run_Details_FromServer_Root.projectSearchIds_ForScanFile_List

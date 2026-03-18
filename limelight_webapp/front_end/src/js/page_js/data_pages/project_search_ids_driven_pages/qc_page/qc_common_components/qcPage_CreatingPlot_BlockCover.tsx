@@ -18,7 +18,7 @@ interface QcPage_CreatingPlot_BlockCover_Props {
 /**
  *  Parent <div> MUST have position: relative
  */
-export const QcPage_CreatingPlot_BlockCover : React.FC<QcPage_CreatingPlot_BlockCover_Props> = function ( props: QcPage_CreatingPlot_BlockCover_Props ) : JSX.Element {
+export const QcPage_CreatingPlot_BlockCover : React.FC<QcPage_CreatingPlot_BlockCover_Props> = function ( props: QcPage_CreatingPlot_BlockCover_Props ) : React.JSX.Element {
 
     return (
 

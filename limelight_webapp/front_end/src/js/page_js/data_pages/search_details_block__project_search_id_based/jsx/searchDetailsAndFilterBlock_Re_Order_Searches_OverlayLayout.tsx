@@ -8,7 +8,7 @@
 
 import React from 'react'
 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable } from "@adaptabletools/react-beautiful-dnd";
 
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
 import {
@@ -47,7 +47,7 @@ export const get_SearchDetailsAndFilterBlock_Re_Order_Searches_Overlay_Layout = 
     callbackOn_Cancel_Close_Clicked : () => void;
     callback_update_OrderOf_Searches : ( params : SearchDetailsAndFilterBlock_Re_Order_Searches_Overlay_OuterContainer_Component__Callback_update_OrderOf_Searches_Params ) => void
 
-}) : JSX.Element {
+}) : React.JSX.Element {
 
     return (
         <SearchDetailsAndFilterBlock_Re_Order_Searches_Overlay_OuterContainer_Component
@@ -205,7 +205,7 @@ class SearchDetailsAndFilterBlock_Re_Order_Searches_Overlay_OuterContainer_Compo
      */
     render(): React.ReactNode {
 
-        const searchDisplayList : Array<JSX.Element> = [];
+        const searchDisplayList : Array<React.JSX.Element> = [];
 
         {
             let index = 0

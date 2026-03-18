@@ -90,7 +90,9 @@ import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearc
  * 
  *   search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl		- For PSMs that are Target
  *   search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl - For PSMs that are Target or Independent Decoy
- *   search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl	- For PSMs that are Target or Independent Decoy or Decoy
+ *   
+ *
+ *	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
  */
 @Component
 public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher extends Limelight_JDBC_Base 
@@ -157,8 +159,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private static final String TABLE_NAME_TARGET = "search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl";
 
 	private static final String TABLE_NAME_TARGET_INDEPENDENT_DECOY = "search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl";
-
-//	private static final String TABLE_NAME_TARGET_INDEPENDENT_DECOY_DECOY = "search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl";
 
 	
 	private final String SQL_MAIN_WHERE_START = 

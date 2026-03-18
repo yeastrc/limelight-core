@@ -6,7 +6,7 @@
  */
 
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot as createRoot_ReactDOM_Client } from "react-dom/client";
 
 import {
     Manage_ImporterPipelineExecution_ForAdminPage_Root_Component,
@@ -18,13 +18,6 @@ import {
  *
  */
 export const manage_ImporterPipelineExecution_ForAdminPage_Main_Init = function () {
-
-
-    //  Called on render complete
-    const renderCompleteCallbackFcn = () => {
-
-    };
-
 
     const containerDOMElement = document.getElementById("AdminPage_Root_Component");
 
@@ -47,10 +40,8 @@ export const manage_ImporterPipelineExecution_ForAdminPage_Main_Init = function 
         )
     )
 
-    ReactDOM.render(
-        root_Component,
-        containerDOMElement,
-        renderCompleteCallbackFcn
-    );
+    const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
+
+    reactRoot_InDOMElement.render( root_Component )
 }
 

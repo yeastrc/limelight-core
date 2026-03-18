@@ -7,7 +7,9 @@
  */
 
 import React from 'react'
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
+
+import { DragDropContext, Draggable, Droppable } from "@adaptabletools/react-beautiful-dnd";
+
 import {
     searchSubGroup_Manage_GroupNames_UpdateServer,
     SearchSubGroup_Manage_GroupNames_UpdateServer_Entry
@@ -99,7 +101,7 @@ export const get_SearchSubGroup_Manage_GroupNames_Overlay_Layout = function(
         callbackOn_Cancel_Close_Clicked : () => void;
         callbackOn_Update : SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_UpdateCallback
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component
@@ -466,7 +468,7 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
 
         let dragIconTitle = "Drag to change Sub Group Order";
 
-        const subGroup_Display_ElementList : Array<JSX.Element> = [];
+        const subGroup_Display_ElementList : Array<React.JSX.Element> = [];
 
         {
 

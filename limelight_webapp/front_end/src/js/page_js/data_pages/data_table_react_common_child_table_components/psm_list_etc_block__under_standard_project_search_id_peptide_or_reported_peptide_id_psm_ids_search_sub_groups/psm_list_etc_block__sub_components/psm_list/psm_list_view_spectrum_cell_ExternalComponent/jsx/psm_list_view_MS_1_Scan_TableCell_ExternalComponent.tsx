@@ -36,7 +36,7 @@ export const get_PsmList_MS_1_Scan_TableCell_ExternalReactComponent = function (
     } : {
         psmListItem: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item
         psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <Internal__PsmList_ViewSpectrumCell_ExternalReactComponent

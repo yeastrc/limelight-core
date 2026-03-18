@@ -57,7 +57,7 @@ export const get_ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSe
         callbackOn_Cancel_Close_Clicked : () => void;
         callback_updateSelected_Searches : ( params : ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) => void
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component
@@ -177,7 +177,7 @@ class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Over
      */
     render(): React.ReactNode {
 
-        const conditionGroupName_ConditionName_Entries : Array<JSX.Element> = [];
+        const conditionGroupName_ConditionName_Entries : Array<React.JSX.Element> = [];
         {
             const cell_ConditionIds_Set = this.props.current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.mainCell_Identifier.cell_ConditionIds_Set
             for ( const conditionGroup of this.props.current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.conditionGroupsContainer.conditionGroups ) {

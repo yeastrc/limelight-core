@@ -6,7 +6,9 @@
 
 
 import React from "react";
-import ReactDOM from "react-dom";
+
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
+
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
@@ -35,16 +37,9 @@ export const addToPage_INTERNAL__ProjectPage_ProjectInformation_Section_Question
         throw Error("No DOM element with id 'project_page_project_information_block___question_mark_with_circle__react_root_container'");
     }
 
-    //  Called on render complete
-    const renderCompleteCallbackFcn = () => {
+    const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
 
-    };
-
-    const renderedReactComponent = ReactDOM.render(
-        projectPage_ExperimentsSectionRoot_Component,
-        containerDOMElement,
-        renderCompleteCallbackFcn
-    );
+    reactRoot_InDOMElement.render( projectPage_ExperimentsSectionRoot_Component )
 }
 
 

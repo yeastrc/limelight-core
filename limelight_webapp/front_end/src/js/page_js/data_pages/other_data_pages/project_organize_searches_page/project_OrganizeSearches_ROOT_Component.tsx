@@ -89,9 +89,9 @@ export class Project_OrganizeSearches_ROOT_Component extends React.Component< Pr
      */
     render() {
 
-        let component_SubTree_ErrorMessage : JSX.Element = undefined;
+        let component_SubTree_ErrorMessage : React.JSX.Element = undefined;
 
-        let mainContent : JSX.Element = undefined;
+        let mainContent : React.JSX.Element = undefined;
 
 
         if ( this.state.component_SubTree_Has_Error ) {

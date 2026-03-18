@@ -69,7 +69,7 @@ export const scanFileToSearchesPage_Display_MainTableRow_ChildBlock__Get_Compone
         params_dataTable : DataTable_DataRowEntry__Get_RowChildContent_CallParams
         componentPropsProp: ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component_Props_Prop
     }
-) : JSX.Element  {
+) : React.JSX.Element  {
 
     return (
         <ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component
@@ -153,7 +153,7 @@ class ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component extends R
 
     render() {
 
-        const elements_For_Searches: Array<JSX.Element> = []
+        const elements_For_Searches: Array<React.JSX.Element> = []
 
         for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
 
@@ -168,7 +168,7 @@ class ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component extends R
                 throw new Error("No value from this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); for projectSearchId: " + projectSearchId );
             }
 
-            const elements_For_PSMs: Array<JSX.Element> = []
+            const elements_For_PSMs: Array<React.JSX.Element> = []
 
             let psmTblData_Array_ElementCounter = 0
 
@@ -255,7 +255,7 @@ class ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component extends R
                 elements_For_PSMs.push( element_PSM_Entry )
             }
 
-            let searchLabel_Element: JSX.Element = undefined
+            let searchLabel_Element: React.JSX.Element = undefined
             const style_ForDiv_DataForSearch: React.CSSProperties = {}
 
             if ( this.props.propsValue.projectSearchIds.length > 1 ) {

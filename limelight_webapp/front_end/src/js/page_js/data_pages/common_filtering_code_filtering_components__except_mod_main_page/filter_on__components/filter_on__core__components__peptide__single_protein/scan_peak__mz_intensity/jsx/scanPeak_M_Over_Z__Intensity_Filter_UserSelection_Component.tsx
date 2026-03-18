@@ -193,7 +193,7 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                 any_All_Text = "all"
             }
 
-            let selectionsElements: Array<JSX.Element> = undefined;
+            let selectionsElements: Array<React.JSX.Element> = undefined;
 
             if ( this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.is_AnySelections() ) {
 

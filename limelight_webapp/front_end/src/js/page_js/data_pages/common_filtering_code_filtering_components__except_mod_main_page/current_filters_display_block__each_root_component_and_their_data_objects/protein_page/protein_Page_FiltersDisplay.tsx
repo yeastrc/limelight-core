@@ -105,7 +105,7 @@ export class Protein_Page_FiltersDisplay extends React.Component< Protein_Page_F
     render() {
         try {
 
-            const currentFiltersArray : Array<JSX.Element> = []
+            const currentFiltersArray : Array<React.JSX.Element> = []
 
             { // SearchSubGroups - NOT on Experiment Page
 

@@ -725,7 +725,7 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                                             reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
                                                             throw e;
                                                         }
-                                                    });
+                                                    }, 50 );
                                                 } catch (e) {
                                                     reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
                                                     throw e;
@@ -859,7 +859,7 @@ class SingleOtherProject_Props {
  * @param props
  */
 const SingleOtherProject : FC<SingleOtherProject_Props> =
-    function (props: SingleOtherProject_Props) : JSX.Element {
+    function (props: SingleOtherProject_Props) : React.JSX.Element {
 
     return (
         <React.Fragment>

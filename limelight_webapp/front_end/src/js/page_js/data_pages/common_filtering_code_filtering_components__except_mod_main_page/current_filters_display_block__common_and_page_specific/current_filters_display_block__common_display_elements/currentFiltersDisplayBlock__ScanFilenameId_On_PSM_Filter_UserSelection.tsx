@@ -29,7 +29,7 @@ export const currentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelect
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
         commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder //  Use with scanFilenameId_On_PSM_Filter_UserSelection_StateObject
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! scanFilenameId_On_PSM_Filter_UserSelection_StateObject ) ) {
         //  Nothing to display
@@ -94,7 +94,7 @@ export const currentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelect
 /**
  *
  */
-const CurrentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelection_NO_Selections = function() : JSX.Element {
+const CurrentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelection_NO_Selections = function() : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 
@@ -115,7 +115,7 @@ const CurrentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelection = f
     } : {
         searchScanFileDataEntries: Array<CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry>
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 
@@ -123,7 +123,7 @@ const CurrentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelection = f
         return a.filename.localeCompare(b.filename)
     });
 
-    const scan_Filename_Entries_Elements : Array<JSX.Element> = [];
+    const scan_Filename_Entries_Elements : Array<React.JSX.Element> = [];
 
     let firstEntry = true;
     for ( const searchScanFileDataEntry of searchScanFileDataEntries ) {

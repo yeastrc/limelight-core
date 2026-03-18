@@ -10,8 +10,8 @@
  */
 
 import React from "react";
-import ReactDOM from "react-dom";
 
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
 
 import {
     ProjectPage__ProjectSection_AllUser_Root_Main_Component,
@@ -34,7 +34,7 @@ export const add_ProjectPage__ProjectSection_AllUser_Root_Component_ToPage = fun
         propsValue
     }
 
-    const projectPage_ExperimentsSectionRoot_Component = (
+    const projectPage__ProjectSection_AllUser_Root_Component = (
         React.createElement(
             ProjectPage__ProjectSection_AllUser_Root_Component,
             props,
@@ -50,16 +50,9 @@ export const add_ProjectPage__ProjectSection_AllUser_Root_Component_ToPage = fun
         throw Error("No DOM element with id 'project_information_root_block_react_implementation'");
     }
 
-    //  Called on render complete
-    const renderCompleteCallbackFcn = () => {
+    const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
 
-    };
-
-    const renderedReactComponent = ReactDOM.render(
-        projectPage_ExperimentsSectionRoot_Component,
-        containerDOMElement,
-        renderCompleteCallbackFcn
-    );
+    reactRoot_InDOMElement.render( projectPage__ProjectSection_AllUser_Root_Component )
 }
 
 

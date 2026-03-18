@@ -17,7 +17,7 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot as createRoot_ReactDOM_Client } from "react-dom/client";
 
 
 
@@ -564,7 +564,7 @@ export class PeptideExperimentPage_RootClass_Common {
 					propsValue
 				}
 
-				const projectPage_ExperimentsSectionRoot_Component = (
+				const component = (
 					React.createElement(
 						PeptideExperimentPage_Display_Root_Component,
 						props,
@@ -580,16 +580,9 @@ export class PeptideExperimentPage_RootClass_Common {
 					throw Error("No DOM element with id 'main_peptide_view_outer_block_react_root_container'");
 				}
 
-				//  Called on render complete
-				const renderCompleteCallbackFcn = () => {
+				const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
 
-				};
-
-				const renderedReactComponent = ReactDOM.render(
-					projectPage_ExperimentsSectionRoot_Component,
-					containerDOMElement,
-					renderCompleteCallbackFcn
-				);
+				reactRoot_InDOMElement.render( component )
 
 				//  Remove div above that has "Loading..."
 

@@ -1,13 +1,11 @@
 /**
  * manageUsersForAdminPage_Root.ts
- * 
- * Javascript for webappAdminManageUsers.jsp page  
- * 
+ *
+ * Javascript for webappAdminManageUsers.jsp page
  */
 
 import React from "react";
-import ReactDOM from "react-dom";
-
+import { createRoot as createRoot_ReactDOM_Client } from "react-dom/client";
 
 /**
  * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
@@ -48,16 +46,9 @@ const _render_RootComponent = function () {
         throw Error("No DOM element with id 'limelight_page__main_react_root'");
     }
 
-    //  Called on render complete
-    const renderCompleteCallbackFcn = () => {
+    const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
 
-    };
-
-    const renderedReactComponent = ReactDOM.render(
-        root_Component,
-        containerDOMElement,
-        renderCompleteCallbackFcn
-    );
+    reactRoot_InDOMElement.render( root_Component )
 }
 
 

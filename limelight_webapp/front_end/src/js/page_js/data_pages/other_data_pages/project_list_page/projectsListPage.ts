@@ -18,7 +18,9 @@
 //  module import 
 
 import React from "react";
-import ReactDOM from "react-dom";
+
+import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client } from "react-dom/client";
+
 
 
 /**
@@ -34,6 +36,7 @@ import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHea
 import {
 	ProjectsListPage_Root_Component, ProjectsListPage_Root_Component_Props
 } from "page_js/data_pages/other_data_pages/project_list_page/projectsListPage_Root_Component";
+
 
 ///////////////
 
@@ -65,17 +68,9 @@ try {
 		throw Error("No DOM element with id 'main_project_list_view_outer_block_react_root_container'");
 	}
 
-	//  Called on render complete
-	const renderCompleteCallbackFcn = () => {
+	const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
 
-	};
-
-	const renderedReactComponent = ReactDOM.render(
-		projectPage_ExperimentsSectionRoot_Component,
-		containerDOMElement,
-		renderCompleteCallbackFcn
-	);
-
+	reactRoot_InDOMElement.render( projectPage_ExperimentsSectionRoot_Component )
 
 } catch( e ) {
 	reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );

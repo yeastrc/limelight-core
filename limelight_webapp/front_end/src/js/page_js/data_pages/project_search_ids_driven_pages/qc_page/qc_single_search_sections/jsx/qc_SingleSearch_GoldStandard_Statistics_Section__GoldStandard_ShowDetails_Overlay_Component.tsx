@@ -668,7 +668,7 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
             let recall_ResultDisplay: string
 
 
-            let matchedTableContents: JSX.Element
+            let matchedTableContents: React.JSX.Element
 
             if ( ( ! this._show_LoadingData_Message ) && ( ! this._showUpdatingMessage ) && this._getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result ) {
 

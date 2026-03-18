@@ -563,7 +563,7 @@ class TableCell extends React.Component< TableCell_Props, TableCell_State > {
             }
         }
 
-        let tooltipContents: JSX.Element = undefined
+        let tooltipContents: React.JSX.Element = undefined
 
         if ( this.props.cell.mainDataCell ) {
 

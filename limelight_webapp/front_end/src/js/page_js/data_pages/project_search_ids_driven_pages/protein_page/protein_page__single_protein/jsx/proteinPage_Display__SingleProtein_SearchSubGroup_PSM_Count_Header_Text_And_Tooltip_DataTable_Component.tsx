@@ -34,7 +34,7 @@ export const get_proteinPage_Display__SingleProtein_SearchSubGroup_PSM_Count_Hea
 
     searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 
-}  ) : JSX.Element {
+}  ) : React.JSX.Element {
 
     return (
         <div >

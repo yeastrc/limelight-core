@@ -6,7 +6,7 @@
  */
 
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot as createRoot_ReactDOM_Client } from "react-dom/client";
 
 import {
     ManageCachedDataForAdminPage_Root_Component,
@@ -20,13 +20,6 @@ import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserv
  *
  */
 export const manageCachedDataForAdminPage_Main_Init = function () {
-
-
-    //  Called on render complete
-    const renderCompleteCallbackFcn = () => {
-
-    };
-
 
     const containerDOMElement = document.getElementById("ManageCachedDataForAdminPage_Root_Component");
 
@@ -50,11 +43,9 @@ export const manageCachedDataForAdminPage_Main_Init = function () {
         )
     )
 
-    ReactDOM.render(
-        root_Component,
-        containerDOMElement,
-        renderCompleteCallbackFcn
-    );
+    const reactRoot_InDOMElement = createRoot_ReactDOM_Client( containerDOMElement )
+
+    reactRoot_InDOMElement.render( root_Component )
 }
 
 

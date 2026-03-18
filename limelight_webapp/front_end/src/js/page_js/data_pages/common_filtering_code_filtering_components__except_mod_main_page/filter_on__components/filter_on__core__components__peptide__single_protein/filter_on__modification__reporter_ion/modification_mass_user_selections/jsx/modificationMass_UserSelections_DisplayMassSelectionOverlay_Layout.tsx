@@ -89,7 +89,7 @@ export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Lay
         callbackOn_Cancel_Close_Clicked : () => void;
         callback_updateSelectedMods : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component
@@ -435,7 +435,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                         }
 
                         const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+                            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                                 return get_Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer({ textLabel, current_selection_SelectionType });
                             }

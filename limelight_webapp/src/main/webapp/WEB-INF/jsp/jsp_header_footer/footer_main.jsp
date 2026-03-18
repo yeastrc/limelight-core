@@ -82,7 +82,7 @@
 		
 		<%--  Footer contents right edge --%>
 		<div class="footer-right-container">
-			&copy; 2025 University of Washington
+			&copy; 2026 University of Washington
 			<%--
 				When Add Terms of Service, update link to page
 			

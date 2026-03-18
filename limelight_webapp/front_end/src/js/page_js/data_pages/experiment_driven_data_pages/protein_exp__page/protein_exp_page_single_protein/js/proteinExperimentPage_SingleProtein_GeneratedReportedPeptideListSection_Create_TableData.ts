@@ -182,7 +182,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
 
         if ( show_Peptide_Unique ) {
 
-            const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+            const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => {
                 return proteinExperimentPage_Display_SingleProtein_GeneratedReportedPeptideListSection_Components_Other.uniqueColumnHeader_Tooltip_Create();
             }
 
@@ -530,7 +530,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                         }
 
                     const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                        ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+                        ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                             return proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Components___proteinNames_Column_Content({
                                 proteinNames_Array, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, proteinName_Clicked_Callback

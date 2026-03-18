@@ -89,7 +89,7 @@ export class ProteinSelection_Generic__UserInputOverlay_GetProteinTooltipContent
 }
 
 export type ProteinSelection_Generic__UserInputOverlay_GetProteinTooltipContents_CallbackFunction =
-    ( params: ProteinSelection_Generic__UserInputOverlay_GetProteinTooltipContents_CallbackFunction_Params ) => JSX.Element;
+    ( params: ProteinSelection_Generic__UserInputOverlay_GetProteinTooltipContents_CallbackFunction_Params ) => React.JSX.Element;
 
 ////  React Components
 
@@ -491,7 +491,7 @@ const _create_ProteinList_DataTableObjects = function(
             let tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = null;
             if ( callback_GetProteinTooltipContents ) {
                 tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = (params : DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params)
-                    : JSX.Element => {
+                    : React.JSX.Element => {
 
                     return callback_GetProteinTooltipContents({ proteinSequenceVersionId: protein.proteinSequenceVersionId });
                 }
@@ -508,7 +508,7 @@ const _create_ProteinList_DataTableObjects = function(
                     }
 
                     const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                        ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+                        ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                             return (
                                 <React.Fragment>

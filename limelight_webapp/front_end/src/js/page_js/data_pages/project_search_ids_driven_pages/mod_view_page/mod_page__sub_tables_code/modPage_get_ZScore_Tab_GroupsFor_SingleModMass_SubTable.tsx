@@ -346,7 +346,7 @@ const _create_DataTable_DataRowEntry = function (
 
         let searchesOrSubSearches_Label_String = "Searches"
 
-        const searchName_Or_SubSearchLabels: Array<JSX.Element> = []
+        const searchName_Or_SubSearchLabels: Array<React.JSX.Element> = []
 
         if ( modViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result_Root.projectSearchId_Or_SubSearchId_Enum
             === ModViewPage_ComputeData_For_ModMassViz_And_TopLevelTable_Result___ProjectSearchId_Or_SubSearchId_Enum.SubSearchId ) {
@@ -391,7 +391,7 @@ const _create_DataTable_DataRowEntry = function (
             }
         }
 
-        const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = () : JSX.Element => (
+        const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = () : React.JSX.Element => (
             <div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     Group { groupNumber } { searchesOrSubSearches_Label_String }:
@@ -436,7 +436,7 @@ const _create_DataTable_DataRowEntry = function (
         const valueDisplay_Search_and_Download = Array.from( modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.get_ResidueLetters() ).sort().join(', ');
 
         const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                 return ModPage_ModifiedResidue__DataTable_ColumnDisplay.get_DataTable_ModifiedResidues_Column_Contents({ modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator })
             }

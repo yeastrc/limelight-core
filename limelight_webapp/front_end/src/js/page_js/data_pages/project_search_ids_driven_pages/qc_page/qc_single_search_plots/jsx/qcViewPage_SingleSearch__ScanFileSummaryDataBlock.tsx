@@ -472,7 +472,7 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
 
         const table_TD_Style: React.CSSProperties = { verticalAlign: "top" }
 
-        let dataDisplay: JSX.Element = null;
+        let dataDisplay: React.JSX.Element = null;
 
         if ( this._scanFile_SummaryPerLevelData_Root && this.state.scanNumbersCount_For_FilteredPSMs ) {
 
@@ -494,11 +494,11 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
 
                 let totalIonCurrentAllLevels = 0;
 
-                const perLevel_TotalIonCurrent_DisplayEntries: Array<JSX.Element> = [];
+                const perLevel_TotalIonCurrent_DisplayEntries: Array<React.JSX.Element> = [];
 
                 const perLevel_TotalIonCurrent_DisplayEntries_DownloadRows: Array<Array<string>> = [];
 
-                const perLevel_Count_DisplayEntries: Array<JSX.Element> = [];
+                const perLevel_Count_DisplayEntries: Array<React.JSX.Element> = [];
 
                 const perLevel_Count_DisplayEntries_DownloadRows: Array<Array<string>> = [];
 

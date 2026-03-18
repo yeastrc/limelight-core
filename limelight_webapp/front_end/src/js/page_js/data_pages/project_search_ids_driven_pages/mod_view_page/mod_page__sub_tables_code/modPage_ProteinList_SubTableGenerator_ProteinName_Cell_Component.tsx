@@ -38,7 +38,7 @@ export type modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Co
  * Contents for cell Protein Name
  */
 export const modPage_ProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents = function (
-    props : Cell_Protein_Name_Contents_Component_Props) : JSX.Element { try {
+    props : Cell_Protein_Name_Contents_Component_Props) : React.JSX.Element { try {
 
     return (
         <Cell_Protein_Name_Contents_Component
@@ -155,7 +155,7 @@ const INTERNAL__Cell_Protein_Name_Contents_Component_GetTooltipContents_Componen
 
 
 
-const _getTooltipText = function( data: ModPage_Get_Protein_NamesAndDescriptions_UTIL_Result ) : JSX.Element { try {
+const _getTooltipText = function( data: ModPage_Get_Protein_NamesAndDescriptions_UTIL_Result ) : React.JSX.Element { try {
 
     return (
         <div style={ { marginBottom: 10 } } className="isTooltip">

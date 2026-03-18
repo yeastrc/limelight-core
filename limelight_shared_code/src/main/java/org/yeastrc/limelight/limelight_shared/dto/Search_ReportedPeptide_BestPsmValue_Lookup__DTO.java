@@ -22,7 +22,9 @@ package org.yeastrc.limelight.limelight_shared.dto;
  * 
  *   search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl		- For PSMs that are Target
  *   search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl - For PSMs that are Target or Independent Decoy
- *   search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl	- For PSMs that are Target or Independent Decoy or Decoy
+ *   
+ *
+ *	Table DELETED since NOT USED For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
  *
  */
 public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {

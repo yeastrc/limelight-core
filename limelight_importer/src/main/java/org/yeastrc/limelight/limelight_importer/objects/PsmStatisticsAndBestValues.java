@@ -33,7 +33,9 @@ public class PsmStatisticsAndBestValues {
 	
 	private BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets;
 	private BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys;
-	private BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys;
+	
+	//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+//	private BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys;
 	
 	private Set<PsmOpenModification_UniquePosition_InReportedPeptide_Entry> psmOpenModification_UniquePositions;
 	private Set<Integer> psmOpenModification_UniqueMassesRounded;
@@ -131,13 +133,15 @@ public class PsmStatisticsAndBestValues {
 			BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys) {
 		this.bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys = bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys;
 	}
+	
+	//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
 
-	public BestPsmFilterableAnnotationProcessing getBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys() {
-		return bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys;
-	}
-
-	public void setBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys(
-			BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys) {
-		this.bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys = bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys;
-	}
+//	public BestPsmFilterableAnnotationProcessing getBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys() {
+//		return bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys;
+//	}
+//
+//	public void setBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys(
+//			BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys) {
+//		this.bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys = bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys;
+//	}
 }

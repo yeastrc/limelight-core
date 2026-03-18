@@ -589,7 +589,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
             searchDetailsContainer_div_Style.display = "none";
         }
 
-        let searchTags_Block: JSX.Element = undefined
+        let searchTags_Block: React.JSX.Element = undefined
 
         { //  Search Tags
 

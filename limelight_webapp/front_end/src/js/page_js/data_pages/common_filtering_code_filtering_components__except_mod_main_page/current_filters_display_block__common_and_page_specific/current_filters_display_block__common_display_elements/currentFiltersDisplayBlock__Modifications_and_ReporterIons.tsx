@@ -29,23 +29,23 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
         modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
         reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject;
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     const AND_SEPARATOR_STRING = "AND"
     const OR_SEPARATOR_STRING = "OR"
     const NOT_SEPARATOR_STRING = "OR"
 
-    let selection_AND_Group_Display_Entries__For_ModificationSelects : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
-    let selection_OR_Group_Display_Entries__For_ModificationSelects : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
-    let selection_NOT_Group_Display_Entries__For_ModificationSelects : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+    let selection_AND_Group_Display_Entries__For_ModificationSelects : Array<React.JSX.Element> = new Array<React.JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+    let selection_OR_Group_Display_Entries__For_ModificationSelects : Array<React.JSX.Element> = new Array<React.JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+    let selection_NOT_Group_Display_Entries__For_ModificationSelects : Array<React.JSX.Element> = new Array<React.JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
 
     let selection_NOT_UnModified_Variable_Mods_Selected = false;
     let selection_NOT_UnModified_Open_Mods_Selected = false;
 
 
-    let selection_AND_Group_Display_Entries__For_ReporterIonSelections : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
-    let selection_OR_Group_Display_Entries__For_ReporterIonSelections : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
-    let selection_NOT_Group_Display_Entries__For_ReporterIonSelections : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+    let selection_AND_Group_Display_Entries__For_ReporterIonSelections : Array<React.JSX.Element> = new Array<React.JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+    let selection_OR_Group_Display_Entries__For_ReporterIonSelections : Array<React.JSX.Element> = new Array<React.JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+    let selection_NOT_Group_Display_Entries__For_ReporterIonSelections : Array<React.JSX.Element> = new Array<React.JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
 
     {
         const variable_ModificationSelections_StateObject = modificationMass_UserSelections_StateObject.get_VariableModificationSelections()
@@ -398,9 +398,9 @@ const CurrentFiltersDisplayBlock__Modifications_and_ReporterIons = function(
         modificationMass_UserSelections_StateObject
 
     } : {
-        selection_AND_Group_Display_Entries : Array<JSX.Element>
-        selection_OR_Group_Display_Entries : Array<JSX.Element>
-        selection_NOT_Group_Display_Entries : Array<JSX.Element>
+        selection_AND_Group_Display_Entries : Array<React.JSX.Element>
+        selection_OR_Group_Display_Entries : Array<React.JSX.Element>
+        selection_NOT_Group_Display_Entries : Array<React.JSX.Element>
 
         selection_NOT_UnModified_Variable_Mods_Selected: boolean
         selection_NOT_UnModified_Open_Mods_Selected: boolean
@@ -408,7 +408,7 @@ const CurrentFiltersDisplayBlock__Modifications_and_ReporterIons = function(
         modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject
 
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 
@@ -482,7 +482,7 @@ const _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL = f
     { staticModificationMassesToFilterOn_ANY_or_ALL, seperatorString, selection_Group_Display_Entries_Local } : {
         staticModificationMassesToFilterOn_ANY_or_ALL : Map<string, Set<number>>
         seperatorString : string
-        selection_Group_Display_Entries_Local : Array<JSX.Element>
+        selection_Group_Display_Entries_Local : Array<React.JSX.Element>
     }) {
 
     //  staticModificationMassesToFilterOn_ANY_or_ALL is Map<String (Residue), Set< Number ( Mod Mass ) >>
@@ -534,7 +534,7 @@ const _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL = f
  */
 const _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local = function({ separatorString, selection_Group_Display_Entries_Local } : {
     separatorString : string
-    selection_Group_Display_Entries_Local : Array<JSX.Element>
+    selection_Group_Display_Entries_Local : Array<React.JSX.Element>
 }) : void {
     if ( selection_Group_Display_Entries_Local.length > 0 ) {
         const key = separatorString + "_Seperator_" + selection_Group_Display_Entries_Local.length

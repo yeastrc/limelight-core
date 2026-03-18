@@ -55,7 +55,7 @@ export const featureDetection_ViewPage__PersistentFeature_DataTable_ExpandChild_
             })
 
             const get_RowChildContent_Return_ChildContent: DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent =
-                ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) : JSX.Element => {
+                ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) : React.JSX.Element => {
 
                     return (
                         <Internal_PersistentFeature_SingularFeatures_ChildReactComponent

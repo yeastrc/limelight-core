@@ -1072,7 +1072,7 @@ const _create_DataTable_Data = function (
 
         let searchesOrSubSearches_Label_String = "Searches"
 
-        const searchName_Or_SubSearchLabels: Array<JSX.Element> = []
+        const searchName_Or_SubSearchLabels: Array<React.JSX.Element> = []
 
         if ( processing_SubSearches ) {
 
@@ -1112,7 +1112,7 @@ const _create_DataTable_Data = function (
             }
         }
 
-        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => (
             <div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     { quantTypeString_With_Count_String }
@@ -1156,7 +1156,7 @@ const _create_DataTable_Data = function (
 
         let searchesOrSubSearches_Label_String = "Searches"
 
-        const searchName_Or_SubSearchLabels: Array<JSX.Element> = []
+        const searchName_Or_SubSearchLabels: Array<React.JSX.Element> = []
 
         if ( processing_SubSearches ) {
 
@@ -1196,7 +1196,7 @@ const _create_DataTable_Data = function (
             }
         }
 
-        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => (
             <div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     { quantTypeString_With_Count_String }
@@ -1246,7 +1246,7 @@ const _create_DataTable_Data = function (
 
         let searchesOrSubSearches_Label_String = "Searches"
 
-        const searchName_Or_SubSearchLabels: Array<JSX.Element> = []
+        const searchName_Or_SubSearchLabels: Array<React.JSX.Element> = []
 
         if ( processing_SubSearches ) {
 
@@ -1286,7 +1286,7 @@ const _create_DataTable_Data = function (
             }
         }
 
-        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => (
             <div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     { quantTypeString + " " + ratio_String }
@@ -1345,7 +1345,7 @@ const _create_DataTable_Data = function (
 
         let searchesOrSubSearches_Label_String = "Searches"
 
-        const searchName_Or_SubSearchLabels: Array<JSX.Element> = []
+        const searchName_Or_SubSearchLabels: Array<React.JSX.Element> = []
 
         if ( processing_SubSearches ) {
 
@@ -1385,7 +1385,7 @@ const _create_DataTable_Data = function (
             }
         }
 
-        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => (
             <div>
                 <div style={ { fontWeight: "bold", marginBottom: 6 } }>
                     { quantTypeString + " " + ratio_String }
@@ -1442,7 +1442,7 @@ const _create_DataTable_Data = function (
     {
         const displayName = "z-score";
 
-        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => (
             <div>
                 Calculated using the canonical two-sample proportion Z-test<br/>
                 comparing the ratio of PSMs with a given modification in the two groups.
@@ -1465,7 +1465,7 @@ const _create_DataTable_Data = function (
     {
         const displayName = "p-value";
 
-        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => (
+        const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : React.JSX.Element => (
             <div>
                 A two-tailed p-value calculated from the Z-score.
             </div>
@@ -1532,7 +1532,7 @@ const _create_DataTable_Data = function (
             const searchTableData_SearchContent = '';		// not searchable
 
             const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                     return modViewDataTableRenderer_MultiSearch_Subcomponents__Cell_ExternalModLinks_Contents({ modMass });
                 };
@@ -1556,7 +1556,7 @@ const _create_DataTable_Data = function (
             const valueDisplay_Search_and_Download = Array.from( data_For_ModMass.modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator.get_ResidueLetters() ).sort().join(', ');
 
             const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
-                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : React.JSX.Element => {
 
                     return ModPage_ModifiedResidue__DataTable_ColumnDisplay.get_DataTable_ModifiedResidues_Column_Contents({ modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator: data_For_ModMass.modPage_ResidueLetters_AndTheir_ModificationCounts_Unlocalized_ModificationCounts_RollupAccumulator })
                 }

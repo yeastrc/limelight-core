@@ -121,7 +121,7 @@ export class ProjectPage__ResearchersSection__ProjectOwnerInteraction_ROOT_Compo
     /**
      *
      */
-    private _get_ExpandedBodyContents() : JSX.Element {
+    private _get_ExpandedBodyContents() : React.JSX.Element {
 
         return (
             <div>

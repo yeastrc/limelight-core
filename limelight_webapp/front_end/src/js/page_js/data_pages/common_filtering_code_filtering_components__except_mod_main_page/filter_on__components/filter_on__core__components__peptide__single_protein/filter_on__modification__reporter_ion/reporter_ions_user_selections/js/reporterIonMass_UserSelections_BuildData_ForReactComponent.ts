@@ -24,7 +24,7 @@ import {CommonData_LoadedFromServer_SingleSearch__ReporterIonMasses_Unique_In_Al
  *  Result from call to reporterIonMass_UserSelections_BuildData_ForReactComponent
  * 
  */
-interface ReporterIonMass_UserSelections_ComponentData { 
+export interface ReporterIonMass_UserSelections_ComponentData {
     reporterIonEntries? : Array< {
         reporterIonMass : number,
         selected : boolean
@@ -36,7 +36,7 @@ interface ReporterIonMass_UserSelections_ComponentData {
  *
  *
  */
-const reporterIonMass_UserSelections_BuildData_ForReactComponent = function(
+export const reporterIonMass_UserSelections_BuildData_ForReactComponent = function(
     {
         reporterIonMass_UserSelections_StateObject,
         projectSearchIds,
@@ -234,5 +234,3 @@ const _createResult = function (
 }
 
 
-
-export { reporterIonMass_UserSelections_BuildData_ForReactComponent, ReporterIonMass_UserSelections_ComponentData }

@@ -94,9 +94,9 @@ export class FeatureDetection_ViewPage__Root_Component extends React.Component< 
      */
     render() {
 
-        let component_SubTree_ErrorMessage : JSX.Element = undefined;
+        let component_SubTree_ErrorMessage : React.JSX.Element = undefined;
 
-        let mainContent : JSX.Element = undefined;
+        let mainContent : React.JSX.Element = undefined;
 
 
         if ( this.state.component_SubTree_Has_Error ) {

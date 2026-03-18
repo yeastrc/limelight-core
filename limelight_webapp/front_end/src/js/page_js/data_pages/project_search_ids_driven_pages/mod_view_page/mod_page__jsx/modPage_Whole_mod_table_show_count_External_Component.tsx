@@ -13,7 +13,7 @@ import {
  * @param params
  */
 export const modPage_Get_WholeModTable_ShowCount_ExternalReactComponent = function (
-    params: WholeModTable_ShowCount_ExternalReactComponent_Props ) : JSX.Element { try {
+    params: WholeModTable_ShowCount_ExternalReactComponent_Props ) : React.JSX.Element { try {
 
     return (
         <WholeModTable_ShowCount_ExternalReactComponent

@@ -110,7 +110,7 @@ export class ScanFileToSearches_Page_FiltersDisplay extends React.Component< Sca
     render() {
         try {
 
-            const currentFiltersArray : Array<JSX.Element> = []
+            const currentFiltersArray : Array<React.JSX.Element> = []
 
             {  //  scanFilenameId_On_PSM_Filter_UserSelection
 

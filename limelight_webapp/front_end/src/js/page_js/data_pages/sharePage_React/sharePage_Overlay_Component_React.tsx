@@ -31,7 +31,7 @@ export const getSharePage_Overlay_Component = function (
         urlShortcutString : string
         callbackOn_Close_Clicked: () => void;
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <SharePage_Overlay_Component

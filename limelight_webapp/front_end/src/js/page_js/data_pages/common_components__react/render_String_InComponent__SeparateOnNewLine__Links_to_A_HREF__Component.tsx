@@ -65,7 +65,7 @@ export class Render_String_InComponent__SeparateOnNewLine__Links_to_A_HREF__Comp
 
             const textString_Split_NewLine = textString_After_Remove_NewLine_AtEnd.split("\n")
 
-            const displayElements: Array<JSX.Element> = []
+            const displayElements: Array<React.JSX.Element> = []
 
             {
                 let displayElements_Key_Counter = 0

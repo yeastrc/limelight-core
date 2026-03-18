@@ -46,7 +46,7 @@ export const getSaveView_Overlay_Component = function (
         saveView_Overlay_Component_Save_Callback : SaveView_Overlay_Component_Save_Callback_Type
         callbackOn_Close_Clicked: () => void;
 
-    }) : JSX.Element {
+    }) : React.JSX.Element {
 
     return (
         <SaveView_Overlay_Component

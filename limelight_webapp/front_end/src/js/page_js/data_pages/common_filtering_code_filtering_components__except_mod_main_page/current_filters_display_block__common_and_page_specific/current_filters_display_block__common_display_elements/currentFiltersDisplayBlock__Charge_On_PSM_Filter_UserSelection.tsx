@@ -24,7 +24,7 @@ export const currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection = fu
     } : {
         psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     if ( ( ! psm_Charge_Filter_UserSelection_StateObject ) ) {
         //  Nothing to display
@@ -65,7 +65,7 @@ export const currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection = fu
 /**
  *
  */
-const CurrentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection_NO_Selections = function() : JSX.Element {
+const CurrentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection_NO_Selections = function() : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 
@@ -86,7 +86,7 @@ const CurrentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection = function(
     } : {
         chargeValues_Selected: Set<number>
     }
-) : JSX.Element {
+) : React.JSX.Element {
 
     //  CANNOT return null since wrapped in <React.Fragment>
 
@@ -94,7 +94,7 @@ const CurrentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection = function(
 
     limelight__Sort_ArrayOfNumbers_SortArrayInPlace(chargeValues_Selected_Array);
 
-    const charge_Entries_Elements : Array<JSX.Element> = [];
+    const charge_Entries_Elements : Array<React.JSX.Element> = [];
 
     let firstEntry = true;
     for ( const chargeValues_Selected_Entry of chargeValues_Selected_Array ) {
