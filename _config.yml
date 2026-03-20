@@ -8,7 +8,7 @@ email: limelight-help@yeastrc.org
 author: Michael Riffle
 description: > # "Write an awesome description for your new site here. 
   Limelight is a platform for analyzing, visualizing, and sharing mass spectrometry proteomics data.
-copyright: 'Copyright &copy; 2024 Michael Riffle. All Rights Reserved.'
+copyright: 'Copyright &copy; 2026 Michael Riffle. All Rights Reserved.'
 
 # ----------------------- #
 #    Jekyll & Plugins     #
@@ -17,6 +17,11 @@ copyright: 'Copyright &copy; 2024 Michael Riffle. All Rights Reserved.'
 # Build settings
 markdown: kramdown
 permalink: pretty
+exclude:
+  - docs
+  - Dockerfile
+  - .dockerignore
+  - README.md
 
 # ----------------------- #
 #   3rd Party Settings    #
