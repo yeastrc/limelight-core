@@ -132,11 +132,14 @@ public class Process_FileObjectStorage_Files_SaveAndAddToDB {
 				int fileObjectStorage_MainEntry_Id = 0;
 				boolean fileObjectStorage_MainEntry_NewlyInserted = false;
 				
-				{  //  File Object Store - Main Entry - Ensure in DB for API Key 
+				{  //  File Object Store - Main Entry - Ensure in DB for API Key AND File Type Id
 
 					FileObjectStorage_MainEntry_DAO_Importer daoInstance = FileObjectStorage_MainEntry_DAO_Importer.getInstance();
 					
-					Integer idFromDB = daoInstance.get_Id_For_FileObjectStorageStorageAPIKey( sendResult_SentTo_YRCFileObjectStorageService.getApiKey_Assigned() );
+					Integer idFromDB = 
+							daoInstance.get_Id_For_FileTypeId_AND_FileObjectStorageStorageAPIKey( 
+									fileObjectStorage_FileContainer.getFileType_FileObjectStore_FileType().value(),
+									sendResult_SentTo_YRCFileObjectStorageService.getApiKey_Assigned() );
 
 					if ( idFromDB != null ) {
 						fileObjectStorage_MainEntry_Id = idFromDB.intValue();
@@ -152,7 +155,10 @@ public class Process_FileObjectStorage_Files_SaveAndAddToDB {
 
 						}
 
-						Integer idFromDB_AfterInsert = daoInstance.get_Id_For_FileObjectStorageStorageAPIKey( sendResult_SentTo_YRCFileObjectStorageService.getApiKey_Assigned() );
+						Integer idFromDB_AfterInsert = 
+								daoInstance.get_Id_For_FileTypeId_AND_FileObjectStorageStorageAPIKey( 
+										fileObjectStorage_FileContainer.getFileType_FileObjectStore_FileType().value(),
+										sendResult_SentTo_YRCFileObjectStorageService.getApiKey_Assigned() );
 
 						if ( idFromDB_AfterInsert != null ) {
 

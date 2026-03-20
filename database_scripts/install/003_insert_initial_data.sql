@@ -113,6 +113,18 @@ INSERT INTO file_import__run_importer__pause_prcssng_sched_type_values_tbl (type
 
 
 
+	--  These values must be kept in sync with the values in the Java class StructureFile_Like_PDB_File_FileType_Enum
+    
+INSERT INTO structure_file_like_pdb_file_type_lookup_tbl 
+(id, short_name, description) 
+VALUES (1, 'pdb', 'pdb format')
+ON DUPLICATE KEY UPDATE fake_on_update_field_when_already_exists = 1;
+
+INSERT INTO structure_file_like_pdb_file_type_lookup_tbl 
+(id, short_name, description) 
+VALUES (2, 'mmcif', 'mmcif format')
+ON DUPLICATE KEY UPDATE fake_on_update_field_when_already_exists = 1;
+
 	
 --  Insert entries into isotope_label_tbl
 

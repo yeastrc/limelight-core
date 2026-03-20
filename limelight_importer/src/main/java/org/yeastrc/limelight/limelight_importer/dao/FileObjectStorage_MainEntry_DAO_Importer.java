@@ -81,32 +81,35 @@ public class FileObjectStorage_MainEntry_DAO_Importer {
 	
 	/**
 	 * Get the id for the supplied file_object_storage_api_key from the database. 
+	 * @param fileTypeId
 	 * @param file_object_storage_api_key
 	 * @return null if not found
 	 * @throws Exception
 	 */
-	public Integer get_Id_For_FileObjectStorageStorageAPIKey( String file_object_storage_api_key ) throws Exception {
+	public Integer get_Id_For_FileTypeId_AND_FileObjectStorageStorageAPIKey( int fileTypeId, String file_object_storage_api_key ) throws Exception {
 		
 		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
-			return getScanFileIdForSpectralStorageAPIKey( file_object_storage_api_key, dbConnection );
+			return get_Id_For_FileTypeId_AND_FileObjectStorageStorageAPIKey( fileTypeId, file_object_storage_api_key, dbConnection );
 		}
 	}
 
 	/**
 	 * Get the id for the supplied spectral_storage_api_key from the database. 
-	 * @param sequence
+	 * @param fileTypeId
+	 * @param file_object_storage_api_key
 	 * @return null if not found
 	 * @throws Exception
 	 */
-	public Integer getScanFileIdForSpectralStorageAPIKey( String file_object_storage_api_key, Connection dbConnection ) throws Exception {
+	public Integer get_Id_For_FileTypeId_AND_FileObjectStorageStorageAPIKey( int fileTypeId, String file_object_storage_api_key, Connection dbConnection ) throws Exception {
 		
 		Integer id = null;
 		
-		final String sql = "SELECT id FROM file_object_storage_main_entry_tbl WHERE file_object_storage_api_key = ? ORDER BY id LIMIT 1";
+		final String sql = "SELECT id FROM file_object_storage_main_entry_tbl WHERE file_type_id = ? AND file_object_storage_api_key = ? ORDER BY id LIMIT 1";
 		
 		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
-			pstmt.setString( 1, file_object_storage_api_key );
+			pstmt.setInt( 1, fileTypeId );
+			pstmt.setString( 2, file_object_storage_api_key );
 
 			try ( ResultSet rs = pstmt.executeQuery() ) {
 				if( rs.next() ) {
@@ -114,7 +117,7 @@ public class FileObjectStorage_MainEntry_DAO_Importer {
 				}
 			}
 		} catch ( Exception e ) {
-			log.error( "ERROR: get_Id_For_FileObjectStorageStorageAPIKey(...) sql: " + sql, e );
+			log.error( "ERROR: get_Id_For_FileTypeId_AND_FileObjectStorageStorageAPIKey(...) sql: " + sql, e );
 			throw e;
 		}
 		
