@@ -29,7 +29,6 @@ Run this from the repository root:
 docker run --rm \
   --name limelight-jekyll-test \
   --user "$(id -u):$(id -g)" \
-  -p 4000:4000 \
   -v "$PWD":/site \
   limelight-jekyll-test:latest
 ```
@@ -37,15 +36,15 @@ docker run --rm \
 What this does:
 
 - builds the Jekyll site into the `docs` directory
-- serves the generated site on `http://127.0.0.1:4000`
+- exits when the build completes
 - writes generated files to the host workspace because the repository is bind-mounted into the container
 
 ### View the generated site
 
-Open this URL in a browser after the container starts:
+After the container finishes, open the generated file directly from the `docs` directory, for example:
 
 ```text
-http://127.0.0.1:4000
+docs/index.html
 ```
 
 ### Generated output
@@ -54,10 +53,4 @@ The local test build writes the rendered site into the `docs` directory.
 
 This is intended for local verification of the generated output. Source files such as the repository Dockerfile and this README are excluded from the Jekyll output.
 
-### Stop the test build
-
-If you started the container without `--rm`, stop and remove it with:
-
-```bash
-docker rm -f limelight-jekyll-test
-```
+The container is intended to terminate after the build finishes, so no long-running preview server is started.
