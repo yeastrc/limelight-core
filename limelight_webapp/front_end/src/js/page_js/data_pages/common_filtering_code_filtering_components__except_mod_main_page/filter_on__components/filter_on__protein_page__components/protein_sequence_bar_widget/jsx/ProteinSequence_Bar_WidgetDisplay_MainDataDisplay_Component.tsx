@@ -1,12 +1,10 @@
 /**
  * ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component.tsx
- * 
+ *
  * Protein Sequence Widget Display
- * 
+ *
  * Goes with JS code:  proteinExperimentPage_SingleProtein_ProteinSequenceWidget_BuildDisplayObject.js
  */
-
-
 
 
 import React from 'react'
@@ -76,15 +74,22 @@ import { Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component } f
 import { ProteinSequenceWidgetDisplay_Component_Data } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_display_widget/js/proteinSequenceWidgetDisplay_Component_Data";
 
 
-
 const _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_dark
 const _STANDARD_COLOR__NOT_PASS_FILTERS_FILL = "grey"
+
+
+const _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__DARK__RGB = _hexColorToRgbColor( _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL )
+
+const _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__LIGHT__RGB = _hexColorToRgbColor( limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_medium )
+
 
 const _STANDARD_COLOR__NO_COVERAGE_EVER_FILL = "#CCCCCC"  //  Light Grey - Protein Fill when NO Coverage filter or no filter. Modification when NOT pass filters.
 
 const _STANDARD_COLOR__SELECTED__FOR_PEPTIDE_BORDER_STROKE_AND_PROTEIN_POSITION_SELECTION_SPOTS = "#FF00FF"  // Fuchsia (very bright)
 
 const _STANDARD_COLOR__TRYPSIN_CUT_POINTS = "#FF0000"  // Red
+
+const _TRYPSIN_CUT_POINTS__OPACITY = 0.6  //  Opacity opacity of Trypsin Cut Point Lines
 
 const _STANDARD_COLOR__PSM_COUNTS_MODIFICATION_MASSES_THAT_PASS_ALL_FILTERS = "red"
 
@@ -145,8 +150,7 @@ const _WIDTH_PER_PROTEIN_POSITION__AT_100_PERCENT_SCALE = 2  //  Keep divisible 
 const _PROTEIN_COVERAGE_BLOCK__ADDITIONAL_WIDTH = 0.2  //  Add to the width to each Protein Coverage block so that it for sure overlaps with block to right and never leaves a white space
 
 
-
-const _compute_Width_Per_ProteinPosition = function ( proteinSequence_Bar_Widget_StateObject : ProteinSequence_Bar_Widget_StateObject ) {
+const _compute_Width_Per_ProteinPosition = function ( proteinSequence_Bar_Widget_StateObject: ProteinSequence_Bar_Widget_StateObject ) {
 
     const horizontalScale_Fraction = proteinSequence_Bar_Widget_StateObject.get_selected_HorizontalScale_Percentage_Value() / 100  // Convert percentage to fraction
 
@@ -181,7 +185,6 @@ const _LINE_HEIGHT_MODIFICATION_LINES = 10
 const _CIRCLE_RADIUS_MODIFICATION_LINES = 2
 
 
-
 /**
  * Offset everything from left edge to allow space for circles on Modifications.  If Scale Circle size for modifications then Scale this
  */
@@ -202,45 +205,45 @@ const _HEIGHT_OF_SECTION__MODIFICATIONS = 18
 const _scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount__NOT_SET: number = undefined
 
 /**
- * 
+ *
  */
 export interface ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_Props_RootPassThrough {
 
-    proteinSequence_Bar_Widget_StateObject : ProteinSequence_Bar_Widget_StateObject
+    proteinSequence_Bar_Widget_StateObject: ProteinSequence_Bar_Widget_StateObject
 
-    proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject
+    proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
 
-    modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;  // Used for filtering modification masses
+    modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject;  // Used for filtering modification masses
 
-    limelight_AnyFilter__HasFilterValue : Limelight_AnyFilter__HasFilterValue
+    limelight_AnyFilter__HasFilterValue: Limelight_AnyFilter__HasFilterValue
 
-    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 
-    proteinSequenceWidgetDisplay_Component_Data : ProteinSequenceWidgetDisplay_Component_Data  // Use for sequence Coverage Percentage display
+    proteinSequenceWidgetDisplay_Component_Data: ProteinSequenceWidgetDisplay_Component_Data  // Use for sequence Coverage Percentage display
 
     /**
      * Use change of object to trigger computation of new data to display
      */
-    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
+    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
 
-    projectSearchIds : Array<number>;
-    proteinSequenceVersionId : number;
-    proteinNames : string;
-    proteinDescriptions : string
-    proteinSequenceString : string
+    projectSearchIds: Array<number>;
+    proteinSequenceVersionId: number;
+    proteinNames: string;
+    proteinDescriptions: string
+    proteinSequenceString: string
 
     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 
     commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
 
-    dataPageStateManager : DataPageStateManager
-    dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
-    searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
+    dataPageStateManager: DataPageStateManager
+    dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: DataPageStateManager;
+    searchDetailsBlockDataMgmtProcessing: SearchDetailsBlockDataMgmtProcessing;
 
-    searchNamesMap_KeyProjectSearchId : SearchNames_AsMap;
-    searchDataLookupParamsRoot : SearchDataLookupParameters_Root;
+    searchNamesMap_KeyProjectSearchId: SearchNames_AsMap;
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root;
 
-    updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback : () => void;
+    updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback: () => void;
 }
 
 
@@ -258,20 +261,20 @@ interface ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_State {
 }
 
 /**
- * 
+ *
  */
-export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends React.Component< ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_Props, ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_State > {
+export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends React.Component<ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_Props, ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_State> {
 
-    private _widthScale_SelectionChanged_BindThis = this._widthScale_SelectionChanged.bind(this)
+    private _widthScale_SelectionChanged_BindThis = this._widthScale_SelectionChanged.bind( this )
 
-    private _scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox__SelectionChanged_BindThis = this._scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox__SelectionChanged.bind(this)
-    private _scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount__SelectionChanged_BindThis = this._scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount__SelectionChanged.bind(this)
+    private _scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox__SelectionChanged_BindThis = this._scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox__SelectionChanged.bind( this )
+    private _scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount__SelectionChanged_BindThis = this._scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount__SelectionChanged.bind( this )
 
-    private _show_TrypsinCutPoints_SelectionChanged_BindThis = this._show_TrypsinCutPoints_SelectionChanged.bind(this)
+    private _show_TrypsinCutPoints_SelectionChanged_BindThis = this._show_TrypsinCutPoints_SelectionChanged.bind( this )
 
-    private _download_Visualization_SVG_BindThis = this._download_Visualization_SVG.bind(this)
+    private _download_Visualization_SVG_BindThis = this._download_Visualization_SVG.bind( this )
 
-    private readonly _visualization_SVG_Ref :  React.RefObject<SVGSVGElement>
+    private readonly _visualization_SVG_Ref: React.RefObject<SVGSVGElement>
 
     private _widthScaleSelection_InitialValue: number
 
@@ -283,35 +286,45 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
     private _mainData_Computed_For_ComponentsInThisFile_Root_Result: INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root
 
     /**
-     * 
-     */    
-    constructor(props : ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_Props) {  try {
-        super(props);
+     *
+     */
+    constructor( props: ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_Props ) {
+        try {
+            super( props );
 
-        this._visualization_SVG_Ref = React.createRef();
+            this._visualization_SVG_Ref = React.createRef();
 
-        this._widthScaleSelection_InitialValue = props.proteinSequence_Bar_Widget_StateObject.get_selected_HorizontalScale_Percentage_Value()
+            this._widthScaleSelection_InitialValue = props.proteinSequence_Bar_Widget_StateObject.get_selected_HorizontalScale_Percentage_Value()
 
-        {
-            const trypsin_CutPoints_For_ProteinSequence_Array = trypsin_CutPointsForSequence_Compute( this.props.proteinSequenceString )
-            if ( trypsin_CutPoints_For_ProteinSequence_Array ) {
-                this._trypsin_CutPoints_For_ProteinSequence_Set = new Set( trypsin_CutPoints_For_ProteinSequence_Array )
+            {
+                const trypsin_CutPoints_For_ProteinSequence_Array = trypsin_CutPointsForSequence_Compute( this.props.proteinSequenceString )
+                if ( trypsin_CutPoints_For_ProteinSequence_Array ) {
+                    this._trypsin_CutPoints_For_ProteinSequence_Set = new Set( trypsin_CutPoints_For_ProteinSequence_Array )
+                }
             }
+
+            this.state = {};
+
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
         }
-
-        this.state = {  };
-
-    } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
+    }
 
 
     /**
      * After render()
      */
-    componentDidMount() { try {
+    componentDidMount() {
+        try {
 
-        this._compute_DerivedDisplay()
+            this._compute_DerivedDisplay()
 
-    } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
+        }
+    }
 
     /**
      * Clean Up
@@ -323,18 +336,23 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate( nextProps: Readonly<ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_Props>, nextState: Readonly<ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_State>, nextContext: any ): boolean {  try {
+    shouldComponentUpdate( nextProps: Readonly<ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_Props>, nextState: Readonly<ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_State>, nextContext: any ): boolean {
+        try {
 
-        if ( nextProps.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds !== this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
-            || nextProps.projectSearchIds !== this.props.projectSearchIds
-        ) {
+            if ( nextProps.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds !== this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+                || nextProps.projectSearchIds !== this.props.projectSearchIds
+            ) {
 
-            return true
+                return true
+            }
+
+            return false
+
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
         }
-
-        return false
-
-    } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
+    }
 
     /**
      * After render()
@@ -343,16 +361,21 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
      * @param prevState
      * @param snapshot
      */
-    componentDidUpdate( prevProps: Readonly<ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_Props>, prevState: Readonly<ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_State>, snapshot?: any ) {  try {
+    componentDidUpdate( prevProps: Readonly<ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_Props>, prevState: Readonly<ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component_State>, snapshot?: any ) {
+        try {
 
-        if ( prevProps.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds !== this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
-            || prevProps.projectSearchIds !== this.props.projectSearchIds
-        ) {
+            if ( prevProps.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds !== this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
+                || prevProps.projectSearchIds !== this.props.projectSearchIds
+            ) {
 
-            this._compute_DerivedDisplay()
+                this._compute_DerivedDisplay()
+            }
+
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
         }
-
-    } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
+    }
 
     /**
      *
@@ -361,7 +384,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
     private _compute_DerivedDisplay() {
 
         const compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root_Result =
-            _compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root({
+            _compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root( {
 
                 anyFilter__HasFilterValue: this.props.limelight_AnyFilter__HasFilterValue.is_AnyFilter__HasFilterValue(),
 
@@ -381,7 +404,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds: this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                 dataPageStateManager: this.props.dataPageStateManager,
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-            })
+            } )
 
         if ( compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root_Result.data ) {
 
@@ -391,407 +414,440 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
             return // EARLY RETURN
         }
 
-        compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root_Result.promise.catch(reason => {})
-        compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root_Result.promise.then(value => { try {
+        compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root_Result.promise.catch( reason => {
+        } )
+        compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root_Result.promise.then( value => {
+            try {
 
-            this._mainData_Computed_For_ComponentsInThisFile_Root_Result = compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root_Result.data
-            this.forceUpdate()  //  React FORCE rerender
+                this._mainData_Computed_For_ComponentsInThisFile_Root_Result = compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root_Result.data
+                this.forceUpdate()  //  React FORCE rerender
 
-        } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } })
+            } catch ( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                throw e
+            }
+        } )
     }
 
-    private _widthScale_SelectionChanged( event: React.SyntheticEvent | Event, value: unknown ) { try {
+    private _widthScale_SelectionChanged( event: React.SyntheticEvent | Event, value: unknown ) {
+        try {
 
-        // console.warn( "onChangeCommitted called. event: ", event )
-        // console.warn( "onChangeCommitted called. value: ", value )
+            // console.warn( "onChangeCommitted called. event: ", event )
+            // console.warn( "onChangeCommitted called. value: ", value )
 
-        if ( ! limelight__variable_is_type_number_Check( value ) ) {
+            if ( ! limelight__variable_is_type_number_Check( value ) ) {
 
-            const msg = "onChangeCommitted called. value is NOT a number.  value: " + value
-            console.warn( msg )
-            throw Error( msg )
+                const msg = "onChangeCommitted called. value is NOT a number.  value: " + value
+                console.warn( msg )
+                throw Error( msg )
+            }
+
+            // console.warn( "onChangeCommitted called. value IS a number.  value: " + value )
+
+            this.props.proteinSequence_Bar_Widget_StateObject.set_selected_HorizontalScale_Percentage_Value( { selected_HorizontalScale_Percentage_Value: value } )
+
+            this.forceUpdate()
+
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
         }
-
-        // console.warn( "onChangeCommitted called. value IS a number.  value: " + value )
-
-        this.props.proteinSequence_Bar_Widget_StateObject.set_selected_HorizontalScale_Percentage_Value({ selected_HorizontalScale_Percentage_Value: value })
-
-        this.forceUpdate()
-
-    } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
+    }
 
     /**
      *
      * @param event
      */
-    private _scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox__SelectionChanged( event: React.ChangeEvent<HTMLInputElement> ) { try {
+    private _scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox__SelectionChanged( event: React.ChangeEvent<HTMLInputElement> ) {
+        try {
 
-        this.props.proteinSequence_Bar_Widget_StateObject.set_shade_by_PSM_Count( event.target.checked )
+            this.props.proteinSequence_Bar_Widget_StateObject.set_shade_by_PSM_Count( event.target.checked )
 
-        this._compute_DerivedDisplay()
+            this._compute_DerivedDisplay()
 
-    } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
+        }
+    }
 
     /**
      *
      * @param event
      */
-    private _scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount__SelectionChanged( event: React.ChangeEvent<HTMLInputElement> ) { try {
+    private _scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount__SelectionChanged( event: React.ChangeEvent<HTMLInputElement> ) {
+        try {
 
-        if (  event.target.value === "" ) {
+            if ( event.target.value === "" ) {
 
-            this.props.proteinSequence_Bar_Widget_StateObject.set_shade_by_PSM_Count__Max_PSM_Count( ProteinSequence_Bar_Widget_StateObject___Shade_by_PSM_Count__Max_PSM_Count_Value_Constants.shade_by_PSM_Count__Max_PSM_Count_Value__NOT_SET )
-
-        } else {
-
-            const newValue_Number = Number.parseInt( event.target.value )
-
-            if ( Number.isNaN( newValue_Number ) ) {
                 this.props.proteinSequence_Bar_Widget_StateObject.set_shade_by_PSM_Count__Max_PSM_Count( ProteinSequence_Bar_Widget_StateObject___Shade_by_PSM_Count__Max_PSM_Count_Value_Constants.shade_by_PSM_Count__Max_PSM_Count_Value__NOT_SET )
+
             } else {
-                this.props.proteinSequence_Bar_Widget_StateObject.set_shade_by_PSM_Count__Max_PSM_Count( newValue_Number )
+
+                const newValue_Number = Number.parseInt( event.target.value )
+
+                if ( Number.isNaN( newValue_Number ) ) {
+                    this.props.proteinSequence_Bar_Widget_StateObject.set_shade_by_PSM_Count__Max_PSM_Count( ProteinSequence_Bar_Widget_StateObject___Shade_by_PSM_Count__Max_PSM_Count_Value_Constants.shade_by_PSM_Count__Max_PSM_Count_Value__NOT_SET )
+                } else {
+                    this.props.proteinSequence_Bar_Widget_StateObject.set_shade_by_PSM_Count__Max_PSM_Count( newValue_Number )
+                }
             }
+
+            this._compute_DerivedDisplay()
+
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
         }
-
-        this._compute_DerivedDisplay()
-
-    } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
+    }
 
     /**
      *
      * @param event
      */
-    private _show_TrypsinCutPoints_SelectionChanged( event: React.ChangeEvent<HTMLInputElement> ) { try {
+    private _show_TrypsinCutPoints_SelectionChanged( event: React.ChangeEvent<HTMLInputElement> ) {
+        try {
 
-        this.props.proteinSequence_Bar_Widget_StateObject.set_show_TrypsinCutPoints( event.target.checked )
+            this.props.proteinSequence_Bar_Widget_StateObject.set_show_TrypsinCutPoints( event.target.checked )
 
-        this.forceUpdate()
+            this.forceUpdate()
 
-    } catch ( e ) { reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } ); throw e } }
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
+        }
+    }
 
     /**
      *
      * @param event
      */
-    private _download_Visualization_SVG( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) { try {
+    private _download_Visualization_SVG( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+        try {
 
-        event.stopPropagation()
+            event.stopPropagation()
 
-        if ( limelight__IsTextSelected() ) {
-            //  Text is selected so exit
-            return  // EARLY RETURN
+            if ( limelight__IsTextSelected() ) {
+                //  Text is selected so exit
+                return  // EARLY RETURN
+            }
+
+            if ( ! this._visualization_SVG_Ref.current ) {
+                return // EARLY RETURN
+            }
+
+            const svgContents = this._visualization_SVG_Ref.current.outerHTML
+
+            const filename = 'protein-coverage-visualization.svg'
+
+            StringDownloadUtils.downloadStringAsFile( { stringToDownload: svgContents, filename: filename } );
+
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
         }
-
-        if ( ! this._visualization_SVG_Ref.current ) {
-            return // EARLY RETURN
-        }
-
-        const svgContents = this._visualization_SVG_Ref.current.outerHTML
-
-        const filename = 'protein-coverage-visualization.svg'
-
-        StringDownloadUtils.downloadStringAsFile( { stringToDownload : svgContents, filename: filename } );
-
-    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+    }
 
     /**
-     * 
-     */    
-    render() { try {
+     *
+     */
+    render() {
+        try {
 
-        if ( ! this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds ) {
-            const msg = "No value for this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds";
-            console.warn( msg );
-            throw Error( msg );
-        }
+            if ( ! this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds ) {
+                const msg = "No value for this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds";
+                console.warn( msg );
+                throw Error( msg );
+            }
 
 
-        const anyFilter__HasFilterValue = this.props.limelight_AnyFilter__HasFilterValue.is_AnyFilter__HasFilterValue()
+            const anyFilter__HasFilterValue = this.props.limelight_AnyFilter__HasFilterValue.is_AnyFilter__HasFilterValue()
 
-        let anySearch_Has_OpenModifications = false
+            let anySearch_Has_OpenModifications = false
 
-        {
-            const common_Searches_Flags = this.props.dataPageStateManager.get_DataPage_common_Searches_Flags()
+            {
+                const common_Searches_Flags = this.props.dataPageStateManager.get_DataPage_common_Searches_Flags()
 
-            for ( const projectSearchId of this.props.projectSearchIds ) {
+                for ( const projectSearchId of this.props.projectSearchIds ) {
 
-                const common_Flags_SingleSearch_ForProjectSearchId = common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId )
-                if ( ! common_Flags_SingleSearch_ForProjectSearchId ) {
-                    throw Error( "common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
-                }
+                    const common_Flags_SingleSearch_ForProjectSearchId = common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId )
+                    if ( ! common_Flags_SingleSearch_ForProjectSearchId ) {
+                        throw Error( "common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                    }
 
-                if ( common_Flags_SingleSearch_ForProjectSearchId.anyPsmHas_OpenModifications ) {
-                    anySearch_Has_OpenModifications = true
-                    break
+                    if ( common_Flags_SingleSearch_ForProjectSearchId.anyPsmHas_OpenModifications ) {
+                        anySearch_Has_OpenModifications = true
+                        break
+                    }
                 }
             }
-        }
 
 
-        /////   TOP of each section
+            /////   TOP of each section
 
-        const top_Of_Section__Protein_Position_Selections = _TOP_OF_SECTION__PROTEIN_POSITION_SELECTIONS
+            const top_Of_Section__Protein_Position_Selections = _TOP_OF_SECTION__PROTEIN_POSITION_SELECTIONS
 
-        let protein_Position_Selections_Height = 0  //  zero if NO selections
+            let protein_Position_Selections_Height = 0  //  zero if NO selections
 
-        if ( this.props.proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition() ) {
+            if ( this.props.proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition() ) {
 
-            protein_Position_Selections_Height = top_Of_Section__Protein_Position_Selections + _HEIGHT_OF_SECTION__PROTEIN_POSITION_SELECTIONS
-        }
-
-        const top_Of_Section__Modifications = top_Of_Section__Protein_Position_Selections + protein_Position_Selections_Height
-        const top_Of_Section__Protein_Bar = top_Of_Section__Modifications + _HEIGHT_OF_SECTION__MODIFICATIONS
-        const top_Of_Section__Peptide_Blocks = top_Of_Section__Protein_Bar + _PROTEIN_BAR__HEIGHT + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_FROM_PROTEIN_BAR
-
-        //////////
-
-        //  Modifications
-
-        const modificationLine_Elements_Array: Array<React.JSX.Element> = []
-
-        //  Populate all grey first
-        this._populate__modificationLine_Elements_Array({
-            populate__modifications_Passes_ALL_Filters__hasAny_Modifications__OnlyTrue: false,
-            modificationLine_Elements_Array,
-            anyFilter__HasFilterValue,
-            top_Of_Section__Modifications
-        })
-
-        //  Populate all grey first
-        this._populate__modificationLine_Elements_Array({
-            populate__modifications_Passes_ALL_Filters__hasAny_Modifications__OnlyTrue: true,
-            modificationLine_Elements_Array,
-            anyFilter__HasFilterValue,
-            top_Of_Section__Modifications
-        })
-
-
-        //////////
-
-        //  Display Selections of Protein Positions - Change to be computed internally in this file
-
-        let selected_ProteinPosition_SVG_Elements: Array<React.JSX.Element> = undefined
-
-        if ( this.props.proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition() ) {
-
-            selected_ProteinPosition_SVG_Elements = []
-
-            const selectedProteinSequencePositions_Array = Array.from( this.props.proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions() )
-
-            limelight__Sort_ArrayOfNumbers_SortArrayInPlace( selectedProteinSequencePositions_Array )
-
-            for ( const selectedProteinSequencePosition of selectedProteinSequencePositions_Array ) {
-
-                const width_Per_ProteinPosition = _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject )
-
-                const horizontalCenter = ( ( selectedProteinSequencePosition - 1 ) * width_Per_ProteinPosition ) + ( width_Per_ProteinPosition / 2 ) +
-                    _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
-
-                const horizontal_LeftEdge = horizontalCenter - ( _PROTEIN_POSITION_SELECTION__WIDTH / 2 )
-
-                // const triangle_Path_D =
-                //     "M" + horizontal_LeftEdge + " 0 " +
-                //     " L" + ( horizontal_LeftEdge + _PROTEIN_POSITION_SELECTION__WIDTH ) + " 0 " +
-                //     " L" + horizontalCenter + " " + _PROTEIN_POSITION_SELECTION__HEIGHT +
-                //     " Z"
-
-                const polygonPoints = (
-                    //  Point 1 - Top Left
-                    horizontal_LeftEdge + "," + top_Of_Section__Protein_Position_Selections
-                    + " "
-                    //  Point 2 - Top Right
-                    + ( horizontal_LeftEdge + _PROTEIN_POSITION_SELECTION__WIDTH ) + "," + top_Of_Section__Protein_Position_Selections
-                    + " "
-                    //  Point 3 - Bottom Center
-                    + ( horizontalCenter ) + "," + ( top_Of_Section__Protein_Position_Selections + _PROTEIN_POSITION_SELECTION__HEIGHT )
-                )
-
-                const selected_ProteinPosition_SVG_Element = (
-
-                    <React.Fragment
-                        key={ selectedProteinSequencePosition }
-                    >
-                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                            title={
-                                <div>
-                                    <div>
-                                        Protein Selection at Position: { selectedProteinSequencePosition }
-                                    </div>
-                                    <div style={ { marginTop: 6 } }>
-                                        Click to remove selection
-                                    </div>
-                                </div>
-                            }
-                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                        >
-                            {/* Selected Protein Position Triangle */ }
-
-                            {/*  Another option is <polygon points="100,20 180,180 20,180" fill="blue" stroke="black" stroke-width="3"/>  */}
-
-                            {/*<path d={ triangle_Path_D }*/}
-                            <polygon points={ polygonPoints }
-                                  fill={ _PROTEIN_POSITION_SELECTION__COLOR__FILL }
-                                // stroke="black"
-                                // stroke-width="1"
-
-                                  onClick={ event => {
-                                      try {
-
-                                          this.props.proteinSequenceWidget_StateObject.delete_selectedProteinSequencePosition( { position: selectedProteinSequencePosition } )
-
-                                          this.forceUpdate()
-
-                                          window.setTimeout( () => {
-                                              try {
-
-                                                  this.props.updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback()
-
-                                              } catch ( e ) {
-                                                  reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                  throw e
-                                              }
-                                          }, 10 )
-                                      } catch ( e ) {
-                                          reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                          throw e
-                                      }
-                                  } }
-                            />
-                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-
-                    </React.Fragment>
-                )
-
-                selected_ProteinPosition_SVG_Elements.push( selected_ProteinPosition_SVG_Element )
+                protein_Position_Selections_Height = top_Of_Section__Protein_Position_Selections + _HEIGHT_OF_SECTION__PROTEIN_POSITION_SELECTIONS
             }
-        }
 
-        //  Trypsin Cut Points
+            const top_Of_Section__Modifications = top_Of_Section__Protein_Position_Selections + protein_Position_Selections_Height
+            const top_Of_Section__Protein_Bar = top_Of_Section__Modifications + _HEIGHT_OF_SECTION__MODIFICATIONS
+            const top_Of_Section__Peptide_Blocks = top_Of_Section__Protein_Bar + _PROTEIN_BAR__HEIGHT + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_FROM_PROTEIN_BAR
 
-        const trypsin_CutPoints_For_ProteinSequence_Elements_Array: Array<React.JSX.Element> = []
+            //////////
 
-        if (
-            this.props.proteinSequence_Bar_Widget_StateObject.get_show_TrypsinCutPoints()
-            && this._trypsin_CutPoints_For_ProteinSequence_Set
-            && this._mainData_Computed_For_ComponentsInThisFile_Root_Result ) {
+            //  Modifications
 
-            /**
-             * trypsin_CutPoints_For_ProteinSequence_Set: undefined if proteinSequence is too short, else Set of positions plus '0.5' since between the positions
-             */
-            const trypsin_CutPoints_For_ProteinSequence_Set = this._trypsin_CutPoints_For_ProteinSequence_Set
+            const modificationLine_Elements_Array: Array<React.JSX.Element> = []
 
-            const width_Per_ProteinPosition = _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject )
+            //  Populate all grey first
+            this._populate__modificationLine_Elements_Array( {
+                populate__modifications_Passes_ALL_Filters__hasAny_Modifications__OnlyTrue: false,
+                modificationLine_Elements_Array,
+                anyFilter__HasFilterValue,
+                top_Of_Section__Modifications
+            } )
 
-            const y1 = top_Of_Section__Protein_Bar + _PROTEIN_BAR__HEIGHT + ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH * 2 )   // Just under the Protein Bar
-            const y2 = (
-                top_Of_Section__Peptide_Blocks + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_BETWEEN_PEPTIDE_ROWS +
-                //  First Row
-                ( _PEPTIDE_BLOCKS_BAR_HEIGHT ) +
-                //  All rows after fist row
-                ( ( _PEPTIDE_BLOCKS_BAR_HEIGHT + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_BETWEEN_PEPTIDE_ROWS ) * ( this._mainData_Computed_For_ComponentsInThisFile_Root_Result.peptidePositions_SingleRow_Array.length - 1 ) ) +
-                //
-                ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH * 2 )
-            )
+            //  Populate all grey first
+            this._populate__modificationLine_Elements_Array( {
+                populate__modifications_Passes_ALL_Filters__hasAny_Modifications__OnlyTrue: true,
+                modificationLine_Elements_Array,
+                anyFilter__HasFilterValue,
+                top_Of_Section__Modifications
+            } )
 
-            const proteinLength = this.props.proteinSequenceString.length
 
-            for ( let proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition++ ) {
+            //////////
 
-                const proteinPosition_CenterAfter = proteinPosition + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions
+            //  Display Selections of Protein Positions - Change to be computed internally in this file
 
-                if ( trypsin_CutPoints_For_ProteinSequence_Set.has( proteinPosition_CenterAfter ) ) {
+            let selected_ProteinPosition_SVG_Elements: Array<React.JSX.Element> = undefined
 
-                    //  Have trypsin cut point so render
+            if ( this.props.proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition() ) {
 
-                    const x =
-                        ( ( proteinPosition ) * width_Per_ProteinPosition ) +
-                        _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH +
-                        _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
+                selected_ProteinPosition_SVG_Elements = []
 
-                    const element = (
+                const selectedProteinSequencePositions_Array = Array.from( this.props.proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions() )
+
+                limelight__Sort_ArrayOfNumbers_SortArrayInPlace( selectedProteinSequencePositions_Array )
+
+                for ( const selectedProteinSequencePosition of selectedProteinSequencePositions_Array ) {
+
+                    const width_Per_ProteinPosition = _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject )
+
+                    const horizontalCenter = ( ( selectedProteinSequencePosition - 1 ) * width_Per_ProteinPosition ) + ( width_Per_ProteinPosition / 2 ) +
+                        _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
+
+                    const horizontal_LeftEdge = horizontalCenter - ( _PROTEIN_POSITION_SELECTION__WIDTH / 2 )
+
+                    // const triangle_Path_D =
+                    //     "M" + horizontal_LeftEdge + " 0 " +
+                    //     " L" + ( horizontal_LeftEdge + _PROTEIN_POSITION_SELECTION__WIDTH ) + " 0 " +
+                    //     " L" + horizontalCenter + " " + _PROTEIN_POSITION_SELECTION__HEIGHT +
+                    //     " Z"
+
+                    const polygonPoints = (
+                        //  Point 1 - Top Left
+                        horizontal_LeftEdge + "," + top_Of_Section__Protein_Position_Selections
+                        + " "
+                        //  Point 2 - Top Right
+                        + ( horizontal_LeftEdge + _PROTEIN_POSITION_SELECTION__WIDTH ) + "," + top_Of_Section__Protein_Position_Selections
+                        + " "
+                        //  Point 3 - Bottom Center
+                        + ( horizontalCenter ) + "," + ( top_Of_Section__Protein_Position_Selections + _PROTEIN_POSITION_SELECTION__HEIGHT )
+                    )
+
+                    const selected_ProteinPosition_SVG_Element = (
 
                         <React.Fragment
-                            key={ proteinPosition }
+                            key={ selectedProteinSequencePosition }
                         >
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                 title={
                                     <div>
-                                        Trypsin Cut point at { proteinPosition }
+                                        <div>
+                                            Protein Selection at Position: { selectedProteinSequencePosition }
+                                        </div>
+                                        <div style={ { marginTop: 6 } }>
+                                            Click to remove selection
+                                        </div>
                                     </div>
                                 }
                                 { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                <line
-                                    x1={ x }
-                                    y1={ y1 }
-                                    x2={ x }
-                                    y2={ y2 }
-                                    stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS }
-                                    strokeWidth={ 1 }
+                                {/* Selected Protein Position Triangle */ }
+
+                                {/*  Another option is <polygon points="100,20 180,180 20,180" fill="blue" stroke="black" stroke-width="3"/>  */ }
+
+                                {/*<path d={ triangle_Path_D }*/ }
+                                <polygon points={ polygonPoints }
+                                         fill={ _PROTEIN_POSITION_SELECTION__COLOR__FILL }
+                                    // stroke="black"
+                                    // stroke-width="1"
+
+                                         onClick={ event => {
+                                             try {
+
+                                                 this.props.proteinSequenceWidget_StateObject.delete_selectedProteinSequencePosition( { position: selectedProteinSequencePosition } )
+
+                                                 this.forceUpdate()
+
+                                                 window.setTimeout( () => {
+                                                     try {
+
+                                                         this.props.updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback()
+
+                                                     } catch ( e ) {
+                                                         reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                         throw e
+                                                     }
+                                                 }, 10 )
+                                             } catch ( e ) {
+                                                 reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                 throw e
+                                             }
+                                         } }
                                 />
                             </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
                         </React.Fragment>
                     )
 
-                    trypsin_CutPoints_For_ProteinSequence_Elements_Array.push( element )
+                    selected_ProteinPosition_SVG_Elements.push( selected_ProteinPosition_SVG_Element )
                 }
             }
-        }
+
+            //  Trypsin Cut Points
+
+            const trypsin_CutPoints_For_ProteinSequence_Elements_Array: Array<React.JSX.Element> = []
+
+            if (
+                this.props.proteinSequence_Bar_Widget_StateObject.get_show_TrypsinCutPoints()
+                && this._trypsin_CutPoints_For_ProteinSequence_Set
+                && this._mainData_Computed_For_ComponentsInThisFile_Root_Result ) {
+
+                /**
+                 * trypsin_CutPoints_For_ProteinSequence_Set: undefined if proteinSequence is too short, else Set of positions plus '0.5' since between the positions
+                 */
+                const trypsin_CutPoints_For_ProteinSequence_Set = this._trypsin_CutPoints_For_ProteinSequence_Set
+
+                const width_Per_ProteinPosition = _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject )
+
+                const y1 = top_Of_Section__Protein_Bar + _PROTEIN_BAR__HEIGHT + ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH * 2 )   // Just under the Protein Bar
+                const y2 = (
+                    top_Of_Section__Peptide_Blocks + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_BETWEEN_PEPTIDE_ROWS +
+                    //  First Row
+                    ( _PEPTIDE_BLOCKS_BAR_HEIGHT ) +
+                    //  All rows after fist row
+                    ( ( _PEPTIDE_BLOCKS_BAR_HEIGHT + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_BETWEEN_PEPTIDE_ROWS ) * ( this._mainData_Computed_For_ComponentsInThisFile_Root_Result.peptidePositions_SingleRow_Array.length - 1 ) ) +
+                    //
+                    ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH * 2 )
+                )
+
+                const proteinLength = this.props.proteinSequenceString.length
+
+                for ( let proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition++ ) {
+
+                    const proteinPosition_CenterAfter = proteinPosition + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions
+
+                    if ( trypsin_CutPoints_For_ProteinSequence_Set.has( proteinPosition_CenterAfter ) ) {
+
+                        //  Have trypsin cut point so render
+
+                        const x =
+                            ( ( proteinPosition ) * width_Per_ProteinPosition ) +
+                            _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH +
+                            _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
+
+                        const element = (
+
+                            <React.Fragment
+                                key={ proteinPosition }
+                            >
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <div>
+                                            Trypsin Cut point at { proteinPosition }
+                                        </div>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <line
+                                        x1={ x }
+                                        y1={ y1 }
+                                        x2={ x }
+                                        y2={ y2 }
+                                        stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS }
+                                        strokeWidth={ 1 }
+                                        opacity={ _TRYPSIN_CUT_POINTS__OPACITY }
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            </React.Fragment>
+                        )
+
+                        trypsin_CutPoints_For_ProteinSequence_Elements_Array.push( element )
+                    }
+                }
+            }
 
 
-        let display_SequenceCoveragePercentage = this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_AllPeptides
-        let display_SequenceCoverageCount = this.props.proteinSequenceWidgetDisplay_Component_Data.proteinPosition_Covered_AllPeptides_Count
+            let display_SequenceCoveragePercentage = this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_AllPeptides
+            let display_SequenceCoverageCount = this.props.proteinSequenceWidgetDisplay_Component_Data.proteinPosition_Covered_AllPeptides_Count
 
-        let display_SequenceCoveragePercentage_CSS_Class = " covered-and-not-filtered-not-a-position "
+            let display_SequenceCoveragePercentage_CSS_Class = " covered-and-not-filtered-not-a-position "
 
-        if ( this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_FilteredPeptides !== undefined ) {
+            if ( this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_FilteredPeptides !== undefined ) {
 
-            display_SequenceCoveragePercentage = this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_FilteredPeptides
+                display_SequenceCoveragePercentage = this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_FilteredPeptides
 
-            display_SequenceCoverageCount = this.props.proteinSequenceWidgetDisplay_Component_Data.proteinPosition_Covered_UserSelectedPeptides_Count
+                display_SequenceCoverageCount = this.props.proteinSequenceWidgetDisplay_Component_Data.proteinPosition_Covered_UserSelectedPeptides_Count
 
-            display_SequenceCoveragePercentage_CSS_Class = " covered-and-filtered-not-a-position "
-        }
+                display_SequenceCoveragePercentage_CSS_Class = " covered-and-filtered-not-a-position "
+            }
 
-        if ( display_SequenceCoveragePercentage !== undefined ) {
-            display_SequenceCoveragePercentage = Math.round( display_SequenceCoveragePercentage )
-        }
+            if ( display_SequenceCoveragePercentage !== undefined ) {
+                display_SequenceCoveragePercentage = Math.round( display_SequenceCoveragePercentage )
+            }
 
 
-        const sequenceCoveragePercentage_TooltipContents = (
+            const sequenceCoveragePercentage_TooltipContents = (
 
-            <div>
                 <div>
-                    Protein sequence coverage is the fraction of the protein sequence covered by observed peptides. If filters are applied, only the filtered peptides are used.
+                    <div>
+                        Protein sequence coverage is the fraction of the protein sequence covered by observed peptides. If filters are applied, only the filtered peptides are used.
+                    </div>
                 </div>
-            </div>
-        )
+            )
 
 
-        // let reportedPeptideIds_Count = 0
-        //
-        // {
-        //     const reportedPeptideIds_Set: Set<number> = new Set()
-        //
-        //     for ( const projectSearchId of this.props.projectSearchIds ) {
-        //
-        //         const reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId = this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId )
-        //         if ( ! reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId ) {
-        //             continue  // EARLY CONTINUE
-        //         }
-        //
-        //         for ( const reportedPeptideId of reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId.get_reportedPeptideIds() ) {
-        //             reportedPeptideIds_Set.add( reportedPeptideId )
-        //         }
-        //     }
-        //
-        //     reportedPeptideIds_Count = reportedPeptideIds_Set.size
-        // }
+            // let reportedPeptideIds_Count = 0
+            //
+            // {
+            //     const reportedPeptideIds_Set: Set<number> = new Set()
+            //
+            //     for ( const projectSearchId of this.props.projectSearchIds ) {
+            //
+            //         const reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId = this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId )
+            //         if ( ! reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId ) {
+            //             continue  // EARLY CONTINUE
+            //         }
+            //
+            //         for ( const reportedPeptideId of reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId.get_reportedPeptideIds() ) {
+            //             reportedPeptideIds_Set.add( reportedPeptideId )
+            //         }
+            //     }
+            //
+            //     reportedPeptideIds_Count = reportedPeptideIds_Set.size
+            // }
 
-        return (
+            return (
 
-            <div style={ { marginBottom: 20 } }>
-                {/*
+                <div style={ { marginBottom: 20 } }>
+                    {/*
 
                 Debugging Info
 
@@ -806,12 +862,12 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                 <div>
                     reportedPeptideIds_Count: { reportedPeptideIds_Count }
                 </div>
-*/}
+*/ }
 
-                { this._mainData_Computed_For_ComponentsInThisFile_Root_Result ? (
+                    { this._mainData_Computed_For_ComponentsInThisFile_Root_Result ? (
 
-                    <>
-                        {/*
+                        <>
+                            {/*
 
                             Debugging Info
 
@@ -838,181 +894,181 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                         </div>
                         */ }
 
-                        { this.props.proteinSequenceWidgetDisplay_Component_Data ? (
+                            { this.props.proteinSequenceWidgetDisplay_Component_Data ? (
 
-                            <div>
-                                <span style={ { fontSize: 18 } }>
-                                    <span style={ { fontWeight: "bold" } }>Sequence Coverage: </span>
+                                <div>
+                                    <span style={ { fontSize: 18 } }>
+                                        <span style={ { fontWeight: "bold" } }>Sequence Coverage: </span>
 
-                                    { this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_AllPeptides !== undefined ? (
-                                        <>
-                                            <span className="  protein-sequence-formatted-sequence-data-block  ">
-                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                    title={ sequenceCoveragePercentage_TooltipContents }
-                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                                >
-                                                    <span>
-                                                        <span
-                                                            className={ display_SequenceCoveragePercentage_CSS_Class }
-                                                        >
-                                                            <span>{ display_SequenceCoveragePercentage }</span>
-                                                            <span>%</span>
+                                        { this.props.proteinSequenceWidgetDisplay_Component_Data.sequenceCoverage_Percentage_AllPeptides !== undefined ? (
+                                            <>
+                                                <span className="  protein-sequence-formatted-sequence-data-block  ">
+                                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                        title={ sequenceCoveragePercentage_TooltipContents }
+                                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                    >
+                                                        <span>
+                                                            <span
+                                                                className={ display_SequenceCoveragePercentage_CSS_Class }
+                                                            >
+                                                                <span>{ display_SequenceCoveragePercentage }</span>
+                                                                <span>%</span>
+                                                            </span>
                                                         </span>
-                                                    </span>
-                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
-                                                <span> </span>
-                                                <span>(</span>
-                                                <span>{ display_SequenceCoverageCount.toString() }</span>
-                                                <span> / </span>
-                                                <span>{ this.props.proteinSequenceString.length.toString() }</span>
-                                                <span>)</span>
+                                                    <span> </span>
+                                                    <span>(</span>
+                                                    <span>{ display_SequenceCoverageCount.toString() }</span>
+                                                    <span> / </span>
+                                                    <span>{ this.props.proteinSequenceString.length.toString() }</span>
+                                                    <span>)</span>
 
-                                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                                    title={ sequenceCoveragePercentage_TooltipContents }
-                                                />
-                                            </span>
-                                        </>
-                                    ) : null }
-                                </span>
-                            </div>
-
-                        ) : null }
-
-                        <div style={ { marginLeft: 40 } }>
-
-                            {/*   Start Block for 'Width Scale Selection' down to the <svg> */ }
-
-                            <div style={ { display: "flex" } }>
-
-                                <div
-                                    style={ { alignSelf: "anchor-center", paddingRight: 15 } }
-                                >
-                                    Protein Bar Width:
+                                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                        title={ sequenceCoveragePercentage_TooltipContents }
+                                                    />
+                                                </span>
+                                            </>
+                                        ) : null }
+                                    </span>
                                 </div>
 
-                                <Box sx={ { width: 100 } }>
-                                    <Slider
-                                        track={ false }
-                                        size="small"
-                                        aria-label="Horizontal Scale"
-                                        defaultValue={ this._widthScaleSelection_InitialValue }
-                                        //  Update min/max for limits in 'marks'
-                                        min={ ProteinSequence_Bar_Widget_StateObject__HorizontalScale_Percentage_Value_Constants._WIDTH_SCALE_SELECTION_MIN }
-                                        max={ ProteinSequence_Bar_Widget_StateObject__HorizontalScale_Percentage_Value_Constants._WIDTH_SCALE_SELECTION_MAX }
-                                        step={ ProteinSequence_Bar_Widget_StateObject__HorizontalScale_Percentage_Value_Constants._WIDTH_SCALE_SELECTION_STEP }
+                            ) : null }
 
-                                        getAriaValueText={ ( value: number ) => {
-                                            return value + "%"
-                                        } }
+                            <div style={ { marginLeft: 40 } }>
 
-                                        valueLabelDisplay="auto" //  Shows value as user drags.
-                                        valueLabelFormat={ ( value: number, index: number ) => {
-                                            return value + "%"
-                                        } }
+                                {/*   Start Block for 'Width Scale Selection' down to the <svg> */ }
 
-                                        marks={ true }  // show dots at each discrete point
+                                <div style={ { display: "flex" } }>
 
-                                        onChangeCommitted={ this._widthScale_SelectionChanged_BindThis }
-
-                                        //  Following ONLY puts the dots where the marks are so may imply to the user that only those values are selectable instead of the actual every 50 as set by the 'step' above
-                                        // marks={[
-                                        //     // {
-                                        //     //     value: 50,
-                                        //     //     label: '50%',
-                                        //     // },
-                                        //     {
-                                        //         value: 100,
-                                        //         label: '100%',
-                                        //     },
-                                        //     // {
-                                        //     //     value: 150,
-                                        //     //     label: '150%',
-                                        //     // },
-                                        //     {
-                                        //         value: 200,
-                                        //         label: '200%',
-                                        //     },
-                                        //     // {
-                                        //     //     value: 250,
-                                        //     //     label: '250%',
-                                        //     // },
-                                        //     {
-                                        //         value: 300,
-                                        //         label: '300%',
-                                        //     },
-                                        //     // {
-                                        //     //     value: 350,
-                                        //     //     label: '350%',
-                                        //     // },
-                                        //     {
-                                        //         value: 400,
-                                        //         label: '400%',
-                                        //     },
-                                        // ]}
-                                    />
-                                </Box>
-
-                                <div
-                                    style={ { alignSelf: "anchor-center", paddingLeft: 15 } }
-                                >
-
-                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                        title={
-                                            <div>
-                                                Current selection
-                                            </div>
-                                        }
-                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    <div
+                                        style={ { alignSelf: "anchor-center", paddingRight: 15 } }
                                     >
-                                        <span>
-                                            {/*  Show current value  */ }
-                                            { this.props.proteinSequence_Bar_Widget_StateObject.get_selected_HorizontalScale_Percentage_Value() }%
-                                        </span>
-                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        Protein Bar Width:
+                                    </div>
+
+                                    <Box sx={ { width: 100 } }>
+                                        <Slider
+                                            track={ false }
+                                            size="small"
+                                            aria-label="Horizontal Scale"
+                                            defaultValue={ this._widthScaleSelection_InitialValue }
+                                            //  Update min/max for limits in 'marks'
+                                            min={ ProteinSequence_Bar_Widget_StateObject__HorizontalScale_Percentage_Value_Constants._WIDTH_SCALE_SELECTION_MIN }
+                                            max={ ProteinSequence_Bar_Widget_StateObject__HorizontalScale_Percentage_Value_Constants._WIDTH_SCALE_SELECTION_MAX }
+                                            step={ ProteinSequence_Bar_Widget_StateObject__HorizontalScale_Percentage_Value_Constants._WIDTH_SCALE_SELECTION_STEP }
+
+                                            getAriaValueText={ ( value: number ) => {
+                                                return value + "%"
+                                            } }
+
+                                            valueLabelDisplay="auto" //  Shows value as user drags.
+                                            valueLabelFormat={ ( value: number, index: number ) => {
+                                                return value + "%"
+                                            } }
+
+                                            marks={ true }  // show dots at each discrete point
+
+                                            onChangeCommitted={ this._widthScale_SelectionChanged_BindThis }
+
+                                            //  Following ONLY puts the dots where the marks are so may imply to the user that only those values are selectable instead of the actual every 50 as set by the 'step' above
+                                            // marks={[
+                                            //     // {
+                                            //     //     value: 50,
+                                            //     //     label: '50%',
+                                            //     // },
+                                            //     {
+                                            //         value: 100,
+                                            //         label: '100%',
+                                            //     },
+                                            //     // {
+                                            //     //     value: 150,
+                                            //     //     label: '150%',
+                                            //     // },
+                                            //     {
+                                            //         value: 200,
+                                            //         label: '200%',
+                                            //     },
+                                            //     // {
+                                            //     //     value: 250,
+                                            //     //     label: '250%',
+                                            //     // },
+                                            //     {
+                                            //         value: 300,
+                                            //         label: '300%',
+                                            //     },
+                                            //     // {
+                                            //     //     value: 350,
+                                            //     //     label: '350%',
+                                            //     // },
+                                            //     {
+                                            //         value: 400,
+                                            //         label: '400%',
+                                            //     },
+                                            // ]}
+                                        />
+                                    </Box>
+
+                                    <div
+                                        style={ { alignSelf: "anchor-center", paddingLeft: 15 } }
+                                    >
+
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <div>
+                                                    Current selection
+                                                </div>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <span>
+                                                {/*  Show current value  */ }
+                                                { this.props.proteinSequence_Bar_Widget_StateObject.get_selected_HorizontalScale_Percentage_Value() }%
+                                            </span>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div>
-                                <label>
-                                    <span>Shade by PSM Count: </span>
+                                <div>
+                                    <label>
+                                        <span>Shade by PSM Count: </span>
+                                        <input
+                                            type="checkbox"
+                                            checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_shade_by_PSM_Count() }
+                                            onChange={ this._scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox__SelectionChanged_BindThis }
+                                        />
+                                    </label>
+                                    <span style={ { width: 10 } }>&nbsp;</span>
+                                    <span>Max PSM Count for shading: </span>
                                     <input
-                                        type="checkbox"
-                                        checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_shade_by_PSM_Count() }
-                                        onChange={ this._scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox__SelectionChanged_BindThis }
+                                        style={ { width: 50 } }
+                                        value={
+                                            (
+                                                this.props.proteinSequence_Bar_Widget_StateObject.get_shade_by_PSM_Count__Max_PSM_Count()
+                                                !== ProteinSequence_Bar_Widget_StateObject___Shade_by_PSM_Count__Max_PSM_Count_Value_Constants.shade_by_PSM_Count__Max_PSM_Count_Value__NOT_SET
+                                                    ? this.props.proteinSequence_Bar_Widget_StateObject.get_shade_by_PSM_Count__Max_PSM_Count()
+                                                    : ""
+                                            )
+                                        }
+                                        onChange={ this._scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount__SelectionChanged_BindThis }
                                     />
-                                </label>
-                                <span style={ { width: 10 } }>&nbsp;</span>
-                                <span>Max PSM Count for shading: </span>
-                                <input
-                                    style={ { width: 50 } }
-                                    value={
-                                        (
-                                            this.props.proteinSequence_Bar_Widget_StateObject.get_shade_by_PSM_Count__Max_PSM_Count()
-                                            !== ProteinSequence_Bar_Widget_StateObject___Shade_by_PSM_Count__Max_PSM_Count_Value_Constants.shade_by_PSM_Count__Max_PSM_Count_Value__NOT_SET
-                                                ? this.props.proteinSequence_Bar_Widget_StateObject.get_shade_by_PSM_Count__Max_PSM_Count()
-                                                : ""
-                                        )
-                                    }
-                                    onChange={ this._scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount__SelectionChanged_BindThis }
-                                />
 
-                            </div>
+                                </div>
 
-                            <div>
-                                <label>
-                                    <span>Show Trypsin Cut points: </span>
-                                    <input
-                                        type="checkbox"
-                                        checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_show_TrypsinCutPoints() }
-                                        onChange={ this._show_TrypsinCutPoints_SelectionChanged_BindThis }
-                                    />
-                                </label>
-                            </div>
+                                <div>
+                                    <label>
+                                        <span>Show Trypsin Cut points: </span>
+                                        <input
+                                            type="checkbox"
+                                            checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_show_TrypsinCutPoints() }
+                                            onChange={ this._show_TrypsinCutPoints_SelectionChanged_BindThis }
+                                        />
+                                    </label>
+                                </div>
 
-                            <div >
+                                <div>
 
-                                {/*  REMOVED
+                                    {/*  REMOVED
 
                                 NOTE:  Also removed all usage of 'get_show_only_modifications_pass_all_filters()'
 
@@ -1036,133 +1092,255 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                                         />
                                     </label>
                                 </div>
-                                */}
+                                */ }
 
-                                <div>
-                                    <label>
-                                        <span>Hide unmatched modifications: </span>
-                                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                            title={
-                                                "If filtering on variable or open modifications, hide all unmatched modifications."
-                                            }
-                                        />
-                                        <input
-                                            type="checkbox"
-                                            checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_show_only_modifications_filtered_on__excluding_static() }
-                                            onChange={ event => {
-
-                                                this.props.proteinSequence_Bar_Widget_StateObject.set_show_only_modifications_filtered_on__excluding_static( event.currentTarget.checked )
-
-                                                this._compute_DerivedDisplay()
-                                            } }
-                                        />
-                                    </label>
-                                </div>
-
-                                { anySearch_Has_OpenModifications ? (
                                     <div>
                                         <label>
-                                            <span>Include unlocalized modifications: </span>
+                                            <span>Hide unmatched modifications: </span>
                                             <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                                                 title={
-                                                    "Show any unlocalized modification as modifying all possible positions in its respective PSM."
+                                                    "If filtering on variable or open modifications, hide all unmatched modifications."
                                                 }
                                             />
                                             <input
                                                 type="checkbox"
-                                                checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_add_open_modifications_unlocalized_in_all_peptide_positions() }
+                                                checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_show_only_modifications_filtered_on__excluding_static() }
                                                 onChange={ event => {
 
-                                                    this.props.proteinSequence_Bar_Widget_StateObject.set_add_open_modifications_unlocalized_in_all_peptide_positions( event.currentTarget.checked )
+                                                    this.props.proteinSequence_Bar_Widget_StateObject.set_show_only_modifications_filtered_on__excluding_static( event.currentTarget.checked )
 
                                                     this._compute_DerivedDisplay()
                                                 } }
                                             />
                                         </label>
                                     </div>
-                                ) : null }
+
+                                    { anySearch_Has_OpenModifications ? (
+                                        <div>
+                                            <label>
+                                                <span>Include unlocalized modifications: </span>
+                                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                    title={
+                                                        "Show any unlocalized modification as modifying all possible positions in its respective PSM."
+                                                    }
+                                                />
+                                                <input
+                                                    type="checkbox"
+                                                    checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_add_open_modifications_unlocalized_in_all_peptide_positions() }
+                                                    onChange={ event => {
+
+                                                        this.props.proteinSequence_Bar_Widget_StateObject.set_add_open_modifications_unlocalized_in_all_peptide_positions( event.currentTarget.checked )
+
+                                                        this._compute_DerivedDisplay()
+                                                    } }
+                                                />
+                                            </label>
+                                        </div>
+                                    ) : null }
+
+                                </div>
+
+                                {/*   End: Block for 'Width Scale Selection' down to the <svg> */ }
 
                             </div>
 
-                            {/*   End: Block for 'Width Scale Selection' down to the <svg> */ }
-
-                        </div>
-
-                        <div
-                            className=" standard-on-hover-show-specific-child-element-div-contents--root-element "
-                            style={ { marginTop: 10, position: "relative" } }
-                        >
-                            <svg
-                                ref={ this._visualization_SVG_Ref }
-                                width={
-                                    _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH +
-                                    this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) +
-                                    ( _OFFSET_FROM_LEFT_AND_RIGHT_EDGE * 2 ) +
-                                    _SVG_WIDTH_EXTRA
-                                }
-                                height={
-                                    top_Of_Section__Peptide_Blocks
-                                    + ( ( _PEPTIDE_BLOCKS_BAR_HEIGHT + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_BETWEEN_PEPTIDE_ROWS ) * this._mainData_Computed_For_ComponentsInThisFile_Root_Result.peptidePositions_SingleRow_Array.length )
-                                    + ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH * 2 )
-                                    + 1 // Extra to ensure bottom edge of last row of peptide blocks are shown
-                                }
+                            <div
+                                className=" standard-on-hover-show-specific-child-element-div-contents--root-element "
+                                style={ { marginTop: 10, position: "relative" } }
                             >
-                                { this.props.proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition() ? (
+                                <svg
+                                    ref={ this._visualization_SVG_Ref }
+                                    width={
+                                        _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH +
+                                        this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) +
+                                        ( _OFFSET_FROM_LEFT_AND_RIGHT_EDGE * 2 ) +
+                                        _SVG_WIDTH_EXTRA
+                                    }
+                                    height={
+                                        top_Of_Section__Peptide_Blocks
+                                        + ( ( _PEPTIDE_BLOCKS_BAR_HEIGHT + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_BETWEEN_PEPTIDE_ROWS ) * this._mainData_Computed_For_ComponentsInThisFile_Root_Result.peptidePositions_SingleRow_Array.length )
+                                        + ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH * 2 )
+                                        + 1 // Extra to ensure bottom edge of last row of peptide blocks are shown
+                                    }
+                                >
+                                    { this.props.proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition() ? (
 
-                                    //  Have Protein Position Selections so display them
+                                        //  Have Protein Position Selections so display them
 
-                                    <>
-                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                            title={
-                                                <div>
-                                                    Protein Position Selections
-                                                </div>
-                                            }
-                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                        >
-                                            <text
-                                                x={ _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - _STANDARD__LABELS_ON_LEFT_DISTANCE_FROM_RIGHT_EDGE_OF_TOTAL_WIDTH }
-                                                y={ top_Of_Section__Protein_Position_Selections }
-                                                textAnchor="end"
-                                                // dy=".35em"
-                                                style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
+                                        <>
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    <div>
+                                                        Protein Position Selections
+                                                    </div>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                             >
-                                                <tspan
+                                                <text
+                                                    x={ _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - _STANDARD__LABELS_ON_LEFT_DISTANCE_FROM_RIGHT_EDGE_OF_TOTAL_WIDTH }
+                                                    y={ top_Of_Section__Protein_Position_Selections }
                                                     textAnchor="end"
                                                     // dy=".35em"
-                                                    dy="1em"
                                                     style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
                                                 >
-                                                    Selections:
-                                                </tspan>
-                                            </text>
-                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                                    <tspan
+                                                        textAnchor="end"
+                                                        // dy=".35em"
+                                                        dy="1em"
+                                                        style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
+                                                    >
+                                                        Selections:
+                                                    </tspan>
+                                                </text>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
-                                        { selected_ProteinPosition_SVG_Elements }
-                                    </>
-                                ) : null }
+                                            { selected_ProteinPosition_SVG_Elements }
+                                        </>
+                                    ) : null }
 
 
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                    title={
-                                        <div>
-                                            <span>Variable modifications </span>
-                                            { anySearch_Has_OpenModifications ? (
-                                                <>
-                                                    <span>and Open localized </span>
-                                                    { this.props.proteinSequence_Bar_Widget_StateObject.get_add_open_modifications_unlocalized_in_all_peptide_positions() ? (
-                                                        <span> and unlocalized </span>
-                                                    ) : null }
-                                                </>
-                                            ) : null }
-                                            <span>modifications</span>
-                                        </div>
-                                    }
-                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                >
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <div>
+                                                <span>Variable modifications </span>
+                                                { anySearch_Has_OpenModifications ? (
+                                                    <>
+                                                        <span>and Open localized </span>
+                                                        { this.props.proteinSequence_Bar_Widget_StateObject.get_add_open_modifications_unlocalized_in_all_peptide_positions() ? (
+                                                            <span> and unlocalized </span>
+                                                        ) : null }
+                                                    </>
+                                                ) : null }
+                                                <span>modifications</span>
+                                            </div>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <text
+                                            x={ _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - _STANDARD__LABELS_ON_LEFT_DISTANCE_FROM_RIGHT_EDGE_OF_TOTAL_WIDTH }
+                                            y={ top_Of_Section__Modifications }
+                                            textAnchor="end"
+                                            // dy=".35em"
+                                            style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
+                                        >
+                                            <tspan
+                                                textAnchor="end"
+                                                // dy=".35em"
+                                                dy="1em"
+                                                style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
+                                            >
+                                                Modifications:
+                                            </tspan>
+                                        </text>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                                    { modificationLine_Elements_Array }
+
                                     <text
                                         x={ _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - _STANDARD__LABELS_ON_LEFT_DISTANCE_FROM_RIGHT_EDGE_OF_TOTAL_WIDTH }
-                                        y={ top_Of_Section__Modifications }
+                                        y={ top_Of_Section__Protein_Bar + ( _PROTEIN_BAR__HEIGHT / 2 ) }
+                                        textAnchor="end"
+                                        dominantBaseline="middle"
+                                        // dy=".35em"
+                                        style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
+                                    >
+                                        <tspan
+                                            textAnchor="end"
+                                            // dy=".35em"
+                                            // dy="1em"  // fallback on dominantBaseline
+                                            style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
+                                        >
+                                            Protein:
+                                        </tspan>
+                                    </text>
+
+                                    <ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY_Component
+
+                                        top_Of_Section__Protein_Bar={ top_Of_Section__Protein_Bar }
+
+                                        anyFilter__HasFilterValue={ anyFilter__HasFilterValue }
+
+                                        proteinSequence_Bar_Widget_StateObject={ this.props.proteinSequence_Bar_Widget_StateObject }
+                                        proteinSequenceWidget_StateObject={ this.props.proteinSequenceWidget_StateObject }
+                                        proteinSequenceString={ this.props.proteinSequenceString }
+                                        trypsin_CutPoints_For_ProteinSequence_Set={ this._trypsin_CutPoints_For_ProteinSequence_Set }
+
+                                        mainData_Computed_For_ComponentsInThisFile_Root_Result={ this._mainData_Computed_For_ComponentsInThisFile_Root_Result }
+
+                                        updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ () => {
+
+                                            // this.forceUpdate()
+
+                                            window.setTimeout( () => {
+                                                try {
+
+                                                    this.props.updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback()
+
+                                                } catch ( e ) {
+                                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                    throw e
+                                                }
+                                            }, 10 )
+                                        } }
+                                    />
+
+                                    {/* Lines around rectangles.  Center of line is at X/Y */ }
+
+                                    {/* Line Top */ }
+                                    <line
+                                        x1={ _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 ) }
+                                        y1={ top_Of_Section__Protein_Bar + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH + 0.5 }
+                                        x2={
+                                            _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 )
+                                            + ( this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) )
+                                        }
+                                        y2={ top_Of_Section__Protein_Bar + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH + 0.5 }
+                                        stroke={ _COLOR_PROTEIN_BAR_STROKE }
+                                        strokeWidth={ _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
+                                    />
+
+                                    {/* Line Bottom */ }
+                                    <line
+                                        x1={ _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 ) }
+                                        y1={ top_Of_Section__Protein_Bar + ( _PROTEIN_BAR__HEIGHT ) + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH - 0.5 }
+                                        x2={
+                                            _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 )
+                                            + ( this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) )
+                                        }
+                                        y2={ top_Of_Section__Protein_Bar + ( _PROTEIN_BAR__HEIGHT ) + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH - 0.5 }
+                                        stroke={ _COLOR_PROTEIN_BAR_STROKE }
+                                        strokeWidth={ _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
+                                    />
+
+                                    {/* Line Left */ }
+                                    <line
+                                        x1={ _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 ) }
+                                        y1={ top_Of_Section__Protein_Bar + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
+                                        x2={ _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 ) }
+                                        y2={ top_Of_Section__Protein_Bar + ( _PROTEIN_BAR__HEIGHT ) + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
+                                        stroke={ _COLOR_PROTEIN_BAR_STROKE }
+                                        strokeWidth={ _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
+                                    />
+
+                                    {/* Line Right */ }
+                                    <line
+                                        x1={
+                                            _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 )
+                                            + ( this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) )
+                                        }
+                                        y1={ top_Of_Section__Protein_Bar + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
+                                        x2={
+                                            _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 )
+                                            + ( this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) )
+                                        }
+                                        y2={ top_Of_Section__Protein_Bar + ( _PROTEIN_BAR__HEIGHT ) + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
+                                        stroke={ _COLOR_PROTEIN_BAR_STROKE }
+                                        strokeWidth={ _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
+                                    />
+
+                                    <text
+                                        x={ _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - _STANDARD__LABELS_ON_LEFT_DISTANCE_FROM_RIGHT_EDGE_OF_TOTAL_WIDTH }
+                                        y={ top_Of_Section__Peptide_Blocks }
                                         textAnchor="end"
                                         // dy=".35em"
                                         style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
@@ -1173,272 +1351,152 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                                             dy="1em"
                                             style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
                                         >
-                                            Modifications:
+                                            Peptides:
                                         </tspan>
                                     </text>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
-                                { modificationLine_Elements_Array }
+                                    { this._mainData_Computed_For_ComponentsInThisFile_Root_Result.peptidePositions_SingleRow_Array.map( ( rowValue, rowIndex ) => {
 
-                                <text
-                                    x={ _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - _STANDARD__LABELS_ON_LEFT_DISTANCE_FROM_RIGHT_EDGE_OF_TOTAL_WIDTH }
-                                    y={ top_Of_Section__Protein_Bar + ( _PROTEIN_BAR__HEIGHT / 2 ) }
-                                    textAnchor="end"
-                                    dominantBaseline="middle"
-                                    // dy=".35em"
-                                    style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
-                                >
-                                    <tspan
-                                        textAnchor="end"
-                                        // dy=".35em"
-                                        // dy="1em"  // fallback on dominantBaseline
-                                        style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
-                                    >
-                                        Protein:
-                                    </tspan>
-                                </text>
+                                        return (
 
-                                <ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY_Component
+                                            <g key={ rowIndex }>
+                                                {
+                                                    rowValue.peptidePositions_SingleEntry_InRow_Array.map( ( entryValue, entryIndex ) => {
 
-                                    top_Of_Section__Protein_Bar={ top_Of_Section__Protein_Bar }
+                                                        const x = ( ( entryValue.start_Position - 1 ) * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
+                                                        const y = ( rowIndex * ( _PEPTIDE_BLOCKS_BAR_HEIGHT + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_BETWEEN_PEPTIDE_ROWS ) ) + _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH__Y_AXIS_ADJUSTMENT + top_Of_Section__Peptide_Blocks + _OFFSET_FROM_TOP_AND_BOTTOM_EDGE
+                                                        const width = ( entryValue.peptideLength * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) - ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH__WIDTH_ADJUSTMENT * 1 )
+                                                        const height = _PEPTIDE_BLOCKS_BAR_HEIGHT - ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH__HEIGHT_ADJUSTMENT * 2 )
 
-                                    anyFilter__HasFilterValue={ anyFilter__HasFilterValue }
+                                                        //  Use if selected for <line>
 
-                                    proteinSequence_Bar_Widget_StateObject={ this.props.proteinSequence_Bar_Widget_StateObject }
-                                    proteinSequenceWidget_StateObject={ this.props.proteinSequenceWidget_StateObject }
-                                    proteinSequenceString={ this.props.proteinSequenceString }
-                                    trypsin_CutPoints_For_ProteinSequence_Set={ this._trypsin_CutPoints_For_ProteinSequence_Set }
+                                                        const line_X_1 = ( ( entryValue.start_Position - 1 ) * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE - ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH / 2 )
+                                                        const line_X_2 = ( ( entryValue.start_Position + entryValue.peptideLength - 1 ) * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
 
-                                    mainData_Computed_For_ComponentsInThisFile_Root_Result={ this._mainData_Computed_For_ComponentsInThisFile_Root_Result }
+                                                        const line_Y_Above = ( rowIndex * ( _PEPTIDE_BLOCKS_BAR_HEIGHT + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_BETWEEN_PEPTIDE_ROWS ) ) +
+                                                            ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH__WIDTH_ADJUSTMENT * 1 ) - ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH / 2 ) +
+                                                            top_Of_Section__Peptide_Blocks +
+                                                            _OFFSET_FROM_TOP_AND_BOTTOM_EDGE
+                                                        const line_Y_Below = y + height + _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH
 
-                                    updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ () => {
+                                                        let isSelected_Protein_StartEnd_Position = this.props.proteinSequenceWidget_StateObject.isSelected_Protein_StartEnd_Position( {
+                                                            protein_Start: entryValue.start_Position,
+                                                            protein_End: entryValue.end_Position
+                                                        } )
+                                                        let rect_StrokeColor = _COLOR_PEPTIDE_BAR_STROKE
 
-                                        // this.forceUpdate()
+                                                        if ( isSelected_Protein_StartEnd_Position ) {
 
-                                        window.setTimeout( () => {
-                                            try {
+                                                            rect_StrokeColor = _COLOR_PEPTIDE_BAR_SELECTED_STROKE
+                                                        }
 
-                                                this.props.updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback()
+                                                        const clickFunction = ( event: React.MouseEvent<Element, MouseEvent> ) => {
 
-                                            } catch ( e ) {
-                                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                                throw e
-                                            }
-                                        }, 10 )
-                                    } }
-                                />
-
-                                {/* Lines around rectangles.  Center of line is at X/Y */ }
-
-                                {/* Line Top */ }
-                                <line
-                                    x1={ _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 ) }
-                                    y1={ top_Of_Section__Protein_Bar + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH + 0.5 }
-                                    x2={
-                                        _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 )
-                                        + ( this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) )
-                                    }
-                                    y2={ top_Of_Section__Protein_Bar + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH + 0.5 }
-                                    stroke={ _COLOR_PROTEIN_BAR_STROKE }
-                                    strokeWidth={ _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
-                                />
-
-                                {/* Line Bottom */ }
-                                <line
-                                    x1={ _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 ) }
-                                    y1={ top_Of_Section__Protein_Bar + ( _PROTEIN_BAR__HEIGHT ) + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH - 0.5 }
-                                    x2={
-                                        _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 )
-                                        + ( this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) )
-                                    }
-                                    y2={ top_Of_Section__Protein_Bar + ( _PROTEIN_BAR__HEIGHT ) + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH - 0.5 }
-                                    stroke={ _COLOR_PROTEIN_BAR_STROKE }
-                                    strokeWidth={ _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
-                                />
-
-                                {/* Line Left */ }
-                                <line
-                                    x1={ _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 ) }
-                                    y1={ top_Of_Section__Protein_Bar + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
-                                    x2={ _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 ) }
-                                    y2={ top_Of_Section__Protein_Bar + ( _PROTEIN_BAR__HEIGHT ) + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
-                                    stroke={ _COLOR_PROTEIN_BAR_STROKE }
-                                    strokeWidth={ _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
-                                />
-
-                                {/* Line Right */ }
-                                <line
-                                    x1={
-                                        _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 )
-                                        + ( this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) )
-                                    }
-                                    y1={ top_Of_Section__Protein_Bar + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
-                                    x2={
-                                        _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 )
-                                        + ( this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) )
-                                    }
-                                    y2={ top_Of_Section__Protein_Bar + ( _PROTEIN_BAR__HEIGHT ) + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
-                                    stroke={ _COLOR_PROTEIN_BAR_STROKE }
-                                    strokeWidth={ _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH }
-                                />
-
-                                <text
-                                    x={ _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - _STANDARD__LABELS_ON_LEFT_DISTANCE_FROM_RIGHT_EDGE_OF_TOTAL_WIDTH }
-                                    y={ top_Of_Section__Peptide_Blocks }
-                                    textAnchor="end"
-                                    // dy=".35em"
-                                    style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
-                                >
-                                    <tspan
-                                        textAnchor="end"
-                                        // dy=".35em"
-                                        dy="1em"
-                                        style={ { fontSize: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.default_font_size_number, fontFamily: "Helvetica, Arial, sans-serif" } }
-                                    >
-                                        Peptides:
-                                    </tspan>
-                                </text>
-
-                                { this._mainData_Computed_For_ComponentsInThisFile_Root_Result.peptidePositions_SingleRow_Array.map( ( rowValue, rowIndex ) => {
-
-                                    return (
-
-                                        <g key={ rowIndex }>
-                                            {
-                                                rowValue.peptidePositions_SingleEntry_InRow_Array.map( ( entryValue, entryIndex ) => {
-
-                                                    const x = ( ( entryValue.start_Position - 1 ) * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
-                                                    const y = ( rowIndex * ( _PEPTIDE_BLOCKS_BAR_HEIGHT + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_BETWEEN_PEPTIDE_ROWS ) ) + _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH__Y_AXIS_ADJUSTMENT + top_Of_Section__Peptide_Blocks + _OFFSET_FROM_TOP_AND_BOTTOM_EDGE
-                                                    const width = ( entryValue.peptideLength * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) - ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH__WIDTH_ADJUSTMENT * 1 )
-                                                    const height = _PEPTIDE_BLOCKS_BAR_HEIGHT - ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH__HEIGHT_ADJUSTMENT * 2 )
-
-                                                    //  Use if selected for <line>
-
-                                                    const line_X_1 = ( ( entryValue.start_Position - 1 ) * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE - ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH / 2 )
-                                                    const line_X_2 = ( ( entryValue.start_Position + entryValue.peptideLength - 1 ) * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
-
-                                                    const line_Y_Above = ( rowIndex * ( _PEPTIDE_BLOCKS_BAR_HEIGHT + _PEPTIDE_BLOCKS_BAR_HEIGHT_SEPARATION_BETWEEN_PEPTIDE_ROWS ) ) +
-                                                        ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH__WIDTH_ADJUSTMENT * 1 ) - ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH / 2 ) +
-                                                        top_Of_Section__Peptide_Blocks +
-                                                        _OFFSET_FROM_TOP_AND_BOTTOM_EDGE
-                                                    const line_Y_Below = y + height + _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH
-
-                                                    let isSelected_Protein_StartEnd_Position = this.props.proteinSequenceWidget_StateObject.isSelected_Protein_StartEnd_Position( {
-                                                        protein_Start: entryValue.start_Position,
-                                                        protein_End: entryValue.end_Position
-                                                    } )
-                                                    let rect_StrokeColor = _COLOR_PEPTIDE_BAR_STROKE
-
-                                                    if ( isSelected_Protein_StartEnd_Position ) {
-
-                                                        rect_StrokeColor = _COLOR_PEPTIDE_BAR_SELECTED_STROKE
-                                                    }
-
-                                                    const clickFunction = ( event: React.MouseEvent<Element, MouseEvent> ) => {
-
-                                                        if ( event.ctrlKey || event.metaKey ) {
-                                                            //  CTRL or Meta (Command on Mac) Key Held
-                                                            if ( this.props.proteinSequenceWidget_StateObject.isSelected_Protein_StartEnd_Position( {
-                                                                protein_Start: entryValue.start_Position,
-                                                                protein_End: entryValue.end_Position
-                                                            } ) ) {
-                                                                //  Already exists so delete
-                                                                this.props.proteinSequenceWidget_StateObject.delete_selected_Protein_StartEnd_Position( {
+                                                            if ( event.ctrlKey || event.metaKey ) {
+                                                                //  CTRL or Meta (Command on Mac) Key Held
+                                                                if ( this.props.proteinSequenceWidget_StateObject.isSelected_Protein_StartEnd_Position( {
                                                                     protein_Start: entryValue.start_Position,
                                                                     protein_End: entryValue.end_Position
-                                                                } )
+                                                                } ) ) {
+                                                                    //  Already exists so delete
+                                                                    this.props.proteinSequenceWidget_StateObject.delete_selected_Protein_StartEnd_Position( {
+                                                                        protein_Start: entryValue.start_Position,
+                                                                        protein_End: entryValue.end_Position
+                                                                    } )
+                                                                } else {
+                                                                    //  NOT Already exists so add
+                                                                    this.props.proteinSequenceWidget_StateObject.add_selected_Protein_StartEnd_Position( {
+                                                                        protein_Start: entryValue.start_Position,
+                                                                        protein_End: entryValue.end_Position
+                                                                    } )
+                                                                }
                                                             } else {
-                                                                //  NOT Already exists so add
-                                                                this.props.proteinSequenceWidget_StateObject.add_selected_Protein_StartEnd_Position( {
-                                                                    protein_Start: entryValue.start_Position,
-                                                                    protein_End: entryValue.end_Position
-                                                                } )
+
+                                                                //  Neither CTRL or Meta Key Held
+
+                                                                if ( isSelected_Protein_StartEnd_Position ) {
+
+                                                                    //  Already selected so delete
+                                                                    this.props.proteinSequenceWidget_StateObject.delete_selected_Protein_StartEnd_Position( {
+                                                                        protein_Start: entryValue.start_Position,
+                                                                        protein_End: entryValue.end_Position
+                                                                    } )
+
+                                                                } else {
+
+                                                                    // Clear all existing
+                                                                    this.props.proteinSequenceWidget_StateObject.clearAll_Selections_Protein_StartEnd_Position()
+                                                                    //  Add
+                                                                    this.props.proteinSequenceWidget_StateObject.add_selected_Protein_StartEnd_Position( {
+                                                                        protein_Start: entryValue.start_Position,
+                                                                        protein_End: entryValue.end_Position
+                                                                    } )
+                                                                }
                                                             }
-                                                        } else {
 
-                                                            //  Neither CTRL or Meta Key Held
+                                                            this.props.updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback()
+                                                        }
 
-                                                            if ( isSelected_Protein_StartEnd_Position ) {
 
-                                                                //  Already selected so delete
-                                                                this.props.proteinSequenceWidget_StateObject.delete_selected_Protein_StartEnd_Position( {
-                                                                    protein_Start: entryValue.start_Position,
-                                                                    protein_End: entryValue.end_Position
-                                                                } )
+                                                        let rect_Fill = _COLOR_PEPTIDE_BAR_NOT_PASS_FILTERS_FILL
+                                                        // let opacity = 1
 
-                                                            } else {
+                                                        if ( entryValue.proteinCoverage_Entry_reportedPeptideId_IN_reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId ) {
 
-                                                                // Clear all existing
-                                                                this.props.proteinSequenceWidget_StateObject.clearAll_Selections_Protein_StartEnd_Position()
-                                                                //  Add
-                                                                this.props.proteinSequenceWidget_StateObject.add_selected_Protein_StartEnd_Position( {
-                                                                    protein_Start: entryValue.start_Position,
-                                                                    protein_End: entryValue.end_Position
-                                                                } )
+                                                            rect_Fill = _COLOR_PEPTIDE_BAR_FILL
+
+                                                            if ( this.props.proteinSequence_Bar_Widget_StateObject.get_shade_by_PSM_Count()
+                                                                && entryValue.only_Data_Passes_AllFilters__PsmIds_PsmCount.psmCount_FractionOf_Max_ProteinCoverage_PSM_Count !== undefined ) {
+
+                                                                rect_Fill = _scaleColor_BasedOn_Fraction(  entryValue.only_Data_Passes_AllFilters__PsmIds_PsmCount.psmCount_FractionOf_Max_ProteinCoverage_PSM_Count )
+
+                                                                // Scale opacity from _PROTEIN_MIN_OPACITY to 1
+
+                                                                // const opacity_MaxMinusMin = 1 - _PROTEIN_MIN_OPACITY
+                                                                //
+                                                                // opacity = _PROTEIN_MIN_OPACITY + ( opacity_MaxMinusMin * entryValue.only_Data_Passes_AllFilters__PsmIds_PsmCount.psmCount_FractionOf_Max_ProteinCoverage_PSM_Count )
+                                                                //
+                                                                // if ( opacity > 1 ) {
+                                                                //     opacity = 1
+                                                                // }
+                                                                // if ( opacity < _PROTEIN_MIN_OPACITY ) {
+                                                                //     opacity = _PROTEIN_MIN_OPACITY // Min Opacity
+                                                                // }
+
+                                                                //   Different approach of no opacity under _PROTEIN_MIN_OPACITY
+
+                                                                // opacity = proteinSequenceCoverage_Position.psmCount_Fraction
+                                                                // if ( opacity < _PROTEIN_MIN_OPACITY ) {
+                                                                //     opacity = _PROTEIN_MIN_OPACITY // Min Opacity
+                                                                // }
                                                             }
                                                         }
 
-                                                        this.props.updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback()
-                                                    }
+                                                        // let opacityString: string = undefined
+                                                        //
+                                                        // if ( opacity === 1 ) {
+                                                        //     opacityString = opacity.toString()
+                                                        // } else {
+                                                        //     opacityString = opacity.toFixed( 3 )
+                                                        // }
 
-
-                                                    let rect_Fill = _COLOR_PEPTIDE_BAR_NOT_PASS_FILTERS_FILL
-                                                    let opacity = 1
-
-                                                    if ( entryValue.proteinCoverage_Entry_reportedPeptideId_IN_reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId ) {
-
-                                                        rect_Fill = _COLOR_PEPTIDE_BAR_FILL
-
-                                                        if ( this.props.proteinSequence_Bar_Widget_StateObject.get_shade_by_PSM_Count()
-                                                            && entryValue.only_Data_Passes_AllFilters__PsmIds_PsmCount.psmCount_FractionOf_Max_ProteinCoverage_PSM_Count !== undefined ) {
-
-                                                            // Scale opacity from _PROTEIN_MIN_OPACITY to 1
-
-                                                            const opacity_MaxMinusMin = 1 - _PROTEIN_MIN_OPACITY
-
-                                                            opacity = _PROTEIN_MIN_OPACITY + ( opacity_MaxMinusMin * entryValue.only_Data_Passes_AllFilters__PsmIds_PsmCount.psmCount_FractionOf_Max_ProteinCoverage_PSM_Count )
-
-                                                            if ( opacity > 1 ) {
-                                                                opacity = 1
-                                                            }
-                                                            if ( opacity < _PROTEIN_MIN_OPACITY ) {
-                                                                opacity = _PROTEIN_MIN_OPACITY // Min Opacity
-                                                            }
-
-                                                            //   Different approach of no opacity under _PROTEIN_MIN_OPACITY
-
-                                                            // opacity = proteinSequenceCoverage_Position.psmCount_Fraction
-                                                            // if ( opacity < _PROTEIN_MIN_OPACITY ) {
-                                                            //     opacity = _PROTEIN_MIN_OPACITY // Min Opacity
-                                                            // }
-                                                        }
-                                                    }
-
-                                                    let opacityString: string = undefined
-
-                                                    if ( opacity === 1 ) {
-                                                        opacityString = opacity.toString()
-                                                    } else {
-                                                        opacityString = opacity.toFixed( 3 )
-                                                    }
-
-                                                    return (
-                                                        <React.Fragment
-                                                            key={ entryValue.start_Position }
-                                                        >
-                                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                                title={
-                                                                    <div>
+                                                        return (
+                                                            <React.Fragment
+                                                                key={ entryValue.start_Position }
+                                                            >
+                                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                                    title={
                                                                         <div>
-                                                                            { isSelected_Protein_StartEnd_Position ? (
-                                                                                <span>Selected</span>
-                                                                            ) : null }
-                                                                        </div>
-                                                                        <div style={ { marginTop: 10 } }>
-                                                                            Peptide position in protein: start: { entryValue.start_Position }, end: { entryValue.end_Position }
-                                                                        </div>
+                                                                            <div>
+                                                                                { isSelected_Protein_StartEnd_Position ? (
+                                                                                    <span>Selected</span>
+                                                                                ) : null }
+                                                                            </div>
+                                                                            <div style={ { marginTop: 10 } }>
+                                                                                Peptide position in protein: start: { entryValue.start_Position }, end: { entryValue.end_Position }
+                                                                            </div>
 
-                                                                        {/*
+                                                                            {/*
                                                                         { anyFilter__HasFilterValue ? (
                                                                             <div style={ { marginTop: 10 } }>
                                                                                 { entryValue.proteinCoverage_Entry_reportedPeptideId_IN_reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId ? (
@@ -1455,141 +1513,141 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                                                                         ) : null }
                                                                         */ }
 
-                                                                        <div style={ { marginTop: 6 } }>
-                                                                            <div>
-                                                                                <span>PSM Count: </span>
-                                                                                <span>
-                                                                                    { entryValue.all_Data__PsmIds_PsmCount.psmCount__FinalResult.toLocaleString() }
-                                                                                </span>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        { anyFilter__HasFilterValue && entryValue.proteinCoverage_Entry_reportedPeptideId_IN_reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId ? (
                                                                             <div style={ { marginTop: 6 } }>
                                                                                 <div>
-                                                                                    <span>Filtered PSM count: </span>
-                                                                                    <span
-                                                                                        style={ { color: _STANDARD_COLOR__PSM_COUNTS_MODIFICATION_MASSES_THAT_PASS_ALL_FILTERS } }
-                                                                                    >
-                                                                                        { entryValue.only_Data_Passes_AllFilters__PsmIds_PsmCount.psmCount__FinalResult.toLocaleString() }
+                                                                                    <span>PSM Count: </span>
+                                                                                    <span>
+                                                                                        { entryValue.all_Data__PsmIds_PsmCount.psmCount__FinalResult.toLocaleString() }
                                                                                     </span>
                                                                                 </div>
                                                                             </div>
-                                                                        ) : null }
 
-                                                                        <div style={ { marginTop: 10 } }>
-                                                                            { ! isSelected_Protein_StartEnd_Position ? (
-                                                                                <div>
-                                                                                    Click to add peptide selection.
+                                                                            { anyFilter__HasFilterValue && entryValue.proteinCoverage_Entry_reportedPeptideId_IN_reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId ? (
+                                                                                <div style={ { marginTop: 6 } }>
+                                                                                    <div>
+                                                                                        <span>Filtered PSM count: </span>
+                                                                                        <span
+                                                                                            style={ { color: _STANDARD_COLOR__PSM_COUNTS_MODIFICATION_MASSES_THAT_PASS_ALL_FILTERS } }
+                                                                                        >
+                                                                                            { entryValue.only_Data_Passes_AllFilters__PsmIds_PsmCount.psmCount__FinalResult.toLocaleString() }
+                                                                                        </span>
+                                                                                    </div>
                                                                                 </div>
-                                                                            ) : (
+                                                                            ) : null }
+
+                                                                            <div style={ { marginTop: 10 } }>
+                                                                                { ! isSelected_Protein_StartEnd_Position ? (
+                                                                                    <div>
+                                                                                        Click to add peptide selection.
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <div>
+                                                                                        Click to remove peptide selection.
+                                                                                    </div>
+                                                                                ) }
                                                                                 <div>
-                                                                                    Click to remove peptide selection.
+                                                                                    Control/command click to toggle selection.
                                                                                 </div>
-                                                                            ) }
-                                                                            <div>
-                                                                                Control/command click to toggle selection.
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                }
-                                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                                            >
-                                                                <rect
-                                                                    fill={ rect_Fill }
-                                                                    opacity={ opacityString }
-                                                                    stroke={ rect_StrokeColor }
-                                                                    strokeWidth={ _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH }
-                                                                    x={ x }
-                                                                    y={ y }
-                                                                    width={ width }
-                                                                    height={ height }
-                                                                    className=" clickable "
-                                                                    onClick={ clickFunction }
-                                                                />
-                                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-
-                                                            { isSelected_Protein_StartEnd_Position ? (
-                                                                <>
-                                                                    {/* Line Above */ }
-                                                                    <line
-                                                                        x1={ line_X_1 }
-                                                                        y1={ line_Y_Above }
-                                                                        x2={ line_X_2 }
-                                                                        y2={ line_Y_Above }
+                                                                    }
+                                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                                >
+                                                                    <rect
+                                                                        fill={ rect_Fill }
+                                                                        // opacity={ opacityString }
                                                                         stroke={ rect_StrokeColor }
-                                                                        strokeWidth={ 2 }
+                                                                        strokeWidth={ _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH }
+                                                                        x={ x }
+                                                                        y={ y }
+                                                                        width={ width }
+                                                                        height={ height }
+                                                                        className=" clickable "
                                                                         onClick={ clickFunction }
                                                                     />
-                                                                    {/* Line Below */ }
-                                                                    <line
-                                                                        x1={ line_X_1 }
-                                                                        y1={ line_Y_Below }
-                                                                        x2={ line_X_2 }
-                                                                        y2={ line_Y_Below }
-                                                                        stroke={ rect_StrokeColor }
-                                                                        strokeWidth={ 2 }
-                                                                        onClick={ clickFunction }
-                                                                    />
-                                                                </>
-                                                            ) : null }
-                                                        </React.Fragment>
-                                                    )
-                                                } )
-                                            }
-                                        </g>
-                                    )
-                                } ) }
+                                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
-                                {/*  trypsin Cut Points  */ }
+                                                                { isSelected_Protein_StartEnd_Position ? (
+                                                                    <>
+                                                                        {/* Line Above */ }
+                                                                        <line
+                                                                            x1={ line_X_1 }
+                                                                            y1={ line_Y_Above }
+                                                                            x2={ line_X_2 }
+                                                                            y2={ line_Y_Above }
+                                                                            stroke={ rect_StrokeColor }
+                                                                            strokeWidth={ 2 }
+                                                                            onClick={ clickFunction }
+                                                                        />
+                                                                        {/* Line Below */ }
+                                                                        <line
+                                                                            x1={ line_X_1 }
+                                                                            y1={ line_Y_Below }
+                                                                            x2={ line_X_2 }
+                                                                            y2={ line_Y_Below }
+                                                                            stroke={ rect_StrokeColor }
+                                                                            strokeWidth={ 2 }
+                                                                            onClick={ clickFunction }
+                                                                        />
+                                                                    </>
+                                                                ) : null }
+                                                            </React.Fragment>
+                                                        )
+                                                    } )
+                                                }
+                                            </g>
+                                        )
+                                    } ) }
 
-                                { trypsin_CutPoints_For_ProteinSequence_Elements_Array }
+                                    {/*  trypsin Cut Points  */ }
 
-                                {/*  Close of single <svg> containing everything  */ }
-                            </svg>
+                                    { trypsin_CutPoints_For_ProteinSequence_Elements_Array }
 
-                            { this._mainData_Computed_For_ComponentsInThisFile_Root_Result?.peptidePositions_SingleRow_Array?.length < 2 ? (
+                                    {/*  Close of single <svg> containing everything  */ }
+                                </svg>
 
-                                //  Less than 3 Peptide Rows so add space below to push down the "Download SVG" link
+                                { this._mainData_Computed_For_ComponentsInThisFile_Root_Result?.peptidePositions_SingleRow_Array?.length < 2 ? (
 
-                                <div style={ { height: "1.3rem" } }>
-                                    &nbsp;
-                                </div>
+                                    //  Less than 3 Peptide Rows so add space below to push down the "Download SVG" link
 
-                            ) : null }
+                                    <div style={ { height: "1.3rem" } }>
+                                        &nbsp;
+                                    </div>
 
-                            <div
-                                // Always SHOW so remove: className=" standard-on-hover-show-specific-child-element-div-contents--child-element-container "
-                                style={ { position: "absolute", left: 0, bottom: 0, width: _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - 2 } }
-                            >
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                    title={
-                                        <div>
-                                            Download the visualization as SVG
-                                        </div>
-                                    }
-                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                ) : null }
+
+                                <div
+                                    // Always SHOW so remove: className=" standard-on-hover-show-specific-child-element-div-contents--child-element-container "
+                                    style={ { position: "absolute", left: 0, bottom: 0, width: _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH - 2 } }
                                 >
-                                    <span
-                                        className=" fake-link "
-                                        onClick={ this._download_Visualization_SVG_BindThis }
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <div>
+                                                Download the visualization as SVG
+                                            </div>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        Download SVG
-                                    </span>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        <span
+                                            className=" fake-link "
+                                            onClick={ this._download_Visualization_SVG_BindThis }
+                                        >
+                                            Download SVG
+                                        </span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                </div>
                             </div>
-                        </div>
-                    </>
+                        </>
 
-                ) : null }
+                    ) : null }
 
-            </div>
+                </div>
 
-        );
-    } catch ( e ) {
-        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-        throw e
-    }
+            );
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
+        }
     }
 
 
@@ -1599,13 +1657,13 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
             modificationLine_Elements_Array,
             anyFilter__HasFilterValue,
             top_Of_Section__Modifications
-        } : {
+        }: {
 
             populate__modifications_Passes_ALL_Filters__hasAny_Modifications__OnlyTrue: boolean
             modificationLine_Elements_Array: Array<React.JSX.Element>
             anyFilter__HasFilterValue: boolean
             top_Of_Section__Modifications: number
-        }) {
+        } ) {
 
         // const proteinSequence_Residues_Elements_Array: Array<React.JSX.Element> = []
 
@@ -1613,7 +1671,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
 
             const proteinLength = this.props.proteinSequenceString.length
 
-            for ( let proteinPosition = 1; proteinPosition <= proteinLength ; proteinPosition++ ) {
+            for ( let proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition++ ) {
 
                 const modifications_At_ProteinPosition = this._mainData_Computed_For_ComponentsInThisFile_Root_Result.modifications_Map_Key_ProteinPosition.get( proteinPosition )
 
@@ -1667,7 +1725,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                     _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH +
                     _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
 
-                const y_TopOffSet =  2 + top_Of_Section__Modifications
+                const y_TopOffSet = 2 + top_Of_Section__Modifications
 
                 ////  Pass PSM_Etc Filters
 
@@ -1699,7 +1757,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
 
                 if ( anyFilter__HasFilterValue ) {
 
-                    if ( modifications_At_ProteinPosition.modifications_Passes_ALL_Filters.variableModification_Masses && modifications_At_ProteinPosition.modifications_Passes_ALL_Filters.variableModification_Masses.size > 0) {
+                    if ( modifications_At_ProteinPosition.modifications_Passes_ALL_Filters.variableModification_Masses && modifications_At_ProteinPosition.modifications_Passes_ALL_Filters.variableModification_Masses.size > 0 ) {
 
                         const variableModification_Masses_Array = Array.from( modifications_At_ProteinPosition.modifications_Passes_ALL_Filters.variableModification_Masses )
                         limelight__Sort_ArrayOfNumbers_SortArrayInPlace( variableModification_Masses_Array )
@@ -1736,7 +1794,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                                     className=" word-break-break-word-backup-break-all "
                                     style={ { display: "grid", gridTemplateColumns: "max-content 1fr", marginTop: 10 } }
                                 >
-                                    {/*  Modifications that pass the top level PSM Reported Peptide Filters  */}
+                                    {/*  Modifications that pass the top level PSM Reported Peptide Filters  */ }
 
                                     { variableModification_Masses_Passes_PSM_Etc_Filters_String ? (
                                         <>
@@ -1773,7 +1831,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                                         </>
                                     ) : null }
 
-                                    {/*  Modifications that pass ALL Filters.  ONLY displayed when any filters.  */}
+                                    {/*  Modifications that pass ALL Filters.  ONLY displayed when any filters.  */ }
 
                                     { variableModification_Masses_Passes_ALL_Filters_String || open_Rounded_Modification_Masses_Passes_ALL_Filters_String ? (
 
@@ -1918,214 +1976,218 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY_Component extend
     /**
      *
      */
-    render() { try {
+    render() {
+        try {
 
-        const proteinCoverage_Rects_Elements_Array: Array<React.JSX.Element> = []
+            const proteinCoverage_Rects_Elements_Array: Array<React.JSX.Element> = []
 
-        {  //  First put light grey for all protein positions that are NOT covered
+            {  //  First put light grey for all protein positions that are NOT covered
 
-            let lastCoveredPosition_End = 0
+                let lastCoveredPosition_End = 0
 
-            for ( const proteinSequenceCoverage_Position_ForCompare of this.props.mainData_Computed_For_ComponentsInThisFile_Root_Result.proteinSequenceCoverage_Positions_Array ) {
+                for ( const proteinSequenceCoverage_Position_ForCompare of this.props.mainData_Computed_For_ComponentsInThisFile_Root_Result.proteinSequenceCoverage_Positions_Array ) {
 
-                if ( proteinSequenceCoverage_Position_ForCompare.start_Position !== ( lastCoveredPosition_End + 1 ) ) {
+                    if ( proteinSequenceCoverage_Position_ForCompare.start_Position !== ( lastCoveredPosition_End + 1 ) ) {
 
-                    //  Need to add 'NOT Covered' block FROM ( lastCoveredPosition_End + 1 ) TO ( proteinSequenceCoverage_Position.start_Position - 1 )
+                        //  Need to add 'NOT Covered' block FROM ( lastCoveredPosition_End + 1 ) TO ( proteinSequenceCoverage_Position.start_Position - 1 )
 
-                    const positionStart = ( lastCoveredPosition_End + 1 )
-                    const positionEnd = ( proteinSequenceCoverage_Position_ForCompare.start_Position - 1 )
+                        const positionStart = ( lastCoveredPosition_End + 1 )
+                        const positionEnd = ( proteinSequenceCoverage_Position_ForCompare.start_Position - 1 )
 
 
-                    const x = ( ( positionStart - 1 ) * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
+                        const x = ( ( positionStart - 1 ) * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
+                        const y = ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + this.props.top_Of_Section__Protein_Bar
+                        const width = ( ( positionEnd - positionStart + 1 ) * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) // - ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH__WIDTH_ADJUSTMENT * 1 )
+                        const height = _PROTEIN_BAR__HEIGHT
+
+                        const element = (
+                            <React.Fragment
+                                key={ positionStart }
+                            >
+                                <rect
+                                    fill={ _COLOR_PROTEIN_BAR__POSITIONS__NO_COVERAGE_EVER__FILL }
+                                    x={ x }
+                                    y={ y }
+                                    width={ width }
+                                    height={ height }
+                                />
+                            </React.Fragment>
+                        )
+
+                        proteinCoverage_Rects_Elements_Array.push( element )
+                    }
+
+                    lastCoveredPosition_End = proteinSequenceCoverage_Position_ForCompare.end_Position
+                }
+            }
+            {
+                // Scale opacity from _PROTEIN_MIN_OPACITY to 1
+
+                const opacity_MaxMinusMin = 1 - _PROTEIN_MIN_OPACITY
+
+                const width_Per_ProteinPosition = _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject )
+
+                for ( const proteinSequenceCoverage_Position of this.props.mainData_Computed_For_ComponentsInThisFile_Root_Result.proteinSequenceCoverage_Positions_Array ) {
+
+                    const x = ( ( proteinSequenceCoverage_Position.start_Position - 1 ) * width_Per_ProteinPosition ) + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
                     const y = ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + this.props.top_Of_Section__Protein_Bar
-                    const width = ( ( positionEnd - positionStart + 1 ) * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) // - ( _PEPTIDE_BLOCKS_BORDER_WIDTH_STROKE_WIDTH__WIDTH_ADJUSTMENT * 1 )
+                    const width =
+                        ( ( proteinSequenceCoverage_Position.end_Position - proteinSequenceCoverage_Position.start_Position + 1 ) * width_Per_ProteinPosition ) + _PROTEIN_COVERAGE_BLOCK__ADDITIONAL_WIDTH
                     const height = _PROTEIN_BAR__HEIGHT
+
+                    let fillColor = proteinSequenceCoverage_Position.passes_All_Filters ? _COLOR_PROTEIN_BAR__POSITIONS__COVERED__FILL : _COLOR_PROTEIN_BAR__POSITIONS__NOT_PASS_FILTERS__FILL
+
+                    // let opacity = 1
+
+                    if ( proteinSequenceCoverage_Position.passes_All_Filters && proteinSequenceCoverage_Position.psmCount_PassesAllFilters_Fraction !== undefined ) {
+
+
+                        fillColor = _scaleColor_BasedOn_Fraction(  proteinSequenceCoverage_Position.psmCount_PassesAllFilters_Fraction )
+
+                        // opacity = _PROTEIN_MIN_OPACITY + ( proteinSequenceCoverage_Position.psmCount_PassesAllFilters_Fraction * opacity_MaxMinusMin )
+                        //
+                        // if ( opacity > 1 ) {
+                        //     opacity = 1
+                        // }
+                        // if ( opacity < _PROTEIN_MIN_OPACITY ) {
+                        //     opacity = _PROTEIN_MIN_OPACITY // Min Opacity
+                        // }
+
+                        //   Different approach of no opacity under _PROTEIN_MIN_OPACITY
+
+                        // opacity = proteinSequenceCoverage_Position.psmCount_Fraction
+                        // if ( opacity < _PROTEIN_MIN_OPACITY ) {
+                        //     opacity = _PROTEIN_MIN_OPACITY // Min Opacity
+                        // }
+                    }
+
+                    // let opacityString: string = undefined
+                    //
+                    // if ( opacity === 1 ) {
+                    //     opacityString = opacity.toString()
+                    // } else {
+                    //     opacityString = opacity.toFixed( 3 )
+                    // }
 
                     const element = (
                         <React.Fragment
-                            key={ positionStart }
+                            key={ proteinSequenceCoverage_Position.start_Position }
                         >
                             <rect
-                                fill={ _COLOR_PROTEIN_BAR__POSITIONS__NO_COVERAGE_EVER__FILL }
                                 x={ x }
                                 y={ y }
                                 width={ width }
                                 height={ height }
+                                fill={ fillColor }
+                                // opacity={ opacityString }
                             />
                         </React.Fragment>
                     )
 
                     proteinCoverage_Rects_Elements_Array.push( element )
                 }
-
-                lastCoveredPosition_End = proteinSequenceCoverage_Position_ForCompare.end_Position
             }
-        }
-        {
-            // Scale opacity from _PROTEIN_MIN_OPACITY to 1
 
-            const opacity_MaxMinusMin = 1 - _PROTEIN_MIN_OPACITY
+            const trypsin_CutPoints_For_ProteinSequence_Elements_Array: Array<React.JSX.Element> = []
 
-            const width_Per_ProteinPosition = _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject )
+            if ( this.props.proteinSequence_Bar_Widget_StateObject.get_show_TrypsinCutPoints()
+                && this.props.trypsin_CutPoints_For_ProteinSequence_Set ) {
 
-            for ( const proteinSequenceCoverage_Position of this.props.mainData_Computed_For_ComponentsInThisFile_Root_Result.proteinSequenceCoverage_Positions_Array ) {
+                /**
+                 * trypsin_CutPoints_For_ProteinSequence_Set: undefined if proteinSequence is too short, else Set of positions plus '0.5' since between the positions
+                 */
+                const trypsin_CutPoints_For_ProteinSequence_Set = this.props.trypsin_CutPoints_For_ProteinSequence_Set
 
-                const x = ( ( proteinSequenceCoverage_Position.start_Position - 1 ) * width_Per_ProteinPosition ) + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH + _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
-                const y = ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + this.props.top_Of_Section__Protein_Bar
-                const width =
-                    ( ( proteinSequenceCoverage_Position.end_Position - proteinSequenceCoverage_Position.start_Position + 1 ) * width_Per_ProteinPosition ) + _PROTEIN_COVERAGE_BLOCK__ADDITIONAL_WIDTH
-                const height = _PROTEIN_BAR__HEIGHT
+                const width_Per_ProteinPosition = _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject )
 
-                const fillColor = proteinSequenceCoverage_Position.passes_All_Filters ? _COLOR_PROTEIN_BAR__POSITIONS__COVERED__FILL : _COLOR_PROTEIN_BAR__POSITIONS__NOT_PASS_FILTERS__FILL
+                const proteinLength = this.props.proteinSequenceString.length
 
-                let opacity = 1
+                for ( let proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition++ ) {
 
-                if ( proteinSequenceCoverage_Position.passes_All_Filters && proteinSequenceCoverage_Position.psmCount_PassesAllFilters_Fraction !== undefined ) {
+                    const proteinPosition_CenterAfter = proteinPosition + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions
 
-                    opacity = _PROTEIN_MIN_OPACITY + ( proteinSequenceCoverage_Position.psmCount_PassesAllFilters_Fraction * opacity_MaxMinusMin )
+                    if ( trypsin_CutPoints_For_ProteinSequence_Set.has( proteinPosition_CenterAfter ) ) {
 
-                    if ( opacity > 1 ) {
-                        opacity = 1
+                        //  Have trypsin cut point so render
+
+
+                        const x =
+                            ( ( proteinPosition ) * width_Per_ProteinPosition ) +
+                            _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH +
+                            _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
+
+                        const y1 = ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + this.props.top_Of_Section__Protein_Bar
+                        const y2 = y1 + ( _PROTEIN_BAR__HEIGHT )
+
+                        const element = (
+                            <line
+                                key={ proteinPosition }
+                                x1={ x }
+                                y1={ y1 }
+                                x2={ x }
+                                y2={ y2 }
+                                stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS }
+                                strokeWidth={ 1 }
+                                opacity={ _TRYPSIN_CUT_POINTS__OPACITY }
+                            />
+                        )
+
+                        trypsin_CutPoints_For_ProteinSequence_Elements_Array.push( element )
                     }
-                    if ( opacity < _PROTEIN_MIN_OPACITY ) {
-                        opacity = _PROTEIN_MIN_OPACITY // Min Opacity
-                    }
-
-                    //   Different approach of no opacity under _PROTEIN_MIN_OPACITY
-
-                    // opacity = proteinSequenceCoverage_Position.psmCount_Fraction
-                    // if ( opacity < _PROTEIN_MIN_OPACITY ) {
-                    //     opacity = _PROTEIN_MIN_OPACITY // Min Opacity
-                    // }
-                }
-
-                let opacityString: string = undefined
-
-                if ( opacity === 1 ) {
-                    opacityString = opacity.toString()
-                } else {
-                    opacityString = opacity.toFixed( 3 )
-                }
-
-                const element = (
-                    <React.Fragment
-                        key={ proteinSequenceCoverage_Position.start_Position }
-                    >
-                        <rect
-                            x={ x }
-                            y={ y }
-                            width={ width }
-                            height={ height }
-                            fill={ fillColor }
-                            opacity={ opacityString }
-                        />
-                    </React.Fragment>
-                )
-
-                proteinCoverage_Rects_Elements_Array.push( element )
-            }
-        }
-
-        const trypsin_CutPoints_For_ProteinSequence_Elements_Array: Array<React.JSX.Element> = []
-
-        if ( this.props.proteinSequence_Bar_Widget_StateObject.get_show_TrypsinCutPoints()
-            && this.props.trypsin_CutPoints_For_ProteinSequence_Set ) {
-
-            /**
-             * trypsin_CutPoints_For_ProteinSequence_Set: undefined if proteinSequence is too short, else Set of positions plus '0.5' since between the positions
-             */
-            const trypsin_CutPoints_For_ProteinSequence_Set = this.props.trypsin_CutPoints_For_ProteinSequence_Set
-
-            const width_Per_ProteinPosition = _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject )
-
-            const proteinLength = this.props.proteinSequenceString.length
-
-            for ( let proteinPosition = 1; proteinPosition <= proteinLength; proteinPosition++ ) {
-
-                const proteinPosition_CenterAfter = proteinPosition + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions
-
-                if ( trypsin_CutPoints_For_ProteinSequence_Set.has( proteinPosition_CenterAfter ) ) {
-
-                    //  Have trypsin cut point so render
-
-
-                    const x =
-                        ( ( proteinPosition ) * width_Per_ProteinPosition ) +
-                        _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH +
-                        _OFFSET_FROM_LEFT_AND_RIGHT_EDGE
-
-                    const y1 = ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + this.props.top_Of_Section__Protein_Bar
-                    const y2 = y1 + ( _PROTEIN_BAR__HEIGHT )
-
-                    const element = (
-                        <line
-                            key={ proteinPosition }
-                            x1={ x }
-                            y1={ y1 }
-                            x2={ x }
-                            y2={ y2 }
-                            stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS }
-                            strokeWidth={ 1 }
-                        />
-                    )
-
-                    trypsin_CutPoints_For_ProteinSequence_Elements_Array.push( element )
                 }
             }
+
+            return (
+
+                <>
+
+                    { proteinCoverage_Rects_Elements_Array }
+
+                    { trypsin_CutPoints_For_ProteinSequence_Elements_Array }
+
+                    {/*  <rect> on top for Tooltip and Click Handler  */ }
+
+                    <ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_ForTooltip_And_ClickHandler_Component
+
+                        top_Of_Section__Protein_Bar={ this.props.top_Of_Section__Protein_Bar }
+
+                        anyFilter__HasFilterValue={ this.props.anyFilter__HasFilterValue }
+
+                        proteinSequence_Bar_Widget_StateObject={ this.props.proteinSequence_Bar_Widget_StateObject }
+                        proteinSequenceWidget_StateObject={ this.props.proteinSequenceWidget_StateObject }
+                        proteinSequenceString={ this.props.proteinSequenceString }
+
+                        mainData_Computed_For_ComponentsInThisFile_Root_Result={ this.props.mainData_Computed_For_ComponentsInThisFile_Root_Result }
+
+                        trypsin_CutPoints_For_ProteinSequence_Set={ this.props.trypsin_CutPoints_For_ProteinSequence_Set }
+
+                        updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ () => {
+
+                            // this.forceUpdate()
+
+                            window.setTimeout( () => {
+                                try {
+
+                                    this.props.updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback()
+
+                                } catch ( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                    throw e
+                                }
+                            }, 10 )
+                        } }
+                    />
+                </>
+
+            )
+
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
         }
-
-        return (
-
-            <>
-
-                { proteinCoverage_Rects_Elements_Array }
-
-                { trypsin_CutPoints_For_ProteinSequence_Elements_Array }
-
-                {/*  <rect> on top for Tooltip and Click Handler  */ }
-
-                <ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_ForTooltip_And_ClickHandler_Component
-
-                    top_Of_Section__Protein_Bar={ this.props.top_Of_Section__Protein_Bar }
-
-                    anyFilter__HasFilterValue={ this.props.anyFilter__HasFilterValue }
-
-                    proteinSequence_Bar_Widget_StateObject={ this.props.proteinSequence_Bar_Widget_StateObject }
-                    proteinSequenceWidget_StateObject={ this.props.proteinSequenceWidget_StateObject}
-                    proteinSequenceString={ this.props.proteinSequenceString }
-
-                    mainData_Computed_For_ComponentsInThisFile_Root_Result={ this.props.mainData_Computed_For_ComponentsInThisFile_Root_Result }
-
-                    trypsin_CutPoints_For_ProteinSequence_Set={ this.props.trypsin_CutPoints_For_ProteinSequence_Set }
-
-                    updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ () => {
-
-                        // this.forceUpdate()
-
-                        window.setTimeout( () => {
-                            try {
-
-                                this.props.updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback()
-
-                            } catch ( e ) {
-                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                throw e
-                            }
-                        }, 10 )
-                    }}
-                />
-            </>
-
-        )
-
-    } catch ( e ) {
-        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-        throw e
-    }
     }
 
 }
-
 
 
 /**
@@ -2137,11 +2199,11 @@ interface ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect
 
     anyFilter__HasFilterValue: boolean
 
-    proteinSequence_Bar_Widget_StateObject : ProteinSequence_Bar_Widget_StateObject
+    proteinSequence_Bar_Widget_StateObject: ProteinSequence_Bar_Widget_StateObject
 
-    proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject
+    proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
 
-    proteinSequenceString : string
+    proteinSequenceString: string
 
     mainData_Computed_For_ComponentsInThisFile_Root_Result: INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root
 
@@ -2150,7 +2212,7 @@ interface ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect
      */
     trypsin_CutPoints_For_ProteinSequence_Set: Set<number>
 
-    updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback : () => void;
+    updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback: () => void;
 }
 
 interface ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_ForTooltip_And_ClickHandler_Component_State {
@@ -2161,10 +2223,10 @@ interface ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect
 /**
  *
  */
-class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_ForTooltip_And_ClickHandler_Component extends React.Component< ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_ForTooltip_And_ClickHandler_Component_Props, ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_ForTooltip_And_ClickHandler_Component_State > {
+class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_ForTooltip_And_ClickHandler_Component extends React.Component<ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_ForTooltip_And_ClickHandler_Component_Props, ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_ForTooltip_And_ClickHandler_Component_State> {
 
     //  bind to 'this' for passing as parameters
-    private _tooltipContents_FunctionComponent_BindThis = this._tooltipContents_FunctionComponent.bind(this)
+    private _tooltipContents_FunctionComponent_BindThis = this._tooltipContents_FunctionComponent.bind( this )
 
     private _proteinBar_MouseMove_EventHandler_BindThis = this._proteinBar_MouseMove_EventHandler.bind( this );
 
@@ -2191,7 +2253,7 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
      *
      * @param event
      */
-    private _proteinBar_MouseMove_EventHandler(  event: React.MouseEvent<SVGRectElement, MouseEvent> ) {
+    private _proteinBar_MouseMove_EventHandler( event: React.MouseEvent<SVGRectElement, MouseEvent> ) {
         try {
             // Update this._mousePointer_ProteinPosition so that Tooltip updates based on current mouse pointer position
 
@@ -2256,7 +2318,7 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
      *
      * @param event
      */
-    private _proteinBar_MouseClick_EventHandler(  event: React.MouseEvent<SVGRectElement, MouseEvent> ) {
+    private _proteinBar_MouseClick_EventHandler( event: React.MouseEvent<SVGRectElement, MouseEvent> ) {
         try {
 
             const mouse_X = event.pageX
@@ -2322,41 +2384,42 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
     /**
      *
      */
-    render() { try {
+    render() {
+        try {
 
-        const TooltipContents_FunctionComponent = this._tooltipContents_FunctionComponent_BindThis
+            const TooltipContents_FunctionComponent = this._tooltipContents_FunctionComponent_BindThis
 
-        return (
+            return (
 
-            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                title={
-                    <TooltipContents_FunctionComponent/>
-                }
-                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-            >
-                <rect
-                    opacity={ 0 }
-                    // fill={ _COLOR_PROTEIN_BAR__POSITIONS__NO_COVERAGE_EVER__FILL }
-                    x={ _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH }
-                    y={ ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + this.props.top_Of_Section__Protein_Bar }
-                    width={ ( this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) }
-                    height={ _PROTEIN_BAR__HEIGHT }
-                    onMouseMove={ this._proteinBar_MouseMove_EventHandler_BindThis }
-                    onClick={ this._proteinBar_MouseClick_EventHandler_BindThis }
-                />
-            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-        )
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <TooltipContents_FunctionComponent/>
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    <rect
+                        opacity={ 0 }
+                        // fill={ _COLOR_PROTEIN_BAR__POSITIONS__NO_COVERAGE_EVER__FILL }
+                        x={ _OFFSET_FROM_LEFT_AND_RIGHT_EDGE + _STANDARD__LABELS_ON_LEFT_TOTAL_WIDTH }
+                        y={ ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH * 2 ) + this.props.top_Of_Section__Protein_Bar }
+                        width={ ( this.props.proteinSequenceString.length * _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) }
+                        height={ _PROTEIN_BAR__HEIGHT }
+                        onMouseMove={ this._proteinBar_MouseMove_EventHandler_BindThis }
+                        onClick={ this._proteinBar_MouseClick_EventHandler_BindThis }
+                    />
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+            )
 
-    } catch ( e ) {
-        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-        throw e
-    }
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
+        }
     }
 
     /**
      *
      */
-    private _tooltipContents_FunctionComponent(  ) {
+    private _tooltipContents_FunctionComponent() {
 
         const proteinSequence = this.props.proteinSequenceString
         const proteinSequenceLength = proteinSequence.length
@@ -2423,14 +2486,14 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
 
                         <svg width={ svgWidth } height={ svgHeight }>
 
-                            {/*  Rectangle the fill size of SVG  */}
+                            {/*  Rectangle the fill size of SVG  */ }
 
                             <rect
                                 x={ 0.5 }
                                 y={ 0.5 }
                                 width={ svgWidth - 1 }
                                 height={ svgHeight - 1 }
-                                stroke={ borderColor}
+                                stroke={ borderColor }
                                 strokeWidth={ borderWidth }
                                 fill={ limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_standard_background_color }
                             />
@@ -2470,7 +2533,7 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
 
                             {/* Trypsin Cut points */ }
 
-                            {/* Trypsin Cut before center residue */}
+                            {/* Trypsin Cut before center residue */ }
                             { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition - 1 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
                                 <line
                                     x1="42" y1="3" x2="42" y2="22"
@@ -2478,14 +2541,14 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
                                 />
                             ) : null }
 
-                            {/* Trypsin Cut before residue 1 left of center */}
+                            {/* Trypsin Cut before residue 1 left of center */ }
                             { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition - 2 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
                                 <line
                                     x1="26" y1="5" x2="26" y2="19"
                                     stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS } strokeWidth="2"
                                 />
                             ) : null }
-                            {/* Trypsin Cut before residue 2 left of center */}
+                            {/* Trypsin Cut before residue 2 left of center */ }
                             { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition - 3 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
                                 <line
                                     x1="14" y1="6" x2="14" y2="18"
@@ -2493,21 +2556,21 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
                                 />
                             ) : null }
 
-                            {/* Trypsin Cut after center residue */}
+                            {/* Trypsin Cut after center residue */ }
                             { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition + 0 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
                                 <line
                                     x1="62" y1="3" x2="62" y2="22"
                                     stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS } strokeWidth="2"
                                 />
                             ) : null }
-                            {/* Trypsin Cut after residue 1 right of center */}
+                            {/* Trypsin Cut after residue 1 right of center */ }
                             { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition + 1 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
                                 <line
                                     x1="78" y1="5" x2="78" y2="19"
                                     stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS } strokeWidth="2"
                                 />
                             ) : null }
-                            {/* Trypsin Cut after residue 2 right of center */}
+                            {/* Trypsin Cut after residue 2 right of center */ }
                             { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition + 2 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
                                 <line
                                     x1="91" y1="6" x2="91" y2="18"
@@ -2596,7 +2659,7 @@ const _compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root = func
 
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 
-        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;  // Used for filtering modification masses
+        modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject;  // Used for filtering modification masses
 
         proteinSequence_Length: number
 
@@ -2652,106 +2715,146 @@ const _compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root = func
                         get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.promise.then( value => {
                             try {
                                 proteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.set( projectSearchId, value.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder )
-                        resolve();
-                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                promises.push(promise);
+                                resolve();
+                            } catch ( e ) {
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                throw e
+                            }
+                        } )
+                    } catch ( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                        throw e
+                    }
+                } )
+                promises.push( promise );
             } else {
-                throw Error("get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result NO data or promise")
+                throw Error( "get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result NO data or promise" )
             }
         }
         {
             const get_numPsmsForReportedPeptideIdMap_Result =
-                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                get_commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters().
-                get_numPsmsForReportedPeptideIdMap()
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters().get_numPsmsForReportedPeptideIdMap()
 
             if ( get_numPsmsForReportedPeptideIdMap_Result.data ) {
-                numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId.
-                set( projectSearchId, get_numPsmsForReportedPeptideIdMap_Result.data.numPsmsForReportedPeptideIdMap )
+                numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId.set( projectSearchId, get_numPsmsForReportedPeptideIdMap_Result.data.numPsmsForReportedPeptideIdMap )
             } else if ( get_numPsmsForReportedPeptideIdMap_Result.promise ) {
-                const promise = new Promise<void>( (resolve, reject) => { try {
-                    get_numPsmsForReportedPeptideIdMap_Result.promise.catch(reason => { reject(reason) })
-                    get_numPsmsForReportedPeptideIdMap_Result.promise.then(value => { try {
-                        numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId.
-                        set( projectSearchId, value.numPsmsForReportedPeptideIdMap )
-                        resolve();
-                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                promises.push(promise);
+                const promise = new Promise<void>( ( resolve, reject ) => {
+                    try {
+                        get_numPsmsForReportedPeptideIdMap_Result.promise.catch( reason => {
+                            reject( reason )
+                        } )
+                        get_numPsmsForReportedPeptideIdMap_Result.promise.then( value => {
+                            try {
+                                numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId.set( projectSearchId, value.numPsmsForReportedPeptideIdMap )
+                                resolve();
+                            } catch ( e ) {
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                throw e
+                            }
+                        } )
+                    } catch ( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                        throw e
+                    }
+                } )
+                promises.push( promise );
             } else {
-                throw Error("get_numPsmsForReportedPeptideIdMap_Result NO data or promise")
+                throw Error( "get_numPsmsForReportedPeptideIdMap_Result NO data or promise" )
             }
         }
         {
             const get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch_Result =
-                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                get_commonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters().
-                get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch()
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters().get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch()
 
             if ( get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch_Result.data ) {
-                variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId.
-                set( projectSearchId, get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch_Result.data.variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder )
+                variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId.set( projectSearchId, get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch_Result.data.variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder )
             } else if ( get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch_Result.promise ) {
-                const promise = new Promise<void>( (resolve, reject) => { try {
-                    get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch_Result.promise.catch(reason => { reject(reason) })
-                    get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch_Result.promise.then(value => { try {
-                        variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId.
-                        set( projectSearchId, value.variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder )
-                        resolve();
-                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                promises.push(promise);
+                const promise = new Promise<void>( ( resolve, reject ) => {
+                    try {
+                        get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch_Result.promise.catch( reason => {
+                            reject( reason )
+                        } )
+                        get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch_Result.promise.then( value => {
+                            try {
+                                variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId.set( projectSearchId, value.variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder )
+                                resolve();
+                            } catch ( e ) {
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                throw e
+                            }
+                        } )
+                    } catch ( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                        throw e
+                    }
+                } )
+                promises.push( promise );
             } else {
-                throw Error("get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch_Result NO data or promise")
+                throw Error( "get_Variable_Dynamic_Modifications_At_ReportedPeptide_LevelHolder_AllForSearch_Result NO data or promise" )
             }
         }
         if ( common_Flags_SingleSearch_ForProjectSearchId.anyPsmHas_OpenModifications ) {
 
             {
                 const get_OpenModifications_On_PSMHolder_AllForSearch_Result =
-                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                    get_commonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters().
-                    get_OpenModifications_On_PSMHolder_AllForSearch()
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters().get_OpenModifications_On_PSMHolder_AllForSearch()
 
                 if ( get_OpenModifications_On_PSMHolder_AllForSearch_Result.data ) {
-                    openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId.
-                    set( projectSearchId, get_OpenModifications_On_PSMHolder_AllForSearch_Result.data.openModifications_On_PSM_For_MainFilters_Holder )
+                    openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId.set( projectSearchId, get_OpenModifications_On_PSMHolder_AllForSearch_Result.data.openModifications_On_PSM_For_MainFilters_Holder )
                 } else if ( get_OpenModifications_On_PSMHolder_AllForSearch_Result.promise ) {
-                    const promise = new Promise<void>( (resolve, reject) => { try {
-                        get_OpenModifications_On_PSMHolder_AllForSearch_Result.promise.catch(reason => { reject(reason) })
-                        get_OpenModifications_On_PSMHolder_AllForSearch_Result.promise.then(value => { try {
-                            openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId.
-                            set( projectSearchId, value.openModifications_On_PSM_For_MainFilters_Holder )
-                            resolve();
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                    promises.push(promise);
+                    const promise = new Promise<void>( ( resolve, reject ) => {
+                        try {
+                            get_OpenModifications_On_PSMHolder_AllForSearch_Result.promise.catch( reason => {
+                                reject( reason )
+                            } )
+                            get_OpenModifications_On_PSMHolder_AllForSearch_Result.promise.then( value => {
+                                try {
+                                    openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId.set( projectSearchId, value.openModifications_On_PSM_For_MainFilters_Holder )
+                                    resolve();
+                                } catch ( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                    throw e
+                                }
+                            } )
+                        } catch ( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                            throw e
+                        }
+                    } )
+                    promises.push( promise );
                 } else {
-                    throw Error("get_OpenModifications_On_PSMHolder_AllForSearch_Result NO data or promise")
+                    throw Error( "get_OpenModifications_On_PSMHolder_AllForSearch_Result NO data or promise" )
                 }
             }
             {
                 const get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result =
-                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                    get_commonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters().
-                    get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch()
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters().get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch()
 
                 if ( get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.data ) {
-                    psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.
-                    set( projectSearchId, get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.data.psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder )
+                    psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.set( projectSearchId, get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.data.psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder )
                 } else if ( get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.promise ) {
-                    const promise = new Promise<void>( (resolve, reject) => { try {
-                        get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.promise.catch(reason => { reject(reason) })
-                        get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.promise.then(value => { try {
-                            psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.
-                            set( projectSearchId, value.psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder )
-                            resolve();
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                    promises.push(promise);
+                    const promise = new Promise<void>( ( resolve, reject ) => {
+                        try {
+                            get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.promise.catch( reason => {
+                                reject( reason )
+                            } )
+                            get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.promise.then( value => {
+                                try {
+                                    psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.set( projectSearchId, value.psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder )
+                                    resolve();
+                                } catch ( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                    throw e
+                                }
+                            } )
+                        } catch ( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                            throw e
+                        }
+                    } )
+                    promises.push( promise );
                 } else {
-                    throw Error("get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result NO data or promise")
+                    throw Error( "get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result NO data or promise" )
                 }
             }
         }
@@ -2759,7 +2862,8 @@ const _compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root = func
 
     if ( promises.length === 0 ) {
 
-        return { promise: undefined, data: _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_LoadData({
+        return {
+            promise: undefined, data: _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_LoadData( {
                 anyFilter__HasFilterValue,
                 add_open_modifications_unlocalized_in_all_peptide_positions,
                 show_only_modifications_filtered_on__excluding_static,
@@ -2776,41 +2880,52 @@ const _compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root = func
                 variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId,
                 openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
                 psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
-            })}
+            } )
+        }
     }
 
     const promisesAll = Promise.all( promises )
 
     return {
         data: undefined,
-        promise: new Promise<INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root>( (resolve, reject) => { try {
+        promise: new Promise<INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root>( ( resolve, reject ) => {
+            try {
 
-            promisesAll.catch( reason => reject(reason) )
-            promisesAll.then(novalue => { try {
+                promisesAll.catch( reason => reject( reason ) )
+                promisesAll.then( novalue => {
+                    try {
 
-                const result = _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_LoadData({
-                    anyFilter__HasFilterValue,
-                    add_open_modifications_unlocalized_in_all_peptide_positions,
-                    show_only_modifications_filtered_on__excluding_static,
-                    scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox,
-                    scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount,
-                    modificationMass_UserSelections_StateObject,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-                    proteinSequence_Length,
-                    projectSearchIds,
-                    proteinSequenceVersionId,
-                    reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-                    proteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId,
-                    numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId,
-                    variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId,
-                    openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
-                    psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
-                })
+                        const result = _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_LoadData( {
+                            anyFilter__HasFilterValue,
+                            add_open_modifications_unlocalized_in_all_peptide_positions,
+                            show_only_modifications_filtered_on__excluding_static,
+                            scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox,
+                            scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount,
+                            modificationMass_UserSelections_StateObject,
+                            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+                            proteinSequence_Length,
+                            projectSearchIds,
+                            proteinSequenceVersionId,
+                            reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+                            proteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+                            numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId,
+                            variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+                            openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
+                            psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
+                        } )
 
-                resolve( result )
+                        resolve( result )
 
-            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    } catch ( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                        throw e
+                    }
+                } )
+            } catch ( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                throw e
+            }
+        } )
     }
 }
 
@@ -2839,7 +2954,7 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
         variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder_Map_Key_ProjectSearchId,
         openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId,
         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
-    } : {
+    }: {
         anyFilter__HasFilterValue: boolean
 
         add_open_modifications_unlocalized_in_all_peptide_positions: boolean
@@ -2849,14 +2964,14 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
         scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox: boolean
         scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount: number
 
-        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;  // Used for filtering modification masses
+        modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject;  // Used for filtering modification masses
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 
         proteinSequence_Length: number
-        projectSearchIds : Array<number>
-        proteinSequenceVersionId : number
+        projectSearchIds: Array<number>
+        proteinSequenceVersionId: number
 
-        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
+        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
 
         proteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder>
         numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_Num_PSMs_For_reportedPeptideIds_ResultDataType>
@@ -2864,7 +2979,7 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
         openModifications_On_PSM_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__OpenModifications_On_PSM_For_MainFilters_Holder>
         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder>
     }
-) : INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root {
+): INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root {
 
     const psmCount__Passes_ALL_Filters__At_ProteinPosition_Map_Key_ProteinPosition: Map<number, number> = new Map()
     const psmCount__Passes_PSM_ReportedPeptide_Etc_Filters__At_ProteinPosition_Map_Key_ProteinPosition: Map<number, number> = new Map()
@@ -3133,12 +3248,12 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
             let peptidePositions_SingleEntry_FromMap = peptidePositions_SingleEntry_AllUnique_Start_End_Map_Key_StartEnd_String.get( protein_Start_End_Positions_As_DelimitedString_For_MapKey )
             if ( ! peptidePositions_SingleEntry_FromMap ) {
 
-                peptidePositions_SingleEntry_FromMap = new INTERNAL__PeptidePositions_SingleEntry_InRow({
-                        start_Position: proteinCoverage_Entry.proteinStartPosition,
-                        end_Position: proteinCoverage_Entry.proteinEndPosition,
-                        peptideLength: proteinCoverage_Entry.proteinEndPosition - proteinCoverage_Entry.proteinStartPosition + 1,  // ' + 1 ' since End Position is last position of peptide NOT position after last position of peptide like many things 'end' function like substring
-                        proteinCoverage_Entry_reportedPeptideId_IN_reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId
-                    })
+                peptidePositions_SingleEntry_FromMap = new INTERNAL__PeptidePositions_SingleEntry_InRow( {
+                    start_Position: proteinCoverage_Entry.proteinStartPosition,
+                    end_Position: proteinCoverage_Entry.proteinEndPosition,
+                    peptideLength: proteinCoverage_Entry.proteinEndPosition - proteinCoverage_Entry.proteinStartPosition + 1,  // ' + 1 ' since End Position is last position of peptide NOT position after last position of peptide like many things 'end' function like substring
+                    proteinCoverage_Entry_reportedPeptideId_IN_reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId
+                } )
 
                 peptidePositions_SingleEntry_AllUnique_Start_End_Map_Key_StartEnd_String.set( protein_Start_End_Positions_As_DelimitedString_For_MapKey, peptidePositions_SingleEntry_FromMap )
             }
@@ -3148,8 +3263,8 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
                 const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( proteinCoverage_Entry.reportedPeptideId )
                 if ( numPsmsForReportedPeptideId === undefined ) {
                     const msg = "numPsmsForReportedPeptideIdMap.get( proteinCoverage_Entry.reportedPeptideId ) returned undefined for proteinCoverage_Entry.reportedPeptideId: " + proteinCoverage_Entry.reportedPeptideId
-                    console.warn(msg)
-                    throw Error(msg)
+                    console.warn( msg )
+                    throw Error( msg )
                 }
 
                 if ( numPsmsForReportedPeptideId ) {
@@ -3199,8 +3314,8 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
                     const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId_AndIts_PSM_IDs_ENTRY__From_Filtered_ReportedPeptideIds_AndTheir_PsmIds.reportedPeptideId )
                     if ( numPsmsForReportedPeptideId === undefined ) {
                         const msg = "numPsmsForReportedPeptideIdMap.get( reportedPeptideId_AndIts_PSM_IDs_ENTRY__From_Filtered_ReportedPeptideIds_AndTheir_PsmIds.reportedPeptideId ) returned undefined for reportedPeptideId_AndIts_PSM_IDs_ENTRY__From_Filtered_ReportedPeptideIds_AndTheir_PsmIds.reportedPeptideId: " + reportedPeptideId_AndIts_PSM_IDs_ENTRY__From_Filtered_ReportedPeptideIds_AndTheir_PsmIds.reportedPeptideId
-                        console.warn(msg)
-                        throw Error(msg)
+                        console.warn( msg )
+                        throw Error( msg )
                     }
 
                     let psmCount_For_ReportedPeptideIds_WithoutPsmIds_ThatPasses_ALL_Filters_Map_ReportedPeptideId =
@@ -3352,8 +3467,6 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
             }
         }
     }
-
-
 
 
     peptidePositions_SingleEntry_AllUnique_Start_End_Array.sort( ( a, b ) => {
@@ -3650,7 +3763,8 @@ class INTERNAL__Modifications_At_Single_Protein_Position_SingleEntry {
         this.modifications_Passes_ALL_Filters = new INTERNAL__Modifications_At_Single_Protein_Position_SingleEntry_Passes_ALL_Filters_OR_Passes_ONLY_PSM_Etc()
     }
 
-    private _fakeForceCallContructor() {}
+    private _fakeForceCallContructor() {
+    }
 }
 
 
@@ -3677,7 +3791,8 @@ class INTERNAL__Modifications_At_Single_Protein_Position_SingleEntry_Passes_ALL_
         return false
     }
 
-    private _fakeForceCallContructor() {}
+    private _fakeForceCallContructor() {
+    }
 }
 
 /**
@@ -3706,7 +3821,7 @@ class INTERNAL__PeptidePositions_SingleEntry_InRow {
     constructor(
         {
             start_Position, end_Position, peptideLength, proteinCoverage_Entry_reportedPeptideId_IN_reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId
-        } : {
+        }: {
             start_Position: number
             end_Position: number
             peptideLength: number
@@ -3719,7 +3834,8 @@ class INTERNAL__PeptidePositions_SingleEntry_InRow {
         this.proteinCoverage_Entry_reportedPeptideId_IN_reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId = proteinCoverage_Entry_reportedPeptideId_IN_reportedPeptideIds_AndTheir_PSM_IDs__For_ProjectSearchId
     }
 
-    private _fakeForceCallContructor() {}
+    private _fakeForceCallContructor() {
+    }
 }
 
 /**
@@ -3738,6 +3854,69 @@ class INTERNAL__PeptidePositions_SingleEntry_InRow__All_OR_OnlyPasses_AllFilters
     constructor() {
     }
 
-    private _fakeForceCallContructor() {}
+    private _fakeForceCallContructor() {
+    }
 }
 
+
+////////
+
+/**
+ * Converts a hex color string (e.g., "#FF0000" or "#ff0000") to an RGB object.
+ * Handles both 3-digit and 6-digit hex codes.
+ * @param hex The hex color string.
+ * @returns An object with r, g, and b properties (0-255).
+ */
+function _hexColorToRgbColor( hex: string ): { r: number; g: number; b: number } | null {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace( shorthandRegex, function ( m, r, g, b ) {
+        return r + r + g + g + b + b;
+    } );
+
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec( hex );
+    return result ? {
+        r: parseInt( result[ 1 ], 16 ),
+        g: parseInt( result[ 2 ], 16 ),
+        b: parseInt( result[ 3 ], 16 )
+    } : null;
+}
+
+/**
+ * Converts an RGB object to a hex color string.
+ * @param r Red value (0-255).
+ * @param g Green value (0-255).
+ * @param b Blue value (0-255).
+ * @returns The hex color string (e.g., "#FF0000").
+ */
+function _rgbColorToHexColor(r: number, g: number, b: number): string {
+    return "#" + [r, g, b].map(x => {
+        const hex = Math.round(x).toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+    }).join('');
+}
+
+/**
+ * Interpolates between two hex colors by a given factor.
+ * @param fraction The scaling factor (0 to 1).
+ * @returns The scaled color in rgb format.
+ */
+function _scaleColor_BasedOn_Fraction( fraction: number ) {
+
+    if ( ! _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__DARK__RGB || ! _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__LIGHT__RGB ) {
+        throw new Error( "Invalid color format provided." );
+    }
+
+    const rgb1 = _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__LIGHT__RGB
+    const rgb2 = _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__DARK__RGB
+
+    const red = rgb1.r + fraction * ( rgb2.r - rgb1.r );
+    const green = rgb1.g + fraction * ( rgb2.g - rgb1.g );
+    const blue = rgb1.b + fraction * ( rgb2.b - rgb1.b );
+
+    return _rgbColorToHexColor( red, green, blue )
+}
+
+// const _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__DARK__RGB = _hexColorToRgbColor( _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL )
+//
+// const _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__LIGHT__RGB = _hexColorToRgbColor( limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_medium )
+//
