@@ -220,16 +220,16 @@ public class Limelight_DatabaseCleanup__Delete_Single_Search_And_Children {
 		if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
 			return;
 		}
-		{
-			final String TABLE = "search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl";
-
-			final String SQL = 
-					"DELETE FROM " + TABLE
-							+ " WHERE search_id = " + searchId
-							+ " LIMIT " + OTHER_DELETE_BATCH_SIZE;
-
-			Limelight_DatabaseCleanup__Execute_SQL_Until_NoRecordsUpdated.getInstance().execute_SQL_Until_NoRecordsUpdated( SQL, TABLE, callFrom );
-		}
+//		{
+//			final String TABLE = "search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl";  //  REMOVED since table Deleted
+//
+//			final String SQL = 
+//					"DELETE FROM " + TABLE
+//							+ " WHERE search_id = " + searchId
+//							+ " LIMIT " + OTHER_DELETE_BATCH_SIZE;
+//
+//			Limelight_DatabaseCleanup__Execute_SQL_Until_NoRecordsUpdated.getInstance().execute_SQL_Until_NoRecordsUpdated( SQL, TABLE, callFrom );
+//		}
 
 		if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
 			return;
@@ -654,16 +654,16 @@ public class Limelight_DatabaseCleanup__Delete_Single_Search_And_Children {
 		if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
 			return;
 		}
-		{
-			final String TABLE = "search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl";
-
-			final String SQL = 
-					"DELETE FROM " + TABLE
-							+ " WHERE search_id = " + searchId
-							+ " LIMIT " + OTHER_DELETE_BATCH_SIZE;
-
-			Limelight_DatabaseCleanup__Execute_SQL_Until_NoRecordsUpdated.getInstance().execute_SQL_Until_NoRecordsUpdated( SQL, TABLE, callFrom );
-		}
+//		{
+//			final String TABLE = "search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl";  //  REMOVED since table Deleted
+//
+//			final String SQL = 
+//					"DELETE FROM " + TABLE
+//							+ " WHERE search_id = " + searchId
+//							+ " LIMIT " + OTHER_DELETE_BATCH_SIZE;
+//
+//			Limelight_DatabaseCleanup__Execute_SQL_Until_NoRecordsUpdated.getInstance().execute_SQL_Until_NoRecordsUpdated( SQL, TABLE, callFrom );
+//		}
 
 		if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
 			return;
