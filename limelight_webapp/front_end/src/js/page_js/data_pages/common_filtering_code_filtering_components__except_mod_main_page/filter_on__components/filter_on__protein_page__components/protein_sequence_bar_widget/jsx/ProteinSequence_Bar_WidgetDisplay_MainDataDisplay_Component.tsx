@@ -2473,7 +2473,6 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
                         <TooltipContents_FunctionComponent/>
                     }
                     { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                    open={ true }  //  TODO  TEMP HARD CODED
                 >
                     <rect
                         opacity={ 0 }
@@ -2500,8 +2499,36 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
     private _tooltipContents_FunctionComponent() {
 
         const proteinSequence = this.props.proteinSequenceString
+        const proteinSequenceLength = proteinSequence.length
 
         var sequencePositionZeroBased = this._mousePointer_ProteinPosition - 1; //  subtract 1 for indexing since charAt starts at zero
+        var sequenceAtPosition = proteinSequence.charAt( ( sequencePositionZeroBased ) );
+
+
+        let sequenceAtPositionLeft1 = "";
+        let sequenceAtPositionLeft2 = "";
+        let sequenceAtPositionLeft3 = "";
+        let sequenceAtPositionRight1 = "";
+        let sequenceAtPositionRight2 = "";
+        let sequenceAtPositionRight3 = "";
+        if ( sequencePositionZeroBased > 0 ) {
+            sequenceAtPositionLeft1 = proteinSequence.charAt( ( sequencePositionZeroBased - 1 ) );
+        }
+        if ( sequencePositionZeroBased > 1 ) {
+            sequenceAtPositionLeft2 = proteinSequence.charAt( ( sequencePositionZeroBased - 2 ) );
+        }
+        if ( sequencePositionZeroBased > 2 ) {
+            sequenceAtPositionLeft3 = proteinSequence.charAt( ( sequencePositionZeroBased - 3 ) );
+        }
+        if ( sequencePositionZeroBased < proteinSequenceLength - 1 ) {
+            sequenceAtPositionRight1 = proteinSequence.charAt( ( sequencePositionZeroBased + 1 ) );
+        }
+        if ( sequencePositionZeroBased < proteinSequenceLength - 2 ) {
+            sequenceAtPositionRight2 = proteinSequence.charAt( ( sequencePositionZeroBased + 2 ) );
+        }
+        if ( sequencePositionZeroBased < proteinSequenceLength - 3 ) {
+            sequenceAtPositionRight3 = proteinSequence.charAt( ( sequencePositionZeroBased + 3 ) );
+        }
 
         let psmCount_All_At_ProteinPosition: number = undefined
         let psmCount_PassesAllFilters_At_ProteinPosition: number = undefined
@@ -2519,16 +2546,10 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
             }
         }
 
-        const svgWidth = 190 //  double 104
+        const svgWidth = 104
         const svgHeight = 26
         const borderWidth = 1
         const borderColor = "red"
-
-        const tooltip_ResidueLetters_AND_TrypsinCutPointLines_Elements = _create_Tooltip_ResidueLetters_AND_TrypsinCutPointLines_Elements({
-            proteinSequence, sequencePositionZeroBased,
-            trypsin_CutPoints_For_ProteinSequence_Set: this.props.trypsin_CutPoints_For_ProteinSequence_Set,
-            svgWidth
-        })
 
         return (
             <div>
@@ -2542,7 +2563,7 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
 
                         <svg width={ svgWidth } height={ svgHeight }>
 
-                            {/*  Rectangle the fill size of SVG to make border */ }
+                            {/*  Rectangle the fill size of SVG  */ }
 
                             <rect
                                 x={ 0.5 }
@@ -2554,7 +2575,85 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
                                 fill={ limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_standard_background_color }
                             />
 
-                            { tooltip_ResidueLetters_AND_TrypsinCutPointLines_Elements }
+                            {/* sequence letters before, starting with one closest to position */ }
+                            <text x="8" y="15" textAnchor="middle">
+                                <tspan style={ { fontSize: 9 } }>{ sequenceAtPositionLeft3 }</tspan>
+                            </text>
+                            <text x="20" y="16" textAnchor="middle">
+                                <tspan style={ { fontSize: 11 } }>{ sequenceAtPositionLeft2 }</tspan>
+                            </text>
+                            <text x="34" y="17" textAnchor="middle">
+                                <tspan style={ { fontSize: 15 } }>{ sequenceAtPositionLeft1 }</tspan>
+                            </text>
+
+                            {/* sequence letter at position first */ }
+                            <text x="52" y="20" textAnchor="middle">
+                                <tspan style={ { fontSize: 24 } }>{ sequenceAtPosition }</tspan>
+                            </text>
+
+                            {/* sequence letters after, starting with one closest to position */ }
+                            <text x="70" y="17" textAnchor="middle">
+                                <tspan style={ { fontSize: 15 } }>{ sequenceAtPositionRight1 }</tspan>
+                            </text>
+                            <text x="84" y="16" textAnchor="middle">
+                                <tspan style={ { fontSize: 11 } }>{ sequenceAtPositionRight2 }</tspan>
+                            </text>
+                            <text x="96" y="15" textAnchor="middle">
+                                <tspan style={ { fontSize: 9 } }>{ sequenceAtPositionRight3 }</tspan>
+                            </text>
+
+
+                            {/* position below sequence letter at position first */ }
+                            {/*<text x="52" y="45" textAnchor="middle">*/ }
+                            {/*    <tspan style={ { fontSize: 15 } }>Pos: { this._mousePointer_ProteinPosition }</tspan>*/ }
+                            {/*</text>*/ }
+
+                            {/* Trypsin Cut points */ }
+
+                            {/* Trypsin Cut before center residue */ }
+                            { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition - 1 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
+                                <line
+                                    x1="42" y1="3" x2="42" y2="22"
+                                    stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS } strokeWidth="2"
+                                />
+                            ) : null }
+
+                            {/* Trypsin Cut before residue 1 left of center */ }
+                            { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition - 2 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
+                                <line
+                                    x1="26" y1="5" x2="26" y2="19"
+                                    stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS } strokeWidth="2"
+                                />
+                            ) : null }
+                            {/* Trypsin Cut before residue 2 left of center */ }
+                            { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition - 3 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
+                                <line
+                                    x1="14" y1="6" x2="14" y2="18"
+                                    stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS } strokeWidth="1"
+                                />
+                            ) : null }
+
+                            {/* Trypsin Cut after center residue */ }
+                            { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition + 0 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
+                                <line
+                                    x1="62" y1="3" x2="62" y2="22"
+                                    stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS } strokeWidth="2"
+                                />
+                            ) : null }
+                            {/* Trypsin Cut after residue 1 right of center */ }
+                            { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition + 1 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
+                                <line
+                                    x1="78" y1="5" x2="78" y2="19"
+                                    stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS } strokeWidth="2"
+                                />
+                            ) : null }
+                            {/* Trypsin Cut after residue 2 right of center */ }
+                            { this.props.trypsin_CutPoints_For_ProteinSequence_Set.has( this._mousePointer_ProteinPosition + 2 + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ? (
+                                <line
+                                    x1="91" y1="6" x2="91" y2="18"
+                                    stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS } strokeWidth="1"
+                                />
+                            ) : null }
 
                         </svg>
                     </div>
@@ -2599,433 +2698,6 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
         )
     }
 }
-
-/**
- *
- * @param sequencePositionZeroBased
- * @param proteinSequence
- * @param svgWidth
- */
-const _create_Tooltip_ResidueLetters_AND_TrypsinCutPointLines_Elements = function (
-    {
-        sequencePositionZeroBased, proteinSequence,
-        trypsin_CutPoints_For_ProteinSequence_Set,
-        svgWidth
-    } : {
-        sequencePositionZeroBased: number
-        proteinSequence: string
-        trypsin_CutPoints_For_ProteinSequence_Set: Set<number>
-        svgWidth: number
-    }) : Array<React.JSX.Element> {
-
-    const elementArray_Result: Array<React.JSX.Element> = []
-
-    const fontSize_MiddleCharacter = 24
-    const x_MiddleCharacter = svgWidth / 2
-    const y_MiddleCharacter = 20
-
-
-    {
-        //* !!!   sequence letter at position !!!!
-
-        // const sequenceAtPosition = proteinSequence.charAt( ( sequencePositionZeroBased ) );
-
-        const sequenceAtPosition = "M"//  TODO  TEMP HARD CODED
-
-        const element = (
-
-            <React.Fragment
-                key="Middle Residue"
-            >
-                <text
-                    x={ x_MiddleCharacter }
-                    y={ y_MiddleCharacter }
-                    textAnchor="middle"
-                >
-                    <tspan style={ { fontSize: fontSize_MiddleCharacter } }>{ sequenceAtPosition }</tspan>
-                </text>
-            </React.Fragment>
-        )
-        elementArray_Result.push( element )
-    }
-
-    ////////   Residue Letters
-
-    //  Compute Left Side Residue Letters
-    _create_Tooltip_ResidueLetters_Elements__ComputeLeftOrRight({
-        computeLeft: true,
-        elementArray_Result,  // Updated
-        sequencePositionZeroBased, proteinSequence, fontSize_MiddleCharacter, x_MiddleCharacter, y_MiddleCharacter
-    })
-
-    //  Compute Right Side Residue Letters
-    _create_Tooltip_ResidueLetters_Elements__ComputeLeftOrRight({
-        computeLeft: false,
-        elementArray_Result,  // Updated
-        sequencePositionZeroBased, proteinSequence, fontSize_MiddleCharacter, x_MiddleCharacter, y_MiddleCharacter
-    })
-
-    {      ////////   Trypsin Cut Point Lines
-
-        {  //  Compute Left Side Trypsin Cut Point Lines
-
-            //  Compute Left Side Trypsin Cut Point Lines
-            _create_Tooltip_TrypsinCutPoints_Elements__ComputeLeftOrRight( {
-                computeLeft: true,
-                elementArray_Result,  // Updated
-                sequencePositionZeroBased,
-                proteinSequence,
-                x_MiddleCharacter,
-                y_MiddleCharacter_Baseline: y_MiddleCharacter,
-                trypsin_CutPoints_For_ProteinSequence_Set
-            } )
-        }
-
-        {  //  Compute Right Side Trypsin Cut Point Lines
-            _create_Tooltip_TrypsinCutPoints_Elements__ComputeLeftOrRight( {
-                computeLeft: false,
-                elementArray_Result,  // Updated
-                sequencePositionZeroBased,
-                proteinSequence,
-                x_MiddleCharacter,
-                y_MiddleCharacter_Baseline: y_MiddleCharacter,
-                trypsin_CutPoints_For_ProteinSequence_Set
-            } )
-        }
-    }
-
-    return elementArray_Result
-}
-
-/**
- *
- * @param computeLeft
- * @param entry
- * @param index
- * @param sequencePositionZeroBased
- * @param proteinSequence
- * @param fontSize_MiddleCharacter
- * @param y_MiddleCharacter
- * @param x_MiddleCharacter
- */
-const _create_Tooltip_ResidueLetters_Elements__ComputeLeftOrRight = (
-    {
-        computeLeft,
-        elementArray_Result,
-        sequencePositionZeroBased, proteinSequence,
-        fontSize_MiddleCharacter, y_MiddleCharacter, x_MiddleCharacter
-    } : {
-        computeLeft: boolean /* false then compute right */
-
-        /**
-         * Updated
-         */
-        elementArray_Result: Array<React.JSX.Element>
-
-        sequencePositionZeroBased: number
-        proteinSequence: string
-
-        fontSize_MiddleCharacter: number
-        x_MiddleCharacter: number
-        y_MiddleCharacter: number
-
-    }) : React.JSX.Element => {
-
-
-    let x = x_MiddleCharacter
-    let y = y_MiddleCharacter
-    let fontSize = fontSize_MiddleCharacter
-
-    //  Compute Right Side Residue Letters
-    for ( let index = 0; index < _positionTooltip_ResidueLetters_EachSide_Formatting.length; index++ ) {
-
-        const entry = _positionTooltip_ResidueLetters_EachSide_Formatting[ index ]
-
-        let sequencePositionZeroBased_For_ThisResidue: number = undefined
-
-        let offset_Multiplier: number = undefined
-
-        if ( computeLeft ) {
-
-            sequencePositionZeroBased_For_ThisResidue = sequencePositionZeroBased - ( index + 1 )
-            offset_Multiplier = -1
-
-            if ( sequencePositionZeroBased_For_ThisResidue < 0 ) {
-                //  Outside of sequence range so return null
-                return null  // EARLY RETURN
-            }
-        } else {
-            sequencePositionZeroBased_For_ThisResidue = sequencePositionZeroBased + ( index + 1 )
-
-            offset_Multiplier = 1
-
-            if ( sequencePositionZeroBased_For_ThisResidue >= proteinSequence.length ) {
-                //  Outside of sequence range so return null
-                return null  // EARLY RETURN
-            }
-        }
-
-        x = x + ( entry.x_offset_From_PrevPosition_OR_CenterPosition * offset_Multiplier )
-        y = y + entry.y_offset_From_PrevPosition_OR_CenterPosition
-        fontSize = fontSize + entry.fontSize_Offset_From_PrevPosition_OR_CenterPosition
-
-        // const residueLetter_At_This_Position = proteinSequence.charAt( sequencePositionZeroBased_For_ThisResidue )
-
-        const residueLetter_At_This_Position = "M"  //  TODO  TEMP HARD CODED
-
-        let key = "right"
-        if ( computeLeft ) {
-            key = "left"
-        }
-        key += "_residue_letter_" + index
-
-        const element = (
-            <React.Fragment
-                key={ key }
-            >
-                <text
-                    x={ x }
-                    y={ y }
-                    textAnchor="middle"
-                >
-                    <tspan style={ { fontSize } }>{ residueLetter_At_This_Position }</tspan>
-                </text>
-            </React.Fragment>
-        )
-
-        elementArray_Result.push( element )
-    }
-}
-
-/**
- *
- * @param computeLeft
- * @param entry
- * @param index
- * @param y_MiddleCharacter
- * @param x_MiddleCharacter
- */
-const _create_Tooltip_TrypsinCutPoints_Elements__ComputeLeftOrRight = (
-    {
-        computeLeft,
-        elementArray_Result,
-        sequencePositionZeroBased, proteinSequence,
-        x_MiddleCharacter, y_MiddleCharacter_Baseline,
-        trypsin_CutPoints_For_ProteinSequence_Set
-    } : {
-        computeLeft: boolean /* false then compute right */
-
-        /**
-         * Updated
-         */
-        elementArray_Result: Array<React.JSX.Element>
-
-        sequencePositionZeroBased: number
-        proteinSequence: string
-
-        x_MiddleCharacter: number
-
-        /**
-         * Baseline of middle character
-         */
-        y_MiddleCharacter_Baseline: number
-
-        trypsin_CutPoints_For_ProteinSequence_Set: Set<number>
-
-    }) : React.JSX.Element => {
-
-    let x1_x2 = x_MiddleCharacter
-    let y2 = y_MiddleCharacter_Baseline
-    let lineLength = 0
-
-    //  Compute Left Side Trypsin Cut Point Lines
-    for ( let index = 0; index < _positionTooltip_TrypsinCutPointLines_EachSide_Formatting.length; index++ ) {
-
-        const entry = _positionTooltip_TrypsinCutPointLines_EachSide_Formatting[ index ]
-
-        let sequencePositionZeroBased_For_ThisResidue: number = undefined
-
-        let offset_Multiplier: number = undefined
-
-        if ( computeLeft ) {
-
-            sequencePositionZeroBased_For_ThisResidue = sequencePositionZeroBased - ( index )
-            offset_Multiplier = -1
-
-            if ( sequencePositionZeroBased_For_ThisResidue < 0 ) {
-                //  Outside of sequence range so return null
-                return null  // EARLY RETURN
-            }
-        } else {
-            sequencePositionZeroBased_For_ThisResidue = sequencePositionZeroBased + ( index + 1 )
-
-            offset_Multiplier = 1
-
-            if ( sequencePositionZeroBased_For_ThisResidue >= proteinSequence.length ) {
-                //  Outside of sequence range so return null
-                return null  // EARLY RETURN
-            }
-        }
-
-        //  TODO  TEMP HARD CODED
-        //  FAKE Comment out so show all lines
-        // if ( ! trypsin_CutPoints_For_ProteinSequence_Set.has( sequencePositionZeroBased_For_ThisResidue + trypsin_CutPointsForSequence_Compute_Constant__AddForCenterBetweenPositions ) ) {
-        //
-        //     return null  // EARLY RETURN
-        // }
-
-        x1_x2 = x1_x2 + ( entry.x_Offset_From_PrevLine_Position_OR_MiddleCharacter * offset_Multiplier )
-        y2 = y2 + entry.y2_Offset_From_PrevLine_Position_OR__y_MiddleCharacter_Baseline
-        lineLength = lineLength + entry.lineLength_Offset_PrevLine_Position_OR__Zero_For_FirstLine_LineLength
-
-        const y1 = y2 - lineLength
-
-        let key = "right"
-        if ( computeLeft ) {
-            key = "left"
-        }
-        key += "_trypsin_cut_point_line_" + index
-
-        const element = (
-            <React.Fragment
-                key={ key }
-            >
-                <line
-                    x1={ x1_x2 }
-                    y1={ y1 }
-                    x2={ x1_x2 }
-                    y2={ y2 }
-                    stroke={ _STANDARD_COLOR__TRYPSIN_CUT_POINTS } strokeWidth="2"
-                />
-            </React.Fragment>
-        )
-
-        elementArray_Result.push( element )
-    }
-}
-
-/////////////////
-
-//  Tooltip Residue Letter data per position offset from center
-
-class INTERNAL__PositionTooltip_ResidueLetters_Entry {
-    x_offset_From_PrevPosition_OR_CenterPosition: number
-    y_offset_From_PrevPosition_OR_CenterPosition: number
-    fontSize_Offset_From_PrevPosition_OR_CenterPosition: number
-}
-
-/**
- * All are offsets.  Negative if next value is smaller (Except for 'x_Offset...')
- */
-const _positionTooltip_ResidueLetters_EachSide_Formatting: Array<INTERNAL__PositionTooltip_ResidueLetters_Entry> =[
-    {
-        x_offset_From_PrevPosition_OR_CenterPosition: 19,
-        y_offset_From_PrevPosition_OR_CenterPosition: -3,
-        fontSize_Offset_From_PrevPosition_OR_CenterPosition: -9,
-    }, {
-        x_offset_From_PrevPosition_OR_CenterPosition: 15,
-        y_offset_From_PrevPosition_OR_CenterPosition: -1,
-        fontSize_Offset_From_PrevPosition_OR_CenterPosition: -2,
-    }, {
-        x_offset_From_PrevPosition_OR_CenterPosition: 14,
-        y_offset_From_PrevPosition_OR_CenterPosition: -0,
-        fontSize_Offset_From_PrevPosition_OR_CenterPosition: -1,
-    }, {
-        x_offset_From_PrevPosition_OR_CenterPosition: 14,
-        y_offset_From_PrevPosition_OR_CenterPosition: -1,
-        fontSize_Offset_From_PrevPosition_OR_CenterPosition: -1,
-    }, {
-        x_offset_From_PrevPosition_OR_CenterPosition: 13,
-        y_offset_From_PrevPosition_OR_CenterPosition: -0,
-        fontSize_Offset_From_PrevPosition_OR_CenterPosition: -1,
-    }, {
-        x_offset_From_PrevPosition_OR_CenterPosition: 12,
-        y_offset_From_PrevPosition_OR_CenterPosition: -1,
-        fontSize_Offset_From_PrevPosition_OR_CenterPosition: -1,
-    }
-] as const
-
-//  WAS  Font size smallest is -15 from middle, -6 from first from center to last from center
-
-// /**
-//  * All are offsets.  Negative if next value is smaller (Except for 'x_Offset...')
-//  */
-// const _positionTooltip_ResidueLetters_EachSide_Formatting: Array<INTERNAL__PositionTooltip_ResidueLetters_Entry> =[
-//     {
-//         x_offset_From_PrevPosition_OR_CenterPosition: 18,
-//         y_offset_From_PrevPosition_OR_CenterPosition: -3,
-//         fontSize_Offset_From_PrevPosition_OR_CenterPosition: -9,
-//     }, {
-//         x_offset_From_PrevPosition_OR_CenterPosition: 14,
-//         y_offset_From_PrevPosition_OR_CenterPosition: -1,
-//         fontSize_Offset_From_PrevPosition_OR_CenterPosition: -4,
-//     }, {
-//         x_offset_From_PrevPosition_OR_CenterPosition: 12,
-//         y_offset_From_PrevPosition_OR_CenterPosition: -1,
-//         fontSize_Offset_From_PrevPosition_OR_CenterPosition: -2,
-//     }
-// ] as const
-
-/////////////////
-
-//  Tooltip Trypsin Cut Point data per position offset from center
-
-class INTERNAL__PositionTooltip_TrypsinCutPointLines_Entry {
-    x_Offset_From_PrevLine_Position_OR_MiddleCharacter: number
-    y2_Offset_From_PrevLine_Position_OR__y_MiddleCharacter_Baseline: number
-    lineLength_Offset_PrevLine_Position_OR__Zero_For_FirstLine_LineLength: number
-}
-
-/**
- * All are offsets.  Negative if next value is smaller (Except for 'x_Offset...')
- */
-const _positionTooltip_TrypsinCutPointLines_EachSide_Formatting: Array<INTERNAL__PositionTooltip_TrypsinCutPointLines_Entry> =[
-    {
-        x_Offset_From_PrevLine_Position_OR_MiddleCharacter: 11,
-        y2_Offset_From_PrevLine_Position_OR__y_MiddleCharacter_Baseline: 2,  //  Positive to put the starting bottom end of line below the character baseline
-        lineLength_Offset_PrevLine_Position_OR__Zero_For_FirstLine_LineLength: 20
-    }, {
-        x_Offset_From_PrevLine_Position_OR_MiddleCharacter: 16,
-        y2_Offset_From_PrevLine_Position_OR__y_MiddleCharacter_Baseline: -2,  //  Rest Negative to move the bottom end of the line up
-        lineLength_Offset_PrevLine_Position_OR__Zero_For_FirstLine_LineLength: -5
-    }, {
-        x_Offset_From_PrevLine_Position_OR_MiddleCharacter: 14,
-        y2_Offset_From_PrevLine_Position_OR__y_MiddleCharacter_Baseline: -1,
-        lineLength_Offset_PrevLine_Position_OR__Zero_For_FirstLine_LineLength: -2
-    }, {
-        x_Offset_From_PrevLine_Position_OR_MiddleCharacter: 14,
-        y2_Offset_From_PrevLine_Position_OR__y_MiddleCharacter_Baseline: -2,
-        lineLength_Offset_PrevLine_Position_OR__Zero_For_FirstLine_LineLength: -2
-    }, {
-        x_Offset_From_PrevLine_Position_OR_MiddleCharacter: 13,
-        y2_Offset_From_PrevLine_Position_OR__y_MiddleCharacter_Baseline: -1,
-        lineLength_Offset_PrevLine_Position_OR__Zero_For_FirstLine_LineLength: -1
-    }, {
-        x_Offset_From_PrevLine_Position_OR_MiddleCharacter: 13,
-        y2_Offset_From_PrevLine_Position_OR__y_MiddleCharacter_Baseline: -0,
-        lineLength_Offset_PrevLine_Position_OR__Zero_For_FirstLine_LineLength: -1
-    }
-] as const
-
-//  WAS  Shortest line 14
-// /**
-//  * All are offsets.  Negative if next value is smaller (Except for 'x_Offset...')
-//  */
-// const _positionTooltip_TrypsinCutPointLines_EachSide_Formatting: Array<INTERNAL__PositionTooltip_TrypsinCutPointLines_Entry> =[
-//     {
-//         x_Offset_From_PrevLine_Position_OR_MiddleCharacter: 10,
-//         y2_Offset_From_PrevLine_Position_OR__y_MiddleCharacter_Baseline: 2,
-//         lineLength_Offset_PrevLine_Position_OR__Zero_For_FirstLine_LineLength: 22
-//     }, {
-//         x_Offset_From_PrevLine_Position_OR_MiddleCharacter: 16,
-//         y2_Offset_From_PrevLine_Position_OR__y_MiddleCharacter_Baseline: -2,
-//         lineLength_Offset_PrevLine_Position_OR__Zero_For_FirstLine_LineLength: -4
-//     }, {
-//         x_Offset_From_PrevLine_Position_OR_MiddleCharacter: 12,
-//         y2_Offset_From_PrevLine_Position_OR__y_MiddleCharacter_Baseline: -2,
-//         lineLength_Offset_PrevLine_Position_OR__Zero_For_FirstLine_LineLength: -4
-//     }
-// ] as const
 
 /////////////////////////////////////////
 
