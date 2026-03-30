@@ -3474,10 +3474,10 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
 
                     for ( const variable_Dynamic_ModificationsOnReportedPeptide_Entry of variable_Dynamic_ModificationsOnReportedPeptide ) {
 
+                        const modMass_RoundedTo_VariableModMassValue = modificationMass_CommonRounding_ReturnNumber( variable_Dynamic_ModificationsOnReportedPeptide_Entry.mass )  // Call external function
+                        
                         if ( show_only_modifications_filtered_on__excluding_static
                             && anyFilters_ON_Variable_Or_Open_Modification_Masses ) {
-
-                            const modMass_RoundedTo_VariableModMassValue = modificationMass_CommonRounding_ReturnNumber( variable_Dynamic_ModificationsOnReportedPeptide_Entry.mass )  // Call external function
 
                             if ( ! modificationMass_UserSelections_StateObject.get_VariableModificationSelections().is_Modification_Selected( modMass_RoundedTo_VariableModMassValue ) ) {
 
@@ -3491,7 +3491,7 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
 
                         const position_InProtein = proteinCoverage_Entry.proteinStartPosition + position_InPeptide - 1
 
-                        const mass = variable_Dynamic_ModificationsOnReportedPeptide_Entry.mass
+                        const mass = modMass_RoundedTo_VariableModMassValue
 
                         let modifications_Entry_At_ProteinPosition = modifications_Map_Key_ProteinPosition.get( position_InProtein )
                         if ( ! modifications_Entry_At_ProteinPosition ) {
