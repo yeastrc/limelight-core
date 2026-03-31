@@ -72,16 +72,16 @@ import { ModificationMass_UserSelections_StateObject } from "page_js/data_pages/
 import { modificationMass_CommonRounding_ReturnNumber } from "page_js/data_pages/modification_mass_common/modification_mass_rounding";
 import { Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 import { ProteinSequenceWidgetDisplay_Component_Data } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_display_widget/js/proteinSequenceWidgetDisplay_Component_Data";
+import { Limelight__scaleColor_BasedOn_Fraction } from "page_js/common_all_pages/Limelight__scaleColor_BasedOn_Fraction";
 
 
 const _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_dark
 const _STANDARD_COLOR__NOT_PASS_FILTERS_FILL = "grey"
 
-
-const _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__DARK__RGB = _hexColorToRgbColor( _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL )
-
-const _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__LIGHT__RGB = _hexColorToRgbColor( limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_medium )
-
+const _scaleColor_BasedOn_Fraction_Object = new Limelight__scaleColor_BasedOn_Fraction({
+    min_Color_SixHex_WithLeading_Hash: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_medium,
+    max_Color_SixHex_WithLeading_Hash: limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_dark
+})
 
 const _STANDARD_COLOR__NO_COVERAGE_EVER_FILL = "#CCCCCC"  //  Light Grey - Protein Fill when NO Coverage filter or no filter. Modification when NOT pass filters.
 
@@ -1547,7 +1547,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                                         if ( this.props.proteinSequence_Bar_Widget_StateObject.get_shade_by_PSM_Count()
                                             && entryValue.only_Data_Passes_AllFilters__PsmIds_PsmCount.psmCount_FractionOf_Max_ProteinCoverage_PSM_Count !== undefined ) {
 
-                                            rect_Fill = _scaleColor_BasedOn_Fraction(  entryValue.only_Data_Passes_AllFilters__PsmIds_PsmCount.psmCount_FractionOf_Max_ProteinCoverage_PSM_Count )
+                                            rect_Fill = _scaleColor_BasedOn_Fraction_Object.scaleColor_BetweenMinAndMax_BasedOn_Fraction__Return_HexColorFormat(  entryValue.only_Data_Passes_AllFilters__PsmIds_PsmCount.psmCount_FractionOf_Max_ProteinCoverage_PSM_Count )
 
                                             // Scale opacity from _PROTEIN_MIN_OPACITY to 1
 
@@ -2119,7 +2119,7 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY_Component extend
                     if ( proteinSequenceCoverage_Position.passes_All_Filters && proteinSequenceCoverage_Position.psmCount_PassesAllFilters_Fraction !== undefined ) {
 
 
-                        fillColor = _scaleColor_BasedOn_Fraction(  proteinSequenceCoverage_Position.psmCount_PassesAllFilters_Fraction )
+                        fillColor = _scaleColor_BasedOn_Fraction_Object.scaleColor_BetweenMinAndMax_BasedOn_Fraction__Return_HexColorFormat(  proteinSequenceCoverage_Position.psmCount_PassesAllFilters_Fraction )
 
                         // opacity = _PROTEIN_MIN_OPACITY + ( proteinSequenceCoverage_Position.psmCount_PassesAllFilters_Fraction * opacity_MaxMinusMin )
                         //
@@ -3475,7 +3475,7 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
                     for ( const variable_Dynamic_ModificationsOnReportedPeptide_Entry of variable_Dynamic_ModificationsOnReportedPeptide ) {
 
                         const modMass_RoundedTo_VariableModMassValue = modificationMass_CommonRounding_ReturnNumber( variable_Dynamic_ModificationsOnReportedPeptide_Entry.mass )  // Call external function
-                        
+
                         if ( show_only_modifications_filtered_on__excluding_static
                             && anyFilters_ON_Variable_Or_Open_Modification_Masses ) {
 
@@ -4248,63 +4248,3 @@ class INTERNAL__PeptidePositions_SingleEntry_InRow__All_OR_OnlyPasses_AllFilters
 
 
 ////////
-
-/**
- * Converts a hex color string (e.g., "#FF0000" or "#ff0000") to an RGB object.
- * Handles both 3-digit and 6-digit hex codes.
- * @param hex The hex color string.
- * @returns An object with r, g, and b properties (0-255).
- */
-function _hexColorToRgbColor( hex: string ): { r: number; g: number; b: number } | null {
-    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    hex = hex.replace( shorthandRegex, function ( m, r, g, b ) {
-        return r + r + g + g + b + b;
-    } );
-
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec( hex );
-    return result ? {
-        r: parseInt( result[ 1 ], 16 ),
-        g: parseInt( result[ 2 ], 16 ),
-        b: parseInt( result[ 3 ], 16 )
-    } : null;
-}
-
-/**
- * Converts an RGB object to a hex color string.
- * @param r Red value (0-255).
- * @param g Green value (0-255).
- * @param b Blue value (0-255).
- * @returns The hex color string (e.g., "#FF0000").
- */
-function _rgbColorToHexColor(r: number, g: number, b: number): string {
-    return "#" + [r, g, b].map(x => {
-        const hex = Math.round(x).toString(16);
-        return hex.length === 1 ? "0" + hex : hex;
-    }).join('');
-}
-
-/**
- * Interpolates between two hex colors by a given factor.
- * @param fraction The scaling factor (0 to 1).
- * @returns The scaled color in rgb format.
- */
-function _scaleColor_BasedOn_Fraction( fraction: number ) {
-
-    if ( ! _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__DARK__RGB || ! _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__LIGHT__RGB ) {
-        throw new Error( "Invalid color format provided." );
-    }
-
-    const rgb1 = _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__LIGHT__RGB
-    const rgb2 = _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__DARK__RGB
-
-    const red = rgb1.r + fraction * ( rgb2.r - rgb1.r );
-    const green = rgb1.g + fraction * ( rgb2.g - rgb1.g );
-    const blue = rgb1.b + fraction * ( rgb2.b - rgb1.b );
-
-    return _rgbColorToHexColor( red, green, blue )
-}
-
-// const _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__DARK__RGB = _hexColorToRgbColor( _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL )
-//
-// const _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL__LIGHT__RGB = _hexColorToRgbColor( limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_medium )
-//
