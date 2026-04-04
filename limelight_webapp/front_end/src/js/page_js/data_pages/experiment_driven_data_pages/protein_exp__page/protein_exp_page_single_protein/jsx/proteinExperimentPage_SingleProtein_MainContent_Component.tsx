@@ -179,14 +179,10 @@ import { Get_SaveView_Component_React_Type, SaveView_Component_React_Params } fr
 
 //  Constants
 
-// Min width for outer container. Increase to 1120 to fit 5 digits.
-const _OUTERMOST_CONTAINER_MIN_WIDTH = 1120; 
-
-const _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH = 787
+const _WIDTH_OF_CONTAINING_DIV_WITH_External_Links_ON_RIGHT = 1050
 
 const _BOXES_ON_RIGHT_CONTAINER_WIDTH__SUMMARY_ETC = 229;
 const _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC = 20;
-// const _BOXES_ON_RIGHT_CONTAINER_PADDING_RIGHT__SUMMARY_ETC = 10;
 
 
 //////////////////////////////////
@@ -201,8 +197,6 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Pro
     projectSearchIds : Array<number>;
 
     experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData;
-
-    // selectedConditionIdsUpdated_Callback
 
     proteinSequenceVersionId : number;
     proteinNames : string;
@@ -249,7 +243,6 @@ export interface ProteinExperimentPage_SingleProtein_MainContent_Component_Props
 
     // view_single_protein_inner_overlay_div
     view_single_protein_inner_overlay_div_Width_Initial : number;
-    setWidth__view_single_protein_inner_overlay_div: any // Function in Root Component Class _setWidth__view_single_protein_inner_overlay_div({ width } : { width : number })
 
     // view_single_protein_overlay_body
     view_single_protein_overlay_body_PaddingLeft : number
@@ -334,15 +327,6 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
     }
 
-    //  bind to 'this' for passing as parameters
-
-    // private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
-
-    private _downloadPeptides_All_ClickHandler_BindThis = this._downloadPeptides_All_ClickHandler.bind(this);
-    private _downloadPeptides_Shown_ClickHandler_BindThis = this._downloadPeptides_Shown_ClickHandler.bind(this);
-    private _downloadPsms_All_ClickHandler_BindThis = this._downloadPsms_All_ClickHandler.bind(this);
-    private _downloadPsms_Shown_ClickHandler_BindThis = this._downloadPsms_Shown_ClickHandler.bind(this);
-
     private _clearAllSelections_BindThis = this._clearAllSelections.bind(this);
 
     private _openModificationMass_OpenUserSelections_Overlay_Override_BindThis : () => void = this._openModificationMass_OpenUserSelections_Overlay_Override.bind(this)
@@ -376,17 +360,10 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
     private _updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis : () => void = this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback.bind(this);
 
     private _div_MainGridAtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Main <div> containing grid of left and on right the boxes Summary ...
-    private _div_MainContent_LeftGridEntry_AtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Left <div> inside this._div_MainGridAtTop_Ref
 
     private _proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinSequenceWidgetDisplay_Root_Component_React>
 
     private _proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component>
-
-    private _domMutationObserver_reported_peptides_outer_container : MutationObserver;
-
-    private _updated_OverlayWidth: number = undefined;  // Updated whenever call function in parent Component to update width of overlay
-
-    // private _width_LeftGridEntry_TopMainSection_LastUpdatedValue = undefined;  // Updated whenever update width left grid entry Top Main Section
 
     private _experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
 
@@ -429,7 +406,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         super(props);
 
         this._div_MainGridAtTop_Ref = React.createRef<HTMLDivElement>();
-        this._div_MainContent_LeftGridEntry_AtTop_Ref = React.createRef<HTMLDivElement>();
+        // this._div_MainContent_LeftGridEntry_AtTop_Ref = React.createRef<HTMLDivElement>();
 
         this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref = React.createRef<HTMLDivElement>()
 
@@ -670,7 +647,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         try {
             // this._resizeWindow_Handler_Remove();
 
-            this._remove_MutationObserver_From_reported_peptides_outer_container();
+            // this._remove_MutationObserver_From_reported_peptides_outer_container();
             
         } catch( e ) {
 			console.log("Exception caught in componentWillUnmount()");
@@ -831,11 +808,6 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 create_GeneratedReportedPeptideListData_Result,
                 singleProtein_FiltersDisplay_ComponentData,
             });
-
-            window.setTimeout( () => {
-
-                this._update_Overlay_Add_Listeners__After_MainPaint()
-            }, 50 );
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
@@ -1034,53 +1006,6 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
-
-    /**
-     *
-     */
-    private _update_Overlay_Add_Listeners__After_MainPaint() {
-
-        this._resize_OverlayWidth_BasedOnReportedPeptidesTableWidth();
-
-        this._add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded();
-
-        // this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
-
-        // this._resizeWindow_Handler_Attach();
-    }
-
-	// /**
-	//  *
-	//  */
-	// private _resizeWindow_Handler_Attach() : void {
-    //
-	// 	//  Attach resize handler
-	// 	window.addEventListener( "resize", this._resizeWindow_Handler_BindThis );
-	// }
-    //
-	// /**
-	//  *
-	//  */
-	// private _resizeWindow_Handler_Remove() : void {
-    //
-	// 	//  Remove resize handler
-	// 	window.removeEventListener( "resize", this._resizeWindow_Handler_BindThis );
-	// }
-	//
-	// /**
-	//  * copied to this._resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this) in constructor
-	//  */
-	// private _resizeWindow_Handler() : void {
-	// 	try {
-	// 		// this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
-    //
-	// 	} catch( e ) {
-	// 		console.log("Exception caught in _resizeWindow_Handler()");
-	// 		console.log( e );
-	// 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-	// 		throw e;
-	// 	}
-	// }
 
     /**
      *
@@ -2767,261 +2692,6 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
     }
 
-
-    //////////////
-    
-    //   Since the Peptide List can end up wider than the current width, 
-    //   have a way to detect that and change the width to wider
-
-	/**
-	 * called by this._createSingleProteinModalOverlay
-	 */
-	_remove_MutationObserver_From_reported_peptides_outer_container() {
-
-		{
-			//  Remove _domMutationObserver_reported_peptides_outer_container if set
-			// stop observing
-			try {
-				if ( this._domMutationObserver_reported_peptides_outer_container ) {
-					this._domMutationObserver_reported_peptides_outer_container.disconnect();
-				}
-			} catch ( e ) {
-				var z = 0;
-			}
-			this._domMutationObserver_reported_peptides_outer_container = undefined;
-		}
-    }
-
-	/**
-	 * called by this.componentDidMount()
-	 */
-	_add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded() {
-
-		{
-			//  Remove _domMutationObserver_reported_peptides_outer_container if set
-			// stop observing
-			try {
-				if ( this._domMutationObserver_reported_peptides_outer_container ) {
-					this._domMutationObserver_reported_peptides_outer_container.disconnect();
-				}
-			} catch ( e ) {
-				var z = 0;
-			}
-			this._domMutationObserver_reported_peptides_outer_container = undefined;
-		}
-
-		//  Add MutationObserver to DOM element .selector_reported_peptides_outer_container
-	
-		// const $selector_reported_peptides_outer_container = $view_single_protein_overlay_body.find(".selector_reported_peptides_outer_container");
-		// if ( $selector_reported_peptides_outer_container.length === 0 ) {
-		// 	throw Error("Failed find DOM element with class 'selector_reported_peptides_outer_container'");
-		// }
-		// if ( $selector_reported_peptides_outer_container.length > 1 ) {
-		// 	throw Error("Found > 1 DOM element with class 'selector_reported_peptides_outer_container'");
-		// }
-		// const DOMElement = $selector_reported_peptides_outer_container[ 0 ];
-
-		// Options for the observer (which mutations to observe)
-		// const config = { attributes: true, childList: true, subtree: true };
-		const config = { childList: true, subtree: true };
-
-		let timeoutId: number = null;
-
-		// Callback function to execute when mutations are observed
-		const domMutationCallback = ( mutationsList: any, observer: any ) => {
-
-			let foundChildListMutation = false;
-
-			for ( const mutation of mutationsList ) {
-				if  ( mutation.type == 'childList' ) {
-					foundChildListMutation = true;
-				}
-				// else if ( mutation.type == 'attributes' ) {
-				// 	console.log( 'The ' + mutation.attributeName + ' attribute was modified.' );
-				// }
-			}
-			if ( foundChildListMutation ) {
-				if ( timeoutId ) {
-					window.clearTimeout( timeoutId );
-				}
-				timeoutId = window.setTimeout( () => {
-					timeoutId = null;
-					// console.log('At least 1 child node has been added or removed.');
-					this._resize_OverlayWidth_BasedOnReportedPeptidesTableWidth();
-				}, 200 );
-			}
-
-		};
-		// Create an observer instance linked to the callback function
-        this._domMutationObserver_reported_peptides_outer_container = new MutationObserver( domMutationCallback );
-        
-
-        const proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
-
-		// Start observing the target node for configured mutations
-		this._domMutationObserver_reported_peptides_outer_container.observe( proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM, config );
-
-		// stop observing
-		// this._domMutationObserver_reported_peptides_outer_container.disconnect();
-	}
-
-	/**
-	 * Adjust overlay width to fit reported peptide 
-	 * 
-	 * called internally from this class
-	 */
-	_resize_OverlayWidth_BasedOnReportedPeptidesTableWidth() {
-
-		//  Adjust overlay width to fit reported peptide list
-
-        let container_Width_MaxOfValues: number = undefined
-
-        {
-            // reported peptide list
-            const proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
-
-            if ( proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM ) {
-
-                const containerRect_GeneratedReportedPeptideListSection = proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
-
-                container_Width_MaxOfValues = containerRect_GeneratedReportedPeptideListSection.width;
-            }
-        }
-
-        {
-            // Protein Sequence or other Tabs in same group Block
-
-            const proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM =
-                this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref.current;
-
-            if ( proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM ) {
-
-                const containerRect = proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM.getBoundingClientRect();
-
-                const container_Width = containerRect.width;
-
-                if ( ( ! container_Width_MaxOfValues ) || container_Width_MaxOfValues < container_Width ) {
-                    container_Width_MaxOfValues = container_Width
-                }
-            }
-        }
-
-        if ( ! container_Width_MaxOfValues ) {
-            //  NO value set to exit
-            return // EARLY RETURN
-        }
-
-
-        // width includes the padding-left for the space for the expand icon.  This is the desired result.
-
-        let overlayWidth = (
-            container_Width_MaxOfValues
-            + this.props.view_single_protein_overlay_body_PaddingLeft 
-            + this.props.view_single_protein_overlay_body_PaddingRight
-            + 2 //  Little Extra
-        );
-		if ( overlayWidth < _OUTERMOST_CONTAINER_MIN_WIDTH ) {
-			overlayWidth = _OUTERMOST_CONTAINER_MIN_WIDTH; // Min width
-        }
-        
-        if ( ( ! this._updated_OverlayWidth ) || this._updated_OverlayWidth < overlayWidth ) {
-
-            //  this._updated_OverlayWidth not set or this._updated_OverlayWidth < new overlay width
-
-            this.props.setWidth__view_single_protein_inner_overlay_div({ width : overlayWidth });
-
-            this._updated_OverlayWidth = overlayWidth;
-        }
-
-		// this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
-	}
-
-	// /**
-	//  * _adjustBoxesOnRight So AtRigthtEdgeOfViewPort or right edge of overlay, whichever is further left.
-    //  *
-    //  * This is done by adjusting the width of the containing <div> that contains the grid definition "auto min-content"
-    //  *
-    //  * Called from _resize_OverlayWidth_BasedOnReportedPeptidesTableWidth() or whenever the width of the viewport changes.
-	//  */
-	// _adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() {
-    //
-    //     // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() entered")
-    //
-    //     let widthOverall_For_TopSection = undefined;  // Section above Peptide List.  Keep in viewport if possible
-    //     {
-    //         let overlayWidth = undefined;
-    //
-    //         if ( this._updated_OverlayWidth !== undefined ) {
-    //
-    //             overlayWidth = this._updated_OverlayWidth;
-    //
-    //         } else {
-    //
-    //             overlayWidth = this.props.view_single_protein_inner_overlay_div_Width_Initial;
-    //         }
-    //
-    //         //   window.innerWidth: Per MDN: Width (in pixels) of the browser window viewport INCLUDING, if rendered, the vertical scrollbar.
-    //         // const window_innerWidth = window.innerWidth
-    //
-    //         //  Get Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar.
-    //         //     Done to position boxes on right correctly from right side, including if vertical scrollbar is rendered
-    //         const rootHTMLelement_Collection = document.getElementsByTagName("html");
-    //         if ( ! ( rootHTMLelement_Collection.length > 0 ) ) {
-    //             const msg = "_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort(): element 'html' not found: true: if ( ! ( rootHTMLelement_Collection.length > 0 ) )"
-    //             console.warn( msg );
-    //             throw Error( msg );
-    //         }
-    //         const rootHTMLelement = rootHTMLelement_Collection[ 0 ];
-    //         const rootHTMLelement_clientWidth = rootHTMLelement.clientWidth; // Width (in pixels) of the browser window viewport EXCLUDING, if rendered, the vertical scrollbar.
-    //
-    //         // console.log("_adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort() rootHTMLelement_clientWidth: " + rootHTMLelement_clientWidth + ", window_innerWidth: " + window_innerWidth )
-    //
-    //         if ( overlayWidth < rootHTMLelement_clientWidth ) {
-    //
-    //             widthOverall_For_TopSection = overlayWidth;
-    //
-    //         } else {
-    //
-    //             widthOverall_For_TopSection = rootHTMLelement_clientWidth;
-    //         }
-    //     }
-    //
-    //     //  Subtract left and right adding of containing <div>
-    //     widthOverall_For_TopSection = widthOverall_For_TopSection - this.props.view_single_protein_overlay_body_PaddingLeft - this.props.view_single_protein_overlay_body_PaddingRight;
-    //     {
-    //         const div_MainGridAtTo_DOM = this._div_MainGridAtTop_Ref.current;
-    //
-    //         div_MainGridAtTo_DOM.style.width = widthOverall_For_TopSection + "px";
-    //
-    //         div_MainGridAtTo_DOM.style.maxWidth = widthOverall_For_TopSection + "px";
-    //     }
-    //     {
-    //         const div_MainContent_LeftGridEntry_AtTop_DOM = this._div_MainContent_LeftGridEntry_AtTop_Ref.current;
-    //
-    //         let width_LeftGridEntry = (
-    //             widthOverall_For_TopSection
-    //             - _BOXES_ON_RIGHT_CONTAINER_WIDTH__SUMMARY_ETC - _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC // - _BOXES_ON_RIGHT_CONTAINER_PADDING_RIGHT__SUMMARY_ETC
-    //             - 10 //  border width on boxes and just extra
-    //         );
-    //
-    //         if ( width_LeftGridEntry < this.state.widthOf_proteinSequenceWidgetDisplay_Component ) {
-    //             width_LeftGridEntry = this.state.widthOf_proteinSequenceWidgetDisplay_Component
-    //         }
-    //
-    //         if ( width_LeftGridEntry !== this._width_LeftGridEntry_TopMainSection_LastUpdatedValue ) {
-    //
-    //             // Has changed so update saved value and DOM
-    //
-    //             this._width_LeftGridEntry_TopMainSection_LastUpdatedValue = width_LeftGridEntry;
-    //
-    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.width = width_LeftGridEntry + "px";
-    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.maxWidth = width_LeftGridEntry + "px";
-    //             div_MainContent_LeftGridEntry_AtTop_DOM.style.minWidth = width_LeftGridEntry + "px";
-    //         }
-    //     }
-	// }
-
-
     ////////////////////////////////////////
 
     /**
@@ -3063,18 +2733,19 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 {/* Fake 'width' so that grid width not auto fill to width 100%.  Grid will exceed the 80px width to fill the width of the 2 columns.
                             This keeps boxes on right in viewport when main overlay width > viewport width. */ }
 
-                <div style={ { display: "grid", gridTemplateColumns: "auto min-content", width: 80 } }
-                     ref={ this._div_MainGridAtTop_Ref }>
+                <div
+                    ref={ this._div_MainGridAtTop_Ref }
+                    style={ {
+                        display: "grid", gridTemplateColumns: "auto min-content",
+                        width: _WIDTH_OF_CONTAINING_DIV_WITH_External_Links_ON_RIGHT  //  Hard coded value that works with other hard coded width values of children elements
+
+                        // width: "min( _WIDTH_OF_CONTAINING_DIV_WITH_External_Links_ON_RIGHTpx, calc( -100px + 100vw ) )"   ---  This does NOT work since back to the child exceeding this element and then the title area is not wide enough
+                    } }
+                >
 
                     {/* display of data above Reported Peptides  */ }
 
-                    <div ref={ this._div_MainContent_LeftGridEntry_AtTop_Ref }
-                         style={ {
-                             display: "inline-block",
-                             width: _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH,
-                             minWidth: _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH,
-                             maxWidth: _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH
-                         } }>
+                    <div>
 
                         {/* Main Content above Reported Peptides  */ }
 
@@ -3348,17 +3019,17 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 </div>
 
 
-                {/*  Block for Tabs for Sequence Coverage Widget, Protein Bar, Protein Structure  */}
+                {/*  Block for Tabs for Sequence Coverage Widget, Protein Bar, Protein Structure  */ }
 
                 <div style={ { display: "inline-block" } } ref={ this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref }>
 
                     <div style={ { position: "relative" } }>
 
-                        {/*<div>*/}
-                        {/*    WARNING:  TESTING ONLY:*/}
-                        {/*    div above component ProteinSequenceWidgetDisplay_Root_Component_React*/}
-                        {/*    ProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_React*/}
-                        {/*</div>*/}
+                        {/*<div>*/ }
+                        {/*    WARNING:  TESTING ONLY:*/ }
+                        {/*    div above component ProteinSequenceWidgetDisplay_Root_Component_React*/ }
+                        {/*    ProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_ReactProteinSequenceWidgetDisplay_Root_Component_React*/ }
+                        {/*</div>*/ }
 
                         <ProteinSequenceWidgetDisplay_Root_Component_React
                             proteinSequenceWidgetDisplay_Component_Data={ this.state.proteinSequenceWidgetDisplay_Component_Data }
@@ -3368,12 +3039,12 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                         { ( this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList ) ? (
 
-                            <div  className=" block-updating-overlay-container " >
+                            <div className=" block-updating-overlay-container ">
                                 Updating Peptide List
                             </div>
                         ) : ( this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds ) ? (
 
-                            <div  className=" block-updating-overlay-container " >
+                            <div className=" block-updating-overlay-container ">
                                 Loading Data to show Peptides
                             </div>
                         ) : null }
@@ -3388,16 +3059,16 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                         searchContains_VariableModifications={ this._searchesContains_VariableModifications }
                         searchContains_OpenModifications={ this._searchesContains_OpenModifications }
                         searchContains_StaticModifications={ this._searchesContains_StaticModifications }
-                        updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback={ this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis  }
+                        updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback={ this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis }
                     />
                 </div>
 
 
-                {/* Display of Reported Peptides  */}
+                {/* Display of Reported Peptides  */ }
 
 
                 <div style={ { display: "inline-block" } }  //  display: "inline-block" so can measure width of this div, including width of Peptide table and sub-tables
-                    ref={ this._proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
+                     ref={ this._proteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref }> {/* ref to allow measuring width of component */ }
 
                     <ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component
 

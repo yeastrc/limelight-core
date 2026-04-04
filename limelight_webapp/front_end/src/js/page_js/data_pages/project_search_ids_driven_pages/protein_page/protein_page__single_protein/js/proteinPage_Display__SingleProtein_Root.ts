@@ -35,10 +35,10 @@ import {
 
 
 import {
-	resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein,
+	// resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein,
 	round_Selected_ModMasses_IfNeed_modificationMass_UserSelections_StateObject,
 	round_Selected_ReporterIonMasses_IfNeed_reporterIonMass_UserSelections_StateObject,
-	update_Overlay_OnWindowResize_MultipleSearch_SingleProtein
+	// update_Overlay_OnWindowResize_MultipleSearch_SingleProtein
 } from './proteinPage_Display__SingleProtein_nonClass_Functions';
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
@@ -155,7 +155,7 @@ export class ProteinPage_Display__SingleProtein_Root {
 
 	private _closeOverlayClickHandler_BindThis = this._closeOverlayClickHandler.bind(this);
 
-	private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
+	// private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
 
 	//////////////////////
 
@@ -818,7 +818,7 @@ export class ProteinPage_Display__SingleProtein_Root {
 
             this._resizeWindow_Handler_Attach();
 
-            resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
+            // resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
 		};
 
 		let proteinNames : string = undefined
@@ -1115,7 +1115,7 @@ export class ProteinPage_Display__SingleProtein_Root {
 	private _resizeWindow_Handler_Attach() : void {
 
 		//  Attach resize handler
-		window.addEventListener( "resize", this._resizeWindow_Handler_BindThis );
+		// window.addEventListener( "resize", this._resizeWindow_Handler_BindThis );
 	}
 
 	/**
@@ -1124,25 +1124,25 @@ export class ProteinPage_Display__SingleProtein_Root {
 	private _resizeWindow_Handler_Remove() : void {
 
 		//  Remove resize handler
-		window.removeEventListener( "resize", this._resizeWindow_Handler_BindThis );
+		// window.removeEventListener( "resize", this._resizeWindow_Handler_BindThis );
 	}
 	
 	/**
 	 * copied to this._resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this) in constructor
 	 */
-	private _resizeWindow_Handler() : void {
-		try {
-			resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
-
-			update_Overlay_OnWindowResize_MultipleSearch_SingleProtein({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
-
-		} catch( e ) {
-			console.log("Exception caught in _resizeWindow_Handler()");
-			console.log( e );
-			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-			throw e;
-		}
-	}
+	// private _resizeWindow_Handler() : void {
+	// 	try {
+	// 		resize_OverlayHeight_BasedOnViewportHeight_MultipleSearch_SingleProtein({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
+	//
+	// 		update_Overlay_OnWindowResize_MultipleSearch_SingleProtein({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
+	//
+	// 	} catch( e ) {
+	// 		console.log("Exception caught in _resizeWindow_Handler()");
+	// 		console.log( e );
+	// 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+	// 		throw e;
+	// 	}
+	// }
 
 	/**
 	 * Return the height of the Page header at the top of the page

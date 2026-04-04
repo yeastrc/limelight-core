@@ -144,8 +144,6 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 	private _closeOverlayClickHandler_BindThis = this._closeOverlayClickHandler.bind(this);
 
-	private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
-
 	//////////////////////
 
 	//  after constructor
@@ -768,9 +766,6 @@ export class ProteinExperimentPage_Display_SingleProtein {
 		//  Called on main component mount
         const component_OnMount_Callback = () => {
 
-            this._resizeWindow_Handler_Attach();
-
-            _resize_OverlayHeight_BasedOnViewportHeight({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
 		};
 
 		let proteinNames : string = undefined
@@ -994,8 +989,6 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 			this._singleProtein_ExpPage_CentralStateManagerObjectClass.clearAll();
 
-			this._resizeWindow_Handler_Remove();
-
 			if ( this._singleProteinCloseCallback ) {
 				this._singleProteinCloseCallback();
 			}
@@ -1007,41 +1000,6 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 
 	//////////////
-
-	/**
-	 * 
-	 */
-	private _resizeWindow_Handler_Attach() : void {
-
-		//  Attach resize handler
-		window.addEventListener( "resize", this._resizeWindow_Handler_BindThis );
-	}
-
-	/**
-	 * 
-	 */
-	private _resizeWindow_Handler_Remove() : void {
-
-		//  Remove resize handler
-		window.removeEventListener( "resize", this._resizeWindow_Handler_BindThis );
-	}
-	
-	/**
-	 * copied to this._resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this) in constructor
-	 */
-	private _resizeWindow_Handler() : void {
-		try {
-			_resize_OverlayHeight_BasedOnViewportHeight({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
-
-			_update_Overlay_OnWindowResize({ singleProteinContainer_addedDivElementDOM : this._singleProteinContainer_addedDivElementDOM });
-
-		} catch( e ) {
-			console.log("Exception caught in _resizeWindow_Handler()");
-			console.log( e );
-			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-			throw e;
-		}
-	}
 
 	/**
 	 * Return the height of the Page header at the top of the page
@@ -1065,107 +1023,3 @@ export class ProteinExperimentPage_Display_SingleProtein {
 	}
 }
 
-
-
-
-const _SECTION_ABOVE_REPORTED_PEPTIDE_LIST_CONTAINER_MIN_WIDTH = 1270; // Min width for upper section of protein sequence and boxes to right
-
-
-
-/**
- *
- */
-const _resize_OverlayHeight_BasedOnViewportHeight = function({ singleProteinContainer_addedDivElementDOM }: { singleProteinContainer_addedDivElementDOM: HTMLDivElement }) {
-
-	if ( ! singleProteinContainer_addedDivElementDOM ) {
-		// Exit if no overlay
-		return;
-	}
-
-	const $window = $(window);
-
-	const windowHeight = $window.height();
-
-	//  Subtract header and footer heights
-
-	const $header_outer_container_div = $("#header_outer_container_div");
-	if ( $header_outer_container_div.length === 0 ) {
-		throw Error("No DOM element found with id 'header_outer_container_div'");
-	}
-	const headerOuterHeight = $header_outer_container_div.outerHeight( true /* [includeMargin ] */ );
-
-	// const $footer_outer_container_div = $("#footer_outer_container_div");
-	// if ( $footer_outer_container_div.length === 0 ) {
-	// 	throw Error("No DOM element found with id 'footer_outer_container_div'");
-	// }
-	// const footerOuterHeight = $footer_outer_container_div.outerHeight( true /* [includeMargin ] */ );
-
-	const footerOuterHeight = 31;  // Hard code footer height since measuring doesn't work right
-
-	const overlayHeight = windowHeight - headerOuterHeight - footerOuterHeight;
-
-	const $singleProteinContainer_addedDivElementDOM = $( singleProteinContainer_addedDivElementDOM );
-
-
-	const $view_single_protein_inner_overlay_div = $singleProteinContainer_addedDivElementDOM.find("#view_single_protein_inner_overlay_div");
-
-	// console.warn("!!!!!!!!!!!!!!!   Skipping resizing DOM id 'view_single_protein_inner_overlay_div' since cannot find DOM element with that id.  $view_single_protein_inner_overlay_div.length: " + $view_single_protein_inner_overlay_div.length );
-
-	if ( $view_single_protein_inner_overlay_div.length === 0 ) {
-		throw Error("No DOM element found with id 'view_single_protein_inner_overlay_div'");
-	}
-
-	$view_single_protein_inner_overlay_div.css('min-height', overlayHeight + 'px');
-}
-
-/**
- *
- */
-const _update_Overlay_OnWindowResize = function( params: any ) {
-
-	let singleProteinContainer_addedDivElementDOM = undefined;
-	let $view_single_protein_overlay_div = undefined;
-	let overlayWidth = undefined;
-
-	if ( params ) {
-		singleProteinContainer_addedDivElementDOM = params.singleProteinContainer_addedDivElementDOM;
-		$view_single_protein_overlay_div = params.$view_single_protein_overlay_div;
-		overlayWidth = params.overlayWidth;
-	}
-
-	if ( ! singleProteinContainer_addedDivElementDOM ) {
-		// Exit if no overlay
-		return;
-	}
-
-	if ( $view_single_protein_overlay_div === undefined ) {
-		$view_single_protein_overlay_div = $("#view_single_protein_overlay_div");
-		if ( $view_single_protein_overlay_div.length === 0 ) {
-			throw Error("No DOM element found with id 'view_single_protein_overlay_div'");
-		}
-	}
-	if ( overlayWidth === undefined ) {
-		overlayWidth = $view_single_protein_overlay_div.outerWidth();
-	}
-
-	//  Adjust width of block above reported peptide list to keep the boxes to the right within the viewport, if necessary.
-
-	const $window = $(window);
-	const windowWidth = $window.width();
-
-	const $selector_section_above_reported_peptides_list_block = $view_single_protein_overlay_div.find(".selector_section_above_reported_peptides_list_block");
-
-	if ( overlayWidth <= windowWidth ) {
-
-		$selector_section_above_reported_peptides_list_block.css('width', ''); // clear setting
-
-	} else {
-
-		let sectionAboveReportedPeptidesList_Width = windowWidth - 50; // - 50 to adjust in from right edge
-		if (sectionAboveReportedPeptidesList_Width < _SECTION_ABOVE_REPORTED_PEPTIDE_LIST_CONTAINER_MIN_WIDTH) {
-			sectionAboveReportedPeptidesList_Width = _SECTION_ABOVE_REPORTED_PEPTIDE_LIST_CONTAINER_MIN_WIDTH; // Min width
-		}
-		$selector_section_above_reported_peptides_list_block.css('width', sectionAboveReportedPeptidesList_Width + 'px');
-	}
-
-}

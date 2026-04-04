@@ -24,8 +24,7 @@ import {
 
 //  Constants
 
-// Min width for outer container. Increase to 1120 to fit 5 digits.
-const _OUTERMOST_CONTAINER_MIN_WIDTH = 1120; 
+const _SINGLE_PROTEIN_GREY_FAKE_BACKGROUND_WIDTH = 40  // in px
 
 //////////////////////////////////
 
@@ -72,16 +71,12 @@ export class ProteinPage_Display__SingleProtein_Root_Component extends React.Com
     //  bind to 'this' for passing as parameters
 
     private _closeOverlayClickHandler_BindThis = this._closeOverlayClickHandler.bind(this);
-    private _setWidth__view_single_protein_inner_overlay_div_BindThis = this._setWidth__view_single_protein_inner_overlay_div.bind(this);
     private _update_OnScroll_BindThis = this._update_OnScroll.bind(this);
 
-    private _view_single_protein_inner_overlay_div_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> id: view_single_protein_inner_overlay_div
     private view_single_protein_overlay_header_inner_container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()
 
-    private _update_OnScroll_Timeout : any;
+    private _update_OnScroll_Timeout : number;
     private _update_Header_Left_For_Scroll_X__Last_ScrollX_Position : number;
-
-    private _view_single_protein_inner_overlay_div_Width : number = undefined;
 
     //  Set when component mounts
     private _view_single_protein_inner_overlay_div_Width_Initial : number = undefined;
@@ -96,7 +91,7 @@ export class ProteinPage_Display__SingleProtein_Root_Component extends React.Com
     constructor(props : ProteinPage_Display__SingleProtein_Root_Component_Props) {
         super(props);
 
-        this._view_single_protein_inner_overlay_div_Ref = React.createRef<HTMLDivElement>();
+        // this._view_single_protein_inner_overlay_div_Ref = React.createRef<HTMLDivElement>();
         this.view_single_protein_overlay_header_inner_container_Ref = React.createRef<HTMLDivElement>();
         this._view_single_protein_overlay_body_Ref = React.createRef<HTMLDivElement>();
 
@@ -144,7 +139,7 @@ export class ProteinPage_Display__SingleProtein_Root_Component extends React.Com
     /**
      * 
      */   
-    componentDidMount() {
+    componentDidMount() { try {
 
         {
             this.props.component_OnMount_Callback()
@@ -157,109 +152,33 @@ export class ProteinPage_Display__SingleProtein_Root_Component extends React.Com
             this._update_Header_Left_For_Scroll_X(); //  Run for initial scroll position
         }
 
-        {
-            //  this._view_single_protein_inner_overlay_div_Ref
-
-            const element_Ref_DOM = this._view_single_protein_inner_overlay_div_Ref.current;
-
-            // const containerRect = element_Ref_DOM.getBoundingClientRect();
-
-            const element_ComputedStyle = window.getComputedStyle( element_Ref_DOM, null );
-
-            {
-                const width_String =  element_ComputedStyle.width;
-                if ( ! width_String.endsWith("px") ) {
-                    const msg = "Code only designed to handle width that is in 'px'. _view_single_protein_inner_overlay_div_Ref.current element_ComputedStyle.width: " + width_String;
-                    console.warn( msg );
-                    throw Error( msg );
-                }
-                const width_NumberInPx = Number.parseFloat( width_String );
-                if ( Number.isNaN( width_NumberInPx ) ) {
-                    const msg = "_view_single_protein_inner_overlay_div_Ref.current width fail to parse to int.  element_ComputedStyle.width: " + width_String;
-                    console.warn( msg );
-                    throw Error( msg );
-                }
-
-                this._view_single_protein_inner_overlay_div_Width = width_NumberInPx;
-
-                this._view_single_protein_inner_overlay_div_Width_Initial = width_NumberInPx;
-            }
-        }
-        {  //  _view_single_protein_overlay_body_Ref
-
-            const element_Ref_DOM = this._view_single_protein_overlay_body_Ref.current;
-
-            // const containerRect = element_Ref_DOM.getBoundingClientRect();
-
-            const element_ComputedStyle = window.getComputedStyle( element_Ref_DOM, null );
-
-            {
-                const paddingLeft_String =  element_ComputedStyle.paddingLeft;
-                if ( ! paddingLeft_String.endsWith("px") ) {
-                    const msg = "Code only designed to handle paddingLeft that is in 'px'. _view_single_protein_inner_overlay_div_Ref.current element_ComputedStyle.paddingLeft: " + paddingLeft_String;
-                    console.warn( msg );
-                    throw Error( msg );
-                }
-                const paddingLeft_NumberInPx = Number.parseFloat( paddingLeft_String );
-                if ( Number.isNaN( paddingLeft_NumberInPx ) ) {
-                    const msg = "_view_single_protein_inner_overlay_div_Ref.current paddingLeft fail to parse to int.  element_ComputedStyle.paddingLeft: " + paddingLeft_String;
-                    console.warn( msg );
-                    throw Error( msg );
-                }
-                this._view_single_protein_overlay_body_PaddingLeft = paddingLeft_NumberInPx;
-            }
-            {
-                const paddingRight_String = element_ComputedStyle.paddingRight;
-                if ( ! paddingRight_String.endsWith("px") ) {
-                    const msg = "Code only designed to handle paddingRight that is in 'px'. _view_single_protein_inner_overlay_div_Ref.current element_ComputedStyle.paddingRight: " + paddingRight_String;
-                    console.warn( msg );
-                    throw Error( msg );
-                }
-                const paddingRight_NumberInPx = Number.parseFloat( paddingRight_String );
-                if ( Number.isNaN( paddingRight_NumberInPx ) ) {
-                    const msg = "_view_single_protein_inner_overlay_div_Ref.current paddingRight fail to parse to int.  element_ComputedStyle.paddingRight: " + paddingRight_String;
-                    console.warn( msg );
-                    throw Error( msg );
-                }
-                this._view_single_protein_overlay_body_PaddingRight = paddingRight_NumberInPx;
-            }
-        }
-    }
+    } catch (e) {
+        reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
+        throw e;
+    }}
 
     /**
      * 
      */   
-    componentWillUnmount() {
+    componentWillUnmount() { try {
         window.removeEventListener( "scroll", this._update_OnScroll_BindThis );
-    }
+
+    } catch (e) {
+        reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
+        throw e;
+    }}
 
     /**
      * 
      */    
     _closeOverlayClickHandler( event : React.MouseEvent<HTMLHeadingElement, MouseEvent> ) : void {
         try {
-            // event.preventDefault();
-            // event.stopPropagation();
-
             if ( this.props.closeOverlayClickHandler ) {
                 this.props.closeOverlayClickHandler();
             }
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
-        }
-    }
-
-    /**
-     * Called by child component
-     */  
-    _setWidth__view_single_protein_inner_overlay_div({ width } : { width : number }) : void {
-
-        if ( this._view_single_protein_inner_overlay_div_Width !== width ) {
-
-            this._view_single_protein_inner_overlay_div_Width = width;
-
-            this._view_single_protein_inner_overlay_div_Ref.current.style.width = width + 'px';
         }
     }
 
@@ -290,7 +209,12 @@ export class ProteinPage_Display__SingleProtein_Root_Component extends React.Com
 
         this._update_Header_Left_For_Scroll_X__Last_ScrollX_Position = scrollX;
 
-        this.view_single_protein_overlay_header_inner_container_Ref.current.style.marginLeft = scrollX + "px";
+        let marginLeft = scrollX - _SINGLE_PROTEIN_GREY_FAKE_BACKGROUND_WIDTH
+        if ( marginLeft < 0 ) {
+            marginLeft = 0
+        }
+
+        this.view_single_protein_overlay_header_inner_container_Ref.current.style.marginLeft = marginLeft + "px";
     }
 
     ////////////////////////////////////////
@@ -324,7 +248,6 @@ export class ProteinPage_Display__SingleProtein_Root_Component extends React.Com
                 <ProteinPage_Display__SingleProtein_MainContent_Component
                     propsValue={ this.state.proteinPage_Display__SingleProtein_MainContent_Component_Props_Prop }
                     view_single_protein_inner_overlay_div_Width_Initial={ this._view_single_protein_inner_overlay_div_Width_Initial }
-                    setWidth__view_single_protein_inner_overlay_div={ this._setWidth__view_single_protein_inner_overlay_div_BindThis }
                     view_single_protein_overlay_body_PaddingLeft={ this._view_single_protein_overlay_body_PaddingLeft }
                     view_single_protein_overlay_body_PaddingRight={ this._view_single_protein_overlay_body_PaddingRight }
                 />
@@ -366,30 +289,39 @@ export class ProteinPage_Display__SingleProtein_Root_Component extends React.Com
             }
         }
 
-        //  This CSS calculation sets the width the lesser of 100% of parent element or view port width (100vw) minus 10 pixels
-        //       (subtract 10 pixels since 100vw doesn't subtract for scrollbar if present)
-        //       (Set 'width:' and 'maxWidth:' to this string)
-        const view_single_protein_overlay_header_Style_width_maxWidth = "min( 100%, calc( 100vw - 10px ))";
-
         return (
-            <div >
-                <div id="single_protein_overlay_background" className="single-protein-modal-dialog-overlay-background" >
+            <div style={ { display: "grid", gridTemplateColumns: _SINGLE_PROTEIN_GREY_FAKE_BACKGROUND_WIDTH + "px 1fr" } }>
 
+                {/*  "Background" which is now a color to left  */ }
+                <div
+                    className="single-protein-modal-dialog-overlay-background"
+                    style={ {
+                        height: "100%"
+                    } }
+                >
                 </div>
 
-                <div id="view_single_protein_overlay_div" className=" overall-enclosing-block " 
-                    style={ { marginLeft: "auto", marginRight: "auto", paddingLeft: 0, paddingRight: 0 } } >
+                <div
+                    className=" overall-enclosing-block " //  Class used on main page as well as Single Protein "Overlay"
+                    style={ {
+                        paddingLeft: 0, paddingRight: 0 //  paddingLeft: 0, paddingRight: 0 To override the class
+                    } }
+                >
 
-                    <div id="view_single_protein_inner_overlay_div"  className=" view-single-protein-overlay-div " ref={ this._view_single_protein_inner_overlay_div_Ref }>
+                    <div
+                        className=" view-single-protein-overlay-div "
+                        style={ { minHeight: "calc(-100px + 100dvh)" } }
+                    >
 
                         <div className="view-single-protein-overlay-header" style={ { top: this.props.standard_Page_Header_Height } }>
 
-                            <div ref={ this.view_single_protein_overlay_header_inner_container_Ref }
-                                style={  { width: view_single_protein_overlay_header_Style_width_maxWidth,  maxWidth: view_single_protein_overlay_header_Style_width_maxWidth } }
+                            {/*   This div is adjusted with margin left when viewport is scrolled to keep the "X" for close at the left edge of the viewport   */ }
+                            <div
+                                ref={ this.view_single_protein_overlay_header_inner_container_Ref }
                             >
 
-                                <div  style={ { display: "grid", gridTemplateColumns: "min-content auto" } }>
-                                    {/* Next elements in the header are in a CSS Grid */}
+                                <div style={ { display: "grid", gridTemplateColumns: "min-content auto" } }>
+                                    {/* Next elements in the header are in a CSS Grid */ }
 
                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                         title={
@@ -418,20 +350,20 @@ export class ProteinPage_Display__SingleProtein_Root_Component extends React.Com
                                             <span>Protein</span>
                                             { proteinName_Display_Header ? (
                                                 <span>: </span>
-                                                ) : null }
+                                            ) : null }
                                             { proteinName_Display_Header }
                                         </h1>
                                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </div>
                             </div>
                         </div>
-                        <div id="view_single_protein_overlay_body" className="view-single-protein-overlay-body" ref={ this._view_single_protein_overlay_body_Ref } >
+                        <div id="view_single_protein_overlay_body" className="view-single-protein-overlay-body" ref={ this._view_single_protein_overlay_body_Ref }>
 
                             { component_SubTree_ErrorMessage }
                             { mainContent }
                         </div>
                     </div>
-                </div>	
+                </div>
 
             </div>
         );

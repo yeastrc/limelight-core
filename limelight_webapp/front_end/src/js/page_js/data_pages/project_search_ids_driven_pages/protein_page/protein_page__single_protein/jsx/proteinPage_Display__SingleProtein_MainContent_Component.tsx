@@ -9,7 +9,6 @@
 
 import React from 'react'
 import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 
 
 
@@ -182,14 +181,10 @@ import { Get_SaveView_Component_React_Type, SaveView_Component_React_Params } fr
 
 //  Constants
 
-// Min width for outer container. Increase to 1120 to fit 5 digits.
-const _OUTERMOST_CONTAINER_MIN_WIDTH = 1120; 
-
-const _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH = 787
+const _WIDTH_OF_CONTAINING_DIV_WITH_External_Links_ON_RIGHT = 1050
 
 const _BOXES_ON_RIGHT_CONTAINER_WIDTH__SUMMARY_ETC = 229;
 const _BOXES_ON_RIGHT_CONTAINER_PADDING_LEFT__SUMMARY_ETC = 20;
-// const _BOXES_ON_RIGHT_CONTAINER_PADDING_RIGHT__SUMMARY_ETC = 10;
 
 
 //////////////////////////////////
@@ -254,7 +249,6 @@ export interface ProteinPage_Display__SingleProtein_MainContent_Component_Props 
 
     // view_single_protein_inner_overlay_div
     view_single_protein_inner_overlay_div_Width_Initial : number;
-    setWidth__view_single_protein_inner_overlay_div: any // Function in Root Component Class _setWidth__view_single_protein_inner_overlay_div({ width } : { width : number })
 
     // view_single_protein_overlay_body
     view_single_protein_overlay_body_PaddingLeft : number
@@ -319,14 +313,10 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
     //  bind to 'this' for passing as parameters
 
-    // private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
-
     private _searchSubGroup_SelectionsChanged_Callback_BindThis = this._searchSubGroup_SelectionsChanged_Callback.bind(this);
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback_BindThis = this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback.bind(this);
 
-    // private _downloadPeptides_All_ClickHandler_BindThis = this._downloadPeptides_All_ClickHandler.bind(this);
     private _downloadPeptides_Shown_ClickHandler_BindThis = this._downloadPeptides_Shown_ClickHandler.bind(this);
-    // private _downloadPsms_All_ClickHandler_BindThis = this._downloadPsms_All_ClickHandler.bind(this);
     private _downloadPsms_Shown_ClickHandler_BindThis = this._downloadPsms_Shown_ClickHandler.bind(this);
 
     private _clearAllSelections_BindThis = this._clearAllSelections.bind(this);
@@ -372,20 +362,11 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
     }
 
     private _div_MainGridAtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Main <div> containing grid of left and on right the boxes Summary ...
-    private _div_MainContent_LeftGridEntry_AtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Left <div> inside this._div_MainGridAtTop_Ref
 
     private _proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component>
     private _proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component>
 
     private _proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinSequenceWidgetDisplay_Root_Component_React>
-
-    private _domMutationObserver_reported_peptides_outer_container : MutationObserver;
-    private _domMutationObserver_ProteinAnnotationDataEtc_outer_container : MutationObserver;
-    private _domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container : MutationObserver;
-
-    private _updated_OverlayWidth: number = undefined;  // Updated whenever call function in parent Component to update width of overlay
-
-    // private _width_LeftGridEntry_TopMainSection_LastUpdatedValue = undefined;  // Updated whenever update width left grid entry Top Main Section
 
     private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
@@ -418,7 +399,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         super(props);
 
         this._div_MainGridAtTop_Ref = React.createRef<HTMLDivElement>();
-        this._div_MainContent_LeftGridEntry_AtTop_Ref = React.createRef<HTMLDivElement>();
 
         this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
@@ -572,28 +552,19 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 		}
     }
 
-    /**
-     *
-     */
-    componentWillUnmount() {
-        try {
-            // this._resizeWindow_Handler_Remove();
-
-            this._remove_MutationObserver_From_reported_peptides_outer_container();
-
-            this._remove_MutationObserver_From_ProteinAnnotationDataEtc_Table_Container()
-
-            this._remove_MutationObserver_From_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container()
-
-        } catch( e ) {
-            console.log("Exception caught in componentWillUnmount()");
-            console.log( e );
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-
-
-    }
+    // /**
+    //  *
+    //  */
+    // componentWillUnmount() {
+    //     try {
+    //
+    //     } catch( e ) {
+    //         console.log("Exception caught in componentWillUnmount()");
+    //         console.log( e );
+    //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+    //         throw e;
+    //     }
+    // }
 
     /**
      * Returned Promise Ignored
@@ -756,11 +727,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                 create_GeneratedReportedPeptideListData_Result,
                 singleProtein_FiltersDisplay_ComponentData
             });
-
-            window.setTimeout( () => {
-
-                this._update_Overlay_Add_Listeners__After_MainPaint()
-            }, 50 );
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
@@ -960,57 +926,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
-
-    /**
-     *
-     */
-    private _update_Overlay_Add_Listeners__After_MainPaint() {
-
-        this._resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width();
-
-        this._add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded();
-
-        this._add_MutationObserver_To_ProteinAnnotationDataEtc_Table_Container_For_MakingWidthChangesAsNeeded()
-
-        this._add_MutationObserver_To_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container()
-
-        // this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
-
-        // this._resizeWindow_Handler_Attach();
-    }
-
-	// /**
-	//  *
-	//  */
-	// private _resizeWindow_Handler_Attach() : void {
-    //
-	// 	//  Attach resize handler
-	// 	window.addEventListener( "resize", this._resizeWindow_Handler_BindThis );
-	// }
-    //
-	// /**
-	//  *
-	//  */
-	// private _resizeWindow_Handler_Remove() : void {
-    //
-	// 	//  Remove resize handler
-	// 	window.removeEventListener( "resize", this._resizeWindow_Handler_BindThis );
-	// }
-
-	// /**
-	//  * copied to this._resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this) in constructor
-	//  */
-	// private _resizeWindow_Handler() : void {
-	// 	try {
-	// 		this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
-    //
-	// 	} catch( e ) {
-	// 		console.log("Exception caught in _resizeWindow_Handler()");
-	// 		console.log( e );
-	// 		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-	// 		throw e;
-	// 	}
-	// }
 
     /**
      *
@@ -2724,359 +2639,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         }
     }
 
-
-    //////////////
-    
-    //   Since the Peptide List can end up wider than the current width, 
-    //   have a way to detect that and change the width to wider
-
-	/**
-	 * called by this.componentWillUnmount
-	 */
-	_remove_MutationObserver_From_reported_peptides_outer_container() {
-
-		{
-			//  Remove _domMutationObserver_reported_peptides_outer_container if set
-			// stop observing
-			try {
-				if ( this._domMutationObserver_reported_peptides_outer_container ) {
-					this._domMutationObserver_reported_peptides_outer_container.disconnect();
-				}
-			} catch ( e ) {
-				var z = 0;
-			}
-			this._domMutationObserver_reported_peptides_outer_container = undefined;
-		}
-    }
-
-	/**
-	 * called by this._update_Overlay_Add_Listeners__After_MainPaint()
-	 */
-	_add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded() {
-		{
-			//  Remove _domMutationObserver_reported_peptides_outer_container if set
-			// stop observing
-			try {
-				if ( this._domMutationObserver_reported_peptides_outer_container ) {
-					this._domMutationObserver_reported_peptides_outer_container.disconnect();
-				}
-			} catch ( e ) {
-				var z = 0;
-			}
-			this._domMutationObserver_reported_peptides_outer_container = undefined;
-		}
-
-		// Options for the observer (which mutations to observe)
-		// const config = { attributes: true, childList: true, subtree: true };
-		const config = { childList: true, subtree: true };
-
-		let timeoutId: number = null;
-
-		// Callback function to execute when mutations are observed
-		const domMutationCallback = ( mutationsList: any, observer: any ) => {
-
-			let foundChildListMutation = false;
-
-			for ( const mutation of mutationsList ) {
-				if  ( mutation.type == 'childList' ) {
-					foundChildListMutation = true;
-				}
-				// else if ( mutation.type == 'attributes' ) {
-				// 	console.log( 'The ' + mutation.attributeName + ' attribute was modified.' );
-				// }
-			}
-			if ( foundChildListMutation ) {
-				if ( timeoutId ) {
-					window.clearTimeout( timeoutId );
-				}
-				timeoutId = window.setTimeout( () => {
-					timeoutId = null;
-					// console.log('At least 1 child node has been added or removed.');
-					this._resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width();
-				}, 200 );
-			}
-		};
-
-
-		// Create an observer instance linked to the callback function
-        this._domMutationObserver_reported_peptides_outer_container = new MutationObserver( domMutationCallback );
-
-
-        const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM =
-            this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
-
-        if ( proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM ) {
-
-            // Start observing the target node for configured mutations
-            this._domMutationObserver_reported_peptides_outer_container.observe( proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM, config );
-        }
-	}
-
-    ///
-
-    //   Since the Protein Annotation Data Etc can end up wider than the current width,
-    //   have a way to detect that and change the width to wider
-
-    /**
-     * called by this.componentWillUnmount
-     */
-    _remove_MutationObserver_From_ProteinAnnotationDataEtc_Table_Container() {
-        {
-            //  Remove _domMutationObserver_ProteinAnnotationDataEtc_outer_container if set
-            // stop observing
-            try {
-                if ( this._domMutationObserver_ProteinAnnotationDataEtc_outer_container ) {
-                    this._domMutationObserver_ProteinAnnotationDataEtc_outer_container.disconnect();
-                }
-            } catch ( e ) {
-                var z = 0;
-            }
-            this._domMutationObserver_ProteinAnnotationDataEtc_outer_container = undefined;
-        }
-    }
-
-    /**
-     * called by this._update_Overlay_Add_Listeners__After_MainPaint()
-     */
-    _add_MutationObserver_To_ProteinAnnotationDataEtc_Table_Container_For_MakingWidthChangesAsNeeded() {
-        {
-            //  Remove _domMutationObserver_reported_peptides_outer_container if set
-            // stop observing
-            try {
-                if ( this._domMutationObserver_ProteinAnnotationDataEtc_outer_container ) {
-                    this._domMutationObserver_ProteinAnnotationDataEtc_outer_container.disconnect();
-                }
-            } catch ( e ) {
-                var z = 0;
-            }
-            this._domMutationObserver_ProteinAnnotationDataEtc_outer_container = undefined;
-        }
-
-        // Options for the observer (which mutations to observe)
-        // const config = { attributes: true, childList: true, subtree: true };
-        const config = { childList: true, subtree: true };
-
-        let timeoutId: number = null;
-
-        // Callback function to execute when mutations are observed
-        const domMutationCallback = ( mutationsList: any, observer: any ) => {
-
-            let foundChildListMutation = false;
-
-            for ( const mutation of mutationsList ) {
-                if  ( mutation.type == 'childList' ) {
-                    foundChildListMutation = true;
-                }
-                // else if ( mutation.type == 'attributes' ) {
-                // 	console.log( 'The ' + mutation.attributeName + ' attribute was modified.' );
-                // }
-            }
-            if ( foundChildListMutation ) {
-                if ( timeoutId ) {
-                    window.clearTimeout( timeoutId );
-                }
-                timeoutId = window.setTimeout( () => {
-                    timeoutId = null;
-                    // console.log('At least 1 child node has been added or removed.');
-                    this._resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width();
-                }, 200 );
-            }
-        };
-
-
-        // Create an observer instance linked to the callback function
-        this._domMutationObserver_ProteinAnnotationDataEtc_outer_container = new MutationObserver( domMutationCallback );
-
-
-        const proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM =
-            this._proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref.current;
-
-        if ( proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM ) {
-
-            // Start observing the target node for configured mutations
-            this._domMutationObserver_ProteinAnnotationDataEtc_outer_container.observe( proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM, config );
-        }
-    }
-
-    ///
-
-    //
-
-    /**
-     * called by this.componentWillUnmount
-     */
-    _remove_MutationObserver_From_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container() {
-        {
-            //  Remove _domMutationObserver_ProteinAnnotationDataEtc_outer_container if set
-            // stop observing
-            try {
-                if ( this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container ) {
-                    this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container.disconnect();
-                }
-            } catch ( e ) {
-                var z = 0;
-            }
-            this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container = undefined;
-        }
-    }
-
-    /**
-     * called by this._update_Overlay_Add_Listeners__After_MainPaint()
-     */
-    _add_MutationObserver_To_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container() {
-        {
-            //  Remove _domMutationObserver_reported_peptides_outer_container if set
-            // stop observing
-            try {
-                if ( this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container ) {
-                    this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container.disconnect();
-                }
-            } catch ( e ) {
-                var z = 0;
-            }
-            this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container = undefined;
-        }
-
-
-        const proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM =
-            this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref.current;
-
-        if ( ! proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM ) {
-
-            console.warn('ref.current does NOT have a value: this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref.current: in: _add_MutationObserver_To_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container()');
-
-            return // EARLY RETURN
-        }
-
-        // *** NOTE:  Added to 'config':   'attributes: true' since Only attributes change when change 'Width Scale Selection:' which changes width of SVG.
-
-        // Options for the observer (which mutations to observe)
-        // const config = { attributes: true, childList: true, subtree: true };
-        const config = { attributes: true, childList: true, subtree: true };
-
-        let timeoutId: number = null;
-
-        // Callback function to execute when mutations are observed
-        const domMutationCallback = ( mutationsList: any, observer: any ) => {
-
-            const foundChildListMutation = true  //  Hard code to true to always force resize on any DOM change
-
-            // let foundChildListMutation = false;
-            //
-            // for ( const mutation of mutationsList ) {
-            //     if  ( mutation.type == 'childList' ) {
-            //         foundChildListMutation = true;
-            //     }
-            //     // else if ( mutation.type == 'attributes' ) {
-            //     // 	console.log( 'The ' + mutation.attributeName + ' attribute was modified.' );
-            //     // }
-            // }
-
-            if ( foundChildListMutation ) {
-                if ( timeoutId ) {
-                    window.clearTimeout( timeoutId );
-                }
-                timeoutId = window.setTimeout( () => {
-                    timeoutId = null;
-                    //  console.log('window.setTimeout called: in: domMutationCallback called: In: _add_MutationObserver_To_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container()');
-                    this._resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width();
-                }, 200 );
-            }
-        };
-
-
-        // Create an observer instance linked to the callback function
-        this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container = new MutationObserver( domMutationCallback );
-
-        // Start observing the target node for configured mutations
-        this._domMutationObserver_ProteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container.
-        observe( proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM, config );
-    }
-
-    /////
-
-    /**
-     * Adjust overlay width to fit reported peptide block AND Protein Annotation Etc Block
-     *
-     * called internally from this class
-     */
-    _resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width() {
-
-        //  Adjust overlay width to fit reported peptide list AND Protein Annotation Etc Block
-
-        let container_Width_MaxOfValues: number = undefined
-
-        {
-            // reported peptide list
-            const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM =
-                this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
-
-            if ( proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM ) {
-
-                const containerRect_GeneratedReportedPeptideListSection = proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
-
-                container_Width_MaxOfValues = containerRect_GeneratedReportedPeptideListSection.width;
-            }
-        }
-        {
-            // Protein Annotation Etc Block
-            const proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM =
-                this._proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref.current;
-
-            if ( proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM ) {
-
-                const containerRect = proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM.getBoundingClientRect();
-
-                const container_Width = containerRect.width;
-
-                if ( ( ! container_Width_MaxOfValues ) || container_Width_MaxOfValues < container_Width ) {
-                    container_Width_MaxOfValues = container_Width
-                }
-            }
-        }
-        {
-            // Protein Sequence or other Tabs in same group Block
-
-            const proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM =
-                this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref.current;
-
-            if ( proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM ) {
-
-                const containerRect = proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref_DOM.getBoundingClientRect();
-
-                const container_Width = containerRect.width;
-
-                if ( ( ! container_Width_MaxOfValues ) || container_Width_MaxOfValues < container_Width ) {
-                    container_Width_MaxOfValues = container_Width
-                }
-            }
-        }
-
-        if ( ! container_Width_MaxOfValues ) {
-            //  NO value set to exit
-            return // EARLY RETURN
-        }
-
-        let overlayWidth = (
-            container_Width_MaxOfValues
-            + this.props.view_single_protein_overlay_body_PaddingLeft
-            + this.props.view_single_protein_overlay_body_PaddingRight
-            + 2 //  Little Extra
-        );
-        if ( overlayWidth < _OUTERMOST_CONTAINER_MIN_WIDTH ) {
-            overlayWidth = _OUTERMOST_CONTAINER_MIN_WIDTH; // Min width
-        }
-
-        if ( ( ! this._updated_OverlayWidth ) || this._updated_OverlayWidth < overlayWidth ) {
-
-            //  this._updated_OverlayWidth not set or this._updated_OverlayWidth < new overlay width
-
-            this.props.setWidth__view_single_protein_inner_overlay_div({ width : overlayWidth });
-
-            this._updated_OverlayWidth = overlayWidth;
-        }
-    }
-
     ////////////////////////////////////////
 
     /**
@@ -3147,17 +2709,20 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                     {/* Fake 'width' so that grid width not auto fill to width 100%.  Grid will exceed the 80px width to fill the width of the 2 columns.
                             This keeps boxes on right in viewport when main overlay width > viewport width. */}
 
-                <div style={ { display: "grid", gridTemplateColumns: "auto min-content", width: 80 } } ref={ this._div_MainGridAtTop_Ref } >
+                <div
+                    ref={ this._div_MainGridAtTop_Ref }
+                    style={ {
+                        display: "grid", gridTemplateColumns: "auto min-content",
+                        width:  _WIDTH_OF_CONTAINING_DIV_WITH_External_Links_ON_RIGHT
+                        //  Hard coded value that works with other hard coded width values of children elements
+
+                        // width: "min( _WIDTH_OF_CONTAINING_DIV_WITH_External_Links_ON_RIGHTpx, calc( -100px + 100vw ) )"   ---  This does NOT work since back to the child exceeding this element and then the title area is not wide enough
+                    } }
+                >
                 
                     {/* display of data above Reported Peptides  */}
 
-                    <div ref={ this._div_MainContent_LeftGridEntry_AtTop_Ref } 
-                        style={ { 
-                            display: "inline-block",
-                            width : _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH,
-                            minWidth : _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH,
-                            maxWidth : _LEFT_BLOCK_SEARCH_DETAILS_TO_PROTEIN_NAME_AND_DESCRIPTION_WIDTH
-                        } } >  
+                    <div>
                     
                         {/* Main Content above Reported Peptides  */}
 
