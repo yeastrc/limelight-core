@@ -61,12 +61,19 @@ const module_MAIN = {
 
 const resolve = {
 	alias: {
+		'h264-mp4-encoder': 'h264-mp4-encoder/embuild/dist/h264-mp4-encoder.web.js'
 	},
 	modules: [
 		path.resolve('./src/js'),
 	path.resolve('./node_modules'),
 	],
-	extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss']  //  !!!!!!!  Needs to be updated for any new file extensions used
+	extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss'],  //  !!!!!!!  Needs to be updated for any new file extensions used
+	fallback: {
+		"path": false, // or require.resolve("path-browserify")
+		"fs": false,
+		"crypto": false,
+		// "buffer": require.resolve("buffer/")
+	}
 }
 
 const plugins = [

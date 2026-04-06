@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+
+    "skipLibCheck": true,
+
+
     /* Basic Options */
     // "incremental": true,                   /* Enable incremental compilation */
     "target": "es2022",                          /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019' or 'ESNEXT'. */
@@ -47,7 +51,7 @@
 
     /* Module Resolution Options */
     "moduleResolution": "node",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
-    "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
+    // "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
     "paths": {                             /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
        "*": ["./src/js/*"]
     },
@@ -72,13 +76,13 @@
     /* Advanced Options */
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
   },
- "include": [
+  "include": [
      "./src/**/*.ts",
      "./src/**/*.tsx"
    ],
-    
     "exclude": [
-      "node_modules",
+      "./node_modules",
+      "./node_modules/**/*",
       "./handlebars_templates_precompiled/**/*",
       "**/__snapshots__/*",
       "**/*.snap"

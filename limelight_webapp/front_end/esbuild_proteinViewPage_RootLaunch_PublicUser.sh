@@ -1,3 +1,9 @@
+#!/bin/bash
+
+set -e  #  exit on first error
+
+
+
 
 # esbuild_proteinViewPage_RootLaunch_LoggedInUsers.sh
 
@@ -6,12 +12,26 @@
 #         npm install --save-exact --save-dev esbuild
 #           per https://esbuild.github.io/getting-started/
 
+  ###  Run Typescript Go with '--noEmit' to Validate all Typescript
+ ./tsgo_Preview_NoEmit.sh
+
+#  Build Protein Page - Public user
 
 ./node_modules/.bin/esbuild \
-./src/js/page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_root/proteinViewPage_RootLaunch_LoggedInUsers.ts  \
+./src/js/page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_root/proteinViewPage_RootLaunch_PublicUser.ts  \
  --bundle --sourcemap --target=es2023  \
   '--define:process.env.NODE_ENV="production"' \
- --outfile=./webpack_build_output/js_generated_bundles/data_pages/proteinViewPage_RootLaunch_LoggedInUsers-bundle.js
+ --outfile=./webpack_build_output/js_generated_bundles/data_pages/proteinViewPage_RootLaunch_PublicUser-bundle.js
+ 
+ 
+ #  Copy to Tomcat
+ 
+ ant -f ant_buildFrontEnd_ONLY_JS_From_WebpackDir_CopyToTomcat.xml
+ 
+ #####
+ 
+ ##   esbuild extra
+ 
 
 #   without  --minify  the NODE_ENV="development"
 
@@ -34,3 +54,6 @@
 #       Google search of error leads to https://github.com/evanw/esbuild/issues/2353
 
 ###################
+
+
+date

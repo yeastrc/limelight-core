@@ -50,6 +50,7 @@ const _SCAN_NUMBER_SCAN_FILE_NAME_ID_PROJECT_SEARCH_ID_ON_PSM_FILTER_USER_SELECT
 const _SCAN_PEAK_M_OVER_Z_INTENSITY_FILTER_USER_SELECTION_STATE_OBJECT_ENCODED_STATE_DATA_PROPERTY_NAME = 'r';
 const _PROTEIN_SEQUENCE_BAR_WIDGET_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 's';
 const _SINGLEPROTEIN_PROTEINSEQUENCE_ETC_TABS_SELECTEDTAB_STATEOBJECT_ENCODING_PROPERTY_NAME = "t"
+const _PROTEIN_STRUCTURE_WIDGET_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'u';
 
 /**
  * 
@@ -60,6 +61,7 @@ export class SingleProtein_CentralStateManagerObjectClass {
 		proteinSequenceVersionId? : number
 		proteinSequenceFormattedDisplayWidgetEncodedStateData? : any
 		proteinSequence_Bar_Widget_EncodedStateData? : any
+		protein_Structure_Widget_EncodedStateData?: any  // Protein_Structure_Widget_StateObject
 		reporterIonMassesSelectedEncodedStateData? : any
 		modsSelectedEncodedStateData? : any
 		peptideUniqueFilterSelectedEncodedStateData? : any
@@ -118,6 +120,7 @@ export class SingleProtein_CentralStateManagerObjectClass {
 				proteinSequenceVersionId : encodedStateData[ _PROTEIN_SEQUENCE_VERSION_ID_ENCODING_PROPERTY_NAME ],
 				proteinSequenceFormattedDisplayWidgetEncodedStateData : encodedStateData[ _PROTEIN_SEQUENCE_FORMATTED_DISPLAY_WIDGET_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				proteinSequence_Bar_Widget_EncodedStateData : encodedStateData[ _PROTEIN_SEQUENCE_BAR_WIDGET_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+				protein_Structure_Widget_EncodedStateData : encodedStateData[ _PROTEIN_STRUCTURE_WIDGET_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				reporterIonMassesSelectedEncodedStateData : encodedStateData[ _REPORTER_ION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				modsSelectedEncodedStateData : encodedStateData[ _MODIFICATION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				peptideUniqueFilterSelectedEncodedStateData : encodedStateData[ _PEPTIDE_UNIQUE_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
@@ -196,6 +199,21 @@ export class SingleProtein_CentralStateManagerObjectClass {
 
 	get_ProteinSequence_Bar_Widget_EncodedStateData() {
 		return this._value.proteinSequence_Bar_Widget_EncodedStateData;
+	}
+
+	set_Protein_Structure_Widget_EncodedStateData( { protein_Structure_Widget_EncodedStateData }: { protein_Structure_Widget_EncodedStateData: any } ) {
+		this._value.protein_Structure_Widget_EncodedStateData = protein_Structure_Widget_EncodedStateData;
+
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
+		}
+	}
+
+	get_Protein_Structure_Widget_EncodedStateData() {
+		return this._value.protein_Structure_Widget_EncodedStateData;
 	}
 
 	setReporterIonMassesSelectedEncodedStateData( { reporterIonMassesSelectedEncodedStateData }: { reporterIonMassesSelectedEncodedStateData: any } ) {
@@ -504,6 +522,9 @@ export class SingleProtein_CentralStateManagerObjectClass {
 		}
 		if ( this._value.proteinSequence_Bar_Widget_EncodedStateData !== undefined ) {
 			dataForEncoding[ _PROTEIN_SEQUENCE_BAR_WIDGET_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.proteinSequence_Bar_Widget_EncodedStateData;
+		}
+		if ( this._value.protein_Structure_Widget_EncodedStateData !== undefined ) {
+			dataForEncoding[ _PROTEIN_STRUCTURE_WIDGET_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.protein_Structure_Widget_EncodedStateData;
 		}
 
 		if ( this._value.reporterIonMassesSelectedEncodedStateData !== undefined ) {

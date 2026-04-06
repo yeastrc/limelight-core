@@ -3,7 +3,7 @@
  * 
  * Protein Sequence Bar Widget - State Object
  *
- * NOTE:  Protein Sequence Bar Widget Component ALSO uses class ProteinSequence_Bar_Widget_StateObject
+ * NOTE:  Protein Sequence Bar Widget Component ALSO uses class ProteinSequenceWidget_StateObject
  *
  */
 

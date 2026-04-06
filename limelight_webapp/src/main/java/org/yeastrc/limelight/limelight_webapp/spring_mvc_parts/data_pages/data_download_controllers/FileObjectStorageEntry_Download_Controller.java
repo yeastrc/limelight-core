@@ -244,21 +244,21 @@ public class FileObjectStorageEntry_Download_Controller {
 				
 	
 				//  Only populated when entry found
-				System.out.println( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getInputStream_FileObjectContents(): " 
+				log.info( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getInputStream_FileObjectContents(): " 
 						+ get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getInputStream_FileObjectContents() );
 	
 				//  Only populated when entry found
-				System.out.println( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getReturnedContentsLength(): " 
+				log.info( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getReturnedContentsLength(): " 
 						+ get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getReturnedContentsLength() );
 	
 				//  Only populated when entry found or entry not found
-				System.out.println( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader(): " 
+				log.info( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader(): " 
 						+ get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader() );
-				System.out.println( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileAPIKey_NOT_FOUND(): " 
+				log.info( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileAPIKey_NOT_FOUND(): " 
 						+ get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileAPIKey_NOT_FOUND() );
-				System.out.println( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileLength_NonGZIP(): " 
+				log.info( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileLength_NonGZIP(): " 
 						+ get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileLength_NonGZIP() );
-				System.out.println( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getResponse_Is_GZIP(): " 
+				log.info( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getResponse_Is_GZIP(): " 
 						+ get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getResponse_Is_GZIP() );
 				
 				//  TODO  Need to handle API Key NOT FOUND

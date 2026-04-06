@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." name="Limelight ant_buildFrontEnd_ONLY_CopyToTomcat" default="built-copy-front-end">
+
+	<!--  Build the 'front end' and copy to a Tomcat Deploy  -->
+
+	<!--  
+			Targets to build Javascript Only for a Single Page.  The JSP are NOT copied.
+	
+	 		Search for:  <target name="js_only_build_copy
+	 		
+	 		
+	 		Run ant for specific target using:  ant -f <filename> <target>
+	-->
+
+	
+	<property name="config_file" value="ant_buildFrontEnd_CopyToTomcat.settings.properties" />
+	
+	<property name="config_file_with_path" 
+		value="${config_file}"/>
+		
+	<fail message="ERROR: '${config_file}' file not found, check the path. filename with path: ${config_file_with_path}">
+		<condition>
+		    <not>
+		    	<available file="${config_file_with_path}" />
+		    </not>
+		</condition>
+	</fail>
+	
+	<echo>config_file_with_path: ${config_file_with_path}</echo>
+	
+	<!-- This does not fail if the file is not found -->
+	<property file="${config_file_with_path}" />
+	
+	<echo>tomcat.webapps.root: ${tomcat.webapps.root}</echo>
+	<echo>limelight.context: ${limelight.context}</echo>
+
+	<property name="tomcat.limelight.webapp.root" value="${tomcat.webapps.root}${file.separator}${limelight.context}" />
+	
+	
+	<property name="tomcat.static" value="${tomcat.limelight.webapp.root}${file.separator}static" />
+	<property name="tomcat.jsp" value="${tomcat.limelight.webapp.root}${file.separator}WEB-INF${file.separator}jsp" />
+	
+	
+	<!-- MAIN / DEFAULT Target  -->
+	
+	<target name="built-copy-front-end" description="">
+
+	      <delete dir="${tomcat.static}${file.separator}js_generated_bundles"/>
+	      <mkdir  dir="${tomcat.static}${file.separator}js_generated_bundles"/>
+				
+		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" overwrite="true" >
+  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
+		</copy>			 
+				
+	</target>
+</project>

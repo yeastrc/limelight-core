@@ -43,6 +43,7 @@ import {
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import { ModificationMass_UserSelections_StateObject } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
 import { Protein_Structure_WidgetDisplay__Main_Component } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/jsx/protein_Structure_WidgetDisplay__Main_Component";
+import { Protein_Structure_Widget_StateObject } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/protein_Structure_Widget_StateObject";
 
 
 const _MAX_PROTEIN_LENGTH_TO_DISPLAY = 100000
@@ -55,7 +56,7 @@ const _PROTEIN_BAR__SELECTED_PROJECT_SEARCH_ID__DEFAULT = _PROTEIN_BAR__SELECTED
  */
 export interface Protein_Structure_WidgetDisplay__SearchBased__Root_Component_Props {
 
-    proteinSequence_Bar_Widget_StateObject : ProteinSequence_Bar_Widget_StateObject
+    protein_Structure_Widget_StateObject: Protein_Structure_Widget_StateObject
 
     proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject
 
@@ -498,7 +499,7 @@ export class Protein_Structure_WidgetDisplay__SearchBased__Root_Component extend
 
                 <Protein_Structure_WidgetDisplay__Main_Component
 
-                    proteinSequence_Bar_Widget_StateObject={ this.props.proteinSequence_Bar_Widget_StateObject }
+                    protein_Structure_Widget_StateObject={ this.props.protein_Structure_Widget_StateObject }
 
                     proteinSequenceWidget_StateObject={ this.props.proteinSequenceWidget_StateObject }
 

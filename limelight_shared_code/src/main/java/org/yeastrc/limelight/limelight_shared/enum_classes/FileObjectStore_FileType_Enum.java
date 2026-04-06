@@ -27,8 +27,14 @@ public enum FileObjectStore_FileType_Enum {
     /**
      * Scan file - Submitted as Scan File to Limelight
      */
-    SCAN_FILE_TYPE(4);
+    SCAN_FILE_TYPE(4),
 
+    /**
+     * Structure File (Like PDB) Uploaded to Limelight
+     */
+    STRUCTURE_FILE_LIKE_PDB_TYPE(5);
+
+    
     
     private final int value;
 

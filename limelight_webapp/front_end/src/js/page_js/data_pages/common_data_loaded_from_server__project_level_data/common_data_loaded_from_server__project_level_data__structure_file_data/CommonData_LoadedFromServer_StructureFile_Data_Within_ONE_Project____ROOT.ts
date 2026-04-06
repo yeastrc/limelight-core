@@ -1,0 +1,55 @@
+/**
+ * CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project____ROOT.ts
+ *
+ * Root of common code of interact with Structure File (like PDB) within ONE Project
+ */
+import { CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_DAO } from "page_js/data_pages/common_data_loaded_from_server__project_level_data/common_data_loaded_from_server__project_level_data__structure_file_data/CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_DAO";
+import { CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO } from "page_js/data_pages/common_data_loaded_from_server__project_level_data/common_data_loaded_from_server__project_level_data__structure_file_data/CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO";
+import { CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_Contents_Value } from "page_js/data_pages/common_data_loaded_from_server__project_level_data/common_data_loaded_from_server__project_level_data__structure_file_data/CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_Contents_Value";
+import { CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__UserAccess_CreateEditDelete } from "page_js/data_pages/common_data_loaded_from_server__project_level_data/common_data_loaded_from_server__project_level_data__structure_file_data/CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__UserAccess_CreateEditDelete";
+
+
+export class CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project____ROOT {
+
+
+    readonly projectId: number
+
+    private _commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__UserAccess_CreateEditDelete: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__UserAccess_CreateEditDelete
+
+    private _commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_DAO: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_DAO
+
+    private _commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_Contents_Value: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_Contents_Value
+
+    private _commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO
+
+    constructor(
+        {
+            projectId
+        } : {
+            projectId: number
+        }
+    ) {
+        this.projectId = projectId
+
+        this._commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__UserAccess_CreateEditDelete = new CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__UserAccess_CreateEditDelete({ projectId })
+        this._commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_DAO = new CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_DAO({ projectId })
+        this._commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_Contents_Value = new CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_Contents_Value()
+        this._commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO = new CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO({ projectId })
+    }
+
+    get_commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__UserAccess_CreateEditDelete() {
+        return this._commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__UserAccess_CreateEditDelete
+    }
+
+    get_commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_DAO() {
+        return this._commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_DAO
+    }
+
+    get_commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_Contents_Value() {
+        return this._commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_Contents_Value
+    }
+
+    get_commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO() {
+        return this._commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO
+    }
+}

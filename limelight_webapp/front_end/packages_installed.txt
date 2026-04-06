@@ -93,4 +93,27 @@ Installed latest webpack 5 and caniuse
 	Installed:   "webpack": "^5.105.2",   "caniuse-lite": "^1.0.30001769",
 
 
+Install Mol* Protein Structure Viewer
+
+    npm install molstar
+
+    Installed:      "molstar": "^5.6.1",
+
+    Does NOT install since 3 years old:  npm install molstar-react
+
+Installed so molstar stops getting errors:
+
+    npm install tslib@latest --save
+        Installed:    "tslib": "^2.8.1"
+
+Installed for esbuild
+
+    npm install --save-exact --save-dev esbuild
+
+
+Removed Typescript GO.  Old version of Webstorm appears to have issues when it is installed (or maybe the issues were unrelated)
+        Install Typescript GO  run with npx tsgo
+            npm install @typescript/native-preview --save-dev # for the experimental preview
+
+
 

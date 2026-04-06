@@ -844,6 +844,65 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0002 =
 			"d/rws/for-page/fdb/feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0002";
+	
+
+	///////////////////////////
+	
+	//    Structure File Data
+	
+	//    Currently used on Single Protein
+
+	//    Structure File and Alignment Entries - Can user create/edit/delete - get that info
+	public static final String STRUCTURE_FILE_AND_ALIGNMENT_USER_CAN_CREATE_EDIT_DELETE_ANY_IN_PROJECT_GET_INFO_ENTRIES_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/structure-file-and-alignment-user-can-create-edit-delete-any-entries-in-project-get-info";
+
+	//   Has Any Structure File entries
+	
+	//         List All Structure Files for Project Id and Protein Sequence Version Id - YES Public
+	public static final String STRUCTURE_FILE_HAS_ANY_FOR_PROJECT_ID_PROTEIN_SEQUENCE_VERSION_ID_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/structure-file-has-any-for-project-id-protein-sequence-version-id";
+
+	//  		Root Structure File record
+
+	//         List All Structure Files for Project Id and Protein Sequence Version Id - YES Public
+	public static final String STRUCTURE_FILE_LIST_ALL_FOR_PROJECT_ID_PROTEIN_SEQUENCE_VERSION_ID_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/structure-file-list-all-for-project-id-protein-sequence-version-id";
+
+	//         List All Structure Files for Project - NOT Public
+	public static final String STRUCTURE_FILE_LIST_ALL_FOR_PROJECT_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/structure-file-list-all-for-project";
+
+	//         Get Structure File Contents for StructureFileId - YES Public
+	public static final String STRUCTURE_FILE_CONTENTS_FOR_STRUCTURE_FILE_ID_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/structure-file-contents-for-structure-file-id";
+
+	//         Upload Structure File Contents
+	public static final String STRUCTURE_FILE_CONTENTS_UPLOAD_DATA_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/structure-file-contents-upload-data";
+	
+	//			Update Structure Description
+	public static final String STRUCTURE_FILE_UPDATE_DESCRIPTION =
+			"d/rws/for-page/structure-file-update-description";
+
+	//			Delete
+	public static final String STRUCTURE_FILE_DELETE =
+			"d/rws/for-page/structure-file-delete";
+
+	//  		Child Structure File Protein Alignment record
+
+	//         List All Structure File Chain to Limelight Protein Alignment for Structure File Id and Protein Sequence Version Id 
+	public static final String STRUCTURE_FILE_CHAIN_TO_LIMELIGHT_PROTEIN_ALIGNMENT_GET_LIST_FOR_STRUCTURE_FILE_ID_AND_PROTEIN_SEQUENCE_VERSION_ID__REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/structure-file-chain-to-limelight-protein-alignment-get-list-for-structure-file-id-and-protein-sequence-version-id";
+
+	//         Save Structure File Chain to Limelight Protein Alignment 
+	public static final String STRUCTURE_FILE_CHAIN_TO_LIMELIGHT_PROTEIN_ALIGNMENT_SAVE_OR_UPDATE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/structure-file-chain-to-limelight-protein-alignment-save-or-update";
+
+	//			Delete Structure File Chain to Limelight Protein Alignment 
+	public static final String STRUCTURE_FILE_CHAIN_TO_LIMELIGHT_PROTEIN_ALIGNMENT_DELETE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/structure-file-chain-to-limelight-protein-alignment-delete";
+	
+	
 
 	///////////////////////////
 	

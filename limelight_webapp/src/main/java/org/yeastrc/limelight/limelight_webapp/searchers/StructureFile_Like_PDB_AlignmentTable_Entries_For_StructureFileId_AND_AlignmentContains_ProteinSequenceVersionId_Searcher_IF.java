@@ -1,0 +1,13 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.yeastrc.limelight.limelight_shared.dto.StructureFile_Like_PDB_File_Alignment_DTO;
+
+public interface StructureFile_Like_PDB_AlignmentTable_Entries_For_StructureFileId_AND_AlignmentContains_ProteinSequenceVersionId_Searcher_IF {
+
+	List<StructureFile_Like_PDB_File_Alignment_DTO> get_StructureFile_Like_PDB_AlignmentTable_Entries_For_StructureFileId_AND_AlignmentContains_ProteinSequenceVersionId(
+			int StructureFileLikePDBId, int proteinSequenceVersionId) throws SQLException;
+
+}

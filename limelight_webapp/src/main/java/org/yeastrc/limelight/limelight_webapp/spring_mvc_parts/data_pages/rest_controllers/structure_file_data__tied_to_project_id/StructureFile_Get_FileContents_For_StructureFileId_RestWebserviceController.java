@@ -1,0 +1,390 @@
+/*
+* Original author: Daniel Jaschob <djaschob .at. uw.edu>
+*                  
+* Copyright 2018 University of Washington - Seattle, WA
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.structure_file_data__tied_to_project_id;
+
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.yeastrc.file_object_storage.accept_import_web_app.webservice_connect.main.CallYRCFileObjectStoreWebservice;
+import org.yeastrc.file_object_storage.accept_import_web_app.webservice_connect.main.CallYRCFileObjectStoreWebserviceInitParameters;
+import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.Get_StoredFileObjectContents_Request;
+import org.yeastrc.file_object_storage.web_app.shared_server_client.webservice_request_response.main.Get_StoredFileObjectContents_Response_FromConnectionLibraryCall;
+import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
+import org.yeastrc.limelight.limelight_shared.dto.FileObjectStorage_MainEntry_DTO;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
+import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
+import org.yeastrc.limelight.limelight_webapp.dao.StructureFile_Like_PDB_File_DAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.FileObjectStorage_MainEntry_DAO_Webapp_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.StructureFile_Like_PDB_File_DAO.StructureFile_Like_PDB_File_DAO__Get_project_id_AND_file_object_storage_main_entry_id_fk_ForId;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
+import org.yeastrc.limelight.limelight_webapp.web_utils.GUNzip_ByteArray_To_ByteArray_IF;
+import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
+import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
+
+/**
+ * Structure File Like PDB file: Get FileContents For StructureFileId
+ * 
+ * Webservice Public
+ * 
+ *
+ */
+@RestController
+public class StructureFile_Get_FileContents_For_StructureFileId_RestWebserviceController {
+  
+	private static final Logger log = LoggerFactory.getLogger( StructureFile_Get_FileContents_For_StructureFileId_RestWebserviceController.class );
+
+	private static final int COPY_FILE_ARRAY_SIZE = 32 * 1024;
+	
+	@Autowired
+	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
+
+	@Autowired
+	private GetWebSessionAuthAccessLevelForProjectIdsIF getWebSessionAuthAccessLevelForProjectIds;
+
+	@Autowired
+	private ConfigSystemDAO_IF configSystemDAO;
+
+	@Autowired
+	private RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF restControllerUtils__Request_Accept_GZip_Response_Set_GZip;
+
+	@Autowired
+	private StructureFile_Like_PDB_File_DAO_IF structureFile_Like_PDB_File_DAO;
+	
+	@Autowired
+	private FileObjectStorage_MainEntry_DAO_Webapp_IF fileObjectStorage_MainEntry_DAO_Webapp;
+
+	@Autowired
+	private GUNzip_ByteArray_To_ByteArray_IF gUNzip_ByteArray_To_ByteArray;
+	
+	@Autowired
+	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
+
+	@Autowired
+	private MarshalObjectToJSON marshalObjectToJSON;
+
+    /**
+	 * 
+	 */
+	public StructureFile_Get_FileContents_For_StructureFileId_RestWebserviceController() {
+		super();
+//		log.warn( "constructor no params called" );
+	}
+	
+	//  Convert result object graph to JSON in byte[] in the controller body so can cache it
+
+	//  These 2 annotations work the same
+	
+
+	//  Mapping the value in {} in the path to parameters in the method:
+	//
+	//    The value in {} has to match the value in the "value = " in the @PathVariable
+	//    If they don't match, a 500 error is thrown and nothing is logged and the method is not called.
+	//    If there is no "value = " in the @PathVariable, the method parameter name is used.
+	
+	@PostMapping( 
+			path = {
+					AA_RestWSControllerPaths_Constants.PATH_START_ALL
+					+ AA_RestWSControllerPaths_Constants.STRUCTURE_FILE_CONTENTS_FOR_STRUCTURE_FILE_ID_REST_WEBSERVICE_CONTROLLER
+			},
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+
+//	@RequestMapping( 
+//			path = AA_RestWSControllerPaths_Constants.,
+//			method = RequestMethod.POST,
+//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+
+    public @ResponseBody ResponseEntity<byte[]>  webserviceMethod(
+
+    		@RequestBody byte[] postBody,
+    		HttpServletRequest httpServletRequest,
+    		HttpServletResponse httpServletResponse
+    		) throws Exception {
+    	
+    	try {
+    		//		log.warn( "projectView(...) called" );
+
+    		//  Throws exception extended from Limelight_WS_ErrorResponse_Base_Exception 
+    		//    to return specific error to web app JS code if webserviceSyncTracking is not current value
+    		validate_WebserviceSyncTracking_Code.validate_webserviceSyncTracking_Code( httpServletRequest );
+
+    		//  Always accept POST body as byte[] and parse to JSON here so have POST body for caching or other needs
+
+    		if ( postBody == null ) {
+    			log.warn( "No Post Body" );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+
+    		WebserviceRequest webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class );
+
+    		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
+
+    		if ( webserviceRequest.structureFileId == null ) {
+    			log.warn( "structureFileId is null or not assigned" );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+    		
+    		StructureFile_Like_PDB_File_DAO__Get_project_id_AND_file_object_storage_main_entry_id_fk_ForId structureFile_Like_PDB_File_DAO__Get_project_id_AND_file_object_storage_main_entry_id_fk_ForId =
+    				structureFile_Like_PDB_File_DAO.get_project_id_AND_file_object_storage_main_entry_id_fk_ForId( webserviceRequest.structureFileId );
+    		if ( structureFile_Like_PDB_File_DAO__Get_project_id_AND_file_object_storage_main_entry_id_fk_ForId == null ) {
+    			log.warn( "structureFileId is not found in db: " + webserviceRequest.structureFileId );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+    		
+    		int projectId = structureFile_Like_PDB_File_DAO__Get_project_id_AND_file_object_storage_main_entry_id_fk_ForId.getProjectId();
+
+			List<Integer> projectIds = new ArrayList<>( 1 );
+			projectIds.add( projectId );
+			
+			GetWebSessionAuthAccessLevelForProjectIds_Result getWebSessionAuthAccessLevelForProjectIds_Result =
+					getWebSessionAuthAccessLevelForProjectIds.getAuthAccessLevelForProjectIds( projectIds, httpServletRequest );
+
+			{
+				WebSessionAuthAccessLevel webSessionAuthAccessLevel = getWebSessionAuthAccessLevelForProjectIds_Result.getWebSessionAuthAccessLevel();
+
+				if ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() ) {
+
+					String msg = "( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() )  Throw Limelight_WS_AuthError_Unauthorized_Exception";
+					log.info( msg );
+					throw new Limelight_WS_AuthError_Unauthorized_Exception();
+				}
+			}
+			
+			//  End Authorization
+			
+			/////////////
+			
+			FileObjectStorage_MainEntry_DTO fileObjectStorage_MainEntry_DTO =
+			fileObjectStorage_MainEntry_DAO_Webapp.getForId( structureFile_Like_PDB_File_DAO__Get_project_id_AND_file_object_storage_main_entry_id_fk_ForId.getFileObjectStorage_MainEntryId() );
+	  		if ( fileObjectStorage_MainEntry_DTO == null ) {
+    			log.warn( "FileObjectStorage_MainEntryId is not found in db: " 
+    					+ structureFile_Like_PDB_File_DAO__Get_project_id_AND_file_object_storage_main_entry_id_fk_ForId.getFileObjectStorage_MainEntryId()
+    					+ ", structureFileId: "
+    					+ webserviceRequest.structureFileId );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+	  		
+	  		///  TODO  validate FileTypeId
+	  		// fileObjectStorage_MainEntry_DTO.getFileTypeId()
+
+			
+			boolean returnAs_GZIP_IfAvailable = false;
+			
+			{
+				boolean accept_GZIP = restControllerUtils__Request_Accept_GZip_Response_Set_GZip.does_HttpServletRequest_Accept_GZip( httpServletRequest );
+					
+				if (  accept_GZIP ) {
+
+					returnAs_GZIP_IfAvailable = true;
+				}
+			}
+			
+			String yrc_FileObjectStorageServiceBaseURL = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL );
+
+			CallYRCFileObjectStoreWebserviceInitParameters initParameters = new CallYRCFileObjectStoreWebserviceInitParameters();
+			
+			initParameters.setFileObjectStorageServerBaseURL( yrc_FileObjectStorageServiceBaseURL );
+
+			CallYRCFileObjectStoreWebservice callYRCFileObjectStoreWebservice = CallYRCFileObjectStoreWebservice.getInstance();
+			
+			callYRCFileObjectStoreWebservice.init(initParameters);
+						
+			Get_StoredFileObjectContents_Request get_StoredFileObjectContents_Request = new Get_StoredFileObjectContents_Request();
+			get_StoredFileObjectContents_Request.setFileAPIKey( fileObjectStorage_MainEntry_DTO.getFileObjectStorageStorageAPIKey() );
+			get_StoredFileObjectContents_Request.setReturnAs_GZIP_IfAvailable( returnAs_GZIP_IfAvailable );
+			
+			Get_StoredFileObjectContents_Response_FromConnectionLibraryCall get_StoredFileObjectContents_Response_FromConnectionLibraryCall = 
+					callYRCFileObjectStoreWebservice.call_GetFile_Webservice( get_StoredFileObjectContents_Request );
+				
+
+			//  Only populated when entry found
+			log.info( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getReturnedContentsLength(): " 
+					+ get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getReturnedContentsLength() );
+
+			//  Only populated when entry found or entry not found
+			log.info( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader(): " 
+					+ get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader() );
+			log.info( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileAPIKey_NOT_FOUND(): " 
+					+ get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileAPIKey_NOT_FOUND() );
+			log.info( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileLength_NonGZIP(): " 
+					+ get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileLength_NonGZIP() );
+			log.info( "get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getResponse_Is_GZIP(): " 
+					+ get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getResponse_Is_GZIP() );
+			
+
+			
+			if ( get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileAPIKey_NOT_FOUND() != null
+					&& get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getFileAPIKey_NOT_FOUND().booleanValue()  ) {
+				
+				//  TODO  Need to handle API Key NOT FOUND				
+			}
+			
+			
+	
+			get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader();
+			Long returnedContentsLength = get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getReturnedContentsLength();
+			
+			if ( returnedContentsLength == null ) {
+				String msg = "( returnedContentsLength.longValue() === null ).";
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+			
+			if ( returnedContentsLength.longValue() > Integer.MAX_VALUE ) {
+				String msg = "( returnedContentsLength.longValue() > Integer.MAX_VALUE ).  Unable to copy contents to byte array to return";
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+			
+			int returnedContentsLength_Int = (int) returnedContentsLength.longValue();
+			
+			byte[] contentsByteArray = new byte[ returnedContentsLength_Int ];
+			
+			try {
+				long totalBytesCopied = 0;
+				
+				int contentsByteArray_CurrentIndex = 0;
+				
+//				try ( ServletOutputStream out = httpServletResponse.getOutputStream() ) {
+
+					InputStream inputStream = get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getInputStream_FileObjectContents();
+					byte[] buf = new byte[ COPY_FILE_ARRAY_SIZE ];
+					int len;
+					while ((len = inputStream.read(buf)) > 0){
+
+						// out.write(buf, 0, len);
+						
+						for ( int buf_index = 0; buf_index < len; buf_index++ ) {
+							
+							contentsByteArray[ contentsByteArray_CurrentIndex ] = buf[ buf_index ];
+							
+							contentsByteArray_CurrentIndex++;
+						}
+						
+						totalBytesCopied += len;
+					}
+//				}
+
+			} finally {
+				
+				if ( get_StoredFileObjectContents_Response_FromConnectionLibraryCall != null ) {
+					InputStream inputStream = get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getInputStream_FileObjectContents();
+				
+					if ( inputStream != null ) {
+						
+						try {
+							inputStream.close();
+						} finally {
+							
+						}
+						
+					}
+					
+				}
+				
+			}
+			
+
+			boolean accept_GZIP = restControllerUtils__Request_Accept_GZip_Response_Set_GZip.does_HttpServletRequest_Accept_GZip( httpServletRequest );
+			
+			
+			
+			
+			if ( get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getResponse_Is_GZIP() != null 
+					&&  get_StoredFileObjectContents_Response_FromConnectionLibraryCall.getResponseFromWebserviceInHeader().getResponse_Is_GZIP().booleanValue() ) {
+				
+				//  is gzipped 
+				if ( accept_GZIP ) {
+					restControllerUtils__Request_Accept_GZip_Response_Set_GZip.set_GZIP_On_HttpServletResponse( httpServletResponse );
+				} else {
+				
+					// NOT accept Gzip so unzip
+					contentsByteArray = gUNzip_ByteArray_To_ByteArray.gUNzip_ByteArray_To_ByteArray(contentsByteArray);
+
+					
+					{
+						String resultString = new String( contentsByteArray );
+						
+						int z = 0;
+					}
+					
+				}
+			}
+			
+    		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).body( contentsByteArray );
+
+    	} catch ( Limelight_WS_ErrorResponse_Base_Exception e ) {
+    		
+    		//  only rethrow Error Response Exceptions 
+    		throw e;
+    		
+    	} catch ( Exception e ) {
+    		String msg = "Failed in controller: ";
+			log.error( msg, e );
+			throw new Limelight_WS_InternalServerError_Exception();
+    	}
+    }
+    
+    /////////////////////////////////////
+    
+
+    public static class WebserviceRequest {
+    	
+    	private Integer structureFileId;
+
+		public void setStructureFileId(Integer structureFileId) {
+			this.structureFileId = structureFileId;
+		}
+
+    }
+    
+    public static class WebserviceResult {
+
+    	private String structureFile_Contents;
+
+		public String getStructureFile_Contents() {
+			return structureFile_Contents;
+		}
+    }
+        
+}
+
+

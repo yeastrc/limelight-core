@@ -1,0 +1,9 @@
+
+//  molstar_lib_mol-plugin-ui_override.scss
+
+//  Override  CSS in '~molstar/lib/mol-plugin-ui/skin/light.scss';
+
+.msp-plugin .msp-layout-standard {
+
+  border-width: 0px;  // Remove Border
+}

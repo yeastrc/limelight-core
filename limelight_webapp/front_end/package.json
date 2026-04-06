@@ -14,6 +14,7 @@
     "@types/react-dom": "^19.2.3",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "css-loader": "^6.11.0",
+    "esbuild": "^0.27.3",
     "eslint": "^9.32.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-node": "^11.1.0",
@@ -47,8 +48,11 @@
     "d3": "^7.8.5",
     "jstat": "^1.9.1",
     "ml-savitzky-golay": "^5.0.0",
+    "molstar": "^5.6.1",
     "plotly.js-dist-min": "^3.0.1",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-colorful": "^5.6.1",
+    "react-dom": "^19.2.4",
+    "tslib": "^2.8.1"
   }
 }

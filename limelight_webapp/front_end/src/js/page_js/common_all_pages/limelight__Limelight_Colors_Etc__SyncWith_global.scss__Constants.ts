@@ -12,11 +12,17 @@ const  color_white = "#ffffff"
 
 const font_color_dark = "#172B4D"
 
+//   NOTE:  See all usage of colors if switch from RGB colors to something else.  Especially any without the "#".
 
-const site_color_very_dark = "#005606"
-const site_color_dark = "#32cd32"
-const site_color_medium = "#e4f9e4"
-const site_color_light = "#f0f7f0"
+const site_color_very_dark__HEX_WithoutLeadingHashCharacter = "005606"
+const site_color_dark__HEX_WithoutLeadingHashCharacter = "32cd32"
+const site_color_medium__HEX_WithoutLeadingHashCharacter = "e4f9e4"
+const site_color_light__HEX_WithoutLeadingHashCharacter = "f0f7f0"
+
+const site_color_very_dark = "#" + site_color_very_dark__HEX_WithoutLeadingHashCharacter
+const site_color_dark = "#" + site_color_dark__HEX_WithoutLeadingHashCharacter
+const site_color_medium = "#" + site_color_medium__HEX_WithoutLeadingHashCharacter
+const site_color_light = "#" + site_color_light__HEX_WithoutLeadingHashCharacter
 
 const site_standard_background_color = color_white
 
@@ -53,6 +59,12 @@ export const limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants = {
     font_background_color_orange: "orange",  // Currently used in Sequence Coverage
 
     font_background_color_disabled: "#540000",  //  Currently used on "Share Data" on Project Page for Disabled
+
+
+    site_color_very_dark__HEX_WithoutLeadingHashCharacter,
+    site_color_dark__HEX_WithoutLeadingHashCharacter,
+    site_color_medium__HEX_WithoutLeadingHashCharacter,
+    site_color_light__HEX_WithoutLeadingHashCharacter,
 
     site_color_very_dark,
     site_color_dark,

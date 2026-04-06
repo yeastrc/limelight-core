@@ -173,6 +173,7 @@ import { Protein_Structure_WidgetDisplay__SearchBased__Root_Component } from "pa
 import { SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject, SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject";
 import { Limelight_MaterialUI_Tab_WrappedWith_Tooltip } from "page_js/common_all_pages/material_ui_library__limelight_extensions_additions/Limelight_MaterialUI_Tab_WrappedWith_Tooltip";
 import { Get_SaveView_Component_React_Type, SaveView_Component_React_Params } from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
+import { Protein_Structure_Widget_StateObject } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/protein_Structure_Widget_StateObject";
 
 
 ////
@@ -228,6 +229,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
     peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject;
     proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject;
     proteinSequence_Bar_Widget_StateObject : ProteinSequence_Bar_Widget_StateObject
+    protein_Structure_Widget_StateObject: Protein_Structure_Widget_StateObject
     scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
     scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
     scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
@@ -366,8 +368,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
     private _proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component>
     private _proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component>
 
-    private _proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinSequenceWidgetDisplay_Root_Component_React>
-
     private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ModificationSelects : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
@@ -403,8 +403,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
         this._proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
-
-        this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref = React.createRef<HTMLDivElement>();
 
         {
             if ( props.propsValue.singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject.get_selected_Tab_Value() === SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject__Enum_Constants.SELECTED_PROTEIN_BAR ) {
@@ -3001,8 +2999,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
                 {/*  Block for Tabs for Sequence Coverage Widget, Protein Bar, Protein Structure  */}
 
-                <div style={ { display: "inline-block" } }
-                     ref={ this._proteinPage_Display__SingleProtein_ProteinSequenceWidgetDisplay_Root_Component_React_AND_Other_Tabs_In_SameGroup_Container_Ref }>
+                <div>
 
                     {/*
                         NOTE:  Tooltip on Tabs:
@@ -3134,6 +3131,8 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
                                  PROTEIN STRUCTURE
 
+                             */}
+
 
                             <Limelight_MaterialUI_Tab_WrappedWith_Tooltip
                                 //  Tab Content
@@ -3160,6 +3159,8 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                                     </div>
                                 }
                             />
+
+                            {/*
 
                              */}
                             
@@ -3276,7 +3277,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                             >
                                 <Protein_Structure_WidgetDisplay__SearchBased__Root_Component
 
-                                    proteinSequence_Bar_Widget_StateObject={ this.props.propsValue.proteinSequence_Bar_Widget_StateObject }
+                                    protein_Structure_Widget_StateObject={ this.props.propsValue.protein_Structure_Widget_StateObject }
 
                                     proteinSequenceWidget_StateObject={ this.props.propsValue.proteinSequenceWidget_StateObject }
 

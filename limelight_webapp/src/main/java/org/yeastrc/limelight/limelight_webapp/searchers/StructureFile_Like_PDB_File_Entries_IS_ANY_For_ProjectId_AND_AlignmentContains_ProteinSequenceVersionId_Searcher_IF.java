@@ -1,0 +1,10 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import java.sql.SQLException;
+
+public interface StructureFile_Like_PDB_File_Entries_IS_ANY_For_ProjectId_AND_AlignmentContains_ProteinSequenceVersionId_Searcher_IF {
+
+	boolean is_StructureFile_Like_PDB_File_Entries_IS_ANY_For_ProjectId_AND_AlignmentContains_ProteinSequenceVersionId(
+			int projectId, int proteinSequenceVersionId) throws SQLException;
+
+}

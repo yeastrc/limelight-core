@@ -1,0 +1,100 @@
+
+
+"react-plotly.js": "^2.5.1"
+
+Upgrade:
+		FROM
+    "react-beautiful-dnd": "^11.0.5",
+		TO
+    "react-beautiful-dnd": "^13.1.1",
+    
+    using  npm install react-beautiful-dnd@latest
+    
+    Upgrade to React 17.0.X
+    
+    npm install react@17.0.2 react-dom@17.0.2
+    npm install @types/react@17.0.2
+    npm install @types/react-dom@17.0.2  --  ran at a later time
+    
+	Upgrade Plotly
+	
+	npm i plotly.js-dist@latest
+	npm i react-plotly.js@latest
+	npm i @types/plotly.js@latest
+    
+Install:
+    npm install @mui/material @emotion/react @emotion/styled
+    
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.13.2",
+    
+
+Install:
+
+	
+npm install plotly.js-dist-min@2.30.0
+
+npm install @types/plotly.js-dist-min@2.3.4 --save-dev
+
+Install:
+
+Web:FrontEnd: Upgrade Plotly to latest "3.0.1"
+
+Ran
+npm install plotly.js-dist-min@latest
+npm install @types/plotly.js-dist-min@latest --save-dev
+
+
+2025-08-08:
+
+Upgrade eslint to address 
+
+npm remove eslint-plugin-standard
+npm remove eslint-plugin-react
+npm remove eslint-plugin-promise
+npm remove eslint-plugin-node
+npm remove eslint-plugin-import
+npm remove eslint-config-standard
+npm remove eslint
+
+   
+npm install eslint@latest --save-dev
+
+npm install eslint-plugin-import@latest --save-dev
+npm install eslint-plugin-node@latest --save-dev
+npm install eslint-plugin-promise@latest --save-dev
+npm install eslint-plugin-react@latest --save-dev
+
+npm install eslint-plugin-standard@latest --save-dev
+	npm warn deprecated eslint-plugin-standard@5.0.0: standard 16.0.0 and eslint-config-standard 16.0.0 no longer require the eslint-plugin-standard package. You can remove it from your dependencies with 'npm rm eslint-plugin-standard'. More info here: https://github.com/standard/standard/issues/1316
+
+
+	Failed to install:
+		npm install eslint-config-standard@latest --save-dev
+
+=================
+
+2026-02-10
+
+Installed latest React 19
+
+    npm install react@^19.0.0 react-dom@^19.0.0
+    npm install @types/react@^19.0.0 @types/react-dom@^19.0.0
+
+    Installed:  "react": "^19.2.4",    "react-dom": "^19.2.4",  "@types/react": "^19.2.13", "@types/react-dom": "^19.2.3",
+
+
+Install Mol* Protein Structure Viewer
+
+    npm install molstar
+
+    Installed:      "molstar": "^5.6.1",
+
+    SKIP since 3 years old:  npm install molstar-react
+
+
+Installed so molstar stops getting errors:
+
+    npm install tslib@latest --save
+        Installed:    "tslib": "^2.8.1"

@@ -67,6 +67,7 @@ import {
 import { ProteinSequence_Bar_Widget_StateObject } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_bar_widget/js/proteinSequence_Bar_Widget_StateObject";
 import { Limelight_AnyFilter__HasFilterValue } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/any_filter__has_filter_value/Limelight_AnyFilter__HasFilterValue";
 import { SingleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject";
+import { Protein_Structure_Widget_StateObject } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/protein_Structure_Widget_StateObject";
 
 /**
  * 
@@ -147,6 +148,7 @@ export class ProteinPage_Display__SingleProtein_Root {
 
 	private _proteinSequence_Bar_Widget_StateObject : ProteinSequence_Bar_Widget_StateObject
 
+	private _protein_Structure_Widget_StateObject: Protein_Structure_Widget_StateObject
 
 	private _limelight_AnyFilter__HasFilterValue: Limelight_AnyFilter__HasFilterValue
 
@@ -511,6 +513,23 @@ export class ProteinPage_Display__SingleProtein_Root {
 			if ( encodedStateData ) {
 				this._proteinSequence_Bar_Widget_StateObject.set_encodedStateData({ encodedStateData })
 			}
+		}
+		{  // this._protein_Structure_Widget_StateObject: Protein_Structure_Widget_StateObject
+
+			const valueChangedCallback = () => {
+
+				const protein_Structure_Widget_EncodedStateData = this._protein_Structure_Widget_StateObject.getEncodedStateData();
+				this._singleProtein_CentralStateManagerObject.set_Protein_Structure_Widget_EncodedStateData({ protein_Structure_Widget_EncodedStateData });
+			}
+			this._protein_Structure_Widget_StateObject = new Protein_Structure_Widget_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._singleProtein_CentralStateManagerObject.get_Protein_Structure_Widget_EncodedStateData();
+			if ( encodedStateData ) {
+				this._protein_Structure_Widget_StateObject.set_encodedStateData({ encodedStateData })
+			}
+
 		}
 
 		{ // this._singleProtein_ProteinSequence_Etc_Tabs_SelectedTab_StateObject
@@ -1012,6 +1031,7 @@ export class ProteinPage_Display__SingleProtein_Root {
 				peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject ,
 				proteinSequenceWidget_StateObject : this._proteinSequenceWidget_StateObject ,
 				proteinSequence_Bar_Widget_StateObject : this._proteinSequence_Bar_Widget_StateObject,
+				protein_Structure_Widget_StateObject: this._protein_Structure_Widget_StateObject,
 				scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
 				scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
 				scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this._scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,

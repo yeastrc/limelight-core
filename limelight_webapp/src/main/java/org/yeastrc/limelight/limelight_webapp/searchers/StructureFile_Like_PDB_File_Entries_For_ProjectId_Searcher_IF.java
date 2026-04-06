@@ -1,0 +1,13 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.yeastrc.limelight.limelight_webapp.searchers.StructureFile_Like_PDB_File_Entries_For_ProjectId_Searcher.StructureFile_Like_PDB_File_Entries_For_ProjectId_Searcher_ResultItem;
+
+public interface StructureFile_Like_PDB_File_Entries_For_ProjectId_Searcher_IF {
+
+	List<StructureFile_Like_PDB_File_Entries_For_ProjectId_Searcher_ResultItem> get_StructureFile_Like_PDB_File_Entries_For_ProjectId(int projectId)
+			throws SQLException;
+
+}

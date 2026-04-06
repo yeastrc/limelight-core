@@ -3,5 +3,5 @@
  *
  */
 
-export const LIMELIGHT__RESIDUE_LETTERS_ALL_IN_ALPHA_ORDER_CONSTANT =
+export const LIMELIGHT__RESIDUE_LETTERS_ALL_IN_ALPHA_ORDER_CONSTANT: Array<string> =
     [ "A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y" ] as const

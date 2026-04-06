@@ -4,6 +4,12 @@
 //   The SCSS file that is built by SASS to create the output CSS file
 
 
+//  Add External library SCSS
+@use '~molstar/lib/mol-plugin-ui/skin/light.scss';
+
+//   Repeat CSS in above molstar file to override the values
+@use 'molstar_lib_mol-plugin-ui_override.scss';
+
 // import page-specific styles
 @use 'all-pages.scss';
 @use 'inset-styles.scss';
