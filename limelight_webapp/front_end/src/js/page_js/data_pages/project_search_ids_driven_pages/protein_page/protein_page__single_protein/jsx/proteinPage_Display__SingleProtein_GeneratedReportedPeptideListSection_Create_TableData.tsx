@@ -30,7 +30,7 @@ import {
 import {
     Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
     CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry
-} from './proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData';
+} from '../js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData';
 import {Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {
