@@ -50,7 +50,7 @@ import {
 import {
     ProteinDataDisplay_ProteinList_Item,
     ProteinDisplayData_From_createProteinDisplayData_ProteinList
-} from './proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes';
+} from '../js/proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes';
 import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject";
 import {proteinView_nsaf_formatNumber_ForDisplayInTable} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_nsaf_formatNumber_ForDisplayInTable";
 import {

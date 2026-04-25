@@ -55,7 +55,7 @@ import {
     ProteinViewPage_Display__singleProteinRow_ClickHandler,
     ProteinViewPage_Display__singleProteinRow_ClickHandler_Params,
     proteinViewPage_renderToPageProteinList__Create_DataTable_RootTableDataObject
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__Create_ProteinList_DataTable_RootTableDataObject";
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/jsx/proteinViewPage_DisplayData_ProteinList__Create_ProteinList_DataTable_RootTableDataObject";
 import {
     SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData,
     SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
