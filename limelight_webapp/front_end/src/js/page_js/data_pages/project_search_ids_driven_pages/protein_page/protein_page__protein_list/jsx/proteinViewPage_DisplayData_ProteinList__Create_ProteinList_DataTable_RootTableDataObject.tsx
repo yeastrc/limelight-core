@@ -1742,7 +1742,41 @@ const _createProteinItem_DataTableEntry = function(
                 dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
         }
-         //  Per Search: Num Distinct Peptides and Distinct Peptides Unique
+
+
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            //  NSAF Using Adjusted_Spectral_Count_ABACUS_
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                //  NSAF Adjusted_Spectral_Count_ABACUS
+
+                let valueNumer = 0;
+
+                const proteinItemRecord = proteinListItem.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId );
+                if ( proteinItemRecord ) {
+                    valueNumer = proteinItemRecord.nsaf__Using_Adjusted_Spectral_Count_ABACUS;
+                }
+
+                const valueString = proteinView_nsaf_formatNumber_ForDisplayInTable( valueNumer );
+
+                const valueDisplay = valueString;
+                const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort : valueNumer
+                })
+                columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+            }
+        }
+
+        //  Per Search: Num Distinct Peptides and Distinct Peptides Unique
 
         for ( const projectSearchId of projectSearchIds ) {
 
