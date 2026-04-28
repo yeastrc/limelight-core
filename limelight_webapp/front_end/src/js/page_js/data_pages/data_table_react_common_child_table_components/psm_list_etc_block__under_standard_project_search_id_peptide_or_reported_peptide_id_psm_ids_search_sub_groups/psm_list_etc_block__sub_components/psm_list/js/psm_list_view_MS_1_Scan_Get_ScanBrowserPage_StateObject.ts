@@ -405,10 +405,20 @@ const _process_LoadedData = function(
 
             scanData = scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanData_BEFORE_get_scanData_parentScanNumber.parentScanNumber )
             if ( ! scanData ) {
-                const msg = "scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanData_BEFORE_get_scanData_parentScanNumber.parentScanNumber ) returned NOTHING for scanData_BEFORE_get_scanData_parentScanNumber.parentScanNumber: " +
-                    scanData_BEFORE_get_scanData_parentScanNumber.parentScanNumber + ", projectScanFileId: " + scanFile_ProjectScanFileId_SearchScanFileId_All_For_SearchScanFileId.projectScanFileId + ", psmListItem.searchScanFileId: " + psmListItem.searchScanFileId
-                console.warn(msg)
-                throw Error(msg)
+                
+                //  Unable to get MS 1 Scan Number so return
+
+                return {                // EARLY RETURN
+                    ms1_ScanNumber_NOT_Found: true,
+                    // no_MS1_Scans: false,
+                    scanFileBrowserPage_SingleScan_UserSelections_StateObject: undefined,
+                    scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc__Result: undefined
+                }
+
+                // const msg = "scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanData_BEFORE_get_scanData_parentScanNumber.parentScanNumber ) returned NOTHING for scanData_BEFORE_get_scanData_parentScanNumber.parentScanNumber: " +
+                //     scanData_BEFORE_get_scanData_parentScanNumber.parentScanNumber + ", projectScanFileId: " + scanFile_ProjectScanFileId_SearchScanFileId_All_For_SearchScanFileId.projectScanFileId + ", psmListItem.searchScanFileId: " + psmListItem.searchScanFileId
+                // console.warn(msg)
+                // throw Error(msg)
             }
         }
 
