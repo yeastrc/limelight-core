@@ -401,9 +401,12 @@ const _process_LoadedData = function(
                 }
             }
 
-            scanData = scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanData.parentScanNumber )
+            const scanData_BEFORE_get_scanData_parentScanNumber = scanData
+
+            scanData = scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanData_BEFORE_get_scanData_parentScanNumber.parentScanNumber )
             if ( ! scanData ) {
-                const msg = "scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanData.parentScanNumber ) returned NOTHING for scanData.parentScanNumber: " + scanData.parentScanNumber + ", projectScanFileId: " + scanFile_ProjectScanFileId_SearchScanFileId_All_For_SearchScanFileId.projectScanFileId + ", psmListItem.searchScanFileId: " + psmListItem.searchScanFileId
+                const msg = "scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanData_BEFORE_get_scanData_parentScanNumber.parentScanNumber ) returned NOTHING for scanData_BEFORE_get_scanData_parentScanNumber.parentScanNumber: " +
+                    scanData_BEFORE_get_scanData_parentScanNumber.parentScanNumber + ", projectScanFileId: " + scanFile_ProjectScanFileId_SearchScanFileId_All_For_SearchScanFileId.projectScanFileId + ", psmListItem.searchScanFileId: " + psmListItem.searchScanFileId
                 console.warn(msg)
                 throw Error(msg)
             }
