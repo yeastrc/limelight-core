@@ -7,12 +7,14 @@
  *
  */
 
+import React from "react";
+
 //   From data_pages_common
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 import {
     DataTable_Column,
-    DataTable_Column_DownloadTable, DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum,
-    DataTable_DataRow_ColumnEntry,
+    DataTable_Column_DownloadTable, DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum, DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element,
+    DataTable_DataRow_ColumnEntry, DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
     DataTable_DataRow_ColumnEntry_SearchTableData,
@@ -498,11 +500,34 @@ const _create_AfterDataLoaded = function (
                     displayName = "PSM Count";
                 }
 
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element: DataTable_Column_tooltip_Fcn_NoInputParam_Return_JSX_Element =
+                    () => {
+
+                        let searchName_ShortName_Display = ""
+
+                        if ( searchNameObj.searchShortName ) {
+                            searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                        }
+                        const searchName_Display = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                        return (
+                            <div>
+                                <div>
+                                    Search:
+                                </div>
+                                <div>
+                                    { searchName_Display }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const dataTable_Column = new DataTable_Column({
                     id : "psmCount_" + projectSearchId, // Used for tracking sort order. Keep short
                     displayName,
                     width : 70,
-                    sortable : true
+                    sortable : true,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element
                 });
                 dataTable_Columns.push( dataTable_Column );
 
@@ -1013,6 +1038,31 @@ const _create_AfterDataLoaded = function (
 
                         psmCount_Total_Across_SearchSubGroups += psmCount;
 
+                        const searchSubGroup_For_SearchSubGroup_Id = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroup_Id_Selected )
+                        if ( ! searchSubGroup_For_SearchSubGroup_Id ) {
+                            const msg = "searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroup_Id_Selected ) returned NOTHING for searchSubGroup_Id_Selected: " + searchSubGroup_Id_Selected
+                            console.warn(msg)
+                            throw Error(msg)
+                        }
+
+                        const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                            () => {
+
+                                const subSearchLabel = searchSubGroup_For_SearchSubGroup_Id.subgroupName_Display
+
+                                return (
+                                    <div>
+                                        <div>
+                                            PSM Count
+                                        </div>
+                                        <div style={ { marginTop: 5 } }>
+                                            Sub Search: { subSearchLabel }
+                                        </div>
+                                    </div>
+                                )
+                            }
+
+
                         const psmCountDisplay = psmCount.toLocaleString();
 
                         const valueDisplay = psmCountDisplay;
@@ -1021,7 +1071,8 @@ const _create_AfterDataLoaded = function (
                         const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
                             searchTableData,
                             valueDisplay,
-                            valueSort: psmCount
+                            valueSort: psmCount,
+                            tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                         });
                         dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
 
@@ -1077,7 +1128,42 @@ const _create_AfterDataLoaded = function (
 
                         psmCount_Total_Across_Searches += psmCount;
 
+
                         const psmCountDisplay = psmCount.toLocaleString();
+
+
+                        //  searchNames // Object with property name is projectSearchId as number
+
+                        const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                        if ( ! searchNameObj ) {
+                            const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein(...): No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                            console.warn( msg );
+                            throw Error( msg );
+                        }
+
+                        const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                            () => {
+
+                                // let searchName_ShortName_Display = ""
+                                //
+                                // if ( searchNameObj.searchShortName ) {
+                                //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                                // }
+                                // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                                const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                                return (
+                                    <div>
+                                        <div>
+                                            PSM Count
+                                        </div>
+                                        <div style={ { marginTop: 5 } }>
+                                            Search: { searchLabel }
+                                        </div>
+                                    </div>
+                                )
+                            }
 
                         const valueDisplay = psmCountDisplay;
                         const searchEntriesForColumn : Array<string> = [ valueDisplay ]
@@ -1085,7 +1171,8 @@ const _create_AfterDataLoaded = function (
                         const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
                             searchTableData,
                             valueDisplay,
-                            valueSort: psmCount
+                            valueSort: psmCount,
+                            tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                         });
                         dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
 

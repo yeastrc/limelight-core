@@ -408,6 +408,9 @@ const _generateDataTable = function (
 
             const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
 
+                const displayName_Start =
+                    _getDisplayName_Start_For_Search_Or_SubSearch_Column({ all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root })
+
                 const searchData = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
                 if ( ! searchData ) {
                     const msg = "dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
@@ -425,9 +428,6 @@ const _generateDataTable = function (
 
                 return (
                     <>
-                        <div style={ { fontWeight: "bold" } }>
-                            { displayName }
-                        </div>
                         <div style={ { marginTop: 5, fontWeight: "bold" } }>
                             Search:
                         </div>
@@ -561,25 +561,22 @@ const _generateDataTable = function (
                         });
                     };
 
-                //   Tooltip for the cell for each Mod Mass data row.  Never deployed NOT Commented out.
-                //
-                //   Commented out since may be too distracting or use too many resources
-
                 const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = () => {
+
+                    const displayName_Start =
+                        _getDisplayName_Start_For_Search_Or_SubSearch_Column({ all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root })
 
                     return (
                         <>
-                            <div style={ { fontWeight: "bold" } }>
-                                { searchSubGroup.subgroupName_Display }
+                            <div>
+                                { displayName_Start }
                             </div>
-                            <div style={ { marginTop: 2 } }>
-                                { searchSubGroup.searchSubgroupName_fromImportFile }
+                            <div style={ { marginTop: 5 } }>
+                                Sub Search: { searchSubGroup.subgroupName_Display }
                             </div>
                         </>
                     )
                 }
-
-
 
                 let valueDisplay__Search_Download : string = "";
                 if ( value_ForDisplay_Formatted !== undefined && value_ForDisplay_Formatted !== null ) {
@@ -638,11 +635,10 @@ const _generateDataTable = function (
                         });
                     };
 
-                //   Tooltip for the cell for each Mod Mass data row.  Never deployed NOT Commented out.
-                //
-                //   Commented out since may be too distracting or use too many resources
-
                 const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough = () => {
+
+                    const displayName_Start =
+                        _getDisplayName_Start_For_Search_Or_SubSearch_Column({ all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root })
 
                     const searchData = all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
                     if ( ! searchData ) {
@@ -651,29 +647,28 @@ const _generateDataTable = function (
                         throw Error( msg );
                     }
 
-                    let searchShortName_Label = ""
-
-                    if ( searchData.searchShortName ) {
-                        searchShortName_Label = "(" + searchData.searchShortName + ") "
-                    }
-
-                    const searchLabel = "(" + searchData.searchId + ") " + searchShortName_Label + searchData.name
+                    // let searchShortName_Label = ""
+                    //
+                    // if ( searchData.searchShortName ) {
+                    //     searchShortName_Label = "(" + searchData.searchShortName + ") "
+                    // }
+                    //
+                    // const searchLabel = "(" + searchData.searchId + ") " + searchShortName_Label + searchData.name
 
                     return (
                         <>
-                            <div style={ { fontWeight: "bold" } }>
-                                Search:
+                            <div>
+                                { displayName_Start }
                             </div>
-                            <div style={ { marginTop: 2 } }>
-                                { searchLabel }
+                            <div style={ { marginTop: 5 } }>
+                                Search: { searchData.searchId }
                             </div>
                         </>
                     )
+                }
 
-                };
 
-
-                let valueDisplay__Search_Download : string = "";
+                let valueDisplay__Search_Download: string = "";
                 if ( value_ForDisplay_Formatted !== undefined && value_ForDisplay_Formatted !== null ) {
                     valueDisplay__Search_Download = value_ForDisplay_Formatted.toString();
                 }

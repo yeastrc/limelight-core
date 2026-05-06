@@ -4,6 +4,7 @@
  * Create DataTable_RootTableDataObject for Protein List for Single Search, Sub Groups, and Multiple Searches
  */
 
+import React from "react";
 
 import {
     DataTable_Column,
@@ -235,14 +236,39 @@ const _getProteinDataTableColumns = function(
 
                 let displayName = 'Sequence Coverage';
 
+                const searchNameObject = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchNameObject ) {
+                    throw Error("No searchNameObject from searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId );
+                }
+
                 if ( projectSearchIds.length > 1 ) {
 
-                    const searchNameObject = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
-                    if ( ! searchNameObject ) {
-                        throw Error("No searchNameObject from searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId );
+                    displayName += ' (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
+                }
+
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+                    let searchShortName_Label = ""
+
+                    if ( searchNameObject.searchShortName ) {
+                        searchShortName_Label = "(" + searchNameObject.searchShortName + ") "
                     }
 
-                    displayName += ' (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
+                    const searchLabel = "(" + searchNameObject.searchId + ") " + searchShortName_Label + searchNameObject.name
+
+                    return (
+                        <>
+                            <div>
+                                { proteinView__ProteinList_ColumnHeader__Tooltip_Text.Sequence_Coverage }
+                            </div>
+                            <div style={ { marginTop: 5, fontWeight: "bold" } }>
+                                Search:
+                            </div>
+                            <div style={ { marginTop: 2 } }>
+                                { searchLabel }
+                            </div>
+                        </>
+                    )
                 }
 
                 const column = new DataTable_Column({
@@ -250,7 +276,7 @@ const _getProteinDataTableColumns = function(
                     displayName,
                     width :        150,
                     sortable : true,
-                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.Sequence_Coverage,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
 
                     showHorizontalGraph: true,
                     graphMaxValue: 1,
@@ -682,12 +708,37 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = 'PSMs (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
 
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+                    let searchShortName_Label = ""
+
+                    if ( searchNameObject.searchShortName ) {
+                        searchShortName_Label = "(" + searchNameObject.searchShortName + ") "
+                    }
+
+                    const searchLabel = "(" + searchNameObject.searchId + ") " + searchShortName_Label + searchNameObject.name
+
+                    return (
+                        <>
+                            <div>
+                                { proteinView__ProteinList_ColumnHeader__Tooltip_Text.PSM_Count }
+                            </div>
+                            <div style={ { marginTop: 5, fontWeight: "bold" } }>
+                                Search:
+                            </div>
+                            <div style={ { marginTop: 2 } }>
+                                { searchLabel }
+                            </div>
+                        </>
+                    )
+                }
+
                 const column = new DataTable_Column({
                     id :           'psms_' + projectSearchId,
                     displayName,
                     width :        80,
                     sortable : true,
-                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.PSM_Count,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
                     onlyShow_ValueDisplay_FirstRowOfGroup: true
                 });
 
@@ -711,12 +762,37 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = 'NSAF (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
 
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+                    let searchShortName_Label = ""
+
+                    if ( searchNameObject.searchShortName ) {
+                        searchShortName_Label = "(" + searchNameObject.searchShortName + ") "
+                    }
+
+                    const searchLabel = "(" + searchNameObject.searchId + ") " + searchShortName_Label + searchNameObject.name
+
+                    return (
+                        <>
+                            <div>
+                                { proteinView__ProteinList_ColumnHeader__Tooltip_Text.NSAF }
+                            </div>
+                            <div style={ { marginTop: 5, fontWeight: "bold" } }>
+                                Search:
+                            </div>
+                            <div style={ { marginTop: 2 } }>
+                                { searchLabel }
+                            </div>
+                        </>
+                    )
+                }
+
                 const column = new DataTable_Column({
                     id :           'nsaf_' + projectSearchId,
                     displayName,
                     width :        80,
                     sortable : true,
-                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.NSAF,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
                     onlyShow_ValueDisplay_FirstRowOfGroup: false
                 });
 
@@ -740,12 +816,39 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = 'Adjusted Spectral Count (ABACUS) (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
 
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+                    let searchShortName_Label = ""
+
+                    if ( searchNameObject.searchShortName ) {
+                        searchShortName_Label = "(" + searchNameObject.searchShortName + ") "
+                    }
+
+                    const searchLabel = "(" + searchNameObject.searchId + ") " + searchShortName_Label + searchNameObject.name
+
+                    const Adjusted_Spectral_Count__ABACUS__ReturnComponent = proteinView__ProteinList_ColumnHeader__Tooltip_Text.Adjusted_Spectral_Count__ABACUS__ReturnComponent
+
+                    return (
+                        <>
+                            <div>
+                                <Adjusted_Spectral_Count__ABACUS__ReturnComponent/>
+                            </div>
+                            <div style={ { marginTop: 5, fontWeight: "bold" } }>
+                                Search:
+                            </div>
+                            <div style={ { marginTop: 2 } }>
+                                { searchLabel }
+                            </div>
+                        </>
+                    )
+                }
+
                 const column = new DataTable_Column({
                     id :           'Adjusted_Spectral_Count_ABACUS__' + projectSearchId,
                     displayName,
                     width :        80,
                     sortable : true,
-                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element: proteinView__ProteinList_ColumnHeader__Tooltip_Text.Adjusted_Spectral_Count__ABACUS__ReturnComponent,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
                     onlyShow_ValueDisplay_FirstRowOfGroup: true
                 });
 
@@ -769,12 +872,37 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = 'NSAF: Adjusted Spectral Count (ABACUS) (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
 
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+                    let searchShortName_Label = ""
+
+                    if ( searchNameObject.searchShortName ) {
+                        searchShortName_Label = "(" + searchNameObject.searchShortName + ") "
+                    }
+
+                    const searchLabel = "(" + searchNameObject.searchId + ") " + searchShortName_Label + searchNameObject.name
+
+                    return (
+                        <>
+                            <div>
+                                { proteinView__ProteinList_ColumnHeader__Tooltip_Text.NSAF_Using_Adjusted_Spectral_Count__ABACUS }
+                            </div>
+                            <div style={ { marginTop: 5, fontWeight: "bold" } }>
+                                Search:
+                            </div>
+                            <div style={ { marginTop: 2 } }>
+                                { searchLabel }
+                            </div>
+                        </>
+                    )
+                }
+
                 const column = new DataTable_Column({
                     id :           'NSAF_Adjusted_Spectral_Count_ABACUS__' + projectSearchId,
                     displayName,
                     width :        80,
                     sortable : true,
-                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.NSAF_Using_Adjusted_Spectral_Count__ABACUS,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
                     onlyShow_ValueDisplay_FirstRowOfGroup: false
                 });
 
@@ -800,12 +928,37 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = 'Distinct Peptides (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
 
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+                    let searchShortName_Label = ""
+
+                    if ( searchNameObject.searchShortName ) {
+                        searchShortName_Label = "(" + searchNameObject.searchShortName + ") "
+                    }
+
+                    const searchLabel = "(" + searchNameObject.searchId + ") " + searchShortName_Label + searchNameObject.name
+
+                    return (
+                        <>
+                            <div>
+                                { proteinView__ProteinList_ColumnHeader__Tooltip_Text.Distinct_Peptide_Count }
+                            </div>
+                            <div style={ { marginTop: 5, fontWeight: "bold" } }>
+                                Search:
+                            </div>
+                            <div style={ { marginTop: 2 } }>
+                                { searchLabel }
+                            </div>
+                        </>
+                    )
+                }
+
                 const column = new DataTable_Column({
                     id: 'peptides_' + projectSearchId,
                     displayName,
                     width: 80,
                     sortable: true,
-                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.Distinct_Peptide_Count,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
                     onlyShow_ValueDisplay_FirstRowOfGroup: true
                 });
 
@@ -821,12 +974,37 @@ const _getProteinDataTableColumns = function(
 
                 const displayName = 'Unique Peptides (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
 
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () => {
+
+                    let searchShortName_Label = ""
+
+                    if ( searchNameObject.searchShortName ) {
+                        searchShortName_Label = "(" + searchNameObject.searchShortName + ") "
+                    }
+
+                    const searchLabel = "(" + searchNameObject.searchId + ") " + searchShortName_Label + searchNameObject.name
+
+                    return (
+                        <>
+                            <div>
+                                { proteinView__ProteinList_ColumnHeader__Tooltip_Text.Unique_Peptide_Count }
+                            </div>
+                            <div style={ { marginTop: 5, fontWeight: "bold" } }>
+                                Search:
+                            </div>
+                            <div style={ { marginTop: 2 } }>
+                                { searchLabel }
+                            </div>
+                        </>
+                    )
+                }
+
                 const column = new DataTable_Column({
                     id: 'peptidesUnique_' + projectSearchId,
                     displayName,
                     width: 80,
                     sortable: true,
-                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.Unique_Peptide_Count,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
                     onlyShow_ValueDisplay_FirstRowOfGroup: true
                 });
 
@@ -1169,6 +1347,9 @@ const _createProteinItem_DataTableEntry = function(
 
 }) : DataTable_DataRowEntry {
 
+    //  For getting search info for projectSearchIds
+    const searchData_SearchName_Etc_Root = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root();
+
     //  Column entries for this data row in data table
     const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
     const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
@@ -1249,13 +1430,48 @@ const _createProteinItem_DataTableEntry = function(
                     proteinCoverageRatioDisplay = proteinItemRecord.proteinCoverageRatioDisplay;
                 }
 
+
+                //  searchNames // Object with property name is projectSearchId as number
+
+                const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchNameObj ) {
+                    const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        // let searchName_ShortName_Display = ""
+                        //
+                        // if ( searchNameObj.searchShortName ) {
+                        //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                        // }
+                        // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                        const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                        return (
+                            <div>
+                                <div>
+                                    Sequence Coverage
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Search: { searchLabel }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueDisplay = proteinCoverageRatioDisplay;
                 const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort : proteinCoverageRatio
+                    valueSort : proteinCoverageRatio,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 })
                 columnEntries.push( columnEntry );
 
@@ -1275,6 +1491,17 @@ const _createProteinItem_DataTableEntry = function(
 
         if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_SequenceCoverage_Selected() ) {
 
+            const projectSearchId = projectSearchIds[0];
+
+            const searchSubGroups_Root = dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root();
+            if ( ! searchSubGroups_Root ) {
+                throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root(); return nothing for projectSearchId: " + projectSearchId );
+            }
+            const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId );
+            if ( ! searchSubGroups_ForProjectSearchId ) {
+                throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId ); return nothing for projectSearchId: " + projectSearchId );
+            }
+
             for ( const searchSubGroupId of searchSubGroupIds ) {
 
                 let proteinCoverageRatio = 0;  // default to zero if no entry
@@ -1291,13 +1518,35 @@ const _createProteinItem_DataTableEntry = function(
                     proteinCoverageRatioDisplay = protein_SubItem_Record.proteinCoverageRatioDisplay;
                 }
 
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId );
+                        if ( ! searchSubGroup ) {
+                            throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId ); return nothing for searchSubGroupId: " + searchSubGroupId
+                                + ", projectSearchId: " + projectSearchId );
+                        }
+
+                        return (
+                            <div>
+                                <div>
+                                    Sequence Coverage
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Sub Search: { searchSubGroup.subgroupName_Display }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueDisplay = proteinCoverageRatioDisplay;
                 const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort : proteinCoverageRatio
+                    valueSort : proteinCoverageRatio,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 })
                 columnEntries.push( columnEntry );
 
@@ -1327,13 +1576,48 @@ const _createProteinItem_DataTableEntry = function(
                 psmCount = protein_SubItem_Record__For__projectSearchId.numPsms;
             }
 
+
+            //  searchNames // Object with property name is projectSearchId as number
+
+            const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+            if ( ! searchNameObj ) {
+                const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                console.warn( msg );
+                throw Error( msg );
+            }
+
+            const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                () => {
+
+                    // let searchName_ShortName_Display = ""
+                    //
+                    // if ( searchNameObj.searchShortName ) {
+                    //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                    // }
+                    // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                    const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                    return (
+                        <div>
+                            <div>
+                                PSMs
+                            </div>
+                            <div style={ { marginTop: 5 } }>
+                                Search: { searchLabel }
+                            </div>
+                        </div>
+                    )
+                }
+
             const valueDisplay = psmCount.toLocaleString();
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
                 valueDisplay,
-                valueSort : psmCount
+                valueSort : psmCount,
+                tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
             })
             columnEntries.push( columnEntry );
 
@@ -1353,13 +1637,46 @@ const _createProteinItem_DataTableEntry = function(
 
             const nsafString = proteinView_nsaf_formatNumber_ForDisplayInTable( nsaf );
 
+
+            const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+            if ( ! searchNameObj ) {
+                const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                console.warn( msg );
+                throw Error( msg );
+            }
+
+            const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                () => {
+
+                    // let searchName_ShortName_Display = ""
+                    //
+                    // if ( searchNameObj.searchShortName ) {
+                    //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                    // }
+                    // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                    const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                    return (
+                        <div>
+                            <div>
+                                NSAF
+                            </div>
+                            <div style={ { marginTop: 5 } }>
+                                Search: { searchLabel }
+                            </div>
+                        </div>
+                    )
+                }
+
             const valueDisplay = nsafString;
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
                 valueDisplay,
-                valueSort : nsaf
+                valueSort : nsaf,
+                tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
             })
             columnEntries.push( columnEntry );
 
@@ -1379,13 +1696,46 @@ const _createProteinItem_DataTableEntry = function(
 
             const valueString = proteinView_Adjusted_Spectral_Count_ABACUS_formatNumber_ForDisplayInTable( valueNumer );
 
+
+            const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+            if ( ! searchNameObj ) {
+                const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                console.warn( msg );
+                throw Error( msg );
+            }
+
+            const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                () => {
+
+                    // let searchName_ShortName_Display = ""
+                    //
+                    // if ( searchNameObj.searchShortName ) {
+                    //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                    // }
+                    // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                    const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                    return (
+                        <div>
+                            <div>
+                                Adjusted Spectral Count (ABACUS)
+                            </div>
+                            <div style={ { marginTop: 5 } }>
+                                Search: { searchLabel }
+                            </div>
+                        </div>
+                    )
+                }
+
             const valueDisplay = valueString;
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
                 valueDisplay,
-                valueSort : valueNumer
+                valueSort : valueNumer,
+                tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
             })
             columnEntries.push( columnEntry );
 
@@ -1405,13 +1755,46 @@ const _createProteinItem_DataTableEntry = function(
 
             const valueString = proteinView_nsaf_formatNumber_ForDisplayInTable( valueNumer );
 
+
+            const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+            if ( ! searchNameObj ) {
+                const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                console.warn( msg );
+                throw Error( msg );
+            }
+
+            const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                () => {
+
+                    // let searchName_ShortName_Display = ""
+                    //
+                    // if ( searchNameObj.searchShortName ) {
+                    //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                    // }
+                    // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                    const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                    return (
+                        <div>
+                            <div>
+                                NSAF: Adjusted Spectral Count (ABACUS)
+                            </div>
+                            <div style={ { marginTop: 5 } }>
+                                Search: { searchLabel }
+                            </div>
+                        </div>
+                    )
+                }
+
             const valueDisplay = valueString;
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
                 valueDisplay,
-                valueSort : valueNumer
+                valueSort : valueNumer,
+                tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
             })
             columnEntries.push( columnEntry );
 
@@ -1430,13 +1813,46 @@ const _createProteinItem_DataTableEntry = function(
                 }
             }
 
+
+            const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+            if ( ! searchNameObj ) {
+                const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                console.warn( msg );
+                throw Error( msg );
+            }
+
+            const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                () => {
+
+                    // let searchName_ShortName_Display = ""
+                    //
+                    // if ( searchNameObj.searchShortName ) {
+                    //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                    // }
+                    // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                    const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                    return (
+                        <div>
+                            <div>
+                                Distinct Peptides
+                            </div>
+                            <div style={ { marginTop: 5 } }>
+                                Search: { searchLabel }
+                            </div>
+                        </div>
+                    )
+                }
+
             const valueDisplay = peptideCount.toLocaleString();
             const searchEntriesForColumn: Array<string> = [valueDisplay]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
                 valueDisplay,
-                valueSort: peptideCount
+                valueSort: peptideCount,
+                tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
             })
             columnEntries.push(columnEntry);
 
@@ -1455,13 +1871,46 @@ const _createProteinItem_DataTableEntry = function(
                 }
             }
 
+
+            const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+            if ( ! searchNameObj ) {
+                const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                console.warn( msg );
+                throw Error( msg );
+            }
+
+            const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                () => {
+
+                    // let searchName_ShortName_Display = ""
+                    //
+                    // if ( searchNameObj.searchShortName ) {
+                    //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                    // }
+                    // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                    const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                    return (
+                        <div>
+                            <div>
+                                Unique Peptides
+                            </div>
+                            <div style={ { marginTop: 5 } }>
+                                Search: { searchLabel }
+                            </div>
+                        </div>
+                    )
+                }
+
             const valueDisplay = uniquePeptideCount.toLocaleString();
             const searchEntriesForColumn: Array<string> = [valueDisplay]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
                 valueDisplay,
-                valueSort: uniquePeptideCount
+                valueSort: uniquePeptideCount,
+                tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
             })
             columnEntries.push(columnEntry);
 
@@ -1476,6 +1925,17 @@ const _createProteinItem_DataTableEntry = function(
 
         //  YES Sub Groups so display Sub Group data
 
+        const projectSearchId = projectSearchIds[0];
+
+        const searchSubGroups_Root = dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root();
+        if ( ! searchSubGroups_Root ) {
+            throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root(); return nothing for projectSearchId: " + projectSearchId );
+        }
+        const searchSubGroups_ForProjectSearchId = searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId );
+        if ( ! searchSubGroups_ForProjectSearchId ) {
+            throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_Root.get_searchSubGroups_ForProjectSearchId( projectSearchId ); return nothing for projectSearchId: " + projectSearchId );
+        }
+
         if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_PsmCount_Selected() ) {
 
             // numPsms per search sub group
@@ -1489,13 +1949,35 @@ const _createProteinItem_DataTableEntry = function(
                     numPsms = protein_SubItem_Record.numPsms;
                 }
 
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId );
+                        if ( ! searchSubGroup ) {
+                            throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId ); return nothing for searchSubGroupId: " + searchSubGroupId
+                                + ", projectSearchId: " + projectSearchId );
+                        }
+
+                        return (
+                            <div>
+                                <div>
+                                    PSMs
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Sub Search: { searchSubGroup.subgroupName_Display }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueDisplay = numPsms.toLocaleString();
                 const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort : numPsms
+                    valueSort : numPsms,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 })
                 columnEntries.push( columnEntry );
 
@@ -1519,13 +2001,35 @@ const _createProteinItem_DataTableEntry = function(
 
                 const nsafString = proteinView_nsaf_formatNumber_ForDisplayInTable( nsaf );
 
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId );
+                        if ( ! searchSubGroup ) {
+                            throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId ); return nothing for searchSubGroupId: " + searchSubGroupId
+                                + ", projectSearchId: " + projectSearchId );
+                        }
+
+                        return (
+                            <div>
+                                <div>
+                                    NSAF
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Sub Search: { searchSubGroup.subgroupName_Display }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueDisplay = nsafString;
                 const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort : nsaf
+                    valueSort : nsaf,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 })
                 columnEntries.push( columnEntry );
 
@@ -1549,13 +2053,35 @@ const _createProteinItem_DataTableEntry = function(
 
                 const valueString = proteinView_Adjusted_Spectral_Count_ABACUS_formatNumber_ForDisplayInTable( valueNumer );
 
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId );
+                        if ( ! searchSubGroup ) {
+                            throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId ); return nothing for searchSubGroupId: " + searchSubGroupId
+                                + ", projectSearchId: " + projectSearchId );
+                        }
+
+                        return (
+                            <div>
+                                <div>
+                                    Adjusted Spectral Count (ABACUS)
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Sub Search: { searchSubGroup.subgroupName_Display }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueDisplay = valueString;
                 const searchEntriesForColumn: Array<string> = [ valueDisplay ]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData( { searchEntriesForColumn } )
                 const columnEntry = new DataTable_DataRow_ColumnEntry( {
                     searchTableData,
                     valueDisplay,
-                    valueSort: valueNumer
+                    valueSort: valueNumer,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 } )
                 columnEntries.push( columnEntry );
 
@@ -1579,13 +2105,35 @@ const _createProteinItem_DataTableEntry = function(
 
                 const valueString = proteinView_nsaf_formatNumber_ForDisplayInTable( valueNumer );
 
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId );
+                        if ( ! searchSubGroup ) {
+                            throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId ); return nothing for searchSubGroupId: " + searchSubGroupId
+                                + ", projectSearchId: " + projectSearchId );
+                        }
+
+                        return (
+                            <div>
+                                <div>
+                                    NSAF: Adjusted Spectral Count (ABACUS)
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Sub Search: { searchSubGroup.subgroupName_Display }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueDisplay = valueString;
                 const searchEntriesForColumn: Array<string> = [ valueDisplay ]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData( { searchEntriesForColumn } )
                 const columnEntry = new DataTable_DataRow_ColumnEntry( {
                     searchTableData,
                     valueDisplay,
-                    valueSort: valueNumer
+                    valueSort: valueNumer,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 } )
                 columnEntries.push( columnEntry );
 
@@ -1609,13 +2157,35 @@ const _createProteinItem_DataTableEntry = function(
                     num = protein_SubItem_Record.peptideCount;
                 }
 
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId );
+                        if ( ! searchSubGroup ) {
+                            throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId ); return nothing for searchSubGroupId: " + searchSubGroupId
+                                + ", projectSearchId: " + projectSearchId );
+                        }
+
+                        return (
+                            <div>
+                                <div>
+                                    Distinct Peptides
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Sub Search: { searchSubGroup.subgroupName_Display }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueDisplay = num.toLocaleString();
                 const searchEntriesForColumn: Array<string> = [valueDisplay]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort: num
+                    valueSort: num,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 })
                 columnEntries.push(columnEntry);
 
@@ -1635,13 +2205,35 @@ const _createProteinItem_DataTableEntry = function(
                     num = protein_SubItem_Record.uniquePeptideCount;
                 }
 
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId );
+                        if ( ! searchSubGroup ) {
+                            throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId ); return nothing for searchSubGroupId: " + searchSubGroupId
+                                + ", projectSearchId: " + projectSearchId );
+                        }
+
+                        return (
+                            <div>
+                                <div>
+                                    Unique Peptides
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Sub Search: { searchSubGroup.subgroupName_Display }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueDisplay = num.toLocaleString();
                 const searchEntriesForColumn: Array<string> = [valueDisplay]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort: num
+                    valueSort: num,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 })
                 columnEntries.push(columnEntry);
 
@@ -1668,13 +2260,47 @@ const _createProteinItem_DataTableEntry = function(
                     numPsms = proteinItemRecord.numPsms;
                 }
 
+                //  searchNames // Object with property name is projectSearchId as number
+
+                const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchNameObj ) {
+                    const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        // let searchName_ShortName_Display = ""
+                        //
+                        // if ( searchNameObj.searchShortName ) {
+                        //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                        // }
+                        // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                        const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                        return (
+                            <div>
+                                <div>
+                                    PSMs
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Search: { searchLabel }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueDisplay = numPsms.toLocaleString();
                 const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort : numPsms
+                    valueSort : numPsms,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 })
                 columnEntries.push( columnEntry );
 
@@ -1696,6 +2322,39 @@ const _createProteinItem_DataTableEntry = function(
                     nsaf = proteinItemRecord.nsaf;
                 }
 
+                //  searchNames // Object with property name is projectSearchId as number
+
+                const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchNameObj ) {
+                    const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        // let searchName_ShortName_Display = ""
+                        //
+                        // if ( searchNameObj.searchShortName ) {
+                        //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                        // }
+                        // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                        const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                        return (
+                            <div>
+                                <div>
+                                    NSAF
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Search: { searchLabel }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const nsafString = proteinView_nsaf_formatNumber_ForDisplayInTable( nsaf );
 
                 const valueDisplay = nsafString;
@@ -1704,7 +2363,8 @@ const _createProteinItem_DataTableEntry = function(
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort : nsaf
+                    valueSort : nsaf,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 })
                 columnEntries.push( columnEntry );
 
@@ -1726,6 +2386,39 @@ const _createProteinItem_DataTableEntry = function(
                     valueNumer = proteinItemRecord.adjusted_Spectral_Count_ABACUS;
                 }
 
+                //  searchNames // Object with property name is projectSearchId as number
+
+                const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchNameObj ) {
+                    const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        // let searchName_ShortName_Display = ""
+                        //
+                        // if ( searchNameObj.searchShortName ) {
+                        //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                        // }
+                        // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                        const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                        return (
+                            <div>
+                                <div>
+                                    Adjusted Spectral Count (ABACUS)
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Search: { searchLabel }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueString = proteinView_Adjusted_Spectral_Count_ABACUS_formatNumber_ForDisplayInTable( valueNumer );
 
                 const valueDisplay = valueString;
@@ -1734,7 +2427,8 @@ const _createProteinItem_DataTableEntry = function(
                 const columnEntry = new DataTable_DataRow_ColumnEntry( {
                     searchTableData,
                     valueDisplay,
-                    valueSort: valueNumer
+                    valueSort: valueNumer,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 } )
                 columnEntries.push( columnEntry );
 
@@ -1759,6 +2453,39 @@ const _createProteinItem_DataTableEntry = function(
                     valueNumer = proteinItemRecord.nsaf__Using_Adjusted_Spectral_Count_ABACUS;
                 }
 
+                //  searchNames // Object with property name is projectSearchId as number
+
+                const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchNameObj ) {
+                    const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        // let searchName_ShortName_Display = ""
+                        //
+                        // if ( searchNameObj.searchShortName ) {
+                        //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                        // }
+                        // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                        const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                        return (
+                            <div>
+                                <div>
+                                    NSAF: Adjusted Spectral Count (ABACUS)
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Search: { searchLabel }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueString = proteinView_nsaf_formatNumber_ForDisplayInTable( valueNumer );
 
                 const valueDisplay = valueString;
@@ -1767,7 +2494,8 @@ const _createProteinItem_DataTableEntry = function(
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort : valueNumer
+                    valueSort : valueNumer,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 })
                 columnEntries.push( columnEntry );
 
@@ -1791,13 +2519,47 @@ const _createProteinItem_DataTableEntry = function(
                     num = proteinItemRecord.peptideCount;
                 }
 
+                //  searchNames // Object with property name is projectSearchId as number
+
+                const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchNameObj ) {
+                    const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        // let searchName_ShortName_Display = ""
+                        //
+                        // if ( searchNameObj.searchShortName ) {
+                        //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                        // }
+                        // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                        const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                        return (
+                            <div>
+                                <div>
+                                    Distinct Peptides
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Search: { searchLabel }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueDisplay = num.toLocaleString();
                 const searchEntriesForColumn: Array<string> = [valueDisplay]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort: num
+                    valueSort: num,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 })
                 columnEntries.push(columnEntry);
 
@@ -1815,13 +2577,47 @@ const _createProteinItem_DataTableEntry = function(
                     num = proteinItemRecord.uniquePeptideCount;
                 }
 
+                //  searchNames // Object with property name is projectSearchId as number
+
+                const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchNameObj ) {
+                    const msg = "No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+
+                const tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough: DataTable_DataRow_ColumnEntry__tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                    () => {
+
+                        // let searchName_ShortName_Display = ""
+                        //
+                        // if ( searchNameObj.searchShortName ) {
+                        //     searchName_ShortName_Display = "(" + searchNameObj.searchShortName + ") "
+                        // }
+                        // const searchLabel = "(" + searchNameObj.searchId + ") " + searchName_ShortName_Display + searchNameObj.name
+
+                        const searchLabel = searchNameObj.searchLabel__SearchShortName_OR_SearchId
+
+                        return (
+                            <div>
+                                <div>
+                                    Unique Peptides
+                                </div>
+                                <div style={ { marginTop: 5 } }>
+                                    Search: { searchLabel }
+                                </div>
+                            </div>
+                        )
+                    }
+
                 const valueDisplay = num.toLocaleString();
                 const searchEntriesForColumn: Array<string> = [valueDisplay]
                 const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
                 const columnEntry = new DataTable_DataRow_ColumnEntry({
                     searchTableData,
                     valueDisplay,
-                    valueSort: num
+                    valueSort: num,
+                    tooltipDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
                 })
                 columnEntries.push(columnEntry);
 
