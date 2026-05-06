@@ -166,12 +166,14 @@ body.data-page {
 
         $data-table-react-border-spacing-horizontal-full: $data-table-react-border-spacing-horizontal-half * 2;
 
-        //  !!!  Header Table and Data Rows Table.  <table> and children values.  !!!
+      $data-table-react-border-spacing-vertical: 6px;
+
+      //  !!!  Header Table and Data Rows Table.  <table> and children values.  !!!
 
         table.data-table-header-table, table.data-table-data-rows-table {
 
           font-size: 12px;  //  DataTable Default Font Size
-          border-spacing: $data-table-react-border-spacing-horizontal-full 6px;  // <Horizontal> <Vertical> -- Spacing around cells in table
+          border-spacing: $data-table-react-border-spacing-horizontal-full $data-table-react-border-spacing-vertical;  // <Horizontal> <Vertical> -- Spacing around cells in table
         }
 
         //  Data Table Row Border values.  Declared here since also used in Table Header formatting
@@ -246,7 +248,11 @@ body.data-page {
         div.data-table-data-rows-outer-containing-div {  
 
             //  If CSS Class 'data-table-data-rows-outer-containing-div' is changed to 'display: inline-block'
-            //         Add '<br />' after that <div> to ensure each of the div above is on a new visual line rather than more than one ending up on the same visual line 
+            //         Add '<br />' after that <div> to ensure each of the div above is on a new visual line rather than more than one ending up on the same visual line
+
+            $data-table-hover-outline-color: $site-color-very-dark;
+            $data-table-hover-outline-style: solid;
+            $data-table-hover-outline-width: 4px;
 
             position: relative;
 
@@ -284,9 +290,9 @@ body.data-page {
                                       //    Ok to add here since in containing <div> for each row
 
               &:hover {
-                outline-color: $site-color-very-dark;
-                outline-style: solid;
-                outline-width: 4px;
+                outline-color: $data-table-hover-outline-color;
+                outline-style: $data-table-hover-outline-style;
+                outline-width: $data-table-hover-outline-width;
               }
             }
 
@@ -352,6 +358,13 @@ body.data-page {
                             //padding-bottom: 5px;
                             word-break: break-all; // Backup in case break-word is not supported
                             word-break: break-word; //  Keep this here as long as it works since not all cells will have the <span> with the class name 'table-data-cell-property-value'
+
+                          &:hover {
+                            outline-color: $data-table-hover-outline-color;
+                            outline-style: $data-table-hover-outline-style;
+                            outline-width: $data-table-hover-outline-width;
+                            outline-offset: $data-table-react-border-spacing-vertical;
+                          }
 
                           &.data-table-data-cell-align-bottom {
                             vertical-align: bottom;  // Override above vertical alignment
