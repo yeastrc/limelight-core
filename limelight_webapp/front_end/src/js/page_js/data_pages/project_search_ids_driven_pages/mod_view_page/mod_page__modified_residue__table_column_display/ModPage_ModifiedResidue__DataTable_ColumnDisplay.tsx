@@ -28,7 +28,7 @@ const _BAR_COLOR__YES_LOCALIZED = limelight__Limelight_Colors_Etc__SyncWith_glob
 const _BAR_COLOR__NOT_LOCALIZED_UNLOCALIZED = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_orange
 
 
-const _BAR_HEIGHT_MAX = 20
+const _BAR_HEIGHT_MAX = 18  // was 20 but always make room for the Min height of unlocalized
 const _BAR_HEIGHT_MIN = 2
 
 const _SINGLE_LETTER_FONT_SIZE = 12
@@ -42,7 +42,7 @@ const _RESIDUE_LETTERS_ALL_LENGTH = LIMELIGHT__RESIDUE_LETTERS_ALL_IN_ALPHA_ORDE
 
 
 const _SVG_WIDTH = _SINGLE_LETTER_WIDTH * _RESIDUE_LETTERS_ALL_LENGTH
-const _SVG_HEIGHT = _BAR_HEIGHT_MAX + _SINGLE_LETTER_HEIGHT - 3  // - 3 since that positions the bottom of the svg at the bottom of the letters
+const _SVG_HEIGHT =  ( _BAR_HEIGHT_MAX + _BAR_HEIGHT_MIN ) + _SINGLE_LETTER_HEIGHT - 3  // "+ _BAR_HEIGHT_MIN" always make room for the Min height of unlocalized. "- 3" since that positions the bottom of the svg at the bottom of the letters.
 
 /**
  *
@@ -216,7 +216,7 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
         // }
 
         const letter_X_Position = Math.floor( ( letterIndex * _SINGLE_LETTER_WIDTH ) + ( _SINGLE_LETTER_WIDTH / 2 ) )
-        const letter_Y_Position = _BAR_HEIGHT_MAX + _SINGLE_LETTER_Y_OFFSET_FROM_BAR
+        const letter_Y_Position =  ( _BAR_HEIGHT_MAX + _BAR_HEIGHT_MIN ) + _SINGLE_LETTER_Y_OFFSET_FROM_BAR
 
         const element = (
 
@@ -249,7 +249,7 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
                 { barHeight__YES_Localized !== 0 ? (
                     <rect
                         x={ ( letterIndex * _SINGLE_LETTER_WIDTH ) + 1 }
-                        y={ _BAR_HEIGHT_MAX - barHeight__YES_Localized }
+                        y={ ( _BAR_HEIGHT_MAX + _BAR_HEIGHT_MIN ) - barHeight__YES_Localized }
                         width={ _SINGLE_LETTER_WIDTH - 2 }
                         height={ barHeight__YES_Localized }
                         style={ { fill: _BAR_COLOR__YES_LOCALIZED } }
@@ -259,7 +259,7 @@ const _get_DataTable_ModifiedResidues_Column_Contents = function (
                 { barHeight__NOT_Localized_Unlocalized !== 0 ? (
                     <rect
                         x={ ( letterIndex * _SINGLE_LETTER_WIDTH ) + 1 }
-                        y={ _BAR_HEIGHT_MAX - barHeight__YES_Localized - barHeight__NOT_Localized_Unlocalized }
+                        y={  ( _BAR_HEIGHT_MAX + _BAR_HEIGHT_MIN ) - barHeight__YES_Localized - barHeight__NOT_Localized_Unlocalized }
                         width={ _SINGLE_LETTER_WIDTH - 2 }
                         height={ barHeight__NOT_Localized_Unlocalized }
                         style={ { fill: _BAR_COLOR__NOT_LOCALIZED_UNLOCALIZED } }
