@@ -75,6 +75,12 @@ import { ProteinSequenceWidgetDisplay_Component_Data } from "page_js/data_pages/
 import { Limelight__scaleColor_BasedOn_Fraction } from "page_js/common_all_pages/Limelight__scaleColor_BasedOn_Fraction";
 
 
+///////////////////////
+
+
+const _NO_ADJACENT_PEPTIDES__POSITION_SEPARATION_MINIMUM = 2
+
+
 const _STANDARD_COLOR__YES_PASS_FILTERS__OR__NO_FILTERS__FILL = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_dark
 const _STANDARD_COLOR__NOT_PASS_FILTERS_FILL = "grey"
 
@@ -394,6 +400,8 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
 
                 scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox: this.props.proteinSequence_Bar_Widget_StateObject.get_shade_by_PSM_Count(),
                 scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount: this.props.proteinSequence_Bar_Widget_StateObject.get_shade_by_PSM_Count__Max_PSM_Count(),
+
+                proteinSequence_Bar_Widget_StateObject: this.props.proteinSequence_Bar_Widget_StateObject,
 
                 modificationMass_UserSelections_StateObject: this.props.modificationMass_UserSelections_StateObject,
                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
@@ -1055,7 +1063,28 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
 
                                 </div>
 
-                                <div>
+                                <div style={ { marginTop: 5 } }>
+                                    <label>
+                                        <span>No adjacent peptides: </span>
+                                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                            title={
+                                                "Peptides that are adjacent will not be placed on the same row."
+                                            }
+                                        />
+                                        <input
+                                            type="checkbox"
+                                            checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_no_adjacent_peptides() }
+                                            onChange={ event => {
+
+                                                this.props.proteinSequence_Bar_Widget_StateObject.set_no_adjacent_peptides( event.currentTarget.checked )
+
+                                                this._compute_DerivedDisplay()
+                                            } }
+                                        />
+                                    </label>
+                                </div>
+
+                                <div style={ { marginTop: 5 } }>
                                     <label>
                                         <span>Show Trypsin Cut points: </span>
                                         <input
@@ -1094,7 +1123,7 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                                 </div>
                                 */ }
 
-                                    <div>
+                                    <div style={ { marginTop: 5 } }>
                                         <label>
                                             <span>Hide unmatched modifications: </span>
                                             <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
@@ -1116,7 +1145,8 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                                     </div>
 
                                     { anySearch_Has_OpenModifications ? (
-                                        <div>
+
+                                        <div style={ { marginTop: 2 } }>
                                             <label>
                                                 <span>Include unlocalized modifications: </span>
                                                 <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
@@ -3020,6 +3050,8 @@ const _compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root = func
         scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox,
         scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount,
 
+        proteinSequence_Bar_Widget_StateObject,
+
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
         modificationMass_UserSelections_StateObject,
         proteinSequence_Length,
@@ -3037,6 +3069,8 @@ const _compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root = func
 
         scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox: boolean
         scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount: number
+
+        proteinSequence_Bar_Widget_StateObject: ProteinSequence_Bar_Widget_StateObject
 
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 
@@ -3250,6 +3284,7 @@ const _compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root = func
                 show_only_modifications_filtered_on__excluding_static,
                 scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox,
                 scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount,
+                proteinSequence_Bar_Widget_StateObject,
                 modificationMass_UserSelections_StateObject,
                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
                 proteinSequence_Length,
@@ -3282,6 +3317,7 @@ const _compute__INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root = func
                             show_only_modifications_filtered_on__excluding_static,
                             scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox,
                             scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount,
+                            proteinSequence_Bar_Widget_StateObject,
                             modificationMass_UserSelections_StateObject,
                             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
                             proteinSequence_Length,
@@ -3324,6 +3360,7 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
         scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox,
         scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount,
 
+        proteinSequence_Bar_Widget_StateObject,
         modificationMass_UserSelections_StateObject,
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
         proteinSequence_Length,
@@ -3344,6 +3381,8 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
 
         scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox: boolean
         scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount: number
+
+        proteinSequence_Bar_Widget_StateObject: ProteinSequence_Bar_Widget_StateObject
 
         modificationMass_UserSelections_StateObject: ModificationMass_UserSelections_StateObject;  // Used for filtering modification masses
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
@@ -3890,12 +3929,30 @@ const _compute_INTERNAL__MainData_Computed_For_ComponentsInThisFile_Root__After_
 
             for ( const peptidePositions_SingleEntry_InRow of peptidePositions_SingleRow.peptidePositions_SingleEntry_InRow_Array ) {
 
-                //  Changed from 'WAS' since that allowed overlapping peptides on same row.  Overlapping by 1 position.
-                // WAS if ( ! ( peptidePositions_SingleEntry.end_Position <= peptidePositions_SingleEntry_InRow.start_Position || peptidePositions_SingleEntry.start_Position >= peptidePositions_SingleEntry_InRow.end_Position ) ) {
+                if ( proteinSequence_Bar_Widget_StateObject.get_no_adjacent_peptides() ) {
 
-                if ( ! ( peptidePositions_SingleEntry.end_Position < peptidePositions_SingleEntry_InRow.start_Position || peptidePositions_SingleEntry.start_Position > peptidePositions_SingleEntry_InRow.end_Position ) ) {
+                    //  NO Allow adjacent peptides
 
-                    foundOverlap_With_ExistingEntriesInRow = true
+
+
+                    if ( !
+                        (
+                            ( peptidePositions_SingleEntry.end_Position + _NO_ADJACENT_PEPTIDES__POSITION_SEPARATION_MINIMUM ) < peptidePositions_SingleEntry_InRow.start_Position
+                            || ( peptidePositions_SingleEntry.start_Position - _NO_ADJACENT_PEPTIDES__POSITION_SEPARATION_MINIMUM ) > peptidePositions_SingleEntry_InRow.end_Position
+                        )
+                    ) {
+
+                        foundOverlap_With_ExistingEntriesInRow = true
+                    }
+
+                } else {
+
+                    //  YES Allow adjacent peptides
+
+                    if ( ! ( peptidePositions_SingleEntry.end_Position < peptidePositions_SingleEntry_InRow.start_Position || peptidePositions_SingleEntry.start_Position > peptidePositions_SingleEntry_InRow.end_Position ) ) {
+
+                        foundOverlap_With_ExistingEntriesInRow = true
+                    }
                 }
             }
 

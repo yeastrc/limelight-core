@@ -25,6 +25,7 @@ const _ENCODED_DATA__SHADE_BY_PSM_COUNT__MAX_PSM_COUNT__VALUE_ENCODING_PROPERTY_
 const _ENCODED_DATA__SHOW_ONLY_MODIFICATIONS_PASS_ALL_FILTERS__VALUE_ENCODING_PROPERTY_NAME = 'f'
 const _ENCODED_DATA__ADD_OPEN_MODIFICATIONS_UNLOCALIZED_IN_ALL_PEPTIDE_POSITIONS__VALUE_ENCODING_PROPERTY_NAME = 'g'
 const _ENCODED_DATA__SHOW_ONLY_MODIFICATIONS_FILTERED_ON__EXCLUDING_STATIC__VALUE_ENCODING_PROPERTY_NAME = 'h'
+const _ENCODED_DATA__NO_ADJACENT_PEPTIDES__VALUE_ENCODING_PROPERTY_NAME = 'i'
 
 
 const _show_TrypsinCutPoints_DEFAULT = true
@@ -60,6 +61,7 @@ export class ProteinSequence_Bar_Widget_StateObject {
 	private _show_only_modifications_pass_all_filters = false
 	private _add_open_modifications_unlocalized_in_all_peptide_positions = false
 	private _show_only_modifications_filtered_on__excluding_static = false
+	private _no_adjacent_peptides = false
 
 	private _valueChangedCallback: () => void;
 
@@ -285,6 +287,36 @@ export class ProteinSequence_Bar_Widget_StateObject {
 		return this._show_only_modifications_filtered_on__excluding_static;
 	}
 
+	///////   no_adjacent_peptides
+
+	/**
+	 * @param no_adjacent_peptides -
+	 */
+	set_no_adjacent_peptides( no_adjacent_peptides: boolean ) : void {
+
+		if ( no_adjacent_peptides === undefined ) {
+			const msg = "set_no_adjacent_peptides: no_adjacent_peptides: undefined";
+			console.warn( msg );
+			throw Error( msg );
+		}
+
+		this._no_adjacent_peptides = no_adjacent_peptides
+
+		if ( ! this._valueChangedCallback ) {
+			throw Error("set_no_adjacent_peptides::( ! this._valueChangedCallback )")
+		}
+
+		this._valueChangedCallback();
+	}
+
+	/**
+	 *
+	 */
+	get_no_adjacent_peptides() {
+
+		return this._no_adjacent_peptides;
+	}
+
 
 	/////////////
 
@@ -339,6 +371,11 @@ export class ProteinSequence_Bar_Widget_StateObject {
 		if ( this._show_only_modifications_filtered_on__excluding_static ) {
 
 			result[ _ENCODED_DATA__SHOW_ONLY_MODIFICATIONS_FILTERED_ON__EXCLUDING_STATIC__VALUE_ENCODING_PROPERTY_NAME ] = this._show_only_modifications_filtered_on__excluding_static
+		}
+
+		if ( this._no_adjacent_peptides ) {
+
+			result[ _ENCODED_DATA__NO_ADJACENT_PEPTIDES__VALUE_ENCODING_PROPERTY_NAME ] = this._no_adjacent_peptides
 		}
 
 		if ( Object.keys( result ).length === 0 ) {
@@ -414,6 +451,13 @@ export class ProteinSequence_Bar_Widget_StateObject {
 				this._show_only_modifications_filtered_on__excluding_static = true
 			} else {
 				this._show_only_modifications_filtered_on__excluding_static = false
+			}
+		}
+		{
+			if ( encodedStateData[ _ENCODED_DATA__NO_ADJACENT_PEPTIDES__VALUE_ENCODING_PROPERTY_NAME ] ) {
+				this._no_adjacent_peptides = true
+			} else {
+				this._no_adjacent_peptides = false
 			}
 		}
 	}
