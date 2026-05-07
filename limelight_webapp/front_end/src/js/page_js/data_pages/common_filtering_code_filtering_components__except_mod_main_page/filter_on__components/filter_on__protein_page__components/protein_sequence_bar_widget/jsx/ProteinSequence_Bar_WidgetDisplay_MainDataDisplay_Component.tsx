@@ -2508,7 +2508,7 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
         }
 
         const svgWidth = 190
-        const svgHeight = 26
+        const svgHeight = 28
         const borderWidth = 1
         const borderColor = "red"
 
@@ -2628,7 +2628,11 @@ const _create_Tooltip_ResidueLetters_AND_TrypsinCutPointLines_Elements = functio
                     y={ y_MiddleCharacter }
                     textAnchor="middle"
                 >
-                    <tspan style={ { fontSize: fontSize_MiddleCharacter } }>{ sequenceAtPosition }</tspan>
+                    <tspan
+                        style={ { fontSize: fontSize_MiddleCharacter, textDecoration: "underline" } }
+                    >
+                        { sequenceAtPosition }
+                    </tspan>
                 </text>
             </React.Fragment>
         )
