@@ -94,6 +94,8 @@ import {
 import {
     modPage_SearchGroups_SubSearchGroups_Init_VizSelections_PageStateManager
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__search_groups_sub_search_groups_init/modPage_SearchGroups_SubSearchGroups_Init_VizSelections_PageStateManager";
+import { download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds, DownloadPSMs_PerProjectSearchId_Entry, DownloadPSMs_PerReportedPeptideId } from "page_js/data_pages/common__project_search_and_experiment_based_download_data/download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds";
+import { modPage_Download_PSM_Entries_LikeOn_PeptidePage } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page__clickable_links_for_downloads_and_view_js/modPage_Download_PSM_Entries_LikeOn_PeptidePage";
 
 
 //  Default and Min Width for the block for the search names and Color Legend Bar label to the left of the SVG with the Mod Mass Heat Map
@@ -162,6 +164,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
     private _download_Data_Table_Clicked_BindThis = this._download_Data_Table_Clicked.bind(this)
     private _download_PSM_Localization_Report_Clicked_BindThis = this._download_PSM_Localization_Report_Clicked.bind(this)
     private _download_ModPositionInProtein_Report_Clicked_BindThis = this._download_ModPositionInProtein_Report_Clicked.bind(this)
+    private _downloadPsms_ClickHandler_BindThis = this._downloadPsms_ClickHandler.bind(this)
 
     /**
      *  Width for the block for the search names and Color Legend Bar label to the left of the SVG with the Mod Mass Heat Map
@@ -1234,6 +1237,19 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
+    /**
+     *
+     */
+    private _downloadPsms_ClickHandler( event: React.MouseEvent<HTMLSpanElement, globalThis.MouseEvent> ) { try {
+
+        modPage_Download_PSM_Entries_LikeOn_PeptidePage({
+            modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root: this._modViewPage_ComputeData_Per_ModMass_And_ProjectSearchId_Or_SubSearchId_PerformingFiltering_Result_Root,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+            searchDataLookupParamsRoot : this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_searchDetailsCriteriaData()
+        })
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
     //////////
 
     /**
@@ -2055,7 +2071,7 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
 
                             { this.props.all_Common_ProjectSearchIdsAll_PageStateObjects_Etc_From_Root.allSearches_HaveProteins ? (
                                 //  ONLY render if ALL searches have proteins
-                                <div>
+                                <div style={ { marginBottom: 4 } }>
                                     <span
                                         className=" fake-link "
                                         onClick={ this._download_ModPositionInProtein_Report_Clicked_BindThis }
@@ -2063,7 +2079,16 @@ export class ModPage_ModPageBlock_UserEntryArea_BelowTheCollapsableFiltersAndOpt
                                         [Download Modification Position in Protein Report]
                                     </span>
                                 </div>
-                            ) : null}
+                            ) : null }
+
+                            <div>
+                                <span
+                                    className=" fake-link "
+                                    onClick={ this._downloadPsms_ClickHandler_BindThis }
+                                >
+                                    [Download PSMs]
+                                </span>
+                            </div>
                         </div>
 
                         {
