@@ -2330,58 +2330,11 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
      *
      * @param event
      */
-    private _proteinBar_MouseMove_EventHandler( event: React.MouseEvent<SVGRectElement, MouseEvent> ) {
+    private _proteinBar_MouseMove_EventHandler( event: React.MouseEvent<Element, MouseEvent> ) {
         try {
             // Update this._mousePointer_ProteinPosition so that Tooltip updates based on current mouse pointer position
 
-            const mouse_X = event.pageX
-
-            // console.warn( "onMouseMove on <rect>. mouse_X: " + mouse_X )
-
-            const targetDOM = event.target
-
-            if ( ! ( targetDOM instanceof SVGElement ) ) {
-                const msg = "In _proteinBar_MouseMove_EventHandler: ( ! ( event.target instanceof HTMLElement ) ) "
-                console.error( msg + ": event.target: ", event.target )
-                throw Error( msg )
-            }
-
-            const targetDOM_BoundingClientRect_X = targetDOM.getBoundingClientRect().x
-
-            // console.warn( "onMouseMove on <rect>. targetDOM_BoundingClientRect_X: " + targetDOM_BoundingClientRect_X )
-
-            const rect_X = Math.round( targetDOM_BoundingClientRect_X )
-
-            // console.warn( "onMouseMove on <rect>. rect_X: " + rect_X )
-
-            const scrollX = window.scrollX
-
-            // console.warn( "onMouseMove on <rect>. scrollX: " + scrollX )
-
-            const x_Offset = mouse_X - scrollX - rect_X
-
-            // console.warn( "onMouseMove on <rect>. x_Offset: " + x_Offset )
-
-            let mousePointer_ProteinPosition_NewValue = Math.floor( x_Offset / _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) + 1 // '+ 1' since x_Offset is zero based
-
-            if ( mousePointer_ProteinPosition_NewValue < 1 ) {
-                mousePointer_ProteinPosition_NewValue = 1
-            }
-            if ( mousePointer_ProteinPosition_NewValue > this.props.proteinSequenceString.length ) {
-                mousePointer_ProteinPosition_NewValue = this.props.proteinSequenceString.length
-            }
-
-            // console.warn( "onMouseMove on <rect>. new this._mousePointer_ProteinPosition: " + mousePointer_ProteinPosition_NewValue )
-
-            // const mousePointer_ProteinPosition_Difference = Math.abs( this._mousePointer_ProteinPosition - mousePointer_ProteinPosition_NewValue )
-            //
-            // if ( mousePointer_ProteinPosition_Difference > 3 ) {
-            //
-            //     console.warn( "onMouseMove on <rect>. new mousePointer_ProteinPosition_Difference: " + mousePointer_ProteinPosition_Difference + " <----" )
-            // }
-
-            this._mousePointer_ProteinPosition = mousePointer_ProteinPosition_NewValue
-
+            this._set__this_mousePointer_ProteinPosition__From_MousePosition_InEvent( event )
 
             this.forceUpdate()
 
@@ -2395,35 +2348,12 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
      *
      * @param event
      */
-    private _proteinBar_MouseClick_EventHandler( event: React.MouseEvent<SVGRectElement, MouseEvent> ) {
+    private _proteinBar_MouseClick_EventHandler( event: React.MouseEvent<Element, MouseEvent> ) {
         try {
 
-            const mouse_X = event.pageX
+            this._set__this_mousePointer_ProteinPosition__From_MousePosition_InEvent( event )
 
-            const targetDOM = event.target
-
-            if ( ! ( targetDOM instanceof SVGElement ) ) {
-                const msg = "In _proteinBar_MouseClick_EventHandler: ( ! ( event.target instanceof HTMLElement ) ) "
-                console.error( msg + ": event.target: ", event.target )
-                throw Error( msg )
-            }
-
-            const targetDOM_BoundingClientRect_X = targetDOM.getBoundingClientRect().x
-
-            const rect_X = Math.floor( targetDOM_BoundingClientRect_X )
-
-            const scrollX = window.scrollX
-
-            const x_Offset = mouse_X - ( rect_X + ( _PROTEIN_BLOCK_BORDER_WIDTH_STROKE_WIDTH / 2 ) ) - scrollX
-
-            let proteinSequencePosition = Math.round( x_Offset / _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) )
-
-            if ( proteinSequencePosition < 1 ) {
-                proteinSequencePosition = 1
-            }
-            if ( proteinSequencePosition > this.props.proteinSequenceString.length ) {
-                proteinSequencePosition = this.props.proteinSequenceString.length
-            }
+            let proteinSequencePosition = this._mousePointer_ProteinPosition
 
             if ( event.ctrlKey || event.metaKey ) {
                 //  Invert Selection
@@ -2457,6 +2387,65 @@ class ProteinSequence_Bar_WidgetDisplay_ProteinSequenceBar_ONLY__OverlayRect_For
             throw e
         }
     }
+
+    /**
+     *
+     * @param event
+     *
+     * Set this._mousePointer_ProteinPosition
+     */
+    private _set__this_mousePointer_ProteinPosition__From_MousePosition_InEvent( event: React.MouseEvent<Element, MouseEvent> ) {
+
+        const mouse_X = event.pageX
+
+        // console.warn( "onMouseMove on <rect>. mouse_X: " + mouse_X )
+
+        const targetDOM = event.target
+
+        if ( ! ( targetDOM instanceof SVGElement ) ) {
+            const msg = "In _proteinBar_MouseMove_EventHandler: ( ! ( event.target instanceof HTMLElement ) ) "
+            console.error( msg + ": event.target: ", event.target )
+            throw Error( msg )
+        }
+
+        const targetDOM_BoundingClientRect_X = targetDOM.getBoundingClientRect().x
+
+        // console.warn( "onMouseMove on <rect>. targetDOM_BoundingClientRect_X: " + targetDOM_BoundingClientRect_X )
+
+        const rect_X = Math.round( targetDOM_BoundingClientRect_X )
+
+        // console.warn( "onMouseMove on <rect>. rect_X: " + rect_X )
+
+        const scrollX = window.scrollX
+
+        // console.warn( "onMouseMove on <rect>. scrollX: " + scrollX )
+
+        const x_Offset = mouse_X - scrollX - rect_X
+
+        // console.warn( "onMouseMove on <rect>. x_Offset: " + x_Offset )
+
+        let mousePointer_ProteinPosition_NewValue = Math.floor( x_Offset / _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject ) ) + 1 // '+ 1' since x_Offset is zero based
+
+        if ( mousePointer_ProteinPosition_NewValue < 1 ) {
+            mousePointer_ProteinPosition_NewValue = 1
+        }
+        if ( mousePointer_ProteinPosition_NewValue > this.props.proteinSequenceString.length ) {
+            mousePointer_ProteinPosition_NewValue = this.props.proteinSequenceString.length
+        }
+
+        // console.warn( "onMouseMove on <rect>. new this._mousePointer_ProteinPosition: " + mousePointer_ProteinPosition_NewValue )
+
+        // const mousePointer_ProteinPosition_Difference = Math.abs( this._mousePointer_ProteinPosition - mousePointer_ProteinPosition_NewValue )
+        //
+        // if ( mousePointer_ProteinPosition_Difference > 3 ) {
+        //
+        //     console.warn( "onMouseMove on <rect>. new mousePointer_ProteinPosition_Difference: " + mousePointer_ProteinPosition_Difference + " <----" )
+        // }
+
+        this._mousePointer_ProteinPosition = mousePointer_ProteinPosition_NewValue
+    }
+
+    ///////////////////
 
     /**
      *
