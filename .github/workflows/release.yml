@@ -25,7 +25,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Run build in Docker container	    
-      uses: docker://mriffle/build-limelight:latest
+      uses: docker://ghcr.io/yeastrc/limelight-build-docker:latest
       with:
         entrypoint: ant
         args: -f ant__build_all_limelight.xml
