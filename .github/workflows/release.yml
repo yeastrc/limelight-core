@@ -23,9 +23,9 @@ jobs:
       
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Run build in Docker container	    
-      uses: docker://mriffle/build-limelight:latest
+      uses: docker://ghcr.io/yeastrc/limelight-build-docker:latest
       with:
         entrypoint: ant
         args: -f ant__build_all_limelight.xml
@@ -103,7 +103,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Create docker-compose archive
       run: |
         tar -cvzf ./docker-compose-files.tgz docker-compose.yml docker-compose-custom-data.yml database_scripts/install/* database_scripts/version_upgrades/* docker/env-sample
