@@ -144,6 +144,13 @@ let addLorikeetToJquery = function( $ ) {
         // trim any 0 intensity peaks from the end of the peaks array
         trimPeaksArray(options);
 
+        //  Added sort 2026 05 08
+        
+        // Sort peaks by m/z ascending
+        if (options.peaks && options.peaks.length > 1) {
+            options.peaks.sort(function(a, b) { return a[0] - b[0]; });
+        }
+
         // read the static modifications
         var parsedStaticMods = [];
         for(var i = 0; i < options.staticMods.length; i += 1) {
