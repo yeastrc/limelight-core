@@ -2539,6 +2539,28 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
      */
     private async _update_AllParts_Of_CurrentStructure() { try {
 
+        console.log( "_update_AllParts_Of_CurrentStructure() called" )
+
+        if ( ! this._molstar_PluginUIContext_Reference ) {
+
+            //  NO this._molstar_PluginUIContext_Reference so problem
+
+            try {
+                const msg = "_update_AllParts_Of_CurrentStructure(): Throw Error: if ( ! this._molstar_PluginUIContext_Reference ) { "
+                console.warn(msg)
+                throw Error(msg)
+
+            } catch ( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                throw e
+            }
+
+            //  return and assume this will be called again after 'this._molstar_PluginUIContext_Reference' is populated.
+
+            const msg = "_update_AllParts_Of_CurrentStructure(): WARN: if ( ! this._molstar_PluginUIContext_Reference ) { "
+            console.warn(msg)
+            return  // EARLY RETURN
+        }
 
         //   Set color of residues in structure chains, setting the color of each residue as required for sequence coverage or user selected color for residue letter
 
@@ -2571,6 +2593,17 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
     private async _set_Color_To_Residues_In_Chains_In_Structure_TO_Format_and_Color() {
         try {
             //  Get structure_StateObjectSelector
+
+            if ( ! this._molstar_PluginUIContext_Reference ) {
+
+                //  NO this._molstar_PluginUIContext_Reference so problem
+
+                const msg = "_set_Color_To_Residues_In_Chains_In_Structure_TO_Format_and_Color Throw Error: if ( ! this._molstar_PluginUIContext_Reference ) { "
+                console.warn(msg)
+                throw Error(msg)
+
+                // return  // EARLY RETURN
+            }
 
             const structureRef_Array = this._molstar_PluginUIContext_Reference.managers.structure.hierarchy.current.structures;
             if ( structureRef_Array.length === 0 ) {
