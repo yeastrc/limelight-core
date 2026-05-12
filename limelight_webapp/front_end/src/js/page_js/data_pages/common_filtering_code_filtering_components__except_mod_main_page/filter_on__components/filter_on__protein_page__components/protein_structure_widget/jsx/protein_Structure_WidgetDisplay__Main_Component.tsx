@@ -2551,8 +2551,8 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 throw Error(msg)
 
             } catch ( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                throw e
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e, skipDisplayErrorOverlay_SkipCall__errorDisplay_WhenHave_Javascript_Typescript_Error: true } );
+                // throw e
             }
 
             //  return and assume this will be called again after 'this._molstar_PluginUIContext_Reference' is populated.
