@@ -5264,7 +5264,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 }
 
                 const perChain_Element = (
-                    <div>
+                    <div key={ chainData.limelightAssigned_ChainId }>
                         <div>
                             <label>
 
