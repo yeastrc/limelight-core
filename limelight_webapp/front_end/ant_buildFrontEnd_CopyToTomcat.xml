@@ -28,7 +28,7 @@
 	<!--  Runs Gradle (gradlew or gradlew.bat) -->
 
 	 <!-- Set program to run for Windows, else Non-Windows (Linux/Mac) -->
-	    <condition property="executableToRun_Build_FrontEnd_CopyToComcat" value="./gradlew.bat" else="./gradlew">
+	    <condition property="gradle_executableToRun_Build_FrontEnd_CopyToComcat" value="./gradlew.bat" else="./gradlew">
 	        <os family="windows"/>
 	    </condition>
 	
@@ -75,9 +75,9 @@
 	
 	<target name="built-copy-front-end" description="">
 
-		<echo>Executing gradle using executable: ${executableToRun_Build_FrontEnd_CopyToComcat}</echo>
+		<echo>Executing gradle using executable: ${gradle_executableToRun_Build_FrontEnd_CopyToComcat}</echo>
 		
-		<exec executable="${executableToRun_Build_FrontEnd_CopyToComcat}" dir="." failonerror="true" 
+		<exec executable="${gradle_executableToRun_Build_FrontEnd_CopyToComcat}" dir="." failonerror="true"
 		    resolveexecutable="true" >
 		    <!--
 		    resolveexecutable:

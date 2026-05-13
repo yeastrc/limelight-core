@@ -57,7 +57,7 @@
   
 <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_main_script_include__script_include_libs__page_header_js.jsp" %>
   
-  <script type="text/javascript" src="static/js_generated_bundles/webapp_admin/manageCachedDataPage_Root-bundle.js?x=${ cacheBustValue }"></script>
+  <script type="text/javascript" src="static/js_generated_bundles/webapp_admin/manageCachedDataForAdminPage_Root-bundle.js?x=${ cacheBustValue }"></script>
   				
 </body>
 </html>

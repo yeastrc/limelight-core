@@ -1,4 +1,5 @@
 /node_modules/
+/build/
 /handlebars_templates_precompiled/
 /webpack_build_output/
 
@@ -36,4 +37,7 @@ ant_buildFrontEnd_CopyToTomcat.settings.properties
 v_webpack__Run__XXX_Only_Build_CONFIG.sh
 
 tsgo_Preview_NoEmit.sh__file_location.properties
+
+Typescript_Executable_OverridePath.txt
+
 

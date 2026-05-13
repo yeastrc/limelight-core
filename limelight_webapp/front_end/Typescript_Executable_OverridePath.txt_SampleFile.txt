@@ -1,0 +1,6 @@
+Copy file to Typescript_Executable_OverridePath.txt
+
+The ONLY contents of the file Typescript_Executable_OverridePath.txt MUST be the path to the 'tsgo' executable under 'node_modules/.bin/'
+
+Example contents:
+/data/code_checkouts/Github/Limelight__DummyProject_Install__Typescript_GO/node_modules/.bin/tsgo

@@ -84,7 +84,7 @@
   
   	<script type="text/javascript" src="static/js/libs/jquery-ui.min.js"></script>
   
-  <script type="text/javascript" src="static/js_generated_bundles/data_pages/lorikeetSpectrumViewPage_Root-bundle.js?x=${ cacheBustValue }"></script>
+  <script type="text/javascript" src="static/js_generated_bundles/data_pages/lorikeetSpectrumViewer_OwnPage_Root-bundle.js?x=${ cacheBustValue }"></script>
 
 </body>
 </html>

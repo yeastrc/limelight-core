@@ -5,7 +5,7 @@
 		 with correct task 'shadowJar' to create runnable jar -->
 
 	 <!-- Set program to run for Windows, else Non-Windows (Linux/Mac) -->
-	    <condition property="executableToRun_CreateWar" value="./gradlew.bat" else="./gradlew">
+	    <condition property="gradle_executableToRun_CreateWar" value="./gradlew.bat" else="./gradlew">
 	        <os family="windows"/>
 	    </condition>
 	
@@ -22,9 +22,9 @@
 
 		<ant dir="..${file.separator}limelight_submit_import" antfile="ant__create_runnable_jar_submit_import.xml" />
     	
-    	<!-- Build front end  -->
+    	<!-- Build front end Webpack using Gradle -->
     	
-		<exec executable="${executableToRun_CreateWar}" dir="front_end" failonerror="true" 
+		<exec executable="${gradle_executableToRun_CreateWar}" dir="front_end" failonerror="true" 
 		    resolveexecutable="true" >
 		    <!--
 		    resolveexecutable:
@@ -33,13 +33,13 @@
 		    On Unix systems, if you only want to allow execution of 
 		    commands in the user's path, set this to false. since Ant 1.6
 		    -->
-			<arg value="frontEndBuild" />
+			<arg value="frontEndBuild_ForProduction" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
     	
     	<!-- Build war file  -->
     	
-		<exec executable="${executableToRun_CreateWar}" dir="." failonerror="true" 
+		<exec executable="${gradle_executableToRun_CreateWar}" dir="." failonerror="true" 
 		    resolveexecutable="true" >
 		    <!--
 		    resolveexecutable:

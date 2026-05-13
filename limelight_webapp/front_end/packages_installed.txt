@@ -115,5 +115,12 @@ Removed Typescript GO.  Old version of Webstorm appears to have issues when it i
         Install Typescript GO  run with npx tsgo
             npm install @typescript/native-preview --save-dev # for the experimental preview
 
+=================
+
+2026-05-13
+
+    CSS Minimizer:
+
+npm install --save-dev  css-minimizer-webpack-plugin
 
 

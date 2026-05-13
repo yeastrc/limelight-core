@@ -5,7 +5,7 @@
  	    ../src/main/webapp/static/js_generated_bundles
 	    ../src/main/webapp/static/css_generated
 	    
-    Task executed from Gradle file in parent directory used to build WAR file for web app:  'frontEndBuild'
+    Task executed from Gradle file in parent directory used to build WAR file for web app:  'frontEndBuild_ForProduction'
  	
  	Default task:
 
@@ -44,7 +44,7 @@ buildscript {
 apply plugin: "com.moowork.node"
 
 
-apply plugin: 'eclipse'
+// apply plugin: 'eclipse'
 // apply plugin: 'idea'
 
 
@@ -56,6 +56,8 @@ repositories {
 dependencies {
 
 }
+
+
 
 //  !!! Execution starts at one of the tasks at the bottom of this file,
 
@@ -69,6 +71,279 @@ dependencies {
 defaultTasks 'frontEndBuild_ForDevelopment'  ///  Task run when no task specified when gradle run on command line
 
 
+// ─── Paths ────────────────────────────────────────────────────────────────────
+
+
+def javascript_OutputDir_Subdir = "js_generated_bundles"
+def css_OutputDir_Subdir = "css_generated"  //  WARNING:  Also set in webpack.config.js
+
+def javascript_OutputDir_Base    = file("${buildDir}/${javascript_OutputDir_Subdir}")
+def css_OutputDir = file("${buildDir}/${css_OutputDir_Subdir}")
+
+
+//  Typescript Executable: Get path to 'tsgo' to use instead of 'tsc'
+
+String typescript_Executable_WithPath = "node_modules/.bin/tsc"
+
+def typescript_Executable_WithPath_OverrideFile = project.file('Typescript_Executable_OverridePath.txt')
+
+if ( typescript_Executable_WithPath_OverrideFile.exists() ) {
+
+    println("typescript_Executable_WithPath_OverrideFile has value so setting typescript_Executable_WithPath")
+    typescript_Executable_WithPath = typescript_Executable_WithPath_OverrideFile.getText('UTF-8');
+}
+
+/*
+ * Esbuild:  Args in common.
+ *
+ * @param javascript_Output_Subdir specifies the subdir name the output will be written to
+ */
+ext.frontEndBuild__Esbuild__CommandLine_Args_Create__Common_Fcn = { javascript_Output_Subdir ->
+
+	println("frontEndBuild__Esbuild__CommandLine_Args_Create__Common_Fcn called.")
+
+    List<String> commandLine_Args = [
+     "./node_modules/.bin/esbuild",
+      "--bundle",
+      "--sourcemap",
+      "--entry-names=[name]-bundle",
+      "--outdir=${javascript_OutputDir_Base}/${javascript_Output_Subdir}"
+   ]
+
+   return commandLine_Args
+}
+
+
+/*
+ * Esbuild:  Args for Development builds.
+ *
+ * @param javascript_Output_Subdir specifies the subdir name the output will be written to
+ */
+ext.frontEndBuild__Esbuild__CommandLine_Args__Add_Development__Common_Fcn = { commandLine_Args ->
+
+	println("frontEndBuild__Esbuild__CommandLine_Args__Add_Development__Common_Fcn called.")
+
+//      commandLine_Args += [
+//      "./node_modules/.bin/esbuild",
+//       "--bundle",
+//       "--sourcemap",
+//       "--entry-names=[name]-bundle"
+//    ]
+
+   return commandLine_Args
+}
+
+ext.frontEndBuild__Esbuild__CommandLine_Args__Add_Production__Common_Fcn = { commandLine_Args ->
+
+	println("frontEndBuild__Esbuild__CommandLine_Args__Add_Development__Common_Fcn called.")
+
+     commandLine_Args += [
+     "--minify"
+   ]
+
+   return commandLine_Args
+}
+
+
+/////////////////
+
+//    Main Pages Header: for header_main_pages.jsp
+
+ext.frontEndBuild__Esbuild__CommandLine_Args_Main_Header_Pages__Add_EntryPoints__Fcn = { commandLine_Args ->
+
+	println("frontEndBuild__Esbuild__CommandLine_Args_Main_Header_Pages__Add_EntryPoints__Fcn called.")
+
+    commandLine_Args += [
+
+    	'./src/js/page_js/header_main_pages/header_main_pages__all_users/limelight__header_main_pages__all_users_Setup.ts',
+		'./src/js/page_js/header_main_pages/header_main_pages__logged_in_user/limelight__header_main_pages__logged_in_user_Setup.ts'
+    ]
+
+   return commandLine_Args
+}
+
+//   Main Pages Header: for header_main_pages.jsp:   Esbuild Command Line Arguments:
+
+def Esbuild_Main_Header_Pages__Output_Subdir = "header_main_pages"
+
+//          Production
+def Esbuild_Main_Header_Pages__Production__CommandlineArgs = frontEndBuild__Esbuild__CommandLine_Args_Main_Header_Pages__Add_EntryPoints__Fcn( frontEndBuild__Esbuild__CommandLine_Args__Add_Production__Common_Fcn( frontEndBuild__Esbuild__CommandLine_Args_Create__Common_Fcn( Esbuild_Main_Header_Pages__Output_Subdir ) ) )
+
+
+/////////////////
+
+//    User Pages
+
+ext.frontEndBuild__Esbuild__CommandLine_Args_User_Pages__Add_EntryPoints__Fcn = { commandLine_Args ->
+
+	println("frontEndBuild__Esbuild__CommandLine_Args_Admin_Pages__Add_EntryPoints__Fcn called.")
+
+    commandLine_Args += [
+
+		'./src/js/page_js/user_account_page_js/root_parts/userLoginPage_Root.ts',
+		'./src/js/page_js/user_account_page_js/root_parts/userCreateAccountPage_Root.ts',
+		'./src/js/page_js/user_account_page_js/root_parts/userInvitePage_Root.ts',
+		'./src/js/page_js/user_account_page_js/root_parts/userResetPasswordPage_Root.ts',
+		'./src/js/page_js/user_account_page_js/user_account_maint_page/userAccountManagementPage_Root.ts'
+    ]
+
+   return commandLine_Args
+}
+
+//   User Pages:   Esbuild Command Line Arguments:
+
+def Esbuild_User_Pages__Output_Subdir = "user_pages"
+
+//          Production
+def Esbuild_User_Pages__Production__CommandlineArgs = frontEndBuild__Esbuild__CommandLine_Args_User_Pages__Add_EntryPoints__Fcn( frontEndBuild__Esbuild__CommandLine_Args__Add_Production__Common_Fcn( frontEndBuild__Esbuild__CommandLine_Args_Create__Common_Fcn( Esbuild_User_Pages__Output_Subdir ) ) )
+
+
+/////////////////
+
+//    Admin Pages
+
+ext.frontEndBuild__Esbuild__CommandLine_Args_Admin_Pages__Add_EntryPoints__Fcn = { commandLine_Args ->
+
+	println("frontEndBuild__Esbuild__CommandLine_Args_Admin_Pages__Add_EntryPoints__Fcn called.")
+
+    commandLine_Args += [
+
+		//  Webapp Configure Page
+		'./src/js/page_js/webapp_admin_pages/webapp_config_page/configureLimelightForAdminPage_Root.ts',
+
+		//  Webapp Manage Users Page
+		'./src/js/page_js/webapp_admin_pages/webapp_manage_users_page/manageUsersForAdminPage_Root.ts',
+
+		//  Webapp Manage Importer / Pipeline Execution Page
+		'./src/js/page_js/webapp_admin_pages/webapp_manage_Importer_PipelineExecution_page/manage_ImporterPipelineExecution_ForAdminPage_Root.ts',
+
+		//  Webapp Manage Cached Data Page
+		'./src/js/page_js/webapp_admin_pages/webapp_manage_cached_data_page/js/manageCachedDataForAdminPage_Root.ts',
+
+		//  Webapp Manage Terms of Service Page
+		'./src/js/page_js/webapp_admin_pages/webapp_manage_terms_of_service_page/manageTermsOfServicePage_Root.ts'
+
+    ]
+
+   return commandLine_Args
+}
+
+//   Admin Pages:   Esbuild Command Line Arguments:
+
+def Esbuild_Admin_Pages__Output_Subdir = "webapp_admin"
+
+//          Production
+def Esbuild_Admin_Pages__Production__CommandlineArgs = frontEndBuild__Esbuild__CommandLine_Args_Admin_Pages__Add_EntryPoints__Fcn( frontEndBuild__Esbuild__CommandLine_Args__Add_Production__Common_Fcn( frontEndBuild__Esbuild__CommandLine_Args_Create__Common_Fcn( Esbuild_Admin_Pages__Output_Subdir ) ) )
+
+
+/////////////////
+
+//    Data Pages
+
+ext.frontEndBuild__Esbuild__CommandLine_Args_DataPages__Add_DataPage_EntryPoints__Fcn = { commandLine_Args ->
+
+	println("frontEndBuild__Esbuild__CommandLine_Args_DataPages__Add_DataPage_EntryPoints__Fcn called.")
+
+    commandLine_Args += [
+
+        //   Project List page
+		'./src/js/page_js/data_pages/other_data_pages/project_list_page/projectsListPage.ts',
+
+		//  Project Page:
+		//   Project page for each type of user and whether or not the project is locked
+		//   Applies to both
+		'./src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_PublicUser.ts',
+		//   Project is NOT Locked
+		'./src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ResearcherUser.ts',
+		'./src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectOwnerUser.ts',
+		//   Project is Locked
+		'./src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectLocked_ResearcherUser.ts',
+		'./src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectLocked_ProjectOwnerUser.ts',
+
+		//  Project: Organize Searches Page:
+		'./src/js/page_js/data_pages/other_data_pages/project_organize_searches_page/project_OrganizeSearches_ROOT.ts',
+
+		//  Lorikeet Own Page
+		'./src/js/page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_OwnPage_Root.ts',
+
+        //  ProjectSearchId Driven pages
+ 		"./src/js/page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptideViewPage_RootLaunch_LoggedInUsers.ts",
+ 		"./src/js/page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptideViewPage_RootLaunch_PublicUser.ts",
+ 		"./src/js/page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_root/proteinViewPage_RootLaunch_LoggedInUsers.ts",
+ 		"./src/js/page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_root/proteinViewPage_RootLaunch_PublicUser.ts",
+ 		"./src/js/page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_RootLaunch_LoggedInUsers.ts",
+ 		"./src/js/page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewPage_RootLaunch_PublicUser.ts",
+ 		"./src/js/page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_root/qcViewPage_RootLaunch_LoggedInUsers.ts",
+ 		"./src/js/page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_root/qcViewPage_RootLaunch_PublicUser.ts",
+
+ 		"./src/js/page_js/data_pages/project_search_ids_driven_pages/scan_file_to_searches_page/main_page_code/scanFileToSearchesViewPage_RootLaunch_LoggedInUsers.ts",
+ 		"./src/js/page_js/data_pages/project_search_ids_driven_pages/scan_file_to_searches_page/main_page_code/scanFileToSearchesViewPage_RootLaunch_PublicUser.ts",
+
+		//  Feature Detection View Data pages
+		"./src/js/page_js/data_pages/feature_detection_driven_pages/feature_detection_view_page/feature_detection_view_page_root/featureDetection_ViewPage_RootLaunch_LoggedInUsers.ts",
+		"./src/js/page_js/data_pages/feature_detection_driven_pages/feature_detection_view_page/feature_detection_view_page_root/featureDetection_ViewPage_RootLaunch_PublicUser.ts",
+
+		//  Scan File Data pages
+		'./src/js/page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserViewPage_RootLaunch_LoggedInUsers.ts',
+		'./src/js/page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserViewPage_RootLaunch_PublicUser.ts',
+
+
+        //  Experiment Data pages
+ 		"./src/js/page_js/data_pages/experiment_driven_data_pages/peptide_exp__page/peptide_exp_page_root/js/peptideExperimentPage_RootLaunch_LoggedInUsers.ts",
+ 		"./src/js/page_js/data_pages/experiment_driven_data_pages/peptide_exp__page/peptide_exp_page_root/js/peptideExperimentPage_RootLaunch_PublicUser.ts",
+ 		"./src/js/page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_RootLaunch_LoggedInUsers.ts",
+ 		"./src/js/page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_RootLaunch_PublicUser.ts",
+ 		"./src/js/page_js/data_pages/experiment_driven_data_pages/mod_exp__page/mod_exp_page_root/js/modExperimentPage_RootLaunch_LoggedInUsers.ts",
+ 		"./src/js/page_js/data_pages/experiment_driven_data_pages/mod_exp__page/mod_exp_page_root/js/modExperimentPage_RootLaunch_PublicUser.ts"
+   ]
+
+   return commandLine_Args
+}
+
+//   Data Pages:   Esbuild Command Line Arguments:
+
+def Esbuild_Data_Pages__Output_Subdir = "data_pages"
+
+//          Development
+def Esbuild_DataPages__Development__CommandlineArgs = frontEndBuild__Esbuild__CommandLine_Args_DataPages__Add_DataPage_EntryPoints__Fcn( frontEndBuild__Esbuild__CommandLine_Args__Add_Development__Common_Fcn( frontEndBuild__Esbuild__CommandLine_Args_Create__Common_Fcn( Esbuild_Data_Pages__Output_Subdir ) ) )
+
+//          Production
+def Esbuild_DataPages__Production__CommandlineArgs = frontEndBuild__Esbuild__CommandLine_Args_DataPages__Add_DataPage_EntryPoints__Fcn( frontEndBuild__Esbuild__CommandLine_Args__Add_Production__Common_Fcn( frontEndBuild__Esbuild__CommandLine_Args_Create__Common_Fcn( Esbuild_Data_Pages__Output_Subdir ) ) )
+
+
+////////////////
+
+
+
+
+
+
+/////////////
+
+
+ext.frontEndBuild_Main_Before_MainBuild_Fcn = { () ->
+
+	println("frontEndBuild_Main_Before_MainBuild_Fcn called.")
+
+   def tasks = [
+     'delete_outputDirs',
+   ]
+
+   return tasks;
+}
+
+ext.frontEndBuild_Main_Add_After_MainBuild_Fcn = { tasksInput ->
+
+	println("frontEndBuild_Main_Add_After_MainBuild_Fcn called.")
+
+   def tasksOutput = tasksInput
+
+   tasksOutput += 'copyFrontEndJS'
+   tasksOutput += 'copyFrontEndCSS'
+
+   return tasksOutput
+}
+
 
 /*
  * Clean up, remove output directories.  Removes some that are not deleted in task 'delete_outputDirs'
@@ -78,10 +353,11 @@ defaultTasks 'frontEndBuild_ForDevelopment'  ///  Task run when no task specifie
  */
 task clean(type: Delete) {
   doFirst {	
-  	println("clean::doFirst called.  Deleting build output directories")
+  	   println("clean::doFirst called.  Deleting build output directories including: ${javascript_OutputDir_Base} ")
 
 	   delete 'handlebars_templates_precompiled'  //  Delete since used to have and delete to ensure cleanup
 	   delete 'webpack_build_output'
+	   delete "${javascript_OutputDir_Base}"
 	   delete '../src/main/webapp/static/js_generated_bundles'
 	   delete '../src/main/webapp/static/css_generated'
    }
@@ -93,14 +369,143 @@ task clean(type: Delete) {
  */
 task delete_outputDirs(type: Delete) {
   doFirst {
-  println("delete_outputDirs::doFirst called.  Deleting build output directories")
+       println("delete_outputDirs::doFirst called.  Deleting build output directories including: ${javascript_OutputDir_Base} ")
 
        delete 'handlebars_templates_precompiled'  //  Delete since used to have and delete to ensure cleanup
 	   delete 'webpack_build_output'
+	   delete "${javascript_OutputDir_Base}"
+	   delete 'esbuild_TestBuild'
 	   delete '../src/main/webapp/static/js_generated_bundles'
 	   delete '../src/main/webapp/static/css_generated'
    }
 }
+
+
+
+
+// Typescript validate
+
+def Typescript_Validate__NoEmit___CommandlineArgs = [ typescript_Executable_WithPath, "--noEmit" ]
+
+/*
+	Run Typescript to validate Typescript
+*/
+task run_Typescript_Validate__NoEmit(type:Exec) {
+
+    commandLine Typescript_Validate__NoEmit___CommandlineArgs
+
+    doFirst {
+        println 'doFirst:  task run_Typescript_Validate__NoEmit...  command line: ' + Typescript_Validate__NoEmit___CommandlineArgs
+    }
+}
+
+
+// ─── esbuild ──────────────────────────────────────────────────────────────────
+//
+// Build all pages:
+//   ./gradlew buildJs
+//
+// Build one page (both of its entry points):
+//   ./gradlew buildJs -PsingleEntry=home
+//   ./gradlew buildJs -PsingleEntry=contact
+//
+
+/*
+	Run Esbuild in Mode Production to include React Library in Production Mode.  JS always  Minified due to command line
+
+	Run Esbuild to build front end JS/TS
+
+	Change so dev runs  'npm install' separately since it takes so long
+*/
+task run_Esbuild_Main_Header_Pages__Production(type:Exec) {
+
+    commandLine Esbuild_Main_Header_Pages__Production__CommandlineArgs
+
+    doFirst {
+        println 'doFirst:  task run_Esbuild_Main_Header_Pages__Production...  command line: ' + Esbuild_Main_Header_Pages__Production__CommandlineArgs
+    }
+}
+
+
+/*
+	Run Esbuild in Mode Production to include React Library in Production Mode.  JS always  Minified due to command line
+
+	Run Esbuild to build front end JS/TS
+
+	Change so dev runs  'npm install' separately since it takes so long
+*/
+task run_Esbuild_User_Pages__Production(type:Exec) {
+
+    commandLine Esbuild_User_Pages__Production__CommandlineArgs
+
+    doFirst {
+        println 'doFirst:  task run_Esbuild_User_Pages__Production...  command line: ' + Esbuild_User_Pages__Production__CommandlineArgs
+    }
+}
+
+
+/*
+	Run Esbuild in Mode Production to include React Library in Production Mode.  JS always  Minified due to command line
+
+	Run Esbuild to build front end JS/TS
+
+	Change so dev runs  'npm install' separately since it takes so long
+*/
+task run_Esbuild_Admin_Pages__Production(type:Exec) {
+
+    commandLine Esbuild_Admin_Pages__Production__CommandlineArgs
+
+    doFirst {
+        println 'doFirst:  task run_Esbuild_Admin_Pages__Production...  command line: ' + Esbuild_Admin_Pages__Production__CommandlineArgs
+    }
+}
+
+/*
+	Run Esbuild in Mode Development to include React Library in Development Mode.  JS always NEVER Minified due to command line
+
+	Run Esbuild to build front end JS/TS
+
+	Change so dev runs  'npm install' separately since it takes so long
+*/
+task run_Esbuild_DataPages__Development(type:Exec) {
+
+    commandLine Esbuild_DataPages__Development__CommandlineArgs
+
+    doFirst {
+        println 'doFirst:  task run_Esbuild_DataPages__Development...  command line: ' + Esbuild_DataPages__Development__CommandlineArgs
+
+//         if ( project.hasProperty('exec_only') ) {
+//
+//             println("doFirst:  task run_Esbuild_DataPages: true: 'project.hasProperty('exec_only')': value: " + project.getProperty('exec_only') )
+//         }
+//
+//         if ( project.hasProperty('AAAA') ) {
+//
+//             println("doFirst:  task run_Esbuild_DataPages: true: 'project.hasProperty('AAAA')': value: " + project.getProperty('AAAA') )
+//         }
+
+    // ERROR: Could not get unknown property 'args' for root project
+    //     println("project.args: value: " + project.args )
+
+    }
+}
+
+/*
+	Run Esbuild in Mode Production to include React Library in Production Mode.  JS always  Minified due to command line
+
+	Run Esbuild to build front end JS/TS
+
+	Change so dev runs  'npm install' separately since it takes so long
+*/
+task run_Esbuild_DataPages__Production(type:Exec) {
+
+    commandLine Esbuild_DataPages__Production__CommandlineArgs
+
+    doFirst {
+        println 'doFirst:  task run_Esbuild_DataPages__Production...  command line: ' + Esbuild_DataPages__Production__CommandlineArgs
+    }
+}
+
 
 
 /*
@@ -149,15 +554,14 @@ task runWebpack_ProductionMode(type: NodeTask ) { //  , dependsOn: 'npmInstall')
 	does a copy into where the Gradle WAR processing expects it
 */
 task copyFrontEndJS(type: Sync) {
-    from "webpack_build_output/js_generated_bundles"
+    from "${javascript_OutputDir_Base}"
     into "../src/main/webapp/static/js_generated_bundles"
 }
 
 task copyFrontEndCSS(type: Sync) {
-    from "webpack_build_output/css_generated"
+    from "${css_OutputDir}"
     into "../src/main/webapp/static/css_generated"
 }
-
 
 
 // task copyFrontEnd(type: Sync) { // , dependsOn: 'webpack') {
@@ -171,42 +575,27 @@ task copyFrontEndCSS(type: Sync) {
 // clean.delete << file('src/main/webapp/dist')
 
 
-
-ext.frontEndBuild_Main_Before_WebPack_Fcn = { fakeParam ->
-
-	println("frontEndBuild_Main_Before_WebPack_Fcn called.")
-
-   def tasks = [ 
-     'delete_outputDirs', 
-   ]
-   
-   return tasks;
-}
-
-ext.frontEndBuild_Main_Add_After_WebPack_Fcn = { tasksInput ->
-
-	println("frontEndBuild_Main_Add_After_WebPack_Fcn called.")
-
-   def tasksOutput = tasksInput
-
-   tasksOutput += 'copyFrontEndJS'
-   tasksOutput += 'copyFrontEndCSS'
-   
-   return tasksOutput
-}
-
-
 /*
  * !!!  Start Exec Here when run ANT script ant_build_War_CopyToTomcat.xml in parent dir to build WAR file
  */
-task frontEndBuild(type: GradleBuild) {
-	println("frontEndBuild_ForDevelopment. main start" )
-	
-	def tasksTemp = frontEndBuild_Main_Before_WebPack_Fcn( 1 )
-	
+task frontEndBuild_ForProduction(type: GradleBuild) {
+
+	println("frontEndBuild_ForProduction: ForProduction. main start" )
+
+	def tasksTemp = frontEndBuild_Main_Before_MainBuild_Fcn()
+
+    //  Validate Typescript
+    tasksTemp += 'run_Typescript_Validate__NoEmit'
+
+    tasksTemp += 'run_Esbuild_Main_Header_Pages__Production'
+    tasksTemp += 'run_Esbuild_Admin_Pages__Production'
+    tasksTemp += 'run_Esbuild_User_Pages__Production'
+
+	tasksTemp += 'run_Esbuild_DataPages__Production'
+
 	tasksTemp += 'runWebpack_ProductionMode'
 	
-	tasksTemp = frontEndBuild_Main_Add_After_WebPack_Fcn( tasksTemp )
+	tasksTemp = frontEndBuild_Main_Add_After_MainBuild_Fcn( tasksTemp )
 	
 	tasks = tasksTemp
 }
@@ -216,15 +605,27 @@ task frontEndBuild(type: GradleBuild) {
 /*
  * !!!  Start Exec Here when run ANT script ant_buildFrontEnd_CopyToTomcat.xml to build only front end and copy to Tomcat
  */
-task frontEndBuild_ForDevelopment(type: GradleBuild) { 
+task frontEndBuild_ForDevelopment(type: GradleBuild) {
 
 	println("frontEndBuild_ForDevelopment. main start" )
 
-	def tasksTemp = frontEndBuild_Main_Before_WebPack_Fcn( 1 )
-	
+	def tasksTemp = frontEndBuild_Main_Before_MainBuild_Fcn()
+
+    //  Validate Typescript
+    tasksTemp += 'run_Typescript_Validate__NoEmit'
+
+    tasksTemp += 'run_Esbuild_Main_Header_Pages__Production'
+    tasksTemp += 'run_Esbuild_Admin_Pages__Production'
+    tasksTemp += 'run_Esbuild_User_Pages__Production'
+
+	tasksTemp += 'run_Esbuild_DataPages__Development'
+
 	tasksTemp += 'runWebpack_DevelopmentMode'
-	
-	tasksTemp = frontEndBuild_Main_Add_After_WebPack_Fcn( tasksTemp )
-	
+
+	tasksTemp = frontEndBuild_Main_Add_After_MainBuild_Fcn( tasksTemp )
+
+	println("frontEndBuild_ForDevelopment. tasksTemp:" )
+	println( tasksTemp )
+
 	tasks = tasksTemp
 }
