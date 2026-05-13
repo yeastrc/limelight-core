@@ -54,7 +54,27 @@ public class GenerateRandomStringForCode implements GenerateRandomStringForCodeI
 
 			// Drop first 6 characters and last character
 			String encodedLongExtract = encodedLong.substring( 6, encodedLong.length() - 1 );
-			randomStringSB.append( encodedLongExtract );
+
+			char[] encodedLongArray = encodedLongExtract.toCharArray();
+			
+			for ( char entry : encodedLongArray ) {
+
+				if ( entry == 'a' || entry == 'e' || entry == 'i' || entry == 'o' || entry == 'u' || entry == 'y' ) {
+					// Skip all vowels so cannot spell words
+					continue;
+				}
+
+				if ( entry == 'l' || entry == 'I' ) {
+					//  Not take lower case l and upper case I since in many fonts they look too similar
+					continue;
+				}
+
+				randomStringSB.append( entry );
+
+				if ( randomStringSB.length() >= outputKeyLength ) {
+					break;
+				}
+			}
 			
 			if ( randomStringSB.length() >= outputKeyLength ) {
 				break;
