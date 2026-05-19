@@ -9,7 +9,7 @@
     "@babel/core": "^7.27.3",
     "@babel/preset-env": "^7.27.2",
     "@babel/preset-react": "^7.27.1",
-    "@types/jquery": "^3.3.31",
+    "@types/jquery": "^3.5.34",
     "@types/plotly.js-dist-min": "^2.3.4",
     "@types/react-dom": "^19.2.3",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",

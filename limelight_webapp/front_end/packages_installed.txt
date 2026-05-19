@@ -123,4 +123,11 @@ Removed Typescript GO.  Old version of Webstorm appears to have issues when it i
 
 npm install --save-dev  css-minimizer-webpack-plugin
 
+=================
+
+2026-05-19
+
+    Support latest tsgo:
+
+npm install --save-dev @types/jquery
 
