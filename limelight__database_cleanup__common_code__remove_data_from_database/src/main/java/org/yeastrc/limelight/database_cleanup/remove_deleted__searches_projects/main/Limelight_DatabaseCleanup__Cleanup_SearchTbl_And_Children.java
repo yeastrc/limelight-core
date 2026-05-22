@@ -40,15 +40,32 @@ public class Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children {
 	}
 	
 	/**
+	 * 
+	 * Result of call method 'cleanup_Search_AndChildren' in class Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children
+	 *
+	 */
+	public static class Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children__Result {
+		
+		boolean atLeast_One_Search_Deleted = false;  // default false
+
+		public boolean isAtLeast_One_Search_Deleted() {
+			return atLeast_One_Search_Deleted;
+		}
+	}
+	
+	/**
 	 * @throws Exception
 	 */
-	public void cleanup_Search_AndChildren( 
+	public Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children__Result cleanup_Search_AndChildren( 
 			Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum callFrom,
 			Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum delete_Or_ListIdsToDelete ) throws Exception {
+		
+		
+		Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children__Result methodResult = new Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children__Result();
 
 		if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
 			
-			return;
+			return methodResult;
 		}
 
 		if ( delete_Or_ListIdsToDelete == Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum.DELETE_RECORDS ) {
@@ -97,7 +114,7 @@ public class Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children {
 
 			////   EXIT HERE
 			
-			return;  // EARLY EXIT     Only listing ids to delete
+			return methodResult;  // EARLY EXIT     Only listing ids to delete
 		}
 		
 		
@@ -113,7 +130,7 @@ public class Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children {
 
 			if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
 				
-				return;
+				return methodResult;
 			}
 				
 			if ( callFrom == Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum.STANDALONE_PROGRAM ) {
@@ -135,7 +152,7 @@ public class Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children {
 
 				if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
 					
-					return;
+					return methodResult;
 				}
 					
 				if ( callFrom == Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum.STANDALONE_PROGRAM ) {
@@ -146,6 +163,8 @@ public class Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children {
 				} else {
 					log.info( "Database Cleanup: Starting: Removing Database records for deleted Search: " + searchId );
 				}
+				
+				methodResult.atLeast_One_Search_Deleted = true;  //  About to delete a search so set flag true
 
 				Limelight_DatabaseCleanup__Delete_Single_Search_And_Children.getInstance().delete_Single_Search( searchId, callFrom );
 
@@ -172,6 +191,8 @@ public class Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children {
 			System.out.println( "**  END:  Deleting from table 'search_tbl'");
 			System.out.println( "***************************************");
 		}
+		
+		return methodResult;
 
 	}
 	

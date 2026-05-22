@@ -3,6 +3,7 @@ package org.yeastrc.limelight.database_cleanup.main_entry_point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum;
+import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__Cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved_Enum;
 import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum;
 import org.yeastrc.limelight.database_cleanup.database_version_info_retrieval_compare.Limelight_DatabaseCleanup__Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode;
 import org.yeastrc.limelight.database_cleanup.database_version_info_retrieval_compare.Limelight_DatabaseCleanup__Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.LimelightDatabaseSchemaVersion_Comparison_Result;
@@ -11,6 +12,7 @@ import org.yeastrc.limelight.database_cleanup.remove_deleted__file_import_tracki
 import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.main.Limelight_DatabaseCleanup__Cleanup_ProjectSearchTbl_And_Children;
 import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.main.Limelight_DatabaseCleanup__Cleanup_ProjectTbl;
 import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.main.Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children;
+import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.main.Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children.Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children__Result;
 import org.yeastrc.limelight.database_cleanup.remove_feature_detection.Limelight_DatabaseCleanup__Cleanup_FeatureDetectionRoot_Root;
 import org.yeastrc.limelight.database_cleanup.remove_gold_standard.Limelight_DatabaseCleanup__Cleanup_GoldStandardRoot_Root;
 
@@ -44,7 +46,8 @@ public class Limelight_DatabaseCleanup__Main_EntryPoint {
 	 */
 	public void limelight_DatabaseCleanup__Main_EntryPoint(
 			Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum callFrom,
-			Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum delete_Or_ListIdsToDelete ) throws Exception {
+			Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum delete_Or_ListIdsToDelete,
+			Limelight_DatabaseCleanup__Cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved_Enum cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved ) throws Exception {
 		
 		if ( callFrom == null || delete_Or_ListIdsToDelete == null ) {
 			throw new IllegalArgumentException( "( callFrom == null || delete_Or_ListIdsToDelete == null )" );
@@ -109,12 +112,18 @@ public class Limelight_DatabaseCleanup__Main_EntryPoint {
 		
 		Limelight_DatabaseCleanup__Cleanup_ProjectSearchTbl_And_Children.getInstance().cleanup_ProjectSearch_AndChildren( callFrom, delete_Or_ListIdsToDelete );
 		
+		Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children__Result cleanup_SearchTbl_And_Children__Result = 
+				Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children.getInstance().cleanup_Search_AndChildren( callFrom, delete_Or_ListIdsToDelete );
 		
-		Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children.getInstance().cleanup_Search_AndChildren( callFrom, delete_Or_ListIdsToDelete );
-
-		// Clean up 'Common' last after remove searches
-		Limelight_DatabaseCleanup__Cleanup__Data_SharedAcross_Searches_ThatIs_Unused.getInstance().cleanup_Shared_Unused(callFrom, delete_Or_ListIdsToDelete);
-		
+		if ( cleanup_SearchTbl_And_Children__Result.isAtLeast_One_Search_Deleted()
+				|| cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved == Limelight_DatabaseCleanup__Cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved_Enum.YES
+				|| delete_Or_ListIdsToDelete == Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum.LIST_RECORD_IDS_TO_DELETE ) {
+			
+			//  Have deleted searches OR Force Cleanup every so often OR delete_Or_ListIdsToDelete == Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum.LIST_RECORD_IDS_TO_DELETE 
+			
+			// Clean up 'Common' last after remove searches
+			Limelight_DatabaseCleanup__Cleanup__Data_SharedAcross_Searches_ThatIs_Unused.getInstance().cleanup_Shared_Unused(callFrom, delete_Or_ListIdsToDelete);
+		}
 
 
 		{

@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.database_cleanup.common.database_connection.Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode;
 import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum;
+import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__Cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved_Enum;
 import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum;
 import org.yeastrc.limelight.database_cleanup.main_entry_point.Limelight_DatabaseCleanup__Main_EntryPoint;
 import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection;
@@ -58,6 +59,19 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 
 	private static final Logger log = LoggerFactory.getLogger( Database_PopulateNewFields_Cleanup_RemoveData_Thread.class );
 	
+	
+
+	private static final long TIME_BETWEEN_RUN__Cleanup__Data_SharedAcross_Searches_ThatIs_Unused__IN_DAYS = 36; //  days
+	
+	private static final long TIME_BETWEEN_RUN__Cleanup__Data_SharedAcross_Searches_ThatIs_Unused__IN_MILLISECONDS =
+			
+			TIME_BETWEEN_RUN__Cleanup__Data_SharedAcross_Searches_ThatIs_Unused__IN_DAYS
+			* 24			//  24 hours in day
+			* 60			//  60 minutes in hour
+			* 60			//  60 seconds in minute
+			* 1000; //  milliseconds in second
+			
+	
 
 	//  Static Properties
 
@@ -81,6 +95,8 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 	
 	private boolean getNewInstance_FirstCall;
 
+	private long time_OfNext_RunOf__Cleanup__Data_SharedAcross_Searches_ThatIs_Unused__IN_MILLISECONDS = 0;
+	
 	/**
 	 * Cleanup when thread is dead
 	 */
@@ -315,12 +331,39 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 							lastTime_ProcessingLoopRan_Milliseconds = System.currentTimeMillis();
 
 
+							/**
+							 * flag for below
+							 */
+							Limelight_DatabaseCleanup__Cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved_Enum cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved = 
+									Limelight_DatabaseCleanup__Cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved_Enum.NO;
+							
+							{
+								//  Enough time has passed since last force clean common tables so force clean now
+								
+								long currentTimeMillis = System.currentTimeMillis();
+								
+								if ( currentTimeMillis > time_OfNext_RunOf__Cleanup__Data_SharedAcross_Searches_ThatIs_Unused__IN_MILLISECONDS ) {
+									
+									//  Past elapsed time (or initial zero) so force Common Cleanup
+									cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved =
+											Limelight_DatabaseCleanup__Cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved_Enum.YES;
+									
+									//  Set time check to next value
+									time_OfNext_RunOf__Cleanup__Data_SharedAcross_Searches_ThatIs_Unused__IN_MILLISECONDS = 
+											currentTimeMillis 
+											+ TIME_BETWEEN_RUN__Cleanup__Data_SharedAcross_Searches_ThatIs_Unused__IN_MILLISECONDS;
+								}
+								
+							}
+							
+
 							log.warn( "INFO:: STARTING: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  When Cleanup is completed it will wait before it runs again" );
 
 							Limelight_DatabaseCleanup__Main_EntryPoint.getSingletonInstance()
 							.limelight_DatabaseCleanup__Main_EntryPoint(
 									Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum.LIMELIGHT__RUN_IMPORTER_PROGRAM,
-									Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum.DELETE_RECORDS
+									Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum.DELETE_RECORDS,
+									cleanup_CommonTablesAcrossSearches_Even_WhenNoSearchesRemoved
 									);
 
 							try {
