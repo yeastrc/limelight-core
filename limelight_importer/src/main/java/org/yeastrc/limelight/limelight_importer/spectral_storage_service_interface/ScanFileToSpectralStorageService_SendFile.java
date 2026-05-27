@@ -169,6 +169,14 @@ public class ScanFileToSpectralStorageService_SendFile {
 //								log.warn( "  ... addnl info: Limelight Importer configured to send Scan file path to Spectral Storage Service but for this specific scan file, the Scan file path was not allowed.  Scan File with path (Java Get Canonical file with Path): "
 //										+ scanFileWithPath.getCanonicalPath() );
 //								log.warn( "  ... addnl info: call sendScanFilenameWithPathToSpectralStorageService(...) returned statusSuccess False" );
+								
+							} else if ( uploadScanFile_AddScanFileFromFilenameAndPath_Response.isUploadScanFileWithPath_FileNotFound() ) {
+
+								//  Already reported in called method
+//								log.warn( "Send of Scan file with path to Spectral Storage Service rejected.  Will next send scan file contents" );
+//								log.warn( "  ... addnl info: Proxl Importer configured to send Scan file path to Spectral Storage Service but for this specific scan file, the Scan file path was not allowed.  Scan File with path (Java Get Canonical file with Path): "
+//										+ scanFileWithPath.getCanonicalPath() );
+//								log.warn( "  ... addnl info: call sendScanFilenameWithPathToSpectralStorageService(...) returned statusSuccess False" );
 
 							} else {
 								String msg = "Send of Scan file with path to Spectral Storage Service Failed.";
@@ -505,6 +513,15 @@ public class ScanFileToSpectralStorageService_SendFile {
 						log.warn( "Send of Scan file with path to Spectral Storage Service rejected.  Will next send scan file contents" );
 						log.warn( "  ... addnl info: Limelight Importer configured to send Scan file path to Spectral Storage Service but for this specific scan file, the Scan file path was not allowed.  Scan File with path (Java Get Canonical file with Path): "
 								+ scanFileWithPath.getCanonicalPath() );
+						log.warn( "  ... addnl info: call sendScanFilenameWithPathToSpectralStorageService(...) returned statusSuccess False" );
+
+						return response; // EARLY EXIT
+
+					} else if ( response.isUploadScanFileWithPath_FileNotFound() ) {
+						String msg = "Send Scan File to Spectral Storage Service. Send Filename And Path. In sendScanFilenameWithPathToSpectralStorageService(): call_UploadScanFile_UploadScanFile_Service return UploadScanFileWithPath_FileNotFound true.  UploadScanFileTempKey: " 
+								+ uploadScanFile_Init_Response.getUploadScanFileTempKey()
+								+ ", Scan File: " + scanFileWithPath.getAbsolutePath();
+						log.warn( msg );
 						log.warn( "  ... addnl info: call sendScanFilenameWithPathToSpectralStorageService(...) returned statusSuccess False" );
 
 						return response; // EARLY EXIT
