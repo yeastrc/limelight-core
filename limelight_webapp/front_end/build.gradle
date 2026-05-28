@@ -551,6 +551,26 @@ task runWebpack_ProductionMode(type: NodeTask ) { //  , dependsOn: 'npmInstall')
 }
 
 /*
+ * Gzip all '.js' files under build/js_generated_bundles, keeping originals.
+ * Each output file is the original filename with '.gz' appended.
+ */
+task gzipJsBundles {
+    doLast {
+        println("gzipJsBundles: gzipping .js files under ${javascript_OutputDir_Base}")
+        fileTree("${javascript_OutputDir_Base}").include('**/*.js').each { File f ->
+            def gzFile = new File(f.path + '.gz')
+            gzFile.withOutputStream { os ->
+                def gzos = new java.util.zip.GZIPOutputStream(os)
+                gzos.write(f.bytes)
+                gzos.finish()
+            }
+            println("gzipJsBundles: created ${gzFile.name}")
+        }
+    }
+}
+
+
+/*
 	does a copy into where the Gradle WAR processing expects it
 */
 task copyFrontEndJS(type: Sync) {
@@ -594,7 +614,9 @@ task frontEndBuild_ForProduction(type: GradleBuild) {
 	tasksTemp += 'run_Esbuild_DataPages__Production'
 
 	tasksTemp += 'runWebpack_ProductionMode'
-	
+
+	tasksTemp += 'gzipJsBundles'
+
 	tasksTemp = frontEndBuild_Main_Add_After_MainBuild_Fcn( tasksTemp )
 	
 	tasks = tasksTemp
