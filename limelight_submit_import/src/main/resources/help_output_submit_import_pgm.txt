@@ -88,7 +88,13 @@ Submit Import Help:
   
 --auth-test
 
-  ---
+  -------------
+  
+  Test run only.  No connection to server is made.  Nothing submitted.  Useful for 'dry run' testing.
+
+--test-run-only-nothing-submitted-no-server-connection-made
+
+  -------------
   For Debugging
   
 --list-command-line-params : List the command line parameters passed to the Java program, one per line

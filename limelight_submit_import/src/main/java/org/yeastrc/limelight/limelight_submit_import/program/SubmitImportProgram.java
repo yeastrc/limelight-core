@@ -38,6 +38,11 @@ public class SubmitImportProgram {
 
 	private static final Logger log = LoggerFactory.getLogger( SubmitImportProgram.class );
 
+	/**
+	 * Use VERY sparingly since making early exit
+	 */
+	private static final int PROGRAM_EXIT_CODE_SUCCESS_EARLY_EXIT = 0;
+
 	private static final int PROGRAM_EXIT_CODE_INVALID_CONFIGURATION = 1;
 
 	private static final int PROGRAM_EXIT_CODE_INVALID_INPUT = 2;
@@ -64,7 +69,10 @@ public class SubmitImportProgram {
 	public static final String AUTH_TEST_PARAM_STRING = "auth-test";
 	public static final String AUTH_TEST_PARAM_STRING_WITH_LEADING_DASHES =
 			"--" + AUTH_TEST_PARAM_STRING;
-		
+	
+	public static final String TEST_ONLY__PARAM_STRING = "test-run-only-nothing-submitted-no-server-connection-made";
+	public static final String TEST_ONLY__PARAM_STRING_WITH_LEADING_DASHES =
+			"--" + TEST_ONLY__PARAM_STRING;
 	/**
 	 * @param args
 	 * @throws Exception
@@ -177,6 +185,8 @@ public class SubmitImportProgram {
 			
 			CmdLineParser.Option authTestCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', AUTH_TEST_PARAM_STRING );
 			
+			CmdLineParser.Option testRunOnly__CommandLineOpt = cmdLineParser.addBooleanOption( 'Z', TEST_ONLY__PARAM_STRING );
+						
 			//  User Submit Import Program Key - Generated in Web app
 			CmdLineParser.Option userSubmitImportProgramKeyCommandLineOpt = 
 					cmdLineParser.addStringOption( 'Z', USER_SUBMIT_IMPORT_KEY_PARAM_STRING );
@@ -247,6 +257,14 @@ public class SubmitImportProgram {
 				Boolean authTestCommandLineOptChosenLocal = (Boolean) cmdLineParser.getOptionValue( authTestCommandLineOpt, Boolean.FALSE);
 				if ( authTestCommandLineOptChosenLocal != null && authTestCommandLineOptChosenLocal.booleanValue() ) {
 					authTestCommandLineOptChosen = true;
+				}
+			}
+
+			boolean testRunOnly__CommandLineOpt_Chosen = false;
+			{
+				Boolean testRunOnly__CommandLineOpt_Chosen_Local = (Boolean) cmdLineParser.getOptionValue( testRunOnly__CommandLineOpt, Boolean.FALSE);
+				if ( testRunOnly__CommandLineOpt_Chosen_Local != null && testRunOnly__CommandLineOpt_Chosen_Local.booleanValue() ) {
+					testRunOnly__CommandLineOpt_Chosen = true;
 				}
 			}
 			
@@ -687,6 +705,26 @@ public class SubmitImportProgram {
 				}
 
 				searchPath = searchPath_FromCommandLine;
+			}
+			
+			
+			if ( testRunOnly__CommandLineOpt_Chosen ) {
+				
+				String msg =  "NO SUBMIT SENT.  command line parameters include '"
+						+ TEST_ONLY__PARAM_STRING_WITH_LEADING_DASHES
+						+ "' ";
+				
+				String asterisks = "******************************";
+				
+				System.out.println(  );
+				System.out.println( asterisks );
+				System.out.println(  );
+				System.out.println( msg );
+				System.out.println(  );
+				System.out.println( asterisks );
+				System.out.println(  );
+				
+				System.exit( PROGRAM_EXIT_CODE_SUCCESS_EARLY_EXIT );  //  EARLY EXIT
 			}
 			
 			SubmitResult submitResult = null;
