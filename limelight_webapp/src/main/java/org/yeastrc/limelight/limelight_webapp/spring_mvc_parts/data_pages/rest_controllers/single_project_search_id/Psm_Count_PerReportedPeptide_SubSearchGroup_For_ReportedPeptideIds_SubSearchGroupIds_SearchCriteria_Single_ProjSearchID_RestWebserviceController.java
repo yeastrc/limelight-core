@@ -84,7 +84,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_COUNT_PER_REPORTED_PEPTIDE_ID__SUB_SEARCH_GROUP__FOR_REP_PEPT_IDS_SUB_SEARCH_GROUPS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_COUNT_PER_REPORTED_PEPTIDE_ID__SUB_SEARCH_GROUP__FOR_REP_PEPT_IDS_SUB_SEARCH_GROUPS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0003;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -287,8 +287,13 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     						projectSearchIdMapToSearchId, 
     						webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId );
     		
-    		List<WebserviceResultItem> webserviceResults = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() * 10 );
 
+    		WebserviceResult result = new WebserviceResult();
+    		
+    		result.reportedPeptideId_List = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() * 10 );
+    		result.searchSubGroupId_List = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() * 10 );
+    		result.numPsms_List = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() * 10 );
+    		
     		//  Determine if can use PSM count at Default Cutoff
     		DefaultCutoffsExactlyMatchAnnTypeDataToSearchDataResult defaultCutoffsExactlyMatchAnnTypeDataToSearchDataResult =
     				defaultCutoffsExactlyMatchAnnTypeDataToSearchData
@@ -304,11 +309,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     			
     			for ( PsmCountSearchSubGroupsForSearchIdReportedPeptideIds_DefaultPSMCutoffs_Searcher_ResultItem dbResult : dbResults ) {
 
-					WebserviceResultItem webserviceResultItem = new WebserviceResultItem();
-					webserviceResultItem.rPId = dbResult.getReportedPeptideId();
-					webserviceResultItem.sSbGpId = dbResult.getSearchSubGroupId();
-					webserviceResultItem.cnt = dbResult.getNumPsms();
-					webserviceResults.add( webserviceResultItem );
+    				result.reportedPeptideId_List.add( dbResult.getReportedPeptideId() );
+    	    		result.searchSubGroupId_List.add( dbResult.getSearchSubGroupId() );
+    	    		result.numPsms_List.add( dbResult.getNumPsms() );
     			}
     			
     		} else {
@@ -325,18 +328,13 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
     				for ( PsmCountSearchSubGroups_For_PsmIds_Searcher_ResultItem dbResult : dbResults ) {
 
-    					WebserviceResultItem webserviceResultItem = new WebserviceResultItem();
-    					webserviceResultItem.rPId = reportedPeptideId;
-    					webserviceResultItem.sSbGpId = dbResult.getSearchSubGroupId();
-    					webserviceResultItem.cnt = dbResult.getNumPsms();
-    					webserviceResults.add( webserviceResultItem );
+    					result.reportedPeptideId_List.add( reportedPeptideId );
+        	    		result.searchSubGroupId_List.add( dbResult.getSearchSubGroupId() );
+        	    		result.numPsms_List.add( dbResult.getNumPsms() );
     				}
     			}
     		}
-    		
-    		WebserviceResult result = new WebserviceResult();
-    		result.results = webserviceResults;
-    		
+    		    		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
 
     		
@@ -407,33 +405,20 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
      */
     public static class WebserviceResult {
     	
-    	List<WebserviceResultItem> results;
-
-		public List<WebserviceResultItem> getResults() {
-			return results;
-		}
-    }
-    
-    /**
-     * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
-     *
-     */
-    public static class WebserviceResultItem {
     	
-    	int rPId;
-		int sSbGpId;
-    	int cnt;
+    	List<Integer> reportedPeptideId_List;
+    	List<Integer> searchSubGroupId_List;
+    	List<Integer> numPsms_List;
     	
-		public int getrPId() {
-			return rPId;
+		public List<Integer> getReportedPeptideId_List() {
+			return reportedPeptideId_List;
 		}
-		public int getsSbGpId() {
-			return sSbGpId;
+		public List<Integer> getSearchSubGroupId_List() {
+			return searchSubGroupId_List;
 		}
-		public int getCnt() {
-			return cnt;
+		public List<Integer> getNumPsms_List() {
+			return numPsms_List;
 		}
-    	
     }
 }
 

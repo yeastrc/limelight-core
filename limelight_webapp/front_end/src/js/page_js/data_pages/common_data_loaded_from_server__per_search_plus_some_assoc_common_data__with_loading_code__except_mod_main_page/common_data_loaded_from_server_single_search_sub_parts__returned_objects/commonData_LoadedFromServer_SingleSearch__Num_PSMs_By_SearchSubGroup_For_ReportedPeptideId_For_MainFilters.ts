@@ -274,7 +274,7 @@ export class CommonData_LoadedFromServer_SingleSearch__Num_PSMs_By_SearchSubGrou
 
                         console.log("AJAX Call to get psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id START, Now: " + new Date() );
 
-                        const url = "d/rws/for-page/psb/psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0002";
+                        const url = "d/rws/for-page/psb/psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0003";
 
                         const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
@@ -331,31 +331,74 @@ export class CommonData_LoadedFromServer_SingleSearch__Num_PSMs_By_SearchSubGrou
      */
     private _process_WebserviceResponse({ responseData }: { responseData: any }) : void {
 
-        const results = responseData.results;
+        const responseData_Cast = responseData as INTERNAL__WebserviceResponse_Class
+
+        if ( ! responseData_Cast.reportedPeptideId_List ) {
+            const msg = "responseData_Cast.reportedPeptideId_List NOT Populated "
+            console.warn( msg );
+            throw Error( msg )
+        }
+        if ( ! responseData_Cast.searchSubGroupId_List ) {
+            const msg = "responseData_Cast.searchSubGroupId_List NOT Populated "
+            console.warn( msg );
+            throw Error( msg )
+        }
+        if ( ! responseData_Cast.numPsms_List ) {
+            const msg = "responseData_Cast.numPsms_List NOT Populated "
+            console.warn( msg );
+            throw Error( msg )
+        }
+        if ( ! ( responseData_Cast.reportedPeptideId_List instanceof Array ) ) {
+            const msg = "responseData_Cast.reportedPeptideId_List NOT type Array "
+            console.warn( msg );
+            throw Error( msg )
+        }
+        if ( ! ( responseData_Cast.searchSubGroupId_List instanceof Array ) ) {
+            const msg = "responseData_Cast.searchSubGroupId_List NOT type Array "
+            console.warn( msg );
+            throw Error( msg )
+        }
+        if ( ! ( responseData_Cast.numPsms_List instanceof Array ) ) {
+            const msg = "responseData_Cast.numPsms_List NOT type Array "
+            console.warn( msg );
+            throw Error( msg )
+        }
+
+        if ( ! ( responseData_Cast.reportedPeptideId_List.length === responseData_Cast.searchSubGroupId_List.length && responseData_Cast.reportedPeptideId_List.length === responseData_Cast.numPsms_List.length ) ) {
+            const msg = "Array lengths not match ( ! ( responseData_Cast.reportedPeptideId_List.length === responseData_Cast.searchSubGroupId_List.length && responseData_Cast.reportedPeptideId_List.length === responseData_Cast.numPsms_List.length ) ) "
+            console.warn( msg );
+            throw Error( msg )
+        }
+
+        const reportedPeptideId_List = responseData_Cast.reportedPeptideId_List;
+        const searchSubGroupId_List = responseData_Cast.searchSubGroupId_List;
+        const numPsms_List = responseData_Cast.numPsms_List;
+
+        const reportedPeptideId_List_Length = reportedPeptideId_List.length
 
         const numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map : Map<number, Map<number, number>> = new Map();
 
-        for ( const result_Entry of results ) {
+        for ( let arrayIndex = 0; arrayIndex < reportedPeptideId_List_Length; arrayIndex++ ) {
 
-            if ( ! limelight__variable_is_type_number_Check( result_Entry.rPId ) ) {
-                const msg = "result_Entry.rPId not numeric: " + result_Entry.rPId;
-                console.warn( msg );
-                throw Error( msg )
-            }
-            if ( ! limelight__variable_is_type_number_Check( result_Entry.sSbGpId ) ) {
-                const msg = "result_Entry.rPId not numeric: " + result_Entry.sSbGpId;
-                console.warn( msg );
-                throw Error( msg )
-            }
-            if ( ! limelight__variable_is_type_number_Check( result_Entry.cnt ) ) {
-                const msg = "result_Entry.rPId not numeric: " + result_Entry.cnt;
-                console.warn( msg );
-                throw Error( msg )
-            }
+            const reportedPeptideId = reportedPeptideId_List[ arrayIndex ]
+            const searchSubGroupId = searchSubGroupId_List[ arrayIndex ]
+            const psmCount = numPsms_List[ arrayIndex ]
 
-            const reportedPeptideId = result_Entry.rPId;
-            const searchSubGroupId = result_Entry.sSbGpId;
-            const psmCount = result_Entry.cnt;
+            if ( ! limelight__variable_is_type_number_Check( reportedPeptideId ) ) {
+                const msg = "reportedPeptideId not numeric: " + reportedPeptideId + ", arrayIndex: " + arrayIndex
+                console.warn( msg );
+                throw Error( msg )
+            }
+            if ( ! limelight__variable_is_type_number_Check( searchSubGroupId ) ) {
+                const msg = "searchSubGroupId not numeric: " + searchSubGroupId + ", arrayIndex: " + arrayIndex
+                console.warn( msg );
+                throw Error( msg )
+            }
+            if ( ! limelight__variable_is_type_number_Check( psmCount ) ) {
+                const msg = "psmCount not numeric: " + psmCount + ", arrayIndex: " + arrayIndex
+                console.warn( msg );
+                throw Error( msg )
+            }
 
             let getSubMap_Key_searchSubGroupId = numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map.get( reportedPeptideId );
             if ( ! getSubMap_Key_searchSubGroupId ) {
@@ -374,4 +417,16 @@ export class CommonData_LoadedFromServer_SingleSearch__Num_PSMs_By_SearchSubGrou
         }
     }
 
+}
+
+/**
+ * INTERNAL only
+ *
+ * Cast the webservice response to this class then do validation on the response while processing it.
+ */
+class  INTERNAL__WebserviceResponse_Class {
+
+    reportedPeptideId_List: Array<number>
+    searchSubGroupId_List: Array<number>
+    numPsms_List: Array<number>
 }
