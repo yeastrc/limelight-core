@@ -44,8 +44,14 @@ public class GenerateRandomStringForCode implements GenerateRandomStringForCodeI
 	 *  Removed more letters and added capitol letters.
 	 *  All characters are URL / email safe (codes are placed in links).
 	 */
+	private static final String ALLOWED_CHARS_NO_NUMBERS__STRING =  "bcdfghjkmnpqrstxBCDFGHJKMNPRSTX";
+	
+	private static final char[] ALLOWED_CHARS_NO_NUMBERS =
+			ALLOWED_CHARS_NO_NUMBERS__STRING.toCharArray();
+
 	private static final char[] ALLOWED_CHARS =
-			"23456789bcdfghjkmnpqrstxBCDFGHJKMNPRSTX".toCharArray();
+			( "23456789" + ALLOWED_CHARS_NO_NUMBERS__STRING ).toCharArray();
+
 
 	private static final SecureRandom secureRandom = new SecureRandom();
 
@@ -61,7 +67,11 @@ public class GenerateRandomStringForCode implements GenerateRandomStringForCodeI
 
 		StringBuilder randomStringSB = new StringBuilder( outputKeyLength );
 
-		for ( int i = 0; i < outputKeyLength; i++ ) {
+		//  First character is NOT a number
+		
+		randomStringSB.append( ALLOWED_CHARS_NO_NUMBERS[ secureRandom.nextInt( ALLOWED_CHARS_NO_NUMBERS.length ) ] );
+		
+		for ( int i = 1; i < outputKeyLength; i++ ) {
 			//  nextInt( bound ) is unbiased so each allowed character is equally likely
 			randomStringSB.append( ALLOWED_CHARS[ secureRandom.nextInt( ALLOWED_CHARS.length ) ] );
 		}
