@@ -44,6 +44,9 @@ hs_err_pid*
 # Eclipse project file
 .project
 
+#  Claude
+**/.claude
+
 # Jekyll/github pages items
 /.jekyll-cache
 /_site

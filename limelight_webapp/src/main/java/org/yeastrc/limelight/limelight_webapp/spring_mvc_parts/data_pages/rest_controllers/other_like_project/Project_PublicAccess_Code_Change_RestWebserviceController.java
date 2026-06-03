@@ -18,9 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.other_like_project;
 
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +47,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
+import org.yeastrc.limelight.limelight_webapp.web_utils.GenerateRandomStringForCodeIF;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
@@ -73,6 +72,9 @@ public class Project_PublicAccess_Code_Change_RestWebserviceController {
 
 	@Autowired
 	private ProjectDAO_IF projectDAO;
+
+	@Autowired
+	private GenerateRandomStringForCodeIF generateRandomStringForCode;
 
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -329,47 +331,9 @@ public class Project_PublicAccess_Code_Change_RestWebserviceController {
 	 */
 	private String _generatePublicAccessCode() {
 
-		StringBuilder randomStringSB = new StringBuilder( 16 );
-
 		final int RETURN_LENGTH = 12;
 		
-		int insertedCharacterCount = 0;
-		
-		for ( int j = 0; j < 200; j++ ) { // for loop just provides an upper bound
-			double tosKeyMultiplier = Math.random();
-			if ( tosKeyMultiplier < 0.5 ) {
-				tosKeyMultiplier += 0.5;
-			}
-			long tosKeyLong = (long) ( System.currentTimeMillis() * tosKeyMultiplier );
-			ByteBuffer tosKeyBuffer = ByteBuffer.allocate(Long.BYTES);
-			tosKeyBuffer.putLong( tosKeyLong );
-			
-			String encodedLong = Base64.getEncoder().encodeToString( tosKeyBuffer.array() );
-			// Drop first 6 characters and last character
-			String encodedLongExtract = encodedLong.substring( 6, encodedLong.length() - 1 );
-			
-			char[] encodedLongArray = encodedLongExtract.toCharArray();
-			
-			for ( char entry : encodedLongArray ) {
-				if ( ( entry >= 'a' && entry <= 'z' )
-						|| ( entry >= 'A' && entry <= 'Z' )
-						|| ( entry >= '1' && entry <= '9' ) ) {
-					//  Only take a-z, A-Z, 1-9.
-					randomStringSB.append( entry );
-					insertedCharacterCount++;
-					if ( insertedCharacterCount >= RETURN_LENGTH ) {
-						break;
-					}
-				}
-			}
-			if ( insertedCharacterCount >= RETURN_LENGTH ) {
-				break;
-			}
-		}
-		if ( insertedCharacterCount < RETURN_LENGTH ) {
-			throw new LimelightInternalErrorException("Not find enough letters and numbers for randomString. insertedCharacterCount: " + insertedCharacterCount );
-		}
-		String randomString = randomStringSB.toString();
+		String randomString = generateRandomStringForCode.generateRandomStringForCode().substring(0, RETURN_LENGTH);
 
 		return randomString;
 	}

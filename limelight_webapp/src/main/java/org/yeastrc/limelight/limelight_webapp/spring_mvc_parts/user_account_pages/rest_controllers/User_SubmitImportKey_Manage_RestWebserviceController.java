@@ -39,6 +39,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
+import org.yeastrc.limelight.limelight_webapp.web_utils.GenerateRandomStringForCodeIF;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
@@ -50,6 +51,9 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
 public class User_SubmitImportKey_Manage_RestWebserviceController {
 
 	private static final Logger log = LoggerFactory.getLogger( User_SubmitImportKey_Manage_RestWebserviceController.class );
+	
+	private static final int _SUBMIT_IMPORT_KEY_MAX_LENGTH = 44;
+	
 
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
@@ -59,6 +63,9 @@ public class User_SubmitImportKey_Manage_RestWebserviceController {
 	
 	@Autowired
 	private FileImportSubmitImportProgramKeyPerUserDAO_IF fileImportSubmitImportProgramKeyPerUserDAO;
+
+	@Autowired
+	private GenerateRandomStringForCodeIF generateRandomStringForCode;
 
 	@Autowired
 	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
@@ -166,7 +173,7 @@ public class User_SubmitImportKey_Manage_RestWebserviceController {
 		
 		if ( webserviceRequest.createKey || webserviceRequest.replaceKey ) {
 			
-			String submitImportProgramKey = generate_submitImportProgramKey();
+			String submitImportProgramKey = generateRandomStringForCode.generateRandomStringForCode().substring(0, _SUBMIT_IMPORT_KEY_MAX_LENGTH );
 			
 			fileImportSubmitImportProgramKeyPerUserDAO.save( userSession.getUserId(), submitImportProgramKey );
 			webserviceResult.newKey = submitImportProgramKey;
@@ -185,33 +192,6 @@ public class User_SubmitImportKey_Manage_RestWebserviceController {
 		return webserviceResult;
 	}
 	
-	/**
-	 * @return
-	 */
-	private String generate_submitImportProgramKey() {
-		
-		long currentTimeMillis = System.currentTimeMillis();
-		
-		String result = generateRandomString(currentTimeMillis)
-				+ generateRandomString(currentTimeMillis)
-				+ generateRandomString(currentTimeMillis)
-				+ generateRandomString(currentTimeMillis);
-		
-		return result;
-	}
-	
-	private String generateRandomString( long currentTimeMillis ) {
-		
-		double randomNumber = Math.random();
-		
-		if ( randomNumber < 0.5 ) {
-			randomNumber += 0.5;
-		}
-		
-		String randomString = Long.toHexString( (long) ( currentTimeMillis * randomNumber ) );
-		return randomString;
-	}
-
 
 	public static class WebserviceRequest {
 		

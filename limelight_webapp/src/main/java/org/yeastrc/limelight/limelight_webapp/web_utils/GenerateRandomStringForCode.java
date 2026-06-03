@@ -17,18 +17,37 @@
 */
 package org.yeastrc.limelight.limelight_webapp.web_utils;
 
+import java.security.SecureRandom;
+
 import org.springframework.stereotype.Component;
 
 /**
- * Generate a Random String for Public Access Code and Invite Code
+ * Generate a Random String for Invite Code, Forgot Password Code, Submit Import Key (truncated),  Download File code. 
  *
+ * These codes act as security tokens (password reset codes, project invite codes,
+ * Submit Import codes, download identifiers) so the randomness MUST be cryptographically
+ * secure.  Use SecureRandom - NOT Math.random()/System.currentTimeMillis(), which are predictable.
  */
 @Component
 public class GenerateRandomStringForCode implements GenerateRandomStringForCodeIF {
 
 	private static final int minKeyLength = 62;
 	private static final int maxKeyLength = 65;
-	private static final int minMaxKeyLengthDiff = maxKeyLength - minKeyLength;
+
+	/**
+	 *  Alphabet of allowed characters: digits 0-9 plus lower case consonants.
+	 *
+	 *  Vowels ( a e i o u y ) are excluded so codes cannot spell words.
+	 *  Lower case 'l' and upper case 'I' are excluded since they look alike in many fonts.
+	 *  Number 0 is excluded since can look like upper case 'O'.
+	 *  Number 1 is excluded since can look like lower case 'l'.
+	 *  Removed more letters and added capitol letters.
+	 *  All characters are URL / email safe (codes are placed in links).
+	 */
+	private static final char[] ALLOWED_CHARS =
+			"23456789bcdfghjkmnpqrstxBCDFGHJKMNPRSTX".toCharArray();
+
+	private static final SecureRandom secureRandom = new SecureRandom();
 
 	/**
 	 * Generate random string in length between minKeyLength and maxKeyLength
@@ -37,52 +56,16 @@ public class GenerateRandomStringForCode implements GenerateRandomStringForCodeI
 	@Override
 	public String generateRandomStringForCode() {
 
-		int outputKeyLength = minKeyLength + (int) ( minMaxKeyLengthDiff * Math.random() );
-		if ( outputKeyLength > maxKeyLength ) {
-			outputKeyLength = maxKeyLength;
+		//  Length uniformly in [ minKeyLength, maxKeyLength ]
+		int outputKeyLength = minKeyLength + secureRandom.nextInt( maxKeyLength - minKeyLength + 1 );
+
+		StringBuilder randomStringSB = new StringBuilder( outputKeyLength );
+
+		for ( int i = 0; i < outputKeyLength; i++ ) {
+			//  nextInt( bound ) is unbiased so each allowed character is equally likely
+			randomStringSB.append( ALLOWED_CHARS[ secureRandom.nextInt( ALLOWED_CHARS.length ) ] );
 		}
-		StringBuilder randomStringSB = new StringBuilder( maxKeyLength * 2 );
-		while ( true ) {
-			double tosKeyMultiplier = Math.random();
-			if ( tosKeyMultiplier < 0.5 ) {
-				tosKeyMultiplier += 0.5;
-			}
-			long tosKeyLong = (long) ( System.currentTimeMillis() * tosKeyMultiplier );
 
-			//  Convert to chars using digits and alpha chars a-y
-			String encodedLong = Long.toString(tosKeyLong, 35);
-
-			// Drop first 6 characters and last character
-			String encodedLongExtract = encodedLong.substring( 6, encodedLong.length() - 1 );
-
-			char[] encodedLongArray = encodedLongExtract.toCharArray();
-			
-			for ( char entry : encodedLongArray ) {
-
-				if ( entry == 'a' || entry == 'e' || entry == 'i' || entry == 'o' || entry == 'u' || entry == 'y' ) {
-					// Skip all vowels so cannot spell words
-					continue;
-				}
-
-				if ( entry == 'l' || entry == 'I' ) {
-					//  Not take lower case l and upper case I since in many fonts they look too similar
-					continue;
-				}
-
-				randomStringSB.append( entry );
-
-				if ( randomStringSB.length() >= outputKeyLength ) {
-					break;
-				}
-			}
-			
-			if ( randomStringSB.length() >= outputKeyLength ) {
-				break;
-			}
-		}
-		
-		String randomString = randomStringSB.substring( 0, outputKeyLength );
-		
-		return randomString;
+		return randomStringSB.toString();
 	}
 }
