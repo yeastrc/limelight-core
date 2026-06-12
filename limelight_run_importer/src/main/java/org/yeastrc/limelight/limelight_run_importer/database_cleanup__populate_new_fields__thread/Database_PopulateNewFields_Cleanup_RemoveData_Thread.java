@@ -79,6 +79,8 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 
 	private static volatile long lastTime_ProcessingLoopRan_Milliseconds = 0;
 
+	private static long time_OfNext_RunOf__Cleanup__Data_SharedAcross_Searches_ThatIs_Unused__IN_MILLISECONDS = 0;
+	
 	//  Instance Properties
 	
 	private ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
@@ -95,7 +97,6 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 	
 	private boolean getNewInstance_FirstCall;
 
-	private long time_OfNext_RunOf__Cleanup__Data_SharedAcross_Searches_ThatIs_Unused__IN_MILLISECONDS = 0;
 	
 	/**
 	 * Cleanup when thread is dead
