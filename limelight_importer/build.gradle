@@ -17,21 +17,22 @@
 buildscript {
   repositories {
     maven {
-      url "https://plugins.gradle.org/m2/"
+      url = "https://plugins.gradle.org/m2/"
     }
   }
 }
 
 plugins {
-	id 'com.github.johnrengelman.shadow' version '8.1.1'
-	id 'org.ajoberstar.grgit' version '4.1.1'
+	id 'com.gradleup.shadow' version '8.3.11'
+	id 'org.ajoberstar.grgit' version '5.3.3'
 }
 
 apply plugin: 'java'
 
 java {
-	sourceCompatibility = 1.8      //    defaults to currently installed JVM
-	// targetCompatibility  = 1.8  //    defaults to sourceCompatibility
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
 }
 
 repositories {
@@ -39,7 +40,7 @@ repositories {
     
     //  For Limelight Import API
     maven {
-       url 'https://raw.githubusercontent.com/yeastrc/limelight-import-api/repository/'
+       url = 'https://raw.githubusercontent.com/yeastrc/limelight-import-api/repository/'
    }
 }
 
@@ -82,10 +83,10 @@ dependencies {
 	//   AWS  S3
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/s3
-	implementation group: 'software.amazon.awssdk', name: 's3', version: '2.20.32'
+	implementation 'software.amazon.awssdk:s3:2.20.32'
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/apache-client
-	implementation group: 'software.amazon.awssdk', name: 'apache-client', version: '2.20.33'
+	implementation 'software.amazon.awssdk:apache-client:2.20.33'
 	
 	
 	//   OLD V1
@@ -95,44 +96,44 @@ dependencies {
 	
 
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
 	
 	// https://mvnrepository.com/artifact/commons-io/commons-io
-	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+	implementation 'commons-io:commons-io:2.11.0'
 	
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2
-	implementation group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.9.0'
+	implementation 'org.apache.commons:commons-dbcp2:2.9.0'
 	
 	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
-	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
+	implementation 'mysql:mysql-connector-java:8.0.28'
 	
 	//  Logging
 	
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.2'
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'	
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.17.2' //  Needed for Web app
+	implementation 'org.apache.logging.log4j:log4j-api:2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-core:2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-web:2.17.2' //  Needed for Web app
 	
 	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.2'
 	
 	//  Jakarta Commons Logging to SLF4J
-	implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.36'
+	implementation 'org.slf4j:jcl-over-slf4j:1.7.36'
 	
 	//  Log4j 1 to 2 bridge
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.17.2'
 		
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.4'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.13.4'
 	
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
 	
 
 	// JAXB dependencies (Required for Java 11+)
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-	implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.6'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.6'
 	
 
 	//  NOT FOUND  in mavenCentral()

@@ -23,7 +23,7 @@
 buildscript {
   repositories {
     maven {
-      url "https://plugins.gradle.org/m2/"
+      url = "https://plugins.gradle.org/m2/"
     }
   }
 }
@@ -32,9 +32,9 @@ plugins {
 	id 'java'
 	id 'war'
 	id 'eclipse'
-	id "org.springframework.boot" version "2.7.18"
-	id "io.spring.dependency-management" version "1.0.11.RELEASE"
-	id 'org.ajoberstar.grgit' version '4.1.1'
+	id "org.springframework.boot" version "4.0.5"
+	id "io.spring.dependency-management" version "1.1.7"
+	id 'org.ajoberstar.grgit' version '5.3.3'
 }
 
 repositories {
@@ -42,7 +42,7 @@ repositories {
     
     //  For Limelight Import API
     maven {
-       url 'https://raw.githubusercontent.com/yeastrc/limelight-import-api/repository/'
+       url = 'https://raw.githubusercontent.com/yeastrc/limelight-import-api/repository/'
    }
 }
 
@@ -51,8 +51,9 @@ repositories {
 //  defaultTasks 'build'
 
 java {
-	sourceCompatibility = 1.8      //    defaults to currently installed JVM
-	// targetCompatibility  = 1.8  //    defaults to sourceCompatibility
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
 }
 
 configurations.all {
@@ -104,10 +105,10 @@ dependencies {
 	//   AWS  S3
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/s3
-	implementation group: 'software.amazon.awssdk', name: 's3', version: '2.20.32'
+	implementation 'software.amazon.awssdk:s3:2.20.32'
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/apache-client
-	implementation group: 'software.amazon.awssdk', name: 'apache-client', version: '2.20.33'
+	implementation 'software.amazon.awssdk:apache-client:2.20.33'
 	
 	
 	//   OLD V1
@@ -117,33 +118,34 @@ dependencies {
 	
 	//  Mail
 	
-	// https://mvnrepository.com/artifact/javax.mail/mail
-	implementation group: 'javax.mail', name: 'mail', version: '1.4.1'
+	//  Jakarta Mail (jakarta.mail.* namespace) + Angus implementation
+	implementation 'jakarta.mail:jakarta.mail-api:2.1.3'
+	runtimeOnly 'org.eclipse.angus:angus-mail:2.0.3'
 	
 	//  Later versions like this have license CDDL and GPL
 	// https://mvnrepository.com/artifact/javax.mail/javax.mail-api
 //	compile group: 'javax.mail', name: 'javax.mail-api', version: '1.6.1'
 	
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2
-	implementation group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.9.0'
+	implementation 'org.apache.commons:commons-dbcp2:2.9.0'
 	
 	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
 //	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.45'
 	
 	//  Logging
 	
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.2'
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'	
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.17.2' //  Needed for Web app
+	implementation 'org.apache.logging.log4j:log4j-api'
+	implementation 'org.apache.logging.log4j:log4j-core'
+	implementation 'org.apache.logging.log4j:log4j-web' //  Needed for Web app
 	
-	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.17.2'
+	//  Route SLF4J 2.x (Spring Boot 3) to Log4j2  (slf4j2 bridge, not the old slf4j1 impl)
+	implementation 'org.apache.logging.log4j:log4j-slf4j2-impl'
 	
 	//  Jakarta Commons Logging to SLF4J
-	implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.36'
+	implementation 'org.slf4j:jcl-over-slf4j'
 	
 	//  Log4j 1 to 2 bridge
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-1.2-api'
 		
 	
 	
@@ -153,7 +155,7 @@ dependencies {
 	
 	// Used by included yeastrc jar password management
 	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto
-	implementation group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.6.2'
+	implementation 'org.springframework.security:spring-security-crypto'
 
 		
 	// Used by included yeastrc jars
@@ -161,42 +163,43 @@ dependencies {
 	//  compile group: 'com.google.guava', name: 'guava', version: '24.0-jre'
 	
 	// https://mvnrepository.com/artifact/com.google.guava/guava
-	implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
+	implementation 'com.google.guava:guava:31.1-jre'
 	
-	// https://mvnrepository.com/artifact/javax.servlet/jstl
-	implementation group: 'javax.servlet', name: 'jstl', version: '1.2'
+	//  JSTL (Jakarta, jakarta.tags.* taglibs) for JSP pages: API + Glassfish impl
+	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
 
 	
 	//   Apache Commons
 	
 	//  Old StringUtils
 	// https://mvnrepository.com/artifact/commons-lang/commons-lang
-	implementation group: 'commons-lang', name: 'commons-lang', version: '2.6'
+	implementation 'commons-lang:commons-lang:2.6'
 
 	//  New StringUtils
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
 	
 	// https://mvnrepository.com/artifact/commons-io/commons-io
-	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+	implementation 'commons-io:commons-io:2.11.0'
 	
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-math3
-	implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+	implementation 'org.apache.commons:commons-math3:3.6.1'
 	
 	//   Apache HTPP Client
 
 	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
 	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
-	implementation group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.15'
+	implementation 'org.apache.httpcomponents:httpcore:4.4.15'
 
 	
 	// JAXB dependencies (Required for Java 11+)
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-	implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.6'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.6'
 	
 	//  Other Limelight Jars
 		
@@ -214,23 +217,38 @@ dependencies {
 	implementation fileTree(dir: 'libs_webapp__yeastrc_github_jars', include: ['*.jar'])
 	
 	
-    // https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core
-    providedCompile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '8.5.77'
+    //  Tomcat embed core (version managed by Spring Boot BOM -> Tomcat 11.0, Servlet 6.1)
+    providedCompile 'org.apache.tomcat.embed:tomcat-embed-core'
 
-    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
-	providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
-	
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.7.18'
+    //  Jakarta Servlet API (version managed by Spring Boot BOM -> 6.1)
+	providedCompile 'jakarta.servlet:jakarta.servlet-api'
 
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor
-	implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.7.18'
+	//  Jackson 2 (com.fasterxml.jackson.*) - version managed by Spring Boot BOM (Jackson 2 is still managed for compatibility)
+	//    Spring Boot 4 / Spring Framework 7 ship Jackson 3 (tools.jackson.*) as the default, but this app's manual
+	//    JSON marshalling/unmarshalling (web_utils.MarshalObjectToJSON / UnmarshalJSON_ToObject and a couple services)
+	//    uses the Jackson 2 ObjectMapper API.  Keep Jackson 2 explicitly so that JSON property naming and null handling
+	//    stay identical to the pre-Spring-Boot-4 behaviour.
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
-	// https://mvnrepository.com/artifact/org.springframework/spring-jdbc
-	implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.3.18'
-  
+	//  Spring Boot starters (versions managed by Spring Boot BOM)
+	//    Spring Boot 4: 'spring-boot-starter-web' was renamed to 'spring-boot-starter-webmvc'
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+
+	implementation 'org.springframework.boot:spring-boot-configuration-processor'
+
+	//  Spring JDBC (version managed by Spring Boot BOM -> Spring Framework 7)
+	implementation 'org.springframework:spring-jdbc'
+
+	//  Spring Boot JDBC starter (version managed by Spring Boot BOM)
+	//    Spring Boot 4 split auto-configuration out of the monolithic 'spring-boot-autoconfigure' jar into
+	//    per-technology modules.  This starter brings 'spring-boot-jdbc', which supplies
+	//    DataSourceAutoConfiguration + JdbcTemplateAutoConfiguration so the JNDI DataSource
+	//    (spring.datasource.jndi-name) and the autowired JdbcTemplate beans are created.
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
     //  Mark provided since creating a war
-	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+	//    Spring Boot 4: WAR deployments use 'spring-boot-starter-tomcat-runtime' (was 'spring-boot-starter-tomcat')
+	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat-runtime')
 	
 	// testCompile('org.springframework.boot:spring-boot-starter-test')
 }

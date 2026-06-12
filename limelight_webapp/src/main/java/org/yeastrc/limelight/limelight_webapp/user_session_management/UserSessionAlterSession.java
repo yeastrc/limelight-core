@@ -17,7 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.user_session_management;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class UserSessionAlterSession implements UserSessionAlterSessionIF {
 	private UserSessionManager userSessionManager;
 
 	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionAlterSessionIF#changeEnabledAppSpecific(boolean, org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession, javax.servlet.http.HttpServletRequest)
+	 * @see org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionAlterSessionIF#changeEnabledAppSpecific(boolean, org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession, jakarta.servlet.http.HttpServletRequest)
 	 */
 	@Override
 	public UserSession changeEnabledAppSpecific( boolean enabledAppSpecific, UserSession userSession, HttpServletRequest httpServletRequest ) {
@@ -49,7 +49,7 @@ public class UserSessionAlterSession implements UserSessionAlterSessionIF {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionAlterSessionIF#changeUserAccessLevel(Integer, org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession, javax.servlet.http.HttpServletRequest)
+	 * @see org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionAlterSessionIF#changeUserAccessLevel(Integer, org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession, jakarta.servlet.http.HttpServletRequest)
 	 */
 	@Override
 	public UserSession changeUserAccessLevel( Integer userAccessLevel, UserSession userSession, HttpServletRequest httpServletRequest ) {

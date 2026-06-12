@@ -18,30 +18,11 @@
 //      except for when task 'clean' is executed from build all ant script at project/repo root.
 
  
- //  New way to import gradle plugin for node:  per https://plugins.gradle.org/plugin/com.moowork.node
-
-/* 
- plugins {
-  id "com.moowork.node" version "1.2.0"
-} 
- */
- 
-// import com.moowork.gradle.node.task.NodeTask
-
-buildscript {
-    repositories {
-        mavenCentral()
-         
-      maven {
-     	 url "https://plugins.gradle.org/m2/"
-    	}
-    }
-    dependencies {
-        classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
-    }
-}
-
-apply plugin: "com.moowork.node"
+ //  NOTE: The old 'com.moowork.node' / gradle-node-plugin (1.2.0) is dead on Gradle 9
+ //        (it provided the 'NodeTask' type). It is no longer applied. The webpack
+ //        tasks below now run Node directly via the built-in 'Exec' task type, the
+ //        same pattern used by the esbuild tasks in this file. No Gradle node plugin
+ //        is needed since 'npm install' is run separately, outside Gradle.
 
 
 // apply plugin: 'eclipse'
@@ -515,18 +496,16 @@ task run_Esbuild_DataPages__Production(type:Exec) {
 	
 	Change so dev runs  'npm install' separately since it takes so long
 */
-task runWebpack_DevelopmentMode(type: NodeTask ) { //  , dependsOn: 'npmInstall') {
+task runWebpack_DevelopmentMode(type: Exec ) { //  , dependsOn: 'npmInstall') {
   def osName = System.getProperty("os.name").toLowerCase();
-  if (osName.contains("windows")) {
-    script = project.file('node_modules/webpack/bin/webpack.js')
-  } else {
-    script = project.file('node_modules/.bin/webpack')
-  }
-    //  '--max_old_space_size=4096': Increase max memory of Node process running webpack.  Example with multiple values: environment = [ 'NODE_ENV': 'development', BASE_URL: '3000' ]
-  environment = [ 'NODE_OPTIONS': '--max_old_space_size=4096' ]
+  def webpackScript = osName.contains("windows") ? 'node_modules/webpack/bin/webpack.js' : 'node_modules/.bin/webpack'
+
+    //  '--max_old_space_size=4096': Increase max memory of Node process running webpack.
+  environment 'NODE_OPTIONS', '--max_old_space_size=4096'
 
   //  specify mode development, defaults to production
-  args = [ '--mode=development' ] // --mode=development does no minification, also React Library includes more code and validation
+  //  --mode=development does no minification, also React Library includes more code and validation
+  commandLine 'node', webpackScript, '--mode=development'
 }
 
 /*
@@ -536,18 +515,16 @@ task runWebpack_DevelopmentMode(type: NodeTask ) { //  , dependsOn: 'npmInstall'
 	
 	Change so dev runs  'npm install' separately since it takes so long
 */
-task runWebpack_ProductionMode(type: NodeTask ) { //  , dependsOn: 'npmInstall') {
+task runWebpack_ProductionMode(type: Exec ) { //  , dependsOn: 'npmInstall') {
   def osName = System.getProperty("os.name").toLowerCase();
-  if (osName.contains("windows")) {
-    script = project.file('node_modules/webpack/bin/webpack.js')
-  } else {
-    script = project.file('node_modules/.bin/webpack')
-  }
-    //  '--max_old_space_size=4096': Increase max memory of Node process running webpack.  Example with multiple values: environment = [ 'NODE_ENV': 'development', BASE_URL: '3000' ]
-  environment = [ 'NODE_OPTIONS': '--max_old_space_size=4096' ]
+  def webpackScript = osName.contains("windows") ? 'node_modules/webpack/bin/webpack.js' : 'node_modules/.bin/webpack'
+
+    //  '--max_old_space_size=4096': Increase max memory of Node process running webpack.
+  environment 'NODE_OPTIONS', '--max_old_space_size=4096'
 
   //  specify mode development, defaults to production
-  args = [ '--mode=production' ] // --mode=development does no minification
+  //  --mode=production does no minification
+  commandLine 'node', webpackScript, '--mode=production'
 }
 
 /*

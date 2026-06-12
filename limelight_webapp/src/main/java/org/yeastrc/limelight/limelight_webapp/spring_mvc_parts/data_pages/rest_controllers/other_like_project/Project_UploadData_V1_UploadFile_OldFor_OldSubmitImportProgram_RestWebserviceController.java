@@ -27,8 +27,8 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -167,7 +167,7 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 //	@RequestMapping( 
 //			path = AA_RestWSControllerPaths_Constants.,
 //			method = RequestMethod.POST,
-//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
     public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_XML(
 

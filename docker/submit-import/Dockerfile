@@ -1,4 +1,4 @@
-FROM amazoncorretto:11
+FROM amazoncorretto:25
 
 ADD limelightSubmitImport.jar  /usr/local/bin/limelightSubmitImport.jar
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh

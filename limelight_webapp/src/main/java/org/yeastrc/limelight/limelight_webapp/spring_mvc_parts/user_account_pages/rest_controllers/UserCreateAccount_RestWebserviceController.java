@@ -17,8 +17,8 @@
  */
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.rest_controllers;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -145,7 +145,7 @@ public class UserCreateAccount_RestWebserviceController {
 					AA_UserAccount_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_UserAccount_RestWSControllerPaths_Constants.USER_CREATE_ACCOUNT_NO_INVITE_REST_WEBSERVICE_CONTROLLER
 			},
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_CreateAccount_NO_Invite(
 
@@ -233,7 +233,7 @@ public class UserCreateAccount_RestWebserviceController {
 					AA_UserAccount_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_UserAccount_RestWSControllerPaths_Constants.USER_CREATE_ACCOUNT_FROM_INVITE_REST_WEBSERVICE_CONTROLLER
 			},
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_CreateAccount_With_Invite(
 
@@ -319,7 +319,7 @@ public class UserCreateAccount_RestWebserviceController {
 					AA_UserAccount_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_UserAccount_RestWSControllerPaths_Constants.USER_CREATE_ACCOUNT_PERFROMED_BY_ADMIN_USER_REST_WEBSERVICE_CONTROLLER
 			},
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_CreateAccount_PerformedBy_AdminUser(
 

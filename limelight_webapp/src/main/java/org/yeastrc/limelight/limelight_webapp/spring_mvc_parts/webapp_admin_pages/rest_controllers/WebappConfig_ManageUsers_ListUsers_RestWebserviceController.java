@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,12 +86,12 @@ public class WebappConfig_ManageUsers_ListUsers_RestWebserviceController {
 					AA_WebappAdmin_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_WebappAdmin_RestWSControllerPaths_Constants.WEBAPP_ADMIN_MANAGE_USERS_LIST_USERS_REST_WEBSERVICE_CONTROLLER
 			},
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 
 	//	@RequestMapping( 
 	//			path = AA_RestWSControllerPaths_Constants.,
 	//			method = RequestMethod.POST,
-	//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	//			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod(
 

@@ -48,8 +48,8 @@ import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webserv
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScanPeak_SubResponse;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -128,12 +128,12 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_RestWSControllerPaths_Constants.SPECTRUM_FOR_PSM_ID_REST_WEBSERVICE_CONTROLLER
 			},
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 
 //	@RequestMapping( 
 //			path = AA_RestWSControllerPaths_Constants.,
 //			method = RequestMethod.POST,
-//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
     public @ResponseBody ResponseEntity<byte[]>  webserviceMethod(
     		

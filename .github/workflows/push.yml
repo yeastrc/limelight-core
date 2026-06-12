@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Verify Gradle sees both JDKs (8 and 25)
+      uses: docker://ghcr.io/yeastrc/limelight-build-docker:latest
+      with:
+        entrypoint: ./limelight_submit_import/gradlew
+        args: -p limelight_submit_import -q javaToolchains
     - name: Run build in Docker container	    
       uses: docker://ghcr.io/yeastrc/limelight-build-docker:latest
       with:

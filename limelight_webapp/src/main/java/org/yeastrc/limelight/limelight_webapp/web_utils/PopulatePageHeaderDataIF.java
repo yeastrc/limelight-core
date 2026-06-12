@@ -19,7 +19,7 @@ package org.yeastrc.limelight.limelight_webapp.web_utils;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 

@@ -21,8 +21,8 @@ import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_c
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +64,7 @@ public class SearchScanFileData_For_ProjectSearchId_RestWebserviceController {
                     AA_RestWSControllerPaths_Constants.PATH_START_ALL
                             + AA_RestWSControllerPaths_Constants.GET_SEARCH_SCAN_FILE_DATA_FOR_PROJECT_SEARCH_ID_LIST_REST_WEBSERVICE_CONTROLLER
             },
-            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 
     public @ResponseBody
     ResponseEntity<byte[]> webserviceMethod(

@@ -17,7 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.user_session_management;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 

@@ -2,7 +2,7 @@ package org.yeastrc.limelight.limelight_webapp.services;
 
 import java.sql.SQLException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface Page_UserDefault_SetForJSP_IF {
 

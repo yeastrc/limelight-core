@@ -25,8 +25,8 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -190,7 +190,7 @@ public class Project_UploadData_V2_UploadFile_Chunking_Upload_File_RestWebservic
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_RestWSControllerPaths_Constants.PROJECT__UPLOAD_DATA_V2_UPLOAD_FILE_CHUNKING_UPLOAD_FILE_REST_WEBSERVICE_CONTROLLER
 			},
-			consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+			consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_JSON(
 
@@ -296,7 +296,7 @@ public class Project_UploadData_V2_UploadFile_Chunking_Upload_File_RestWebservic
 ////	@RequestMapping( 
 ////			path = AA_RestWSControllerPaths_Constants.,
 ////			method = RequestMethod.POST,
-////			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+////			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //
 //    public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_XML(
 //

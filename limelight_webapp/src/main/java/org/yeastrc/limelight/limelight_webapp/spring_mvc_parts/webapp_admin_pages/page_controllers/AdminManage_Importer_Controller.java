@@ -17,7 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.webapp_admin_pages.page_controllers;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

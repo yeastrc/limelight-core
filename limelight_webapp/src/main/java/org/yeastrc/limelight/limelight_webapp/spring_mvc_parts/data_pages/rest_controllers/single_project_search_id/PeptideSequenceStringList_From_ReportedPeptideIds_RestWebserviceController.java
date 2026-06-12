@@ -23,8 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -158,12 +158,12 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ CONTROLLER_PATH
 			},
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 
 //	@RequestMapping( 
 //			path = AA_RestWSControllerPaths_Constants.,
 //			method = RequestMethod.POST,
-//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
     public @ResponseBody ResponseEntity<byte[]>  controllerEntry(
     		

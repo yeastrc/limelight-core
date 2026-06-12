@@ -19,8 +19,8 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controllers_othe
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +75,7 @@ public class RunImporter_ImporterFinish_RestWebserviceController {
 //	@RequestMapping( 
 //			path = AA_RestWSControllerPaths_Constants.,
 //			method = RequestMethod.POST,
-//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
     public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_XML(
 

@@ -17,7 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
-//import javax.servlet.http.HttpServletRequest;
+//import jakarta.servlet.http.HttpServletRequest;
 //
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class BrowserIs_InternetExplorer_Detection_Service
 //	private UserSessionManager userSessionManager;
 //	
 //	/* (non-Javadoc)
-//	 * @see org.yeastrc.limelight.limelight_webapp.services.BrowserIs_InternetExplorer_Detection_ServiceIF#browserIs_InternetExplorer_Detection_Service(javax.servlet.http.HttpServletRequest)
+//	 * @see org.yeastrc.limelight.limelight_webapp.services.BrowserIs_InternetExplorer_Detection_ServiceIF#browserIs_InternetExplorer_Detection_Service(jakarta.servlet.http.HttpServletRequest)
 //	 */
 //	@Override
 //	public boolean browserIs_InternetExplorer_Detection_Service( HttpServletRequest httpServletRequest ) {

@@ -27,8 +27,8 @@ import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_u
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.web_utils.GUNzip_ByteArray_To_ByteArray_IF;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +74,7 @@ public class ScanFile_PeakIntensityBinnedOn_RT_MZ_JSON__From_SpectralStorageSyst
                     AA_RestWSControllerPaths_Constants.PATH_START_ALL
                             + AA_RestWSControllerPaths_Constants.SCAN_FILE_PEAK_INTENSITY_BINNED_ON_RT_MZ_JSON_FROM_SPECTRAL_STORAGE_DATA__SEARCH_SCAN_FILE_ID_SINGLE_PROJECT_SEARCH_ID
             },
-            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 
     public @ResponseBody
     ResponseEntity<byte[]> webserviceMethod(

@@ -20,8 +20,8 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -105,12 +105,12 @@ public class StructureFile_Chain_Limelight_Protein_Alignment_Save_OR_Update_Rest
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_RestWSControllerPaths_Constants.STRUCTURE_FILE_CHAIN_TO_LIMELIGHT_PROTEIN_ALIGNMENT_SAVE_OR_UPDATE_REST_WEBSERVICE_CONTROLLER
 			},
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 
 	//	@RequestMapping( 
 	//			path = AA_RestWSControllerPaths_Constants.,
 	//			method = RequestMethod.POST,
-	//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	//			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod(
 

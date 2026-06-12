@@ -20,7 +20,7 @@ package org.yeastrc.limelight.limelight_webapp.access_control.access_control_res
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;

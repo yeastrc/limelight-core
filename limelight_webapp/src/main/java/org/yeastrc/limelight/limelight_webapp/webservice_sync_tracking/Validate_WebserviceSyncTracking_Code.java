@@ -17,7 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

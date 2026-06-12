@@ -17,7 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public class GetUserSessionActualUserLoggedIn_ForRestController implements GetUs
 	private AccessControl_GetUserSession_RefreshAccessEnabled_IF accessControl_GetUserSession_RefreshAccessEnabled;
 
 	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.GetUserSessionActualUserLoggedIn_ForRestControllerIF#userSessionOfActualUserLoggedIn(javax.servlet.http.HttpServletRequest)
+	 * @see org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.GetUserSessionActualUserLoggedIn_ForRestControllerIF#userSessionOfActualUserLoggedIn(jakarta.servlet.http.HttpServletRequest)
 	 */
 	@Override
 	public UserSession userSessionOfActualUserLoggedIn( HttpServletRequest httpServletRequest ) {

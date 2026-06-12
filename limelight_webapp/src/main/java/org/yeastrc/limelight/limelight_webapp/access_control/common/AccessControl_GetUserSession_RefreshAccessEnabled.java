@@ -19,7 +19,7 @@ package org.yeastrc.limelight.limelight_webapp.access_control.common;
 
 import java.sql.SQLException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,7 +50,7 @@ public class AccessControl_GetUserSession_RefreshAccessEnabled implements Access
 	@Autowired UserSessionAlterSessionIF userSessionAlterSession;
 
 	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.access_control.common.AccessControl_GetUserSession_RefreshAccessEnabled_IF#getUserSession_RefreshAccessEnabled(javax.servlet.http.HttpServletRequest)
+	 * @see org.yeastrc.limelight.limelight_webapp.access_control.common.AccessControl_GetUserSession_RefreshAccessEnabled_IF#getUserSession_RefreshAccessEnabled(jakarta.servlet.http.HttpServletRequest)
 	 */
 	@Override
 	public UserSession getUserSession_RefreshAccessEnabled( HttpServletRequest httpServletRequest ) {

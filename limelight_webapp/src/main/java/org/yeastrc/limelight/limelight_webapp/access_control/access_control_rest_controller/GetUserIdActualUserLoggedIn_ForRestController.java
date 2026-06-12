@@ -17,7 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

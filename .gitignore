@@ -5,6 +5,7 @@
 /deploy/
 /download_zip_file/
 /.idea/
+/.claude/
 
 aa_ant__build_all_limelight_config.properties
 

@@ -23,8 +23,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -132,12 +132,12 @@ public class Project_GoldStandard_Import_Request_Submit_RestWebserviceController
 //					AA_RestWSControllerPaths_Constants.PATH_START_ALL
 //					+ AA_RestWSControllerPaths_Constants.PROJECT__GOLD_STANDARD_IMPORT_SUBMIT_REST_WEBSERVICE_CONTROLLER
 //			},
-//			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+//			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 //
 ////	@RequestMapping( 
 ////			path = AA_RestWSControllerPaths_Constants.,
 ////			method = RequestMethod.POST,
-////			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+////			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 //
 //    public @ResponseBody ResponseEntity<byte[]>  webserviceMethod_JSON(
 //

@@ -17,21 +17,22 @@
 buildscript {
   repositories {
     maven {
-      url "https://plugins.gradle.org/m2/"
+      url = "https://plugins.gradle.org/m2/"
     }
   }
 }
 
 plugins {
-	id 'com.github.johnrengelman.shadow' version '8.1.1'
-	id 'org.ajoberstar.grgit' version '4.1.1'
+	id 'com.gradleup.shadow' version '8.3.11'
+	id 'org.ajoberstar.grgit' version '5.3.3'
 }
 
 apply plugin: 'java'
 
 java {
-	sourceCompatibility = 1.8      //    defaults to currently installed JVM
-	// targetCompatibility  = 1.8  //    defaults to sourceCompatibility
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(8)
+	}
 }
 
 repositories {
@@ -63,35 +64,35 @@ dependencies {
 //	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.10.0'	
 
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
 		
 	// https://mvnrepository.com/artifact/commons-io/commons-io
-	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+	implementation 'commons-io:commons-io:2.11.0'
 
 	
 	//  Logging
 	
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.2'
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'	
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.17.2' //  Needed for Web app
+	implementation 'org.apache.logging.log4j:log4j-api:2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-core:2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-web:2.17.2' //  Needed for Web app
 	
 	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.2'
 	
 	//  Jakarta Commons Logging to SLF4J
-	implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.36'
+	implementation 'org.slf4j:jcl-over-slf4j:1.7.36'
 	
 	//  Log4j 1 to 2 bridge
-	implementation group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.17.2'
 		
 		
 	//  Required for dependent project within this repo 'limelight_submit_import_client_connector' 	
 
 	// JAXB dependencies (Required for Java 11+)
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-	implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.6'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.6'
 	
 	//  NOT FOUND  in mavenCentral()
 	

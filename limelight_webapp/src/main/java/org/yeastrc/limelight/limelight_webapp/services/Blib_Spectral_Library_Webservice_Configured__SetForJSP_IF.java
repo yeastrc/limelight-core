@@ -1,6 +1,6 @@
 package org.yeastrc.limelight.limelight_webapp.services;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface Blib_Spectral_Library_Webservice_Configured__SetForJSP_IF {
 

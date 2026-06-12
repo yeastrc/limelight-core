@@ -1,7 +1,7 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class RestControllerUtils__Request_Accept_GZip_Response_Set_GZip implemen
 	
 	
 	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF#does_HttpServletRequest_Accept_GZip(javax.servlet.http.HttpServletRequest)
+	 * @see org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF#does_HttpServletRequest_Accept_GZip(jakarta.servlet.http.HttpServletRequest)
 	 */
 	@Override
 	public boolean does_HttpServletRequest_Accept_GZip( HttpServletRequest httpServletRequest ) {
@@ -34,7 +34,7 @@ public class RestControllerUtils__Request_Accept_GZip_Response_Set_GZip implemen
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF#set_GZIP_On_HttpServletResponse(javax.servlet.http.HttpServletResponse)
+	 * @see org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF#set_GZIP_On_HttpServletResponse(jakarta.servlet.http.HttpServletResponse)
 	 */
 	@Override
 	public void set_GZIP_On_HttpServletResponse( HttpServletResponse httpServletResponse ) {

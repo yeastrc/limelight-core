@@ -20,7 +20,7 @@ package org.yeastrc.limelight.limelight_webapp.access_control.access_control_pag
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -107,7 +107,7 @@ public class GetWebSessionAuthAccessLevelForProjectIds implements GetWebSessionA
 	}
 
 	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF#getAuthAccessLevelForProjectIds(java.util.List, javax.servlet.http.HttpServletRequest)
+	 * @see org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF#getAuthAccessLevelForProjectIds(java.util.List, jakarta.servlet.http.HttpServletRequest)
 	 */
 	@Override
 	public GetWebSessionAuthAccessLevelForProjectIds_Result getAuthAccessLevelForProjectIds( List<Integer> projectIds, HttpServletRequest httpServletRequest ) 

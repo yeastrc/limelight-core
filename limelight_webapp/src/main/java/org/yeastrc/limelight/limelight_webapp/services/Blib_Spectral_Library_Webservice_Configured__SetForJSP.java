@@ -1,6 +1,6 @@
 package org.yeastrc.limelight.limelight_webapp.services;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class Blib_Spectral_Library_Webservice_Configured__SetForJSP implements B
 	private ConfigSystemDAO_IF configSystemDAO;
 	
 	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.services.Blib_Spectral_Library_Webservice_Configured__SetForJSP_IF#blib_Spectral_Library_Webservice_Configured__SetForJSP(java.lang.String, javax.servlet.http.HttpServletRequest)
+	 * @see org.yeastrc.limelight.limelight_webapp.services.Blib_Spectral_Library_Webservice_Configured__SetForJSP_IF#blib_Spectral_Library_Webservice_Configured__SetForJSP(java.lang.String, jakarta.servlet.http.HttpServletRequest)
 	 */
 	
 	@Override

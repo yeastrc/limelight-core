@@ -17,8 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.rest_controllers;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +68,7 @@ public class User_Get_TermsOfServiceText_From_IDString_RestWebserviceController 
 					AA_UserAccount_RestWSControllerPaths_Constants.PATH_START_ALL
 					+ AA_UserAccount_RestWSControllerPaths_Constants.USER_GET_TERMS_OF_SERVICE_TEXT_FROM_ID_STRING_REST_WEBSERVICE_CONTROLLER
 			},
-			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE )
 
 	public @ResponseBody ResponseEntity<byte[]>  webserviceMethod(
 
