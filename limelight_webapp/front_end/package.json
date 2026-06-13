@@ -15,7 +15,7 @@
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "css-loader": "^6.11.0",
     "css-minimizer-webpack-plugin": "^8.0.0",
-    "esbuild": "^0.27.3",
+    "esbuild": "^0.28.1",
     "eslint": "^9.32.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-node": "^11.1.0",
