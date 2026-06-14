@@ -621,6 +621,8 @@ task frontEndBuild_ForDevelopment(type: GradleBuild) {
 
 	tasksTemp += 'runWebpack_DevelopmentMode'
 
+	tasksTemp += 'gzipJsBundles'
+
 	tasksTemp = frontEndBuild_Main_Add_After_MainBuild_Fcn( tasksTemp )
 
 	println("frontEndBuild_ForDevelopment. tasksTemp:" )

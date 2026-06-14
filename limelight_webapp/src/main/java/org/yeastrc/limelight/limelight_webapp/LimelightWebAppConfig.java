@@ -24,7 +24,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.AllControllers_SpringHandlerInterceptor;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.All_Page_Controllers_SpringHandlerInterceptor;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_interceptor_handlers.Temp_AllControllersAccessControl_SpringHandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.resource.EncodedResourceResolver;
 
 /**
  * Configure paths for Controller Interceptor class AllControllersAccessControl_SpringHandlerInterceptor
@@ -71,5 +72,19 @@ public class LimelightWebAppConfig implements WebMvcConfigurer {
 //		.addPathPatterns("/**")
 //		.excludePathPatterns( AllControllersAccessControl_SpringHandlerInterceptor.excludeInterceptorPaths );
 	}
+	
+
+	  @Override
+	  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+	      registry.addResourceHandler("/static/**")
+	              .addResourceLocations("/static/")   // servlet-context-relative = WAR doc root
+	              // resourceChain(false): no resolution caching, so bundles regenerated while the
+	              // app is running are always re-resolved/re-read fresh. Still auto-appends the
+	              // terminating PathResourceResolver. (false because there is no separate prod/dev
+	              // runtime build; the WAR is rebuilt and bundles may change under a running server.)
+	              .resourceChain(false)
+	              .addResolver(new EncodedResourceResolver());
+	  }
+
 	
 }
