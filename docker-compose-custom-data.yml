@@ -64,6 +64,7 @@ services:
     image: mriffle/limelight-importer:7
     container_name: limelight-importer
     restart: always
+    stop_grace_period: 60s
     depends_on:
       - db
     volumes:
@@ -81,6 +82,7 @@ services:
     image: mriffle/limelight-webapp:7
     container_name: limelight-webapp
     restart: always
+    stop_grace_period: 60s
     depends_on:
       - db
     volumes:
