@@ -32,9 +32,38 @@ plugins {
 	id 'java'
 	id 'war'
 	id 'eclipse'
+    id 'eclipse-wtp' //  Required to manipulate Eclipse Web Tools Platform settings
 	id "org.springframework.boot" version "4.0.5"
 	id "io.spring.dependency-management" version "1.1.7"
 	id 'org.ajoberstar.grgit' version '5.3.3'
+}
+
+eclipse {
+    wtp {
+        facet {
+            // Pin the WTP facets for Eclipse to: Dynamic Web Module 6.0 (WTP's
+            // newest; jakarta namespace, matches our real Servlet 6.1 runtime)
+            // and Java 25.
+            //
+            // The eclipse-wtp plugin auto-injects facets (jst.web 6.1 from the
+            // jakarta.servlet-api dependency, jst.java 21) AFTER this block
+            // evaluates, so filtering 'facets' here does nothing. Instead, add
+            // the versions we want and strip the wrong-version duplicates at
+            // merge time (which runs last). Guard on version != null so the
+            // '<fixed facet="jst.java"/>' entry is preserved.
+            facet name: 'jst.web',  version: '6.0'
+            facet name: 'jst.java', version: '25'
+            file {
+                whenMerged { wtpFacet ->
+                    wtpFacet.facets.removeAll {
+                        it.version != null &&
+                        ( (it.name == 'jst.web'  && it.version != '6.0') ||
+                          (it.name == 'jst.java' && it.version != '25') )
+                    }
+                }
+            }
+        }
+    }
 }
 
 repositories {
