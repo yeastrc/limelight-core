@@ -98,7 +98,7 @@ configurations.all {
 
 //  Build 'compile' string for 'org.yeastrc:limelight-import-api:###'
 
- String limelight_import_version = project.file('../Gradle_limelight-import-api_version_for_Gradle.txt').getText('UTF-8');
+ String limelight_import_version = project.file('../Gradle_limelight-import-api_version_for_Gradle.txt').getText('UTF-8').trim();
 
 //   Prev used: String limelight_import_version = "#.#.#";
  
