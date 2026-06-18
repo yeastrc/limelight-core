@@ -549,7 +549,7 @@ public class SubmitUploadMain {
 
 					if ( ! submitterSameMachine ) {
 
-						String file_SHA256_Hash = compute_SHA256_Hash_ForFile( limelightXMLFile );
+						String file_SHA256_Hash = compute_SHA256_Hash_ForFile( fastaFile );
 						
 						SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
 
@@ -633,7 +633,7 @@ public class SubmitUploadMain {
 
 						if ( ! submitterSameMachine ) {
 
-							String file_SHA256_Hash = compute_SHA256_Hash_ForFile( limelightXMLFile );
+							String file_SHA256_Hash = compute_SHA256_Hash_ForFile( scanFile );
 							
 							SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
 
@@ -712,7 +712,7 @@ public class SubmitUploadMain {
 
 						if ( ! submitterSameMachine ) {
 
-							String file_SHA256_Hash = compute_SHA256_Hash_ForFile( limelightXMLFile );
+							String file_SHA256_Hash = compute_SHA256_Hash_ForFile( genericOtherFile );
 							
 							SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
 
