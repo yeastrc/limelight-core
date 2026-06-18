@@ -486,7 +486,7 @@ public class SubmitUploadMain {
 						webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
 						webserviceRequest.setFilename( limelightXMLFile.getName() );
 						
-						webserviceRequest.setFileSHA256Hash( file_SHA256_Hash + "FAKE" );
+						webserviceRequest.setFileSHA256Hash( file_SHA256_Hash );
 						
 						webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( limelightXMLFile.getAbsolutePath() );
 						webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( limelightXMLFile.getCanonicalPath() );
