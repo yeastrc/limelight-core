@@ -1249,6 +1249,12 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 
 							if ( ! sha256_Of_PostBody.equals( webserviceRequestHeaderContents.getFileSHA256Hash() ) ) {
 
+								
+								log.warn( "SHA256 Mismatch: webserviceResult.setUploadedFileSHA256HashNotMatchParamFileSHA256Hash(true); webserviceRequestHeaderContents.getFileSHA256Hash():  " 
+										+ webserviceRequestHeaderContents.getFileSHA256Hash() 
+										+ ", sha256_Of_PostBody: " + sha256_Of_PostBody );
+
+								
 								//  Return Error -  Status Code 400
 								webserviceResult.setStatusSuccess(false);
 								
