@@ -17,9 +17,9 @@
 */
 package org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Response object for POST to Webservice Project_UploadData_UploadFile_Submit_RestWebserviceController

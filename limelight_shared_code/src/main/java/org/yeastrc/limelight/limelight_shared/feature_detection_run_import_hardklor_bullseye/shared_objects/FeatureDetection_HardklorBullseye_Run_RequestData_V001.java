@@ -1,9 +1,9 @@
 package org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.shared_objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * "Run" request.   Stored in DB:  import_and_pipeline_run_tracking_tbl.request_data
