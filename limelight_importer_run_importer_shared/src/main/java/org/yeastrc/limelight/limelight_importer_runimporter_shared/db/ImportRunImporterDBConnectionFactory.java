@@ -26,8 +26,6 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	
 	private static final String DEFAULT_DATABASE_NAME = "limelight";
 	
-	private static final String DATABASE_DRIVER_CLASS = "com.mysql.jdbc.Driver";
-	
 	private static final String _DEFAULT_PORT = "3306";
 	
 	private static final int COMMIT_AFTER_100_INSERTS = 100;
@@ -232,10 +230,10 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 			}
 		}
 
-		if( _dataSourceMain == null && _dataSourceBatchInserts == null ) {
-			Class.forName( DATABASE_DRIVER_CLASS );
-		}
-		
+		//  No manual driver load: MySQL Connector/J 8 auto-registers via the JDBC SPI and DBCP2
+		//  resolves the driver from the JDBC URL. (Class.forName(com.mysql.jdbc.Driver) removed -
+		//  that class name is deprecated in Connector/J 8 and the load is unnecessary.)
+
 		initialized = true;
 	}
 	
