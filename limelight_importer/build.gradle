@@ -129,11 +129,19 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
 	
 
-	// JAXB dependencies (Required for Java 11+)
+	// JAXB 4.0 (jakarta.xml.bind) - the deserializer runtime. A 4.0 runtime binds the published
+	// jakarta limelight-import-api classes (LimelightInput, built at JAXB 3.0).
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.6'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
+
+	// javax JAXB 2 (javax.xml.bind) - still required by the bundled yeastrc client-connector jars
+	// (file_object_store + spectral_storage_*), which marshal/unmarshal with javax JAXB. Uses the
+	// OLD javax.xml.bind:jaxb-api coordinate + com.sun.xml.bind:jaxb-impl runtime so both runtimes
+	// coexist with the jakarta jaxb-runtime above (distinct Maven coordinates, no version collision).
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
 	
 
 	//  NOT FOUND  in mavenCentral()
