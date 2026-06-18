@@ -96,14 +96,6 @@ jobs:
         context: docker/submit-import
         push: true
         tags: ${{ steps.meta_submit_import.outputs.tags }}
-
-  github_deploy:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
     - name: Create docker-compose archive
       run: |
         tar -cvzf ./docker-compose-files.tgz docker-compose.yml docker-compose-custom-data.yml database_scripts/install/* database_scripts/version_upgrades/* docker/env-sample
@@ -123,5 +115,13 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: ./docker-compose-files.zip
         asset_name: docker-compose-files.zip
+        tag: ${{ github.ref }}
+        overwrite: true
+    - name: Upload limelightSubmitImport.jar to github release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ./deploy/limelightSubmitImport.jar
+        asset_name: limelightSubmitImport.jar
         tag: ${{ github.ref }}
         overwrite: true
