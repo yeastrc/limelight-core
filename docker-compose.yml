@@ -27,7 +27,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: limelight
   spectr:
-    image: mriffle/spectr:1.5.2
+    image: mriffle/spectr:2
     container_name: limelight-spectr
     restart: always
     environment:
@@ -37,7 +37,7 @@ services:
       - spectr_storage:/data/storage
       - limelight_upload:/data/limelight_upload
   file-object-store:
-    image: mriffle/file-object-store:1
+    image: mriffle/file-object-store:2
     container_name: limelight-file-object-store
     restart: always
     volumes:
