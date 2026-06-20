@@ -67,23 +67,23 @@ dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 		
 	// https://mvnrepository.com/artifact/commons-io/commons-io
-	implementation 'commons-io:commons-io:2.11.0'
+	implementation 'commons-io:commons-io:2.18.0'
 
 	
 	//  Logging
 	
-	implementation 'org.apache.logging.log4j:log4j-api:2.17.2'
-	implementation 'org.apache.logging.log4j:log4j-core:2.17.2'
-	implementation 'org.apache.logging.log4j:log4j-web:2.17.2' //  Needed for Web app
+	implementation 'org.apache.logging.log4j:log4j-api:2.24.3'
+	implementation 'org.apache.logging.log4j:log4j-core:2.24.3'
+	implementation 'org.apache.logging.log4j:log4j-web:2.24.3' //  Needed for Web app
 	
 	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
-	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.24.3'
 	
 	//  Jakarta Commons Logging to SLF4J
 	implementation 'org.slf4j:jcl-over-slf4j:1.7.36'
 	
 	//  Log4j 1 to 2 bridge
-	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.17.2'
+	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.24.3'
 		
 		
 	//  Required for dependent project within this repo 'limelight_submit_import_client_connector' 	
