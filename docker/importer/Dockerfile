@@ -1,4 +1,4 @@
-FROM amazoncorretto:25-alpine-jdk
+FROM eclipse-temurin:25-jre
 
 ADD limelight_importer_config_file.properties  /usr/local/bin/
 ADD run_importer_config_file.properties  /usr/local/bin/
