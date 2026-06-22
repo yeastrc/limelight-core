@@ -100,9 +100,9 @@ dependencies {
 
 	// JAXB dependencies (Required for Java 11+)
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.6'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
 	
 
 	//  NOT FOUND  in mavenCentral()

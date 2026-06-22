@@ -37,8 +37,12 @@ dependencies {
 	//////////////////////////////
 	
 	// JAXB dependencies (Required for Java 11+)
+	// 'api' (not 'implementation') so the jakarta.xml.bind-api is on consumers' COMPILE classpath:
+	// this module's exported DTO classes are jakarta-annotated (@XmlAccessorType(XmlAccessType.FIELD)),
+	// so consumers (importer_run_importer_shared, importer, ...) need the api jar to resolve those
+	// annotation enum constants at compile time (otherwise javac warns "unknown enum constant").
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+	api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
 	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
 	
