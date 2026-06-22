@@ -22,3 +22,6 @@ limelight_send_extra_email_on_import_finish_success_or_error_configuration.prope
 limelight_parallelstream_java_processing_enable_configuration.properties
 
 
+
+#  file only added in for some builds
+user_mgmt_config.properties
