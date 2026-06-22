@@ -2555,6 +2555,8 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                     if ( plotlyTrace_Etc_Result ) {
 
                         trace_RT_Intensity_Line_ForEach_Unique_IsotopeMass.push( plotlyTrace_Etc_Result.plotly_TraceData )
+
+                        areaUnderCurve_Total += plotlyTrace_Etc_Result.areaUnderCurve_SingleTrace
                     }
                 }
             }
