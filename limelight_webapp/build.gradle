@@ -201,11 +201,6 @@ dependencies {
 	
 	//   Apache Commons
 	
-	//  Old StringUtils
-	// https://mvnrepository.com/artifact/commons-lang/commons-lang
-	implementation 'commons-lang:commons-lang:2.6'
-
-	//  New StringUtils
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 	
