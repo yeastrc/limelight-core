@@ -54,7 +54,7 @@ jobs:
         password: ${{ secrets.QUAY_PASSWORD }}
     - name: Docker meta for webapp
       id: meta_webapp
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v6
       with:
         images: |
           ${{ env.DOCKER_REPO_WEBAPP }}
@@ -70,7 +70,7 @@ jobs:
         tags: ${{ steps.meta_webapp.outputs.tags }}
     - name: Docker meta for importer
       id: meta_importer
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v6
       with:
         images: |
           ${{ env.DOCKER_REPO_IMPORTER }}
@@ -86,7 +86,7 @@ jobs:
         tags: ${{ steps.meta_importer.outputs.tags }}
     - name: Docker meta for submit import
       id: meta_submit_import
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v6
       with:
         images: |
           ${{ env.DOCKER_REPO_SUBMIT_IMPORT }}
