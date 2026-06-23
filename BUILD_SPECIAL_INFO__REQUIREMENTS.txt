@@ -2,12 +2,8 @@
 
 Requirements for building.
 
-Java 8+   Java 11 works  Java > 11 should work
+The build environment (Java, Node, NPM versions and tooling) is defined by the
+Limelight build Docker image. See that repository for the current requirements
+and for building:
 
-Node v20
-NPM  v10.3+
-
-
-One option is to use Docker using
 https://github.com/yeastrc/limelight-build-docker
-
