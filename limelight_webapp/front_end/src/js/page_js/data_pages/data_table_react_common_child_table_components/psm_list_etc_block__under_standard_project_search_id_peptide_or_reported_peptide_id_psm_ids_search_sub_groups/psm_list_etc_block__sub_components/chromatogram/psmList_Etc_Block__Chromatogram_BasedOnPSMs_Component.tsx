@@ -5,6 +5,18 @@
  * One Overall assumption is that all PSMs will map to Reported Peptides with the same or very similar Peptide sequences.
  *
  * 'console.log' is commented out
+ *
+ *  !!!  PARALLEL FILE — mirror changes with the sibling chromatogram component:
+ *       psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component.tsx  <->  featureDetection_ViewPage__Chromatogram_Component.tsx
+ *
+ *  Byte-identical pieces are already factored into page_js/data_pages/chromatogram_common/
+ *  (helpers, option enums/constants, the option-selector components, the RT min/max overlay
+ *  components).  The code REMAINING in these two files is intentionally per-page (PSM vs
+ *  feature-detection data), but several parts are still structurally PARALLEL — the
+ *  Create_Single_PlotlyTrace trace/AUC builder, the monoisotopic+isotope accumulation loop,
+ *  the Plotly render + click wiring, and the loading/error/message UI.  When you change one of
+ *  those here, mirror it in the sibling file (and consider whether it can now move into
+ *  chromatogram_common/).  See chromatogram_common/EXTRACTION_PLAN.md.
  */
 
 
@@ -34,8 +46,11 @@ import {
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers";
 import { PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/js/psmList_ForProjectSearchIdReportedPeptideId_GetDataFromServer";
 import { limelight__Sort_ArrayOfNumbers_SortArrayInPlace } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
-import { C13_MASS_DELTA, PeptideMassCalculator } from "page_js/data_pages/peptide_mass_utils/PeptideMassCalculator";
-import { psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus";
+import { PeptideMassCalculator } from "page_js/data_pages/peptide_mass_utils/PeptideMassCalculator";
+import { chromatogram_Common_Helpers__ISOTOPE_MAX__FOR_CHART_TRACES, chromatogram_Common_Helpers__ISOTOPE_PLOT_TRACE_COLORS, chromatogram_Common_Helpers__compute_Isotope_M_Over_Z_Addition_For_Isotope_Number, chromatogram_Common_Helpers__areaUnderCurve_Display_FormattingFunction, chromatogram_Common_Helpers__compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus, chromatogram_Common_Helpers__areaUnderCurve_TrapezoidBetweenPoints } from "page_js/data_pages/chromatogram_common/chromatogram_Common_Helpers";
+import { chromatogram_Common_Options__PlotType_IonCurrent_VS_Ions_Select_Enum, chromatogram_Common_Options__plotType_IonCurrent_VS_Ions_Select_DEFAULT, chromatogram_Common_Options__ScanPeakSelect_Enum, chromatogram_Common_Options__scanPeakSelect_DEFAULT, chromatogram_Common_Options__SmoothingOption_Enum, chromatogram_Common_Options__smoothingOption_Selection_DEFAULT, chromatogram_Common_Options__ChartCreate__IonCurrent__IonCount__Enum, chromatogram_Common_Options__MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues, chromatogram_Common_Options__DEFAULT_VALUE__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues, chromatogram_Common_Options__SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues, chromatogram_Common_Options__PADDING_TOP_ABOVE_HELP_SYMBOL, chromatogram_Common_Options__MARGIN_LEFT_AFTER_HELP_SYMBOL } from "page_js/data_pages/chromatogram_common/chromatogram_Common_Options";
+import { Chromatogram_Common_OptionSelector_Components__PlotType_IonCurrent_VS_Ions_Component, Chromatogram_Common_OptionSelector_Components__PeakSelection_Component, Chromatogram_Common_OptionSelector_Components__SmoothingSelection_Component, Chromatogram_Common_OptionSelector_Components__MS1_Window_Size_Selection_Component } from "page_js/data_pages/chromatogram_common/chromatogram_Common_OptionSelector_Components";
+import { Chromatogram_Common_RetentionTimeOverlay_Components__RetentionTime_Min_Max_UserEditable_Component } from "page_js/data_pages/chromatogram_common/chromatogram_Common_RetentionTimeOverlay_Components";
 import { SpectrumRetrieveAndDisplay_Use_lorikeet } from "page_js/data_pages/data_pages_subparts_other/spectrumRetrieveAndDisplay_Use_lorikeet";
 import { CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
 import { CommonData_LoadedFromServer_CommonAcrossSearches__ReportedPeptideSequences_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_common_across_searches_sub_parts__returned_objects/commonData_LoadedFromServer_CommonAcrossSearches__ReportedPeptideSequences";
@@ -76,30 +91,21 @@ const _CHART_WIDTH = 800
 const _CHART_HEIGHT = 600
 
 
-//   !!!  IMPORTANT:  The number of elements in '_ISOTOPE_PLOT_TRACE_COLORS' MUST be equal to '_ISOTOPE_MAX__FOR_CHART_TRACES + 1'
+//   !!!  IMPORTANT:  The number of elements in 'chromatogram_Common_Helpers__ISOTOPE_PLOT_TRACE_COLORS' MUST be equal to 'chromatogram_Common_Helpers__ISOTOPE_MAX__FOR_CHART_TRACES + 1'
 
-//    !!!   NUMBER OF ISOTOPES to DISPLAY
-const _ISOTOPE_MAX__FOR_CHART_TRACES = 3  //  Show Lines in Plot for 'Monoisotopic' and then +1, +2, ... Up To Isotope Max
 
-const _ISOTOPE_PLOT_TRACE_COLORS = [
-    "UNUSED",  // Start with "UUSED" since isotope numbers start at 1
-    "rgb(255, 127, 14)",
-    "rgb(44, 160, 44)",
-    "#3BB2C4"
-]
+//  chromatogram_Common_Helpers__ISOTOPE_PLOT_TRACE_COLORS moved to chromatogram_common/chromatogram_Common_Helpers
 
 {
-    if ( ( _ISOTOPE_MAX__FOR_CHART_TRACES + 1 ) !== _ISOTOPE_PLOT_TRACE_COLORS.length ) {
-        const msg = "The number of elements in '_ISOTOPE_PLOT_TRACE_COLORS' MUST be equal to '_ISOTOPE_MAX__FOR_CHART_TRACES + 1'"
+    if ( ( chromatogram_Common_Helpers__ISOTOPE_MAX__FOR_CHART_TRACES + 1 ) !== chromatogram_Common_Helpers__ISOTOPE_PLOT_TRACE_COLORS.length ) {
+        const msg = "The number of elements in 'chromatogram_Common_Helpers__ISOTOPE_PLOT_TRACE_COLORS' MUST be equal to 'chromatogram_Common_Helpers__ISOTOPE_MAX__FOR_CHART_TRACES + 1'"
         console.warn( msg )
         window.alert(msg)
         throw Error(msg)
     }
 }
 
-const _PADDING_TOP_ABOVE_HELP_SYMBOL = 3
 
-const _MARGIN_LEFT_AFTER_HELP_SYMBOL = 3
 
 const _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY = 4
 
@@ -142,64 +148,15 @@ limelight__Sort_ArrayOfNumbers_SortArrayInPlace( _OPEN_MODIFICATION_MASS_DECIMAL
 }
 
 const _MAX_VALUE_FOR_GET_FROM_SERVER__retentionTime_Seconds_ExtendRange_AddSubtract_ToMinMaxValues = 30;
-const _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues = 25;
-
-const _DEFAULT_VALUE__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues = 15
+//  _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM... + _DEFAULT_VALUE__M_Over_Z_PPM... moved to chromatogram_common/chromatogram_Common_Options
 
 const _MAX_GET_SCAN_DATA_WITH_PEAKS_PARALLEL_BATCH_SIZE = 3;  //  The common Webservice call code has a max parallel call so anything larger than that will just queue there which isn't good.
 
-const _SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues = [
-    10,
-    _DEFAULT_VALUE__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues,
-    _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues  // MUST include _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues as LAST and Max value
-]
-
-{ //  Sort and validate _SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues
-
-    if ( ! ( _SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues.length > 0 ) ) {
-        const msg = "( ! ( _SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues.length > 0 ) )"
-        console.warn(msg)
-        throw Error(msg)
-    }
-    limelight__Sort_ArrayOfNumbers_SortArrayInPlace( _SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues )
-    if ( _SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues[ _SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues.length - 1 ] != _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues ) {
-        const msg = "Max value of _SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues is NOT _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues.  Required for correct get data from server"
-        console.warn(msg)
-        throw Error(msg)
-    }
-}
+//  _SELECTION_VALUES__M_Over_Z_PPM... + its sort/validate moved to chromatogram_common/chromatogram_Common_Options
 
 let maxScanDataWithPeaksReturnCount__FromServer: number  // Will be retrieved at start of each get Data for SearchScanFileId
 
-enum PlotType_IonCurrent_VS_Ions_Select_Enum {
-    ION_CURRENT = "ION_CURRENT",
-    IONS = "IONS"
-}
-
-const _plotType_IonCurrent_VS_Ions_Select_DEFAULT = PlotType_IonCurrent_VS_Ions_Select_Enum.ION_CURRENT  //  Set to default of ION_CURRENT
-
-enum ScanPeakSelect_Enum {
-    MAX_PEAK_INTENSITY = "MAX_PEAK_INTENSITY",
-    PEAK_MZ_CENTER_OF_MZ_RANGE = "PEAK_MZ_CENTER_OF_MZ_RANGE"
-}
-
-const _scanPeakSelect_DEFAULT = ScanPeakSelect_Enum.MAX_PEAK_INTENSITY  //  Set to default of MAX_PEAK_INTENSITY
-
-enum SmoothingOption_Enum {
-    NONE = "NONE",
-    LOWESS = "LOWESS",
-    SAVITZKY_GOLAY = "SAVITZKY_GOLAY"
-}
-
-const _smoothingOption_Selection_DEFAULT = SmoothingOption_Enum.SAVITZKY_GOLAY;
-
-
-
-
-enum ChartCreate__IonCurrent__IonCount__Enum {
-    ION_CURRENT = "ION_CURRENT",
-    ION_COUNT = "ION_COUNT"
-}
+//  Chart-option enums + defaults moved to chromatogram_common/chromatogram_Common_Options
 
 
 
@@ -293,15 +250,15 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
     //  Single Selected
     private _ionSelection__reportedPeptide_OpenModMass_Charge_Selection: Internal__Selection_ReportedPeptide_OpenModMass_Charge
 
-    private _scanPeakSelect: ScanPeakSelect_Enum = _scanPeakSelect_DEFAULT  //  Requires Same Default in the Scan Peak Select Component  Internal__RetentionTime_Min_Max_UserEditable_Component
+    private _scanPeakSelect: chromatogram_Common_Options__ScanPeakSelect_Enum = chromatogram_Common_Options__scanPeakSelect_DEFAULT  //  Requires Same Default in the Scan Peak Select Component  Chromatogram_Common_RetentionTimeOverlay_Components__RetentionTime_Min_Max_UserEditable_Component
 
-    private _plotType_IonCurrent_VS_Ions_Select: PlotType_IonCurrent_VS_Ions_Select_Enum = _plotType_IonCurrent_VS_Ions_Select_DEFAULT  //  Requires Same Default in the Internal Component with radio buttons
+    private _plotType_IonCurrent_VS_Ions_Select: chromatogram_Common_Options__PlotType_IonCurrent_VS_Ions_Select_Enum = chromatogram_Common_Options__plotType_IonCurrent_VS_Ions_Select_DEFAULT  //  Requires Same Default in the Internal Component with radio buttons
 
-    private _smoothingOption_Selection: SmoothingOption_Enum = _smoothingOption_Selection_DEFAULT  //  Requires Same Default in the Smoothing Select Component  Internal__SmoothingSelection_Component
+    private _smoothingOption_Selection: chromatogram_Common_Options__SmoothingOption_Enum = chromatogram_Common_Options__smoothingOption_Selection_DEFAULT  //  Requires Same Default in the Smoothing Select Component  Chromatogram_Common_OptionSelector_Components__SmoothingSelection_Component
 
 
-    //  Set default. Requires Same Default in the Component Internal__MS1_Window_Size_Selection_Component
-    private _precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection = _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues
+    //  Set default. Requires Same Default in the Component Chromatogram_Common_OptionSelector_Components__MS1_Window_Size_Selection_Component
+    private _precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection = chromatogram_Common_Options__MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues
 
 
     //  Set to default
@@ -1605,8 +1562,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                 const modificationMasses = Array.from( modificationMasses_VariableAndStatic ) // make copy
                                 modificationMasses.push( openModMass )
                                 const m_over_z_Peptide_And_Mods = PeptideMassCalculator.calculateMZ( peptideSequence_String, modificationMasses, for_Charge );
-                                const ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus = psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus({
-                                    ppm_ExtendRange_AddSubtract_ToMinMaxValues: _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues,  //  Max value for loading data from server
+                                const ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus = chromatogram_Common_Helpers__compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus({
+                                    ppm_ExtendRange_AddSubtract_ToMinMaxValues: chromatogram_Common_Options__MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues,  //  Max value for loading data from server
                                     m_Over_Z_Mass: m_over_z_Peptide_And_Mods
                                 })
                                 m_over_Z_Range_Min = m_over_z_Peptide_And_Mods - ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus
@@ -1622,12 +1579,12 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                 modificationMasses.push( openModMass )
                                 const m_over_z_Peptide_And_Mods = PeptideMassCalculator.calculateMZ( peptideSequence_String, modificationMasses, for_Charge );
 
-                                const isotope_M_Over_Z_Addition = _compute_Isotope_M_Over_Z_Addition_For_Isotope_Number({ isotope_Number: _ISOTOPE_MAX__FOR_CHART_TRACES, charge: for_Charge });
+                                const isotope_M_Over_Z_Addition = chromatogram_Common_Helpers__compute_Isotope_M_Over_Z_Addition_For_Isotope_Number({ isotope_Number: chromatogram_Common_Helpers__ISOTOPE_MAX__FOR_CHART_TRACES, charge: for_Charge });
 
                                 const m_over_z_Peptide_And_Mods_Plus_2_Isotopes = m_over_z_Peptide_And_Mods + isotope_M_Over_Z_Addition;
 
-                                const ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus = psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus({
-                                    ppm_ExtendRange_AddSubtract_ToMinMaxValues: _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues,  //  Max value for loading data from server
+                                const ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus = chromatogram_Common_Helpers__compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus({
+                                    ppm_ExtendRange_AddSubtract_ToMinMaxValues: chromatogram_Common_Options__MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues,  //  Max value for loading data from server
                                     m_Over_Z_Mass: m_over_z_Peptide_And_Mods_Plus_2_Isotopes
                                 })
                                 m_over_Z_Range_Max = m_over_z_Peptide_And_Mods_Plus_2_Isotopes + ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus
@@ -1651,12 +1608,12 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                         for ( const charge of psmChargeValues_Array ) {
 
                             const m_over_z_Peptide_And_Mods = PeptideMassCalculator.calculateMZ( peptideSequence_String, modificationMasses_VariableAndStatic, charge );
-                            const ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus = psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus({
-                                ppm_ExtendRange_AddSubtract_ToMinMaxValues: _MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues,  //  Max value for loading data from server
+                            const ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus = chromatogram_Common_Helpers__compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus({
+                                ppm_ExtendRange_AddSubtract_ToMinMaxValues: chromatogram_Common_Options__MAX_VALUE_FOR_GET_FROM_SERVER__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues,  //  Max value for loading data from server
                                 m_Over_Z_Mass: m_over_z_Peptide_And_Mods
                             })
 
-                            const isotope_M_Over_Z_Addition = _compute_Isotope_M_Over_Z_Addition_For_Isotope_Number({ isotope_Number: _ISOTOPE_MAX__FOR_CHART_TRACES, charge: charge });
+                            const isotope_M_Over_Z_Addition = chromatogram_Common_Helpers__compute_Isotope_M_Over_Z_Addition_For_Isotope_Number({ isotope_Number: chromatogram_Common_Helpers__ISOTOPE_MAX__FOR_CHART_TRACES, charge: charge });
 
                             const m_over_z_Peptide_And_Mods_Plus_MAX_Isotopes = m_over_z_Peptide_And_Mods + isotope_M_Over_Z_Addition;
 
@@ -1934,7 +1891,7 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
             if ( ! this._show__Plot_Ion_Count_Option_Div ) {
                 //  Reset to since not displaying the radio button options
-                this._plotType_IonCurrent_VS_Ions_Select = _plotType_IonCurrent_VS_Ions_Select_DEFAULT
+                this._plotType_IonCurrent_VS_Ions_Select = chromatogram_Common_Options__plotType_IonCurrent_VS_Ions_Select_DEFAULT
             }
         }
 
@@ -2043,7 +2000,7 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
                                         this._scanFilename_SearchScanFileId_Array.length > 1 ? (
 
-                                            <div style={ { paddingTop: _PADDING_TOP_ABOVE_HELP_SYMBOL } }>
+                                            <div style={ { paddingTop: chromatogram_Common_Options__PADDING_TOP_ABOVE_HELP_SYMBOL } }>
                                                 <div style={ { marginBottom: 5 } }>
                                                     <span>Scan Filename:</span>
 
@@ -2115,7 +2072,7 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                         ) : null
                                     ) : null }
 
-                                    <div style={ { paddingTop: _PADDING_TOP_ABOVE_HELP_SYMBOL } }>
+                                    <div style={ { paddingTop: chromatogram_Common_Options__PADDING_TOP_ABOVE_HELP_SYMBOL } }>
                                         <div style={ { marginBottom: 5 } }>
                                             <span>Select ion:</span>
 
@@ -2330,10 +2287,10 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
                                     { this._show__Plot_Ion_Count_Option_Div ? (
 
-                                        <div style={ { paddingTop: _PADDING_TOP_ABOVE_HELP_SYMBOL } }>
+                                        <div style={ { paddingTop: chromatogram_Common_Options__PADDING_TOP_ABOVE_HELP_SYMBOL } }>
                                             <div style={ { marginBottom: 5 } }>
 
-                                                <Internal__PlotType_IonCurrent_VS_Ions_Component
+                                                <Chromatogram_Common_OptionSelector_Components__PlotType_IonCurrent_VS_Ions_Component
 
                                                     onChange_Callback={ (newSelectionValue) => { try {
 
@@ -2355,10 +2312,10 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                         </div>
                                     ) : null }
 
-                                    <div style={ { paddingTop: _PADDING_TOP_ABOVE_HELP_SYMBOL } }>
+                                    <div style={ { paddingTop: chromatogram_Common_Options__PADDING_TOP_ABOVE_HELP_SYMBOL } }>
                                         <div style={ { marginBottom: 5 } }>
 
-                                            <Internal__PeakSelection_Component
+                                            <Chromatogram_Common_OptionSelector_Components__PeakSelection_Component
                                                 onChange_Callback={ (newSelectionValue) => { try {
 
                                                     this._scanPeakSelect = newSelectionValue
@@ -2378,9 +2335,9 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                     </div>
 
 
-                                    <div style={ { paddingTop: _PADDING_TOP_ABOVE_HELP_SYMBOL } }>
+                                    <div style={ { paddingTop: chromatogram_Common_Options__PADDING_TOP_ABOVE_HELP_SYMBOL } }>
                                         <div style={ { marginBottom: 5 } }>
-                                            <Internal__SmoothingSelection_Component
+                                            <Chromatogram_Common_OptionSelector_Components__SmoothingSelection_Component
                                                 onChange_Callback={ (newSelectionValue) => { try {
 
                                                     this._smoothingOption_Selection = newSelectionValue
@@ -2400,10 +2357,10 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                     </div>
 
 
-                                    <div style={ { paddingTop: _PADDING_TOP_ABOVE_HELP_SYMBOL } }>
+                                    <div style={ { paddingTop: chromatogram_Common_Options__PADDING_TOP_ABOVE_HELP_SYMBOL } }>
 
                                         <div style={ { marginBottom: 5 } }>
-                                            <Internal__MS1_Window_Size_Selection_Component
+                                            <Chromatogram_Common_OptionSelector_Components__MS1_Window_Size_Selection_Component
 
                                                 onChange_Callback={ (newSelectionValue) => { try {
 
@@ -2424,7 +2381,7 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                     </div>
 
                                     <div style={ { marginBottom: 5 } }>
-                                        <Internal__RetentionTime_Min_Max_UserEditable_Component
+                                        <Chromatogram_Common_RetentionTimeOverlay_Components__RetentionTime_Min_Max_UserEditable_Component
                                             force_SetTo_ValueFromParent={ this._force_SetTo_ValueFromParent__FOR__Internal__RetentionTime_Min_Max_UserEditable_Component }  // On object reference change, the input values will be set to the values from Parent
 
                                             retentionTime_Minutes_Range_ForChart_Min__ValueFromParent={ this._retentionTime_Minutes_Range_ForChart_Min_Max.retentionTime_Minutes_Range_Min }
@@ -2728,7 +2685,7 @@ interface Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Componen
 
     triggerPlotUpdate_Object: object
 
-    plotType_IonCurrent_VS_Ions_Select: PlotType_IonCurrent_VS_Ions_Select_Enum
+    plotType_IonCurrent_VS_Ions_Select: chromatogram_Common_Options__PlotType_IonCurrent_VS_Ions_Select_Enum
 
     open_modification_mass_decimal_place_rounding__10_POWER___for_user_selection: number
 
@@ -2741,9 +2698,9 @@ interface Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Componen
     //  Single Selected Reported Peptide Open Mod Mass Charge
     selection_ReportedPeptide_OpenModMass_Charge: Internal__Selection_ReportedPeptide_OpenModMass_Charge
 
-    scanPeakSelect: ScanPeakSelect_Enum
+    scanPeakSelect: chromatogram_Common_Options__ScanPeakSelect_Enum
 
-    smoothingOption_Selection: SmoothingOption_Enum
+    smoothingOption_Selection: chromatogram_Common_Options__SmoothingOption_Enum
 
     precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection: number
 
@@ -2975,11 +2932,11 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             return 0;
         })
 
-        if ( this.props.plotType_IonCurrent_VS_Ions_Select === PlotType_IonCurrent_VS_Ions_Select_Enum.ION_CURRENT ) {
+        if ( this.props.plotType_IonCurrent_VS_Ions_Select === chromatogram_Common_Options__PlotType_IonCurrent_VS_Ions_Select_Enum.ION_CURRENT ) {
 
             this._createOnMount_And_OnUpdate__SpecificChart( {
 
-                chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_CURRENT,
+                chartCreate__IonCurrent__IonCount__Enum: chromatogram_Common_Options__ChartCreate__IonCurrent__IonCount__Enum.ION_CURRENT,
 
                 retentionTime_Minutes_Range_ForChart_Min,
                 retentionTime_Minutes_Range_ForChart_Max,
@@ -2990,7 +2947,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         } else {
             this._createOnMount_And_OnUpdate__SpecificChart( {
 
-                chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT,
+                chartCreate__IonCurrent__IonCount__Enum: chromatogram_Common_Options__ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT,
 
                 retentionTime_Minutes_Range_ForChart_Min,
                 retentionTime_Minutes_Range_ForChart_Max,
@@ -3019,7 +2976,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
             psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
         } : {
-            chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum
+            chartCreate__IonCurrent__IonCount__Enum: chromatogram_Common_Options__ChartCreate__IonCurrent__IonCount__Enum
 
             retentionTime_Minutes_Range_ForChart_Min: number
             retentionTime_Minutes_Range_ForChart_Max: number
@@ -3146,7 +3103,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
                     const plotlyTrace_Label = "Monoisotopic";
 
-                    const ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus = psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus({
+                    const ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus = chromatogram_Common_Helpers__compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus({
                         ppm_ExtendRange_AddSubtract_ToMinMaxValues: this.props.precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection,
                         m_Over_Z_Mass: m_over_z_Peptide_And_Mods
                     })
@@ -3204,17 +3161,17 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                     }
                 }
 
-                //  LOOP For Isotopes to Display: up to _ISOTOPE_MAX__FOR_CHART_TRACES
+                //  LOOP For Isotopes to Display: up to chromatogram_Common_Helpers__ISOTOPE_MAX__FOR_CHART_TRACES
 
-                for ( let isotope_Number = 1; isotope_Number <= _ISOTOPE_MAX__FOR_CHART_TRACES; isotope_Number++ ) {  //  Window:  m/z window for main m/z + X isotope
+                for ( let isotope_Number = 1; isotope_Number <= chromatogram_Common_Helpers__ISOTOPE_MAX__FOR_CHART_TRACES; isotope_Number++ ) {  //  Window:  m/z window for main m/z + X isotope
 
                     const plotlyTrace_Label = "13C x " + isotope_Number
 
-                    const isotope_M_Over_Z_Addition = _compute_Isotope_M_Over_Z_Addition_For_Isotope_Number({ isotope_Number, charge: this.props.selection_ReportedPeptide_OpenModMass_Charge.charge });
+                    const isotope_M_Over_Z_Addition = chromatogram_Common_Helpers__compute_Isotope_M_Over_Z_Addition_For_Isotope_Number({ isotope_Number, charge: this.props.selection_ReportedPeptide_OpenModMass_Charge.charge });
 
                     const m_over_z_Peptide_And_Mods__Plus_X_Isotope = m_over_z_Peptide_And_Mods + isotope_M_Over_Z_Addition
 
-                    const ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus = psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus( {
+                    const ppm_Mass_For_precursor_M_Over_Z_Max_PlusMinus = chromatogram_Common_Helpers__compute_PPM_Mass_For_Precursor_M_Over_Z_PlusMinus( {
                         ppm_ExtendRange_AddSubtract_ToMinMaxValues: this.props.precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection,
                         m_Over_Z_Mass: m_over_z_Peptide_And_Mods__Plus_X_Isotope
                     } )
@@ -3242,7 +3199,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                         smoothingOption_Selection: this.props.smoothingOption_Selection,
 
                         plotlyTrace_Label,
-                        plotlyTrace_Color: _ISOTOPE_PLOT_TRACE_COLORS[ isotope_Number ],
+                        plotlyTrace_Color: chromatogram_Common_Helpers__ISOTOPE_PLOT_TRACE_COLORS[ isotope_Number ],
 
                         m_Over_Z_Window_Min,
                         m_Over_Z_Window_Max,
@@ -3330,7 +3287,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
         let chartTitle_Start = "Ion Current"
 
-        if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+        if ( chartCreate__IonCurrent__IonCount__Enum === chromatogram_Common_Options__ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
             chartTitle_Start = "Ions "
         }
 
@@ -3338,13 +3295,13 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         const chartTitle_FirstLine = chartTitle_Start + " Chromatogram - " + reportedPeptideSequence + "<sup>" + this.props.selection_ReportedPeptide_OpenModMass_Charge.charge + "+</sup>" + openModMass_Display_For_ChartTitle
 
 
-        const chartTitle = chartTitle_FirstLine + "<br>" + "Peak Area: " + _areaUnderCurve_Display_FormattingFunction( areaUnderCurve_Total )
+        const chartTitle = chartTitle_FirstLine + "<br>" + "Peak Area: " + chromatogram_Common_Helpers__areaUnderCurve_Display_FormattingFunction( areaUnderCurve_Total )
 
         const chart_X_Axis_Label = "Time (min)"
 
         let chart_Y_Axis_Label = "Ion Current"
 
-        if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+        if ( chartCreate__IonCurrent__IonCount__Enum === chromatogram_Common_Options__ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
             chart_Y_Axis_Label = " Ions"
         }
 
@@ -3661,7 +3618,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                             <div style={ { fontSize: 18 } }>
                                 <span style={ { fontWeight: "bold" } }>Peak area: </span>
                                 <span>
-                                    { _areaUnderCurve_Display_FormattingFunction( this._areaUnderCurve_Display ) }
+                                    { chromatogram_Common_Helpers__areaUnderCurve_Display_FormattingFunction( this._areaUnderCurve_Display ) }
                                 </span>
                             </div>
                             <div>
@@ -3838,13 +3795,13 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
         trace_Psm_Points_Y,
         trace_Psm_Points_Tooltips
     } : {
-        chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum
+        chartCreate__IonCurrent__IonCount__Enum: chromatogram_Common_Options__ChartCreate__IonCurrent__IonCount__Enum
 
         //  Single Selected Reported Peptide Open Mod Mass Charge
         selection_ReportedPeptide_OpenModMass_Charge: Internal__Selection_ReportedPeptide_OpenModMass_Charge
 
-        scanPeakSelect: ScanPeakSelect_Enum
-        smoothingOption_Selection: SmoothingOption_Enum
+        scanPeakSelect: chromatogram_Common_Options__ScanPeakSelect_Enum
+        smoothingOption_Selection: chromatogram_Common_Options__SmoothingOption_Enum
 
         plotlyTrace_Label: string
         plotlyTrace_Color: string
@@ -4002,11 +3959,11 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
                     } else {
                         scanCount_Where_MoreThanOnePeak_InsideWindow++
 
-                        if ( scanPeakSelect === ScanPeakSelect_Enum.MAX_PEAK_INTENSITY ) {
+                        if ( scanPeakSelect === chromatogram_Common_Options__ScanPeakSelect_Enum.MAX_PEAK_INTENSITY ) {
                             if ( peakToUse.intensity < peak.intensity ) {
                                 peakToUse = peak
                             }
-                        } else if ( scanPeakSelect === ScanPeakSelect_Enum.PEAK_MZ_CENTER_OF_MZ_RANGE ) {
+                        } else if ( scanPeakSelect === chromatogram_Common_Options__ScanPeakSelect_Enum.PEAK_MZ_CENTER_OF_MZ_RANGE ) {
 
                             const peak_DifferenceFrom_M_Over_Z_RangeCenter = Math.abs( peak.mz - m_Over_Z_Window_Middle_Between_Min_Max )
 
@@ -4031,7 +3988,7 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
 
                     let lineY_Value = peakToUse.intensity
 
-                    if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+                    if ( chartCreate__IonCurrent__IonCount__Enum === chromatogram_Common_Options__ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
 
                         //  Ion Count
 
@@ -4071,13 +4028,12 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
 
                     } else {
 
-                        const scan_retentionTime_Seconds_Difference = scanItem.scan_RetentionTime - prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.scan_retentionTime_Seconds
-
-                        const peak_Intensity_Average = ( peakToUse.intensity + prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.peak_Intensity ) / 2
-
-                        const peakArea_BetweenPrevPeakAndCurrentPeak = scan_retentionTime_Seconds_Difference * peak_Intensity_Average
-
-                        areaUnderCurve_SingleTrace += peakArea_BetweenPrevPeakAndCurrentPeak
+                        areaUnderCurve_SingleTrace += chromatogram_Common_Helpers__areaUnderCurve_TrapezoidBetweenPoints({
+                            prev_RetentionTime_Seconds: prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.scan_retentionTime_Seconds,
+                            prev_Intensity: prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.peak_Intensity,
+                            current_RetentionTime_Seconds: scanItem.scan_RetentionTime,
+                            current_Intensity: peakToUse.intensity
+                        })
 
                         //  Update PrevPeak Values
 
@@ -4132,13 +4088,12 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
 
                     } else {
 
-                        const scan_retentionTime_Seconds_Difference = scanItem.scan_RetentionTime - prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.scan_retentionTime_Seconds
-
-                        const peak_Intensity_Average = ( peakIntensity_ZERO_Since_NO_Peak + prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.peak_Intensity ) / 2
-
-                        const peakArea_BetweenPrevPeakAndCurrentPeak = scan_retentionTime_Seconds_Difference * peak_Intensity_Average
-
-                        areaUnderCurve_SingleTrace += peakArea_BetweenPrevPeakAndCurrentPeak
+                        areaUnderCurve_SingleTrace += chromatogram_Common_Helpers__areaUnderCurve_TrapezoidBetweenPoints({
+                            prev_RetentionTime_Seconds: prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.scan_retentionTime_Seconds,
+                            prev_Intensity: prevPeak_Values__ForComputing_areaUnderCurve_SingleTrace.peak_Intensity,
+                            current_RetentionTime_Seconds: scanItem.scan_RetentionTime,
+                            current_Intensity: peakIntensity_ZERO_Since_NO_Peak
+                        })
 
                         //  Update PrevPeak Values
 
@@ -4180,7 +4135,7 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
 
         //  Scan Trace Smoothing if needed
 
-        if ( smoothingOption_Selection === SmoothingOption_Enum.SAVITZKY_GOLAY ) {
+        if ( smoothingOption_Selection === chromatogram_Common_Options__SmoothingOption_Enum.SAVITZKY_GOLAY ) {
 
             try {
                 const result = smoothSavitzkyGolay( trace_rt_Intensity_Line_X, trace_rt_Intensity_Line_Y /* , smoothingFactor - Has Default */)
@@ -4206,7 +4161,7 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
                 //  Eat Exception  Leave it not smoothed
             }
 
-        } else if ( smoothingOption_Selection === SmoothingOption_Enum.LOWESS ) {
+        } else if ( smoothingOption_Selection === chromatogram_Common_Options__SmoothingOption_Enum.LOWESS ) {
 
             // console.log( "BEFORE call to 'smoothLowess'.  Input X array: ", trace_rt_Intensity_Line_X )
             // console.log( "BEFORE call to 'smoothLowess'.  Input Y array: ", trace_rt_Intensity_Line_Y )
@@ -4531,1071 +4486,8 @@ const _for_Component__Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnP
 /**
  *
  */
-interface Internal__PlotType_IonCurrent_VS_Ions_Component_Props {
-
-    onChange_Callback: (newSelectionValue: PlotType_IonCurrent_VS_Ions_Select_Enum ) => void
-}
-
-/**
- *
- */
-interface Internal__PlotType_IonCurrent_VS_Ions_Component_State {
-
-    forceRerenderObject?: object
-}
-
-/**
- *
- */
-class Internal__PlotType_IonCurrent_VS_Ions_Component extends React.Component< Internal__PlotType_IonCurrent_VS_Ions_Component_Props, Internal__PlotType_IonCurrent_VS_Ions_Component_State > {
-
-    private _plotType_IonCurrent_VS_Ions_Select: PlotType_IonCurrent_VS_Ions_Select_Enum = _plotType_IonCurrent_VS_Ions_Select_DEFAULT
-
-    /**
-     *
-     */
-    constructor( props: Internal__PlotType_IonCurrent_VS_Ions_Component_Props ) {
-        super( props );
-
-        this.state = { forceRerenderObject: {} }
-    }
-
-    render() {
-        return (
-            <div>
-                <span>Plot Using:</span>
-
-                <span>&nbsp;</span>
-
-                <label>
-                    <input
-                        type="radio"
-                        checked={ this._plotType_IonCurrent_VS_Ions_Select === PlotType_IonCurrent_VS_Ions_Select_Enum.ION_CURRENT }
-                        onChange={ event => { try {
-
-                            this._plotType_IonCurrent_VS_Ions_Select = PlotType_IonCurrent_VS_Ions_Select_Enum.ION_CURRENT
-
-                            this.setState({ forceRerenderObject: {} })
-
-                            window.setTimeout( () => { try {
-
-                                this.props.onChange_Callback(this._plotType_IonCurrent_VS_Ions_Select)
-
-                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
-
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
-                    />
-                    <span> Ion Current</span>
-                </label>
-                <span> </span>
-                <label>
-                    <input
-                        type="radio"
-                        checked={ this._plotType_IonCurrent_VS_Ions_Select === PlotType_IonCurrent_VS_Ions_Select_Enum.IONS }
-                        onChange={ event => { try {
-
-                            this._plotType_IonCurrent_VS_Ions_Select = PlotType_IonCurrent_VS_Ions_Select_Enum.IONS
-
-                            this.setState({ forceRerenderObject: {} })
-
-                            window.setTimeout( () => { try {
-
-                                this.props.onChange_Callback(this._plotType_IonCurrent_VS_Ions_Select)
-
-                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
-
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
-                    />
-                    <span> Ions</span>
-                </label>
-            </div>
-        );
-    }
-}
-
-////////////////////////////////////////////////////////////////////////
-
-//    Internal Component for User change the Peak Selection
-
-
-/**
- *
- */
-interface Internal__PeakSelection_Component_Props {
-
-    onChange_Callback: (newSelectionValue: ScanPeakSelect_Enum ) => void
-}
-
-/**
- *
- */
-interface Internal__PeakSelection_Component_State {
-
-    forceRerenderObject?: object
-}
-
-/**
- *
- */
-class Internal__PeakSelection_Component extends React.Component< Internal__PeakSelection_Component_Props, Internal__PeakSelection_Component_State > {
-
-    private _scanPeakSelect: ScanPeakSelect_Enum = _scanPeakSelect_DEFAULT
-
-    /**
-     *
-     */
-    constructor( props: Internal__PeakSelection_Component_Props ) {
-        super( props );
-
-        this.state = { forceRerenderObject: {} }
-    }
-
-    render() {
-        return (
-            <div>
-                <span>Peak Selection:</span>
-
-                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                    title={
-                        <span>
-                            A m/z is calculated for the selected ion based on the peptide sequence, any modifications, and the charge state.
-                            This m/z serves as the center of a m/z window of a specified width (see below).
-                            This option determines which peak in the MS1 spectrum is used to build the chromatogram.
-                        </span>
-                    }
-                />
-
-                <span>&nbsp;</span>
-
-                <label>
-                    <input
-                        type="radio"
-                        checked={ this._scanPeakSelect === ScanPeakSelect_Enum.MAX_PEAK_INTENSITY }
-                        onChange={ event => { try {
-
-                            this._scanPeakSelect = ScanPeakSelect_Enum.MAX_PEAK_INTENSITY
-
-                            this.setState({ forceRerenderObject: {} })
-
-                            window.setTimeout( () => { try {
-
-                                this.props.onChange_Callback(this._scanPeakSelect)
-
-                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
-
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
-                    />
-                    <span> Max Intensity</span>
-                </label>
-                <span> </span>
-                <label>
-                    <input
-                        type="radio"
-                        checked={ this._scanPeakSelect === ScanPeakSelect_Enum.PEAK_MZ_CENTER_OF_MZ_RANGE }
-                        onChange={ event => { try {
-
-                            this._scanPeakSelect = ScanPeakSelect_Enum.PEAK_MZ_CENTER_OF_MZ_RANGE
-
-                            this.setState({ forceRerenderObject: {} })
-
-                            window.setTimeout( () => { try {
-
-                                this.props.onChange_Callback(this._scanPeakSelect)
-
-                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
-
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
-                    />
-                    <span> Nearest Peak</span>
-                </label>
-            </div>
-        );
-    }
-}
-
-////////////////////////////////////////////////////////////////////////
-
-//    Internal Component for User change the Smoothing Selection
-
-/**
- *
- */
-interface Internal__SmoothingSelection_Component_Props {
-
-    onChange_Callback: (newSelectionValue: SmoothingOption_Enum ) => void
-}
-
-/**
- *
- */
-interface Internal__SmoothingSelection_Component_State {
-
-    forceRerenderObject?: object
-}
-
-/**
- *
- */
-class Internal__SmoothingSelection_Component extends React.Component< Internal__SmoothingSelection_Component_Props, Internal__SmoothingSelection_Component_State > {
-
-    private _smoothingOption_Selection: SmoothingOption_Enum = _smoothingOption_Selection_DEFAULT
-
-    /**
-     *
-     */
-    constructor( props: Internal__SmoothingSelection_Component_Props ) {
-        super( props );
-
-        this.state = { forceRerenderObject: {} }
-    }
-
-    render() {
-        return (
-            <div>
-                <span>Smoothing:</span>
-
-                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                    title={
-                        <span>
-                            Apply a smoothing algorithm to reduce noise in the generated chromatogram while retaining overall patterns.
-                        </span>
-                    }
-                />
-
-                <span>&nbsp;</span>
-
-                <label>
-                    <input
-                        type="radio"
-                        checked={ this._smoothingOption_Selection === SmoothingOption_Enum.NONE }
-                        onChange={ event => { try {
-
-                            this._smoothingOption_Selection = SmoothingOption_Enum.NONE
-
-                            this.setState({ forceRerenderObject: {} })
-
-                            window.setTimeout( () => { try {
-
-                                this.props.onChange_Callback(this._smoothingOption_Selection)
-
-                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
-
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
-                    />
-                    <span> None</span>
-                </label>
-
-                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                    title={
-                        <span>
-                            Apply no smoothing
-                        </span>
-                    }
-                    no_Margin_Left={ true }
-                />
-
-                <span> </span>
-                <label>
-                    <input
-                        type="radio"
-                        checked={ this._smoothingOption_Selection === SmoothingOption_Enum.LOWESS }
-                        onChange={ event => { try {
-
-                            this._smoothingOption_Selection = SmoothingOption_Enum.LOWESS
-
-                            this.setState({ forceRerenderObject: {} })
-
-                            window.setTimeout( () => { try {
-
-                                this.props.onChange_Callback(this._smoothingOption_Selection)
-
-                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
-
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
-                    />
-                    <span> LOWESS</span>
-                </label>
-
-                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                    title={
-                        <span>
-                            Apply the LOWESS (locally weighted least squares) smoother. Performs better with wider peaks.
-                        </span>
-                    }
-                    no_Margin_Left={ true }
-                />
-
-                <span> </span>
-                <label>
-                    <input
-                        type="radio"
-                        checked={ this._smoothingOption_Selection === SmoothingOption_Enum.SAVITZKY_GOLAY }
-                        onChange={ event => { try {
-
-                            this._smoothingOption_Selection = SmoothingOption_Enum.SAVITZKY_GOLAY
-
-                            this.setState({ forceRerenderObject: {} })
-
-                            window.setTimeout( () => { try {
-
-                                this.props.onChange_Callback(this._smoothingOption_Selection)
-
-                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
-
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
-                    />
-                    <span> Savitzky-Golay</span>
-                </label>
-
-                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                    title={
-                        <span>
-                            Apply the Savitzky–Golay filter to smooth the data, a popular method for signal smoothing in analytical chemistry.
-                        </span>
-                    }
-                    no_Margin_Left={ true }
-                />
-
-            </div>
-        );
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////////
-
-//    Internal Component for User change the MS1 Window Size Selection
-
-/**
- *
- */
-interface Internal__MS1_Window_Size_Selection_Component_Props {
-
-    onChange_Callback: (newSelectionValue: number ) => void
-}
-
-/**
- *
- */
-interface Internal__MS1_Window_Size_Selection_Component_State {
-
-    forceRerenderObject?: object
-}
-
-/**
- *
- */
-class Internal__MS1_Window_Size_Selection_Component extends React.Component< Internal__MS1_Window_Size_Selection_Component_Props, Internal__MS1_Window_Size_Selection_Component_State > {
-
-    private _precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection = _DEFAULT_VALUE__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues  //  Set default
-
-    /**
-     *
-     */
-    constructor( props: Internal__MS1_Window_Size_Selection_Component_Props ) {
-        super( props );
-
-        this.state = { forceRerenderObject: {} }
-    }
-
-    render() {
-        return (
-            <div>
-                <span>MS1 Window Size:</span>
-
-                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                    title={
-                        <span>
-                            This is the size of the window to use when picking a peak from the MS1 scan to use to build the chromatogram.
-                            The window will be centered on the m/z calculated for this ion and
-                            will extend this distance both in the positive and negative direction.
-                        </span>
-                    }
-                />
-
-                <span>&nbsp;</span>
-
-                { _SELECTION_VALUES__M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues.map(( selectionValue__precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Item, index, array) => {
-
-                    return (
-                        <React.Fragment key={ selectionValue__precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Item }>
-                            <span> </span>
-                            <label>
-                                <input
-                                    type="radio"
-                                    checked={ this._precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection === selectionValue__precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Item }
-                                    onChange={ event => { try {
-
-                                        this._precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection = selectionValue__precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Item
-
-                                        window.setTimeout( () => { try {
-
-                                            this.props.onChange_Callback(this._precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection)
-
-                                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}, 10 )
-
-                                        this.setState({ forceRerenderObject: {} })
-
-                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
-                                />
-                                <span> +/-{ selectionValue__precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Item } ppm</span>
-                            </label>
-
-                        </React.Fragment>
-                    )
-                })}
-            </div>
-        );
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////////
-
-//    Internal Component for User change the Retention Time Min/Max
-
-class Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback_Params {
-    retentionTime_Minutes_Range_ForChart_Min: number
-    retentionTime_Minutes_Range_ForChart_Max: number
-}
-
-type Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback =
-    (params: Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback_Params) => void
-
-
-/**
- *
- */
-interface Internal__RetentionTime_Min_Max_UserEditable_Component_Props {
-
-    force_SetTo_ValueFromParent: object  // On object reference change, the input values will be set to the values from Parent
-
-    retentionTime_Minutes_Range_ForChart_Min__ValueFromParent: number
-    retentionTime_Minutes_Range_ForChart_Max__ValueFromParent: number
-
-    retentionTime_Minutes_Range_ForChart_Min__DefaultValue: number
-    retentionTime_Minutes_Range_ForChart_Max__DefaultValue: number
-
-    updatedValues_Callback: Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback
-}
-
-/**
- *
- */
-interface Internal__RetentionTime_Min_Max_UserEditable_Component_State {
-
-    forceRerenderObject?: object
-}
-
-/**
- *
- */
-class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Component< Internal__RetentionTime_Min_Max_UserEditable_Component_Props, Internal__RetentionTime_Min_Max_UserEditable_Component_State > {
-
-    private _retentionTimes_Updated_FromOverlay_OrFrom_ResetToDefaults_BindThis = this._retentionTimes_Updated_FromOverlay_OrFrom_ResetToDefaults.bind(this)
-
-    private _retentionTime_Div_Ref: React.RefObject<HTMLDivElement>; //  React.createRef()
-
-    private _retentionTimeMinutes_Range_ForChart_Min__Current__Number: number
-    private _retentionTimeMinutes_Range_ForChart_Max__Current__Number: number
-
-    /**
-     *
-     */
-    constructor( props: Internal__RetentionTime_Min_Max_UserEditable_Component_Props ) {
-        super( props );
-
-        this._retentionTime_Div_Ref = React.createRef()
-
-        this._set_LocalProperties_On_Create_Or_SetTo_ValuesFromParent(props)
-
-        this.state = { forceRerenderObject: {} }
-    }
-
-    /**
-     *
-     */
-    componentDidUpdate( prevProps: Readonly<Internal__RetentionTime_Min_Max_UserEditable_Component_Props>, prevState: Readonly<Internal__RetentionTime_Min_Max_UserEditable_Component_State>, snapshot?: any ) {
-
-        if ( prevProps.force_SetTo_ValueFromParent !== this.props.force_SetTo_ValueFromParent ) {
-
-            this._set_LocalProperties_On_Create_Or_SetTo_ValuesFromParent(this.props)
-
-            this.setState({ forceRerenderObject: {} })
-        }
-    }
-
-    /**
-     *
-     */
-    private _set_LocalProperties_On_Create_Or_SetTo_ValuesFromParent(props: Internal__RetentionTime_Min_Max_UserEditable_Component_Props) {
-
-        if ( this._retentionTimeMinutes_Range_ForChart_Min__Current__Number === props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent
-            && this._retentionTimeMinutes_Range_ForChart_Max__Current__Number=== props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent ) {
-
-            //  Already have current values
-
-            return // EARLY RETURN
-        }
-
-        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent
-        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent
-    }
-
-    /**
-     *
-     */
-    private _set_LocalProperties_On_Create_Or_SetTo_Defaults() {
-
-        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this.props.retentionTime_Minutes_Range_ForChart_Min__DefaultValue
-        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this.props.retentionTime_Minutes_Range_ForChart_Max__DefaultValue
-
-        this.setState({ forceRerenderObject: {} })
-    }
-
-    /**
-     *
-     */
-    private _retentionTimes_Updated_FromOverlay_OrFrom_ResetToDefaults(
-        params: Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback_Params
-    ) {
-        try {
-
-
-            this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = params.retentionTime_Minutes_Range_ForChart_Min
-            this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = params.retentionTime_Minutes_Range_ForChart_Max
-
-            this.setState({ forceRerenderObject: {} })
-
-            window.setTimeout( () => {
-                try {
-                    this.props.updatedValues_Callback({
-                        retentionTime_Minutes_Range_ForChart_Min: this._retentionTimeMinutes_Range_ForChart_Min__Current__Number,
-                        retentionTime_Minutes_Range_ForChart_Max: this._retentionTimeMinutes_Range_ForChart_Max__Current__Number
-                    })
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-            }, 10 )
-        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-    }
-
-    /**
-     *
-     */
-    render() {
-
-        return (
-            <div>
-                <div style={ { paddingTop: _PADDING_TOP_ABOVE_HELP_SYMBOL } }>
-
-
-                    <div
-                        ref={ this._retentionTime_Div_Ref }
-                    >
-                        <span>Retention time range (minutes):</span>
-
-                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                            title={
-                                <div>
-                                    <div>
-                                        A chromatogram will be built for this range of retention times.
-                                    </div>
-                                    <div style={ { marginTop: 5 } }>
-                                        By default the range will be the retention time of the earliest PSM (minus 30 seconds) to the retention time of the latest PSM (plus 30 seconds).
-                                    </div>
-                                </div>
-                            }
-                        />
-
-                        <span style={ { marginLeft: _MARGIN_LEFT_AFTER_HELP_SYMBOL } }> Start: </span>
-
-                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                            title={
-                                <span>
-                                    Click to change retention time start and end
-                                </span>
-                            }
-                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                        >
-                            <span
-                                className=" filter-single-value-display-block  clickable "
-                                onClick={ event => {  try {
-
-                                    const retentionTime_Div_BoundingRect = this._retentionTime_Div_Ref.current.getBoundingClientRect();
-
-                                    let position_top =  retentionTime_Div_BoundingRect.top;
-                                    let position_left =  retentionTime_Div_BoundingRect.left;
-
-                                    Internal__RetentionTime_Min_Max_UserInput_Overlay_Component__OpenOverlay({
-                                        retentionTime_Minutes_Range_ForChart_Min__ValueFromParent: this.props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent,
-                                        retentionTime_Minutes_Range_ForChart_Max__ValueFromParent: this.props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent,
-
-                                        retentionTime_Minutes_Range_ForChart_Min__DefaultValue: this.props.retentionTime_Minutes_Range_ForChart_Min__DefaultValue,
-                                        retentionTime_Minutes_Range_ForChart_Max__DefaultValue: this.props.retentionTime_Minutes_Range_ForChart_Max__DefaultValue,
-
-                                        position_top,
-                                        position_left,
-
-                                        updatedValues_Callback: this._retentionTimes_Updated_FromOverlay_OrFrom_ResetToDefaults_BindThis
-                                    })
-                                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e } } }
-                            >
-                                { this._retentionTimeMinutes_Range_ForChart_Min__Current__Number }
-                            </span>
-                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-
-                        <span>  End: </span>
-
-                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                            title={
-                                <span>
-                                    Click to change retention time start and end
-                                </span>
-                            }
-                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                        >
-                            <span
-                                className=" filter-single-value-display-block  clickable "
-                                onClick={ event => {  try {
-
-                                    const retentionTime_Div_BoundingRect = this._retentionTime_Div_Ref.current.getBoundingClientRect();
-
-                                    let position_top =  retentionTime_Div_BoundingRect.top;
-                                    let position_left =  retentionTime_Div_BoundingRect.left;
-
-                                    Internal__RetentionTime_Min_Max_UserInput_Overlay_Component__OpenOverlay({
-                                        retentionTime_Minutes_Range_ForChart_Min__ValueFromParent: this.props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent,
-                                        retentionTime_Minutes_Range_ForChart_Max__ValueFromParent: this.props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent,
-
-                                        retentionTime_Minutes_Range_ForChart_Min__DefaultValue: this.props.retentionTime_Minutes_Range_ForChart_Min__DefaultValue,
-                                        retentionTime_Minutes_Range_ForChart_Max__DefaultValue: this.props.retentionTime_Minutes_Range_ForChart_Max__DefaultValue,
-
-                                        position_top,
-                                        position_left,
-
-                                        updatedValues_Callback: this._retentionTimes_Updated_FromOverlay_OrFrom_ResetToDefaults_BindThis
-                                    })
-                                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e } } }
-                            >
-                                { this._retentionTimeMinutes_Range_ForChart_Max__Current__Number }
-                            </span>
-                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-
-                        <span> </span>
-
-                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                            title={
-                                <span>
-                                    Change retention time start and time end
-                                </span>
-                            }
-                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                        >
-                            <button
-                                onClick={ event => {  try {
-
-                                    const retentionTime_Div_BoundingRect = this._retentionTime_Div_Ref.current.getBoundingClientRect();
-
-                                    let position_top =  retentionTime_Div_BoundingRect.top;
-                                    let position_left =  retentionTime_Div_BoundingRect.left;
-
-                                    Internal__RetentionTime_Min_Max_UserInput_Overlay_Component__OpenOverlay({
-                                        retentionTime_Minutes_Range_ForChart_Min__ValueFromParent: this.props.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent,
-                                        retentionTime_Minutes_Range_ForChart_Max__ValueFromParent: this.props.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent,
-
-                                        retentionTime_Minutes_Range_ForChart_Min__DefaultValue: this.props.retentionTime_Minutes_Range_ForChart_Min__DefaultValue,
-                                        retentionTime_Minutes_Range_ForChart_Max__DefaultValue: this.props.retentionTime_Minutes_Range_ForChart_Max__DefaultValue,
-
-                                        position_top,
-                                        position_left,
-
-                                        updatedValues_Callback: this._retentionTimes_Updated_FromOverlay_OrFrom_ResetToDefaults_BindThis
-                                    })
-                                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e } } }
-                            >
-                                Change
-                            </button>
-                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-
-                        <span> </span>
-                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                            title={
-                                <span>
-                                    Reset to Retention Time Defaults based on PSM retention times
-                                </span>
-                            }
-                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                        >
-                            <button
-                                onClick={ event => { try {
-
-                                    this._set_LocalProperties_On_Create_Or_SetTo_Defaults()
-
-                                    this._retentionTimes_Updated_FromOverlay_OrFrom_ResetToDefaults({
-                                        retentionTime_Minutes_Range_ForChart_Min: this.props.retentionTime_Minutes_Range_ForChart_Min__DefaultValue,
-                                        retentionTime_Minutes_Range_ForChart_Max: this.props.retentionTime_Minutes_Range_ForChart_Max__DefaultValue
-                                    })
-                                    this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this.props.retentionTime_Minutes_Range_ForChart_Min__DefaultValue
-                                    this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this.props.retentionTime_Minutes_Range_ForChart_Max__DefaultValue
-
-                                    this.setState({ forceRerenderObject: {} })
-
-                                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e } } }
-                            >
-                                Reset
-                            </button>
-                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////////
-
-//    Internal Component for User change the Retention Time Min/Max OVERLAY
-
-/**
- *
- */
-interface Internal__RetentionTime_Min_Max_UserInput_Overlay_Component_ParamValues {
-
-    retentionTime_Minutes_Range_ForChart_Min__ValueFromParent: number
-    retentionTime_Minutes_Range_ForChart_Max__ValueFromParent: number
-
-    retentionTime_Minutes_Range_ForChart_Min__DefaultValue: number
-    retentionTime_Minutes_Range_ForChart_Max__DefaultValue: number
-
-    position_top: number
-    position_left: number
-
-    updatedValues_Callback: Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback
-}
-
-const Internal__RetentionTime_Min_Max_UserInput_Overlay_Component__OpenOverlay = function (
-    params: Internal__RetentionTime_Min_Max_UserInput_Overlay_Component_ParamValues
-) {
-
-    if ( params.position_top > window.innerHeight - 160 ) {
-        params.position_top = window.innerHeight - 160;
-    }
-    if ( params.position_top < 10 ) {
-        params.position_top = 10;
-    }
-
-    if ( params.position_left < 10 ) {
-        params.position_left = 10;
-    }
-    if ( params.position_left > 100 ) {
-        params.position_left = 100;
-    }
-
-    const window_innerWidth = window.innerWidth - 10; // Subtract 10 for vertical scroll bar
-
-    const width_OtherThan_searchName_InputField = 150;
-
-    let searchName_InputField_Width = 550;
-
-    if ( window_innerWidth < ( params.position_left + width_OtherThan_searchName_InputField + searchName_InputField_Width + 30 ) ) {  //  + 20 to allow margins and vertical scroll bar
-
-        params.position_left = 10;
-        searchName_InputField_Width = window_innerWidth - ( ( params.position_left * 2 ) + width_OtherThan_searchName_InputField )
-    }
-
-
-    let addedOverlay : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF;
-
-    const change_Callback_Local = ( params_To_change_Callback_Local : Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback_Params ) => {
-
-        addedOverlay.removeContents_AndContainer_FromDOM();
-
-        params.updatedValues_Callback( params_To_change_Callback_Local )
-    }
-
-    const cancel_Callback_Local = () => {
-
-        addedOverlay.removeContents_AndContainer_FromDOM();
-    }
-
-    const componentToAdd = (
-        <Internal__RetentionTime_Min_Max_UserInput_Overlay_Component
-            paramValues={ params }
-            updatedValues_Callback={ change_Callback_Local }
-            cancel_Callback={ cancel_Callback_Local }
-        />
-    )
-
-    addedOverlay = limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd });
-}
-
-
-/////////
-
-/**
- *
- */
-interface Internal__RetentionTime_Min_Max_UserInput_Overlay_Component_Props {
-
-    paramValues: Internal__RetentionTime_Min_Max_UserInput_Overlay_Component_ParamValues
-
-    updatedValues_Callback: Internal__RetentionTime_Min_Max_UserEditable_Component_UpdatedValues_Callback
-    cancel_Callback: () => void
-}
-
-/**
- *
- */
-interface Internal__RetentionTime_Min_Max_UserInput_Overlay_Component_State {
-
-    forceRerenderObject?: object
-}
-
-/**
- *
- */
-class Internal__RetentionTime_Min_Max_UserInput_Overlay_Component extends React.Component< Internal__RetentionTime_Min_Max_UserInput_Overlay_Component_Props, Internal__RetentionTime_Min_Max_UserInput_Overlay_Component_State > {
-
-    private readonly _NUMBER_NOT_ASSIGNED: number = undefined
-
-    private _formSubmit_BindThis = this._formSubmit.bind(this);
-
-    private _retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString: string
-    private _retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString: string
-
-    private _retentionTimeMinutes_Range_ForChart_Min__Current__Number: number
-    private _retentionTimeMinutes_Range_ForChart_Max__Current__Number: number
-
-    private _updateButton_Enabled = true
-
-    /**
-     *
-     */
-    constructor( props: Internal__RetentionTime_Min_Max_UserInput_Overlay_Component_Props ) {
-        super( props );
-
-        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this.props.paramValues.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent
-        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this.props.paramValues.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent
-
-        this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = this.props.paramValues.retentionTime_Minutes_Range_ForChart_Min__ValueFromParent.toString()
-        this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = this.props.paramValues.retentionTime_Minutes_Range_ForChart_Max__ValueFromParent.toString()
-
-        this.state = { forceRerenderObject: {} }
-    }
-
-    /**
-     *
-     */
-    private _formSubmit(event: React.FormEvent<HTMLFormElement>) : void {
-        try {
-            event.preventDefault();
-
-            this.props.updatedValues_Callback({
-                retentionTime_Minutes_Range_ForChart_Min: this._retentionTimeMinutes_Range_ForChart_Min__Current__Number,
-                retentionTime_Minutes_Range_ForChart_Max: this._retentionTimeMinutes_Range_ForChart_Max__Current__Number
-            })
-
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    }
-
-    /**
-     *
-     */
-    private _is_AllNumbersValid() {
-
-        if ( this._retentionTimeMinutes_Range_ForChart_Min__Current__Number === this._NUMBER_NOT_ASSIGNED ||
-            this._retentionTimeMinutes_Range_ForChart_Max__Current__Number === this._NUMBER_NOT_ASSIGNED ) {
-
-            return false
-        }
-
-        return true
-    }
-
-    /**
-     *
-     */
-    private _set_UpdateButton_Enabled() {
-
-        if ( ! this._is_AllNumbersValid() ) {
-
-            this._updateButton_Enabled = false
-
-            this.setState({ forceRerenderObject: {} })
-
-            return // EARLY RETURN
-        }
-
-        this._updateButton_Enabled = true
-
-        this.setState({ forceRerenderObject: {} })
-    }
-
-    /**
-     *
-     */
-    render() {
-
-        const _INPUT_FIELD_MAX_LENGTH = 15
-        const _INPUT_FIELD_WIDTH = 60
-
-        return (
-
-            <div >
-                <div style={ { zIndex: 700 } } className=" modal-dialog-small-positioned-near-related-content-background ">
-
-                </div>
-                <div style={ { zIndex: 710, position: "fixed", top: this.props.paramValues.position_top, left: this.props.paramValues.position_left }}
-                     className=" modal-dialog-small-positioned-near-related-content-container "
-                >
-                    <div style={ { padding: 20, position: "relative" } }>
-
-                        <form
-                            onSubmit={ this._formSubmit_BindThis }
-                        >
-
-                            <span>Retention time range (minutes):</span>
-
-                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                title={
-                                    <div>
-                                        <div>
-                                            A chromatogram will be built for this range of retention times.
-                                        </div>
-                                    </div>
-                                }
-                            />
-
-                            <span style={ { marginLeft: _MARGIN_LEFT_AFTER_HELP_SYMBOL } }> Start: </span>
-
-                            <input
-                                value={ this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString }
-                                maxLength={ _INPUT_FIELD_MAX_LENGTH }
-                                style={ { width: _INPUT_FIELD_WIDTH } }
-                                onChange={ event => {
-                                    const valueString = event.target.value
-                                    if ( valueString === "" || valueString === "." || valueString === "-" ) {
-                                        this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = valueString
-                                        this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this._NUMBER_NOT_ASSIGNED
-
-                                        this._set_UpdateButton_Enabled()
-
-                                        return // EARLY RETURN
-                                    }
-
-                                    const valueNumber = Number.parseFloat( valueString )
-                                    if ( Number.isNaN( valueNumber ) ) {
-                                        //  Not a number so ignore new value
-                                        return; // EARLY RETURN
-                                    }
-
-                                    this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = valueNumber
-
-                                    this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = valueNumber.toString()
-
-                                    if ( valueString.endsWith( "." ) ) {
-
-                                        this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString += "."
-                                    }
-
-                                    this._set_UpdateButton_Enabled()
-
-                                } }
-                            />
-
-                            <span> End: </span>
-
-                            <input
-                                value={ this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString }
-                                maxLength={ _INPUT_FIELD_MAX_LENGTH }
-                                style={ { width: _INPUT_FIELD_WIDTH } }
-                                onChange={ event => {
-                                    const valueString = event.target.value
-                                    if ( valueString === "" || valueString === "." || valueString === "-" ) {
-                                        this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = valueString
-                                        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this._NUMBER_NOT_ASSIGNED
-
-                                        this._set_UpdateButton_Enabled()
-
-                                        return // EARLY RETURN
-                                    }
-
-                                    const valueNumber = Number.parseFloat( valueString )
-                                    if ( Number.isNaN( valueNumber ) ) {
-                                        //  Not a number so ignore new value
-                                        return; // EARLY RETURN
-                                    }
-
-                                    this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = valueNumber
-
-                                    this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = valueNumber.toString()
-
-                                    if ( valueString.endsWith( "." ) ) {
-
-                                        this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString += "."
-                                    }
-
-                                    this._set_UpdateButton_Enabled()
-
-                                } }
-                            />
-
-                            <span> </span>
-
-                            <div style={ { position: "relative", display: "inline-block" } }>
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                    title={
-                                        this._updateButton_Enabled ? (
-                                            <span>
-                                                Update chart with retention time start and end entered
-                                            </span>
-                                        ) : (
-                                            <span>
-                                                Start and End must be populated with decimal numbers
-                                            </span>
-                                        )
-                                    }
-                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                >
-                                    <span>
-                                        <button
-                                            type="submit"
-                                            disabled={ ! this._updateButton_Enabled }
-                                            //  containing form has onSubmit
-                                        >
-                                            Update
-                                        </button>
-                                    </span>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                            </div>
-
-                            <span> </span>
-
-                            <button
-                                onClick={ event => {
-                                    try {
-                                        event.preventDefault();  // Stop form.onsubmit code from running
-
-                                        this.props.cancel_Callback()
-
-                                    } catch ( e ) {
-                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                        throw e
-                                    }
-                                } }
-                            >
-                                Cancel
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
+//  Plot Type / Peak Selection / Smoothing / MS1 Window Size selector components moved to chromatogram_common/chromatogram_Common_OptionSelector_Components
+//  RT Min/Max user-editable + overlay components moved to chromatogram_common/chromatogram_Common_RetentionTimeOverlay_Components
 
 
 /////////////////////////
@@ -5806,28 +4698,5 @@ const _openModMassRounding_For_OpenModMassSelection = function (
     return openModificationMassRounded;
 }
 
-/**
- *
- * @param isotope_Number
- * @param charge
- * @private
- */
-const _compute_Isotope_M_Over_Z_Addition_For_Isotope_Number = function(
-    {
-        isotope_Number, charge
-    } : {
-        isotope_Number: number  // the +1, +2, ...  Isotope
-        charge: number
-    }
-) : number {
-    return isotope_Number * C13_MASS_DELTA / charge
-}
-
-/**
- *
- * @param areaUnderCurve_Display
- */
-const _areaUnderCurve_Display_FormattingFunction = function ( areaUnderCurve_Display: number ) {
-
-    return areaUnderCurve_Display.toExponential( 3 )
-}
+//  chromatogram_Common_Helpers__compute_Isotope_M_Over_Z_Addition_For_Isotope_Number + chromatogram_Common_Helpers__areaUnderCurve_Display_FormattingFunction
+//  moved to chromatogram_common/chromatogram_Common_Helpers
