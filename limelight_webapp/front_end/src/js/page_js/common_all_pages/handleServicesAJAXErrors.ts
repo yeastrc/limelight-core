@@ -360,7 +360,8 @@ function showAjaxErrorMsgFromMsg( params: any ) {
 
 //		alert( errorMsg );
 
-		var html = '<div style="position: absolute; background-color: white; z-index: 10000; top:40px; left:40px; width:500px; padding: 10px; border-width: 5px; border-color: red; border-style: solid;" >'
+		var $errorMessageContainer = $(
+			'<div style="position: absolute; background-color: white; z-index: 10000; top:40px; left:40px; width:500px; padding: 10px; border-width: 5px; border-color: red; border-style: solid;" >'
 
 			+ '<h1 style="color: red;">Error accessing server</h1>'
 
@@ -371,14 +372,17 @@ function showAjaxErrorMsgFromMsg( params: any ) {
 
 			+ 'Error Message:<br>'
 
-			+ errorMsg
+			+ '<span class="ajax_error_message_text"></span>'
 
 			+ '<br><br>'
 
-			+ '</div>';
+			+ '</div>'
+		);
 
+		//  Set errorMsg as text, NOT HTML, so any markup in the message (e.g. server response text) is not interpreted as HTML
+		$errorMessageContainer.find( ".ajax_error_message_text" ).text( errorMsg );
 
-		$("body").append( html );
+		$("body").append( $errorMessageContainer );
 
 		window.scroll(0, 0);  // scroll to top left, assuming message is in that corner
 		
