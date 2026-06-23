@@ -18,7 +18,6 @@
 package org.yeastrc.limelight.limelight_submit_import.main;
 
 
-import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -195,15 +194,6 @@ public class SubmitUploadMain {
 			retryCount++;
 
 			try {
-
-				Console systemConsole = System.console();
-
-				if ( systemConsole == null ) {
-					if ( StringUtils.isEmpty( userSubmitImportProgramKeyFromCommandLine ) ) {
-						System.out.println( "The environment this program is running in does not support reading passwords securely from user input" );
-						System.out.println( "All data entered will be echoed to the screen.");
-					}
-				}
 
 				System.out.println( "Connecting to Limelight web app using URL: " + baseURL );
 				

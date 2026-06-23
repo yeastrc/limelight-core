@@ -75,6 +75,22 @@ public class CallSubmitImportWebservice {
 	private static final int HTTP_RETURN_CODE__ERROR_NOT_FOUND = 404;
 	
 	private static final String CONTENT_TYPE_SEND_RECEIVE = "application/xml";
+
+	//  Time-unit conversion constants (so the timeout math below has no inline magic numbers)
+	private static final int MILLISECONDS_PER_SECOND = 1000;
+	private static final int SECONDS_PER_MINUTE = 60;
+	private static final int MINUTES_PER_HOUR = 60;
+
+	//  HTTP timeouts.
+	//  connectTimeout = TCP connection establishment only.
+	//  readTimeout = max idle time on a single response read (resets as data arrives); it is
+	//  NOT a total-transfer budget and does NOT bound the file upload (a write).  Long value
+	//  covers a slow server response after a large (multi-GB) upload.
+	private static final int CONNECT_TIMEOUT_MINUTES = 8;
+	private static final int CONNECT_TIMEOUT_MILLISECONDS = CONNECT_TIMEOUT_MINUTES * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
+
+	private static final int READ_TIMEOUT_HOURS = 6;
+	private static final int READ_TIMEOUT_MILLISECONDS = READ_TIMEOUT_HOURS * MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
 	
 	//  Keep in sync with class AA_RestWSControllerPaths_Constants in web app
 	
@@ -559,6 +575,9 @@ public class CallSubmitImportWebservice {
 		//     ( Calling setFixedLengthStreamingMode(...) allows > 2GB to be sent 
 		//       and HttpURLConnection does NOT buffer the sent bytes using ByteArrayOutputStream )
 		httpURLConnection.setFixedLengthStreamingMode( numberOfBytesToSend );
+
+		httpURLConnection.setConnectTimeout( CONNECT_TIMEOUT_MILLISECONDS );
+		httpURLConnection.setReadTimeout( READ_TIMEOUT_MILLISECONDS );
 		
 		//  Add headers
 		if ( headersToSend != null && ( ! headersToSend.isEmpty() ) ) {
