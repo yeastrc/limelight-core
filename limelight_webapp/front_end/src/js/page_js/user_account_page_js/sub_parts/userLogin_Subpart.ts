@@ -71,7 +71,7 @@ export class UserLogin_Subpart {
 	}
 
 	/**
-	 * show the login part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
+	 * show the login part on the page (Add the template and then add element listeners like onClick, ...)
 	 */
 	showOnPage(
 		{

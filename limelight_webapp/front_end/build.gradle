@@ -336,7 +336,6 @@ task clean(type: Delete) {
   doFirst {	
   	   println("clean::doFirst called.  Deleting build output directories including: ${javascript_OutputDir_Base} ")
 
-	   delete 'handlebars_templates_precompiled'  //  Delete since used to have and delete to ensure cleanup
 	   delete 'webpack_build_output'
 	   delete "${javascript_OutputDir_Base}"
 	   delete '../src/main/webapp/static/js_generated_bundles'
@@ -352,7 +351,6 @@ task delete_outputDirs(type: Delete) {
   doFirst {
        println("delete_outputDirs::doFirst called.  Deleting build output directories including: ${javascript_OutputDir_Base} ")
 
-       delete 'handlebars_templates_precompiled'  //  Delete since used to have and delete to ensure cleanup
 	   delete 'webpack_build_output'
 	   delete "${javascript_OutputDir_Base}"
 	   delete 'esbuild_TestBuild'

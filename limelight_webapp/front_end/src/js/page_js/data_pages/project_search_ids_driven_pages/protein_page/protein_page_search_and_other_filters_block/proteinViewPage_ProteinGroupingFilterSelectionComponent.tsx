@@ -193,7 +193,7 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
     render(): React.ReactNode {
 
 
-        //  Convert groupProteins value into booleans for handlebars template
+        //  Convert groupProteins value into booleans for template
 
         let proteinGroupNone = false;
         let proteinGroup_GroupProteins = false;

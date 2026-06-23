@@ -86,7 +86,6 @@
     "exclude": [
       "./node_modules",
       "./node_modules/**/*",
-      "./handlebars_templates_precompiled/**/*",
       "**/__snapshots__/*",
       "**/*.snap"
     ]

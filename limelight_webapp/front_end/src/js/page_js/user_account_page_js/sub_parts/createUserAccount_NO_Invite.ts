@@ -50,7 +50,7 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	}
 
 	/**
-	 * show the create account part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
+	 * show the create account part on the page (Add the template and then add element listeners like onClick, ...)
 	 */
 	showOnPage(
 		{

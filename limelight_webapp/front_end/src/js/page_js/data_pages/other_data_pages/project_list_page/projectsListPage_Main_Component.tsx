@@ -276,7 +276,7 @@ class INTERNAL__Add_Project_Component extends React.Component< INTERNAL__Add_Pro
                 <tr>
                     {/*  Width will expand to fully display the icon   */}
                     <td valign="top" style={ { paddingRight: _TABLE_FIRST_COLUMN_PADDING_RIGHT, width: 1 } }>
-                        {/*   Same padding-right as <td> in single_project_template.handlebars  */}
+                        {/*   Same padding-right as the project list table <td>  */}
 
                         { ! this._showSection_AddProject ? (
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
