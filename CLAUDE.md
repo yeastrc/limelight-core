@@ -1,5 +1,62 @@
 # Limelight Core
 
+Limelight is a web application for visualizing, sharing, and analyzing mass-spec
+proteomics results. This repo is a multi-module Java project (built with Ant; see
+Building below) plus a TypeScript/webpack front end. User-facing docs live at
+https://limelight-ms.readthedocs.io/ — this section covers only what isn't obvious
+from the code.
+
+## Architecture
+
+### Data flow
+
+A user submits search results (Limelight XML) for import. The import is queued,
+then a long-running daemon picks it up and loads it into the database. The webapp
+reads that database to visualize and share the results.
+
+```
+submit_import (CLI)  ─┐
+                      ├─►  queue (DB)  ──►  run_importer (daemon)  ──►  importer ──►  DB  ◄── webapp (visualize/share)
+webapp upload UI    ─┘                                              └─► feature_detection_run_import
+```
+
+### Modules
+
+Runnable jars (each has a `main`) and the WAR are the deployable artifacts; the
+rest are libraries consumed by them.
+
+**Deployables**
+- `limelight_webapp` — Spring MVC web app deployed as a WAR to Tomcat. Entry:
+  `LimelightSpringApplicationRoot` / `WebappServletContextListener`. The
+  TypeScript/webpack UI lives in `limelight_webapp/front_end` (see its own
+  `CLAUDE.md`). MUST be built with its Ant script, not Gradle.
+- `limelight_run_importer` — daemon (`RunImporterProgram`) that polls the import
+  queue and runs imports; also drives DB cleanup and new-field population on
+  startup/maintenance.
+- `limelight_importer` — core importer (`LimelightImporterProgram`): validates and
+  parses Limelight XML and loads it into the database.
+- `limelight_feature_detection_run_import` — importer variant
+  (`Limelight_FeatureDetection_Run_Import_Program`) for feature-detection data.
+- `limelight_submit_import` — CLI (`SubmitImportProgram`) that submits/queues an
+  import by calling the webapp web service.
+
+**Libraries**
+- `limelight_shared_code` — DTO/DAO/database layer shared across (nearly) all
+  modules. Start here when looking for how data is persisted or read.
+- `limelight_importer_run_importer_shared` — code shared by the importer,
+  feature-detection importer, and run_importer.
+- `limelight_submit_import_client_connector` — web-service client connector for
+  the submit-import call; used by `submit_import`, `shared_code`, and `webapp`.
+- `limelight__database_cleanup__common_code__remove_data_from_database` — removes
+  data from the DB; consumed by `run_importer`.
+- `limelight__db_populate_new_fields__common_code` — populates newly added DB
+  fields (schema-upgrade data backfill); consumed by `run_importer` and `webapp`.
+
+**Other top-level dirs**
+- `database_scripts` — SQL `install/` schema and `version_upgrades/`.
+- `docs` — Sphinx source for the readthedocs site.
+- `deploy` — build output (jars + WAR).
+
 ## Building
 
 ### Full project
