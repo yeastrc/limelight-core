@@ -13,6 +13,12 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    # Batch all available updates into ONE PR (per directory) instead of one PR
+    # per dependency, to avoid a flood of PRs.
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
 
   # ---- Gradle: all JVM modules with declared dependencies ----
   - package-ecosystem: "gradle"
@@ -30,9 +36,20 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    # Batch all available updates into ONE PR per module directory instead of one
+    # PR per dependency.
+    groups:
+      gradle-dependencies:
+        patterns:
+          - "*"
 
   # ---- GitHub Actions used by the workflows ----
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - "*"
