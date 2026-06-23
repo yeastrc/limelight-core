@@ -42,12 +42,12 @@ jobs:
         cp deploy/limelight.war docker/webapp/
         cp deploy/limelightSubmitImport.jar docker/submit-import/
     - name: Login to DockerHub
-      uses: docker/login-action@v1 
+      uses: docker/login-action@v4 
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Login to quay.io
-      uses: docker/login-action@v1
+      uses: docker/login-action@v4
       with:
         registry: ${{ env.QUAY_REPO_REGISTRY }}
         username: ${{ secrets.QUAY_USER }}
