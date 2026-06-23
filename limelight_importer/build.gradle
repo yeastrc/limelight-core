@@ -123,10 +123,10 @@ dependencies {
 	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.24.3'
 		
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-	implementation 'com.fasterxml.jackson.core:jackson-core:2.19.1'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.22.0'
 	
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.1'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.0'
 	
 
 	// JAXB 4.0 (jakarta.xml.bind) - jakarta-only. Binds the published jakarta limelight-import-api
