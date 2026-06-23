@@ -1,0 +1,38 @@
+version: 2
+
+# Dependabot VERSION-UPDATE PRs.
+#
+# Security ALERTS for the Gradle modules come from the dependency graph submitted by
+# .github/workflows/dependency-submission.yml (GitHub does not auto-parse build.gradle).
+# This file additionally opens scheduled PRs to bump DIRECT dependencies that are behind.
+
+updates:
+  # ---- npm: front end ----
+  - package-ecosystem: "npm"
+    directory: "/limelight_webapp/front_end"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # ---- Gradle: all JVM modules with declared dependencies ----
+  - package-ecosystem: "gradle"
+    directories:
+      - "/limelight_webapp"
+      - "/limelight_shared_code"
+      - "/limelight_importer"
+      - "/limelight_importer_run_importer_shared"
+      - "/limelight_run_importer"
+      - "/limelight_feature_detection_run_import"
+      - "/limelight_submit_import"
+      - "/limelight_submit_import_client_connector"
+      - "/limelight__db_populate_new_fields__common_code"
+      - "/limelight__database_cleanup__common_code__remove_data_from_database"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # ---- GitHub Actions used by the workflows ----
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
