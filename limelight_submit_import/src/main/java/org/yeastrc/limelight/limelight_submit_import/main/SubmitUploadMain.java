@@ -453,320 +453,32 @@ public class SubmitUploadMain {
 
 
 
-				int fileIndex = 1;
+				int[] fileIndex = { 1 };  //  Running file-index holder, shared across all file types
+
+				//  Each file type is uploaded in its own method, with that file passed as a parameter, so the
+				//  code for one file type cannot reference another file type's File variable.  The single copy
+				//  of the hash/send/error logic lives in uploadSingleFile_ToServer(...).
+				//  Returns null = success; non-null = SubmitResult to propagate (original early-exit behavior).
 
 				if ( limelightXMLFile != null ) {
-					//  Process Limelight XML file
-
-					SubmitImport_FinalSubmit_SingleFileItem submitImport_FinalSubmit_SingleFileItem = new SubmitImport_FinalSubmit_SingleFileItem();
-					fileItems.add( submitImport_FinalSubmit_SingleFileItem );
-
-					submitImport_FinalSubmit_SingleFileItem.setFileIndex( fileIndex );
-					submitImport_FinalSubmit_SingleFileItem.setFileType( LimelightSubmit_FileImportFileType.LIMELIGHT_XML_FILE.value() );
-					submitImport_FinalSubmit_SingleFileItem.setIsLimelightXMLFile( true );
-					submitImport_FinalSubmit_SingleFileItem.setUploadedFilename( limelightXMLFile.getName() );
-
-					if ( submitterSameMachine ) {
-
-						submitImport_FinalSubmit_SingleFileItem.setFilenameOnDiskWithPathSubSameMachine( limelightXMLFile.getCanonicalPath() );
-					}
-
-					if ( ! submitterSameMachine ) {
-						
-						String file_SHA256_Hash = compute_SHA256_Hash_ForFile( limelightXMLFile );
-						
-						SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
-
-						webserviceRequest.setSubmitProgram_Version( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
-						
-						webserviceRequest.setProjectIdentifier( projectIdString );
-						webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
-						webserviceRequest.setUploadKey( submitImport_UploadKey );
-						webserviceRequest.setFileIndex( submitImport_FinalSubmit_SingleFileItem.getFileIndex() );
-						webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
-						webserviceRequest.setFilename( limelightXMLFile.getName() );
-						
-						webserviceRequest.setFileSHA256Hash( file_SHA256_Hash );
-						
-						webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( limelightXMLFile.getAbsolutePath() );
-						webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( limelightXMLFile.getCanonicalPath() );
-
-						Call_SubmitImport_UploadFile_Service_Parameters parameters = new Call_SubmitImport_UploadFile_Service_Parameters();
-						parameters.setUploadFile( limelightXMLFile );
-						parameters.setWebserviceRequest( webserviceRequest );
-
-						//  Make call to server
-						SubmitImport_UploadFile_Response_PgmXML submitImport_UploadFile_Response =
-								callSubmitImportWebservice.call_SubmitImport_UploadFile_Service( parameters );
-
-						if ( ! submitImport_UploadFile_Response.isStatusSuccess() ) {
-
-							System.err.println( "FAILED sending Limelight XML file to server: " + limelightXMLFile.getCanonicalPath() );
-							
-							if ( submitImport_UploadFile_Response.isFileSizeLimitExceeded() ) {
-							
-								System.err.println( "Limelight XML file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
-							}
-
-							if ( submitImport_UploadFile_Response.isUploadedFileSHA256HashNotMatchParamFileSHA256Hash() ) {
-							
-								System.err.println( "The file contents received by the server have a different hash than the hash computed by this program on the file." );
-								
-								throw new LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception();
-							}
-							
-							System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
-
-							submitResult.exitCode = PROGRAM_EXIT_CODE_UPLOAD_SEND_FILE_FAILED;
-
-							return submitResult;    //  EARLY EXIT
-
-						}
-
-
-						System.out.println( "Sent Limelight XML file to server: " + limelightXMLFile.getCanonicalPath() );
-					}
+					SubmitResult uploadResult = uploadFile_LimelightXML( limelightXMLFile, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+					if ( uploadResult != null ) { return uploadResult; }
 				}
 
 				if ( fastaFile != null && sendFastaFile_LOCAL ) {
-					
-					//  Process FASTA file
-
-					fileIndex++;
-
-					SubmitImport_FinalSubmit_SingleFileItem submitImport_FinalSubmit_SingleFileItem = new SubmitImport_FinalSubmit_SingleFileItem();
-					fileItems.add( submitImport_FinalSubmit_SingleFileItem );
-
-					submitImport_FinalSubmit_SingleFileItem.setFileIndex( fileIndex );
-					submitImport_FinalSubmit_SingleFileItem.setFileType( LimelightSubmit_FileImportFileType.FASTA_FILE.value() );
-					submitImport_FinalSubmit_SingleFileItem.setIsLimelightXMLFile( false );
-					submitImport_FinalSubmit_SingleFileItem.setUploadedFilename( fastaFile.getName() );
-
-					if ( submitterSameMachine ) {
-
-						submitImport_FinalSubmit_SingleFileItem.setFilenameOnDiskWithPathSubSameMachine( fastaFile.getCanonicalPath() );
-					}
-
-					if ( ! submitterSameMachine ) {
-
-						String file_SHA256_Hash = compute_SHA256_Hash_ForFile( fastaFile );
-						
-						SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
-
-						webserviceRequest.setSubmitProgram_Version( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
-						
-						webserviceRequest.setProjectIdentifier( projectIdString );
-						webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
-						webserviceRequest.setUploadKey( submitImport_UploadKey );
-						webserviceRequest.setFileIndex( submitImport_FinalSubmit_SingleFileItem.getFileIndex() );
-						webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
-						webserviceRequest.setFilename( fastaFile.getName() );
-
-						webserviceRequest.setFileSHA256Hash( file_SHA256_Hash );
-						
-						webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( fastaFile.getAbsolutePath() );
-						webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( fastaFile.getCanonicalPath() );
-
-						Call_SubmitImport_UploadFile_Service_Parameters parameters = new Call_SubmitImport_UploadFile_Service_Parameters();
-						parameters.setUploadFile( fastaFile );
-						parameters.setWebserviceRequest( webserviceRequest );
-
-						//  Make call to server
-						SubmitImport_UploadFile_Response_PgmXML submitImport_UploadFile_Response =
-								callSubmitImportWebservice.call_SubmitImport_UploadFile_Service( parameters );
-
-						if ( ! submitImport_UploadFile_Response.isStatusSuccess() ) {
-
-							System.err.println( "FAILED sending FASTA file to server: " + fastaFile.getCanonicalPath() );
-
-							if ( submitImport_UploadFile_Response.isFileSizeLimitExceeded() ) {
-							
-								System.err.println( "FASTA file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
-							}
-
-							if ( submitImport_UploadFile_Response.isUploadedFileSHA256HashNotMatchParamFileSHA256Hash() ) {
-							
-								System.err.println( "The file contents received by the server have a different hash than the hash computed by this program on the file." );
-								
-								throw new LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception();
-							}
-							
-							if ( submitImport_UploadFile_Response.getFastaFile_InvalidContents() != null &&  submitImport_UploadFile_Response.getFastaFile_InvalidContents().booleanValue() ) {
-
-								System.err.println( "FASTA file is invalid.  It does not start with '>' or is not ASCII text." );
-							}
-
-							System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
-
-							submitResult.exitCode = PROGRAM_EXIT_CODE_UPLOAD_SEND_FILE_FAILED;
-
-							return submitResult;    //  EARLY EXIT
-
-						}
-
-
-						System.out.println( "Sent FASTA file to server: " + fastaFile.getCanonicalPath() );
-					}
+					SubmitResult uploadResult = uploadFile_FASTA( fastaFile, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+					if ( uploadResult != null ) { return uploadResult; }
 				}
-
-
-				//	Process scanFiles
 
 				if ( scanFiles != null ) {
-
-					for ( File scanFile : scanFiles ) {
-
-						fileIndex++;
-
-						SubmitImport_FinalSubmit_SingleFileItem submitImport_FinalSubmit_SingleFileItem = new SubmitImport_FinalSubmit_SingleFileItem();
-						fileItems.add( submitImport_FinalSubmit_SingleFileItem );
-
-						submitImport_FinalSubmit_SingleFileItem.setFileIndex( fileIndex );
-						submitImport_FinalSubmit_SingleFileItem.setFileType( LimelightSubmit_FileImportFileType.SCAN_FILE.value() );
-						submitImport_FinalSubmit_SingleFileItem.setIsLimelightXMLFile( false );
-						submitImport_FinalSubmit_SingleFileItem.setUploadedFilename( scanFile.getName() );
-
-						if ( submitterSameMachine ) {
-
-							submitImport_FinalSubmit_SingleFileItem.setFilenameOnDiskWithPathSubSameMachine( scanFile.getCanonicalPath() );
-						}
-
-						if ( ! submitterSameMachine ) {
-
-							String file_SHA256_Hash = compute_SHA256_Hash_ForFile( scanFile );
-							
-							SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
-
-							webserviceRequest.setSubmitProgram_Version( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
-							
-							webserviceRequest.setProjectIdentifier( projectIdString );
-							webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
-							webserviceRequest.setUploadKey( submitImport_UploadKey );
-							webserviceRequest.setFileIndex( submitImport_FinalSubmit_SingleFileItem.getFileIndex() );
-							webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
-							webserviceRequest.setFilename( scanFile.getName() );
-
-							webserviceRequest.setFileSHA256Hash( file_SHA256_Hash );
-							
-							webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( scanFile.getAbsolutePath() );
-							webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( scanFile.getCanonicalPath() );
-
-							Call_SubmitImport_UploadFile_Service_Parameters parameters = new Call_SubmitImport_UploadFile_Service_Parameters();
-							parameters.setUploadFile( scanFile );
-							parameters.setWebserviceRequest( webserviceRequest );
-
-							//  Make call to server
-							SubmitImport_UploadFile_Response_PgmXML submitImport_UploadFile_Response =
-									callSubmitImportWebservice.call_SubmitImport_UploadFile_Service( parameters );
-
-							if ( ! submitImport_UploadFile_Response.isStatusSuccess() ) {
-
-								System.err.println( "FAILED sending Scan file to server: " + scanFile.getCanonicalPath() );
-								
-								if ( submitImport_UploadFile_Response.isFileSizeLimitExceeded() ) {
-								
-									System.err.println( "Scan file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
-								}
-
-								if ( submitImport_UploadFile_Response.isUploadedFileSHA256HashNotMatchParamFileSHA256Hash() ) {
-								
-									System.err.println( "The file contents received by the server have a different hash than the hash computed by this program on the file." );
-									
-									throw new LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception();
-								}
-
-								System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
-
-								submitResult.exitCode = PROGRAM_EXIT_CODE_UPLOAD_SEND_FILE_FAILED;
-
-								return submitResult;    //  EARLY EXIT
-
-							}
-
-							System.out.println( "Sent Scan file to server: " + scanFile.getCanonicalPath() );
-						}
-					}
+					SubmitResult uploadResult = uploadScanFiles( scanFiles, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+					if ( uploadResult != null ) { return uploadResult; }
 				}
-
-
-				//	Process Generic Other Files (other files that just need to be stored)
 
 				if ( genericOtherFiles != null ) {
-
-					for ( File genericOtherFile : genericOtherFiles ) {
-
-						fileIndex++;
-
-						SubmitImport_FinalSubmit_SingleFileItem submitImport_FinalSubmit_SingleFileItem = new SubmitImport_FinalSubmit_SingleFileItem();
-						fileItems.add( submitImport_FinalSubmit_SingleFileItem );
-
-						submitImport_FinalSubmit_SingleFileItem.setFileIndex( fileIndex );
-						submitImport_FinalSubmit_SingleFileItem.setFileType( LimelightSubmit_FileImportFileType.GENERIC_OTHER_FILE.value() );
-						submitImport_FinalSubmit_SingleFileItem.setIsLimelightXMLFile( false );
-						submitImport_FinalSubmit_SingleFileItem.setUploadedFilename( genericOtherFile.getName() );
-
-						if ( submitterSameMachine ) {
-
-							submitImport_FinalSubmit_SingleFileItem.setFilenameOnDiskWithPathSubSameMachine( genericOtherFile.getCanonicalPath() );
-						}
-
-						if ( ! submitterSameMachine ) {
-
-							String file_SHA256_Hash = compute_SHA256_Hash_ForFile( genericOtherFile );
-							
-							SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
-
-							webserviceRequest.setSubmitProgram_Version( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
-							
-							webserviceRequest.setProjectIdentifier( projectIdString );
-							webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
-							webserviceRequest.setUploadKey( submitImport_UploadKey );
-							webserviceRequest.setFileIndex( submitImport_FinalSubmit_SingleFileItem.getFileIndex() );
-							webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
-							webserviceRequest.setFilename( genericOtherFile.getName() );
-
-							webserviceRequest.setFileSHA256Hash( file_SHA256_Hash );
-							
-							webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( genericOtherFile.getAbsolutePath() );
-							webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( genericOtherFile.getCanonicalPath() );
-
-							Call_SubmitImport_UploadFile_Service_Parameters parameters = new Call_SubmitImport_UploadFile_Service_Parameters();
-							parameters.setUploadFile( genericOtherFile );
-							parameters.setWebserviceRequest( webserviceRequest );
-
-							//  Make call to server
-							SubmitImport_UploadFile_Response_PgmXML submitImport_UploadFile_Response =
-									callSubmitImportWebservice.call_SubmitImport_UploadFile_Service( parameters );
-
-							if ( ! submitImport_UploadFile_Response.isStatusSuccess() ) {
-
-								System.err.println( "FAILED sending Generic Other File to server: " + genericOtherFile.getCanonicalPath() );
-								
-								if ( submitImport_UploadFile_Response.isFileSizeLimitExceeded() ) {
-								
-									System.err.println( "Scan file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
-								}
-
-								if ( submitImport_UploadFile_Response.isUploadedFileSHA256HashNotMatchParamFileSHA256Hash() ) {
-								
-									System.err.println( "The file contents received by the server have a different hash than the hash computed by this program on the file." );
-									
-									throw new LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception();
-								}
-
-								System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
-
-								submitResult.exitCode = PROGRAM_EXIT_CODE_UPLOAD_SEND_FILE_FAILED;
-
-								return submitResult;    //  EARLY EXIT
-
-							}
-
-							System.out.println( "Sent Add File (--add-file=...) to server: " + genericOtherFile.getCanonicalPath() );
-						}
-					}
+					SubmitResult uploadResult = uploadGenericOtherFiles( genericOtherFiles, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+					if ( uploadResult != null ) { return uploadResult; }
 				}
-
 				// Submit the upload:  send the XML submit 
 
 				SubmitImport_FinalSubmit_Response_PgmXML finalSubmit_Response =
@@ -895,6 +607,188 @@ public class SubmitUploadMain {
 	 * @throws FileNotFoundException 
 	 * @throws NoSuchAlgorithmException 
 	 */
+	//////////////////////////////////////////////////////////////////////////////////
+	//
+	//  Per-file-type upload methods.  Each takes ONLY its own file type as a parameter so the
+	//  code for one file type cannot accidentally reference another file type's File variable
+	//  (the bug fixed in commit "Fix Submit Import File Hash Compute").
+	//
+	//  'fileIndex' is a single running counter (int[1] holder) shared across all file types:
+	//  Limelight XML = 1, then each subsequent uploaded file increments it.
+	//
+	//  Each returns null on success, or the populated SubmitResult (exit code set) to propagate
+	//  on failure (the caller returns it = the original early-exit behavior).
+	//
+
+	private SubmitResult uploadFile_LimelightXML(
+			File limelightXMLFile, int[] fileIndex,
+			List<SubmitImport_FinalSubmit_SingleFileItem> fileItems, boolean submitterSameMachine,
+			String projectIdString, String userSubmitImportProgramKey, String submitImport_UploadKey,
+			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult ) throws Exception {
+
+		//  Limelight XML file uses index 1 (no increment), matching the original numbering
+		int thisFileIndex = fileIndex[ 0 ];
+
+		return uploadSingleFile_ToServer(
+				limelightXMLFile, thisFileIndex,
+				LimelightSubmit_FileImportFileType.LIMELIGHT_XML_FILE.value(), true, "Limelight XML file",
+				fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey,
+				submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+	}
+
+	private SubmitResult uploadFile_FASTA(
+			File fastaFile, int[] fileIndex,
+			List<SubmitImport_FinalSubmit_SingleFileItem> fileItems, boolean submitterSameMachine,
+			String projectIdString, String userSubmitImportProgramKey, String submitImport_UploadKey,
+			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult ) throws Exception {
+
+		int thisFileIndex = ++fileIndex[ 0 ];
+
+		return uploadSingleFile_ToServer(
+				fastaFile, thisFileIndex,
+				LimelightSubmit_FileImportFileType.FASTA_FILE.value(), false, "FASTA file",
+				fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey,
+				submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+	}
+
+	private SubmitResult uploadScanFiles(
+			List<File> scanFiles, int[] fileIndex,
+			List<SubmitImport_FinalSubmit_SingleFileItem> fileItems, boolean submitterSameMachine,
+			String projectIdString, String userSubmitImportProgramKey, String submitImport_UploadKey,
+			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult ) throws Exception {
+
+		for ( File scanFile : scanFiles ) {
+
+			int thisFileIndex = ++fileIndex[ 0 ];
+
+			SubmitResult uploadResult = uploadSingleFile_ToServer(
+					scanFile, thisFileIndex,
+					LimelightSubmit_FileImportFileType.SCAN_FILE.value(), false, "Scan file",
+					fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey,
+					submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+
+			if ( uploadResult != null ) {
+				return uploadResult;
+			}
+		}
+
+		return null;
+	}
+
+	private SubmitResult uploadGenericOtherFiles(
+			List<File> genericOtherFiles, int[] fileIndex,
+			List<SubmitImport_FinalSubmit_SingleFileItem> fileItems, boolean submitterSameMachine,
+			String projectIdString, String userSubmitImportProgramKey, String submitImport_UploadKey,
+			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult ) throws Exception {
+
+		for ( File genericOtherFile : genericOtherFiles ) {
+
+			int thisFileIndex = ++fileIndex[ 0 ];
+
+			SubmitResult uploadResult = uploadSingleFile_ToServer(
+					genericOtherFile, thisFileIndex,
+					LimelightSubmit_FileImportFileType.GENERIC_OTHER_FILE.value(), false, "Generic Other File",
+					fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey,
+					submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+
+			if ( uploadResult != null ) {
+				return uploadResult;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Upload a single file to the server: build the submit file-item, and (when not same-machine)
+	 * compute the SHA-256 hash, build the request, send it, and handle errors.
+	 *
+	 * The file is a parameter, so the code here cannot reference any other file type's File variable.
+	 *
+	 * @return null on success; the populated SubmitResult (exit code set) on failure to propagate.
+	 */
+	private SubmitResult uploadSingleFile_ToServer(
+			File file, int fileIndex, int fileType, boolean isLimelightXMLFile, String fileTypeForDisplay,
+			List<SubmitImport_FinalSubmit_SingleFileItem> fileItems, boolean submitterSameMachine,
+			String projectIdString, String userSubmitImportProgramKey, String submitImport_UploadKey,
+			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult ) throws Exception {
+
+		SubmitImport_FinalSubmit_SingleFileItem submitImport_FinalSubmit_SingleFileItem = new SubmitImport_FinalSubmit_SingleFileItem();
+		fileItems.add( submitImport_FinalSubmit_SingleFileItem );
+
+		submitImport_FinalSubmit_SingleFileItem.setFileIndex( fileIndex );
+		submitImport_FinalSubmit_SingleFileItem.setFileType( fileType );
+		submitImport_FinalSubmit_SingleFileItem.setIsLimelightXMLFile( isLimelightXMLFile );
+		submitImport_FinalSubmit_SingleFileItem.setUploadedFilename( file.getName() );
+
+		if ( submitterSameMachine ) {
+
+			submitImport_FinalSubmit_SingleFileItem.setFilenameOnDiskWithPathSubSameMachine( file.getCanonicalPath() );
+		}
+
+		if ( ! submitterSameMachine ) {
+
+			String file_SHA256_Hash = compute_SHA256_Hash_ForFile( file );
+
+			SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
+
+			webserviceRequest.setSubmitProgram_Version( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
+
+			webserviceRequest.setProjectIdentifier( projectIdString );
+			webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
+			webserviceRequest.setUploadKey( submitImport_UploadKey );
+			webserviceRequest.setFileIndex( submitImport_FinalSubmit_SingleFileItem.getFileIndex() );
+			webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
+			webserviceRequest.setFilename( file.getName() );
+
+			webserviceRequest.setFileSHA256Hash( file_SHA256_Hash );
+
+			webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( file.getAbsolutePath() );
+			webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( file.getCanonicalPath() );
+
+			Call_SubmitImport_UploadFile_Service_Parameters parameters = new Call_SubmitImport_UploadFile_Service_Parameters();
+			parameters.setUploadFile( file );
+			parameters.setWebserviceRequest( webserviceRequest );
+
+			//  Make call to server
+			SubmitImport_UploadFile_Response_PgmXML submitImport_UploadFile_Response =
+					callSubmitImportWebservice.call_SubmitImport_UploadFile_Service( parameters );
+
+			if ( ! submitImport_UploadFile_Response.isStatusSuccess() ) {
+
+				System.err.println( "FAILED sending " + fileTypeForDisplay + " to server: " + file.getCanonicalPath() );
+
+				if ( submitImport_UploadFile_Response.isFileSizeLimitExceeded() ) {
+
+					System.err.println( fileTypeForDisplay + " is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
+				}
+
+				if ( submitImport_UploadFile_Response.isUploadedFileSHA256HashNotMatchParamFileSHA256Hash() ) {
+
+					System.err.println( "The file contents received by the server have a different hash than the hash computed by this program on the file." );
+
+					throw new LimelightSubmitImportProgram_SHA256_Hash_NotMatch_Exception();
+				}
+
+				if ( submitImport_UploadFile_Response.getFastaFile_InvalidContents() != null && submitImport_UploadFile_Response.getFastaFile_InvalidContents().booleanValue() ) {
+
+					System.err.println( "FASTA file is invalid.  It does not start with '>' or is not ASCII text." );
+				}
+
+				System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
+
+				submitResult.exitCode = PROGRAM_EXIT_CODE_UPLOAD_SEND_FILE_FAILED;
+
+				return submitResult;    //  FAILURE
+			}
+
+			System.out.println( "Sent " + fileTypeForDisplay + " to server: " + file.getCanonicalPath() );
+		}
+
+		return null;  //  success
+	}
+
+
 	private static String compute_SHA256_Hash_ForFile( File file ) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
 		
 		final String SHA_256_ALGORITHM = "SHA-256";
