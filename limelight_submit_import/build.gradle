@@ -92,7 +92,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
 	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.9'
 	
 	//  NOT FOUND  in mavenCentral()
 	
