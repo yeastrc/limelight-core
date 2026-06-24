@@ -104,8 +104,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2
 	implementation 'org.apache.commons:commons-dbcp2:2.9.0'
 	
-	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
-	implementation 'mysql:mysql-connector-java:8.0.28'
+	// https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
+	implementation 'com.mysql:mysql-connector-j:8.4.0'
 	
 	//  Logging
 	

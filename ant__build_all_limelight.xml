@@ -158,9 +158,12 @@
 		<!-- submit import  -->		
 		<ant antfile="ant__create_runnable_jar_submit_import.xml"  dir="limelight_submit_import" />
 
-		<!--  web app  -->		
+		<!--  web app  -->
 		<ant antfile="ant_create_war.xml"  dir="limelight_webapp" />
-				
+
+		<!-- tomcat image setup: emit MySQL JDBC driver for the webapp Docker image (Tomcat lib) -->
+		<ant antfile="ant_emit_tomcat_image_files.xml"  dir="tomcat_image_setup" />
+
 	</target>
 	
 
@@ -175,7 +178,12 @@
 		<copy file="limelight_feature_detection_run_import/build/libs/limelight_FeatureDetection_Run_Import.jar" todir="deploy" />
 		<copy file="limelight_run_importer/build/libs/limelightRunImporter.jar" todir="deploy" />
 		<copy file="limelight_submit_import/build/libs/limelightSubmitImport.jar" todir="deploy" />
-		
+
+		<!-- jars to drop into the webapp image's Tomcat lib/ (e.g. MySQL JDBC driver) -->
+		<copy todir="deploy/tomcat_lib_jars">
+			<fileset dir="tomcat_image_setup/build/tomcat_lib_jars" />
+		</copy>
+
 	</target>
 	
 </project>
