@@ -238,7 +238,7 @@ public class ImportFile_Bullseye_Results {
 
 					String amazonS3_RegionName = fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results.getAws_s3_region();
 
-					if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+					if ( StringUtils.isEmpty( amazonS3_RegionName ) ) {
 								
 						amazonS3_RegionName = ConfigSystemDAO_Importer.getInstance().getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
 					}

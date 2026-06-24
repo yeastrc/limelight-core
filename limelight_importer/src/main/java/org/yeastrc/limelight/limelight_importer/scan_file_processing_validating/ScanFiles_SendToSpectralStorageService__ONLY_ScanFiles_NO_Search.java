@@ -148,7 +148,7 @@ public class ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search {
 
 				{  // Use Region from Config, otherwise SDK use from Environment Variable
 
-					if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+					if ( StringUtils.isEmpty( amazonS3_RegionName ) ) {
 								
 						amazonS3_RegionName = ConfigSystemDAO_Importer.getInstance().getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
 					}

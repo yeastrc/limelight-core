@@ -776,17 +776,17 @@ public class Project_UploadData_V2_UploadFile_Submit_RestWebserviceController {
 
 			{ //  Aws_s3_region
 
-				final String amazonS3_bucketName__FromConfig = Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values.getInstance().get_S3_Region_Configuration_Value();
+				final String amazonS3_region__FromConfig = Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values.getInstance().get_S3_Region_Configuration_Value();
 				
 				boolean configChanged = false;
 
 				if ( StringUtils.isNotEmpty( fileImportTrackingSingleFileDTO.getAws_s3_region() ) ) {
 
-					if ( ! fileImportTrackingSingleFileDTO.getAws_s3_region().equals( amazonS3_bucketName__FromConfig ) ) {
+					if ( ! fileImportTrackingSingleFileDTO.getAws_s3_region().equals( amazonS3_region__FromConfig ) ) {
 				
 						configChanged = true;
 					}
-				} else if ( StringUtils.isNotEmpty( amazonS3_bucketName__FromConfig ) ) {
+				} else if ( StringUtils.isNotEmpty( amazonS3_region__FromConfig ) ) {
 					
 					configChanged = true;
 				}
