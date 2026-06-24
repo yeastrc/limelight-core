@@ -425,11 +425,13 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 				ByteArrayInputStream byteArrayInputStream_Full_FileContents = new ByteArrayInputStream(bytes_Full_FileContents, 0, bytes_Full_FileContents__BytesPopulatedCount);
 				
 
-				{
-					String resultString = new String( bytes_Full_FileContents, 0, bytes_Full_FileContents__BytesPopulatedCount );
-					
-					int z = 0;
-				}
+				//  DEBUG ONLY - view file contents as String in debugger; safe to uncomment
+				//  try {
+				//      String resultString = new String( bytes_Full_FileContents, 0, bytes_Full_FileContents__BytesPopulatedCount );  // Consider adding a character set if use for more than debugging
+				//      int z = 0;
+				//  } catch ( Throwable t ) {
+				//      //  swallow - debug only
+				//  }
 				
 				
 				String yrc_FileObjectStorageServiceBaseURL = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL );

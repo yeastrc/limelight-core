@@ -340,11 +340,13 @@ public class StructureFile_Get_FileContents_For_StructureFileId_RestWebserviceCo
 					contentsByteArray = gUNzip_ByteArray_To_ByteArray.gUNzip_ByteArray_To_ByteArray(contentsByteArray);
 
 					
-					{
-						String resultString = new String( contentsByteArray );
-						
-						int z = 0;
-					}
+					//  DEBUG ONLY - view file contents as String in debugger; safe to uncomment
+					//  try {
+					//      String resultString = new String( contentsByteArray );  // Consider adding a character set if use for more than debugging
+					//      int z = 0;
+					//  } catch ( Throwable t ) {
+					//      //  swallow - debug only
+					//  }
 					
 				}
 			}
