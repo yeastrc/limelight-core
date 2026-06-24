@@ -69,7 +69,12 @@ dependencies {
 	implementation 'org.apache.commons:commons-dbcp2:2.9.0'
 	
 	// https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
-	implementation 'com.mysql:mysql-connector-j:8.4.0'
+	implementation('com.mysql:mysql-connector-j:8.4.0') {
+		//  protobuf-java is only used by the MySQL X DevAPI (X Protocol). Limelight uses
+		//  classic JDBC (com.mysql.cj.jdbc.Driver), so exclude it to drop the transitive
+		//  protobuf CVEs (X DevAPI code path is never reached).
+		exclude group: 'com.google.protobuf', module: 'protobuf-java'
+	}
 	
 	//  Logging
 	
