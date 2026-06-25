@@ -128,20 +128,17 @@ session and refreshes its cached access level so grants/revokes take effect);
 `direct_user_session/UserIsAdminCheck`; `result_objects/WebSessionAuthAccessLevel`
 (+ `...Builder`).
 
-### Pitfall — REST controller using the page-controller getter (fails open)
+### REST controllers: use the throwing validator, not the page-controller getter
 
-A REST controller must NOT authorize with the non-throwing
-`getAuthAccessLevelForProjectIds(...)` and then check only stage 1
-(`isNoSession() && ! isPublicAccessCodeReadAllowed()`). For a **logged-in
-non-member of a private project** the computed level is `NONE` but `isNoSession()`
-is **false**, so that single check passes and the data is served — broken access
-control. REST controllers must either call a throwing `validate<Level>Allowed(...)`
-**or** add stage 2 (`if ( ! isPublicAccessCodeReadAllowed() ) throw
-Limelight_WS_AuthError_Forbidden_Exception`). (This gap was found and fixed in ~15
-`/d/rws/...` read controllers in 2026-06 — feature-detection-mapping, scan-data /
-scan-file, and project-view / project-title; the fix throws `Forbidden` to match the
-throwing validators. When adding a new REST data controller, follow the throwing-
-validator pattern to avoid reintroducing it.)
+A REST controller must authorize with a throwing `validate<Level>Allowed(...)`
+(which ends `NONE → throw Forbidden`). Do **not** reuse the page-controller's
+non-throwing `getAuthAccessLevelForProjectIds(...)` with only a no-session check —
+that getter is a two-stage idiom for *page* controllers; the missing stage in a REST
+controller fails open for a logged-in user who isn't a project member. If a REST
+controller does use the getter, it must add the level check itself
+(`if ( ! isPublicAccessCodeReadAllowed() ) throw Limelight_WS_AuthError_Forbidden_Exception`).
+The throwing validator is the simplest correct choice — prefer it for every new REST
+data controller.
 
 ### Page ↔ webservice auth must agree — the reload-on-403 contract
 
@@ -258,9 +255,11 @@ above. Key facts (reviewed clean 2026-06-25):
   (`FileImportSubmitImportProgramKeyPerUserDAO`, keyed on `userSession.getUserId()`).
   **Public access code** and **invite** flows resolve the project (and, for invites,
   the granted access level) **server-side** from the validated code, not the request.
-- Known low-severity tradeoff: the password-reset and account-update responses
-  distinguish "account exists / duplicate email-or-username" from success, i.e.
-  **user enumeration** — common and usually deliberate for UX, not an access hole.
+- The password-reset and account-update responses currently favor specific
+  user-facing messages over generic ones. If tightening that is ever desired,
+  generic "if an account exists, we've emailed it" / "could not save" responses are
+  the more conservative default; it's a UX-vs-privacy tradeoff, not an access-control
+  issue.
 
 ### App-admin gate (`webapp_admin_pages/`) — GLOBAL admin, not per-project
 
@@ -295,7 +294,7 @@ if ( userSession.isGlobalAdminUser()
 - **Access control**: there is **no blanket login gate** — public projects are
   readable anonymously, so each page controller and REST webservice does its own
   per-project check. See the **Authorization** section above (model, the two
-  controller families, the interceptors, and the fail-open pitfall).
+  controller families, the interceptors, and the REST validator guidance).
 - **Adding a page** requires a front-end change too: add an esbuild entry point in
   `front_end/build.gradle` — **not** in `webpack.config.js`. esbuild bundles all
   TS/JS; webpack processes SCSS only; types are checked with `tsc --noEmit`. The
