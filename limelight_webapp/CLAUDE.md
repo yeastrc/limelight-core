@@ -262,6 +262,34 @@ above. Key facts (reviewed clean 2026-06-25):
   distinguish "account exists / duplicate email-or-username" from success, i.e.
   **user enumeration** — common and usually deliberate for UX, not an access hole.
 
+### App-admin gate (`webapp_admin_pages/`) — GLOBAL admin, not per-project
+
+The webapp-admin controllers (manage users, webapp config, caches, importer
+pause, terms-of-service) require **global** site-admin, which is a *different*
+check from the per-project `validate<Level>Allowed(...)` validators (those are
+project-keyed; admin here is site-wide). Every admin controller does the same
+**inline** gate (reviewed clean 2026-06-25 — all 7 page + 17 REST):
+
+```java
+if ( userSession.isGlobalAdminUser()
+     || ( userSession.getUserAccessLevel() != null
+          && userSession.getUserAccessLevel() <= AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN ) ) {
+    // proceed
+} else { /* REST: throw Limelight_WS_AuthError_Forbidden_Exception; page: throw / forward to login */ }
+```
+
+- **REST** controllers first call
+  `GetUserSessionActualUserLoggedIn_ForRestController.userSessionOfActualUserLoggedIn(req)`,
+  which **throws 401** (no session) / **403** (not an actual logged-in user, or null
+  userId) and returns a guaranteed non-null logged-in session — so the
+  `isGlobalAdminUser()` call can't NPE or see anonymous. Then the gate above
+  (`else` → `Forbidden`).
+- **Page** controllers: `userSession == null || ! isActualUser()` → forward to login;
+  non-admin `else` → throw (no fall-through to the admin JSP).
+- The gate is **copy-pasted into all 24** (no shared `validateGlobalAdmin` helper) —
+  consistent today, but when adding an admin controller, replicate it exactly (a
+  missing gate is a full admin bypass). A shared throwing helper would harden this.
+
 ## Gotchas
 
 - **Access control**: there is **no blanket login gate** — public projects are
