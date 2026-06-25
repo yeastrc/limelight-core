@@ -149,6 +149,27 @@ project-view — pending fix.)
   bundles are copied into `src/main/webapp/static/`. The full front-end pipeline is
   documented in `front_end/CLAUDE.md` (authoritative — `README_Development.md` is
   stale on the build). See also `README_AddingURLsWithHash.md`.
+- **Error-response message text is load-bearing — Spring Boot keeps disabling it.**
+  Webservice errors are thrown as `@ResponseStatus`-annotated exceptions (see
+  `exceptions/webservice_access_exceptions/`, e.g. `Limelight_WS_AuthError_Forbidden_Exception`
+  → 403 reason `"forbidden"`, `..._Unauthorized_Exception` → 401 `"no_session"`,
+  the sync-tracking-mismatch → 400, invalid-parameter → 400). The TypeScript
+  front end (`front_end/.../common_all_pages/handleServicesAJAXErrors.ts`) keys off
+  **both the HTTP status and the response body's `message` field** to decide what to
+  do — e.g. 403 + `message === "forbidden"` or 401 + `message === "no_session"` triggers
+  a page **reload** (which re-runs page validation and forwards the now-unauthorized
+  user to a no-access JSP) instead of showing a raw error. For the `message` field to
+  reach the client, `src/main/resources/application.properties` must set
+  **`server.error.include-message=always`** (Spring Boot defaults this to `never` since
+  2.3). **This setting has broken more than once across Spring Boot upgrades** — on
+  Spring Boot 4.0.x the error JSON came back with no `message` field despite the
+  property, so the front end shows `"403 received, responseText: undefined"` and does
+  NOT reload. **After any Spring Boot upgrade, re-verify** that a webservice 403/401
+  returns the reason text in the body's `message` field (curl an unauthorized endpoint;
+  body should contain `"message":"forbidden"`). If it regressed, the inclusion mechanism
+  (property name / ErrorAttributes options / `@ResponseStatus(reason=...)` handling) has
+  changed again and must be re-fixed — the per-project access-control reload UX depends
+  on it. Also depends on `server.error.whitelabel.enabled=false`.
 - **Runtime config** is read from properties files / env vars / `-D` JVM params on
   startup; templates are in `Sample_Configuration_Files/`.
 - There is no JUnit suite in `src/test` — verify changes by building and running.
