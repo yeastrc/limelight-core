@@ -24,11 +24,13 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
+import org.springframework.boot.webmvc.autoconfigure.error.ErrorViewResolver;
 import org.springframework.boot.webmvc.error.DefaultErrorAttributes;
 import org.springframework.boot.webmvc.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -158,6 +160,29 @@ public class LimelightWebAppConfig implements WebMvcConfigurer {
 						+ " (Spring Boot property rename on upgrade?).  See limelight_webapp/CLAUDE.md." );
 			}
 		};
+	}
+
+	/**
+	 * Renders generalError.jsp for HTML error responses (e.g. an uncaught exception from a
+	 * page controller).
+	 *
+	 * Spring Boot's BasicErrorController owns "/error" and intercepts errors before the web.xml
+	 * <error-page> mapping can.  With the whitelabel error view disabled
+	 * (spring.web.error.whitelabel.enabled=false) and no other HTML error view, errorHtml()
+	 * would fall back to an unresolved "error" view -> empty body -> the browser's generic
+	 * "HTTP ERROR 500" page.  This ErrorViewResolver gives BasicErrorController.errorHtml() a
+	 * view name "generalError.jsp" -> internalResourceViewResolver() (prefix /WEB-INF/jsp/,
+	 * NO suffix -> view names include the .jsp by app convention) -> /WEB-INF/jsp/generalError.jsp.
+	 * generalError.jsp renders with the core error message even when none of its optional
+	 * request attributes are set.
+	 *
+	 * Only the HTML branch is affected; webservice/JSON errors still return the JSON body
+	 * (with the "message" field from errorAttributes() above).  Compile-safe: a future rename
+	 * of ErrorViewResolver / its package fails to compile.
+	 */
+	@Bean
+	ErrorViewResolver generalErrorViewResolver() {
+		return ( request, status, model ) -> new ModelAndView( "generalError.jsp" );
 	}
 
 }
