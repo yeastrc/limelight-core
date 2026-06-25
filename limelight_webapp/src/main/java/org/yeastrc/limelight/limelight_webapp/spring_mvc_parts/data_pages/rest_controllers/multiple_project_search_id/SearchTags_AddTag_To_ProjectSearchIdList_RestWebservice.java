@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
+import org.yeastrc.limelight.limelight_webapp.dao.ProjectSearch_TagStringInProject_DAO_IF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.Search_Tags_Insert_ProjectSearchIdToTagIdMapping_UsingDBTransactionService_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
@@ -62,7 +63,10 @@ public class SearchTags_AddTag_To_ProjectSearchIdList_RestWebservice {
 
 	@Autowired
 	private Search_Tags_Insert_ProjectSearchIdToTagIdMapping_UsingDBTransactionService_IF search_Tags_Insert_ProjectSearchIdToTagIdMapping_UsingDBTransactionService;
-	
+
+	@Autowired
+	private ProjectSearch_TagStringInProject_DAO_IF projectSearch_TagStringInProject_DAO;
+
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
 
@@ -166,7 +170,19 @@ public class SearchTags_AddTag_To_ProjectSearchIdList_RestWebservice {
     			log.warn( "projectIdsForProjectSearchIds.size > 1. projectIdsForProjectSearchIds.size: " + projectIdsForProjectSearchIds.size() );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
-    		
+
+    		int projectId = projectIdsForProjectSearchIds.get( 0 );
+
+    		//  AUTH:  Validate the tagId belongs to the same (authorized) project as the project search ids.
+    		//    Otherwise an owner of one project could map a tag from another project onto their searches.
+    		Integer tagId_ProjectId = projectSearch_TagStringInProject_DAO.getProjectId_For_Id( webserviceRequest.tagId );
+
+    		if ( tagId_ProjectId == null || tagId_ProjectId.intValue() != projectId ) {
+    			log.warn( "tagId is not in the authorized project. tagId: " + webserviceRequest.tagId
+    					+ ", tagId_ProjectId: " + tagId_ProjectId + ", projectId: " + projectId );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+
     		search_Tags_Insert_ProjectSearchIdToTagIdMapping_UsingDBTransactionService.insert_ProjectSearchIds_TO_TagId_Mapping(
     				webserviceRequest.projectSearchIds, webserviceRequest.tagId
     				);
