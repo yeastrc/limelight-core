@@ -42,6 +42,7 @@ import org.yeastrc.limelight.limelight_webapp.dao.ProjectScanFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Forbidden_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -205,6 +206,11 @@ public class ScanData_WithPeaks_For__ScanNumbers_ProjectSearchId_SearchScanFileI
 				
 				//  No User session and not public project
 				throw new Limelight_WS_AuthError_Unauthorized_Exception();
+			}
+
+			if ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() ) {
+				//  Have a user session but no read access to this (non-public) project
+				throw new Limelight_WS_AuthError_Forbidden_Exception();
 			}
 			    		
 			
