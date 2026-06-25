@@ -40,6 +40,7 @@ import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebS
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Forbidden_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -154,6 +155,11 @@ public class Project_GetProjectTitle_RestWebserviceController {
 				
 				//  No User session and not public project
 				throw new Limelight_WS_AuthError_Unauthorized_Exception();
+			}
+
+			if ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() ) {
+				//  Have a user session but no read access to this (non-public) project
+				throw new Limelight_WS_AuthError_Forbidden_Exception();
 			}
 			
 			ProjectDTO projectDTO = projectDAO.get_Title_ProjectLocked_ForId( projectId );
