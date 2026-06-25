@@ -133,9 +133,11 @@ non-member of a private project** the computed level is `NONE` but `isNoSession(
 is **false**, so that single check passes and the data is served — broken access
 control. REST controllers must either call a throwing `validate<Level>Allowed(...)`
 **or** add stage 2 (`if ( ! isPublicAccessCodeReadAllowed() ) throw
-Limelight_WS_AuthError_Unauthorized_Exception`). (Known instances of this gap exist
-in some `/d/rws/...` read controllers — feature-detection-mapping, scan-data,
-project-view — pending fix.)
+Limelight_WS_AuthError_Forbidden_Exception`). (This gap was found and fixed in ~15
+`/d/rws/...` read controllers in 2026-06 — feature-detection-mapping, scan-data /
+scan-file, and project-view / project-title; the fix throws `Forbidden` to match the
+throwing validators. When adding a new REST data controller, follow the throwing-
+validator pattern to avoid reintroducing it.)
 
 ## Gotchas
 
