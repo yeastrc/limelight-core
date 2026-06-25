@@ -56,9 +56,13 @@ Spring app must be under this package (see `ZZ_README.txt`). ~1200 Java files.
 
 ## Authorization (per-project access control)
 
-Login is one layer; **per-project authorization is separate and is mostly the
-controller's own job.** The code lives in `access_control/`. Read this before
-adding or reviewing any data controller.
+**There is no blanket "must be logged in" layer.** Public projects (and
+public-access-code links) are readable by anonymous users, so authorization
+cannot be a single gate — **every page controller and every REST webservice does
+its own per-project access check** (the one structural exception is the
+`/d/pg/psb/**` interceptor below, which does the check for projectSearchId-based
+*page* controllers). The reusable code lives in `access_control/`. Read this
+before adding or reviewing any data controller.
 
 ### The model
 
@@ -139,12 +143,66 @@ scan-file, and project-view / project-title; the fix throws `Forbidden` to match
 throwing validators. When adding a new REST data controller, follow the throwing-
 validator pattern to avoid reintroducing it.)
 
+### Spring interceptors (registered in `LimelightWebAppConfig.addInterceptors`)
+
+Three `HandlerInterceptor`s are registered (in
+`spring_mvc_parts/controller_interceptor_handlers/`). **Only the third does
+authorization** — do not assume the `/**` ones gate access:
+
+- **`AllControllers_SpringHandlerInterceptor`** — path `/**` (excludes
+  `/static/**`). **No auth.** Just ensures `AppContextConfigSystemValuesRetrieval`
+  is in the servlet context (so JSPs can read config-system HTML values). Always
+  returns `true`.
+- **`All_Page_Controllers_SpringHandlerInterceptor`** — path `/**` (excludes
+  `/static/**`, the data-page REST paths `/d/rws/...`, user REST paths, and the
+  IE-error page). **No auth.** (1) sets the `Webapp_VersionAndGitInfo_FromBuild`
+  request attribute for JSP display; (2) **gates on DB-schema-version match** — if
+  the running code's schema version ≠ the DB's (or an update is in progress), it
+  forwards to the schema-mismatch error page and returns `false`. Otherwise `true`.
+- **`DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor`**
+  — path `PATHS_FOR_INTERCEPTOR` = `/d/pg/psb/**` (projectSearchId-based **page**
+  controllers only; **not** the `/d/rws/...` REST webservices). **This one does
+  per-project access control.** It parses the URL's 2nd path element — a
+  search-data-lookup-params code, a projectSearchId-codes block, or a
+  projectScanFileId-code block — resolves it to `projectSearchIds` + the lookup
+  DTO, **stashes those as request attributes** so the page controller doesn't
+  re-parse, then runs the standard two-stage check on the derived project(s):
+  `isNoSession() && !isPublicAccessCodeReadAllowed()` → forward to the **login
+  page**; else `!isPublicAccessCodeReadAllowed()` → 401 + the **project-access-not-
+  allowed** error page; else proceed. Invalid URL → 400 / `generalError`; unknown
+  id → 404. (A formerly-present blanket "require a user session or forward to
+  login" block is commented out — there is intentionally no blanket login gate.)
+
+Note: a `AllControllersAccessControl_SpringHandlerInterceptor` (different class)
+is referenced only in commented-out code in `LimelightWebAppConfig` and is **not
+registered** — don't cite it as the access gate.
+
+### URI path structure (roots)
+
+Path constants live in per-area `AA_*Paths_Constants` classes. Roots:
+
+- **`/d`** — **Data Pages.** `AA_PageControllerPaths_Constants`,
+  `AA_RestWSControllerPaths_Constants`, `AA_DataDownloadControllersPaths_Constants`.
+  - **`/d/pg`** — data-page **page controllers** (return JSP views).
+    - **`/d/pg/psb`** — projectSearchId-based page controllers (covered by the
+      access-control interceptor above).
+  - **`/d/rws`** — data-page **REST webservices** (`@RestController`, `byte[]` in/out;
+    each does its own per-project auth — the interceptor does NOT cover these).
+  - data-page **download controllers** — TS submits a form; they return a file.
+- **`/p`** — project-label shortcut: **not an auth check**; redirects to the
+  `/d/pg` project page for the project id.
+- **`/go`** — URL-shortener: **not an auth check**; redirects to the real `/d/pg`
+  data page (access enforced at the redirect target). See
+  `UrlShortener_RedirectTo_Assoc_URL_Controller`.
+- **User account pages** — `spring_mvc_parts/user_account_pages/` (login, account, invites).
+- **App admin pages** — `spring_mvc_parts/webapp_admin_pages/`.
+
 ## Gotchas
 
-- **Access control**: login is required for all URIs except the login page,
-  enforced in `AllControllersAccessControl_SpringHandlerInterceptor`. Add new
-  public paths there. Per-project authorization is a separate concern — see
-  **Authorization** above.
+- **Access control**: there is **no blanket login gate** — public projects are
+  readable anonymously, so each page controller and REST webservice does its own
+  per-project check. See the **Authorization** section above (model, the two
+  controller families, the interceptors, and the fail-open pitfall).
 - **Adding a page** requires a front-end change too: add an esbuild entry point in
   `front_end/build.gradle` — **not** in `webpack.config.js`. esbuild bundles all
   TS/JS; webpack processes SCSS only; types are checked with `tsc --noEmit`. The
