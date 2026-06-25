@@ -160,25 +160,25 @@ validator pattern to avoid reintroducing it.)
   **both the HTTP status and the response body's `message` field** to decide what to
   do — e.g. 403 + `message === "forbidden"` or 401 + `message === "no_session"` triggers
   a page **reload** (which re-runs page validation and forwards the now-unauthorized
-  user to a no-access JSP) instead of showing a raw error. For the `message` field to
-  reach the client, `src/main/resources/application.properties` must enable message
-  inclusion (Spring Boot defaults it to `never` since 2.3). **The property name keeps
-  changing across Spring Boot major versions** — on **Spring Boot 4.0 the entire
-  `server.error.*` namespace was removed** (not even a deprecated alias) and the error
-  config moved to **`spring.web.error.*`**, bound via `WebProperties` →
-  `BasicErrorController`. So the old `server.error.include-message=always` /
-  `server.error.whitelabel.enabled=false` are **silently ignored** on Boot 4, the
-  `message` field defaults to omitted, and the front end shows
-  `"403 received, responseText: undefined"` with no reload. Current correct settings:
-  ```
-  spring.web.error.include-message=always
-  spring.web.error.whitelabel.enabled=false
-  ```
-  **After any Spring Boot upgrade, re-verify** an unauthorized webservice returns the
-  reason in the body's `message` field (`curl` it; body should contain
-  `"message":"forbidden"`). If it regressed, the property namespace moved again — find
-  the current binding (`grep` the Boot autoconfigure jar's
-  `spring-configuration-metadata.json` for `include-message`).
+  user to a no-access JSP) instead of showing a raw error. Including that `message`
+  field used to be a string property (`server.error.include-message=always`, which
+  Spring Boot defaults to `never` since 2.3) — but **Spring Boot 4.0 removed the entire
+  `server.error.*` namespace with no deprecated alias** (moved to `spring.web.error.*`),
+  so the old property was **silently ignored**, the `message` field vanished, and the
+  front end showed `"403 received, responseText: undefined"` with no reload. To stop
+  silently-ignored-property breakage, the error-message inclusion and the JSP view prefix
+  are now set **programmatically in `LimelightWebAppConfig`** instead of via properties:
+  - `errorAttributes()` — a `DefaultErrorAttributes` subclass that forces
+    `ErrorAttributeOptions.Include.MESSAGE` (replaces `*.error.include-message=always`).
+    BasicErrorController uses it via `@ConditionalOnMissingBean(ErrorAttributes.class)`.
+  - `internalResourceViewResolver()` — sets the `/WEB-INF/jsp/` prefix (replaces
+    `spring.mvc.view.prefix`); Boot backs off via `@ConditionalOnMissingBean`.
+  - `assert_ErrorWhitelabel_Disabled(...)` — `spring.web.error.whitelabel.enabled=false`
+    stays a property (no clean typed "off" bean), but this `ApplicationRunner` **fails
+    startup** if it ever stops binding. These all use **typed Spring Boot APIs**, so a
+    future rename/removal fails to **compile** (or, for whitelabel, fails to **start**)
+    rather than silently breaking. After a Spring Boot upgrade: confirm it compiles, the
+    app starts, and an error webservice still returns `"message":"..."` (curl it).
 - **Runtime config** is read from properties files / env vars / `-D` JVM params on
   startup; templates are in `Sample_Configuration_Files/`.
 - There is no JUnit suite in `src/test` — verify changes by building and running.
