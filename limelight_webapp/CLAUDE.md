@@ -54,11 +54,95 @@ Spring app must be under this package (see `ZZ_README.txt`). ~1200 Java files.
   `init_populate_new_db_fields_shared_code_lib/` wire in the
   `limelight_shared_code` and `db_populate_new_fields` modules on startup.
 
+## Authorization (per-project access control)
+
+Login is one layer; **per-project authorization is separate and is mostly the
+controller's own job.** The code lives in `access_control/`. Read this before
+adding or reviewing any data controller.
+
+### The model
+
+A project has members (`project_user_tbl` → `ProjectUserDTO`, one access level
+per user) and an owner. A project can additionally be made **public** (readable
+by anyone, even not logged in) and/or carry a **public access code** (a
+shareable code in the URL/session that grants read). A project can be **locked**
+(frozen) which downgrades everyone to read-only. So the access level for a
+`(user, projectId)` pair resolves as: admin → `ADMIN`; else project member →
+their `ProjectUserDTO` level; else project public → the public level; else
+`NONE`. "No session" (anonymous, possibly with a public access code) is tracked
+separately from a real logged-in user.
+
+### Access levels — `constants/AuthAccessLevelConstants` (LOWER int = MORE access)
+
+`ADMIN 0 < CREATE_NEW_PROJECT/USER 25 < PROJECT_OWNER 30 (= SEARCH_DELETE) <
+ASSISTANT_PROJECT_OWNER/RESEARCHER 38 < WRITE 50 < LOGGED_IN_USER_READ_ONLY 90 <
+PUBLIC_ACCESS_CODE/PUBLIC_PROJECT_READ_ONLY 99 < NONE 9999`.
+`WebSessionAuthAccessLevel.is<Level>Allowed()` means `authAccessLevel <= LEVEL`
+(i.e. "at least this privileged"). `isPublicAccessCodeReadAllowed()` = `<= 99` =
+**"any read at all"** (the minimum grant); `NONE` (9999) is the only level that
+fails it. There is also an `...IfProjectNotLockedAllowed()` variant per level
+(uses the pre-lock level) and an exact-match `isPublicAccessCodeReadAccessLevel()`.
+
+### Two families — pick by controller type
+
+- **REST controllers → the THROWING validators** in
+  `access_control/access_control_rest_controller/`:
+  - `ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds`
+    (keyed on **projectSearchIds**) and
+  - `ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds`
+    (keyed on **projectIds**).
+  Call one `validate<Level>Allowed(ids, request)` — `validatePublicAccessCodeReadAllowed`
+  (read), `validateAssistantProjectOwnerAllowed`, `validateProjectOwnerAllowed`,
+  `validateWriteAllowed`, `validateSearchDeleteAllowed`, `validateAdminAllowed`,
+  the `...IfProjectNotLocked...` variants, etc. **One call is the complete gate:**
+  it computes the level and **throws** `Limelight_WS_AuthError_Forbidden_Exception`
+  (logged in but insufficient) or `Limelight_WS_AuthError_Unauthorized_Exception`
+  (no session) when the bar isn't met — ending on `authAccessLevel == NONE → throw
+  Forbidden`. Returns the `userSession`, `webSessionAuthAccessLevel`, and
+  `projectIdsForProjectSearchIds`. This is what the clean read/write controllers use
+  (`single_project_search_id/`, `experiment/`, `project_search_based_insert_update_delete/`).
+  - Submit-import-program (non-web-session) auth:
+    `Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId`.
+  - Helpers: `GetUserSessionActualUserLoggedIn_ForRestController`,
+    `GetUserIdActualUserLoggedIn_ForRestController`.
+
+- **Page controllers → the NON-throwing getter**
+  `access_control/access_control_page_controller/GetWebSessionAuthAccessLevelForProjectIds`.
+  It only **returns** a `_Result` (`webSessionAuthAccessLevel`, `isNoSession()`,
+  `userSession`) — the caller must decide. The correct page idiom is a **two-stage**
+  check (see `FeatureDetectionView_Controller`, `ProjectView_Controller`):
+  1. `if ( isNoSession() && ! isPublicAccessCodeReadAllowed() )` → forward to login;
+  2. `if ( ! isPublicAccessCodeReadAllowed() )` → forward to access-denied JSP.
+  Page controllers under `/d/pg/psb/**` are *also* backstopped by
+  `DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor`
+  (registered in `LimelightWebAppConfig`). **That interceptor does NOT cover the REST
+  paths** (`/d/rws/...`), so REST controllers get no per-project backstop — their
+  inline check is the only gate.
+
+Other pieces: `common/AccessControl_GetUserSession_RefreshAccessEnabled` (loads the
+session and refreshes its cached access level so grants/revokes take effect);
+`direct_user_session/UserIsAdminCheck`; `result_objects/WebSessionAuthAccessLevel`
+(+ `...Builder`).
+
+### Pitfall — REST controller using the page-controller getter (fails open)
+
+A REST controller must NOT authorize with the non-throwing
+`getAuthAccessLevelForProjectIds(...)` and then check only stage 1
+(`isNoSession() && ! isPublicAccessCodeReadAllowed()`). For a **logged-in
+non-member of a private project** the computed level is `NONE` but `isNoSession()`
+is **false**, so that single check passes and the data is served — broken access
+control. REST controllers must either call a throwing `validate<Level>Allowed(...)`
+**or** add stage 2 (`if ( ! isPublicAccessCodeReadAllowed() ) throw
+Limelight_WS_AuthError_Unauthorized_Exception`). (Known instances of this gap exist
+in some `/d/rws/...` read controllers — feature-detection-mapping, scan-data,
+project-view — pending fix.)
+
 ## Gotchas
 
 - **Access control**: login is required for all URIs except the login page,
   enforced in `AllControllersAccessControl_SpringHandlerInterceptor`. Add new
-  public paths there.
+  public paths there. Per-project authorization is a separate concern — see
+  **Authorization** above.
 - **Adding a page** requires a front-end change too: add an esbuild entry point in
   `front_end/build.gradle` — **not** in `webpack.config.js`. esbuild bundles all
   TS/JS; webpack processes SCSS only; types are checked with `tsc --noEmit`. The
