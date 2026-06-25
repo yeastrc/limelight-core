@@ -143,6 +143,41 @@ scan-file, and project-view / project-title; the fix throws `Forbidden` to match
 throwing validators. When adding a new REST data controller, follow the throwing-
 validator pattern to avoid reintroducing it.)
 
+### Page ↔ webservice auth must agree — the reload-on-403 contract
+
+A data page and the webservices it calls authorize **independently**, and the
+front end ties them together: when a `/d/rws/...` webservice returns **403/401**,
+`handleServicesAJAXErrors.ts` **reloads the page**, expecting the **page
+controller to reach the same auth failure** and forward to the no-access/login
+JSP. So **a page controller must validate at least as strictly as every
+webservice the page will call.** If the page check is *weaker* than a webservice
+check, the page renders, the webservice 403s, the page reloads, the page renders
+again… a **reload loop** (and a confusing UX) instead of a clean no-access page.
+This two-path agreement is load-bearing and easy to break when adding a page —
+re-derive the *full* access decision in the page controller, don't assume a
+coarser check is enough.
+
+Worked example — **experiment pages** (`Experiment__{Peptide,Protein,Mod}View_Controller`
+→ `access_control/access_control_page_controller/Validate_Access_Page_ExperimentDataPage`).
+An experiment carries a `project_id` **and** a stored projectSearchId set (it
+*should* be single-project, but historically searches could move between projects,
+so this isn't structurally guaranteed). The optional `searchDataLookupParametersCode`
+URL segment overrides the experiment's stored filtering. The validator does the
+**full** check, not just "read the experiment's project":
+1. `validatePublicAccessCodeReadAllowed([experiment.project_id])` (read auth on the
+   experiment's project);
+2. if a URL code is present, assert its projectSearchIds **exactly equal** the
+   experiment's stored projectSearchIds (no substituting a different search set);
+3. resolve the projectSearchIds actually being displayed to their **real DB
+   `project_id`s** (`get_ProjectIds_For_ProjectSearchIds_Service`) and require they
+   are **one project == the experiment's `project_id`** — else error.
+   Step 3 is what keeps the page decision consistent with the projectSearchId-keyed
+   webservices (which resolve search→project→access the same way). The controller
+   early-returns when `result.isHttpForwardOrRedirectSent()`. (Step 3's mismatch
+   path throws `LimelightInternalErrorException` → 500, a data-integrity guard
+   rather than a graceful no-access page — fine unless you want to soften the UX
+   for any legacy cross-project experiment.)
+
 ### Spring interceptors (registered in `LimelightWebAppConfig.addInterceptors`)
 
 Three `HandlerInterceptor`s are registered (in
