@@ -14,6 +14,48 @@ would be a new, and likely *primary*, kind of displayed data.
 
 ---
 
+## 0. Central tension to settle FIRST: per-search quant vs. quant for a *set* of searches
+
+> This is the highest-leverage product/architecture decision in the whole effort, and it
+> needs to be settled with the boss before schema/UI work. It governs whether quant fits
+> the existing Limelight framework or forces a new framework concept. (Detailed mechanics
+> in §5c; surfaced here because everything downstream depends on it.)
+
+**Model A — per-search quant (the intended model).** Quant results are stored **against a
+single Limelight search** and displayed **when that search is viewed**, reusing the same
+PSM/peptide filtering the search already has. This is what the boss has in mind, and it
+**fits the existing Limelight framework cleanly** — a search is already a first-class,
+viewable, shareable entity with filtering. It is also **valid** wherever the samples live
+*within one search*: a search that spans N scan files (supported, though uncommon — see
+§5c) is quantified by a **single FlashLFQ run** over those N files, giving a coherent
+multi-sample matrix that legitimately belongs to that one search. The common
+single-scan-file search yields a one-sample (N=1) matrix.
+
+**Model B — quant for a set of searches (the friction).** A valid multi-sample comparison
+across samples that live in **different** Limelight searches requires co-quantifying them
+in **one** FlashLFQ run (shared RT alignment / match-between-runs / normalization — see
+§5c). The resulting matrix therefore belongs to a **set of searches** and is only
+meaningful when that exact set is viewed **together**. **Limelight has no such entity
+today** — there is no "store this result against a group of searches and show it only when
+that group is displayed" concept. (The `experiment` machinery is the nearest thing and is
+both behind in development and the wrong shape — see §3.) This is net-new framework, not a
+schema tweak.
+
+**Why you can't dodge B with A:** you cannot get a valid cross-search comparison by storing
+per-search quant (Model A) and stitching the results together afterward — independent
+FlashLFQ runs have independent normalization and no shared MBR, so their intensities are
+not comparable (§5c). Cross-search comparison *requires* a joint run, which *requires*
+Model B's set-owned result. So "multi-sample view across searches" and "per-search storage"
+are genuinely in tension; they are not two renderings of the same stored data.
+
+**Recommended sequencing (to propose):** build **Model A first** — it satisfies the
+common case, the within-search multi-scan-file case, fits the framework, and is fully
+valid. Treat **Model B as a separate, later phase** that introduces a new "search-set quant"
+concept, and decide with the boss whether it's in scope at all, since it leaves the
+existing single-search display model.
+
+---
+
 ## 1. Architectural starting point (how data gets into Limelight today)
 
 - Limelight is **search-engine agnostic**. Nothing in `limelight-core` is wired to a
@@ -192,6 +234,117 @@ many runs. Resolve:
   loss; but needs cross-search linkage UI.
 
 These are "decide with people" questions — recorded as open, not resolved.
+
+## 5c. FlashLFQ pipeline-service approach (2026-06-26)
+
+A concrete, **in-Limelight** path that largely dissolves §5b's hardest problem. Instead
+of importing a foreign MaxQuant analysis and doing a fuzzy cross-program join, run an
+**ID-driven label-free quant** tool over the scans for an *existing* Limelight search,
+feeding it that search's own PSMs.
+
+**Tool: FlashLFQ** (smith-chem-wisc) — chosen because it fits every constraint:
+- Free and genuinely **open source (MIT)**; runs **headless on Linux in Docker**.
+- **MS1 label-free quant** (the confirmed target metric), driven by **externally
+  supplied PSMs** — it does **NOT** run its own search. Inputs: a **TSV of MS/MS
+  identifications** (natively reads MaxQuant / MetaMorpheus / Morpheus / PeptideShaker
+  layouts) + spectral files. Spectral input on Linux is effectively **`.mzML`** (`.raw`
+  reading is Windows-leaning; it does **not** ingest `.ms1`/`.ms2`).
+
+**Why this sidesteps the §5b fuzzy join:** because FlashLFQ quantifies *the IDs you give
+it* rather than re-searching (no Andromeda re-search), there is no orphan/gap divergence
+between "the search's IDs" and "the quant tool's IDs." The mapping back onto the existing
+search is **exact, not fuzzy**. The §5b orphan/gap/protein-group-mismatch problem was an
+artifact of MaxQuant re-searching; it disappears under an ID-driven quant tool.
+
+**Driver = third sibling of the existing yeastrc pipeline services.** Two coworker repos
+are the templates:
+- `limelight-pipeline-feature-detection-service` — Python, Docker/docker-compose,
+  `start_service.py`. **Receives** a request, **pulls scan data from spectr** in batches
+  (`getScanDataFromScanNumbers_JSON` / `getScanNumbers_JSON`), writes a scan file, runs
+  an external tool (Hardklor/Bullseye), writes results to a mounted workdir.
+- `limelight-export-blib-service` — same scaffolding; the relevant half is that it
+  **receives the PSMs from Limelight in the request payload** (it does NOT reach back
+  into Limelight's DB) and fetches matching scans from spectr.
+
+So the quant-service flow is:
+
+```
+Limelight ──(PSMs in request)──► quant-service ──(scan #s)──► spectr (stores all levels)
+                                       │
+                                       ├─ write mzML incl. MS1 scans  (via a writer lib, e.g. psims)
+                                       ├─ transform PSMs → FlashLFQ identifications TSV
+                                       ├─ run FlashLFQ
+                                       └─ parse FlashLFQ TSV abundance output ──► import onto the existing search
+```
+
+**Scan-file format is a solved detail.** spectr ingests mzML/mzXML and stores **every
+scan level**, so the MS1 survey scans needed for MS1 LFQ are available. The service
+reconstructs mzML (with MS1) from spectr's JSON via a writer library (`psims` for Python)
+— format choice is encapsulated, not hand-rolled.
+
+**Output granularity — confirmed: PEPTIDE and PROTEIN abundance, not PSM.** FlashLFQ
+integrates the **MS1 precursor peak**, so even though **PSMs go in**, what comes **out**
+is intensity at **peptide level and protein level**, one column **per spectra file =
+per sample** (with match-between-runs flags). It does not emit per-PSM abundance. So the
+abundance attaches at **(peptide × sample)** and **(protein-group × sample)** — mapping
+cleanly onto the §4 `srch_rep_pept_quant_value_tbl` and `srch_protein_group_quant_value_tbl`
+tables; the per-PSM `psm_quant_value_tbl` is **not** populated by this path.
+
+**Import path — NOT Limelight XML.** The results are imported **another way** that
+associates abundance with the **existing search** the PSMs came from (this is §5b
+**Fork A — Overlay**, but now *exact* rather than fuzzy). Implication: a **new ingest
+webservice** in `limelight-core`, parallel to the XML importer, that attaches
+peptide/protein abundance to an existing `projectSearchId`. The §4 schema work still
+applies — in particular the **sample dimension is still net-new** (FlashLFQ inherently
+yields a peptide × sample *matrix*, even overlaid on one single-result search).
+
+**RESOLVED — the §5b multi-sample-vs-single-search tension goes away (2026-06-26).** A
+Limelight search **can already span multiple scan files**: a user runs Comet on N scan
+files, then runs **Percolator once across all N** Comet results (so FDR/q-value is
+computed jointly), and the whole thing imports as **one search**. This is a **supported
+and used import shape — though not the common case** (most searches are single-scan-file).
+So "one search with N scan files" is not a hypothetical model we'd impose; the import path
+already exists. This maps 1:1 onto FlashLFQ, whose output is **per spectra file**: each of the
+search's N scan files → one reconstructed mzML → one FlashLFQ spectra file → **one
+sample**. The abundance matrix therefore lives **internal to the single search**, exactly
+as §3/§4 wanted, with **scan file = sample** as the new dimension (scan file + scan number
+already exist on PSMs today; "sample" just elevates scan-file to a first-class axis). The
+§5b "N Comet searches, matrix across searches" branch is unnecessary.
+
+Corollary: a **single-scan-file search** (the common case) yields a **one-sample matrix**
+— abundance with N=1. Still meaningful (single-run intensities), but the multi-sample
+quant visualizations (heatmap, volcano, profile) only have data to show when a search has
+multiple scan files. Whether the one-sample case is a first-class target or a degenerate
+one is not yet decided.
+
+### How FlashLFQ handles multiple files, and the cross-search validity question
+
+**FlashLFQ is multi-file in a single run** (verified against its CLI wiki, 2026-06-26):
+`--idt` takes one identifications TSV, `--rep` takes a **directory of spectra files**, and
+**match-between-runs runs across all of them by default** (`--mbr true`). Output has **one
+intensity column per file = per sample**. So one FlashLFQ run *is* the multi-sample run —
+there is no per-file/per-run-then-merge step. (Earlier assumption that FlashLFQ runs on a
+single scan file per run was wrong.)
+
+**This resolves the "is quant valid across searches?" question.** Label-free MS1
+intensities are only directly comparable when the samples are quantified **together in one
+run** — shared RT alignment, shared MBR, one normalization. Therefore:
+- The valid way to get a **multi-search, multi-sample view** is to run FlashLFQ **once over
+  the union of those searches' scan files** (union of their PSMs in one `--idt` TSV) → one
+  coherent matrix. Validity comes from co-quantifying in a single run.
+- **Stitching together per-search abundances computed in separate FlashLFQ runs is invalid**
+  (independent normalization, no shared MBR/RT alignment) — and now unnecessary, since one
+  run handles N files natively.
+
+Implication for "pull quant for multiple searches" (anticipated user request): it is NOT an
+aggregation of stored per-search results; it is a **new joint quant computation** whose
+inputs are PSMs + scan files gathered from multiple searches. That differs from §3's
+cross-search experiment stitching, and reopens the §5b question of which Limelight entity
+(a single search vs. some new multi-search grouping) the resulting cross-search matrix
+attaches to. **This IS the §0 Model-A-vs-Model-B decision** — a cross-search matrix is
+"Model B" (set-owned result, not in today's framework). See §0; the boss's expectation is
+Model A (per-search storage, shown when that search is viewed). Recorded as open, to settle
+with the boss.
 
 ## 6. Scope summary
 
