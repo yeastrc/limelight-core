@@ -12,13 +12,13 @@ env:
   QUAY_REPO_REGISTRY: "quay.io"
 
 jobs:
-  dockerhub:
+  build_and_deploy:
 
     runs-on: ubuntu-latest
 
     env:
       LIMELIGHT_RELEASE_TAG: ${{ github.event.release.tag_name }}
-      
+
     steps:
     - name: Checkout
       uses: actions/checkout@v5
@@ -27,7 +27,7 @@ jobs:
       with:
         entrypoint: ./limelight_submit_import/gradlew
         args: -p limelight_submit_import -q javaToolchains
-    - name: Run build in Docker container	    
+    - name: Run build in Docker container
       uses: docker://ghcr.io/yeastrc/limelight-build-docker:latest
       with:
         entrypoint: ant
@@ -41,7 +41,7 @@ jobs:
         cp -r deploy/tomcat_lib_jars docker/webapp/
         cp deploy/limelightSubmitImport.jar docker/submit-import/
     - name: Login to DockerHub
-      uses: docker/login-action@v3 
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -100,14 +100,6 @@ jobs:
         context: docker/submit-import
         push: true
         tags: ${{ steps.meta_submit_import.outputs.tags }}
-
-  github_deploy:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v5
     - name: Create docker-compose archive
       run: |
         tar -cvzf ./docker-compose-files.tgz docker-compose.yml docker-compose-custom-data.yml database_scripts/install/* database_scripts/version_upgrades/* docker/env-sample
@@ -127,5 +119,13 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: ./docker-compose-files.zip
         asset_name: docker-compose-files.zip
+        tag: ${{ github.event.release.tag_name }}
+        overwrite: true
+    - name: Upload limelightSubmitImport.jar to github release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ./deploy/limelightSubmitImport.jar
+        asset_name: limelightSubmitImport.jar
         tag: ${{ github.event.release.tag_name }}
         overwrite: true
