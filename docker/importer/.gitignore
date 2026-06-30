@@ -1,0 +1,5 @@
+# Importer jars are emitted into this dir at release time by the build
+# (see .github/workflows/release.yml "Copy binaries into place"), not committed.
+/limelightImporter_XMLFile_ScanFiles.jar
+/limelightRunImporter.jar
+/limelight_FeatureDetection_Run_Import.jar

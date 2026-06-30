@@ -59,3 +59,6 @@ hs_err_pid*
 /docs/build
 
 /.env
+
+# Local-only docker compose override (points services at locally-built images)
+/docker-compose.override.yml
