@@ -21,7 +21,7 @@ jobs:
       
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Verify Gradle sees both JDKs (8 and 25)
       uses: docker://ghcr.io/yeastrc/limelight-build-docker:latest
       with:
@@ -41,19 +41,19 @@ jobs:
         cp -r deploy/tomcat_lib_jars docker/webapp/
         cp deploy/limelightSubmitImport.jar docker/submit-import/
     - name: Login to DockerHub
-      uses: docker/login-action@v1 
+      uses: docker/login-action@v3 
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Login to quay.io
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         registry: ${{ env.QUAY_REPO_REGISTRY }}
         username: ${{ secrets.QUAY_USER }}
         password: ${{ secrets.QUAY_PASSWORD }}
     - name: Docker meta for webapp
       id: meta_webapp
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v5
       with:
         images: |
           ${{ env.DOCKER_REPO_WEBAPP }}
@@ -62,14 +62,14 @@ jobs:
           type=semver,pattern={{major}},value=${{ github.event.release.tag_name }}
     - name: Build and push webapp
       id: docker_build_webapp
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v6
       with:
         context: docker/webapp
         push: true
         tags: ${{ steps.meta_webapp.outputs.tags }}
     - name: Docker meta for importer
       id: meta_importer
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v5
       with:
         images: |
           ${{ env.DOCKER_REPO_IMPORTER }}
@@ -78,14 +78,14 @@ jobs:
           type=semver,pattern={{major}},value=${{ github.event.release.tag_name }}
     - name: Build and push importer
       id: docker_build_importer
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v6
       with:
         context: docker/importer
         push: true
         tags: ${{ steps.meta_importer.outputs.tags }}
     - name: Docker meta for submit import
       id: meta_submit_import
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v5
       with:
         images: |
           ${{ env.DOCKER_REPO_SUBMIT_IMPORT }}
@@ -95,7 +95,7 @@ jobs:
           type=semver,pattern={{major}},value=${{ github.event.release.tag_name }}
     - name: Build and push submit importer
       id: docker_build_submit_import
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v6
       with:
         context: docker/submit-import
         push: true
@@ -107,7 +107,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Create docker-compose archive
       run: |
         tar -cvzf ./docker-compose-files.tgz docker-compose.yml docker-compose-custom-data.yml database_scripts/install/* database_scripts/version_upgrades/* docker/env-sample
