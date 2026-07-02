@@ -57,6 +57,28 @@ rest are libraries consumed by them.
 - `docs` — Sphinx source for the readthedocs site.
 - `deploy` — build output (jars + WAR).
 
+## Identifications data model (PSMs, reported peptides, open modifications)
+
+A few cross-cutting concepts that aren't obvious from the schema:
+
+- **PSM** — a single peptide-spectrum match (one identified scan). Per-scan facts live here:
+  charge, scan number/file, and — importantly — **open-modification** mass/position.
+- **Reported peptide** — the **grouping of PSMs at which peptide-level statistics apply.** When
+  post-processing rescores PSMs and emits a *peptide-level* value (e.g. Percolator's peptide-level
+  q-value / PEP), that peptide is the reported peptide; it is the grouping of the PSMs that rolled up
+  into it. So a reported peptide is a *scoring/grouping* level, not necessarily one exact mass form.
+- **Open modification** — Limelight models an open modification on a peptide as **a mass plus
+  zero-to-many candidate positions** within the peptide (0 positions = unlocalized). This exists to
+  support open / mass-tolerant searching from tools like **MSFragger, Magnum, and MetaMorpheus**,
+  where a delta mass is found but only localized to a set of possible sites (or not at all).
+
+  **Key consequence: the open-mod mass (and its position(s)) is stored on the _PSM_, not on the
+  reported peptide.** So a single `reportedPeptideId` can cover PSMs with **different open-mod masses /
+  positions** — i.e. one reported peptide maps to *multiple distinct peptidoform mass forms*. Any code
+  that assumes "one reported peptide == one exact mass/modification form" is wrong for open-mod data
+  (e.g. quant keyed only on `reportedPeptideId` under-splits open-mod peptides — the distinguishing
+  mass lives on the PSM).
+
 ## Building
 
 ### Full project
