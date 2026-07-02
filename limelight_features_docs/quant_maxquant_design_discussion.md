@@ -21,6 +21,15 @@ would be a new, and likely *primary*, kind of displayed data.
 > the existing Limelight framework or forces a new framework concept. (Detailed mechanics
 > in §5c; surfaced here because everything downstream depends on it.)
 
+> **DECISION (2026-06-29, boss): Model A — per-search quant. Model B is NOT pursued.**
+> Quant is computed **per search** (one FlashLFQ run per search over that search's own scan
+> files). Limelight makes **no cross-search comparability assumption**: two arbitrary searches
+> aren't guaranteed to be replicates / the same conditions / comparable instruments, so
+> cross-search MBR, RT-alignment, and normalization cannot be assumed valid. Within a single
+> search spanning N scan files, those files ARE co-quantified in one run (that's one analysis
+> the user deliberately set up). The tension below is resolved in favor of Model A.
+> Implementation status + the per-search TODO in §5d.
+
 **Model A — per-search quant (the intended model).** Quant results are stored **against a
 single Limelight search** and displayed **when that search is viewed**, reusing the same
 PSM/peptide filtering the search already has. This is what the boss has in mind, and it
@@ -345,6 +354,82 @@ attaches to. **This IS the §0 Model-A-vs-Model-B decision** — a cross-search 
 "Model B" (set-owned result, not in today's framework). See §0; the boss's expectation is
 Model A (per-search storage, shown when that search is viewed). Recorded as open, to settle
 with the boss.
+
+## 5d. Implementation status + per-search decision (2026-06-29)
+
+> Companion docs (technical, boss-facing):
+> - **`flashlfq_summary_and_comparison.md`** — how FlashLFQ works (indexed-XIC apex quant,
+>   isotope/charge defaults, MBR/normalization scoped to within-search), technical caveats, the org +
+>   peer-reviewed papers, and a comparison vs MaxQuant/MaxLFQ, IonQuant, directLFQ, DIA-NN, Skyline,
+>   OpenMS, Proteome Discoverer.
+> - **`flashlfq_output_to_limelight_mapping.md`** — mapping FlashLFQ output back to Limelight
+>   (esp. modifications): why to ingest `QuantifiedPeaks` (feature-level, dedupe done) rather than
+>   `QuantifiedPeptides` (which zeroes ~93% of open-mod signal), attribution like PSM counts, what
+>   stats are/aren't lost, and the no-open-mod case.
+
+The FlashLFQ pipeline-service approach (§5c) was **built and validated end-to-end**:
+Run-FlashLFQ button → webapp REST controller → Python service → spectr → mzML → FlashLFQ →
+peptide- and protein-level abundance. Tested: single search (1 scan file), single search with
+N scan files, multiple searches, the (now-removed) collision case, and non-standard-residue
+resilience.
+
+**New repo:** `limelight-flashlfq-service` (sibling of `limelight-export-blib-service`).
+Python/Docker; image based on the official `smithchemwisc/flashlfq` (Alpine + .NET 8, FlashLFQ
+at `/flashlfq`, CLI `dotnet /flashlfq/CMD.dll`) + apk python3 + a venv (numpy/lxml/psims install
+from musllinux wheels). Compose drop-in like blib/feature-detection: internal network, **no auth,
+no exposed port**; listens on `WEBAPP_PORT` (3434). Dev run wired with `--network host` to reach
+host-Tomcat spectr at `localhost:8080`.
+
+**Webapp side** (`FlashLFQ_Run__Request_Creation_RestWebserviceController`, new config key
+`run_flashlfq_service_web_service_base_url`, REST path `…/flashlfq-run--request-creation`, the
+`RunFlashLFQ` button in `searchDetailsAndFilterBlock_MainPage_Root.tsx`): request carries ONLY
+`{ projectSearchIds, searchDataLookupParamsRoot }`; the server derives reported peptides + PSMs
+from the **PSM/Peptide cutoffs only**. Protein accessions populated via reportedPeptideId →
+protein sequence version ids → protein names.
+
+**Sample identity = `scan_file_tbl.id`** (the only unique/stable handle; a filename can differ
+per search). Sample/mzML named `scanfile_id_<id>`; FlashLFQ output columns are
+`Intensity_scanfile_id_<id>` (an `ExperimentalDesign.tsv` drives the protein-column names) — so
+the output parses **directly back to the Limelight DB**. (FlashLFQ output is machine-parsed for
+DB ingest, not human-facing.) The manifest records `scan_file_id → file_name`.
+
+**BOSS DECISION (per §0): quant per-search; Model B (cross-search joint run) not pursued.**
+Consequences applied 2026-06-29:
+- The "same scan file in multiple searches" **collision guard was REMOVED** (moot under
+  per-search runs).
+- The **Run-FlashLFQ button is hidden for >1 selected search** (interim) so the still-joint code
+  path isn't reachable from the UI.
+
+**TODO #1 — the per-search refactor (not yet done):** the controller still builds **one joint
+run over all selected searches' scan files**. Change to **one FlashLFQ run PER SEARCH** (over
+that search's own scan files); when >1 search is selected, produce N independent per-search runs.
+Then re-enable the multi-search button. Until then, multi-search is intentionally UI-gated off.
+
+**Implementation gotchas worth remembering** (so they aren't rediscovered):
+- spectr request/response field names taken from the spectr connector-library DTOs; peaks come
+  back by default; per-scan `level`, `scanNumber`, `retentionTime`, `isCentroid`, `parentScanNumber`,
+  `precursor_M_Over_Z`, `precursorCharge`, `peaks:[{mz,intensity}]`.
+- RT: spectr stores **seconds** (config knob `SPECTR_RT_IN_MINUTES`, default false); converted to
+  minutes for the FlashLFQ TSV; written to mzML in seconds-as-minutes consistently.
+- FlashLFQ's mzML reader (mzLib) NREs unless the mzML has a `sourceFile`, a `<scanList>` scan-start-time,
+  AND `software`/`instrumentConfiguration`/`dataProcessing` sections — all are written via `psims`.
+- `SPECTR_BATCH_SIZE` must be ≤ spectr's max-scans-per-request (was 147; set 100) or scans are
+  truncated; a `getMaxScanCountToReturn` webservice exists to query it (deferred).
+- **Non-standard-residue PSMs — DROP rule (decided 2026-06-29).** A PSM is quantified only if every
+  residue has a **single, explainable monoisotopic mass**. Kept: the 20 standard AAs **+ U** (Sec)
+  **+ O** (Pyl) **+ J** (Leu/Ile — isobaric, so 113.08406 is unambiguous). Dropped: the
+  ambiguity/placeholder codes with **no single defined mass** — `X` (any), `B` (Asn/Asp), `Z`
+  (Gln/Glu), `*` (stop). Dropped PSMs are counted + listed in the manifest
+  (`dropped_psms_non_standard_residue`); one bad PSM never aborts the run.
+  - The criterion is **explainability** ("can we state the mass used?"), not rarity — that's why U/O/J
+    (defined mass) are kept and X/B/Z/* (undefined) are dropped.
+  - Investigated + REJECTED: keeping `X` PSMs by setting X=0 *when* the X=0 theoretical mass matched
+    the precursor within ±10 ppm (+ isotope). On real crosslink data X=0 *did* match the precursor
+    (X is a zero-mass placeholder there; the crosslinker mass is in the modification). But the boss
+    rejected the **silent/conditional** decision: results are machine-parsed (no one reads logs), and
+    "keep some X, drop others by a tolerance" is hard to explain to a user. So: flat unconditional
+    drop of all undefined-mass residues. (Watch item: U/O/J now reach FlashLFQ's Base Sequence as
+    non-standard letters — unverified whether FlashLFQ tolerates them, since such peptides are rare.)
 
 ## 6. Scope summary
 
