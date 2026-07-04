@@ -2,6 +2,13 @@
 
 This directory is the entire TypeScript/React front end (all `.ts`/`.tsx` in the repo live under `src/`). **Match the surrounding code.** The rules below are the established house style.
 
+> **File names and locations are often misleading — legacy from the JS→TS migration.** The front end
+> started as JavaScript; when it was migrated to TypeScript, code was **not** renamed or relocated to
+> better-fitting names/dirs — it stayed where it already was. So a file's name/folder frequently does
+> **not** reflect what actually uses it or where it conceptually belongs. **Don't infer scope/ownership
+> from the path — grep imports/callers to confirm real usage.** (Worked example below: the
+> `proteinPage_Display__SingleProtein_...` peptide-list code actually drives the peptide page too.)
+
 ---
 
 ## Naming: underscore = private / file-scoped
@@ -88,6 +95,48 @@ Data pages carry a per-search "flags" object describing what each loaded search 
   `is__anyPsmHas_IsDecoy_True__TrueForAnySearch()`,
   `is__anyPsmHas_IsIndependentDecoy_True__TrueForAnySearch()`. Add a new `is__..._All/Any_Searches()`
   helper here rather than re-looping the map at each call site.
+
+---
+
+## Generated reported-peptide display string (the "generated peptide" the peptide list shows)
+
+The per-position modified-peptide string shown in the peptide list (e.g. `PEPT[79.97]IDE`,
+`n[42]PEPTIDE`, `PEPT(80)IDE`) is built by one canonical function — **don't hand-format these,
+and don't derive them from an external tool's string** (e.g. FlashLFQ's `PEP[+79.96633]TIDE` full
+sequence is a *different* format; to line data up with the peptide list, build the string with this
+function from the same inputs, then match).
+
+- **Builder:** `reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches` in
+  `page_js/data_pages/reported_peptide__generated_common__across_searches/reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches.ts`.
+  Terminus sentinel positions are exported alongside it:
+  `..._N_TERMINUS_POSITION_INDEX` / `..._C_TERMINUS_POSITION_INDEX` (re-exported from
+  `reportedPeptide_CommonValue_AcrossSearches`). Residue positions are **1-based**.
+- **Inputs (all mods already rounded to strings by the caller):**
+  `peptideSequence`; `variable_Modifications_RoundedArray_KeyPosition: Map<position, string[]>`
+  (multiple variable mods can share a position → comma-joined); `staticModificationsRounded_KeyPosition:
+  Map<position, string>`; and a **single** open mod as `open_Modification_Rounded` (string) +
+  `open_Modification_Rounded_Position`, **or** `open_Modification_Rounded_NoPosition` (unlocalized).
+- **Output format:** residue, then `[v,v]` (variable), `{s}` (static), `(o)` (open) at that position;
+  `n`/`c` prefixes carry terminus mods; an unlocalized open mod is appended as `-(o)` at the end. No mods
+  → returns the bare sequence.
+- **Rounding is the caller's job, and the two mod kinds round differently** — this matters for matching:
+  - **Variable & static** → 2 decimal places via `modificationMass_CommonRounding_ReturnString` /
+    `modificationMass_CommonRounding_ReturnNumber` (`page_js/data_pages/modification_mass_common/modification_mass_rounding.ts`).
+  - **Open modifications → rounded to a whole number** (`Math.round(openModificationMass)`; the loaded
+    open-mod object carries it as `openModificationMass_Rounded`). There is no dedicated "round open mod"
+    helper — it's `Math.round` at the call sites.
+- **One open mod per generated string.** When an open mod has **multiple candidate positions**, the
+  caller emits **one generated string per position** (the same fan-out used for PSM counts — the same PSM
+  is counted under every generated peptide string). The reference implementation of that fan-out is
+  `page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__js/mod_page_util_js/modPage_Create_GeneratedReportedPeptideEntries_String_Etc.ts`.
+
+**Shared across pages — the naming is misleading.** The peptide-list generation code (which computes the
+rounded-mod maps and calls the builder) lives under `protein_page__single_protein/`
+(`proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData.ts`), but the **same code
+drives both** the peptide list on the **peptide page** *and* the peptide list in the **single-protein
+overlay** — and that overlay is reachable from the **protein, peptide, and modification** pages. So a
+change here affects all of those. (Other callers of the builder: mod page, feature-detection chromatogram,
+QC gold-standard, scan-file-to-searches, lorikeet PSM table.)
 
 ---
 
