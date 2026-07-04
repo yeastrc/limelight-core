@@ -5,6 +5,32 @@ open-modification search (FlashLFQ 1.0.0.0), request `aebff14a…`. Companion do
 `flashlfq_summary_and_comparison.md` (how FlashLFQ works) and `quant_maxquant_design_discussion.md`
 (overall quant design).
 
+## Framing (read first)
+
+**Quant is peptide-level, and it is exactly what you picture: extract the peptide's XIC and integrate
+the area under the chromatographic peak. That does not change.** *(Same XIC-extract-and-integrate-area
+model as Skyline; think of each `QuantifiedPeaks` row as one Skyline-style integrated chromatographic
+peak, and the open-mod case as the familiar co-eluting/isobaric peptides sharing one peak.)* The only
+decision here is *which FlashLFQ output file we read to get those integrated areas* — a lossiness
+problem, not a change of level or method:
+
+- **Each row of FlashLFQ's `QuantifiedPeaks.tsv` is one integrated XIC — the area under one
+  chromatographic peak.** That *is* the quant measurement. It is **not a "lower level"**; it is the
+  areas-under-the-curve themselves, one per detected chromatographic peak, each tagged with the
+  peptide form(s) it belongs to.
+- **The open-modification catch:** several open-mod forms of a peptide fall at the same — or within
+  instrument tolerance — precursor m/z, so they **share one XIC**. There is a single area under the
+  curve, and it belongs to all of them.
+- FlashLFQ's **peptide file (`QuantifiedPeptides.tsv`) discards every shared curve** — it sets those
+  forms to zero. For open-mod data that is ~90% of peptides and **~93% of the integrated signal**
+  (measured below). The peaks file keeps that area and lists which forms share it.
+
+So we read the integrated XIC areas from the peaks file (complete) and assign each area to its peptide
+form(s) inside Limelight — one curve integrated once, shown under each form it belongs to — the **same
+many-to-one accounting Limelight already does when it counts one PSM under multiple peptide forms.**
+This is precisely the fix for the open-modification problem, applied to integrated area instead of
+counts.
+
 ## The question
 
 FlashLFQ gives us peptide- and protein-level abundance per sample. To show it in Limelight we must map
@@ -119,6 +145,41 @@ Limelight's peptide **display** rounds variable mods to 2 decimals and open mods
 splits an open mod with >1 position into one peptide string per position. MS1 quant is **position-blind**
 (mass only). Consequence: a shared feature's intensity is shown under each applicable display string —
 same as PSM count — and any rollup dedupes by feature so the same signal is never summed twice.
+
+## Why a row's Quant doesn't change when filtering shrinks its PSM count
+
+**What the user sees:** apply a filter that removes some PSMs from a peptide row (e.g. exclude a charge
+state, a scan, a retention-time range) and the row's **PSM count drops but its Quant stays the same**.
+This is correct, not a bug — and it comes straight from what MS1 label-free quant *is*.
+
+**Why.** A PSM count is a count of *identifications*, so it responds to any filter that removes
+identifications. **Quant is not a count of PSMs — it is the integrated area of a precursor
+chromatographic feature (the XIC peak).** FlashLFQ computed that area **once**, over the identifications
+we submitted, and an integrated peak area is **not decomposable into per-PSM contributions**: there is no
+"the charge-3 part of this peak" to subtract. So narrowing the *displayed* PSM subset cannot move the
+number — the feature, and its area, are unchanged. Put plainly: **the filtered PSM subset was never sent
+to FlashLFQ; the quant was measured on the originally-submitted set and reflects the whole feature.**
+
+**When Quant *does* change:** only when a filter changes **which features roll up to the row**, not when
+it merely thins the PSMs within the row. Concretely:
+
+- **Moves the number** — filters that remove the **reported peptide(s) / peptidoforms** (and therefore
+  their peaks) that feed the row, or that remove a **sample/scan-file** (each peak belongs to one sample).
+  When the contributing peaks leave, the sum drops (and a row with no remaining peaks disappears / shows
+  no quant).
+- **Does *not* move the number** — filters that subset **PSMs within** a reported peptide it keeps
+  (charge, scan number, precursor RT/m-z, individual PSM). These change the identification count, not the
+  precursor feature, so the area is unchanged.
+
+**How to say it to a user (one line):** *"Quant is the area of the precursor's chromatographic peak,
+measured once over all the matches for this peptide. Filtering the peptide/PSM list changes which matches
+you're looking at, but it doesn't re-integrate the peak — so the intensity only changes when a filter
+removes whole peptide forms (or a sample), not when it just narrows the PSMs shown."*
+
+*(Filtering to a subset does **not** require re-running FlashLFQ — the peaks are fixed and we re-attribute
+them client-side. Re-running on the subset is possible but pointless here: it still can't split one
+existing feature by PSM. See the filter analysis in `quant_maxquant_design_discussion.md` — this is the
+same "MS1 quant is precursor-feature-level, not PSM-level" fact, viewed from the UI.)*
 
 ## What statistics do we lose by ingesting peaks instead of the summary files?
 
