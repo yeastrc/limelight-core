@@ -233,6 +233,48 @@ Store a **feature/peak-level** quant record (intensity + its mapped-forms list) 
 with per-reported-peptide, per-display-peptide, and per-protein-group views **derived** from it — rather
 than storing only per-reported-peptide values (which cannot represent open-mod shared features).
 
+## Quant identity & rollup grain (decides how quant is stored and keyed)
+
+The peptide page's **'Collate Peptides Using:'** control lets the user choose whether the generated
+peptide string includes **variable**, **open**, and/or **static** modifications. So the peptide **row
+grain is user-variable at runtime** — turn open mods off and a peptide's whole open-mod cloud collapses to
+one row (quant should sum all forms); turn them on and each mass form is its own row (per-form quant).
+**Quant therefore cannot be baked to a fixed grain** at send time or ingest time.
+
+**Architecture that follows:** store quant at the **feature (peak) level** and roll it up **through the
+same grouping machinery that builds the peptide list** — feed feature-level quant, keyed by the
+peptidoform *components*, into the generated-peptide-string grouping, and quant tracks every collation
+change and every page automatically, with **feature-level dedup** so a shared feature is never summed
+twice. This is the display's own pattern (rows re-derived from underlying data), applied to quant.
+
+**Identity — key on the peptidoform components, not `reportedPeptideId`.** `reportedPeptideId` means "how
+PSMs were aggregated for a peptide-level *score*" (Percolator peptide q-value, etc.) — orthogonal to "what
+mass form was measured," and it cannot express the collation-variable grain (it is fixed at sequence +
+reported variable mods, and it lumps open-mod forms). Key each quantified feature instead on the same
+inputs the generated-peptide-string builder consumes:
+
+> **peptide id (base sequence) + decomposed mods { type (variable / open / static), position, mass } + charge**
+
+- Use **decomposed mods with positions**, not a bare total mass: positional isomers of a variable mod are
+  the *same mass* (one shared feature) but *different display rows*, so position is needed to split them
+  when collation includes variable mods — and it collapses correctly when it doesn't.
+- `reportedPeptideId` is retained as **association metadata** (to hang a peptide-level score off, and
+  because the display entries already carry it), **not** as the key that defines quant grain.
+
+**Rollups are derived axes over the same feature store:**
+- **Peptide page** — group features by the current generated-peptide-string grain (collation-dependent).
+- **Protein page** — sum a protein's peptides' features, **deduped by feature**, with a shared-peptide
+  rule across protein groups (our own rollup — not FlashLFQ's top-3 `QuantifiedProteins`, which is built
+  on the zeroed peptides).
+- **Mod page** — group features by modification (open or variable): sum the features whose peptidoform
+  carries that mod.
+
+**What we send FlashLFQ:** the per-PSM `modifications` map we already build *is* the decomposed component
+set (position→mass). Embedding **peptide id + that map** (optionally tagging mod type, and carrying the
+associated `reportedPeptideId`(s)) gives an exact round-trip with no string re-parsing, and the
+per-display-form quant falls out of the same key. This **supersedes the earlier "embed only
+`reportedPeptideId`" prototype** and revises open item #3 below.
+
 ## How Limelight's existing PSM-based chromatogram peak area compares to FlashLFQ
 
 Limelight already computes an MS1 peak area in the PSM-list **chromatogram**
@@ -320,9 +362,10 @@ area-vs-apex + fixed-window effects.
 2. **Multi-position open-mod mass encoding** — verify the controller emits an open-mod delta **once**,
    not once per candidate position, so `Peptide Monoisotopic Mass` isn't double-counted
    (`peptide_monoisotopic_mass` sums `modifications.values()`).
-3. **Identity embedding** — decide the exact identity we send so the output round-trips: at minimum a
-   peptidoform/feature key that carries the reported peptide **and** the PSM open-mod mass/position, so
-   each peak's mapped forms resolve to exact Limelight entities without string re-matching.
+3. **Identity embedding** — send a per-peptidoform key = **peptide id + decomposed mods (type/position/
+   mass) + charge**, with `reportedPeptideId` as association metadata (see "Quant identity & rollup grain"
+   above). This round-trips without string re-parsing and lets quant roll up to whatever the current
+   'Collate Peptides Using:' grain is. Supersedes the shipped "embed only `reportedPeptideId`" prototype.
 4. **Cross-base-sequence shared peaks** — peaks with `Base Sequences Mapped > 1` (near-isobaric, e.g.
    I/L variants) attribute one intensity to different peptides/proteins; represent with an ambiguity
    flag and dedupe on rollup.
