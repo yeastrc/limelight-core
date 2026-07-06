@@ -278,6 +278,41 @@ disagree it's usually (1) area-vs-apex, (2) the fixed-window integration, or (3)
 a bug in either. The cleanest close-match test is a **non-open-mod, single-charge** peptide with matched
 ppm and `--int true`, where both reduce to "integrate one peptidoform's XIC."
 
+### Worked example: `SIQFVDWCPTGFK-(13)` — chromatogram 2.06e9 vs Quant 4.22e11
+
+A concrete case that shows both effects at once (and why the gap is mostly **grain**, not area-vs-apex).
+
+Filter the peptide table to the display row **`SIQFVDWCPTGFK-(13)`** (open mod ~13 Da, unlocalized). At the
+**display grain** this row is a single PSM, and the PSM-list **chromatogram** integrates that one form:
+- Chromatogram **peak area = 2.062e9** (fixed window 117.1 → 118.2 min = the PSM's RT ± 30 s).
+
+The prototype **Quant column = 4.22e11**, with **# Peaks = 55**. That "55" is the tell. This row's
+reported peptide (`reportedPeptideId 246169`) carries **71 FlashLFQ features — 55 with measurable
+intensity** — and their `Peak intensity` values sum to **4.217e11** (= the Quant). Those 55 features are:
+
+- **~70 distinct open-modification delta-mass forms** of the same peptide (monoisotopic mass spanning
+  ~1583.72 → 1585.74 — an open-mod *cloud*, exactly what a mass-tolerant search produces), across
+- **charge states 2, 3 and 4**, and
+- several features **shared** with near-isobaric peptides (`TIQFVDWCPTGFK` [S→T], `RSIQFVDWCPTGFK`
+  [missed cleavage], `TKRSIQFVDWCPTGFK`, …).
+
+So the Quant is **the entire reported peptide, summed over all its open-mod mass forms and charges** (plus
+shared signal) — **not** the `-(13)` form the chromatogram measured. Because only `reportedPeptideId` is
+embedded (not the open-mod mass), every open-mod display row of this reported peptide — `-(0)`, `-(13)`,
+`-(16)`, … — shows the **same** 4.22e11 (the "each row shows the reportedPeptideId's full quant"
+limitation noted above, made concrete).
+
+**Why the two numbers differ, ranked:**
+1. **Grain (dominant):** Quant sums **55 features** (all open-mod masses × charges of the reported
+   peptide, incl. shared); the chromatogram measured **one** display form. This alone is most of the gap.
+2. **Area vs apex:** chromatogram = integrated **area**; FlashLFQ (`--int` off) = summed **apex heights**.
+3. **Shared-peak attribution:** some of the 55 are shared with other peptides and also count toward them.
+
+**The fix** (open item #3 below): embed an open-mod **feature key** (exact mass/position) alongside
+`reportedPeptideId`, so each peak resolves to the specific display form. Then `SIQFVDWCPTGFK-(13)` would
+show only the ~13-Da form's features, and the remaining difference would be the (smaller, explainable)
+area-vs-apex + fixed-window effects.
+
 ## Open items to settle before building
 
 1. **No-open-mod ambiguity fraction** — measure on a real static+variable-only search to confirm Route
