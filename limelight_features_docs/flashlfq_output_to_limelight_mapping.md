@@ -275,6 +275,43 @@ associated `reportedPeptideId`(s)) gives an exact round-trip with no string re-p
 per-display-form quant falls out of the same key. This **supersedes the earlier "embed only
 `reportedPeptideId`" prototype** and revises open item #3 below.
 
+## Open-modification mass binning on the send side (implemented — no silent data loss)
+
+FlashLFQ enforces a strict **1:1 mapping between a `Full Sequence` string and its `Peptide Monoisotopic
+Mass`**: a later identification row with the *same* string but a *different* mass is **silently rejected**
+("a peptide with the same modified sequence but a different monoisotopic mass has already been added").
+Open / mass-tolerant search breaks this by construction — the same open mod is measured with mDa-level
+mass jitter across PSMs, so the `Full Sequence` mass token (rounded, 5 dp) collided while the
+full-precision mass differed. On the open-mod evidence run this **dropped 1,740 of 52,675 PSMs (~3.3%)**
+at read time, surfaced only as a log line — **silent data loss** — and it also exploded the peptidoform
+table with meaningless jitter (39,188 distinct `Full Sequence`s).
+
+**Fix (done in Limelight, not the runner).** Before sending, the webapp computes each PSM's neutral
+monoisotopic mass **once** (via Limelight's canonical peptide-mass calculator) and **bins near-isobaric
+open-mod forms**: within one `reportedPeptideId` **and** one modification-position layout, PSMs whose
+neutral masses fall within the run's **ppm tolerance** form one cluster, and every member is rewritten to
+a single representative mass + `Full Sequence`. Because the merge radius is the *same* ppm window FlashLFQ
+uses to extract the MS1 peak, anything merged would have landed on that same peak anyway — so **no quant
+is lost**. The binning is deliberately conservative — it only merges within one reported peptide and one
+layout, so genuinely different mass forms (e.g. +0 vs +79.97) and different localizations stay separate.
+Every same-string/different-mass collision is, by construction, within one (reportedPeptideId, layout), so
+this removes **100%** of the rejections while merging nothing that isn't measurement jitter.
+
+Two consequences worth noting:
+- **Mass is now computed only in Limelight and sent** (a per-PSM field); the FlashLFQ runner does **no**
+  mass computation. Single source of truth — mass logic is not duplicated across modules. A peptide whose
+  mass Limelight cannot compute (non-standard residue) is dropped before sending.
+- **Doing it at request-build time means every future quant tool inherits it**, not just FlashLFQ.
+
+**Validated end-to-end** (owner-triggered run, same open-search data as the evidence run): FlashLFQ read
+**all 52,675 identifications with 0 rejections** (was 1,740 dropped), every row carried a mass, and the
+distinct-peptidoform / `QuantifiedPeptides` count fell **39,188 → 8,830** as the jitter collapsed.
+
+This binning fixes the **read-time data loss and table bloat**; it does **not** by itself give
+per-display-form quant — a reported peptide's open-mod cloud still shares one rolled-up number until the
+decomposed-component identity + receive-side per-form rollup land (open item #3, and the worked example
+below).
+
 ## How Limelight's existing PSM-based chromatogram peak area compares to FlashLFQ
 
 Limelight already computes an MS1 peak area in the PSM-list **chromatogram**
@@ -360,12 +397,14 @@ area-vs-apex + fixed-window effects.
 1. **No-open-mod ambiguity fraction** — measure on a real static+variable-only search to confirm Route
    1 "just works" (expected ~1–2% ambiguous). Not yet measured.
 2. **Multi-position open-mod mass encoding** — verify the controller emits an open-mod delta **once**,
-   not once per candidate position, so `Peptide Monoisotopic Mass` isn't double-counted
-   (`peptide_monoisotopic_mass` sums `modifications.values()`).
-3. **Identity embedding** — send a per-peptidoform key = **peptide id + decomposed mods (type/position/
-   mass) + charge**, with `reportedPeptideId` as association metadata (see "Quant identity & rollup grain"
-   above). This round-trips without string re-parsing and lets quant roll up to whatever the current
-   'Collate Peptides Using:' grain is. Supersedes the shipped "embed only `reportedPeptideId`" prototype.
+   not once per candidate position, so the monoisotopic mass isn't double-counted (the mass is now Σ over
+   the per-PSM `modifications` map, computed in the webapp — see the binning section above).
+3. **Identity embedding** — *partially done.* Shipped: `reportedPeptideId` is embedded in the `Full
+   Sequence`, and the per-peptidoform **mass is computed webapp-side and binned** so the round-trip has no
+   silent data loss (see "Open-modification mass binning" above). **Still open:** send the full decomposed
+   per-peptidoform key = **peptide id + decomposed mods (type/position/mass) + charge** (with
+   `reportedPeptideId` as association metadata) so quant rolls up to whatever the current 'Collate Peptides
+   Using:' grain is and each open-mod display row shows its own form — the worked example's remaining gap.
 4. **Cross-base-sequence shared peaks** — peaks with `Base Sequences Mapped > 1` (near-isobaric, e.g.
    I/L variants) attribute one intensity to different peptides/proteins; represent with an ambiguity
    flag and dedupe on rollup.
