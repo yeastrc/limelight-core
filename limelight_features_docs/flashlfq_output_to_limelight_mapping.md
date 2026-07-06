@@ -233,6 +233,51 @@ Store a **feature/peak-level** quant record (intensity + its mapped-forms list) 
 with per-reported-peptide, per-display-peptide, and per-protein-group views **derived** from it — rather
 than storing only per-reported-peptide values (which cannot represent open-mod shared features).
 
+## How Limelight's existing PSM-based chromatogram peak area compares to FlashLFQ
+
+Limelight already computes an MS1 peak area in the PSM-list **chromatogram**
+(`psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component.tsx`; **this peak-area method was
+boss-specified**). It's worth knowing where it agrees with FlashLFQ and where it won't — the two will
+generally **not** produce the same number, especially for open mods.
+
+Both compute a **theoretical** target m/z — peptide neutral monoisotopic mass (Σ residues + Σ mods +
+water), then `(mass + z·proton)/z`; neither reads the observed precursor m/z — and both extract with a
+**ppm** tolerance and sum an **isotope envelope**. Beyond that they diverge:
+
+| Aspect | Limelight chromatogram (boss-specified) | FlashLFQ |
+|---|---|---|
+| Target m/z | theoretical, from sequence+mods+charge | theoretical, per peptidoform (our `Full Sequence`) |
+| ppm tolerance | symmetric ± ppm, default 15 (max 25), user-selectable | `--ppm` (default 10) + `--iso` isotope ppm |
+| Isotopes | monoisotopic + M+1/+2/+3 windows, summed | isotopic-envelope peak-finding |
+| Charge states | **one selected charge**; not summed across charges | per-feature per charge; peptide level sums charges |
+| **Reported value** | **trapezoidal AREA** (intensity·seconds) | **default = APEX intensity (a height)**; integrated area only with `--int true` |
+| **RT integration** | **fixed window = first→last PSM RT ± 30 s, trapezoid over every MS1 scan, zero-filled; NO apex/boundary/peak-shape detection** | **detects the chromatographic peak (apex + boundaries)** and integrates/measures that; MBR across runs |
+| **Open mods** | area is per (reportedPeptideId × **display-rounded** open-mod bucket, 2 dp × charge); the bucket's open-mod masses are **averaged** into one narrow window | each peptidoform's **exact** summed mass is its own feature; same-mass-within-ppm forms share one peak, others stay separate |
+| Grain | one area per (reportedPeptideId × open-mod bucket × charge × scan file), **user-selected one at a time** | all features at once; per (peptidoform × sample), peptide = sum over charges |
+
+**The three differences that matter:**
+
+1. **Area vs apex height.** The chromatogram integrates a trapezoidal **area**; FlashLFQ by default
+   reports the **apex intensity** (peak height) and only integrates an area when passed `--int true`.
+   So out of the box the two aren't even the same *kind* of quantity — magnitudes differ. To compare
+   apples-to-apples, run FlashLFQ with `--int true`.
+2. **Fixed RT window vs peak detection.** The chromatogram integrates a *fixed* window (first→last PSM
+   RT, ± 30 s) with a plain trapezoid over every MS1 scan (zero-filling scans with no in-window peak) and
+   does **no** apex/boundary detection. FlashLFQ **finds** the peak and measures its actual bounds. So on
+   the same data the chromatogram can include baseline / adjacent-peak area the PSMs happen to bracket,
+   or miss signal eluting just outside ±30 s. Expect the numbers **correlated but not equal**.
+3. **Open-mod bucketing differs.** The chromatogram groups open mods by the **display-rounded** mass
+   (2 dp) and *averages* the bucket into one window — it quantifies at the **display grain**. FlashLFQ
+   keys on the **exact** per-peptidoform mass; forms within ppm merge, forms farther apart stay separate.
+   A rounded 2-dp bucket that spans more than the ppm tolerance is one number in the chromatogram but
+   several features in FlashLFQ (which our rollup then re-groups by reportedPeptideId). Same
+   display-grain-vs-quant-grain tension, surfacing as a numeric difference between the tools.
+
+**Implication:** the chromatogram area is a useful **sanity cross-check**, not an oracle — where they
+disagree it's usually (1) area-vs-apex, (2) the fixed-window integration, or (3) open-mod bucketing, not
+a bug in either. The cleanest close-match test is a **non-open-mod, single-charge** peptide with matched
+ppm and `--int true`, where both reduce to "integrate one peptidoform's XIC."
+
 ## Open items to settle before building
 
 1. **No-open-mod ambiguity fraction** — measure on a real static+variable-only search to confirm Route
