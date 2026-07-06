@@ -269,11 +269,24 @@ inputs the generated-peptide-string builder consumes:
 - **Mod page** — group features by modification (open or variable): sum the features whose peptidoform
   carries that mod.
 
-**What we send FlashLFQ:** the per-PSM `modifications` map we already build *is* the decomposed component
-set (position→mass). Embedding **peptide id + that map** (optionally tagging mod type, and carrying the
-associated `reportedPeptideId`(s)) gives an exact round-trip with no string re-parsing, and the
-per-display-form quant falls out of the same key. This **supersedes the earlier "embed only
-`reportedPeptideId`" prototype** and revises open item #3 below.
+**What we send FlashLFQ (and the real work item #3 needs):** the per-PSM `modifications` map we build
+today is **`position → summed mass`, with dynamic + variable + open + static folded together** at each
+position (the controller does `put(pos, mass + existing)` for every mod source) — it is **not** a
+decomposed, type-tagged component set, and co-located mods at one position are already summed and
+unrecoverable. So item #3 is a real send-side change, not a repackaging of what we have:
+
+- **Stop summing across mod types for the identity** — carry a structured `{ type, position, mass }`
+  component list alongside `peptide id` and the associated `reportedPeptideId`(s). The neutral **mass
+  stays the sum** (FlashLFQ needs the total neutral mass); only the *identity / Full Sequence encoding*
+  gains structure.
+- **Bin-then-embed** — embed the **post-binning canonical** components (bin per `(reportedPeptideId,
+  layout)` as we do now, then embed the representative cluster's decomposed set). The two features are
+  compatible but ordered.
+
+Done that way, quant round-trips with no string re-parsing and per-display-form quant falls out of the
+same key. This **supersedes the earlier "embed only `reportedPeptideId`" prototype** and revises open
+item #3 below. (One irreducible limit: two mod types that truly co-locate on one residue still cannot be
+separated — rare.)
 
 ## Open-modification mass binning on the send side (implemented — no silent data loss)
 
