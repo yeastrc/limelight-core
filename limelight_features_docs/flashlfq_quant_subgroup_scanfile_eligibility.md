@@ -4,8 +4,10 @@
 **Audience:** §1–§8 are a decision memo that can be forwarded as-is; §9–§12 are the engineering spec.
 
 **One-line ask:** exclude searches whose **sub-groups cross-cut scan files** from *per–sub-group* quant,
-because MS1 label-free quant of such sub-groups is not physically meaningful. Offer per-scan-file quant as
-the always-valid fallback.
+because MS1 label-free quant of such sub-groups is not physically meaningful. For such searches, **do not
+offer quant at all** — show a short, plain-language message explaining that it isn't available and why.
+(Every Limelight-XML converter we have written *never produces this shape* anyway — see §8 — so this is a
+guard for a case our own pipeline doesn't create, not a feature we're declining to build.)
 
 ---
 
@@ -84,7 +86,7 @@ files**:
 |---|---|---|
 | Search, no sub-groups | sum over the search's scan files | ✅ valid |
 | Sub-groups that **partition** scan files (no scan file mixes sub-groups) | per sub-group = sum over that sub-group's scan files | ✅ valid |
-| Sub-groups that **cross-cut** scan files | — | ❌ **exclude from per–sub-group quant** |
+| Sub-groups that **cross-cut** scan files | — | ❌ **decline quant; show a message (§11)** |
 
 **Parallel caveat, same principle:** since a scan file is *not* always 1:1 with a search, if a scan file is
 shared across searches, per-*search* quant double-claims that file's peaks — the same rule applies (a grain
@@ -92,12 +94,21 @@ must aggregate scan files it exclusively owns).
 
 ## 8. Why this is the right call, not a cop-out
 
-It scopes quant to what was physically measured, keeps every number **additive, reproducible, and
-comparable**, and prevents the product from emitting fabricated differential abundance. The data-model gap
-(sub-group and scan file being independent per-PSM attributes, never constrained to align) is real and
-pre-existing; the eligibility test is the pragmatic way to ship *correct* quant now without waiting for that
-model to be locked down. Searches we can't quantify at the requested grain are **not** left empty-handed —
-they get the per-scan-file fallback (§11).
+Two independent reasons, either sufficient on its own:
+
+- **Principled:** it scopes quant to what was physically measured, keeps every number **additive,
+  reproducible, and comparable**, and prevents the product from emitting fabricated differential abundance
+  (§1–§6).
+- **Practical — our own tooling never creates this shape:** **every converter we have written from search
+  results to Limelight XML produces searches in which sub-groups do *not* cross-cut scan files.** So this
+  data shape does not arise from the Limelight pipeline at all — it could appear only in hand-authored or
+  third-party XML. There is no reason to engineer a quant model for a shape our converters never emit; the
+  correct response is to **detect it and decline**, not to invent apportionment logic for it.
+
+The underlying data-model gap (sub-group and scan file are independent per-PSM attributes, never constrained
+to align) is real and pre-existing. Rather than block quant on locking that model down, we simply **detect
+the unsupported shape and decline quant for it** with a clear message (§11). Searches with the shape our
+converters actually produce are quantified normally.
 
 ---
 
@@ -133,20 +144,29 @@ ineligible(search) :=
   pattern the UI already uses to gate the "Run FlashLFQ" button (`is__All_Searches_Have_ScanData()` etc.).
   Add e.g. `quant_SubGroupGrain_Eligible` per search.
 
-## 11. Fallback behavior (don't leave searches empty-handed)
+## 11. What is offered — and the message when quant is declined
 
-The **always-valid** fallback is **per-scan-file quant** — the native FlashLFQ grain, where every peak maps
-to exactly one scan file with no ambiguity. Behavior by case:
+Quant is offered only at a grain the data supports. Per-scan-file is used **internally** as the
+storage/aggregation grain (§12); whether to *also* expose a per-scan-file report to users is a **separate**
+question, out of scope here (users may well want it) — it is **not** used as a substitute for a grain the
+user asked for.
 
-| Search shape | Offer |
+| Search shape | Behavior |
 |---|---|
-| No sub-groups | per-search total (sum of its scan files); optionally per-scan-file breakdown |
-| Sub-groups **partition** scan files | per-sub-group (= per-scan-file grouped by sub-group) |
-| Sub-groups **cross-cut** scan files | **per-scan-file only** — do **not** offer per-sub-group; gate the UI so the invalid grain can't be requested, with a short explanation ("sub-groups share raw files, so per-condition quant isn't measurable") |
+| No sub-groups | per-search quant (summed across its scan files) |
+| Sub-groups **partition** scan files | per-sub-group quant |
+| Sub-groups **cross-cut** scan files | **Quant declined — show the message below.** (Our converters don't produce this shape; §8.) |
+
+**When quant is declined, say so plainly** — don't silently hide it, and don't substitute a grain the user
+didn't ask for. Show a short, plain-language message, e.g.:
+
+> **Quant is not available for this search.** FlashLFQ measures signal per raw (mass-spec) file, but this
+> search's sub-groups are spread across shared raw files, so a separate quant value per sub-group can't be
+> measured from the data.
 
 **UI gating:** treat per–sub-group quant like any other per-search capability — render/enable it only when
-**all** selected searches are `quant_SubGroupGrain_Eligible`, exactly as the "Run FlashLFQ" button is gated
-on scan data today. Never let the user trigger a grain the data can't support.
+**all** selected searches are `quant_SubGroupGrain_Eligible` (same pattern as gating the "Run FlashLFQ"
+button on scan data today). For an ineligible search, show the message instead of a quant control.
 
 ## 12. The generic quant format should make this fall out for free
 
