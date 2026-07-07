@@ -78,6 +78,12 @@ A few cross-cutting concepts that aren't obvious from the schema:
   that assumes "one reported peptide == one exact mass/modification form" is wrong for open-mod data
   (e.g. quant keyed only on `reportedPeptideId` under-splits open-mod peptides — the distinguishing
   mass lives on the PSM).
+- **Search sub-group** ("Sub Search" in the UI) — an optional per-PSM *logical* label that partitions one
+  search's PSMs into named groups (conditions/replicates). It is **independent of the scan file** (a
+  *physical* per-PSM fact): a sub-group can span many scan files and a scan file can hold many sub-groups,
+  with no constraint aligning them. `searchSubGroupId` is unique only within a `searchId`, so sub-groups
+  show only on single-search views. For the full stack (schema → import → searchers → REST → UI) and why
+  this matters for MS1 quant, see `limelight_features_docs/limelight_search_sub_groups_deep_dive.md`.
 
 ## Building
 
