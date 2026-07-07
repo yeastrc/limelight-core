@@ -1962,6 +1962,25 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
     }
 
     //  First combine all positional mods together into single map since will display all as Variable Mods in '[' ']'
+    //
+    //  DISPLAY REQUIREMENT (was not documented until 2026-07-07 — call this out because it surprises callers):
+    //  a LOCALIZED (positioned) open modification is rendered here IDENTICALLY to a variable mod, i.e. in
+    //  square brackets '[' ']', NOT in the open-mod parentheses '(' ')' that the canonical builder
+    //  reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches uses for its own open-mod param. We do
+    //  this by merging the localized open mod into modifications_combine_temp below (with the other '[ ]'
+    //  mods) and passing the builder's open_Modification_Rounded param as undefined. Only an UNLOCALIZED open
+    //  mod keeps parens (rendered as a trailing '-(N)' via open_Modification_Rounded_NoPosition). Open-mod
+    //  masses are also whole-number rounded (Math.round), so a localized open mod shows e.g. '[14]', not the
+    //  2-decimal '[14.02]' a variable mod shows.
+    //
+    //  CONSEQUENCE: the generated display string does NOT encode open-mod KIND — a localized open mod is
+    //  byte-identical to a real variable mod at the same residue, and the localized-vs-unlocalized rendering
+    //  even depends on the "open modifications with localization" user selection. So DO NOT try to recover
+    //  open-mod kind/mass by parsing this display string; read it from the open-mod data source
+    //  (openModifications_On_PSM_For_MainFilters_Holder / DB psm_open_modification_tbl + ..._position_tbl),
+    //  which is exactly where this function got open_Modification_Rounded. (This is why the FlashLFQ-quant
+    //  per-form column, which parsed the display string for '(N)' parens, left every localized-open-mod row
+    //  blank — a display-string-parsing limitation, not a data problem.)
 
     const modifications_combine_temp : Map<number, Array<{ massNumber : number, massString : string }>> = new Map();
 
@@ -2012,6 +2031,8 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
 
     if ( open_Modification_Rounded !== undefined && open_Modification_Rounded !== null ) {
 
+        //  LOCALIZED open mod → merged in with the '[ ]' variable mods (see the DISPLAY REQUIREMENT note at
+        //  the top of this function): it is rendered in brackets, indistinguishable from a variable mod.
         let modifications_combine_temp_Entry = modifications_combine_temp.get( open_Modification_Rounded_Position );
         if ( ! modifications_combine_temp_Entry ) {
             modifications_combine_temp_Entry = new Array<{massNumber: number; massString: string}>()

@@ -138,6 +138,36 @@ overlay** — and that overlay is reachable from the **protein, peptide, and mod
 change here affects all of those. (Other callers of the builder: mod page, feature-detection chromatogram,
 QC gold-standard, scan-file-to-searches, lorikeet PSM table.)
 
+### The display string does NOT encode open-mod *kind* — a LOCALIZED open mod renders in brackets, identical to a variable mod
+
+The bullets above describe the **canonical builder's** own params (`(o)` parens for open, `[v]` for
+variable). But the **peptide-list caller** does **not** feed a localized open mod through the builder's
+open-mod param — so **you cannot recover open-mod kind/mass by parsing the peptide-list display string.**
+In `proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData.ts`
+(`_generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM`):
+
+- It **merges the localized open mod into the same map as variable + static mods** (see the comment
+  *"combine all positional mods together into single map since will display all as Variable Mods in
+  `[` `]`"*), then passes that map as `variable_Modifications_RoundedArray_KeyPosition` with the builder's
+  `open_Modification_Rounded` param left **undefined**. Result: a localized open mod of +14.016 on
+  `AVFVDLEPTVVDEVR` renders as **`AVFVDLEPTVVDE[14]VR`** — square brackets, **whole-number rounded** (open
+  mods use `Math.round`, so it's `[14]`, not the 2-decimal `[14.02]` a variable mod would show). It is
+  **byte-identical** to a genuine variable `[14]`; no string parser can tell them apart.
+- **Only an UNLOCALIZED open mod gets paren treatment** — appended as trailing **`-(N)`** (via the
+  builder's `open_Modification_Rounded_NoPosition`).
+- **Which one you get depends on the page's "open modifications with localization" user selection**:
+  localization ON + candidate positions present → per-position `[N]` (localized, bracketed); OFF (or no
+  positions) → trailing `-(N)` (unlocalized). So the *same* PSM open mass can render either way.
+
+**Consequence / how to get open-mod info correctly:** do **not** reverse-engineer the open modification
+from the display string (it's ambiguous for localized mods and toggle-dependent). Read it from the
+open-mod data source that generated the row — the PSM open modifications
+(`openModifications_On_PSM_For_MainFilters_Holder`, keyed by `reportedPeptideId`; DB `psm_open_modification_tbl`
++ `psm_open_modification_position_tbl`), which is where the builder itself gets it. This is exactly why
+the FlashLFQ-quant receive side (`quant_PrototypeData__parseDisplayOpenMod`, which only matches `(N)`/`-(N)`
+parens) leaves **every localized-open-mod row blank** in the per-form Quant column — a known prototype
+limitation, not a data problem: the underlying data classifies the mod as open correctly.
+
 ---
 
 ## Modal overlay (home-grown) — `ModalOverlay_Limelight_Component_v001_B_FlexBox`
