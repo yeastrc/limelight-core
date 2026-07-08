@@ -114,24 +114,24 @@ dependencies {
 	
 	//  Logging
 	
-	implementation 'org.apache.logging.log4j:log4j-api:2.25.4'
-	implementation 'org.apache.logging.log4j:log4j-core:2.25.4'
-	implementation 'org.apache.logging.log4j:log4j-web:2.25.4' //  Needed for Web app
+	implementation 'org.apache.logging.log4j:log4j-api:2.26.1'
+	implementation 'org.apache.logging.log4j:log4j-core:2.26.1'
+	implementation 'org.apache.logging.log4j:log4j-web:2.26.1' //  Needed for Web app
 	
 	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
-	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.25.4'
+	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.26.1'
 	
 	//  Jakarta Commons Logging to SLF4J
 	implementation 'org.slf4j:jcl-over-slf4j:1.7.36'
 	
 	//  Log4j 1 to 2 bridge
-	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.25.4'
+	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.26.1'
 		
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-	implementation 'com.fasterxml.jackson.core:jackson-core:2.22.0'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.22.1'
 	
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.0'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
 	
 
 	// JAXB 4.0 (jakarta.xml.bind) - jakarta-only. Binds the published jakarta limelight-import-api
