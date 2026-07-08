@@ -170,6 +170,27 @@ limitation, not a data problem: the underlying data classifies the mod as open c
 
 ---
 
+## Browser address-bar URL (data pages rewrite it — hash is now preserved)
+
+The projectSearchId/experiment **data pages rewrite the browser address-bar URL early on load and on state
+changes**: `centralPageStateManager` rebuilds the URL from page state and calls
+`limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function`
+(`page_js/common_all_pages/limelight__ReplaceBrowserAddressBarURL_ValidateUpdated_Function.ts`), which does
+`window.history.replaceState( null, null, newURL )`. `newURL` is rebuilt **without** any URL hash, so the
+rewrite used to **silently drop `#...`** — anything in the hash vanished within a moment of page load. **This
+surprises anyone trying to use the hash for state.**
+
+That function now **copies the current `window.location.hash` onto `newURL` when `newURL` has no hash of its
+own**, so a hash survives the rewrite (its post-`replaceState` self-validation still matches). Implications:
+
+- The URL **hash is usable for client-side-only state** on data pages (it now persists across the rewrite),
+  but **read it lazily** (e.g. in `componentDidMount` / on demand) — don't assume the address bar is
+  untouched at any given instant during load.
+- `location.hash` is referenced nowhere else in the FE, so the hash namespace is otherwise free.
+- Example consumer: the throwaway FlashLFQ-quant per-search test selection
+  `#<projectSearchId>_<requestId>-<projectSearchId>_<requestId>…`, parsed in `quant_PrototypeData.ts` to fetch
+  one served `QuantifiedPeaks.tsv` per search and tag its peaks with that projectSearchId.
+
 ## Modal overlay (home-grown) — `ModalOverlay_Limelight_Component_v001_B_FlexBox`
 
 Limelight has its own React modal overlay (not a library) with an optional title bar. Use it for
