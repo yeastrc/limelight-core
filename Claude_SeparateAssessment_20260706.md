@@ -900,10 +900,37 @@ Two conclusions:
 
 **Design implication (Dan, 2026-07-08):** to guarantee correct quant under arbitrary filtering, run
 FlashLFQ on the **final filtered PSMs** and bind the result to a frozen, URL-encoded filter state — the
-**"locked-filter run"** (any filter change removes the quant). Full write-up, harness table, and
+**"locked-filter run"** (any filter change removes the quant). The features doc now frames this as a
+three-option spectrum (Option 1 = honest-labeled total, no re-run [recommended default]; Option 2 =
+opt-in "quantify current filtered view"; Option 3 = locked-filter run). Full write-up, harness table, and
 non-decomposability evidence: **`limelight_features_docs/flashlfq_quant_run_on_final_filtered_psms.md`**.
 *(Over-count numbers OBSERVED from re-runs I executed; "webpage value" is a code-verified reconstruction of
 `quant_PrototypeData.ts`, not a UI screenshot. Single scan file → no MBR.)*
+
+**Option 1 shipped and vetted (2026-07-08).** The other session implemented the recommended default as a
+**labeling/semantics change only** — no engine or run-model change: an "About the Quant column" info box
+(`…GeneratedReportedPeptideListSection_Component.tsx:557–579`) + a matching header tooltip
+(`…Create_TableData.tsx:559–577`). I reviewed the actual working-tree strings. **Verdict: accurate and
+ship-worthy** — both state the value is the peptidoform total over the **submitted** PSMs, **not narrowed**
+by secondary filters (charge/RT/m·z/scan), **not charge-scoped**, and **not additive down the column**
+(shared-feature convention = PSM Count). Confirmed code-true: `get_QuantForDisplayForm` takes no
+charge/filter args and a row's `reportedPeptideIds` don't change under secondary filters, so "not narrowed"
+is a real property. **Both surfaces are shared onto the peptide page** via the (misnamed) `…SingleProtein…`
+Section + Create_TableData — an earlier "peptide-page coverage gap" I raised was **wrong**, an artifact of
+the filename; verified by who *renders* it (`peptidePage_Display_MainContent_Component.tsx` imports both).
+
+Two review items left (both name-independent):
+- **`--chg` coupling** — the "*cannot* be split by charge" wording is literally true only for `--chg` **off**
+  (the default; the 28%-charge-pooling evidence came from an off run). The run form exposes
+  `only_identified_charge` (`quant_FlashLFQ_Parameters.ts:83`); with `--chg` **on**, peaks are per-charge and
+  "cannot" overclaims. Fix: soften to "…one combined intensity across charge states, **not broken out by
+  charge**" (robust to both), or lock `--chg` off.
+- **Nit** — tooltip "*summed over the PSMs* submitted" implies PSM-additivity; the summation unit is MS1
+  features (peaks). "*as measured from* the PSMs submitted" is cleaner (the info box already avoids this).
+
+Out-of-scope note for later: the **experiment-driven** protein/peptide pages have *parallel*
+`…GeneratedReportedPeptideListSection…` components (separate files) that would need the same wording if quant
+reaches them. *(Wording OBSERVED from the working-tree source; not yet seen rendered in a live UI.)*
 
 ---
 
