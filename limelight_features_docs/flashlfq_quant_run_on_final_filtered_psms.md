@@ -86,36 +86,62 @@ Two filter classes, from §16, now with the correctness verdict attached:
 - **Secondary page filters** — presence-gated client-side. **Correct only when they remove whole forms;
   over-count when they thin PSMs within a surviving form.**
 
-## 4. Proposed design — the "locked-filter run" (guarantees correctness)
+## 4. Design options — a spectrum, cheapest to strictest
 
-To make quant correct under *any* filtering, bind a FlashLFQ run to a complete, frozen filter state:
+There is no need to choose between "friendly but wrong" and "harsh but correct." Three options,
+**additive** — ship (1) alone and it is already defensible; (2) and (3) layer on if anyone demands
+per-filter numbers.
 
-1. The user selects **all** the filtering they want (annotation/cutoff **and** secondary: charge, mod mass,
-   RT, m/z, scan-peak, …).
-2. The app resolves that to the **exact final PSM set** and submits **those PSMs** to FlashLFQ (the submit
-   webservice already accepts submit-time filter values and retrieves PSMs; this extends it to the full
-   final set — see the Tier-2 explicit `reportedPeptideId → [psmId]` path in assessment §19d).
-3. The app generates a **page URL** encoding that filter state and pointing at the FlashLFQ result for
-   exactly those PSMs.
+**First, what NOT to do — do not classify filters as "safe" vs "unsafe."** The harness shows de-seeding is
+a property of the *specific peptides/PSMs*, not of the filter type: even the RT-window filter de-seeded 310
+forms. Whether a filter thins a form or removes it whole is **data-dependent**, so any static "these filters
+are OK to display live" whitelist would be right on one dataset and wrong on the next. (Dan, 2026-07-08:
+trying to assess which filters yield an OK result is unreasonable.) The one structural exception is **charge**:
+it is *always* off for a multi-charge peptidoform, because the form key sums charges and the peak intensity
+is not charge-decomposable — that is a fact about one filter, not a fragile heuristic.
+
+### Option 1 (recommended default) — honest-labeled peptidoform total, no re-run
+
+Keep the single run and live **row** filtering (presence-gating still hides rows whose peptidoform has no
+surviving PSM). But **redefine and label the quant value**: it is the peptidoform's **total MS1 abundance
+over the submitted PSM set — NOT narrowed by the secondary charge / RT / m·z / scan filters.** State this in
+the column header and tooltip; call out explicitly that quant is **not charge-scoped**.
+
+- **Why it works:** the value becomes a well-defined quantity — exactly what FlashLFQ measured for that
+  peptidoform. The only defect was ever the *implicit claim* that it tracked the secondary filters; removing
+  that claim removes the defect. This is §16's "quant is not charge-subset" made **honest and explicit**
+  rather than silent.
+- **Cost:** the number does not move when a user narrows charge/RT/etc.; the label must make that obvious so
+  no one reads it as filter-specific. No re-run, no lock, no filter taxonomy. **Boss-friendly.**
+
+### Option 2 (opt-in correctness) — "Quantify current filtered view" action
+
+For users who genuinely need filter-specific numbers, offer a button that runs FlashLFQ on **exactly the
+displayed PSMs** (the Tier-2 explicit `reportedPeptideId → [psmId]` path, assessment §19d), returns the
+correct values for that view, and **invalidates them when filters change**.
+
+- Same correctness as Option 3, but the user *chooses* it per view instead of it being forced page-wide — a
+  much easier sell than "unlocking removes your results."
+
+### Option 3 (strictest) — the "locked-filter run"
+
+Bind a FlashLFQ run to a complete, frozen filter state:
+
+1. The user selects **all** filtering (annotation/cutoff **and** secondary: charge, mod mass, RT, m/z,
+   scan-peak, …).
+2. The app resolves that to the **exact final PSM set** and submits **those PSMs** to FlashLFQ.
+3. The app generates a **page URL** encoding that filter state, pointing at the result for those PSMs.
 4. The page renders with those filters **applied and locked**, showing the FlashLFQ results.
-5. **Unlocking / changing any filter removes the quant results** (the run no longer matches the view). To
-   get quant again, the user re-selects filters and generates a new run.
+5. **Changing any filter removes the quant results.** To get quant again, re-select filters and re-run.
 
-**Why it works:** every displayed peak is seeded by a PSM in the view, so there is no de-seeding, no
-non-decomposable charge pooling, no over-count — the numbers are exactly what FlashLFQ computes for what the
-user sees. It is the Tier-2 "run bound to one filter state" model promoted to the product model.
+- **Why it works:** every displayed peak is seeded by a PSM in the view — no de-seeding, no charge pooling,
+  no over-count. The Tier-2 "run bound to one filter state" model promoted to the whole page.
+- **Cost:** harsh UX (quant not live-filterable); one run per distinct filter state — cache keyed by a
+  **filter-state hash** so identical selections reuse a run. Interacts with DB-ingest (Track B): the filter
+  state becomes the run's **primary key**, not just metadata.
 
-**Trade-offs (acknowledged):**
-- **Harsh UX:** quant is not live-filterable; any filter change invalidates it. This is the honest cost of
-  correctness given non-decomposability.
-- **One run per distinct filter state** — cache/store results keyed by a **filter-state hash** so identical
-  selections reuse a run rather than re-computing.
-- Interacts with the DB-ingest work (Track B): a stored run already carries its filter provenance
-  (§ data-model doc); this makes the filter state the *primary key* of a run, not just metadata.
-- **Middle ground worth weighing:** since *form-removing* filters are already exact, a system could keep the
-  live display for those and only require a locked run when a *form-thinning* filter (charge/RT/m·z/scan) is
-  engaged — narrower "harsh" surface, at the cost of classifying filters. The all-or-nothing lock is simpler
-  and unimpeachable; the middle ground is friendlier but needs the filter taxonomy maintained.
+**Recommendation:** ship **Option 1** as the default (correct-by-definition, no UX cost, no boss objection),
+and treat **Options 2/3** as opt-in additions for the subset of users who require per-filter quant.
 
 ## 5. Provenance
 
