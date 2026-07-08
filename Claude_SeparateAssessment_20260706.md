@@ -869,6 +869,42 @@ Decision 3's "keep rpid-total permanently (not scaffolding)", and elevating the 
 rounding reconciliation to the core of the receive logic** (bucket via the builder's own rounding, never
 an independent round) — both fully endorsed. The response's build order is sound.
 
+### §16 addendum — the "sum across charges" semantic is quantified, and it is large (2026-07-08)
+
+The §16 note that "a charge filter keeps the proteoform and shows all features summed across charges —
+quant is *not* charge-subset" was framed as a benign, internally-consistent semantic. A **Tier-1 offline
+differential harness** (re-run `CMD.dll` on PSM subsets of the validated single-file run `b3a49a5d…`,
+compare per display form to summing the full-run peaks) now puts numbers on it. **Full-set re-run
+reproduced production exactly** (6,069 forms, max rel err 0 → harness is faithful). Measured **over-count**
+of the webpage sum vs. a re-run on exactly the surviving PSMs:
+
+| Filter (PSMs kept)        | forms | exact | de-seeded | over-count |
+|---------------------------|-------|-------|-----------|------------|
+| drop open-mod +14 (92.8%) | 5,999 | 5,983 | 0         | **0.000%** |
+| RT window 54–145 (79.5%)  | 5,137 | 4,825 | 310       | **1.04%**  |
+| random 50% (50%)          | 4,249 | 3,198 | 911       | **5.96%**  |
+| drop charge 2 (45%)       | 3,277 | 2,617 | 357+301*  | **54.2%**  |
+
+Two conclusions:
+- **Area-invariance holds** (the model's load-bearing assumption): removing *some* of a form's PSMs does
+  not move its integrated peak — the open-mod filter is essentially exact; retained-peak drift ≤3.2%. The
+  §16 "presence-gate, never re-integrate" call is sound for **form-removing** filters (0% over-count).
+- **But for filters that thin PSMs *within* a surviving form the display over-counts**, up to **~54% for a
+  charge filter** — because the form key sums across charges AND the stored intensity is **not
+  charge-decomposable** (observed: `peak.charge` is the *ID* charge, not the peak's `Peak Charge`; ~28% of
+  peaks pool ≥2 charge states, so a single charge's contribution cannot be extracted). Confirmed at the
+  call site (`…GeneratedReportedPeptideListSection_Create_TableData.tsx:1247`: only `reportedPeptideIds`,
+  `openModDescriptor`, `projectSearchId` passed — no charge). So the front end *does not*, and *could not*,
+  charge-subset the stored peaks; a correct charge-specific value requires **re-running FlashLFQ on
+  charge-specific PSMs**.
+
+**Design implication (Dan, 2026-07-08):** to guarantee correct quant under arbitrary filtering, run
+FlashLFQ on the **final filtered PSMs** and bind the result to a frozen, URL-encoded filter state — the
+**"locked-filter run"** (any filter change removes the quant). Full write-up, harness table, and
+non-decomposability evidence: **`limelight_features_docs/flashlfq_quant_run_on_final_filtered_psms.md`**.
+*(Over-count numbers OBSERVED from re-runs I executed; "webpage value" is a code-verified reconstruction of
+`quant_PrototypeData.ts`, not a UI screenshot. Single scan file → no MBR.)*
+
 ---
 
 ## 17. Track A independent validation — run `b3a49a5d` (2026-07-06)
@@ -989,3 +1025,101 @@ into-the-database** work — a structural change to the flow (Track B in §13d) 
 against the current served-TSV prototype. The job-status endpoint + cleanup are natural parts of that
 DB-ingest phase; doing them now against the throwaway path would be wasted. Display work (Track A)
 continues on the prototype path meanwhile.
+
+---
+
+## 19. Single-search / multi-file quant: run **per scan file**, MBR off — refines §16/§17 (2026-07-08)
+
+The single-search-with-multiple-scan-files case (flagged open in §17 / TODO #1, and never designed) was
+worked through with the user. Conclusion below. The topology already in use — **many searches, each a
+single scan file, each run through FlashLFQ separately** — is unaffected (no MBR, no cross-file coupling);
+this section is only about the *one search, several scan files* case.
+
+### 19a. Why MBR is not merely "changes the numbers" — it is **incompatible with the §16 filter model**
+
+§16 established the architecture: FlashLFQ is measured **once** over the annotation/cutoff-defined PSM
+set, and all other page filters gate **client-side by presence** — a feature is kept iff a proteoform it
+is attributed to still has ≥1 surviving identification. That model has an unstated premise: **every
+feature is attributable to real PSMs in the set**, so "did any survive?" is answerable.
+
+**An MBR-transferred peak violates that premise by construction.** It has **zero seeding PSMs in its own
+scan file** — it is integrated in an acceptor file purely from a *donor* identification in a *different*
+file. Yet the send side stamps its `rpid` from that donor, so the phantom peak still carries a
+reportedPeptideId and **would be summed into that peptide's displayed quant**, with **no PSM behind it in
+that file that any filter could act on**. So an MBR peak is not just *different* under a view-narrowing
+filter (the §17 "materially change results" framing) — it is **unfilterable**: presence-gating cannot
+coherently include or exclude it. This is a sharper statement than §17: MBR doesn't just perturb
+multi-file numbers, it breaks the run-once / display-many **mechanism** of §16.
+
+Corollary: MBR is sound **only** if FlashLFQ is run on *exactly* the PSMs driving the current display —
+i.e. the run-once model must be abandoned and a run bound to one filter state (the Tier-2 endpoint in
+19c). You cannot have both MBR and reusable-across-filters results.
+
+### 19b. Recommendation — quantify **per scan file**, one FlashLFQ run per file
+
+For a single search with N scan files, run FlashLFQ **N times, once per file, feeding each run only that
+file's PSMs**, then sum per displayed form across the per-file runs (same receive-side rollup as today).
+
+- This **forces MBR off by construction** — a single-file run has no donor, so MBR is a guaranteed no-op
+  (confirmed empirically in §17: 0 MBR-transferred peaks, all `MSMS`, for the single-file run). **This is a
+  third MBR-off path §17 did not list** — and the cleanest: it needs neither the `.NET`-library rewrite
+  (§17 option a) nor a newer FlashLFQ whose `--mbr` takes a value (§17 option b). It also supersedes the
+  premise of Decision B (§18): with per-file runs there is no live MBR control to annotate, because MBR is
+  structurally absent, not merely un-disable-able.
+- It **collapses the multi-file case into the single-file topology already validated** in §16/§17, so the
+  bounded correctness property carries over verbatim: summing the run's peaks equals a subset re-run
+  **except** for peaks a finer-than-proteoform filter fully de-seeds (the §16 charge-summing semantic),
+  and every peak is backed by a real MS/MS ID.
+
+### 19c. What it costs, and the open metadata question
+
+- **You give up MBR's value-recovery.** MBR's purpose is to fill missing values — integrate a peptide's
+  XIC in a file where it is present in MS1 but was not MS/MS-identified (DDA sampling is stochastic).
+  Per-file runs won't do that; files where a peptide wasn't identified get no peak for it. The displayed
+  cross-file total therefore becomes **"sum of ID-seeded per-file XIC areas"** — more conservative and
+  fully filter-attributable, but with more gaps than an MBR total.
+- **Whether that matters depends on what the N files are**, and this is a genuine **design decision, not a
+  test**: *fractions* of one sample (SCX / high-pH) → per-file is fine, arguably better (cross-fraction
+  MBR is marginal or actively wrong); *replicates / time series / conditions to compare across files* →
+  MBR's recovery is valuable and per-file loses it. **Open question:** does Limelight capture the
+  file-relationship (fraction vs replicate) metadata? If not, one cannot branch on it and must pick a
+  documented default — **per-file-then-sum, "MBR-based recovery not performed"**, is the defensible
+  default given the correctness parity above and that the display already just sums.
+- **Not a regression vs. current display:** the peak-summing display never used FlashLFQ's cross-file
+  normalization or protein-Bayesian rollup, so per-file runs lose only MBR, nothing else.
+- **Summing across files** is itself a semantic to state: legitimate as a total for fractions; conflates
+  replicates (FlashLFQ deliberately keeps per-file intensities so one does *not* just sum replicates).
+  Ties to the same fraction-vs-replicate metadata gap.
+
+### 19d. Parallel testing — an offline oracle needing no code change, plus a Tier-2 endpoint
+
+The user's standing frustration is the lack of an independent way to check any of this. Two tiers:
+
+- **Tier 1 (immediate, no webservice change):** each `finaldir/<requestId>/` already contains
+  `flashlfq_identifications.tsv` (the exact identification input) + `mzml/` + the engine (`CMD.dll`). A
+  differential run = delete a controlled subset of identification rows (one peptidoform / one charge / one
+  file / a random fraction), re-run `CMD.dll` on the reduced identifications + same mzML, and compare
+  `QuantifiedPeaks` intensities per form (full-run-restricted-to-survivors vs subset re-run). This
+  measures FlashLFQ's subsetting sensitivity directly and confirms/breaks the "only fully-de-seeded peaks
+  differ, retained peaks are area-invariant" claim — including any second-order RT-recalibration drift on
+  retained peaks, which reasoning alone can't rule out. **Verify the granularity of
+  `flashlfq_identifications.tsv` (expected one row per PSM) before relying on it.**
+- **Tier 2 (end-to-end, needs a throwaway webservice change):** the user proposed modifying the submit
+  webservice to accept explicit `reportedPeptideId → [psmId]` and build FlashLFQ inputs from only those,
+  bypassing the current filter-value-retrieval path. The peptide page already knows the surviving
+  reportedPeptideIds+PSMs for the *actual* current filters, so it can hand that set straight to the
+  endpoint. This is the definitive product-path check (does the summed display equal a re-run on exactly
+  the displayed PSMs). Acknowledged **throwaway scaffolding**, to be removed once results live in the DB.
+  Do Tier 1 first — if the effect is negligible, Tier 2 may not be worth building.
+
+*(Provenance: 19a–19b are algorithmic/domain reasoning about how FlashLFQ seeds and integrates peaks,
+consistent with the §17 empirical single-file result; the "per-file ≈ all-files-minus-MBR" equivalence
+and the de-seeding bound are to be confirmed by the Tier-1 harness, not yet observed on a real multi-file
+run.)*
+
+### Decision (19) — proposed, pending user confirmation
+
+For single-search / multi-file: **quantify per scan file (MBR off by construction), sum per displayed form
+across files.** MBR is incompatible with the run-once/display-many model (19a) and is only sound bound to
+one filter state (Tier-2). Document "MBR-based recovery not performed" and record the **fraction-vs-
+replicate metadata gap** as the next design question. Validate via the Tier-1 offline harness.

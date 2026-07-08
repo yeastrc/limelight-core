@@ -2,6 +2,9 @@
 
 **Status:** design argument + implementation spec. Written 2026-07-07.
 **Audience:** §1–§8 are a decision memo that can be forwarded as-is; §9–§12 are the engineering spec.
+**Companion:** for *why a single search with multiple scan files is quantified with one FlashLFQ run per
+scan file* (MBR is incompatible with Limelight's run-once/display-many model), see
+`flashlfq_per_scan_file_separate_run_rationale.md`.
 
 **One-line ask:** exclude searches whose **sub-groups cross-cut scan files** from *per–sub-group* quant,
 because MS1 label-free quant of such sub-groups is not physically meaningful. For such searches, **do not
