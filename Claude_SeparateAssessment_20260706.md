@@ -928,6 +928,15 @@ Two review items left (both name-independent):
 - **Nit** — tooltip "*summed over the PSMs* submitted" implies PSM-additivity; the summation unit is MS1
   features (peaks). "*as measured from* the PSMs submitted" is cleaner (the info box already avoids this).
 
+**Both items RESOLVED (2026-07-08), verified in the working tree.** The other session took the softening for
+`--chg` (did not lock the flag): info box and tooltip now read "*one combined intensity across charge states,
+not broken out by charge*" (robust to `--chg` on or off, since the form key excludes charge regardless of run
+config) — `Section_Component.tsx:571`, `Create_TableData.tsx:569–570`; the old "cannot be split by charge" is
+gone from both. The nit is applied: tooltip now "*as measured from the PSMs submitted*" (`Create_TableData.tsx:564`).
+So the Option-1 wording is fully vetted and correct on both the single-protein and peptide pages. *(Confirmed
+by reading the working-tree strings; FE was rebuilt/redeployed and the new phrasing was verified rendered by
+the other session — I did not re-observe the live UI.)*
+
 Out-of-scope note for later: the **experiment-driven** protein/peptide pages have *parallel*
 `…GeneratedReportedPeptideListSection…` components (separate files) that would need the same wording if quant
 reaches them. *(Wording OBSERVED from the working-tree source; not yet seen rendered in a live UI.)*
