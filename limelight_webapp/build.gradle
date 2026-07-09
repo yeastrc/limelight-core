@@ -223,9 +223,9 @@ dependencies {
 	// + RunImporterToWebApp* DTOs). A 4.0 runtime binds both the jakarta-3.0 connector DTOs and
 	// the jakarta-4.0 shared_code DTOs.
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.5'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.9'
 
 	// javax JAXB 2 (javax.xml.bind) - still required by the bundled yeastrc client-connector jars
 	// in libs_yeastrc_github_jars (file_object_store + spectral_storage_*), which use javax JAXB.

@@ -24,7 +24,7 @@ updates:
         patterns:
           - "*"
 
-  # ---- Gradle: all JVM modules with declared dependencies ----
+  # ---- Gradle: Java 25 JVM modules with declared dependencies ----
   - package-ecosystem: "gradle"
     directories:
       - "/limelight_webapp"
@@ -33,8 +33,6 @@ updates:
       - "/limelight_importer_run_importer_shared"
       - "/limelight_run_importer"
       - "/limelight_feature_detection_run_import"
-      - "/limelight_submit_import"
-      - "/limelight_submit_import_client_connector"
       - "/limelight__db_populate_new_fields__common_code"
       - "/limelight__database_cleanup__common_code__remove_data_from_database"
     schedule:
@@ -42,6 +40,34 @@ updates:
     open-pull-requests-limit: 5
     # Batch all available updates into ONE PR per module directory instead of one
     # PR per dependency.
+    groups:
+      gradle-dependencies:
+        patterns:
+          - "*"
+      gradle-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+
+  # ---- Gradle: Java 8 modules (submit_import + its client connector) ----
+  # These two modules pin the Java 8 toolchain (JavaLanguageVersion.of(8)) so the
+  # submit-import client can run under Java 8. The JAXB 4.x line (jakarta.xml.bind-api
+  # and jaxb-runtime) is compiled for Java 11 (class-file version 55.0) and will NOT
+  # compile under a Java 8 toolchain (needs 52.0) -- so keep these on the Java-8-
+  # compatible JAXB 3.0.x line. Ignore the 4.x+ JAXB bumps here; the Java 25 modules
+  # above still take them.
+  - package-ecosystem: "gradle"
+    directories:
+      - "/limelight_submit_import"
+      - "/limelight_submit_import_client_connector"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "jakarta.xml.bind:jakarta.xml.bind-api"
+        versions: [">=4.0.0"]
+      - dependency-name: "org.glassfish.jaxb:jaxb-runtime"
+        versions: [">=4.0.0"]
     groups:
       gradle-dependencies:
         patterns:

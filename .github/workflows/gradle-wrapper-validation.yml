@@ -1,0 +1,28 @@
+name: Gradle Wrapper Validation
+
+# Validates every committed gradle-wrapper.jar in the repo against Gradle's set of
+# known-good official checksums (for ALL released Gradle versions), so a tampered or
+# corrupted wrapper JAR cannot enter via a push or PR. This complements the
+# distributionSha256Sum pin in each gradle-wrapper.properties: that pin protects the
+# downloaded distribution at build time; this protects the committed bootstrap JAR.
+#
+# It is version-agnostic — any official Gradle version passes automatically, so normal
+# wrapper upgrades (see Gradle_Version_UpgradeProcess.md) do NOT need changes here.
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  wrapper-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Gradle wrapper JARs
+        uses: gradle/actions/wrapper-validation@v4
