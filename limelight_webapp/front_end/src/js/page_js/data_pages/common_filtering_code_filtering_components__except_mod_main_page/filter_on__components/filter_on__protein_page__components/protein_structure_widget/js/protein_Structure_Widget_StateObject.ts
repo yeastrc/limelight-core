@@ -38,6 +38,9 @@ const _ENCODED_DATA__SELECTED__MODIFICATION_MASS_COLOR__VALUE_ENCODING_PROPERTY_
 
 const _ENCODED_DATA__MODIFICATIONS_SYMBOLS__SIZE_PERCENTAGE__VALUE_ENCODING_PROPERTY_NAME = 'o'
 
+const _ENCODED_DATA__HIDE_VARIABLE_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME = 'p'
+const _ENCODED_DATA__HIDE_OPEN_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME = 'q'
+
 
 ////
 
@@ -428,6 +431,8 @@ export class Protein_Structure_Widget_StateObject {
 	private _show_only_modifications_pass_all_filters = false
 	private _add_open_modifications_unlocalized_in_all_peptide_positions = false
 	private _show_only_modifications_filtered_on__excluding_static = false
+	private _hide_Variable_Modifications = false
+	private _hide_Open_Modifications = false
 
 	private _show_Modification_Symbols = _show_Modification_Symbols_DEFAULT
 	private _modification_Symbols_Color__SixHex_WithLeading_Hash: string = undefined
@@ -784,6 +789,66 @@ export class Protein_Structure_Widget_StateObject {
 		return this._show_only_modifications_filtered_on__excluding_static;
 	}
 
+	///////   Hide_Variable_Modifications
+
+	/**
+	 * @param Hide_Variable_Modifications -
+	 */
+	set_Hide_Variable_Modifications( Hide_Variable_Modifications: boolean ) : void {
+
+		if ( Hide_Variable_Modifications === undefined ) {
+			const msg = "set_Hide_Variable_Modifications: Hide_Variable_Modifications: undefined";
+			console.warn( msg );
+			throw Error( msg );
+		}
+
+		this._hide_Variable_Modifications = Hide_Variable_Modifications
+
+		if ( ! this._valueChangedCallback ) {
+			throw Error("set_Hide_Variable_Modifications::( ! this._valueChangedCallback )")
+		}
+
+		this._valueChangedCallback();
+	}
+
+	/**
+	 *
+	 */
+	get_Hide_Variable_Modifications() {
+
+		return this._hide_Variable_Modifications;
+	}
+
+	///////   Hide_Open_Modifications
+
+	/**
+	 * @param Hide_Open_Modifications -
+	 */
+	set_Hide_Open_Modifications( Hide_Open_Modifications: boolean ) : void {
+
+		if ( Hide_Open_Modifications === undefined ) {
+			const msg = "set_Hide_Open_Modifications: Hide_Open_Modifications: undefined";
+			console.warn( msg );
+			throw Error( msg );
+		}
+
+		this._hide_Open_Modifications = Hide_Open_Modifications
+
+		if ( ! this._valueChangedCallback ) {
+			throw Error("set_Hide_Open_Modifications::( ! this._valueChangedCallback )")
+		}
+
+		this._valueChangedCallback();
+	}
+
+	/**
+	 *
+	 */
+	get_Hide_Open_Modifications() {
+
+		return this._hide_Open_Modifications;
+	}
+
 	///////   show_Modification_Symbols
 
 	/**
@@ -946,6 +1011,16 @@ export class Protein_Structure_Widget_StateObject {
 		if ( this._show_only_modifications_filtered_on__excluding_static ) {
 
 			result[ _ENCODED_DATA__SHOW_ONLY_MODIFICATIONS_FILTERED_ON__EXCLUDING_STATIC__VALUE_ENCODING_PROPERTY_NAME ] = this._show_only_modifications_filtered_on__excluding_static
+		}
+
+		if ( this._hide_Variable_Modifications ) {
+
+			result[ _ENCODED_DATA__HIDE_VARIABLE_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME ] = this._hide_Variable_Modifications
+		}
+
+		if ( this._hide_Open_Modifications ) {
+
+			result[ _ENCODED_DATA__HIDE_OPEN_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME ] = this._hide_Open_Modifications
 		}
 
 		// if ( this._show_Modification_Symbols ) {
@@ -1121,6 +1196,20 @@ export class Protein_Structure_Widget_StateObject {
 				this._show_only_modifications_filtered_on__excluding_static = true
 			} else {
 				this._show_only_modifications_filtered_on__excluding_static = false
+			}
+		}
+		{
+			if ( encodedStateData[ _ENCODED_DATA__HIDE_VARIABLE_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME ] ) {
+				this._hide_Variable_Modifications = true
+			} else {
+				this._hide_Variable_Modifications = false
+			}
+		}
+		{
+			if ( encodedStateData[ _ENCODED_DATA__HIDE_OPEN_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME ] ) {
+				this._hide_Open_Modifications = true
+			} else {
+				this._hide_Open_Modifications = false
 			}
 		}
 

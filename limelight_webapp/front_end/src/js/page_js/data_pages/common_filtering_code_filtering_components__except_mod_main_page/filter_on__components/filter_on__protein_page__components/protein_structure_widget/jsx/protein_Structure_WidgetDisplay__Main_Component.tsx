@@ -1763,17 +1763,24 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                                     const limelightProteinSequence_Position =
                                                         sequenceAlignment_DataFor_ProteinSequenceVersionId.structureFile__ProteinAlignment__CurrentProtein.get__limelightProteinSequence_Position__FOR__structureFile_AlignedSequence_Position( sequenceInChain_Position )
 
-                                                    console.log( "Clicked control or meta key held:  sequenceAlignment_DataForChain in : " + sequenceAlignment_DataForChain + ", limelightProteinSequence_Position: " + limelightProteinSequence_Position );
+                                                    if ( limelightProteinSequence_Position === undefined ) {
 
-                                                    //  Toggle position
+                                                        console.log( "Clicked control or meta key held:  Ignore click since structure position NOT mapped to Limelight Sequence Position:  sequenceAlignment_DataForChain in : " + sequenceAlignment_DataForChain + ", limelightProteinSequence_Position: " + limelightProteinSequence_Position );
 
-                                                    if ( this.props.proteinSequenceWidget_StateObject.has_selectedProteinSequencePosition( { position: limelightProteinSequence_Position } ) ) {
-                                                        this.props.proteinSequenceWidget_StateObject.delete_selectedProteinSequencePosition( { position: limelightProteinSequence_Position } )
                                                     } else {
-                                                        this.props.proteinSequenceWidget_StateObject.add_selectedProteinSequencePosition( { position: limelightProteinSequence_Position } )
-                                                    }
 
-                                                    this.props.updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback()
+                                                        console.log( "Clicked control or meta key held:  sequenceAlignment_DataForChain in : " + sequenceAlignment_DataForChain + ", limelightProteinSequence_Position: " + limelightProteinSequence_Position );
+
+                                                        //  Toggle position
+
+                                                        if ( this.props.proteinSequenceWidget_StateObject.has_selectedProteinSequencePosition( { position: limelightProteinSequence_Position } ) ) {
+                                                            this.props.proteinSequenceWidget_StateObject.delete_selectedProteinSequencePosition( { position: limelightProteinSequence_Position } )
+                                                        } else {
+                                                            this.props.proteinSequenceWidget_StateObject.add_selectedProteinSequencePosition( { position: limelightProteinSequence_Position } )
+                                                        }
+
+                                                        this.props.updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback()
+                                                    }
                                                 }
                                             }
                                         }
@@ -3467,6 +3474,10 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
             this._dataFor_ChimeraX_Download.modificationBalls_Internal = []
         }
 
+        //  Hide Variable / Hide Open modifications user selections
+        const hide_Variable_Modifications = this.props.protein_Structure_Widget_StateObject.get_Hide_Variable_Modifications()
+        const hide_Open_Modifications = this.props.protein_Structure_Widget_StateObject.get_Hide_Open_Modifications()
+
 
         /////////////   Add balls for Modifications
 
@@ -3730,8 +3741,27 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                         continue  // EARLY CONTINUE
                     }
 
+                    //  Hide Variable / Hide Open modifications.
+                    //  A position is hidden ONLY when everything it has (passing ALL filters) is of a hidden type ("only had that type").
+
+                    const position_Has_Variable_Modifications =
+                        modifications_For_Position.modifications_Passes_ALL_Filters.variableModification_Masses_RoundedPer_VariableModMassRoundingRules.size > 0
+                    const position_Has_Open_Modifications =
+                        modifications_For_Position.modifications_Passes_ALL_Filters.openModifications_Masses_RoundToWholeNumber.size > 0
+
+                    const position_Has_Any_Visible_Modification =
+                        ( position_Has_Variable_Modifications && ( ! hide_Variable_Modifications ) )
+                        || ( position_Has_Open_Modifications && ( ! hide_Open_Modifications ) )
+
+                    if ( ! position_Has_Any_Visible_Modification ) {
+                        //  Everything at this position is a hidden modification type so SKIP
+                        continue  // EARLY CONTINUE
+                    }
+
                     let found_Selection_For_SpecificModMass = false
 
+                    //  When Variable modifications are hidden, do NOT match/color positions by Variable modification selections
+                    if ( ! hide_Variable_Modifications ) {
                     for ( const variable_Modifications_Selection_Entry of variable_Modifications_Selections_Array ) {
 
                         if ( modifications_For_Position?.modifications_Passes_ALL_Filters?.variableModification_Masses_RoundedPer_VariableModMassRoundingRules
@@ -3759,8 +3789,10 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                             break  // EARLY BREAK
                         }
                     }
+                    }
 
-                    if ( ! found_Selection_For_SpecificModMass ) {
+                    //  When Open modifications are hidden, do NOT match/color positions by Open modification selections
+                    if ( ( ! found_Selection_For_SpecificModMass ) && ( ! hide_Open_Modifications ) ) {
 
                         //  NOT found any match for Variable mod so search Open Mods
 
@@ -4985,7 +5017,8 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                         hidden={ ( ! this._structureViewer_UserInputs_ToRight_Of_StructureViewer_Div ) && ( ! this._structureViewer__UserInputs_Expand ) }
                                         style={ {
                                             marginLeft: this._structureViewer_UserInputs_ToRight_Of_StructureViewer_Div ? 20 : undefined,
-                                            marginRight: this._structureViewer_UserInputs_ToRight_Of_StructureViewer_Div ? 20 : undefined
+                                            marginRight: this._structureViewer_UserInputs_ToRight_Of_StructureViewer_Div ? 20 : undefined,
+                                            marginBottom: this._structureViewer_UserInputs_ToRight_Of_StructureViewer_Div ? 20 : undefined
                                         } }
                                     >
                                         { this._render__UserInputs_Above_OR_Right_Of_StructureViewer() }
@@ -5778,6 +5811,60 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                 onChange={ async event => {
 
                                     this.props.protein_Structure_Widget_StateObject.set_add_open_modifications_unlocalized_in_all_peptide_positions( event.currentTarget.checked )
+
+                                    await this._compute_DerivedDisplay()
+
+                                    if ( this._structureFile_Contents_Entry_Value__CurrentlyDisplayed ) {
+
+                                        await this._update_AllParts_Of_CurrentStructure()
+                                    }
+                                } }
+                            />
+                        </label>
+                    </div>
+                ) : null }
+
+                <div style={ { marginTop: 5 } }>
+                    <label>
+                        <span>Hide Variable modifications: </span>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                "Hide variable modifications in the 'Modifications:' line in the structure."
+                            }
+                        />
+                        <input
+                            type="checkbox"
+                            checked={ this.props.protein_Structure_Widget_StateObject.get_Hide_Variable_Modifications() }
+                            onChange={ async event => {
+
+                                this.props.protein_Structure_Widget_StateObject.set_Hide_Variable_Modifications( event.currentTarget.checked )
+
+                                await this._compute_DerivedDisplay()
+
+                                if ( this._structureFile_Contents_Entry_Value__CurrentlyDisplayed ) {
+
+                                    await this._update_AllParts_Of_CurrentStructure()
+                                }
+                            } }
+                        />
+                    </label>
+                </div>
+
+                { anySearch_Has_OpenModifications ? (
+                    <div style={ { marginTop: 2 } }>
+                        <label>
+                            <span>Hide Open modifications: </span>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    "Hide open modifications in the 'Modifications:' line in the structure."
+                                }
+                            />
+                            <input
+                                type="checkbox"
+                                checked={ this.props.protein_Structure_Widget_StateObject.get_Hide_Open_Modifications() }
+                                onChange={ async event => {
+
+                                    this.props.protein_Structure_Widget_StateObject.set_Hide_Open_Modifications( event.currentTarget.checked )
 
                                     await this._compute_DerivedDisplay()
 
@@ -6752,7 +6839,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                             } )
                         } }
                     >
-                        Choose color for specific mod mass
+                        Choose ball color for specific mod mass
                     </span>
                 </div>
 

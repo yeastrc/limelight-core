@@ -148,6 +148,11 @@ const _COLOR_MODIFICATION_LOLLIPOP__POSITIONS__COVERED__FILL = _STANDARD_COLOR__
 
 const _COLOR_MODIFICATION_LOLLIPOP__NOT_PASS_FILTERS__FILL = _STANDARD_COLOR__NO_COVERAGE_EVER_FILL
 
+/**
+ * When a lollipop that would otherwise be colored "covered" (green) has a variable modification that passes ALL filters, color it black instead
+ */
+const _COLOR_MODIFICATION_LOLLIPOP__HAS_VARIABLE_MOD__FILL = "black"
+
 
 //   Width of single Protein Position when select 100% scale
 
@@ -280,7 +285,17 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
 
     private _download_Visualization_SVG_BindThis = this._download_Visualization_SVG.bind( this )
 
+    private _controlsFlexWrap_Ref_Callback_BindThis = this._controlsFlexWrap_Ref_Callback.bind( this )
+
     private readonly _visualization_SVG_Ref: React.RefObject<SVGSVGElement>
+
+    /**
+     * Set once (on first mount of the controls block, via a ref callback) to
+     * `calc(100vw - <left-offset-from-viewport + fudge>px)` so the flex-wrap controls
+     * wrap at the viewport right edge instead of the (SVG-stretched) parent width.
+     * Measured a single time; intentionally NO window-resize listener.
+     */
+    private _controlsFlexWrap_MaxWidth_CalcString: string = undefined
 
     private _widthScaleSelection_InitialValue: number
 
@@ -549,6 +564,30 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
             const filename = 'protein-coverage-visualization.svg'
 
             StringDownloadUtils.downloadStringAsFile( { stringToDownload: svgContents, filename: filename } );
+
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
+        }
+    }
+
+    /**
+     * ref callback on the flex-wrap controls div.  Measured a single time (guarded) to set the
+     * div's maxWidth to `calc(100vw - <left-offset + fudge>px)` so it wraps at the viewport right
+     * edge instead of the (SVG-stretched) parent width.  Bound to 'this' once via
+     * '_controlsFlexWrap_Ref_Callback_BindThis' so each render does not pass a new function.
+     *
+     * @param el - the div, or null on unmount
+     */
+    private _controlsFlexWrap_Ref_Callback( el: HTMLDivElement ) {
+        try {
+
+            if ( el && this._controlsFlexWrap_MaxWidth_CalcString === undefined ) {
+                //  Distance from the left edge of the viewport, normalized to the unscrolled position, plus a 20px fudge for the scrollbar.
+                const x = el.getBoundingClientRect().left + window.scrollX + 20
+                this._controlsFlexWrap_MaxWidth_CalcString = "calc(100vw - " + x + "px)"
+                this.forceUpdate()
+            }
 
         } catch ( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
@@ -1063,111 +1102,173 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
 
                                 </div>
 
-                                <div style={ { marginTop: 5 } }>
-                                    <label>
-                                        <span>No adjacent peptides: </span>
-                                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                            title={
-                                                "Peptides that are adjacent will not be placed on the same row."
-                                            }
-                                        />
-                                        <input
-                                            type="checkbox"
-                                            checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_no_adjacent_peptides() }
-                                            onChange={ event => {
+                                {/*  For the next options, in groups of 2 put them on same line unless they need to wrap for the viewport width  */}
+                                <div
+                                    ref={ this._controlsFlexWrap_Ref_Callback_BindThis }
+                                    style={ {
+                                        maxWidth: this._controlsFlexWrap_MaxWidth_CalcString ? this._controlsFlexWrap_MaxWidth_CalcString : 1000,
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        columnGap: 20
+                                    } }
+                                >
+                                    <div>
 
-                                                this.props.proteinSequence_Bar_Widget_StateObject.set_no_adjacent_peptides( event.currentTarget.checked )
-
-                                                this._compute_DerivedDisplay()
-                                            } }
-                                        />
-                                    </label>
-                                </div>
-
-                                <div style={ { marginTop: 5 } }>
-                                    <label>
-                                        <span>Show Trypsin Cut points: </span>
-                                        <input
-                                            type="checkbox"
-                                            checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_show_TrypsinCutPoints() }
-                                            onChange={ this._show_TrypsinCutPoints_SelectionChanged_BindThis }
-                                        />
-                                    </label>
-                                </div>
-
-                                <div>
-
-                                    {/*  REMOVED
-
-                                NOTE:  Also removed all usage of 'get_show_only_modifications_pass_all_filters()'
-
-                                <div>
-                                    <label>
-                                        <span>Show only modifications on peptides that pass all filters: </span>
-                                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                            title={
-                                                "Show only modifications on the peptides that pass all filters"
-                                            }
-                                        />
-                                        <input
-                                            type="checkbox"
-                                            checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_show_only_modifications_pass_all_filters() }
-                                            onChange={ event => {
-
-                                                this.props.proteinSequence_Bar_Widget_StateObject.set_show_only_modifications_pass_all_filters( event.currentTarget.checked )
-
-                                                this._compute_DerivedDisplay()
-                                            } }
-                                        />
-                                    </label>
-                                </div>
-                                */ }
-
-                                    <div style={ { marginTop: 5 } }>
-                                        <label>
-                                            <span>Hide unmatched modifications: </span>
-                                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                                title={
-                                                    "If filtering on variable or open modifications, hide all unmatched modifications."
-                                                }
-                                            />
-                                            <input
-                                                type="checkbox"
-                                                checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_show_only_modifications_filtered_on__excluding_static() }
-                                                onChange={ event => {
-
-                                                    this.props.proteinSequence_Bar_Widget_StateObject.set_show_only_modifications_filtered_on__excluding_static( event.currentTarget.checked )
-
-                                                    this._compute_DerivedDisplay()
-                                                } }
-                                            />
-                                        </label>
-                                    </div>
-
-                                    { anySearch_Has_OpenModifications ? (
-
-                                        <div style={ { marginTop: 2 } }>
+                                        <div style={ { marginTop: 5 } }>
                                             <label>
-                                                <span>Include unlocalized modifications: </span>
+                                                <span>No adjacent peptides: </span>
                                                 <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                                                     title={
-                                                        "Show any unlocalized modification as modifying all possible positions in its respective PSM."
+                                                        "Peptides that are adjacent will not be placed on the same row."
                                                     }
                                                 />
                                                 <input
                                                     type="checkbox"
-                                                    checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_add_open_modifications_unlocalized_in_all_peptide_positions() }
+                                                    checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_no_adjacent_peptides() }
                                                     onChange={ event => {
 
-                                                        this.props.proteinSequence_Bar_Widget_StateObject.set_add_open_modifications_unlocalized_in_all_peptide_positions( event.currentTarget.checked )
+                                                        this.props.proteinSequence_Bar_Widget_StateObject.set_no_adjacent_peptides( event.currentTarget.checked )
 
                                                         this._compute_DerivedDisplay()
                                                     } }
                                                 />
                                             </label>
                                         </div>
-                                    ) : null }
 
+                                        <div style={ { marginTop: 5 } }>
+                                            <label>
+                                                <span>Show Trypsin Cut points: </span>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_show_TrypsinCutPoints() }
+                                                    onChange={ this._show_TrypsinCutPoints_SelectionChanged_BindThis }
+                                                />
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div>
+
+                                        {/*  REMOVED
+
+                                                NOTE:  Also removed all usage of 'get_show_only_modifications_pass_all_filters()'
+
+                                                <div>
+                                                    <label>
+                                                        <span>Show only modifications on peptides that pass all filters: </span>
+                                                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                            title={
+                                                                "Show only modifications on the peptides that pass all filters"
+                                                            }
+                                                        />
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_show_only_modifications_pass_all_filters() }
+                                                            onChange={ event => {
+
+                                                                this.props.proteinSequence_Bar_Widget_StateObject.set_show_only_modifications_pass_all_filters( event.currentTarget.checked )
+
+                                                                this._compute_DerivedDisplay()
+                                                            } }
+                                                        />
+                                                    </label>
+                                                </div>
+                                                */ }
+
+                                        <div style={ { marginTop: 5 } }>
+                                            <label>
+                                                <span>Hide unmatched modifications: </span>
+                                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                    title={
+                                                        "If filtering on variable or open modifications, hide all unmatched modifications."
+                                                    }
+                                                />
+                                                <input
+                                                    type="checkbox"
+                                                    checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_show_only_modifications_filtered_on__excluding_static() }
+                                                    onChange={ event => {
+
+                                                        this.props.proteinSequence_Bar_Widget_StateObject.set_show_only_modifications_filtered_on__excluding_static( event.currentTarget.checked )
+
+                                                        this._compute_DerivedDisplay()
+                                                    } }
+                                                />
+                                            </label>
+                                        </div>
+
+                                        { anySearch_Has_OpenModifications ? (
+
+                                            <div style={ { marginTop: 2 } }>
+                                                <label>
+                                                    <span>Include unlocalized modifications: </span>
+                                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                        title={
+                                                            "Show any unlocalized modification as modifying all possible positions in its respective PSM."
+                                                        }
+                                                    />
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={ this.props.proteinSequence_Bar_Widget_StateObject.get_add_open_modifications_unlocalized_in_all_peptide_positions() }
+                                                        onChange={ event => {
+
+                                                            this.props.proteinSequence_Bar_Widget_StateObject.set_add_open_modifications_unlocalized_in_all_peptide_positions( event.currentTarget.checked )
+
+                                                            this._compute_DerivedDisplay()
+                                                        } }
+                                                    />
+                                                </label>
+                                            </div>
+                                        ) : null }
+                                    </div>
+                                    <div>
+                                        <div style={ { marginTop: 5 } }>
+                                            <label>
+                                                <span>Hide Variable modifications: </span>
+                                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                    title={
+                                                        "Hide variable modifications in the 'Modifications:' line in the graphic."
+                                                    }
+                                                />
+                                                <input
+                                                    type="checkbox"
+                                                    checked={
+                                                        this.props.proteinSequence_Bar_Widget_StateObject.get_Hide_Variable_Modifications()
+                                                    }
+                                                    onChange={ event => {
+
+                                                        this.props.proteinSequence_Bar_Widget_StateObject.set_Hide_Variable_Modifications( event.currentTarget.checked )
+
+                                                        this._compute_DerivedDisplay()
+                                                    } }
+                                                />
+                                            </label>
+                                        </div>
+
+                                        { anySearch_Has_OpenModifications ? (
+
+                                            <div style={ { marginTop: 2 } }>
+                                                <label>
+                                                    <span>Hide Open modifications: </span>
+                                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                        title={
+                                                            "Hide open modifications in the 'Modifications:' line in the graphic."
+                                                        }
+                                                    />
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={
+                                                            this.props.proteinSequence_Bar_Widget_StateObject.get_Hide_Open_Modifications()
+                                                        }
+                                                        onChange={ event => {
+
+                                                            this.props.proteinSequence_Bar_Widget_StateObject.set_Hide_Open_Modifications( event.currentTarget.checked )
+
+                                                            this._compute_DerivedDisplay()
+                                                        } }
+                                                    />
+                                                </label>
+                                            </div>
+                                        ) : null }
+                                    </div>
                                 </div>
 
                                 {/*   End: Block for 'Width Scale Selection' down to the <svg> */ }
@@ -1787,6 +1888,27 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                     continue // EARLY CONTINUE
                 }
 
+                //  Hide Variable / Hide Open modifications.
+                //  Determine what modification types are at this position (from the full PSM/Etc superset).
+                //  A position is hidden ONLY when everything it has is of a hidden type ("only had that type").
+
+                const hide_Variable_Modifications = this.props.proteinSequence_Bar_Widget_StateObject.get_Hide_Variable_Modifications()
+                const hide_Open_Modifications = this.props.proteinSequence_Bar_Widget_StateObject.get_Hide_Open_Modifications()
+
+                const position_Has_Variable_Modifications =
+                    modifications_At_ProteinPosition.modifications_Passes_PSM_Etc_Filters.variableModification_Masses.size > 0
+                const position_Has_Open_Modifications =
+                    modifications_At_ProteinPosition.modifications_Passes_PSM_Etc_Filters.openModifications_Masses_RoundToWholeNumber.size > 0
+
+                const position_Has_Any_Visible_Modification =
+                    ( position_Has_Variable_Modifications && ( ! hide_Variable_Modifications ) )
+                    || ( position_Has_Open_Modifications && ( ! hide_Open_Modifications ) )
+
+                if ( ! position_Has_Any_Visible_Modification ) {
+                    //  Everything at this position is a hidden modification type so SKIP
+                    continue // EARLY CONTINUE
+                }
+
                 //  REMOVED:  Removed since removed UI Checkbox for this option.
                 //
                 // if (
@@ -1821,8 +1943,17 @@ export class ProteinSequence_Bar_WidgetDisplay_MainDataDisplay_Component extends
                     }
                 }
 
-                const fillColor = ( modifications_At_ProteinPosition.modifications_Passes_ALL_Filters.hasAny_Modifications() ) ?
+                let fillColor = ( modifications_At_ProteinPosition.modifications_Passes_ALL_Filters.hasAny_Modifications() ) ?
                     _COLOR_MODIFICATION_LOLLIPOP__POSITIONS__COVERED__FILL : _COLOR_MODIFICATION_LOLLIPOP__NOT_PASS_FILTERS__FILL
+
+                //  If this would be colored "covered" (green) and it has a (still-visible) variable modification that passes ALL filters, color it black instead
+                if (
+                    fillColor === _COLOR_MODIFICATION_LOLLIPOP__POSITIONS__COVERED__FILL
+                    && ( ! hide_Variable_Modifications )
+                    && modifications_At_ProteinPosition.modifications_Passes_ALL_Filters.variableModification_Masses.size > 0
+                ) {
+                    fillColor = _COLOR_MODIFICATION_LOLLIPOP__HAS_VARIABLE_MOD__FILL
+                }
 
 
                 const width_Per_ProteinPosition = _compute_Width_Per_ProteinPosition( this.props.proteinSequence_Bar_Widget_StateObject )

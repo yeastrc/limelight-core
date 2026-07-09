@@ -26,6 +26,8 @@ const _ENCODED_DATA__SHOW_ONLY_MODIFICATIONS_PASS_ALL_FILTERS__VALUE_ENCODING_PR
 const _ENCODED_DATA__ADD_OPEN_MODIFICATIONS_UNLOCALIZED_IN_ALL_PEPTIDE_POSITIONS__VALUE_ENCODING_PROPERTY_NAME = 'g'
 const _ENCODED_DATA__SHOW_ONLY_MODIFICATIONS_FILTERED_ON__EXCLUDING_STATIC__VALUE_ENCODING_PROPERTY_NAME = 'h'
 const _ENCODED_DATA__NO_ADJACENT_PEPTIDES__VALUE_ENCODING_PROPERTY_NAME = 'i'
+const _ENCODED_DATA__HIDE_VARIABLE_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME = 'j'
+const _ENCODED_DATA__HIDE_OPEN_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME = 'k'
 
 
 const _show_TrypsinCutPoints_DEFAULT = true
@@ -62,6 +64,8 @@ export class ProteinSequence_Bar_Widget_StateObject {
 	private _add_open_modifications_unlocalized_in_all_peptide_positions = false
 	private _show_only_modifications_filtered_on__excluding_static = false
 	private _no_adjacent_peptides = false
+	private _hide_Variable_Modifications = false
+	private _hide_Open_Modifications = false
 
 	private _valueChangedCallback: () => void;
 
@@ -317,6 +321,66 @@ export class ProteinSequence_Bar_Widget_StateObject {
 		return this._no_adjacent_peptides;
 	}
 
+	///////   Hide_Variable_Modifications
+
+	/**
+	 * @param Hide_Variable_Modifications -
+	 */
+	set_Hide_Variable_Modifications( Hide_Variable_Modifications: boolean ) : void {
+
+		if ( Hide_Variable_Modifications === undefined ) {
+			const msg = "set_Hide_Variable_Modifications: Hide_Variable_Modifications: undefined";
+			console.warn( msg );
+			throw Error( msg );
+		}
+
+		this._hide_Variable_Modifications = Hide_Variable_Modifications
+
+		if ( ! this._valueChangedCallback ) {
+			throw Error("set_Hide_Variable_Modifications::( ! this._valueChangedCallback )")
+		}
+
+		this._valueChangedCallback();
+	}
+
+	/**
+	 *
+	 */
+	get_Hide_Variable_Modifications() {
+
+		return this._hide_Variable_Modifications;
+	}
+
+	///////   Hide_Open_Modifications
+
+	/**
+	 * @param Hide_Open_Modifications -
+	 */
+	set_Hide_Open_Modifications( Hide_Open_Modifications: boolean ) : void {
+
+		if ( Hide_Open_Modifications === undefined ) {
+			const msg = "set_Hide_Open_Modifications: Hide_Open_Modifications: undefined";
+			console.warn( msg );
+			throw Error( msg );
+		}
+
+		this._hide_Open_Modifications = Hide_Open_Modifications
+
+		if ( ! this._valueChangedCallback ) {
+			throw Error("set_Hide_Open_Modifications::( ! this._valueChangedCallback )")
+		}
+
+		this._valueChangedCallback();
+	}
+
+	/**
+	 *
+	 */
+	get_Hide_Open_Modifications() {
+
+		return this._hide_Open_Modifications;
+	}
+
 
 	/////////////
 
@@ -376,6 +440,16 @@ export class ProteinSequence_Bar_Widget_StateObject {
 		if ( this._no_adjacent_peptides ) {
 
 			result[ _ENCODED_DATA__NO_ADJACENT_PEPTIDES__VALUE_ENCODING_PROPERTY_NAME ] = this._no_adjacent_peptides
+		}
+
+		if ( this._hide_Variable_Modifications ) {
+
+			result[ _ENCODED_DATA__HIDE_VARIABLE_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME ] = this._hide_Variable_Modifications
+		}
+
+		if ( this._hide_Open_Modifications ) {
+
+			result[ _ENCODED_DATA__HIDE_OPEN_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME ] = this._hide_Open_Modifications
 		}
 
 		if ( Object.keys( result ).length === 0 ) {
@@ -458,6 +532,20 @@ export class ProteinSequence_Bar_Widget_StateObject {
 				this._no_adjacent_peptides = true
 			} else {
 				this._no_adjacent_peptides = false
+			}
+		}
+		{
+			if ( encodedStateData[ _ENCODED_DATA__HIDE_VARIABLE_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME ] ) {
+				this._hide_Variable_Modifications = true
+			} else {
+				this._hide_Variable_Modifications = false
+			}
+		}
+		{
+			if ( encodedStateData[ _ENCODED_DATA__HIDE_OPEN_MODIFICATIONS__VALUE_ENCODING_PROPERTY_NAME ] ) {
+				this._hide_Open_Modifications = true
+			} else {
+				this._hide_Open_Modifications = false
 			}
 		}
 	}
