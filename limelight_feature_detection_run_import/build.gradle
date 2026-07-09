@@ -87,11 +87,17 @@ dependencies {
 	implementation 'org.apache.logging.log4j:log4j-core:2.26.1'
 	implementation 'org.apache.logging.log4j:log4j-web:2.26.1' //  Needed for Web app
 	
-	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
-	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.26.1'
+	//  SLF4J 2.x binding for Log4j2. log4j-slf4j2-impl targets SLF4J 2.0 (ServiceLoader
+	//  provider); the older log4j-slf4j-impl only supplies the SLF4J 1.7 StaticLoggerBinder
+	//  and would leave SLF4J 2.x with no provider (silent no-op logging).
+	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl
+	implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.26.1'
+
+	//  Pin the SLF4J 2.0.x API explicitly (also pulled transitively by the binding above).
+	implementation 'org.slf4j:slf4j-api:2.0.17'
 	
 	//  Jakarta Commons Logging to SLF4J
-	implementation 'org.slf4j:jcl-over-slf4j:1.7.36'
+	implementation 'org.slf4j:jcl-over-slf4j:2.0.17'
 	
 	//  Log4j 1 to 2 bridge
 	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.26.1'

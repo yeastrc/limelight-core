@@ -49,6 +49,7 @@ public class RunImporterProgram {
 	//	private static final int PROGRAM_EXIT_CODE_DEFAULT_NO_SYTEM_EXIT_CALLED = 0;
 	private static final int PROGRAM_EXIT_CODE_INVALID_INPUT = 1;
 	private static final int PROGRAM_EXIT_CODE_HELP = 1;
+	private static final int PROGRAM_EXIT_CODE_PROGRAM_PROBLEM = 99;
 	private static final String FOR_HELP_STRING = "For help, run without any parameters, -h, or --help";
 	private static final String LIMELIGHT_DB_NAME_CMD_LINE_PARAM_STRING = "limelight_db_name";
 	private static final String MAX_TRACKING_RECORD_PRIORITY_TO_RETRIEVE_CMD_LINE_PARAM_STRING = "max_tracking_record_priority_to_retrieve";
@@ -58,6 +59,15 @@ public class RunImporterProgram {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
+
+		//  Fail loudly if no SLF4J logging provider is bound. slf4j 2.x binds via ServiceLoader
+		//  (META-INF/services/org.slf4j.spi.SLF4JServiceProvider, supplied by log4j-slf4j2-impl); a
+		//  packaging/dependency regression would otherwise silently drop ALL logging to a NO-OP logger.
+		if ( org.slf4j.LoggerFactory.getILoggerFactory() instanceof org.slf4j.helpers.NOPLoggerFactory ) {
+			System.err.println( "FATAL: No SLF4J logging provider is bound (expected log4j-slf4j2-impl on the classpath)."
+					+ "  Aborting rather than run with all logging silently disabled." );
+			System.exit( PROGRAM_EXIT_CODE_PROGRAM_PROBLEM );
+		}
 
 		int maxTrackingRecordPriorityToRetrieve = Integer.MAX_VALUE;
 		ImportRunnerProgramShutdown importRunnerProgramShutdown = null;

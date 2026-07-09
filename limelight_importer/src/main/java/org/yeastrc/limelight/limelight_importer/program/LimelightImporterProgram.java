@@ -129,7 +129,16 @@ public class LimelightImporterProgram {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		
+
+		//  Fail loudly if no SLF4J logging provider is bound. slf4j 2.x binds via ServiceLoader
+		//  (META-INF/services/org.slf4j.spi.SLF4JServiceProvider, supplied by log4j-slf4j2-impl); a
+		//  packaging/dependency regression would otherwise silently drop ALL logging to a NO-OP logger.
+		if ( org.slf4j.LoggerFactory.getILoggerFactory() instanceof org.slf4j.helpers.NOPLoggerFactory ) {
+			System.err.println( "FATAL: No SLF4J logging provider is bound (expected log4j-slf4j2-impl on the classpath)."
+					+ "  Aborting rather than run with all logging silently disabled." );
+			System.exit( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_SYSTEM_ERROR );
+		}
+
 		if ( args.length == 0 ) {
 			System.out.println( "NO Command Line Arguments");
 		} else {

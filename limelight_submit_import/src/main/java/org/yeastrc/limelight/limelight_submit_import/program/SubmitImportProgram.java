@@ -80,7 +80,16 @@ public class SubmitImportProgram {
 	public static void main(String[] args) throws Exception {
 		
 		System.out.println( "Submit Import Program Version: " + Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
-		
+
+		//  Fail loudly if no SLF4J logging provider is bound. slf4j 2.x binds via ServiceLoader
+		//  (META-INF/services/org.slf4j.spi.SLF4JServiceProvider, supplied by log4j-slf4j2-impl); a
+		//  packaging/dependency regression would otherwise silently drop ALL logging to a NO-OP logger.
+		if ( org.slf4j.LoggerFactory.getILoggerFactory() instanceof org.slf4j.helpers.NOPLoggerFactory ) {
+			System.err.println( "FATAL: No SLF4J logging provider is bound (expected log4j-slf4j2-impl on the classpath)."
+					+ "  Aborting rather than run with all logging silently disabled." );
+			System.exit( PROGRAM_EXIT_CODE_PROGRAM_PROBLEM );
+		}
+
 		if ( args.length == 0 ) {
 			System.out.println( "Run with '-h' to view help" );
 			System.exit( 1 );
