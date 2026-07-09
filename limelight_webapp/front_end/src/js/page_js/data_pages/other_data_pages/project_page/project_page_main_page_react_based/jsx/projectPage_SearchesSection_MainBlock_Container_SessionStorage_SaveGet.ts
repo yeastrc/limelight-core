@@ -21,6 +21,8 @@ const _SESSION_STORAGE_KEY__limelight_project_page_search_tag_ids_selected = "li
 
 const _SESSION_STORAGE_KEY__limelight_project_page_search_name_search_id_filter_value = "limelight_project_page_search_name_search_id_filter_value"
 
+const _SESSION_STORAGE_KEY__limelight_project_page_advanced_tag_filter = "limelight_project_page_advanced_tag_filter"
+
 
 /**
  *
@@ -36,6 +38,8 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
     private _current__SearchTagIds_Selected : Search_Tags_Selections_Object
 
     private _current__SearchName_SearchId_FilterValue: string
+
+    private _current__Advanced_TagFilter : ProjectPage_SearchesSection__Advanced_TagFilter | null = null
 
     /**
      * searchSelectionChangeCallback - function called when the search selection changes
@@ -63,6 +67,8 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
         this._initialize__current__SearchTagIds_Selected()
 
         this._initialize__current__SearchName_SearchId_FilterValue()
+
+        this._initialize__current__Advanced_TagFilter()
     }
 
     /**
@@ -342,7 +348,106 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
         }, 50 );
     }
 
+    ////   Advanced ( grouped CNF ) tag filter
 
+    private _initialize__current__Advanced_TagFilter() {
+
+        this._current__Advanced_TagFilter = null;
+
+        const storedValueJSON = window.sessionStorage.getItem( _SESSION_STORAGE_KEY__limelight_project_page_advanced_tag_filter )
+        if ( ! storedValueJSON ) {
+            return; // EARLY RETURN
+        }
+
+        let storageValue: Internal__Advanced_TagFilter__SessionStorageObject = null
+        try {
+            storageValue = JSON.parse( storedValueJSON );
+        } catch (e) {
+            return; // EARLY RETURN
+        }
+
+        if ( ( ! storageValue ) || storageValue.projectIdentifier !== this._projectIdentifierFromURL ) {
+            return; // EARLY RETURN
+        }
+
+        this._current__Advanced_TagFilter = _validate_Advanced_TagFilter( storageValue.advanced_TagFilter );
+    }
+
+    get_Advanced_TagFilter() : ProjectPage_SearchesSection__Advanced_TagFilter | null {
+        return this._current__Advanced_TagFilter
+    }
+
+    /**
+     * Pass null to clear the stored advanced filter
+     */
+    update_Advanced_TagFilter( advanced_TagFilter : ProjectPage_SearchesSection__Advanced_TagFilter | null ) {
+
+        this._current__Advanced_TagFilter = advanced_TagFilter;
+
+        this._save_Advanced_TagFilter_To_SessionStorage( advanced_TagFilter )
+    }
+
+    private _save_Advanced_TagFilter_To_SessionStorage( advanced_TagFilter : ProjectPage_SearchesSection__Advanced_TagFilter | null ) {
+
+        window.setTimeout( () => {
+
+            if ( ! advanced_TagFilter ) {
+                window.sessionStorage.removeItem( _SESSION_STORAGE_KEY__limelight_project_page_advanced_tag_filter )
+                return; // EARLY RETURN
+            }
+
+            const storageValue: Internal__Advanced_TagFilter__SessionStorageObject = {
+                advanced_TagFilter,
+                projectIdentifier: this._projectIdentifierFromURL
+            }
+            const storedValueJSON = JSON.stringify( storageValue );
+
+            window.sessionStorage.setItem( _SESSION_STORAGE_KEY__limelight_project_page_advanced_tag_filter, storedValueJSON )
+
+        }, 50 );
+    }
+
+
+}
+
+
+/**
+ * Validate/sanitize an advanced tag filter loaded from session storage.  Returns null if there is
+ * no usable ( non-empty ) filter.
+ */
+function _validate_Advanced_TagFilter( input : any ) : ProjectPage_SearchesSection__Advanced_TagFilter | null {
+
+    if ( ( ! input ) || ( typeof input !== "object" ) ) {
+        return null;
+    }
+
+    const withinGroup_Operator : 'AND' | 'OR' =
+        ( input.withinGroup_Operator === "AND" || input.withinGroup_Operator === "OR" ) ? input.withinGroup_Operator : "OR";
+
+    const andGroups : Array<ProjectPage_SearchesSection__Advanced_TagFilter_OrGroup> = [];
+
+    if ( input.andGroups instanceof Array ) {
+        for ( const group of input.andGroups ) {
+            if ( ( ! group ) || ( ! ( group.literals instanceof Array ) ) ) {
+                continue;
+            }
+            const literals : Array<ProjectPage_SearchesSection__Advanced_TagFilter_Literal> = [];
+            for ( const literal of group.literals ) {
+                if ( literal && limelight__variable_is_type_number_Check( literal.tagId ) ) {
+                    literals.push( { tagId: literal.tagId, negated: ( literal.negated === true ) } );
+                }
+            }
+            if ( literals.length > 0 ) {
+                andGroups.push( { literals } );
+            }
+        }
+    }
+
+    if ( andGroups.length === 0 ) {
+        return null;
+    }
+
+    return { withinGroup_Operator, andGroups };
 }
 
 
@@ -365,6 +470,26 @@ interface Internal__SearchTagIds_Selected__SessionStorageObject {
 
 interface Internal__SearchName_SearchId_FilterValue__SessionStorageObject {
     searchName_SearchId_FilterValue: string
+    projectIdentifier: string
+}
+
+
+//  Advanced ( grouped CNF ) tag filter -- exported so the container can pass it to/from the builder
+
+export interface ProjectPage_SearchesSection__Advanced_TagFilter_Literal {
+    tagId: number
+    negated: boolean
+}
+export interface ProjectPage_SearchesSection__Advanced_TagFilter_OrGroup {
+    literals: Array<ProjectPage_SearchesSection__Advanced_TagFilter_Literal>
+}
+export interface ProjectPage_SearchesSection__Advanced_TagFilter {
+    withinGroup_Operator: 'AND' | 'OR'
+    andGroups: Array<ProjectPage_SearchesSection__Advanced_TagFilter_OrGroup>
+}
+
+interface Internal__Advanced_TagFilter__SessionStorageObject {
+    advanced_TagFilter: ProjectPage_SearchesSection__Advanced_TagFilter
     projectIdentifier: string
 }
 
