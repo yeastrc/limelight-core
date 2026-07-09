@@ -21,7 +21,7 @@
  
 plugins {
 	id 'java'
-	id 'com.gradleup.shadow' version '8.3.11'
+	id 'com.gradleup.shadow' version '9.5.1'
 	id 'org.ajoberstar.grgit' version '5.3.3'
 }
 
@@ -54,10 +54,10 @@ dependencies {
 	//   AWS  S3
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/s3
-	implementation 'software.amazon.awssdk:s3:2.46.7'
+	implementation 'software.amazon.awssdk:s3:2.47.3'
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/apache-client
-	implementation 'software.amazon.awssdk:apache-client:2.46.7'
+	implementation 'software.amazon.awssdk:apache-client:2.47.3'
 	
 	
 	//   OLD V1
@@ -68,13 +68,13 @@ dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.20.0'
 	
 	// https://mvnrepository.com/artifact/commons-io/commons-io
-	implementation 'commons-io:commons-io:2.18.0'
+	implementation 'commons-io:commons-io:2.22.0'
 	
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2
-	implementation 'org.apache.commons:commons-dbcp2:2.9.0'
+	implementation 'org.apache.commons:commons-dbcp2:2.14.0'
 	
 	// https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
-	implementation('com.mysql:mysql-connector-j:8.4.0') {
+	implementation('com.mysql:mysql-connector-j:9.7.0') {
 		//  protobuf-java is only used by the MySQL X DevAPI (X Protocol). Limelight uses
 		//  classic JDBC (com.mysql.cj.jdbc.Driver), so exclude it to drop the transitive
 		//  protobuf CVEs (X DevAPI code path is never reached).
@@ -91,7 +91,7 @@ dependencies {
 	implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.26.1'
 	
 	//  Jakarta Commons Logging to SLF4J
-	implementation 'org.slf4j:jcl-over-slf4j:1.7.36'
+	implementation 'org.slf4j:jcl-over-slf4j:2.0.18'
 	
 	//  Log4j 1 to 2 bridge
 	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.26.1'
@@ -105,9 +105,9 @@ dependencies {
 
 	// JAXB dependencies (Required for Java 11+)
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.5'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.9'
 	
 
 	//  NOT FOUND  in mavenCentral()

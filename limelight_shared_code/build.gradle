@@ -22,7 +22,7 @@ java {
 dependencies {
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-	implementation 'org.slf4j:slf4j-api:1.7.36'
+	implementation 'org.slf4j:slf4j-api:2.0.18'
 
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 	implementation 'org.apache.commons:commons-lang3:3.20.0'
@@ -42,9 +42,9 @@ dependencies {
 	// so consumers (importer_run_importer_shared, importer, ...) need the api jar to resolve those
 	// annotation enum constants at compile time (otherwise javac warns "unknown enum constant").
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-	api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+	api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.5'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.9'
 	
 	/////////////////////////////////////
 
