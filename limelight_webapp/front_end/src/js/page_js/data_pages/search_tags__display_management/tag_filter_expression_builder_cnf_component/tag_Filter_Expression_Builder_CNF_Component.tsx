@@ -1,17 +1,16 @@
 /**
  * tag_Filter_Expression_Builder_CNF_Component.tsx
  *
- * UI ONLY (prototype):  Build a CNF (Conjunctive Normal Form) tag filter expression:
+ * Build a CNF (Conjunctive Normal Form) tag filter expression:
  *
  *      ( a OR b OR c )  AND  ( d OR e OR f )
  *
- *   - Top level is always AND.
- *   - Each group is always OR.
+ *   - By default the top level is AND and each group is OR ( the global AND/OR mode toggle flips this to DNF ).
  *   - Each tag literal may be negated ( "NOT tag" ).
  *
- * This component holds its OWN internal state (the CNF expression being built) so the UI
- * is fully interactive on its own.  It does NOT (yet) drive any search filtering and is NOT
- * wired to persistence -- that is intentionally out of scope for this prototype.
+ * This component holds its OWN internal state (the CNF expression being built) and notifies the parent
+ * of changes via expression_Changed_Callback ( the parent persists the expression and drives the actual
+ * search filtering from it ).
  */
 
 import React from 'react'
@@ -199,6 +198,20 @@ export class Tag_Filter_Expression_Builder_CNF_Component
     private _addGroup = () : void => {
         const newGroup : Internal__CNF_OrGroup = { _uiId: this._generateUiId(), literals: [] };
         this.setState( { andGroups: [ ...this.state.andGroups, newGroup ] } );
+    }
+
+    //  The "first step" from the empty state:  open the tag picker on the first group ( creating one if needed ),
+    //  so the very first thing the user does is add a tag rather than reason about groups.
+    private _openTagPicker_StartFirstGroup = () : void => {
+        let groupUiId : number;
+        if ( this.state.andGroups.length > 0 ) {
+            groupUiId = this.state.andGroups[ 0 ]._uiId;
+        } else {
+            const newGroup : Internal__CNF_OrGroup = { _uiId: this._generateUiId(), literals: [] };
+            groupUiId = newGroup._uiId;
+            this.setState( { andGroups: [ newGroup ] } );
+        }
+        this._openTagPicker_ForGroup( groupUiId );
     }
 
     private _removeGroup = ( groupUiId : number ) : void => {
@@ -628,6 +641,89 @@ export class Tag_Filter_Expression_Builder_CNF_Component
     }
 
     /**
+     * The pristine / empty first view:  a friendly dashed callout with ONE prominent primary action
+     * ( "+ Add a tag" ) so the first step is obvious, instead of a bare empty group box + two faint links.
+     */
+    private _render_EmptyState() : React.JSX.Element {
+        return (
+            <div
+                style={ {
+                    marginTop: 8,
+                    borderWidth: 1,
+                    borderStyle: "dashed",
+                    borderColor: "#8aa9c9",
+                    borderRadius: 8,
+                    backgroundColor: "#f4f8fc",
+                    paddingTop: 22,
+                    paddingRight: 20,
+                    paddingBottom: 22,
+                    paddingLeft: 20,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    textAlign: "center",
+                    rowGap: 12
+                } }
+            >
+                <div style={ { fontWeight: "bold", fontSize: 16, color: "#33557a" } }>
+                    Start building a tag filter
+                </div>
+                <div style={ { color: "#666666", maxWidth: 560 } }>
+                    Add a tag to filter the searches below.  Add more tags and groups to build an expression like&nbsp;
+                    <code>( a OR b OR c ) AND ( d OR e OR f )</code> &mdash; you can switch how tags combine at any time.
+                </div>
+
+                {/*  The single, prominent first step  */}
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={ <span>Opens a picker with the project's tags grouped by category.  Pick a tag to start the filter; you can add several, then close.</span> }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    <span
+                        onClick={ () => this._openTagPicker_StartFirstGroup() }
+                        style={ {
+                            display: "inline-flex",
+                            alignItems: "center",
+                            backgroundColor: "#33557a",
+                            color: "#ffffff",
+                            fontWeight: "bold",
+                            fontSize: 15,
+                            borderWidth: 1,
+                            borderStyle: "solid",
+                            borderColor: "#22405f",
+                            borderRadius: 5,
+                            paddingTop: 7,
+                            paddingBottom: 7,
+                            paddingLeft: 16,
+                            paddingRight: 16,
+                            cursor: "pointer",
+                            whiteSpace: "nowrap"
+                        } }
+                    >
+                        + Add a tag
+                    </span>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                {/*  Secondary, lower-emphasis path  */}
+                <div style={ { color: "#888888" } }>
+                    or&nbsp;
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={ <span>Add an <b>empty group</b>, then add tags to it.</span> }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <span
+                            className=" fake-link "
+                            onClick={ () => this._addGroup() }
+                            style={ { cursor: "pointer", whiteSpace: "nowrap" } }
+                        >
+                            add an empty group
+                        </span>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                </div>
+            </div>
+        );
+    }
+
+    /**
      *
      */
     render() {
@@ -641,6 +737,10 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         //  Is anything actually being filtered on ( any group has at least one tag )?
         const hasTagFilter = this.state.andGroups.some( g => g.literals.length > 0 );
 
+        //  Pristine == the untouched initial view ( no tags yet, no extra groups built ).  In that case show the
+        //  empty-state callout with one clear first step instead of a bare empty group box + faint links.
+        const isPristine = ( ! hasTagFilter ) && this.state.andGroups.length <= 1;
+
         return (
             <div>
 
@@ -648,11 +748,15 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                     <div style={ { fontWeight: "bold", marginRight: 6, fontSize: 18 } }>
                         Advanced Search Tag Filter
                     </div>
-                    <div style={ { color: "#666666" } }>
-                        e.g. <code>( a OR b OR c ) AND ( d OR e OR f )</code>.
-                        By default tags within a group are OR'd and groups are AND'd &mdash; <b>click any AND/OR to switch modes</b>.
-                    </div>
+                    { isPristine ? null : (
+                        <div style={ { color: "#666666" } }>
+                            e.g. <code>( a OR b OR c ) AND ( d OR e OR f )</code>.
+                            By default tags within a group are OR'd and groups are AND'd &mdash; <b>click any AND/OR to switch modes</b>.
+                        </div>
+                    ) }
                 </div>
+
+                { isPristine ? this._render_EmptyState() : ( <>
 
                 {/*  The groups, with "AND" separators between them  */}
                 <div style={ { display: "flex", flexWrap: "wrap", alignItems: "stretch", gap: 6 } }>
@@ -716,6 +820,8 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                         No search filtering
                     </div>
                 ) }
+
+                </> ) }
 
             </div>
         );
