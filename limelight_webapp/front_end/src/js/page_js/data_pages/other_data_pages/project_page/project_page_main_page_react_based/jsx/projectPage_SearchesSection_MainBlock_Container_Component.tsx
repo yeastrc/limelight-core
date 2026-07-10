@@ -384,7 +384,8 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
      *   - each AND tag  -> its own 1-tag group        ( AND'd across groups )
      *   - each NOT tag  -> its own 1-tag negated group ( "NOT tag" )
      *   - the OR bucket -> a single group of OR'd tags
-     * If there are no existing selections, returns [] and the builder starts with one empty group.
+     * If there are no existing selections, returns [] and the builder shows the "Start building a tag filter"
+     * empty-state callout ( no groups yet ).
      */
     private _build_CNF_SeedGroups_From_ExistingSelections() : Array<Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup> {
 
@@ -460,11 +461,21 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     }
 
     /**
-     * PROTOTYPE:  the advanced filter is "active" ( used for filtering ) when it has at least one tag.
+     * The advanced filter is "active" ( used for filtering ) when it has at least one group -- whether that
+     * group has tags or is empty.  An empty group blocks all searches ( see _advanced_TagFilter_Matches ), so
+     * it must count as active.  The pristine "Start building a tag filter" state has NO groups ( seed == [] ),
+     * so it is NOT active and all searches display.
      */
     private _isAdvanced_TagFilter_Active() : boolean {
+        return this._advanced_TagFilter_InitialSeed.length > 0;
+    }
+
+    /**
+     * True if the advanced filter contains any empty group ( a group with zero tags ).
+     */
+    private _advanced_TagFilter_HasEmptyGroup() : boolean {
         for ( const group of this._advanced_TagFilter_InitialSeed ) {
-            if ( group.literals.length > 0 ) {
+            if ( group.literals.length === 0 ) {
                 return true;
             }
         }
@@ -472,11 +483,18 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     }
 
     /**
-     * PROTOTYPE:  Evaluate the advanced ( grouped ) expression against one search's tag id set.
+     * Evaluate the advanced ( grouped ) expression against one search's tag id set.
      * withinGroup_Operator combines literals inside a group;  the opposite operator combines the groups.
      * A negated literal matches when the tag is ABSENT.
      */
     private _advanced_TagFilter_Matches( searchTagIds_Set : ReadonlySet<number> ) : boolean {
+
+        //  An empty group makes the filter incomplete -- no searches pass until it is populated or removed.
+        //  This is only reached when the advanced filter is active ( has >=1 tag ), so the pristine
+        //  "Start building a tag filter" state ( no tags yet ) is unaffected and still displays all searches.
+        if ( this._advanced_TagFilter_HasEmptyGroup() ) {
+            return false;
+        }
 
         const withinOp = this._advanced_TagFilter_Initial_Operator;
         const betweenOp : 'AND' | 'OR' = ( withinOp === 'OR' ) ? 'AND' : 'OR';

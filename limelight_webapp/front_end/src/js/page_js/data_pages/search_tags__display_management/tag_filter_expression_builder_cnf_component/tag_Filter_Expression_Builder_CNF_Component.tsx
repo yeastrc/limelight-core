@@ -122,8 +122,9 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                 } ) )
             } ) );
         } else {
-            //  Start with a single empty OR group so the UI is immediately usable
-            andGroups = [ { _uiId: this._generateUiId(), literals: [] } ];
+            //  Start with NO groups -- render() shows the "Start building a tag filter" empty-state callout.
+            //  ( The first "+ Add a tag" / "add an empty group" action creates the first group. )
+            andGroups = [];
         }
 
         this.state = {
@@ -211,7 +212,7 @@ export class Tag_Filter_Expression_Builder_CNF_Component
             groupUiId = newGroup._uiId;
             this.setState( { andGroups: [ newGroup ] } );
         }
-        this._openTagPicker_ForGroup( groupUiId );
+        this._openTagPicker_ForGroup( groupUiId, { includeOperatorChooser: true } );
     }
 
     private _removeGroup = ( groupUiId : number ) : void => {
@@ -219,8 +220,11 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         this.setState( { andGroups } );
     }
 
-    //  Open the home-grown overlay ( categories-left / tags-right ) to add a tag to an existing group
-    private _openTagPicker_ForGroup = ( groupUiId : number ) : void => {
+    //  Open the home-grown overlay ( categories-left / tags-right ) to add a tag to an existing group.
+    //  includeOperatorChooser:  show the OR/AND radios ( used when starting the first group ).
+    private _openTagPicker_ForGroup = ( groupUiId : number, options ?: { includeOperatorChooser? : boolean } ) : void => {
+        const includeOperatorChooser = !! ( options && options.includeOperatorChooser );
+
         const group = this.state.andGroups.find( g => g._uiId === groupUiId );
         const initialDisabledTagIds = group ? new Set<number>( group.literals.map( lit => lit.tagId ) ) : new Set<number>();
 
@@ -229,39 +233,22 @@ export class Tag_Filter_Expression_Builder_CNF_Component
 
         tagFilter_Expression_TagPicker_Overlay__openOverlay( {
             searchTagData_Root: this.props.searchTagData_Root,
-            title: "Add a tag to the group",
-            promptText: "Click a tag to add it to this group ( combined with " + this.state.withinGroup_Operator + " ).  You can add several, then close.",
+            title: includeOperatorChooser ? "Add tags to the first group" : "Add a tag to the group",
+            promptText: includeOperatorChooser
+                ? "Click tags to add them to the first group.  You can add several, then close."
+                : "Click a tag to add it to this group ( combined with " + this.state.withinGroup_Operator + " ).  You can add several, then close.",
             initialDisabledTagIds,
             disabledReason: "Already in this group",
             onPickTagId: ( tagId ) => this._addTagToGroup( groupUiId, tagId ),
+            operatorChooser: includeOperatorChooser ? {
+                initial_WithinGroup_Operator: this.state.withinGroup_Operator,
+                onChoose_WithinGroup_Operator: ( withinGroup_Operator ) => this.setState( { withinGroup_Operator } )
+            } : undefined,
             onOverlayClosed: () => {
                 this._suppress_ExpressionChanged = false;
                 this._fireExpressionChanged();   //  apply/persist the accumulated picks once
             }
         } );
-    }
-
-    //  Open the overlay to add a tag as a NEW 1-tag group ( joined by the between-groups operator ).
-    //  closeAfterPick: one pick creates one new group, then the overlay closes ( each pick = its own group ).
-    private _openTagPicker_ForNewGroup = () : void => {
-        const betweenOp = this._betweenGroups_Operator();
-        tagFilter_Expression_TagPicker_Overlay__openOverlay( {
-            searchTagData_Root: this.props.searchTagData_Root,
-            title: "Add a tag as a new group",
-            promptText: "Click a tag to " + betweenOp + " it as a new group.",
-            initialDisabledTagIds: new Set<number>(),
-            disabledReason: "",
-            onPickTagId: ( tagId ) => this._addTag_AsNewGroup( tagId ),
-            closeAfterPick: true
-        } );
-    }
-
-    private _addTag_AsNewGroup = ( tagId : number ) : void => {
-        const newGroup : Internal__CNF_OrGroup = {
-            _uiId: this._generateUiId(),
-            literals: [ { _uiId: this._generateUiId(), tagId, negated: false } ]
-        };
-        this.setState( { andGroups: [ ...this.state.andGroups, newGroup ] } );
     }
 
     private _addTagToGroup = ( groupUiId : number, tagId : number ) : void => {
@@ -570,6 +557,9 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         categoryLabel_Map : Map<number, string>
     ) : React.JSX.Element {
 
+        //  Shared tooltip for the "add tag(s) to this group" controls ( empty-group button and per-group "Add tag" )
+        const addTagTooltip = ( <span>Add a tag to this group.  Opens a picker with the project's tags grouped by category; tags within this group are combined with <b>{ this.state.withinGroup_Operator }</b>.  You can add several, then close.</span> );
+
         return (
             <div
                 key={ group._uiId }
@@ -587,67 +577,86 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                 } }
             >
                 {/*  Group header  */}
-                <div style={ { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 } }>
-                    <span style={ { fontWeight: "bold", color: "#33557a" } }>
+                <div style={ { display: "flex", alignItems: "center", marginBottom: 4 } }>
+                    <span style={ { fontWeight: "bold", color: "#33557a", marginRight: 6 } }>
                         Group { groupIndex + 1 }
                     </span>
                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                        title={ <span>Remove this entire group and all of its tags from the filter.  The other groups still apply.</span> }
+                        title={ <span>Remove Group</span> }
                         { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                     >
-                        <span
-                            className=" fake-link "
+                        <img
+                            className=" icon-small clickable "
+                            src="static/images/icon-circle-delete.png"
                             onClick={ () => this._removeGroup( group._uiId ) }
-                            style={ { cursor: "pointer" } }
-                        >
-                            remove group
-                        </span>
+                        />
                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
 
-                {/*  Literals ( OR'd )  */}
-                <div>
-                    { group.literals.length === 0 ? (
-                        <span style={ { color: "#888888", fontStyle: "italic" } }>
-                            (empty &mdash; add a tag)
-                        </span>
-                    ) : (
-                        group.literals.map( ( literal, literalIndex ) => (
+                { group.literals.length === 0 ? (
+
+                    //  Empty group:  a button to add tags, and an "(Empty Group)" marker below it ( the
+                    //  "Filtering on tags:" warning refers to empty groups, so name the state here ).
+                    <div>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={ addTagTooltip }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <button
+                                type="button"
+                                onClick={ () => this._openTagPicker_ForGroup( group._uiId ) }
+                                style={ { cursor: "pointer" } }
+                            >
+                                Add tags to group
+                            </button>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        <div style={ { color: "#888888", fontStyle: "italic", marginTop: 4 } }>
+                            (Empty Group)
+                        </div>
+                    </div>
+
+                ) : ( <>
+
+                    {/*  Literals ( combined with the within-group operator )  */}
+                    <div>
+                        { group.literals.map( ( literal, literalIndex ) => (
                             <React.Fragment key={ literal._uiId }>
                                 { literalIndex > 0 ? this._render_ClickableOperator( { operator: this.state.withinGroup_Operator, variant: 'inline' } ) : null }
                                 { this._render_LiteralChip( group, literal, tagEntry_Map, categoryLabel_Map ) }
                             </React.Fragment>
-                        ) )
-                    ) }
-                </div>
+                        ) ) }
+                    </div>
 
-                {/*  Add-tag control  ( opens the categories-left / tags-right overlay )  */}
-                <div style={ { marginTop: 6 } }>
-                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                        title={ <span>Add a tag to this group.  Opens a picker with the project's tags grouped by category; tags within this group are combined with <b>{ this.state.withinGroup_Operator }</b>.  You can add several, then close.</span> }
-                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                    >
-                        <span
-                            className=" fake-link "
-                            onClick={ () => this._openTagPicker_ForGroup( group._uiId ) }
-                            style={ { cursor: "pointer" } }
+                    {/*  Add-tag control  ( opens the categories-left / tags-right overlay )  */}
+                    <div style={ { marginTop: 6 } }>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={ addTagTooltip }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            + tag
-                        </span>
-                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                </div>
+                            <span
+                                className=" fake-link "
+                                onClick={ () => this._openTagPicker_ForGroup( group._uiId ) }
+                                style={ { cursor: "pointer" } }
+                            >
+                                Add tag
+                            </span>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                    </div>
+
+                </> ) }
             </div>
         );
     }
 
     /**
      * The pristine / empty first view:  a friendly dashed callout with ONE prominent primary action
-     * ( "+ Add a tag" ) so the first step is obvious, instead of a bare empty group box + two faint links.
+     * ( "Add tags to first group" ) so the first step is obvious, instead of a bare empty group box.
      */
     private _render_EmptyState() : React.JSX.Element {
         return (
             <div
                 style={ {
+                    maxWidth: 650,
                     marginTop: 8,
                     borderWidth: 1,
                     borderStyle: "dashed",
@@ -666,16 +675,16 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                 } }
             >
                 <div style={ { fontWeight: "bold", fontSize: 16, color: "#33557a" } }>
-                    Start building a tag filter
+                    Start adding tags to the first group.
                 </div>
                 <div style={ { color: "#666666", maxWidth: 560 } }>
-                    Add a tag to filter the searches below.  Add more tags and groups to build an expression like&nbsp;
-                    <code>( a OR b OR c ) AND ( d OR e OR f )</code> &mdash; you can switch how tags combine at any time.
+                    More groups can be added later &mdash; build an expression like&nbsp;
+                    <code>( a OR b OR c ) AND ( d OR e OR f )</code>.
                 </div>
 
                 {/*  The single, prominent first step  */}
                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                    title={ <span>Opens a picker with the project's tags grouped by category.  Pick a tag to start the filter; you can add several, then close.</span> }
+                    title={ <span>Opens a picker with the project's tags grouped by category.  Choose how the tags combine ( OR / AND ), then click tags to add them; you can add several, then close.</span> }
                     { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
                     <span
@@ -699,26 +708,9 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                             whiteSpace: "nowrap"
                         } }
                     >
-                        + Add a tag
+                        Add tags to first group
                     </span>
                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-
-                {/*  Secondary, lower-emphasis path  */}
-                <div style={ { color: "#888888" } }>
-                    or&nbsp;
-                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                        title={ <span>Add an <b>empty group</b>, then add tags to it.</span> }
-                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                    >
-                        <span
-                            className=" fake-link "
-                            onClick={ () => this._addGroup() }
-                            style={ { cursor: "pointer", whiteSpace: "nowrap" } }
-                        >
-                            add an empty group
-                        </span>
-                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                </div>
             </div>
         );
     }
@@ -737,9 +729,13 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         //  Is anything actually being filtered on ( any group has at least one tag )?
         const hasTagFilter = this.state.andGroups.some( g => g.literals.length > 0 );
 
-        //  Pristine == the untouched initial view ( no tags yet, no extra groups built ).  In that case show the
-        //  empty-state callout with one clear first step instead of a bare empty group box + faint links.
-        const isPristine = ( ! hasTagFilter ) && this.state.andGroups.length <= 1;
+        //  Any empty group makes the filter incomplete -- while filtering ( hasTagFilter ), an empty group means
+        //  NO searches pass ( see the parent's _advanced_TagFilter_Matches ).  Warn instead of showing the expression.
+        const hasEmptyGroup = this.state.andGroups.some( g => g.literals.length === 0 );
+
+        //  Pristine == no groups at all ( the untouched initial view ).  Show the empty-state callout with one
+        //  clear first step.  As soon as there is any group ( even empty ), show the builder instead.
+        const isPristine = this.state.andGroups.length === 0;
 
         return (
             <div>
@@ -772,30 +768,18 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                     ) ) }
                 </div>
 
-                {/*  Add controls:  one-click "<between-op> a tag" ( new 1-tag group ) and "<between-op> an empty group"  */}
+                {/*  Add control:  add a new ( empty ) group;  the user then adds tags to it  */}
                 <div style={ { marginTop: 8, display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" } }>
                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                        title={ <span>Add a tag as a <b>new group</b> ( joined to the other groups with <b>{ betweenGroups_Operator }</b> ).  Opens a picker; pick one tag and it's added as a new group.</span> }
-                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                    >
-                        <span
-                            className=" fake-link "
-                            onClick={ () => this._openTagPicker_ForNewGroup() }
-                            style={ { cursor: "pointer", fontWeight: "bold", whiteSpace: "nowrap" } }
-                        >
-                            { this.state.andGroups.length > 0 ? ( "+ " + betweenGroups_Operator + " a tag" ) : "+ add a tag" }
-                        </span>
-                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                        title={ <span>Add a <b>new empty group</b> ( joined to the other groups with <b>{ betweenGroups_Operator }</b> ), then add tags to it.</span> }
+                        title={ <span>Add a <b>new group</b> ( joined to the other groups with <b>{ betweenGroups_Operator }</b> ), then add tags to it.</span> }
                         { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                     >
                         <span
                             className=" fake-link "
                             onClick={ () => this._addGroup() }
-                            style={ { cursor: "pointer", whiteSpace: "nowrap" } }
+                            style={ { cursor: "pointer", fontWeight: "bold", whiteSpace: "nowrap" } }
                         >
-                            { this.state.andGroups.length > 0 ? ( "+ " + betweenGroups_Operator + " an empty group" ) : "+ add an empty group" }
+                            Add a group
                         </span>
                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
@@ -803,16 +787,22 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                 {/*  Live expression preview -- styled like the "Filtering on tags:" block:  yellow border ( from the
                      CSS class ) when filtering, a label block on the left and the expression block on the right.
                      When nothing is selected, show "No search filtering" instead.  */}
-                { hasTagFilter ? (
+                { ( hasTagFilter || hasEmptyGroup ) ? (
                     <div
                         className=" filter-on-tags--currently-filtering "
-                        style={ { marginTop: 10, padding: 10, display: "grid", gridTemplateColumns: "max-content auto" } }
+                        style={ { marginTop: 10, padding: 10, display: "grid", gridTemplateColumns: "max-content auto", alignItems: "baseline" } }
                     >
                         <div style={ { fontWeight: "bold", whiteSpace: "nowrap", fontSize: 18, marginRight: 6 } }>
                             Filtering on tags:
                         </div>
                         <div>
-                            { this._render_ExpressionPreview( tagEntry_Map, categoryLabel_Map ) }
+                            { hasEmptyGroup ? (
+                                <span style={ { color: "#c0392b", fontWeight: "bold" } }>
+                                    At least one group is empty, so no searches pass the filters.  Populate all groups, or remove empty groups.
+                                </span>
+                            ) : (
+                                this._render_ExpressionPreview( tagEntry_Map, categoryLabel_Map )
+                            ) }
                         </div>
                     </div>
                 ) : (

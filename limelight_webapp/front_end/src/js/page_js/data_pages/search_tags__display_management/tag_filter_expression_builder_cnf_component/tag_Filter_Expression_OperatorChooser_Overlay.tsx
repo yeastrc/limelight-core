@@ -23,6 +23,26 @@ import {
 /////
 
 
+/**
+ * The human-readable description + example for a within-group operator choice.  Shared so the tag-picker
+ * overlay's OR/AND radios show the SAME wording ( as tooltips ) as this chooser overlay.
+ */
+export function tag_Filter_Expression_OperatorChooser_Overlay__Operator_Title_And_Example(
+    withinGroup_Operator : 'AND' | 'OR'
+) : { title : string, example : string } {
+
+    const title = withinGroup_Operator === 'OR'
+        ? "OR within each group, AND between groups"
+        : "AND within each group, OR between groups";
+
+    const example = withinGroup_Operator === 'OR'
+        ? "( 'a' OR 'b' )   AND   ( 'c' OR 'd' )"
+        : "( 'a' AND 'b' )   OR   ( 'c' AND 'd' )";
+
+    return { title, example };
+}
+
+
 const _Overlay_Width_Min = 360;
 const _Overlay_Width_Max = 620;
 const _Overlay_Height_Min = 220;
@@ -110,13 +130,7 @@ class TagFilter_Expression_OperatorChooser_OverlayBody extends React.Component< 
 
         const isCurrent = this.props.current_WithinGroup_Operator === withinGroup_Operator;
 
-        const title = withinGroup_Operator === 'OR'
-            ? "OR within each group, AND between groups"
-            : "AND within each group, OR between groups";
-
-        const example = withinGroup_Operator === 'OR'
-            ? "( 'a' OR 'b' )   AND   ( 'c' OR 'd' )"
-            : "( 'a' AND 'b' )   OR   ( 'c' AND 'd' )";
+        const { title, example } = tag_Filter_Expression_OperatorChooser_Overlay__Operator_Title_And_Example( withinGroup_Operator );
 
         return (
             <div

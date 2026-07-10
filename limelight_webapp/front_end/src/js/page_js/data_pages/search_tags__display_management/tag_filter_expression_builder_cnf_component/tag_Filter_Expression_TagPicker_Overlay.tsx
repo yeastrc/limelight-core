@@ -24,9 +24,18 @@ import {
     Search_Tags_SelectSearchTags_Component_SearchTagData_Root,
     Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry
 } from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
+import {tag_Filter_Expression_OperatorChooser_Overlay__Operator_Title_And_Example} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_cnf_component/tag_Filter_Expression_OperatorChooser_Overlay";
 
 
 /////
+
+
+//  Optional OR/AND chooser shown at the top of the picker ( used when starting the FIRST group ):  lets the
+//  user choose how the tags being added combine.  Setting it drives the builder's within-group operator.
+export interface TagFilter_Expression_TagPicker_Overlay__OperatorChooser {
+    initial_WithinGroup_Operator : 'AND' | 'OR'
+    onChoose_WithinGroup_Operator : ( withinGroup_Operator : 'AND' | 'OR' ) => void
+}
 
 
 const _Overlay_Width_Min = 420;
@@ -50,6 +59,9 @@ interface TagFilter_Expression_TagPicker_Overlay__OpenParams {
     //  Called after the overlay is closed ( X / backdrop / Close button / closeAfterPick ).
     //  Used to apply/persist the accumulated picks once, instead of on every pick.
     onOverlayClosed? : () => void
+
+    //  Optional OR/AND chooser ( shown when starting the first group )
+    operatorChooser? : TagFilter_Expression_TagPicker_Overlay__OperatorChooser
 }
 
 
@@ -117,6 +129,7 @@ export function get_TagFilter_Expression_TagPicker_Overlay_Container(
                 initialDisabledTagIds={ params.initialDisabledTagIds }
                 disabledReason={ params.disabledReason }
                 onPickTagId={ params.onPickTagId }
+                operatorChooser={ params.operatorChooser }
                 onClose={ onClose }
             />
         </ModalOverlay_Limelight_Component_v001_B_FlexBox>
@@ -133,11 +146,15 @@ interface Internal__OverlayBody_Props {
     initialDisabledTagIds : Set<number>
     disabledReason : string
     onPickTagId : ( tagId : number ) => void
+    operatorChooser? : TagFilter_Expression_TagPicker_Overlay__OperatorChooser
     onClose : () => void
 }
 
 interface Internal__OverlayBody_State {
     locallyPickedTagIds : Set<number>
+
+    //  The currently-selected within-group operator ( only meaningful when operatorChooser is present )
+    selectedOperator : 'AND' | 'OR'
 }
 
 //  One category ( or 'uncategorized' ) with its tags, for the 2-column layout
@@ -152,7 +169,10 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
 
     constructor( props : Internal__OverlayBody_Props ) {
         super( props );
-        this.state = { locallyPickedTagIds: new Set<number>() };
+        this.state = {
+            locallyPickedTagIds: new Set<number>(),
+            selectedOperator: ( props.operatorChooser && props.operatorChooser.initial_WithinGroup_Operator === 'AND' ) ? 'AND' : 'OR'
+        };
     }
 
     private _pick = ( tagId : number ) : void => {
@@ -160,6 +180,44 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
         const locallyPickedTagIds = new Set<number>( this.state.locallyPickedTagIds );
         locallyPickedTagIds.add( tagId );
         this.setState( { locallyPickedTagIds } );
+    }
+
+    private _chooseOperator = ( withinGroup_Operator : 'AND' | 'OR' ) : void => {
+        this.setState( { selectedOperator: withinGroup_Operator } );
+        if ( this.props.operatorChooser ) {
+            this.props.operatorChooser.onChoose_WithinGroup_Operator( withinGroup_Operator );
+        }
+    }
+
+    //  One OR/AND radio, tooltipped with the SAME description + example as the operator-chooser overlay
+    private _render_OperatorRadio( withinGroup_Operator : 'AND' | 'OR' ) : React.JSX.Element {
+
+        const { title, example } = tag_Filter_Expression_OperatorChooser_Overlay__Operator_Title_And_Example( withinGroup_Operator );
+
+        const tooltipContents = (
+            <span>
+                <div>{ title }</div>
+                <div style={ { fontFamily: "monospace", marginTop: 4 } }>{ example }</div>
+            </span>
+        );
+
+        return (
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                title={ tooltipContents }
+                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+            >
+                <label style={ { display: "inline-flex", alignItems: "center", marginRight: 18, cursor: "pointer" } }>
+                    <input
+                        type="radio"
+                        name="tag_Filter_Expression_TagPicker_Overlay__within_group_operator"
+                        checked={ this.state.selectedOperator === withinGroup_Operator }
+                        onChange={ () => this._chooseOperator( withinGroup_Operator ) }
+                        style={ { marginRight: 6 } }
+                    />
+                    <span style={ { fontWeight: "bold" } }>{ withinGroup_Operator }</span>
+                </label>
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+        );
     }
 
     //  Group tags by category ( categories sorted by label, uncategorized last;  tags sorted by string )
@@ -250,6 +308,17 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
                         Close
                     </button>
                 </div>
+
+                {/*  Optional OR/AND chooser -- pinned above the ( scrolling ) tag list so it stays visible  */}
+                { this.props.operatorChooser ? (
+                    <div className=" top-level fixed-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                        style={ { marginTop: 12, paddingTop: 8, paddingBottom: 8, borderBottomWidth: 1, borderBottomStyle: "solid", borderBottomColor: "#dddddd", display: "flex", alignItems: "center", flexWrap: "wrap" } }
+                    >
+                        <span style={ { fontWeight: "bold", marginRight: 12 } }>Combine these tags with:</span>
+                        { this._render_OperatorRadio( 'OR' ) }
+                        { this._render_OperatorRadio( 'AND' ) }
+                    </div>
+                ) : null }
 
                 <div
                     className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right modal-overlay-body-standard-margin-bottom "
