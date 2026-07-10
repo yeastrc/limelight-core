@@ -14,6 +14,15 @@ schema → import → searchers → REST → UI, and the §7 display-grain rule 
 Use the precise ids: **`projectSearchId`**, **`searchSubGroupId`**, **`scanFileId`** (`search_scan_file_id`),
 **`reportedPeptideId`**.
 
+**Scope note — open modifications are deferred (addressed much later).** Open-modification searches are
+**out of scope for now**. An open mod is a *mass + zero-to-many candidate positions* stored on the **PSM**, so a
+single `reportedPeptideId` spans many distinct peptidoform mass forms (the open-mod "cloud"); quantifying it
+correctly (per open-mod form, keyed on the PSM's distinguishing mass/position, not just `reportedPeptideId`) is a
+substantially larger problem that we will **address much later**. Until then, quant is only offered for searches
+**without** open modifications: on the peptide page the **"View / Add Quant" button and all quant display are
+hidden when any selected search has open modifications** (`DataPage_common_Searches_Flags.is__anyPsmHas_OpenModifications__TrueForAnySearch()`).
+Everything below is written for the non-open-mod case unless it explicitly says otherwise.
+
 ---
 
 ## 1. The storage grain (the atom): per scan file
