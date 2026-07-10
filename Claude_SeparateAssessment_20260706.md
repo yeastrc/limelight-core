@@ -1047,6 +1047,26 @@ Still holds (unchanged by this decision):
   double-counted in a total — that is the roll-up layer, separate from per-row display, and the mapping
   doc already plans it. "No flag" applies to the per-row display, consistent with how counts behave.
 
+**RECONSIDERED for the QUANT column (2026-07-10) — flag shared-quant rows.** Grounded in the non-open-mod
+run `3d4438a3…` (shared-peak analysis): of 1,621 reported peptides with quant, **12.5% carry shared-peak
+intensity (value is an upper bound), 9.4% fully shared**; the sharing is **almost entirely variable-mod
+positional isomers** (same base sequence + same mass, different mod site — e.g. `MM[+15.995]QQ…` vs
+`M[+15.995]MQQ…`), **not** distinct near-isobaric peptides (only 0.2% of peaks). The count-vs-abundance
+distinction justifies flagging quant while **leaving PSM Count unflagged**: PSM Count is identification
+evidence (shared credit is benign), whereas quant is an **abundance** and showing the *same* intensity under
+two localization-variant rows distorts the quantitative comparison quant exists for. So Decision A's "no
+flag" is **revised for the quant column only** (Dan, 2026-07-10): mark shared-quant rows with a small glyph
++ tooltip. **PSM Count keeps no flag** (Decision A stands for it).
+
+Implementation caveat (important): base the row flag on the peak mapping to **>1 reported peptide**
+(`peak.reportedPeptideIds.length > 1` — equivalently `Full Sequences Mapped`/rpid multiplicity), **NOT** the
+existing `peak.isShared` (which is `baseSequenceSet.size > 1`). The dominant case is one base sequence /
+multiple rpids, so base-sequence sharing would catch only the 0.2% distinct-sequence peaks and **miss ~97%**
+of the actual sharing. A row is "shared" iff any peak in its quant sum also maps to a different
+`reportedPeptideId`. Single glyph (don't distinguish partly-vs-fully); tooltip can state the sibling count.
+*(Prevalence OBSERVED from the run's `QuantifiedPeaks.tsv`; per-reported-peptide rollup computed by my
+analysis script replicating the receive-side attribution.)*
+
 ### Decision B — MBR-off UI note: owned by the other session
 
 The other session is adding a UI note that **MBR cannot be turned off in FlashLFQ `CMD.dll` 1.0.0.0**
