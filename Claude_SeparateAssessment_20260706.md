@@ -1082,6 +1082,25 @@ against the current served-TSV prototype. The job-status endpoint + cleanup are 
 DB-ingest phase; doing them now against the throwaway path would be wasted. Display work (Track A)
 continues on the prototype path meanwhile.
 
+### Decision D — quant filter-scoping: **Option 1 adopted** (boss, 2026-07-10) — resolves §16 / the three-option spectrum
+
+Boss's ruling on what the quant value means: **quant reflects ONLY the top-of-page PSM/Peptide filters
+(the run-defining annotation/cutoff filters); display that value on each peptide, and it is NOT narrowed by
+the secondary row filters (charge, RT, m/z, scan).** This adopts **Option 1** from
+`flashlfq_quant_run_on_final_filtered_psms.md` and **drops Options 2 and 3** (the on-demand "quantify
+current view" and the locked-filter run). It matches the already-shipped Option-1 labeling; no
+re-architecture. The §16-addendum over-count numbers (charge ~54% etc.) are therefore **by-design behavior,
+not a defect** — quant is the peptidoform total, deliberately not secondary-filter-scoped.
+
+**Enforcement (Dan's plan):** store the top PSM/Peptide filters **with** the quant result, and **show the
+quant only when the current top filters match the stored ones**; on mismatch, hide the value (no stale
+numbers). This binds quant to its defining filter state with no re-run machinery — the clean way to honor
+"only reflective of the current top filters." (Secondary filters correctly never affect quant; only a
+**top**-filter change invalidates it.)
+
+Decisions A (shared-quant flag, revised for the quant column) and §19 (per-scan-file, MBR off) are
+unaffected and still stand.
+
 ---
 
 ## 19. Single-search / multi-file quant: run **per scan file**, MBR off — refines §16/§17 (2026-07-08)
