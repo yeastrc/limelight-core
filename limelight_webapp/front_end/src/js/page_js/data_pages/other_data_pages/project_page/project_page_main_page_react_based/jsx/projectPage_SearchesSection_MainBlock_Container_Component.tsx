@@ -41,7 +41,7 @@ import {ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet} 
 import {ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
 import {
-    Tag_Filter_Expression_Builder_CNF_Component,
+    Tag_Filter_Expression_Builder_CNF_Component, Tag_Filter_Expression_Builder_CNF_Component__Expression,
     Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup
 } from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_cnf_component/tag_Filter_Expression_Builder_CNF_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
@@ -1710,13 +1710,20 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                         searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
                                         initial_AndGroups={ this._advanced_TagFilter_InitialSeed }
                                         initial_WithinGroup_Operator={ this._advanced_TagFilter_Initial_Operator }
-                                        expression_Changed_Callback={ ( expression ) => {
+                                        expression_Changed_Callback={ ( expression: Tag_Filter_Expression_Builder_CNF_Component__Expression ) => {
+
                                             //  Keep the seed fields in sync ( for remount ), persist, and re-run the filtering
                                             this._advanced_TagFilter_InitialSeed = expression.andGroups.map( g => ( { literals: g.literals.map( l => ( { tagId: l.tagId, negated: l.negated } ) ) } ) )
                                             this._advanced_TagFilter_Initial_Operator = expression.withinGroup_Operator
-                                            this._save_Advanced_TagFilter_ToSessionStorage( this._advanced_TagFilter_InitialSeed, this._advanced_TagFilter_Initial_Operator )
-                                            this._searchesAndFolders_Update_FilterOnSearchTags()
-                                            this.setState({ force_Rerender: {} })
+
+                                            window.setTimeout( ()=> { 	try {
+
+                                                this._save_Advanced_TagFilter_ToSessionStorage( this._advanced_TagFilter_InitialSeed, this._advanced_TagFilter_Initial_Operator )
+                                                this._searchesAndFolders_Update_FilterOnSearchTags()
+                                                this.setState({ force_Rerender: {} })
+
+                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+                                            }, 10 )
                                         } }
                                     />
                                 </div>

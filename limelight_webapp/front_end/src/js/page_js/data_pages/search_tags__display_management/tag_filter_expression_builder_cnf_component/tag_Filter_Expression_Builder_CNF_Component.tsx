@@ -201,6 +201,12 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         this.setState( { andGroups: [ ...this.state.andGroups, newGroup ] } );
     }
 
+    //  Clear the whole tag filter -- remove all groups ( back to the pristine "Start building" empty state ) and
+    //  reset the combine mode to the default.  Fires the change callback so the parent clears filtering/persistence.
+    private _clearAll = () : void => {
+        this.setState( { andGroups: [], withinGroup_Operator: 'OR' } );
+    }
+
     //  The "first step" from the empty state:  open the tag picker on the first group ( creating one if needed ),
     //  so the very first thing the user does is add a tag rather than reason about groups.
     private _openTagPicker_StartFirstGroup = () : void => {
@@ -678,8 +684,17 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                     Start adding tags to the first group.
                 </div>
                 <div style={ { color: "#666666", maxWidth: 560 } }>
-                    More groups can be added later &mdash; build an expression like&nbsp;
-                    <code>( a OR b OR c ) AND ( d OR e OR f )</code>.
+                    <div>
+                        More groups can be added later.
+                    </div>
+                    <div style={ { marginTop: 10, marginLeft: "auto", marginRight: "auto" } }>
+                        <div style={ { whiteSpace: "nowrap" } }>
+                            Build an expression like
+                        </div>
+                        <div style={ { whiteSpace: "nowrap" } }>
+                            <code>( a OR b OR c ) AND ( d OR e OR f )</code>
+                        </div>
+                    </div>
                 </div>
 
                 {/*  The single, prominent first step  */}
@@ -792,8 +807,28 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                         className=" filter-on-tags--currently-filtering "
                         style={ { marginTop: 10, padding: 10, display: "grid", gridTemplateColumns: "max-content auto", alignItems: "baseline" } }
                     >
-                        <div style={ { fontWeight: "bold", whiteSpace: "nowrap", fontSize: 18, marginRight: 6 } }>
-                            Filtering on tags:
+                        <div style={ { marginRight: 6 } }>
+                            <div style={ { fontWeight: "bold", whiteSpace: "nowrap", fontSize: 18 } }>
+                                Filtering on tags:
+                            </div>
+                            <div>
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Clear the tag filter &mdash; remove all groups and tags.
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <span
+                                        className=" fake-link "
+                                        style={ { fontSize: 10 } }
+                                        onClick={ () => this._clearAll() }
+                                    >
+                                        clear
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            </div>
                         </div>
                         <div>
                             { hasEmptyGroup ? (
