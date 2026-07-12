@@ -44,6 +44,7 @@ import {
     Tag_Filter_Expression_Builder_CNF_Component, Tag_Filter_Expression_Builder_CNF_Component__Expression,
     Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup
 } from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_cnf_component/tag_Filter_Expression_Builder_CNF_Component";
+import {Tag_Filter_Expression_Preview_Component} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_cnf_component/tag_Filter_Expression_Preview_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
@@ -156,9 +157,13 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
     private _search_Tags_Selections_Object: Search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
 
-    //  PROTOTYPE:  seed for the Advanced builder ( from the basic selection when switching, or from session storage on load )
+    //  Seed for the Advanced builder ( from the basic selection when switching, or from session storage on load )
     private _advanced_TagFilter_InitialSeed: Array<Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup> = []
     private _advanced_TagFilter_Initial_Operator: 'AND' | 'OR' = 'OR'
+
+    //  Bumped to force the Advanced builder to remount ( React key ) when we reset it from outside -- e.g. the
+    //  "clear" in the summary.  The builder holds its own state, so a remount is how the parent resets it.
+    private _advanced_Builder_RemountCounter = 0
 
     private _searchName_SearchId_Filter_UserInput = ""
 
@@ -443,6 +448,20 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
         this._searchesAndFolders_Update_FilterOnSearchTags();
 
         this.setState({ use_Advanced_TagFilter_Prototype: false });
+    }
+
+    /**
+     * Clear the advanced tag filter -- remove all groups ( back to the builder's pristine empty state ),
+     * reset the combine mode, clear persistence, and re-run filtering.  Remounts the builder so its own
+     * internal state resets.  Stays in Advanced mode ( parallels the basic "clear tag filters" ).
+     */
+    private _clearAdvancedTagFilter = () : void => {
+        this._advanced_TagFilter_InitialSeed = [];
+        this._advanced_TagFilter_Initial_Operator = 'OR';
+        this._advanced_Builder_RemountCounter++;
+        this._save_Advanced_TagFilter_ToSessionStorage( this._advanced_TagFilter_InitialSeed, this._advanced_TagFilter_Initial_Operator );
+        this._searchesAndFolders_Update_FilterOnSearchTags();
+        this.setState({ force_Rerender: {} });
     }
 
     /**
@@ -1578,13 +1597,58 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                         ) : null }
 
+                        {/*  Advanced ( grouped CNF ) tag filter -- shown ( instead of the basic filter ) below the
+                             search-name/id input, seeded from the basic selection.  The "Filtering on tags:" summary
+                             is rendered further down in the shared "filter-on-tags--currently-filtering" block.  */}
+
+                        { this.state.use_Advanced_TagFilter_Prototype && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root.searchTag_Array.length > 0 ? (
+
+                            <div style={ { marginTop: 10 } }>
+                                {/*  "Use basic tag filter" button at the top of the advanced area  */}
+                                <div style={ { marginBottom: 10 } }>
+                                    <button
+                                        type="button"
+                                        onClick={ () => { this._switchTo_Basic_TagFilter() } }
+                                        style={ { cursor: "pointer" } }
+                                    >
+                                        Use basic tag filter
+                                    </button>
+                                </div>
+
+                                <Tag_Filter_Expression_Builder_CNF_Component
+                                    key={ "advanced-tag-filter-builder-" + this._advanced_Builder_RemountCounter }
+                                    searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
+                                    initial_AndGroups={ this._advanced_TagFilter_InitialSeed }
+                                    initial_WithinGroup_Operator={ this._advanced_TagFilter_Initial_Operator }
+                                    expression_Changed_Callback={ ( expression: Tag_Filter_Expression_Builder_CNF_Component__Expression ) => {
+
+                                        //  Keep the seed fields in sync ( for remount + the summary preview ), persist, and re-run filtering
+                                        this._advanced_TagFilter_InitialSeed = expression.andGroups.map( g => ( { literals: g.literals.map( l => ( { tagId: l.tagId, negated: l.negated } ) ) } ) )
+                                        this._advanced_TagFilter_Initial_Operator = expression.withinGroup_Operator
+
+                                        window.setTimeout( ()=> { 	try {
+
+                                            this._save_Advanced_TagFilter_ToSessionStorage( this._advanced_TagFilter_InitialSeed, this._advanced_TagFilter_Initial_Operator )
+                                            this._searchesAndFolders_Update_FilterOnSearchTags()
+                                            this.setState({ force_Rerender: {} })
+
+                                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+                                        }, 10 )
+                                    } }
+                                />
+                            </div>
+
+                        ) : null }
+
                         {/*  Display "Filtering On" to show what search name, search id, and search tags filtering on  */}
 
-                        { this._searchName_SearchId_Filter_UserInput.length > 0 || ( ( ! this.state.use_Advanced_TagFilter_Prototype ) && this._search_Tags_Selections_Object.is_any_selections() ) ? (
+                        { this._searchName_SearchId_Filter_UserInput.length > 0
+                            || ( ( ! this.state.use_Advanced_TagFilter_Prototype ) && this._search_Tags_Selections_Object.is_any_selections() )
+                            || ( this.state.use_Advanced_TagFilter_Prototype && this._isAdvanced_TagFilter_Active() ) ? (
 
                             <div
                                 className=" filter-on-tags--currently-filtering "
-                                style={ { marginBottom: 15 } }
+                                style={ { marginTop: 20, marginBottom: 15 } }
                             >
                                 { this._searchName_SearchId_Filter_UserInput.length > 0 ? (  //  User Input value
                                     <div  //  Add marginBottom if also have Search Tags to display
@@ -1686,49 +1750,49 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                         </div>
                                     </div>
                                 ) : null }
-                            </div>
-                        ) : null }
 
-                        {/*  PROTOTYPE:  Advanced ( grouped CNF ) tag filter -- shown instead of the basic filter, seeded from it  */}
+                                {/*  Advanced ( grouped CNF ) tag filter summary -- same shared block as "Filtering on text:"  */}
+                                { this.state.use_Advanced_TagFilter_Prototype && this._isAdvanced_TagFilter_Active() ? (
 
-                        { this.state.use_Advanced_TagFilter_Prototype && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root.searchTag_Array.length > 0 ? (
-
-                            <div style={ { marginTop: 10 } }>
-                                {/*  "Use basic tag filter" button at the top of the advanced area  */}
-                                <div style={ { marginBottom: 10 } }>
-                                    <button
-                                        type="button"
-                                        onClick={ () => { this._switchTo_Basic_TagFilter() } }
-                                        style={ { cursor: "pointer" } }
+                                    <div
+                                        style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }
                                     >
-                                        Use basic tag filter
-                                    </button>
-                                </div>
-
-                                <div style={ { paddingTop: 10, paddingRight: 10, paddingBottom: 10, paddingLeft: 10, borderWidth: 1, borderStyle: "solid", borderColor: "#cccccc", borderRadius: 6, backgroundColor: "#ffffff" } }>
-                                    <Tag_Filter_Expression_Builder_CNF_Component
-                                        searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
-                                        initial_AndGroups={ this._advanced_TagFilter_InitialSeed }
-                                        initial_WithinGroup_Operator={ this._advanced_TagFilter_Initial_Operator }
-                                        expression_Changed_Callback={ ( expression: Tag_Filter_Expression_Builder_CNF_Component__Expression ) => {
-
-                                            //  Keep the seed fields in sync ( for remount ), persist, and re-run the filtering
-                                            this._advanced_TagFilter_InitialSeed = expression.andGroups.map( g => ( { literals: g.literals.map( l => ( { tagId: l.tagId, negated: l.negated } ) ) } ) )
-                                            this._advanced_TagFilter_Initial_Operator = expression.withinGroup_Operator
-
-                                            window.setTimeout( ()=> { 	try {
-
-                                                this._save_Advanced_TagFilter_ToSessionStorage( this._advanced_TagFilter_InitialSeed, this._advanced_TagFilter_Initial_Operator )
-                                                this._searchesAndFolders_Update_FilterOnSearchTags()
-                                                this.setState({ force_Rerender: {} })
-
-                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-                                            }, 10 )
-                                        } }
-                                    />
-                                </div>
+                                        <div>
+                                            <div>
+                                                <span style={ { fontSize: 18, fontWeight: "bold", whiteSpace: "nowrap", marginRight: 5 }}
+                                                >
+                                                    Filtering on tags:
+                                                </span>
+                                            </div>
+                                            <div style={ { fontSize: 10, marginBottom: 10 } }>
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            Clear the tag filter &mdash; remove all groups and tags.
+                                                        </span>
+                                                    }
+                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                >
+                                                    <span
+                                                        className=" fake-link "
+                                                        style={ { fontSize: 10 } }
+                                                        onClick={ () => { this._clearAdvancedTagFilter() } }
+                                                    >
+                                                        clear
+                                                    </span>
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <Tag_Filter_Expression_Preview_Component
+                                                andGroups={ this._advanced_TagFilter_InitialSeed }
+                                                withinGroup_Operator={ this._advanced_TagFilter_Initial_Operator }
+                                                searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
+                                            />
+                                        </div>
+                                    </div>
+                                ) : null }
                             </div>
-
                         ) : null }
 
                         {/*  Separator line between the tag-filter area and the searches list  */}

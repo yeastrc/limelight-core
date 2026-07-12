@@ -201,12 +201,6 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         this.setState( { andGroups: [ ...this.state.andGroups, newGroup ] } );
     }
 
-    //  Clear the whole tag filter -- remove all groups ( back to the pristine "Start building" empty state ) and
-    //  reset the combine mode to the default.  Fires the change callback so the parent clears filtering/persistence.
-    private _clearAll = () : void => {
-        this.setState( { andGroups: [], withinGroup_Operator: 'OR' } );
-    }
-
     //  The "first step" from the empty state:  open the tag picker on the first group ( creating one if needed ),
     //  so the very first thing the user does is add a tag rather than reason about groups.
     private _openTagPicker_StartFirstGroup = () : void => {
@@ -309,93 +303,6 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                     <div>{ categoryLabel ? categoryLabel : "(uncategorized)" }</div>
                 </div>
                 { negated ? ( <div style={ { marginTop: 4, fontStyle: "italic" } }>Negated ( NOT ) — tag must be ABSENT</div> ) : null }
-            </span>
-        );
-    }
-
-    //  A read-only ( non-interactive ) colored tag chip for the Expression preview, with a tag+category tooltip
-    private _render_PreviewTagChip(
-        literal : Internal__CNF_Literal,
-        tagEntry_Map : Map<number, Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry>,
-        categoryLabel_Map : Map<number, string>
-    ) : React.JSX.Element {
-
-        const tagEntry = tagEntry_Map.get( literal.tagId );
-
-        const backgroundColor = tagEntry ? tagEntry.tag_Color_Background : "#eeeeee";
-        const fontColor = tagEntry ? tagEntry.tag_Color_Font : "#000000";
-        const borderColor = tagEntry ? tagEntry.tag_Color_Border : "#999999";
-        const tagString = tagEntry ? tagEntry.tagString : ( "tagId " + literal.tagId );
-
-        const categoryLabel = ( tagEntry && tagEntry.tagCategoryId !== undefined && tagEntry.tagCategoryId !== null )
-            ? categoryLabel_Map.get( tagEntry.tagCategoryId ) : null;
-
-        const tooltipContents = this._build_TagTooltipContents( tagString, categoryLabel, literal.negated );
-
-        const _NEGATED_COLOR = "#c0392b";  //  red
-
-        return (
-            <span
-                style={ {
-                    display: "inline-flex",
-                    alignItems: "center",
-                    backgroundColor,
-                    color: fontColor,
-                    //  Always a VALID border color ( see note in _render_LiteralChip ) so un-NOT clears the red
-                    borderWidth: 2,
-                    borderStyle: "solid",
-                    borderColor: literal.negated ? _NEGATED_COLOR : ( borderColor ? borderColor : "transparent" ),
-                    borderRadius: 4,
-                    paddingTop: 1,
-                    paddingBottom: 1,
-                    paddingLeft: 5,
-                    paddingRight: 5,
-                    whiteSpace: "nowrap"
-                } }
-            >
-                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                    title={ tooltipContents }
-                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                >
-                    <span style={ { display: "inline-flex", alignItems: "center" } }>
-                        { literal.negated ? ( <span style={ { fontWeight: "bold", color: _NEGATED_COLOR, marginRight: 4 } }>NOT</span> ) : null }
-                        <span style={ literal.negated ? { textDecoration: "line-through" } : undefined }>{ tagString }</span>
-                    </span>
-                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-            </span>
-        );
-    }
-
-    private _render_ExpressionPreview(
-        tagEntry_Map : Map<number, Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry>,
-        categoryLabel_Map : Map<number, string>
-    ) : React.JSX.Element {
-
-        const nonEmptyGroups = this.state.andGroups.filter( g => g.literals.length > 0 );
-        if ( nonEmptyGroups.length === 0 ) {
-            return <span style={ { color: "#888888" } }>(no tags selected)</span>;
-        }
-
-        const withinOp = this.state.withinGroup_Operator;
-        const betweenOp = this._betweenGroups_Operator();
-
-        return (
-            <span style={ { display: "inline-flex", flexWrap: "wrap", alignItems: "center", gap: 4 } }>
-                { nonEmptyGroups.map( ( g, groupIndex ) => (
-                    <React.Fragment key={ g._uiId }>
-                        { groupIndex > 0 ? ( <span style={ { fontWeight: "bold", marginTop: 0, marginBottom: 0, marginLeft: 3, marginRight: 3 } }>{ betweenOp }</span> ) : null }
-                        <span style={ { display: "inline-flex", flexWrap: "wrap", alignItems: "center", gap: 4 } }>
-                            <span style={ { fontWeight: "bold" } }>(</span>
-                            { g.literals.map( ( literal, literalIndex ) => (
-                                <React.Fragment key={ literal._uiId }>
-                                    { literalIndex > 0 ? ( <span style={ { fontWeight: "bold" } }>{ withinOp }</span> ) : null }
-                                    { this._render_PreviewTagChip( literal, tagEntry_Map, categoryLabel_Map ) }
-                                </React.Fragment>
-                            ) ) }
-                            <span style={ { fontWeight: "bold" } }>)</span>
-                        </span>
-                    </React.Fragment>
-                ) ) }
             </span>
         );
     }
@@ -741,13 +648,6 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         //  A new group is joined to the existing groups by the between-groups operator
         const betweenGroups_Operator = this._betweenGroups_Operator();
 
-        //  Is anything actually being filtered on ( any group has at least one tag )?
-        const hasTagFilter = this.state.andGroups.some( g => g.literals.length > 0 );
-
-        //  Any empty group makes the filter incomplete -- while filtering ( hasTagFilter ), an empty group means
-        //  NO searches pass ( see the parent's _advanced_TagFilter_Matches ).  Warn instead of showing the expression.
-        const hasEmptyGroup = this.state.andGroups.some( g => g.literals.length === 0 );
-
         //  Pristine == no groups at all ( the untouched initial view ).  Show the empty-state callout with one
         //  clear first step.  As soon as there is any group ( even empty ), show the builder instead.
         const isPristine = this.state.andGroups.length === 0;
@@ -799,52 +699,9 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
 
-                {/*  Live expression preview -- styled like the "Filtering on tags:" block:  yellow border ( from the
-                     CSS class ) when filtering, a label block on the left and the expression block on the right.
-                     When nothing is selected, show "No search filtering" instead.  */}
-                { ( hasTagFilter || hasEmptyGroup ) ? (
-                    <div
-                        className=" filter-on-tags--currently-filtering "
-                        style={ { marginTop: 10, padding: 10, display: "grid", gridTemplateColumns: "max-content auto", alignItems: "baseline" } }
-                    >
-                        <div style={ { marginRight: 6 } }>
-                            <div style={ { fontWeight: "bold", whiteSpace: "nowrap", fontSize: 18 } }>
-                                Filtering on tags:
-                            </div>
-                            <div>
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                    title={
-                                        <span>
-                                            Clear the tag filter &mdash; remove all groups and tags.
-                                        </span>
-                                    }
-                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                >
-                                    <span
-                                        className=" fake-link "
-                                        style={ { fontSize: 10 } }
-                                        onClick={ () => this._clearAll() }
-                                    >
-                                        clear
-                                    </span>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                            </div>
-                        </div>
-                        <div>
-                            { hasEmptyGroup ? (
-                                <span style={ { color: "#c0392b", fontWeight: "bold" } }>
-                                    At least one group is empty, so no searches pass the filters.  Populate all groups, or remove empty groups.
-                                </span>
-                            ) : (
-                                this._render_ExpressionPreview( tagEntry_Map, categoryLabel_Map )
-                            ) }
-                        </div>
-                    </div>
-                ) : (
-                    <div style={ { marginTop: 10, fontWeight: "bold" } }>
-                        No search filtering
-                    </div>
-                ) }
+                {/*  NOTE:  the "Filtering on tags:" summary is rendered by the PARENT ( in the shared
+                     "filter-on-tags--currently-filtering" block, next to "Filtering on text:" ) via
+                     Tag_Filter_Expression_Preview_Component -- this builder is edit-only.  */}
 
                 </> ) }
 
