@@ -17,7 +17,17 @@ import { handleAJAXError } from "page_js/common_all_pages/handleServicesAJAXErro
 
 export const get_DisplayNameString_From_CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry = function ( item: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry ) {
 
-    return item.chainId_Label_AssignedAt_StructureFileCreation
+    const label = item.chainId_Label_AssignedAt_StructureFileCreation
+    const auth = item.chainId_AuthorId_AssignedAt_StructureFileCreation
+
+    //  Show the author (auth_asym_id) chain id alongside the label when they differ, so the user
+    //  also sees the id they recognize from the PDB entry and other viewers (PyMOL, ChimeraX). For
+    //  formats where auth == label (e.g. most PDB files) there is nothing extra to show.
+    if ( auth && auth !== label ) {
+        return `${ label } (auth: ${ auth })`
+    }
+
+    return label
 }
 
 export class CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_Value {
