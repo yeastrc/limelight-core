@@ -6,15 +6,18 @@ import { molstar__read_structure_create_chimerax_file__ResidueKey, molstar__read
  *
  * Input specs identify residues in LABEL numbering (label_asym_id / label_seq_id),
  * but ChimeraX resolves residue specifiers like `/A:42` in AUTH numbering. So we
- * look each residue up in the CA map (keyed by label) and emit the spec using the
- * AUTH identity stored on the entry — chain, residue number, and any insertion code.
+ * look each residue up in the residue map (keyed by label) and emit the spec using
+ * the AUTH identity stored on the entry — chain, residue number, and any insertion
+ * code. This does not depend on the residue having a CA atom: the map carries auth
+ * identity for every polymer residue, so polymer residues without a CA (nucleic
+ * acids, modified or incomplete amino-acid residues) are still colored.
  *
  * ChimeraX atom-spec syntax: /authChainId:authSeqId[insCode]
  * Example output:  color /A:42 #FF0000   (or  color /H:100A #FF0000  with ins code)
  *
- * If the residue is not present in the CA map we cannot resolve its auth identity,
- * so the command is SKIPPED with a warning rather than emitted with wrong (label)
- * numbering that would silently color the wrong residue.
+ * If the residue is not present in the structure at all we cannot resolve its auth
+ * identity, so the command is SKIPPED with a warning rather than emitted with wrong
+ * (label) numbering that would silently color the wrong residue.
  */
 export function molstar__read_structure_create_chimerax_file__GenerateColorCommands(
     specs: Molstar__read_structure_create_chimerax_file__ResidueColorSpec[],
@@ -29,7 +32,7 @@ export function molstar__read_structure_create_chimerax_file__GenerateColorComma
 
         if (!entry) {
             warnings.push(
-                `Color: residue not found (no CA) for label chain "${spec.chainId__label_asym_id}" residue ${spec.residueSeqId__label_seq_id} — skipped (cannot resolve auth numbering for ChimeraX spec)`,
+                `Color: residue not found in structure for label chain "${spec.chainId__label_asym_id}" residue ${spec.residueSeqId__label_seq_id} — skipped (cannot resolve auth numbering for ChimeraX spec)`,
             );
             continue;
         }

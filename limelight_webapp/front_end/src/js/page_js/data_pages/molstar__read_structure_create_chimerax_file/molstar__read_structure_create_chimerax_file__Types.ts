@@ -31,23 +31,24 @@ export interface Molstar__read_structure_create_chimerax_file__DiskSpec {
 // --- Internal ---
 
 /**
- * One entry in the CA coordinate map.
+ * One entry in the residue map — one per residue in the structure.
  *
  * The Map is KEYED by LABEL numbering (`label_asym_id:label_seq_id`) — a clean,
  * gap-free integer sequence with no insertion codes, which makes a stable
  * internal key and matches the label-based specs coming in from Limelight.
  *
  * The AUTH identity (`auth_asym_id` / `auth_seq_id` / insertion code) is carried
- * alongside because ChimeraX resolves residue specifiers like `/A:42` in AUTH
- * space, NOT label space. Anything that emits a ChimeraX residue spec (e.g. the
- * `color` command) MUST use these auth fields, not the label key — otherwise the
- * command lands on the wrong residue whenever auth != label.
+ * on every entry because ChimeraX resolves residue specifiers like `/A:42` in
+ * AUTH space, NOT label space. Anything that emits a ChimeraX residue spec (e.g.
+ * the `color` command) MUST use these auth fields, not the label key — otherwise
+ * the command lands on the wrong residue whenever auth != label.
  *
- * Coordinate-based output (symbols, disks) uses `pos` directly and is unaffected
- * by the auth/label distinction.
+ * `pos` (the CA coordinate) is present only when the residue has a CA atom.
+ * Coordinate-based output (symbols, disks) uses `pos` and skips residues where
+ * it is undefined; color output ignores `pos` entirely.
  */
 export interface Molstar__read_structure_create_chimerax_file__ResidueEntry {
-  pos: Vec3;            // CA coordinate
+  pos?: Vec3;          // CA coordinate — present only when the residue has a CA atom
   authAsymId: string;  // auth_asym_id — the ChimeraX chain id
   authSeqId: number;   // auth_seq_id — the ChimeraX residue number
   insCode: string;     // pdbx_PDB_ins_code, '' when none
