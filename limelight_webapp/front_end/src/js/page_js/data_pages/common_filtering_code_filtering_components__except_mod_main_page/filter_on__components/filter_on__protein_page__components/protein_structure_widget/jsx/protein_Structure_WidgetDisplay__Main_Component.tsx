@@ -3608,7 +3608,6 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                         color: _TRYPSIN_CUT_POINT__DISK_COLOR,
 
                         limelight_Only_HTML_TooltipContent: label,
-                        limelight_Only_ChainId: get_DisplayNameString_From_CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry( chainData ),
                         limelight_Only_Residue_A_Position_LimelightProtein: residue_A_Position_LimelightProtein,
                         limelight_Only_Residue_B_Position_LimelightProtein: residue_B_Position_LimelightProtein
                     } );
@@ -9554,7 +9553,6 @@ interface INTERNAL__Molstar_DiskData {
     //   Data stored for tooltip
 
     limelight_Only_HTML_TooltipContent: string
-    limelight_Only_ChainId: string
 
     limelight_Only_Residue_A_Position_LimelightProtein: number
     limelight_Only_Residue_B_Position_LimelightProtein: number
