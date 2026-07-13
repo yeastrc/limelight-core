@@ -2767,8 +2767,9 @@ class Protein_Structure_WidgetDisplay__StructureFile_MapNewStructure_Overlay____
                                 // marginRight: "auto"  // to center left to right
                             } }  // height: "100%" so get full height for viewer
                         >
-                            {/*This text is replaced when create the viewer*/}
-                            Structure Viewer Here
+                            {/*  Leaf container: Molstar mounts the viewer into this div, so it must have no
+                                 React-managed children (a text/child + a createRoot/createPortal target on the
+                                 same element makes it ambiguous whose content wins).  */}
                         </div>
                     </div>
                 </>
