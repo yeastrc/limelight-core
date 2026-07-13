@@ -646,8 +646,6 @@
 //
 //                 for ( const chainId of this.props.commonParams.chainLabels_ALL_Array_Sorted_OnStructure ) {
 //
-//                     const polymer_Full_Expression = _molstar__PolymerExpression( chainId );
-//
 //                     let color: Molstar_Color = undefined
 //
 //                     if ( chainId === this._selectedChainId ) {
@@ -1288,24 +1286,4 @@
 //
 // }
 //
-//
-// /**
-//  *
-//  * @param chainId
-//  */
-// const _molstar__PolymerExpression = function ( chainId: string | null ): Expression {
-//     const params: Record<string, Expression> = {
-//         'entity-test': MolScriptBuilder.core.rel.eq( [
-//             MolScriptBuilder.struct.atomProperty.macromolecular.entityType(),
-//             'polymer',
-//         ] ),
-//     };
-//     if ( chainId ) {
-//         params[ 'chain-test' ] = MolScriptBuilder.core.rel.eq( [
-//             MolScriptBuilder.struct.atomProperty.macromolecular.auth_asym_id(),
-//             chainId,
-//         ] );
-//     }
-//     return MolScriptBuilder.struct.generator.atomGroups( params );
-// }
 //

@@ -22,6 +22,7 @@ import { PluginUIContext } from "molstar/lib/mol-plugin-ui/context";
 import { Color as Molstar_Color } from "molstar/lib/commonjs/mol-util/color";
 import { Expression } from "molstar/lib/mol-script/language/expression";
 import { MolScriptBuilder } from "molstar/lib/mol-script/language/builder";
+import { molstar_ChainTest_Expression__For_LabelAsymId } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_ChainTest_Expression";
 
 
 //  Molstar_Unit.Kind
@@ -2886,10 +2887,7 @@ const _molstar__PolymerExpression = function ( chainId: string | null ): Express
         ] ),
     };
     if ( chainId ) {
-        params[ 'chain-test' ] = MolScriptBuilder.core.rel.eq( [
-            MolScriptBuilder.struct.atomProperty.macromolecular.auth_asym_id(),
-            chainId,
-        ] );
+        params[ 'chain-test' ] = molstar_ChainTest_Expression__For_LabelAsymId( chainId );
     }
     return MolScriptBuilder.struct.generator.atomGroups( params );
 }
