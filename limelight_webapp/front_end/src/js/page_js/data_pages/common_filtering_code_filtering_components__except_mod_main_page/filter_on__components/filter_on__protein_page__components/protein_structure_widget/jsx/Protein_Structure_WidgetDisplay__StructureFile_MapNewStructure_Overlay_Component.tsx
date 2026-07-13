@@ -2545,8 +2545,9 @@ class Protein_Structure_WidgetDisplay__StructureFile_MapNewStructure_Overlay____
 
             let alignmentEntry_Map_Key_limelightAssigned_ChainId: Map<number, CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO__Single_Entry_Value> = undefined
 
-            if ( this.props.alignmentEntries_Result__For_SelectChain.resultEntries ) {
-                //  this.props.alignmentEntries_Result__For_SelectChain.resultEntries populated for existing structure file entry
+            if ( this.props.alignmentEntries_Result__For_SelectChain?.resultEntries ) {
+                //  this.props.alignmentEntries_Result__For_SelectChain is undefined for a newly-uploaded structure
+                //  file (no alignment computed yet); .resultEntries is populated only for an existing entry.
 
                 alignmentEntry_Map_Key_limelightAssigned_ChainId = new Map()
 
