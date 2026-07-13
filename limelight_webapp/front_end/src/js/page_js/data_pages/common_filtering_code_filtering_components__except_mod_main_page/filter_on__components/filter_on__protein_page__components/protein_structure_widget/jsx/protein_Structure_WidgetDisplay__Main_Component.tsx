@@ -33,6 +33,7 @@ import { PluginConfig } from "molstar/lib/mol-plugin/config";
 import { PluginUIContext } from "molstar/lib/mol-plugin-ui/context";
 import { Expression } from "molstar/lib/mol-script/language/expression";
 import { molstar_ChainTest_Expression__For_LabelAsymId } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_ChainTest_Expression";
+import { molstar_DevMode_LogChainSelection } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_DevMode_SelectionLogging";
 import { MolScriptBuilder } from 'molstar/lib/mol-script/language/builder';
 import { BuiltInTrajectoryFormat } from "molstar/lib/mol-plugin-state/formats/trajectory";
 import { InteractivityManager } from "molstar/lib/mol-plugin-state/manager/interactivity";
@@ -2443,6 +2444,9 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
             for ( const chainData of this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array ) {
 
                 const polymer_Full_Expression = _molstar__PolymerExpression( chainData.chainId_Label_AssignedAt_StructureFileCreation );
+
+                //  DEV-MODE: log what this chain selection actually matched (label -> auth, atom/residue counts). No-op unless enabled.
+                molstar_DevMode_LogChainSelection( { structure, chainId__label_asym_id: chainData.chainId_Label_AssignedAt_StructureFileCreation, context: "Main: per-chain color" } );
 
 
                 {  //   Render/Color positions in color that indicates that do not align to limelight protein sequence.

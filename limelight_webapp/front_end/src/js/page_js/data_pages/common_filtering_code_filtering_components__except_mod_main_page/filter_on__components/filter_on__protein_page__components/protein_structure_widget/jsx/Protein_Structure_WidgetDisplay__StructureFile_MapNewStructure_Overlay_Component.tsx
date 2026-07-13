@@ -23,6 +23,7 @@ import { Color as Molstar_Color } from "molstar/lib/commonjs/mol-util/color";
 import { Expression } from "molstar/lib/mol-script/language/expression";
 import { MolScriptBuilder } from "molstar/lib/mol-script/language/builder";
 import { molstar_ChainTest_Expression__For_LabelAsymId } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_ChainTest_Expression";
+import { molstar_DevMode_LogChainSelection } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_DevMode_SelectionLogging";
 
 
 //  Molstar_Unit.Kind
@@ -2454,6 +2455,18 @@ class Protein_Structure_WidgetDisplay__StructureFile_MapNewStructure_Overlay____
                 for ( const chainData of this.props.chainData_Parsed_From_OnStructure_In_Label_Order_Array ) {
 
                     const polymer_Full_Expression = _molstar__PolymerExpression( chainData.chainId_Label_AssignedAt_StructureFileCreation );
+
+                    //  DEV-MODE: log what this chain selection actually matched (label -> auth, atom/residue counts). No-op unless enabled.
+                    {
+                        //  Source the Structure from the typed plugin hierarchy (same ref used above at
+                        //  'structures[ 0 ]?.cell'), rather than the loosely-typed structure_StateObjectSelector,
+                        //  so this stays fully typed with no 'any'.
+                        const structure_ForDevLog: Structure | undefined =
+                            this._molstar_PluginUIContext_Reference.managers.structure.hierarchy.current.structures[ 0 ]?.cell.obj?.data;
+                        if ( structure_ForDevLog ) {
+                            molstar_DevMode_LogChainSelection( { structure: structure_ForDevLog, chainId__label_asym_id: chainData.chainId_Label_AssignedAt_StructureFileCreation, context: "MapNewStructure Overlay: per-chain color" } );
+                        }
+                    }
 
                     let color: Molstar_Color = undefined
 
