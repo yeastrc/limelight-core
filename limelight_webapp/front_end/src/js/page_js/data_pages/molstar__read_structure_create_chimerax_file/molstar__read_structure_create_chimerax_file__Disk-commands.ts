@@ -42,8 +42,8 @@ export function molstar__read_structure_create_chimerax_file__GenerateDiskComman
 
         const key1 = molstar__read_structure_create_chimerax_file__ResidueKey(spec.chainId__label_asym_id, spec.residueSeqId1);
         const key2 = molstar__read_structure_create_chimerax_file__ResidueKey(spec.chainId__label_asym_id, spec.residueSeqId2);
-        const pos1 = caMap.get(key1);
-        const pos2 = caMap.get(key2);
+        const pos1 = caMap.get(key1)?.pos;
+        const pos2 = caMap.get(key2)?.pos;
 
         if (!pos1) {
             warnings.push(

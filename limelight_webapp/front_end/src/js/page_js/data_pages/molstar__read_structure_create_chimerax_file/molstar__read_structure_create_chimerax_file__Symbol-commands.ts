@@ -27,7 +27,7 @@ export function molstar__read_structure_create_chimerax_file__GenerateSymbolComm
 
     for (const spec of specs) {
         const key = molstar__read_structure_create_chimerax_file__ResidueKey(spec.chainId__label_asym_id, spec.residueSeqId__label_seq_id);
-        const pos = caMap.get(key);
+        const pos = caMap.get(key)?.pos;
 
         if (!pos) {
             warnings.push(

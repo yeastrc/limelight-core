@@ -45,7 +45,19 @@ export function molstar__read_structure_create_chimerax_file__ExtractCACoordinat
             const y = StructureProperties.atom.y(loc);
             const z = StructureProperties.atom.z(loc);
 
-            map.set(key, Vec3.create(x, y, z));
+            // AUTH identity — required for ChimeraX residue specs, which resolve
+            // in auth space (not the label space used for the map key above).
+            const authAsymId = StructureProperties.chain.auth_asym_id(loc);
+            const authSeqId  = StructureProperties.residue.auth_seq_id(loc);
+            const rawInsCode = StructureProperties.residue.pdbx_PDB_ins_code(loc);
+            const insCode    = (rawInsCode && rawInsCode.trim()) ? rawInsCode.trim() : '';
+
+            map.set(key, {
+                pos: Vec3.create(x, y, z),
+                authAsymId,
+                authSeqId,
+                insCode,
+            });
         }
     }
 
