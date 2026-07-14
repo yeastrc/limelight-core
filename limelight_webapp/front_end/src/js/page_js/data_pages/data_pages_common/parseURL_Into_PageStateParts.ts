@@ -140,7 +140,7 @@ export class ParseURL_Into_PageStateParts {
 						} else {
 
 							{
-								if ( windowPath.indexOf( '/go/' ) ) {
+								if ( windowPath.indexOf( '/go/' ) !== -1 ) {
 
 									//  Throw this exception so NOT logged to server
 									const msg = "ERROR: Page URL is not Project Search Id Based or Experiment Id Based or Feature Detection Id Based or Project Scan File Id.  Page URL contains '/go/'.  Page URL: " + windowPath;
