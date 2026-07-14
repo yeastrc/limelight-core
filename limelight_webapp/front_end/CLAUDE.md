@@ -38,6 +38,24 @@ Exported names should be long and self-describing so an IDE autocomplete entry t
   import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
   ```
 
+## Colors — use the shared brand-color constants, don't hardcode hex
+
+**Don't hardcode Limelight brand color hex values in TS/TSX.** There is a single shared, frozen constants
+object mirroring the SCSS variables in `styles/global.scss` / `styles/a-common-scss-variables.scss`:
+
+- `page_js/common_all_pages/limelight__Limelight_Colors_Etc__SyncWith_global.scss__Constants.ts` →
+  `limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants` (`Object.freeze`d `as const`).
+
+Keys include the site greens `site_color_very_dark` (`#005606`, the dark brand/link green),
+`site_color_dark` (`#32cd32`, limegreen), `site_color_medium` (`#e4f9e4`), `site_color_light`; the
+`*__HEX_WithoutLeadingHashCharacter` variants (for places that need the hex without `#`); `link_color_*`
+(`link_color_underline` `#65A96A`); grays; `site_color_orange`; `filtering_display_color` (`#FEDD00`, the
+"Filtering On" yellow); `error_text_color`; `color_white`; `font_color_dark`/`font_color_default`; and the
+default font size. Reference these instead of literals; if the brand palette lacks the exact tone you want,
+use the **nearest existing constant** rather than inventing a new hex (that file's contract is to stay in
+sync with the SCSS — don't add colors that aren't in the SCSS). Neutral one-off shades that aren't brand
+colors (e.g. a `#bbbbbb` divider) can stay inline.
+
 ---
 
 ## How the front end is actually built

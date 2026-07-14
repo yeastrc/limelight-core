@@ -13,6 +13,7 @@
 
 import React from 'react'
 
+import { limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants } from "page_js/common_all_pages/limelight__Limelight_Colors_Etc__SyncWith_global.scss__Constants";
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
 import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
@@ -138,8 +139,8 @@ class TagFilter_Expression_OperatorChooser_OverlayBody extends React.Component< 
                 style={ {
                     borderWidth: isCurrent ? 2 : 1,
                     borderStyle: "solid",
-                    borderColor: isCurrent ? "#33557a" : "#bbbbbb",
-                    backgroundColor: isCurrent ? "#eef4fb" : "#ffffff",
+                    borderColor: isCurrent ? limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_very_dark : "#bbbbbb",  //  Limelight green when selected
+                    backgroundColor: isCurrent ? limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.site_color_medium : limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants.color_white,
                     borderRadius: 6,
                     paddingTop: 12,
                     paddingRight: 12,

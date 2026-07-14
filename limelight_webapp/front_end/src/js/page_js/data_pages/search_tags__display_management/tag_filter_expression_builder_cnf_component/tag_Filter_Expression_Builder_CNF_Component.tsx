@@ -16,6 +16,7 @@
 import React from 'react'
 import Switch from '@mui/material/Switch'
 
+import { limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants } from "page_js/common_all_pages/limelight__Limelight_Colors_Etc__SyncWith_global.scss__Constants";
 import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -318,9 +319,13 @@ export class Tag_Filter_Expression_Builder_CNF_Component
 
         const { operator, variant } = params;
 
+        //  Limelight green ( brand ):  dark green ( site_color_very_dark ) filled with white for the prominent
+        //  between-groups operator;  light green ( site_color_medium ) with dark-green text + medium-green border
+        //  ( link_color_underline ) for the lower-emphasis inline operator.
+        const _colors = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants;
         const baseStyle : React.CSSProperties = variant === 'between'
-            ? { color: "#ffffff", backgroundColor: "#33557a", borderWidth: 1, borderStyle: "solid", borderColor: "#22405f", borderRadius: 4, paddingTop: 2, paddingBottom: 2, paddingLeft: 7, paddingRight: 7 }
-            : { color: "#33557a", backgroundColor: "#dbe6f2", borderWidth: 1, borderStyle: "solid", borderColor: "#8aa9c9", borderRadius: 3, paddingTop: 1, paddingBottom: 1, paddingLeft: 4, paddingRight: 4, marginTop: 0, marginBottom: 0, marginLeft: 3, marginRight: 3 };
+            ? { color: _colors.color_white, backgroundColor: _colors.site_color_very_dark, borderWidth: 1, borderStyle: "solid", borderColor: _colors.site_color_very_dark, borderRadius: 4, paddingTop: 2, paddingBottom: 2, paddingLeft: 7, paddingRight: 7 }
+            : { color: _colors.site_color_very_dark, backgroundColor: _colors.site_color_medium, borderWidth: 1, borderStyle: "solid", borderColor: _colors.link_color_underline, borderRadius: 3, paddingTop: 1, paddingBottom: 1, paddingLeft: 4, paddingRight: 4, marginTop: 0, marginBottom: 0, marginLeft: 3, marginRight: 3 };
 
         const tooltipContents = (
             <span>
@@ -652,58 +657,87 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         //  clear first step.  As soon as there is any group ( even empty ), show the builder instead.
         const isPristine = this.state.andGroups.length === 0;
 
+        //  Wrap the ( non-pristine ) builder in a light panel that shrink-wraps to its content
+        //  ( width: fit-content ) so it does NOT stretch to the page's right edge -- while still letting the
+        //  groups row use the available width and wrap as many groups per line as fit ( fit-content grows to
+        //  the available width when the groups need it, then wraps ).
+        const panelStyle : React.CSSProperties = {
+            width: "fit-content",
+            maxWidth: "100%",
+            boxSizing: "border-box",
+            borderWidth: 1,
+            borderStyle: "solid",
+            borderColor: "#cbd5e6",
+            borderRadius: 6,
+            backgroundColor: "#f7fafd",
+            paddingTop: 10,
+            paddingRight: 12,
+            paddingBottom: 10,
+            paddingLeft: 12
+        };
+
         return (
             <div>
 
-                <div style={ { marginBottom: 6, display: "grid", gridTemplateColumns: "max-content 1fr", alignItems: "baseline" } }>
-                    <div style={ { fontWeight: "bold", marginRight: 6, fontSize: 18 } }>
+                { isPristine ? ( <>
+
+                    <div style={ { marginBottom: 6, fontWeight: "bold", fontSize: 18 } }>
                         Advanced Search Tag Filter
                     </div>
-                    { isPristine ? null : (
-                        <div style={ { color: "#666666" } }>
-                            e.g. <code>( a OR b OR c ) AND ( d OR e OR f )</code>.
-                            By default tags within a group are OR'd and groups are AND'd &mdash; <b>click any AND/OR to switch modes</b>.
+                    { this._render_EmptyState() }
+
+                </> ) : (
+
+                    <div style={ panelStyle }>
+
+                        {/*  Header ( inside the panel so the border encloses all parts )  */}
+                        <div style={ { marginBottom: 8, display: "flex", alignItems: "baseline", flexWrap: "wrap", columnGap: 6, rowGap: 2 } }>
+                            <div style={ { fontWeight: "bold", fontSize: 18, whiteSpace: "nowrap" } }>
+                                Advanced Search Tag Filter
+                            </div>
+                            <div style={ { color: "#666666", maxWidth: 560 } }>
+                                e.g. <code>( a OR b OR c ) AND ( d OR e OR f )</code>.
+                                By default tags within a group are OR'd and groups are AND'd &mdash; <b>click any AND/OR to switch modes</b>.
+                            </div>
                         </div>
-                    ) }
-                </div>
 
-                { isPristine ? this._render_EmptyState() : ( <>
+                        {/*  The groups, with "AND"/"OR" separators between them  */}
+                        <div style={ { display: "flex", flexWrap: "wrap", alignItems: "stretch", gap: 6 } }>
+                            { this.state.andGroups.map( ( group, groupIndex ) => (
+                                <React.Fragment key={ group._uiId }>
+                                    { groupIndex > 0 ? (
+                                        <div style={ { display: "flex", alignItems: "center" } }>
+                                            { this._render_ClickableOperator( { operator: this._betweenGroups_Operator(), variant: 'between' } ) }
+                                        </div>
+                                    ) : null }
+                                    { this._render_Group( group, groupIndex, tagEntry_Map, categoryLabel_Map ) }
+                                </React.Fragment>
+                            ) ) }
+                        </div>
 
-                {/*  The groups, with "AND" separators between them  */}
-                <div style={ { display: "flex", flexWrap: "wrap", alignItems: "stretch", gap: 6 } }>
-                    { this.state.andGroups.map( ( group, groupIndex ) => (
-                        <React.Fragment key={ group._uiId }>
-                            { groupIndex > 0 ? (
-                                <div style={ { display: "flex", alignItems: "center" } }>
-                                    { this._render_ClickableOperator( { operator: this._betweenGroups_Operator(), variant: 'between' } ) }
-                                </div>
-                            ) : null }
-                            { this._render_Group( group, groupIndex, tagEntry_Map, categoryLabel_Map ) }
-                        </React.Fragment>
-                    ) ) }
-                </div>
+                        {/*  Add control:  add a new ( empty ) group;  the user then adds tags to it  */}
+                        <div style={ { marginTop: 8, display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" } }>
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={ <span>Add a <b>new group</b> ( joined to the other groups with <b>{ betweenGroups_Operator }</b> ), then add tags to it.</span> }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <button
+                                    type="button"
+                                    onClick={ () => this._addGroup() }
+                                    style={ { cursor: "pointer", whiteSpace: "nowrap" } }
+                                >
+                                    Add a group
+                                </button>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        </div>
 
-                {/*  Add control:  add a new ( empty ) group;  the user then adds tags to it  */}
-                <div style={ { marginTop: 8, display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" } }>
-                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                        title={ <span>Add a <b>new group</b> ( joined to the other groups with <b>{ betweenGroups_Operator }</b> ), then add tags to it.</span> }
-                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                    >
-                        <span
-                            className=" fake-link "
-                            onClick={ () => this._addGroup() }
-                            style={ { cursor: "pointer", fontWeight: "bold", whiteSpace: "nowrap" } }
-                        >
-                            Add a group
-                        </span>
-                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                </div>
+                        {/*  NOTE:  the "Filtering on tags:" summary is rendered by the PARENT ( in the shared
+                             "filter-on-tags--currently-filtering" block, next to "Filtering on text:" ) via
+                             Tag_Filter_Expression_Preview_Component -- this builder is edit-only.  */}
 
-                {/*  NOTE:  the "Filtering on tags:" summary is rendered by the PARENT ( in the shared
-                     "filter-on-tags--currently-filtering" block, next to "Filtering on text:" ) via
-                     Tag_Filter_Expression_Preview_Component -- this builder is edit-only.  */}
+                    </div>
 
-                </> ) }
+                ) }
 
             </div>
         );
