@@ -70,6 +70,7 @@ import {
     Molstar__read_structure_create_chimerax_file__ResidueColorSpec,
     Molstar__read_structure_create_chimerax_file__ResidueSymbolSpec,
 } from "page_js/data_pages/molstar__read_structure_create_chimerax_file/molstar__read_structure_create_chimerax_file___Index";
+import { chimeraXExport_AuthCollision_Overlay__openOverlay } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/jsx/chimeraXExport_AuthCollision_Overlay";
 
 
 
@@ -3781,7 +3782,25 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 console.log( "ChimeraX file matches the Mol* viewer: the following positions are shown in neither because they have no coordinates in the structure, so nothing can be drawn there:", result.warnings )
             }
 
-            StringDownloadUtils.downloadStringAsFile( { stringToDownload: result.script, filename } );
+            const download_ChimeraXFile_Callback = () => {
+                StringDownloadUtils.downloadStringAsFile( { stringToDownload: result.script, filename } );
+            }
+
+            if ( result.collisions?.length > 0 ) {
+                //  Real problem: the structure's author numbering duplicates a residue within a chain, so
+                //  some color commands are ambiguous in ChimeraX (it cannot tell the residues apart, and
+                //  colors them all the same). Unlike the "no coordinates" skips above -- which match the
+                //  Mol* viewer and stay silent -- this is a case where the file is actually wrong, so warn
+                //  the user and let them start the download from the overlay (the browser download dialog
+                //  would otherwise cover it).
+                console.warn( "molstar__read_structure_create_chimerax_file__ConvertToCXC(...) auth-numbering collisions -- ambiguous coloring", result.collisions )
+                chimeraXExport_AuthCollision_Overlay__openOverlay( {
+                    collisions: result.collisions,
+                    download_Callback: download_ChimeraXFile_Callback
+                } )
+            } else {
+                download_ChimeraXFile_Callback()
+            }
 
         } catch ( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );

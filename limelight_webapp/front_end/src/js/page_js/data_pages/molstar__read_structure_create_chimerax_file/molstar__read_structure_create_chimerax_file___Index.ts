@@ -4,6 +4,7 @@ import {
     Molstar__read_structure_create_chimerax_file__ResidueSymbolSpec,
     Molstar__read_structure_create_chimerax_file__DiskSpec,
     Molstar__read_structure_create_chimerax_file__ConversionResult,
+    Molstar__read_structure_create_chimerax_file__AuthCollision,
 } from './molstar__read_structure_create_chimerax_file__Types';
 import { molstar__read_structure_create_chimerax_file__ExtractCACoordinates } from './molstar__read_structure_create_chimerax_file__CA-extractor';
 import { molstar__read_structure_create_chimerax_file__GenerateColorCommands } from './molstar__read_structure_create_chimerax_file__Color-commands';
@@ -11,7 +12,7 @@ import { molstar__read_structure_create_chimerax_file__GenerateSymbolCommands } 
 import { molstar__read_structure_create_chimerax_file__GenerateDiskCommands } from './molstar__read_structure_create_chimerax_file__Disk-commands';
 
 export type { Molstar__read_structure_create_chimerax_file__ResidueColorSpec, Molstar__read_structure_create_chimerax_file__ResidueSymbolSpec, Molstar__read_structure_create_chimerax_file__DiskSpec, Molstar__read_structure_create_chimerax_file__ConversionResult };
-export type { Molstar__read_structure_create_chimerax_file__SymbolType } from './molstar__read_structure_create_chimerax_file__Types';
+export type { Molstar__read_structure_create_chimerax_file__SymbolType, Molstar__read_structure_create_chimerax_file__AuthCollision } from './molstar__read_structure_create_chimerax_file__Types';
 
 /**
  * Convert a Molstar Structure with residue annotations into a ChimeraX .cxc
@@ -39,13 +40,14 @@ export function molstar__read_structure_create_chimerax_file__ConvertToCXC(
     }
 ): Molstar__read_structure_create_chimerax_file__ConversionResult {
     const warnings: string[] = [];
+    const collisions: Molstar__read_structure_create_chimerax_file__AuthCollision[] = [];
 
     // 1. Build CA coordinate map by traversing Molstar Structure
     const { map: caMap, warnings: extractWarnings } = molstar__read_structure_create_chimerax_file__ExtractCACoordinates(structure);
     warnings.push(...extractWarnings);
 
     // 2. Generate command blocks
-    const colorCmds  = molstar__read_structure_create_chimerax_file__GenerateColorCommands(colorSpecs, caMap, warnings);
+    const colorCmds  = molstar__read_structure_create_chimerax_file__GenerateColorCommands(colorSpecs, caMap, warnings, collisions);
     const symbolCmds = molstar__read_structure_create_chimerax_file__GenerateSymbolCommands(symbolSpecs, caMap, warnings);
     const diskCmds   = molstar__read_structure_create_chimerax_file__GenerateDiskCommands(diskSpecs, caMap, warnings);
 
@@ -73,5 +75,6 @@ export function molstar__read_structure_create_chimerax_file__ConvertToCXC(
     return {
         script: sections.join('\n'),
         warnings,
+        collisions,
     };
 }

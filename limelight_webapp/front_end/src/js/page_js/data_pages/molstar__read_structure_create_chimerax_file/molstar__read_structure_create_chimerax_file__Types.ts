@@ -57,7 +57,24 @@ export interface Molstar__read_structure_create_chimerax_file__ResidueEntry {
 export type Molstar__read_structure_create_chimerax_file__CACoordinateMap = Map<string, Molstar__read_structure_create_chimerax_file__ResidueEntry>;
 // key: `${label_asym_id}:${label_seq_id}`  (see ResidueEntry above)
 
+// --- Auth-numbering collisions (ambiguous coloring) ---
+
+/**
+ * A single ChimeraX color spec `/authAsymId:authSeqId[insCode]` that is claimed by MORE THAN ONE
+ * residue. Happens only in an out-of-spec structure whose author numbering duplicates a residue
+ * within one auth chain (e.g. two label chains share an auth_asym_id AND overlap in auth_seq_id).
+ * ChimeraX merges such chains and cannot tell the residues apart, so `color /A:100` colors them all
+ * the same — the one case where this file diverges from the label-based Mol* viewer.
+ */
+export interface Molstar__read_structure_create_chimerax_file__AuthCollision {
+  authAsymId: string;   // the shared ChimeraX (auth) chain id
+  authSeqId: number;    // the shared ChimeraX (auth) residue number
+  insCode: string;      // shared insertion code, '' when none
+  residues: Array<{ labelAsymId: string; labelSeqId: number }>;  // the >= 2 distinct residues that collide, in label identity
+}
+
 export interface Molstar__read_structure_create_chimerax_file__ConversionResult {
   script: string;
   warnings: string[];
+  collisions: Molstar__read_structure_create_chimerax_file__AuthCollision[];
 }
