@@ -3749,12 +3749,6 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 diskSpecs
             } )
 
-            if ( result.warnings?.length > 0 ) {
-                window.alert( "Create result returned warnings.  See browser console for warnings" )
-                console.warn( "molstar__read_structure_create_chimerax_file__ConvertToCXC(...) result warnings", result.warnings )
-                // throw Error( "molstar__read_structure_create_chimerax_file__ConvertToCXC(...) result contains warnings" )
-            }
-
             const searchIds: Array<string> = []
 
             for ( const projectSearchId of this.props.projectSearchIds ) {
@@ -3778,6 +3772,14 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 "_limelight_" +
                 searchIds_UnderlineSeparated +
                 ".cxc"
+
+            if ( result.warnings?.length > 0 ) {
+                //  Some items were skipped -- almost always residues with no coordinates in the structure file.
+                //  These are the SAME items the Mol* viewer also cannot draw (it skips them silently: coloring
+                //  selects atoms, modification balls and trypsin-cut-point disks require a CA). So the downloaded
+                //  file matches what is on screen and no user-facing message is warranted. Logged as a dev aid only.
+                console.log( "ChimeraX file matches the Mol* viewer: the following positions are shown in neither because they have no coordinates in the structure, so nothing can be drawn there:", result.warnings )
+            }
 
             StringDownloadUtils.downloadStringAsFile( { stringToDownload: result.script, filename } );
 
