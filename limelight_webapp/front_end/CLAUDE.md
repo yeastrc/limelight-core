@@ -199,6 +199,13 @@ in-page dialogs. Definition:
 Canonical usage example: `SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component`
 in `.../search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_UserInput_OverlayContents.tsx`.
 
+**Prefer this overlay over `window.alert()` for anything the user should read.** Do **not** surface
+user-facing warnings/messages through the browser console, nor a `window.alert("… see browser console …")`
+— most users can't or won't use the console. Present them in this overlay, well-formatted. `window.alert`
+is tempting because it is far less code and it blocks execution until dismissed, but that convenience is
+not worth the poor UX: **write no new `window.alert`s** — the existing ones are legacy shortcuts, not a
+pattern to copy. Console logging is fine as an *additional* developer aid, never the user's only channel.
+
 - **The overlay centers itself and sizes between the min/max you give it**, and auto-switches CSS
   `position` between `fixed` and `absolute` on window resize so the browser scrollbars can still reach
   it when the viewport is too small. It renders its **own title bar** (a `top-level fixed-height
