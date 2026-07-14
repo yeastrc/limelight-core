@@ -78,6 +78,7 @@ import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_c
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Marshal_RestRequest_Object_ToXML;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_XML_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
+import org.yeastrc.limelight.limelight_webapp.web_utils.HttpHeaderValue_Base64_Encoding;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.web_utils.UnmarshalJSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
@@ -108,7 +109,7 @@ public class Project_UploadData_V2_UploadFile_Chunking_Upload_File_RestWebservic
 	
 	//  Keep all these Strings in sync with the Javascript AJAX Send:
 
-	private static final String UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON = "limelight_upload_file_params_json";
+	private static final String UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON = "limelight_upload_file_params_json_base_64";
 
 	//  Keep all these Strings in sync with the Submit Program Send:
 	
@@ -210,12 +211,14 @@ public class Project_UploadData_V2_UploadFile_Chunking_Upload_File_RestWebservic
 
 			//    			String requestURL = httpServletRequest.getRequestURL().toString();
 
-			String uploadFileParamsJSON = httpServletRequest.getHeader( UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON );
+			String uploadFileParamsJSON_Base64 = httpServletRequest.getHeader( UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON );
 
-			if ( StringUtils.isEmpty( uploadFileParamsJSON ) ) {
+			if ( StringUtils.isEmpty( uploadFileParamsJSON_Base64 ) ) {
 				log.warn( "'" + UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON + "' header parameter is not sent or is empty" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
+
+			String uploadFileParamsJSON = HttpHeaderValue_Base64_Encoding.decode_HttpHeaderValue_Base64_ToString( uploadFileParamsJSON_Base64 );
 
 			SubmitImport_V2_UploadFile_Chunking_Request_Common webserviceRequestHeaderContents = 
 					unmarshalJSON_ToObject.getObjectFromJSONString( uploadFileParamsJSON, SubmitImport_V2_UploadFile_Chunking_Request_Common.class );

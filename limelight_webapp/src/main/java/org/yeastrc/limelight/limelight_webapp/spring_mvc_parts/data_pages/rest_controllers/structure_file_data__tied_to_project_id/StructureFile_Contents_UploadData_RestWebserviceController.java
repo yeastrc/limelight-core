@@ -61,6 +61,7 @@ import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.ut
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
+import org.yeastrc.limelight.limelight_webapp.web_utils.HttpHeaderValue_Base64_Encoding;
 import org.yeastrc.limelight.limelight_webapp.web_utils.UnmarshalJSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
@@ -77,9 +78,9 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 	
 	//  Keep all these Strings in sync with the Javascript AJAX Send:
 
-	private static final String UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON = "limelight_upload_file_params_json";
+	private static final String UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON = "limelight_upload_file_params_json_base_64";
 	
-	private static final String STRUCTURE_FILE_CHAINS_ID_LABEL_AUTH_JSON = "limelight_upload_structure_file_chains_id_label_auth_json";
+	private static final String STRUCTURE_FILE_CHAINS_ID_LABEL_AUTH_JSON = "limelight_upload_structure_file_chains_id_label_auth_json_base_64";
 
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
@@ -138,26 +139,30 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 
 			//    			String requestURL = httpServletRequest.getRequestURL().toString();
 
-			String uploadFileParamsJSON = httpServletRequest.getHeader( UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON );
+			String uploadFileParamsJSON_Base64 = httpServletRequest.getHeader( UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON );
 
-			if ( StringUtils.isEmpty( uploadFileParamsJSON ) ) {
+			if ( StringUtils.isEmpty( uploadFileParamsJSON_Base64 ) ) {
 				log.warn( "'" + UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON + "' header parameter is not sent or is empty" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 
-			WebserviceRequest_HeaderContents webserviceRequestHeaderContents = 
+			String uploadFileParamsJSON = HttpHeaderValue_Base64_Encoding.decode_HttpHeaderValue_Base64_ToString( uploadFileParamsJSON_Base64 );
+
+			WebserviceRequest_HeaderContents webserviceRequestHeaderContents =
 					unmarshalJSON_ToObject.getObjectFromJSONString( uploadFileParamsJSON, WebserviceRequest_HeaderContents.class );
 			
 			
 			
-			String structureFile_Chains_Id_Label_Auth_JSON = httpServletRequest.getHeader( STRUCTURE_FILE_CHAINS_ID_LABEL_AUTH_JSON );
+			String structureFile_Chains_Id_Label_Auth_JSON_Base64 = httpServletRequest.getHeader( STRUCTURE_FILE_CHAINS_ID_LABEL_AUTH_JSON );
 
-			if ( StringUtils.isEmpty( structureFile_Chains_Id_Label_Auth_JSON ) ) {
+			if ( StringUtils.isEmpty( structureFile_Chains_Id_Label_Auth_JSON_Base64 ) ) {
 				log.warn( "'" + STRUCTURE_FILE_CHAINS_ID_LABEL_AUTH_JSON + "' header parameter is not sent or is empty" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 
-			StructureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT = 
+			String structureFile_Chains_Id_Label_Auth_JSON = HttpHeaderValue_Base64_Encoding.decode_HttpHeaderValue_Base64_ToString( structureFile_Chains_Id_Label_Auth_JSON_Base64 );
+
+			StructureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT =
 					unmarshalJSON_ToObject.getObjectFromJSONString( structureFile_Chains_Id_Label_Auth_JSON, StructureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT.class );
 			
 			{  // Validate structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT

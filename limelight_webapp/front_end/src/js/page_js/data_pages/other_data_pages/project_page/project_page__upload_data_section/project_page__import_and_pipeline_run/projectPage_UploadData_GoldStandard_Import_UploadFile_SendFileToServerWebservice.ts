@@ -9,6 +9,7 @@
  */
 
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+import { encode_String_To_HttpHeaderValue_Base64 } from "page_js/data_pages/data_pages_common/httpHeaderValue_Base64_EncodeDecode";
 import {handleRawAJAXError} from "page_js/common_all_pages/handleServicesAJAXErrors";
 import {
     getWebserviceSyncTrackingCode,
@@ -20,7 +21,7 @@ import {
 const FILE_UPLOAD_SERVICE_URL = "d/rws/for-page/project-gold-standard-import-upload-file";
 
 
-const LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM = "limelight_upload_file_params_json"  //  Keep in sync with server side
+const LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM = "limelight_upload_file_params_json_base_64"  //  Keep in sync with server side
 
 const LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR = "REJECT_ON_NETWORK_ERROR";
 
@@ -255,7 +256,7 @@ const _actual_WebserviceCall__Return_XHR_Response_Via_Promise = function (
         }
         let uploadFileHeaderParamsJSON = JSON.stringify( uploadFileHeaderParams );
 
-        xmlHttpRequest.setRequestHeader( LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM, uploadFileHeaderParamsJSON );
+        xmlHttpRequest.setRequestHeader( LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM, encode_String_To_HttpHeaderValue_Base64( uploadFileHeaderParamsJSON ) );
 
         //  ES Lint reports useless try/catch so remove
         // try {

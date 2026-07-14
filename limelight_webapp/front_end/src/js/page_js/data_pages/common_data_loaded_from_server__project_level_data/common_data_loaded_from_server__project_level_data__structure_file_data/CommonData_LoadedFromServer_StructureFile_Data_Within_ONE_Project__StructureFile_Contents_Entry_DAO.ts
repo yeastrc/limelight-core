@@ -6,6 +6,7 @@
  * DAO for the Structure File Contents Webservices
  */
 import { BuiltInTrajectoryFormat } from "molstar/lib/mol-plugin-state/formats/trajectory";
+import { encode_String_To_HttpHeaderValue_Base64 } from "page_js/data_pages/data_pages_common/httpHeaderValue_Base64_EncodeDecode";
 import { getWebserviceSyncTrackingCode, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM } from "page_js/common_all_pages/EveryPageCommon";
 import { limelight__variable_is_type_number_Check } from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
@@ -335,7 +336,7 @@ export class CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__
 
         /////////
 
-        const LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM = "limelight_upload_file_params_json"  //  Keep in sync with server side
+        const LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM = "limelight_upload_file_params_json_base_64"  //  Keep in sync with server side
 
         const uploadFileHeaderParams = {
             projectIdentifier, // string
@@ -349,7 +350,7 @@ export class CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__
 
         ///////
 
-        const LIMELIGHT_UPLOAD_FILE__CHAINS_DATA__PARAMS_JSON__HEADER_PARAM = "limelight_upload_structure_file_chains_id_label_auth_json"  //  Keep in sync with server side
+        const LIMELIGHT_UPLOAD_FILE__CHAINS_DATA__PARAMS_JSON__HEADER_PARAM = "limelight_upload_structure_file_chains_id_label_auth_json_base_64"  //  Keep in sync with server side
 
         const uploadFile_ChainsData_Entries: Array<any> = []
 
@@ -396,8 +397,8 @@ export class CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__
         const httpHeaders: any = {
             "Content-Type": "application/octet-stream",
             [ LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM ]: webserviceSyncTrackingCode,
-            [ LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM ]: uploadFileHeaderParamsJSON,
-            [ LIMELIGHT_UPLOAD_FILE__CHAINS_DATA__PARAMS_JSON__HEADER_PARAM ]: uploadFile_ChainsData_HeaderParamsJSON
+            [ LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM ]: encode_String_To_HttpHeaderValue_Base64( uploadFileHeaderParamsJSON ),
+            [ LIMELIGHT_UPLOAD_FILE__CHAINS_DATA__PARAMS_JSON__HEADER_PARAM ]: encode_String_To_HttpHeaderValue_Base64( uploadFile_ChainsData_HeaderParamsJSON )
         }
 
         const fetch_Response = await window.fetch( url, {

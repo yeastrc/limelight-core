@@ -19,6 +19,7 @@
 
 //  For AJAX call (non jQuery)
 import { getWebserviceSyncTrackingCode, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM } from 'page_js/common_all_pages/EveryPageCommon';
+import { encode_String_To_HttpHeaderValue_Base64 } from "page_js/data_pages/data_pages_common/httpHeaderValue_Base64_EncodeDecode";
 
 import { handleRawAJAXError } from 'page_js/common_all_pages/handleServicesAJAXErrors'
 
@@ -32,7 +33,7 @@ const STARTING_SEND_DATA_BLOCK_SIZE__AS_FRACTION_OF_MAX_SIZE = .05;
 
 const MINIMUM_SEND_DATA_BLOCK_SIZE__AS_FRACTION_OF_MAX_SIZE = .005;
 
-const LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM = "limelight_upload_file_params_json"  //  Keep in sync with server side
+const LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM = "limelight_upload_file_params_json_base_64"  //  Keep in sync with server side
 
 const LIMELIGHT_UPLOAD_FILE__REJECT_ON_NETWORK_ERROR = "REJECT_ON_NETWORK_ERROR";
 
@@ -639,7 +640,7 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 				}
 				let uploadFileHeaderParamsJSON = JSON.stringify( uploadFileHeaderParams );
 
-				xmlHttpRequest.setRequestHeader( LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM, uploadFileHeaderParamsJSON );
+				xmlHttpRequest.setRequestHeader( LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM, encode_String_To_HttpHeaderValue_Base64( uploadFileHeaderParamsJSON ) );
 
 				//  ES Lint reports useless try/catch so remove
 				// try {
