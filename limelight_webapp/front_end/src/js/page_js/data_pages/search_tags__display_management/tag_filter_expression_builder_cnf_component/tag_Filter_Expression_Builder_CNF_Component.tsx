@@ -32,6 +32,10 @@ import {tagFilter_Expression_TagPicker_Overlay__openOverlay} from "page_js/data_
 /////
 
 
+//  Short alias for the shared Limelight brand-color constants ( used for every brand color in this file )
+const _limelightColors = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants;
+
+
 //  A single tag literal inside an OR group
 interface Internal__CNF_Literal {
     _uiId: number
@@ -322,10 +326,9 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         //  Limelight green ( brand ):  dark green ( site_color_very_dark ) filled with white for the prominent
         //  between-groups operator;  light green ( site_color_medium ) with dark-green text + medium-green border
         //  ( link_color_underline ) for the lower-emphasis inline operator.
-        const _colors = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants;
         const baseStyle : React.CSSProperties = variant === 'between'
-            ? { color: _colors.color_white, backgroundColor: _colors.site_color_very_dark, borderWidth: 1, borderStyle: "solid", borderColor: _colors.site_color_very_dark, borderRadius: 4, paddingTop: 2, paddingBottom: 2, paddingLeft: 7, paddingRight: 7 }
-            : { color: _colors.site_color_very_dark, backgroundColor: _colors.site_color_medium, borderWidth: 1, borderStyle: "solid", borderColor: _colors.link_color_underline, borderRadius: 3, paddingTop: 1, paddingBottom: 1, paddingLeft: 4, paddingRight: 4, marginTop: 0, marginBottom: 0, marginLeft: 3, marginRight: 3 };
+            ? { color: _limelightColors.color_white, backgroundColor: _limelightColors.site_color_very_dark, borderWidth: 1, borderStyle: "solid", borderColor: _limelightColors.site_color_very_dark, borderRadius: 4, paddingTop: 2, paddingBottom: 2, paddingLeft: 7, paddingRight: 7 }
+            : { color: _limelightColors.site_color_very_dark, backgroundColor: _limelightColors.site_color_medium, borderWidth: 1, borderStyle: "solid", borderColor: _limelightColors.link_color_underline, borderRadius: 3, paddingTop: 1, paddingBottom: 1, paddingLeft: 4, paddingRight: 4, marginTop: 0, marginBottom: 0, marginLeft: 3, marginRight: 3 };
 
         const tooltipContents = (
             <span>
@@ -484,19 +487,19 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                 style={ {
                     borderWidth: 1,
                     borderStyle: "solid",
-                    borderColor: "#8aa9c9",
+                    borderColor: _limelightColors.link_color_underline,
                     borderRadius: 6,
                     paddingTop: 8,
                     paddingRight: 8,
                     paddingBottom: 8,
                     paddingLeft: 8,
-                    backgroundColor: "#f4f8fc",
+                    backgroundColor: _limelightColors.site_color_light,
                     minWidth: 180
                 } }
             >
                 {/*  Group header  */}
                 <div style={ { display: "flex", alignItems: "center", marginBottom: 4 } }>
-                    <span style={ { fontWeight: "bold", color: "#33557a", marginRight: 6 } }>
+                    <span style={ { fontWeight: "bold", color: _limelightColors.site_color_very_dark, marginRight: 6 } }>
                         Group { groupIndex + 1 }
                     </span>
                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -578,9 +581,9 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                     marginTop: 8,
                     borderWidth: 1,
                     borderStyle: "dashed",
-                    borderColor: "#8aa9c9",
+                    borderColor: _limelightColors.link_color_underline,
                     borderRadius: 8,
-                    backgroundColor: "#f4f8fc",
+                    backgroundColor: _limelightColors.site_color_light,
                     paddingTop: 22,
                     paddingRight: 20,
                     paddingBottom: 22,
@@ -592,7 +595,7 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                     rowGap: 12
                 } }
             >
-                <div style={ { fontWeight: "bold", fontSize: 16, color: "#33557a" } }>
+                <div style={ { fontWeight: "bold", fontSize: 16, color: _limelightColors.site_color_very_dark } }>
                     Start adding tags to the first group.
                 </div>
                 <div style={ { color: "#666666", maxWidth: 560 } }>
@@ -619,13 +622,13 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                         style={ {
                             display: "inline-flex",
                             alignItems: "center",
-                            backgroundColor: "#33557a",
-                            color: "#ffffff",
+                            backgroundColor: _limelightColors.site_color_very_dark,
+                            color: _limelightColors.color_white,
                             fontWeight: "bold",
                             fontSize: 15,
                             borderWidth: 1,
                             borderStyle: "solid",
-                            borderColor: "#22405f",
+                            borderColor: _limelightColors.site_color_very_dark,
                             borderRadius: 5,
                             paddingTop: 7,
                             paddingBottom: 7,
@@ -667,9 +670,9 @@ export class Tag_Filter_Expression_Builder_CNF_Component
             boxSizing: "border-box",
             borderWidth: 1,
             borderStyle: "solid",
-            borderColor: "#cbd5e6",
+            borderColor: _limelightColors.link_color_underline,
             borderRadius: 6,
-            backgroundColor: "#f7fafd",
+            backgroundColor: _limelightColors.site_color_light,
             paddingTop: 10,
             paddingRight: 12,
             paddingBottom: 10,
