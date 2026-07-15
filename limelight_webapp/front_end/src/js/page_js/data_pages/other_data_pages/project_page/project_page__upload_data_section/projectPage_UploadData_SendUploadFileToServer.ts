@@ -225,7 +225,11 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 
 			processedBytes_OfFile += sendData_BlockSize;
 
-			if ( processedBytes_OfFile <= totalFileSize ) {
+			//  Use '<' (not '<=') so that when a chunk boundary lands exactly on the end of the file
+			//  (processedBytes_OfFile === totalFileSize, e.g. a file that is an exact multiple of the
+			//  fixed S3 chunk size) the upload is treated as complete instead of sending an extra
+			//  0-byte trailing chunk (which for S3 becomes a spurious 0-byte UploadPart).
+			if ( processedBytes_OfFile < totalFileSize ) {
 
 				// file is NOT completely uploaded
 

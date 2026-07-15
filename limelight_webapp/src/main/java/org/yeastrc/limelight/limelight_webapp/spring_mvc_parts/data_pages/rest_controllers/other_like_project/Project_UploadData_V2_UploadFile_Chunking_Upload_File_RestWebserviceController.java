@@ -996,6 +996,16 @@ public class Project_UploadData_V2_UploadFile_Chunking_Upload_File_RestWebservic
 				if ( FileImportTrackingSingleFile_S3UploadPart_DTO != null ) {
 					//  Part number exists so validate the start end and then skip the upload.
 
+					//  TODO  S3 part-retry idempotency is NOT implemented -- this throws instead of skipping.
+					//        This branch is hit when the client re-sends a chunk whose S3 part was already
+					//        uploaded AND persisted (e.g. the 200 response was lost after the DB save committed,
+					//        then the client retried).  Throwing LimelightInternalErrorException returns HTTP 500,
+					//        which the client does NOT retry (only network/checksum errors are retried), so the
+					//        whole upload fails on what should be a recoverable duplicate.
+					//        To fix: validate that this existing part DTO's start/end byte range matches the
+					//        current request (getFileChunk_StartByte + contentLength), then SKIP the re-upload and
+					//        return success (setStatusSuccess(true)) so the retry is idempotent -- do NOT upload
+					//        the part again.  NOT DONE / NOT TESTED (no S3 env).
 
 					throw new LimelightInternalErrorException( "NOT HANDLED:  fileImportTrackingSingleFile_S3UploadPart_DAO.getFor_FileImportTrackingSingleFileId_S3_UploadPart_Number(...) returned a record");
 					
@@ -1049,6 +1059,15 @@ public class Project_UploadData_V2_UploadFile_Chunking_Upload_File_RestWebservic
 				 {
 					 try ( InputStream inputStreamFromPOSTLocal = httpServletRequest.getInputStream() ) {
 
+						 //  TODO  The per-chunk SHA-256 integrity check is NOT performed on this S3 path.
+						 //        The browser always computes and sends webserviceRequestHeaderContents.getSha256_Value_ForChunk()
+						 //        for every chunk, but only the local-disk branch below verifies it (see the
+						 //        MessageDigest / setChecksumSHA256_NotMatch block).  On this S3 path the value is ignored,
+						 //        so S3 chunk uploads have weaker integrity than local ones.
+						 //        To add it: wrap inputStreamFromPOSTLocal in a java.security.DigestInputStream (SHA-256)
+						 //        so the hash is computed as bytes stream to S3, then after uploadPart compare it to
+						 //        getSha256_Value_ForChunk(); on mismatch do NOT persist the part DTO and return
+						 //        setChecksumSHA256_NotMatch(true) so the client retries.  NOT DONE / NOT TESTED (no S3 env).
 
 						 //  TODO  Duplicate the File validation below
 
@@ -1098,16 +1117,40 @@ public class Project_UploadData_V2_UploadFile_Chunking_Upload_File_RestWebservic
 					fileTotalSize = uploadedFileOnDisk.length();
 					
 					if ( webserviceRequestHeaderContents.getFileChunk_StartByte().longValue() < fileTotalSize ) {
-						
+
 						//  Already saved this block so skip
-		
+
 						webserviceResult.setStatusSuccess( true );
-						
+
 						return methodResults;  //  EARLY RETURN
 					}
 				}
 			}
-			
+
+			//  Enforce in-order, gap-free assembly.  The local-disk branch simply appends each chunk,
+			//  so the only correct StartByte at this point is exactly the current end of the assembled
+			//  file (fileTotalSize).  The "already saved" skip above handled StartByte < fileTotalSize,
+			//  so reaching here with StartByte != fileTotalSize means StartByte > fileTotalSize: a chunk
+			//  is missing or arrived out of order.  Appending it would silently corrupt the assembled
+			//  file (the wrong bytes would land at the wrong offset and the final size check could still
+			//  pass), so reject instead.
+			if ( webserviceRequestHeaderContents.getFileChunk_StartByte().longValue() != fileTotalSize ) {
+
+				String msg = "Chunk fileChunk_StartByte (" + webserviceRequestHeaderContents.getFileChunk_StartByte()
+						+ ") does not match current assembled file length (" + fileTotalSize
+						+ "); chunks must be uploaded in order with no gaps.  importTrackingId: " + importTrackingId
+						+ ", fileIndex: " + webserviceRequestHeaderContents.getFileIndex();
+				log.warn( msg );
+
+				webserviceResult.setStatusSuccess( false );
+				webserviceResult.setUploadKeyNotValid( true );
+
+				methodResults.returnBadRequestStatusCode = true;
+
+				//  EARLY RETURN
+				return methodResults;
+			}
+
 			//  Copy InputStream containing POST body into memory buffer and then into file on disk
 			{
 				//  Copy to in memory buffer first to ensure get full chunk before append to file

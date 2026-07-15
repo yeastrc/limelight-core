@@ -873,7 +873,12 @@ public class Project_UploadData_V2_UploadFile_Initialize_RestWebserviceControlle
 				- Limelight__AWS_S3_Constants.AWS_S3_MULTIPART_UPLOAD_UPLOAD_PART__MINIMUM_PART_NUMBER
 				+ 1;
 		
-		long chunkSize = (long) Math.ceil( uploadFileSize / maxPartCount );
+		//  Integer ceiling division: smallest chunk size such that the number of parts
+		//  ( ceil( uploadFileSize / chunkSize ) ) is <= maxPartCount.  NOTE: do NOT write this as
+		//  Math.ceil( uploadFileSize / maxPartCount ) -- both operands are integral, so that is
+		//  long (integer) division which floors BEFORE Math.ceil runs, making Math.ceil a no-op and
+		//  under-sizing the chunk by up to ~1 unit, which can push the part count to maxPartCount + 1.
+		long chunkSize = ( uploadFileSize + maxPartCount - 1 ) / maxPartCount;
 		
 		if ( chunkSize < Limelight__AWS_S3_Constants.AWS_S3_MULTIPART_UPLOAD_UPLOAD_PART__MINIMUM_PUT_OBJECT_SIZE_EXCEPT_LAST_PUT ) {
 			//  chunkSize MUST be at least MINIMUM_PUT_OBJECT_SIZE
