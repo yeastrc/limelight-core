@@ -6,7 +6,7 @@
 ///////////////////////////////////////////
 
 // @ts-ignore
-import { saveAs } from 'file-saver/FileSaver';
+import { saveAs } from 'file-saver';
 
 /**
  * 
