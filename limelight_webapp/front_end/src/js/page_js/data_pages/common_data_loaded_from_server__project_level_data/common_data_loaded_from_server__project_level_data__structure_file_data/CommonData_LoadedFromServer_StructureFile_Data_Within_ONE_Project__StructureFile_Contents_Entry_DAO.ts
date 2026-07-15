@@ -350,7 +350,9 @@ export class CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__
 
         ///////
 
-        const LIMELIGHT_UPLOAD_FILE__CHAINS_DATA__PARAMS_JSON__HEADER_PARAM = "limelight_upload_structure_file_chains_id_label_auth_json_base_64"  //  Keep in sync with server side
+        const LIMELIGHT_UPLOAD_FILE__CHAINS_DATA__BODY_PREFIX_BYTE_LENGTH__HEADER_PARAM = "limelight_upload_structure_file_chains_id_label_auth_json_body_prefix_byte_length"  //  Keep in sync with server side
+
+        const LIMELIGHT_UPLOAD_FILE__CHAINS_DATA__BODY_PREFIX_SHA_256__HEADER_PARAM = "limelight_upload_structure_file_chains_id_label_auth_json_body_prefix_sha_256"  //  Keep in sync with server side
 
         const uploadFile_ChainsData_Entries: Array<any> = []
 
@@ -386,6 +388,19 @@ export class CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__
         }
         const uploadFile_ChainsData_HeaderParamsJSON = JSON.stringify( uploadFile_ChainsData_HeaderParams );
 
+        //  Chains JSON is sent at the START of the POST body (not in a header) as UTF-8 bytes, with its byte
+        //  length in the header below.  The server splits the body into [ chains ][ file ] at that byte offset.
+        //  MUST be the UTF-8 byte count, NOT string .length (UTF-16 code units), which would split mid-character.
+        const uploadFile_ChainsData_HeaderParamsJSON_Bytes = textEncoder.encode( uploadFile_ChainsData_HeaderParamsJSON );
+        const uploadFile_ChainsData_ByteLength = uploadFile_ChainsData_HeaderParamsJSON_Bytes.length;
+
+        //  SHA-256 of the chains JSON body-prefix bytes, sent in a header so the server can verify the
+        //  integrity of the prefix (same treatment as the file contents).  Hash the BYTES, not the string.
+        const uploadFile_ChainsData_Hash_ArrayBuffer = await window.crypto.subtle.digest( _DIGEST_ALGORITHM, uploadFile_ChainsData_HeaderParamsJSON_Bytes );
+        const uploadFile_ChainsData_HashHex = Array.from( new Uint8Array( uploadFile_ChainsData_Hash_ArrayBuffer ) )
+            .map( byte => byte.toString( 16 ).padStart( 2, '0' ) )
+            .join( '' );
+
         //////
 
         const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
@@ -398,15 +413,21 @@ export class CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__
             "Content-Type": "application/octet-stream",
             [ LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM ]: webserviceSyncTrackingCode,
             [ LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM ]: encode_String_To_HttpHeaderValue_Base64( uploadFileHeaderParamsJSON ),
-            [ LIMELIGHT_UPLOAD_FILE__CHAINS_DATA__PARAMS_JSON__HEADER_PARAM ]: encode_String_To_HttpHeaderValue_Base64( uploadFile_ChainsData_HeaderParamsJSON )
+            [ LIMELIGHT_UPLOAD_FILE__CHAINS_DATA__BODY_PREFIX_BYTE_LENGTH__HEADER_PARAM ]: String( uploadFile_ChainsData_ByteLength ),
+            [ LIMELIGHT_UPLOAD_FILE__CHAINS_DATA__BODY_PREFIX_SHA_256__HEADER_PARAM ]: uploadFile_ChainsData_HashHex
         }
+
+        //  POST body = [ chains JSON UTF-8 bytes ][ file contents UTF-8 bytes ].
+        //  Use the already-encoded file bytes (the exact bytes the SHA-256 above was computed over) so the file
+        //  portion on the wire is byte-identical to what the server hashes after offset = chains byte length.
+        const uploadBody_Blob = new Blob( [ uploadFile_ChainsData_HeaderParamsJSON_Bytes, proteinSequenceStructureFile_Contents_Encoded ] );
 
         const fetch_Response = await window.fetch( url, {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
             headers: httpHeaders,
             // redirect: "follow", // manual, *follow, error
             // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: proteinSequenceStructureFile_Contents // body data type must match "Content-Type" header
+            body: uploadBody_Blob // body data type must match "Content-Type" header
         } )
 
         const fetchResponse_Status = fetch_Response.status

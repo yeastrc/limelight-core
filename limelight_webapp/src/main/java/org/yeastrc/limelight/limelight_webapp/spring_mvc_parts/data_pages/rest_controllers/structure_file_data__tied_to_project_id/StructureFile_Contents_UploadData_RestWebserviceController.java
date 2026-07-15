@@ -19,6 +19,7 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -80,7 +81,9 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 
 	private static final String UPLOAD_FILE_HEADER_PARAMETER_PARAMS_WEB_JSON = "limelight_upload_file_params_json_base_64";
 	
-	private static final String STRUCTURE_FILE_CHAINS_ID_LABEL_AUTH_JSON = "limelight_upload_structure_file_chains_id_label_auth_json_base_64";
+	private static final String STRUCTURE_FILE_CHAINS_BODY_PREFIX_BYTE_LENGTH = "limelight_upload_structure_file_chains_id_label_auth_json_body_prefix_byte_length";
+
+	private static final String STRUCTURE_FILE_CHAINS_BODY_PREFIX_SHA_256 = "limelight_upload_structure_file_chains_id_label_auth_json_body_prefix_sha_256";
 
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
@@ -153,42 +156,34 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 			
 			
 			
-			String structureFile_Chains_Id_Label_Auth_JSON_Base64 = httpServletRequest.getHeader( STRUCTURE_FILE_CHAINS_ID_LABEL_AUTH_JSON );
+			//  Chains id/label/auth JSON is now sent at the START of the POST body (not in a header) as UTF-8
+			//  bytes.  This header carries only its byte length so _processRequest can split body = [ chains ][ file ].
+			String structureFile_Chains_BodyPrefix_ByteLength_String = httpServletRequest.getHeader( STRUCTURE_FILE_CHAINS_BODY_PREFIX_BYTE_LENGTH );
 
-			if ( StringUtils.isEmpty( structureFile_Chains_Id_Label_Auth_JSON_Base64 ) ) {
-				log.warn( "'" + STRUCTURE_FILE_CHAINS_ID_LABEL_AUTH_JSON + "' header parameter is not sent or is empty" );
+			if ( StringUtils.isEmpty( structureFile_Chains_BodyPrefix_ByteLength_String ) ) {
+				log.warn( "'" + STRUCTURE_FILE_CHAINS_BODY_PREFIX_BYTE_LENGTH + "' header parameter is not sent or is empty" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 
-			String structureFile_Chains_Id_Label_Auth_JSON = HttpHeaderValue_Base64_Encoding.decode_HttpHeaderValue_Base64_ToString( structureFile_Chains_Id_Label_Auth_JSON_Base64 );
-
-			StructureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT =
-					unmarshalJSON_ToObject.getObjectFromJSONString( structureFile_Chains_Id_Label_Auth_JSON, StructureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT.class );
-			
-			{  // Validate structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT
-				
-				// Test for duplicate values of 'lid' or 'lbl'
-				
-				int entriesSize = structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT.getEntries().size();
-				
-				Set<Integer> lidEntries = new HashSet<>( entriesSize );
-				Set<String> lblEntries = new HashSet<>( entriesSize );
-				
-				for ( StructureFile_Chains_Id_Label_Auth_Json_Blob_InDB_Entry entry : structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT.getEntries() ) {
-					
-					if ( ! lidEntries.add( entry.getLid() ) ) {
-						log.warn( "Duplicate value for 'lid': " + entry.getLid() );
-						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-					}
-
-					if ( ! lblEntries.add( entry.getLbl() ) ) {
-						log.warn( "Duplicate value for 'lbl': " + entry.getLbl() );
-						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-					}
-				}
-				
+			int structureFile_Chains_BodyPrefix_ByteLength = 0;
+			try {
+				structureFile_Chains_BodyPrefix_ByteLength = Integer.parseInt( structureFile_Chains_BodyPrefix_ByteLength_String );
+			} catch ( RuntimeException e ) {
+				log.warn( "'" + STRUCTURE_FILE_CHAINS_BODY_PREFIX_BYTE_LENGTH + "' header parameter is not parsable to int: " + structureFile_Chains_BodyPrefix_ByteLength_String );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
-			
+			if ( structureFile_Chains_BodyPrefix_ByteLength <= 0 ) {
+				log.warn( "'" + STRUCTURE_FILE_CHAINS_BODY_PREFIX_BYTE_LENGTH + "' header parameter must be > 0: " + structureFile_Chains_BodyPrefix_ByteLength );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+
+			String structureFile_Chains_BodyPrefix_Sha256 = httpServletRequest.getHeader( STRUCTURE_FILE_CHAINS_BODY_PREFIX_SHA_256 );
+
+			if ( StringUtils.isEmpty( structureFile_Chains_BodyPrefix_Sha256 ) ) {
+				log.warn( "'" + STRUCTURE_FILE_CHAINS_BODY_PREFIX_SHA_256 + "' header parameter is not sent or is empty" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+
 			///////////
 
 			String projectIdentifier = webserviceRequestHeaderContents.projectIdentifier;
@@ -235,7 +230,7 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 
 			_processRequest( 
 					webserviceRequestHeaderContents, webserviceResult, httpServletRequest, 
-					projectId, userId, structureFile_Chains_Id_Label_Auth_JSON, structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT );
+					projectId, userId, structureFile_Chains_BodyPrefix_ByteLength, structureFile_Chains_BodyPrefix_Sha256 );
 
 			byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 			
@@ -269,8 +264,8 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 			
 			int projectId,
 			Integer userId,
-			String structureFile_Chains_Id_Label_Auth_JSON,
-			StructureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT
+			int structureFile_Chains_BodyPrefix_ByteLength,
+			String structureFile_Chains_BodyPrefix_Sha256
 			) {
 
 		try {
@@ -384,6 +379,55 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 				}
 				
+				//  POST body = [ chains id/label/auth JSON UTF-8 bytes ][ file contents bytes ].  Split at the
+				//  byte offset from the header; the remainder (from offset -> end) is the file that is hashed and stored.
+				if ( structureFile_Chains_BodyPrefix_ByteLength > bytes_Full_FileContents__BytesPopulatedCount ) {
+					log.warn( "Chains body-prefix byte length is larger than the received body. prefix byte length: " + structureFile_Chains_BodyPrefix_ByteLength + ", body bytes: " + bytes_Full_FileContents__BytesPopulatedCount );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+
+				int fileContents_StartIndex = structureFile_Chains_BodyPrefix_ByteLength;
+				int fileContents_ByteLength = bytes_Full_FileContents__BytesPopulatedCount - structureFile_Chains_BodyPrefix_ByteLength;
+
+				//  Verify the integrity of the chains JSON body-prefix (SHA-256 of the prefix bytes) before parsing it.
+				{
+					MessageDigest messageDigest_Chains_SHA_256 = MessageDigest.getInstance( "SHA-256" );
+					messageDigest_Chains_SHA_256.update( bytes_Full_FileContents, 0, structureFile_Chains_BodyPrefix_ByteLength );
+					byte[] chains_sha_256_Digest = messageDigest_Chains_SHA_256.digest();
+					StringBuilder chains_sha_256_HexString_SB = new StringBuilder( chains_sha_256_Digest.length * 2 );
+					for ( byte chains_sha_256_Digest_Byte : chains_sha_256_Digest ) {
+						chains_sha_256_HexString_SB.append( String.format( "%02x", chains_sha_256_Digest_Byte ) );
+					}
+					String chains_sha_256_HexString = chains_sha_256_HexString_SB.toString();
+					if ( ! structureFile_Chains_BodyPrefix_Sha256.equals( chains_sha_256_HexString ) ) {
+						String msg = "Chains body-prefix SHA-256 computed on Client NOT the same as computed on server.  Client: " + structureFile_Chains_BodyPrefix_Sha256 + ", Server: " + chains_sha_256_HexString;
+						log.warn( msg );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+				}
+
+				String structureFile_Chains_Id_Label_Auth_JSON = new String( bytes_Full_FileContents, 0, structureFile_Chains_BodyPrefix_ByteLength, StandardCharsets.UTF_8 );
+
+				StructureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT =
+						unmarshalJSON_ToObject.getObjectFromJSONString( structureFile_Chains_Id_Label_Auth_JSON, StructureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT.class );
+
+				{  // Validate structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT
+					// Test for duplicate values of 'lid' or 'lbl'
+					int entriesSize = structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT.getEntries().size();
+					Set<Integer> lidEntries = new HashSet<>( entriesSize );
+					Set<String> lblEntries = new HashSet<>( entriesSize );
+					for ( StructureFile_Chains_Id_Label_Auth_Json_Blob_InDB_Entry entry : structureFile_Chains_Id_Label_Auth_Json_Blob_InDB_ROOT.getEntries() ) {
+						if ( ! lidEntries.add( entry.getLid() ) ) {
+							log.warn( "Duplicate value for 'lid': " + entry.getLid() );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+						if ( ! lblEntries.add( entry.getLbl() ) ) {
+							log.warn( "Duplicate value for 'lbl': " + entry.getLbl() );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+					}
+				}
+
 				if ( webserviceRequestHeaderContents.sha256_Value_For_FileContents != null ) {
 					
 					//  Have  SHA-256 value computed in the browser
@@ -394,7 +438,7 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 					
 					MessageDigest messageDigest_SHA_256 = MessageDigest.getInstance( SHA_256_ALGORITHM );
 					
-					messageDigest_SHA_256.update( bytes_Full_FileContents, 0, bytes_Full_FileContents__BytesPopulatedCount );
+					messageDigest_SHA_256.update( bytes_Full_FileContents, fileContents_StartIndex, fileContents_ByteLength );
 		
 					byte[] sha_256_Digest = messageDigest_SHA_256.digest();
 					
@@ -427,7 +471,7 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 					throw new LimelightInternalErrorException( "( bytes_Full_FileContents.length < bytes_Full_FileContents__BytesPopulatedCount )" );
 				}
 				
-				ByteArrayInputStream byteArrayInputStream_Full_FileContents = new ByteArrayInputStream(bytes_Full_FileContents, 0, bytes_Full_FileContents__BytesPopulatedCount);
+				ByteArrayInputStream byteArrayInputStream_Full_FileContents = new ByteArrayInputStream(bytes_Full_FileContents, fileContents_StartIndex, fileContents_ByteLength);
 				
 
 				//  DEBUG ONLY - view file contents as String in debugger; safe to uncomment
@@ -452,7 +496,7 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 				UploadFile_UploadFile_Pass_Filename_InputStream_Size_Request fileObjectStorage_UploadFile_UploadFile_Pass_Filename_InputStream_Size_Request = new UploadFile_UploadFile_Pass_Filename_InputStream_Size_Request();
 						
 				fileObjectStorage_UploadFile_UploadFile_Pass_Filename_InputStream_Size_Request.setFilename(uploadedName);
-				fileObjectStorage_UploadFile_UploadFile_Pass_Filename_InputStream_Size_Request.setFile_Size( (long)bytes_Full_FileContents__BytesPopulatedCount);
+				fileObjectStorage_UploadFile_UploadFile_Pass_Filename_InputStream_Size_Request.setFile_Size( (long) fileContents_ByteLength );
 				fileObjectStorage_UploadFile_UploadFile_Pass_Filename_InputStream_Size_Request.setFile_InputStream( byteArrayInputStream_Full_FileContents );
 				fileObjectStorage_UploadFile_UploadFile_Pass_Filename_InputStream_Size_Request.setGzipCompressContents(true);
 				
@@ -525,7 +569,7 @@ public class StructureFile_Contents_UploadData_RestWebserviceController {
 				
 				structureFile_Like_PDB_File_DTO.setStructureFile_Chains_Id_Label_Auth_Json_Blob( structureFile_Chains_Id_Label_Auth_JSON );
 				
-				structureFile_Like_PDB_File_DTO.setFileSize(bytes_Full_FileContents__BytesPopulatedCount);
+				structureFile_Like_PDB_File_DTO.setFileSize( fileContents_ByteLength );
 				structureFile_Like_PDB_File_DTO.setUserId_Created(userId);
 				
 				
