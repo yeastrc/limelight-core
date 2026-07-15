@@ -27,7 +27,12 @@ head_section_include_every_page.jsp
     	First hash 'sha256-LtIWLBFFzfYXdIGWJ2t/yMJVIYyKlWYs6JwRq0ESN9U='  
     	is for inline script in this file for IE testing.
     	
-    	https://www.gstatic.com/charts/loader.js is for Google Charts
+    	Google Charts is NOT used in Limelight and is not planned. (It was used in the
+    	app Limelight was originally copied from; this note is kept only as a reminder.)
+    	If Google Charts is ever added it will require CSP changes here: it loads from
+    	https://www.gstatic.com/charts/loader.js and also needs 'unsafe-eval'. If so, add
+    	the NARROWED path https://www.gstatic.com/charts/ -- do NOT widen the gstatic
+    	entry below back to all of https://www.gstatic.com/ (Google flags that as too broad).
     	
     	Chrome will display a console log for any inline scripts along with the hash code that can be added here.
     --%>
@@ -38,8 +43,8 @@ head_section_include_every_page.jsp
     		'self' 
     		'sha256-LtIWLBFFzfYXdIGWJ2t/yMJVIYyKlWYs6JwRq0ESN9U=' <%-- inline script in this file for IE testing. --%>
     		'sha256-319wADTDxjEQJFL1G+2TSXPRFK4SR/WciC6jFGqf3j8=' <%-- inline script in this file for Page Error reporting. --%>
-    		https://www.gstatic.com/  <%-- Google Charts Loader and Google Recaptcha data loaded from here --%>
-    		'unsafe-eval'             <%-- Required for Plotly WebGL detection and Google Charts (Google Charts currently NOT used) --%> 
+    		https://www.gstatic.com/recaptcha/  <%-- Google Recaptcha loads its resource bundles from here (narrowed path; see note above) --%>
+    		'unsafe-eval'             <%-- Required for Plotly WebGL: scattergl traces render via regl, which uses the Function constructor --%> 
     		https://www.googletagmanager.com/gtag/js  <%-- Google Analytics --%>
     		https://www.google-analytics.com/analytics.js   <%-- Google Analytics --%>
     		https://www.recaptcha.net/recaptcha/api.js  <%-- Google Recaptcha --%>
