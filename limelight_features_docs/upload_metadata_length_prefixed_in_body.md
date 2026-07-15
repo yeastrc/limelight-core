@@ -118,9 +118,26 @@ Body = `[fixed-width length field][metadata bytes][file bytes]` (e.g. 4-byte big
 4. **Test** with a non-ASCII payload (proves the byte-count split) and with a large payload (proves the
    size limit is gone).
 
-## Concrete instance
+## Concrete instance (implemented)
 
-The first candidate is the **structure-file upload** (`structure-file-contents-upload-data`): its
-`chains id/label/auth` JSON grows with chain count and is the blob most likely to approach the header cap.
-Moving *that* blob into the body via this pattern (Option A) is the intended first application; the small
-`params_json` can stay a base64 header. See the deferred-follow-up note recorded for that upload.
+The first application is the **structure-file upload** (`structure-file-contents-upload-data`): its
+`chains id/label/auth` JSON grows with chain count and was the blob most likely to approach the header cap.
+That blob now rides in the body via **Option A**, as of 2026-07-15:
+
+- **Producer** — `...common_data_loaded_from_server__project_level_data__structure_file_data/CommonData_LoadedFromServer_...StructureFile_Contents_Entry_DAO.ts`:
+  chains JSON is UTF-8-encoded (`TextEncoder().encode(...)`), the body is `new Blob([chainsBytes, fileBytes])`,
+  and two ASCII headers describe the prefix — `..._chains_id_label_auth_json_body_prefix_byte_length` (the UTF-8
+  **byte** count) and `..._chains_id_label_auth_json_body_prefix_sha_256` (SHA-256 of the prefix bytes). The
+  chains blob is no longer base64.
+- **Consumer** — `...rest_controllers/structure_file_data__tied_to_project_id/StructureFile_Contents_UploadData_RestWebserviceController.java`:
+  reads the byte-length header, splits the body at that offset, **verifies the chains-prefix SHA-256 before
+  parsing**, then hashes/stores only the file portion (offset N → end).
+- The small **`params_json` stays a base64 header** (below the size concern; not worth moving).
+- Verified end-to-end with a non-ASCII (é) chain label — the server SHA-256 of the file portion matched,
+  proving the UTF-8 byte-count split landed on the exact boundary.
+
+Note the **optional integrity add-on** used here: a second ASCII header carrying a SHA-256 of the *metadata
+prefix* bytes, verified server-side before parse — the same guarantee the file portion already has. It's
+defense-in-depth (framing is already guarded because a wrong `N` corrupts the file hash), cheap (hex is
+header-safe), and worth it when the moved blob is important. Applying the same to `params_json` was judged
+not worth it.
