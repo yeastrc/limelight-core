@@ -51,6 +51,7 @@ head_section_include_every_page.jsp
     		https://www.google.com/recaptcha/api.js  <%-- Google Recaptcha Original path --%>
     		;
     		object-src 'none';
+    		base-uri 'self';  <%-- lock <base> to same-origin; the app hangs all relative URLs off <base href="<contextPath>/">, so an injected off-origin <base> would repoint every relative link/resource --%>
     		">
  
 <%-- Included script tests for Internet Explorer. --%>
