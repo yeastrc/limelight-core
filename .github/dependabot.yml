@@ -38,6 +38,15 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    ignore:
+      # limelight_webapp deliberately pins com.sun.xml.bind:jaxb-impl at 2.3.1 as the
+      # JAVAX (javax.xml.bind) JAXB 2 runtime -- paired with javax.xml.bind:jaxb-api:2.3.1 --
+      # for the bundled yeastrc client-connector jars, coexisting with the separate JAKARTA
+      # jaxb-runtime 4.0.x. Bumping this coordinate to 3.x/4.x breaks that javax pairing and
+      # drags in a duplicate org.glassfish.jaxb:jaxb-core-4.x (already provided by jaxb-runtime),
+      # which fails the WAR build (bootWar: duplicate WEB-INF/lib entry). Keep it on the 2.3.x line.
+      - dependency-name: "com.sun.xml.bind:jaxb-impl"
+        versions: [">=3.0.0"]
     # Batch all available updates into ONE PR per module directory instead of one
     # PR per dependency.
     groups:
