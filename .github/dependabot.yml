@@ -47,6 +47,17 @@ updates:
       # which fails the WAR build (bootWar: duplicate WEB-INF/lib entry). Keep it on the 2.3.x line.
       - dependency-name: "com.sun.xml.bind:jaxb-impl"
         versions: [">=3.0.0"]
+      # limelight_submit_import_client_connector is a Java-8 module and CANNOT take JAXB 4.x
+      # (compiled for Java 11 / class-file 55.0). It is a Gradle SUBPROJECT of the webapp build
+      # (limelight_webapp/settings.gradle includes it), so Dependabot reaches it while scanning
+      # the webapp directory -- via THIS Java-25 group, bypassing the Java-8 group's own >=4.0.0
+      # ignore below. Ignoring the semver-MAJOR bump here blocks that 3.x->4.x jump for the
+      # connector while still letting the genuine Java-25 modules (webapp, importer, shared_code)
+      # receive JAXB 4.x minor/patch updates. (Major JAXB bumps here are deliberately manual.)
+      - dependency-name: "jakarta.xml.bind:jakarta.xml.bind-api"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "org.glassfish.jaxb:jaxb-runtime"
+        update-types: ["version-update:semver-major"]
     # Batch all available updates into ONE PR per module directory instead of one
     # PR per dependency.
     groups:
