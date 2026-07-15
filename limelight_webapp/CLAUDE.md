@@ -8,7 +8,17 @@ root `CLAUDE.md`.
 
 ## Building
 
-Build the WAR by running the Ant script — always Ant, never Gradle directly:
+First-time / after dependency changes, install the front-end npm packages (the
+Ant build runs the front-end Gradle build but does NOT run `npm install`, so the
+`node_modules` must already be present):
+
+```
+cd front_end
+npm install
+```
+
+Then build the WAR by running the Ant script — always Ant, never Gradle directly
+(run from this `limelight_webapp/` directory):
 
 ```
 ant -f ant_create_war.xml
