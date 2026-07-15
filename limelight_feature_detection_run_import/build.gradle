@@ -208,6 +208,13 @@ shadowJar {
     //  Default is empty string 
     archiveVersion = ''
     
+    //  Let the Log4j2 plugins-cache transformer (below) merge every copy of
+    //  META-INF/.../Log4j2Plugins.dat. With the default EXCLUDE, Shadow 9.x drops
+    //  duplicate .dat files BEFORE the transformer runs (and warns about it), which
+    //  could silently omit log4j2 plugins from the fat jar. INCLUDE keeps them all
+    //  so the transformer can combine them.
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
     //  For Log4J2
     transform(com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer)
 }
