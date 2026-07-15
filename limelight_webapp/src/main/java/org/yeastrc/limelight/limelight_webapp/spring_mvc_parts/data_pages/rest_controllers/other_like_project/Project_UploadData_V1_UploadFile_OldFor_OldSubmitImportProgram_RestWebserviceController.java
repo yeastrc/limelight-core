@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -117,6 +118,11 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 	//  Keep all these Strings in sync with the Submit Program Send:
 	
 	private static final String UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML = "limelight_upload_file_params_xml";
+
+	//  Newer header: the same params XML, Base64-encoded (header-safe).  Sent by newer Submit Import Programs
+	//  that detected (via the auth-test version handshake) that this server understands it.  Preferred over the
+	//  raw-XML header when present.  Keep in sync with the Submit Program connector CallSubmitImportWebservice.
+	private static final String UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML_BASE_64 = "limelight_upload_file_params_xml_base_64";
 	
 
 	private static final String SHA_256_ALGORITHM = "SHA-256";
@@ -186,14 +192,40 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
     	
     	SubmitImport_UploadFile_Request_Common webserviceRequestHeaderContents = null;
 
-		String uploadFileParamsXML = httpServletRequest.getHeader( UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML );
+		//  Prefer the newer Base64-encoded-XML header (sent by newer Submit Import Programs that learned, via
+		//  the auth-test version handshake, that this server understands it).  Fall back to the original raw-XML
+		//  header for older programs.  Reject if NEITHER is present.  If the NEW header IS present but malformed
+		//  (not valid Base64), reject (fail loud) -- do NOT silently fall back to the old header, since a new
+		//  program sending a broken new header is a client bug worth surfacing.
 
-		if ( StringUtils.isEmpty( uploadFileParamsXML ) ) {
-			log.warn( "'" + UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML + "' header parameter is not sent or is empty" );
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+		Object webserviceRequestHeaderContentsAsObject = null;
+
+		String uploadFileParamsXML_Base64 = httpServletRequest.getHeader( UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML_BASE_64 );
+
+		if ( StringUtils.isNotEmpty( uploadFileParamsXML_Base64 ) ) {
+
+			byte[] uploadFileParamsXML_Bytes = null;
+			try {
+				uploadFileParamsXML_Bytes = Base64.getDecoder().decode( uploadFileParamsXML_Base64 );
+			} catch ( IllegalArgumentException e ) {
+				log.warn( "'" + UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML_BASE_64 + "' header parameter is not valid Base64" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+
+			webserviceRequestHeaderContentsAsObject = unmarshal_RestRequest_XML_ToObject.getObjectFromXMLByteArray( uploadFileParamsXML_Bytes );
+
+		} else {
+
+			String uploadFileParamsXML = httpServletRequest.getHeader( UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML );
+
+			if ( StringUtils.isEmpty( uploadFileParamsXML ) ) {
+				log.warn( "Neither '" + UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML_BASE_64 + "' nor '" + UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML + "' header parameter is sent or non-empty" );
+				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+
+			webserviceRequestHeaderContentsAsObject = unmarshal_RestRequest_XML_ToObject.getObjectFromXMLString( uploadFileParamsXML );
 		}
 
-		Object webserviceRequestHeaderContentsAsObject = unmarshal_RestRequest_XML_ToObject.getObjectFromXMLString( uploadFileParamsXML );
 		if ( webserviceRequestHeaderContentsAsObject == null ) {
 			log.warn("webserviceRequestHeaderContentsAsObject == null");
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();

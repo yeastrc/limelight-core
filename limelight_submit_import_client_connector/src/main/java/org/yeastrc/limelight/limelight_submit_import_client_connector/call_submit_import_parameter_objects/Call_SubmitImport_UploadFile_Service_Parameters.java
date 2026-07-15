@@ -29,7 +29,14 @@ public class Call_SubmitImport_UploadFile_Service_Parameters {
 
 	private SubmitImport_UploadFile_Request_Common webserviceRequest;
 	private File uploadFile;
-	
+
+	/**
+	 * The submit-program version the Limelight SERVER is coded for, from the auth-test response.
+	 * Null when the server did not return it (old server) -- treat null as "old server".
+	 * Used by the upload send to select which upload header to populate.
+	 */
+	private Integer serverCodedFor_SubmitProgramVersionNumber_OrNull;
+
 	public File getUploadFile() {
 		return uploadFile;
 	}
@@ -41,5 +48,11 @@ public class Call_SubmitImport_UploadFile_Service_Parameters {
 	}
 	public void setWebserviceRequest(SubmitImport_UploadFile_Request_Common webserviceRequest) {
 		this.webserviceRequest = webserviceRequest;
+	}
+	public Integer getServerCodedFor_SubmitProgramVersionNumber_OrNull() {
+		return serverCodedFor_SubmitProgramVersionNumber_OrNull;
+	}
+	public void setServerCodedFor_SubmitProgramVersionNumber_OrNull(Integer serverCodedFor_SubmitProgramVersionNumber_OrNull) {
+		this.serverCodedFor_SubmitProgramVersionNumber_OrNull = serverCodedFor_SubmitProgramVersionNumber_OrNull;
 	}
 }

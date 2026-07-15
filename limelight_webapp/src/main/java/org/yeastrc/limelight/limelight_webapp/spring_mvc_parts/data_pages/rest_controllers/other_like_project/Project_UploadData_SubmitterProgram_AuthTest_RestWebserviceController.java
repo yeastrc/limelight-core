@@ -135,6 +135,14 @@ public class Project_UploadData_SubmitterProgram_AuthTest_RestWebserviceControll
 		
 		SubmitImport_AuthTest_Response_PgmXML webserviceResult = new SubmitImport_AuthTest_Response_PgmXML();
 
+		//  Always report the submit-program version this webapp is coded for, on ALL response paths
+		//  (success AND every failure), so the Submit Import Program can learn the server's version from a
+		//  normal (successful) auth-test and select behavior accordingly (e.g. which upload header to
+		//  populate).  Previously this was set only on the 'program version too old' rejection path, so a
+		//  successful auth-test returned no server version.  Older servers do not set this at all, so the
+		//  program should treat a null value here (or a 404 on this webservice) as "old server".
+		webserviceResult.setSubmitProgramVersionNumber_Current_Per_Webapp( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
+
 		if ( webserviceRequest.getSubmitProgramVersionNumber() == null ) {
 			
 			log.warn( "webserviceRequest.getSubmitProgramVersionNumber() == null. webserviceRequest.getProjectIdentifier(): " + webserviceRequest.getProjectIdentifier() );

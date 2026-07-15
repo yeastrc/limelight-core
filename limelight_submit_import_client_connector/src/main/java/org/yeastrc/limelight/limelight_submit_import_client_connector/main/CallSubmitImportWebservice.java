@@ -31,6 +31,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 
 import org.yeastrc.limelight.limelight_submit_import_client_connector.call_submit_import_parameter_objects.Call_SubmitImport_UploadFile_Service_Parameters;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.Limelight_SubmitImport_Version_Constants;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.exceptions.LimelightSubmitImportWebserviceCallErrorException;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Response_PgmXML;
@@ -102,8 +104,13 @@ public class CallSubmitImportWebservice {
 	private static final String SUBMIT_IMPORT_UPLOAD_FILE_WEBSERVICE_SUB_URL = "/d/rws/for-page/project-upload-data-upload-file-from-submit-pgm";
 	private static final String SUBMIT_IMPORT_FINAL_SUBMIT_WEBSERVICE_SUB_URL = "/d/rws/for-page/project-upload-data-upload-submit-from-submit-pgm";
 	
-	//  String to label Header Parameter for Upload File
+	//  String to label Header Parameter for Upload File.  Keep in sync with the web app v1 upload-file controller.
 	private static final String SUBMIT_IMPORT_UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML = "limelight_upload_file_params_xml";
+
+	//  Newer header: the same params XML, Base64-encoded (header-safe, no newline-stripping).  Sent instead of
+	//  the raw-XML header when the server's expected Submit Import Program version is >= the new-header minimum
+	//  (learned from the auth-test response).  Keep in sync with the web app v1 upload-file controller.
+	private static final String SUBMIT_IMPORT_UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML_BASE_64 = "limelight_upload_file_params_xml_base_64";
 
 	private String webappServerBaseURL;
 	private JAXBContext jaxbContext;
@@ -292,18 +299,40 @@ public class CallSubmitImportWebservice {
 			throw new IllegalArgumentException( "userSubmitImportProgramKey property in webserviceRequest param must not be null or empty in call to call_SubmitImport_UploadFile_Service(...)" );
 		}
 		
-		//  From parameter 'webserviceRequest', create XML String that will sent to the server in the HTTP Header 
-		
-		ByteArrayOutputStream byteArrayOutputStream_ToSend = serializeObjectToXML_Return_ByteArrayOutputStream( webserviceRequest );
-		String headerString = new String( byteArrayOutputStream_ToSend.toByteArray(), XML_ENCODING_CHARACTER_SET );
-		if ( headerString.contains( "\n" ) ) {
-			//  Remove \n (new line) since not valid in header.  JaxB adds \n after prolog and at end
-			headerString = headerString.replace( "\n", "");
-		}
-		
+		//  From parameter 'webserviceRequest', create the params XML that is sent to the server in an HTTP Header.
+		//  If the server is new enough (its expected Submit Import Program version, learned from the auth-test
+		//  response, is >= the new-header minimum), send the XML Base64-encoded in a new header (header-safe, no
+		//  newline stripping).  Otherwise send the original raw-XML header unchanged so older servers still work.
+
+		Integer serverExpects_SubmitProgramVersion_OrNull = parameters.getServerCodedFor_SubmitProgramVersionNumber_OrNull();
+
+		boolean useNewBase64XmlHeader =
+				serverExpects_SubmitProgramVersion_OrNull != null
+				&& serverExpects_SubmitProgramVersion_OrNull.intValue() >= Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM_VERSION__UPLOAD_FILE_PARAMS_NEW_BASE64_XML_HEADER__MINIMUM;
+
 		Map<String,String> headersToSend = new HashMap<>();
-		headersToSend.put( SUBMIT_IMPORT_UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML, headerString );
-		
+
+		if ( useNewBase64XmlHeader ) {
+
+			webserviceRequest.setNewHeaderParams_FormatVersion( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM_UPLOAD_FILE_PARAMS_NEW_BASE64_XML_HEADER__FORMAT_VERSION );
+
+			ByteArrayOutputStream byteArrayOutputStream_ToSend = serializeObjectToXML_Return_ByteArrayOutputStream( webserviceRequest );
+			String headerString_Base64 = Base64.getEncoder().encodeToString( byteArrayOutputStream_ToSend.toByteArray() );
+
+			headersToSend.put( SUBMIT_IMPORT_UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML_BASE_64, headerString_Base64 );
+
+		} else {
+
+			ByteArrayOutputStream byteArrayOutputStream_ToSend = serializeObjectToXML_Return_ByteArrayOutputStream( webserviceRequest );
+			String headerString = new String( byteArrayOutputStream_ToSend.toByteArray(), XML_ENCODING_CHARACTER_SET );
+			if ( headerString.contains( "\n" ) ) {
+				//  Remove \n (new line) since not valid in header.  JaxB adds \n after prolog and at end
+				headerString = headerString.replace( "\n", "");
+			}
+
+			headersToSend.put( SUBMIT_IMPORT_UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML, headerString );
+		}
+
 		String webserviceURL = webappServerBaseURL + SUBMIT_IMPORT_UPLOAD_FILE_WEBSERVICE_SUB_URL;
 				
 		Object webserviceResponseAsObject = 

@@ -103,11 +103,25 @@ public class SubmitUploadMain {
 
 		int exitCode = PROGRAM_EXIT_CODE_NO_ERROR;
 
+		/**
+		 * The submit-program version this Limelight SERVER is coded for, as returned by the auth-test
+		 * webservice ('submitProgramVersionNumber_Current_Per_Webapp').  Null when the server did not
+		 * return it -- an older server, or a 404 on the auth-test webservice -- so treat null as
+		 * "old server" when deciding upload behavior (e.g. which upload header to populate).
+		 */
+		private Integer serverCodedFor_SubmitProgramVersionNumber_OrNull;
+
 		public int getExitCode() {
 			return exitCode;
 		}
 		public void setExitCode(int exitCode) {
 			this.exitCode = exitCode;
+		}
+		public Integer getServerCodedFor_SubmitProgramVersionNumber_OrNull() {
+			return serverCodedFor_SubmitProgramVersionNumber_OrNull;
+		}
+		public void setServerCodedFor_SubmitProgramVersionNumber_OrNull(Integer serverCodedFor_SubmitProgramVersionNumber_OrNull) {
+			this.serverCodedFor_SubmitProgramVersionNumber_OrNull = serverCodedFor_SubmitProgramVersionNumber_OrNull;
 		}
 	}
 
@@ -205,12 +219,18 @@ public class SubmitUploadMain {
 									"Submit Import: " );
 				
 				if ( submitResult_AuthCheck.exitCode != PROGRAM_EXIT_CODE_NO_ERROR ) {
-					
-					submitResult.exitCode = submitResult.exitCode;
-					
+
+					submitResult.exitCode = submitResult_AuthCheck.exitCode;  //  was self-assignment 'submitResult.exitCode = submitResult.exitCode' which dropped the auth-check failure exit code
+
 					return submitResult;  // EARLY RETURN
 				}
-				
+
+				//  Submit-program version this SERVER is coded for, from the auth-test response.
+				//  Null = old server (or auth-test not returning it).  Threaded to the file-upload step
+				//  so it can select which upload header to populate.
+				Integer serverCodedFor_SubmitProgramVersionNumber_OrNull =
+						submitResult_AuthCheck.getServerCodedFor_SubmitProgramVersionNumber_OrNull();
+
 				/////
 								
 				boolean sendFastaFile_LOCAL = false;
@@ -451,22 +471,22 @@ public class SubmitUploadMain {
 				//  Returns null = success; non-null = SubmitResult to propagate (original early-exit behavior).
 
 				if ( limelightXMLFile != null ) {
-					SubmitResult uploadResult = uploadFile_LimelightXML( limelightXMLFile, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+					SubmitResult uploadResult = uploadFile_LimelightXML( limelightXMLFile, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult, serverCodedFor_SubmitProgramVersionNumber_OrNull );
 					if ( uploadResult != null ) { return uploadResult; }
 				}
 
 				if ( fastaFile != null && sendFastaFile_LOCAL ) {
-					SubmitResult uploadResult = uploadFile_FASTA( fastaFile, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+					SubmitResult uploadResult = uploadFile_FASTA( fastaFile, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult, serverCodedFor_SubmitProgramVersionNumber_OrNull );
 					if ( uploadResult != null ) { return uploadResult; }
 				}
 
 				if ( scanFiles != null ) {
-					SubmitResult uploadResult = uploadScanFiles( scanFiles, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+					SubmitResult uploadResult = uploadScanFiles( scanFiles, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult, serverCodedFor_SubmitProgramVersionNumber_OrNull );
 					if ( uploadResult != null ) { return uploadResult; }
 				}
 
 				if ( genericOtherFiles != null ) {
-					SubmitResult uploadResult = uploadGenericOtherFiles( genericOtherFiles, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+					SubmitResult uploadResult = uploadGenericOtherFiles( genericOtherFiles, fileIndex, fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey, submitImport_UploadKey, callSubmitImportWebservice, submitResult, serverCodedFor_SubmitProgramVersionNumber_OrNull );
 					if ( uploadResult != null ) { return uploadResult; }
 				}
 				// Submit the upload:  send the XML submit 
@@ -614,7 +634,8 @@ public class SubmitUploadMain {
 			File limelightXMLFile, int[] fileIndex,
 			List<SubmitImport_FinalSubmit_SingleFileItem> fileItems, boolean submitterSameMachine,
 			String projectIdString, String userSubmitImportProgramKey, String submitImport_UploadKey,
-			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult ) throws Exception {
+			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult,
+			Integer serverCodedFor_SubmitProgramVersionNumber_OrNull ) throws Exception {
 
 		//  Limelight XML file uses index 1 (no increment), matching the original numbering
 		int thisFileIndex = fileIndex[ 0 ];
@@ -623,14 +644,16 @@ public class SubmitUploadMain {
 				limelightXMLFile, thisFileIndex,
 				LimelightSubmit_FileImportFileType.LIMELIGHT_XML_FILE.value(), true, "Limelight XML file",
 				fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey,
-				submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+				submitImport_UploadKey, callSubmitImportWebservice, submitResult,
+				serverCodedFor_SubmitProgramVersionNumber_OrNull );
 	}
 
 	private SubmitResult uploadFile_FASTA(
 			File fastaFile, int[] fileIndex,
 			List<SubmitImport_FinalSubmit_SingleFileItem> fileItems, boolean submitterSameMachine,
 			String projectIdString, String userSubmitImportProgramKey, String submitImport_UploadKey,
-			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult ) throws Exception {
+			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult,
+			Integer serverCodedFor_SubmitProgramVersionNumber_OrNull ) throws Exception {
 
 		int thisFileIndex = ++fileIndex[ 0 ];
 
@@ -638,14 +661,16 @@ public class SubmitUploadMain {
 				fastaFile, thisFileIndex,
 				LimelightSubmit_FileImportFileType.FASTA_FILE.value(), false, "FASTA file",
 				fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey,
-				submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+				submitImport_UploadKey, callSubmitImportWebservice, submitResult,
+				serverCodedFor_SubmitProgramVersionNumber_OrNull );
 	}
 
 	private SubmitResult uploadScanFiles(
 			List<File> scanFiles, int[] fileIndex,
 			List<SubmitImport_FinalSubmit_SingleFileItem> fileItems, boolean submitterSameMachine,
 			String projectIdString, String userSubmitImportProgramKey, String submitImport_UploadKey,
-			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult ) throws Exception {
+			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult,
+			Integer serverCodedFor_SubmitProgramVersionNumber_OrNull ) throws Exception {
 
 		for ( File scanFile : scanFiles ) {
 
@@ -655,7 +680,8 @@ public class SubmitUploadMain {
 					scanFile, thisFileIndex,
 					LimelightSubmit_FileImportFileType.SCAN_FILE.value(), false, "Scan file",
 					fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey,
-					submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+					submitImport_UploadKey, callSubmitImportWebservice, submitResult,
+					serverCodedFor_SubmitProgramVersionNumber_OrNull );
 
 			if ( uploadResult != null ) {
 				return uploadResult;
@@ -669,7 +695,8 @@ public class SubmitUploadMain {
 			List<File> genericOtherFiles, int[] fileIndex,
 			List<SubmitImport_FinalSubmit_SingleFileItem> fileItems, boolean submitterSameMachine,
 			String projectIdString, String userSubmitImportProgramKey, String submitImport_UploadKey,
-			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult ) throws Exception {
+			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult,
+			Integer serverCodedFor_SubmitProgramVersionNumber_OrNull ) throws Exception {
 
 		for ( File genericOtherFile : genericOtherFiles ) {
 
@@ -679,7 +706,8 @@ public class SubmitUploadMain {
 					genericOtherFile, thisFileIndex,
 					LimelightSubmit_FileImportFileType.GENERIC_OTHER_FILE.value(), false, "Generic Other File",
 					fileItems, submitterSameMachine, projectIdString, userSubmitImportProgramKey,
-					submitImport_UploadKey, callSubmitImportWebservice, submitResult );
+					submitImport_UploadKey, callSubmitImportWebservice, submitResult,
+					serverCodedFor_SubmitProgramVersionNumber_OrNull );
 
 			if ( uploadResult != null ) {
 				return uploadResult;
@@ -701,7 +729,8 @@ public class SubmitUploadMain {
 			File file, int fileIndex, int fileType, boolean isLimelightXMLFile, String fileTypeForDisplay,
 			List<SubmitImport_FinalSubmit_SingleFileItem> fileItems, boolean submitterSameMachine,
 			String projectIdString, String userSubmitImportProgramKey, String submitImport_UploadKey,
-			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult ) throws Exception {
+			CallSubmitImportWebservice callSubmitImportWebservice, SubmitResult submitResult,
+			Integer serverCodedFor_SubmitProgramVersionNumber_OrNull ) throws Exception {
 
 		SubmitImport_FinalSubmit_SingleFileItem submitImport_FinalSubmit_SingleFileItem = new SubmitImport_FinalSubmit_SingleFileItem();
 		fileItems.add( submitImport_FinalSubmit_SingleFileItem );
@@ -739,6 +768,9 @@ public class SubmitUploadMain {
 			Call_SubmitImport_UploadFile_Service_Parameters parameters = new Call_SubmitImport_UploadFile_Service_Parameters();
 			parameters.setUploadFile( file );
 			parameters.setWebserviceRequest( webserviceRequest );
+			//  Server's coded-for submit-program version (null = old server).  Handed to the connector so
+			//  the upload send can select which header to populate (old XML vs new).  Used in a later step.
+			parameters.setServerCodedFor_SubmitProgramVersionNumber_OrNull( serverCodedFor_SubmitProgramVersionNumber_OrNull );
 
 			//  Make call to server
 			SubmitImport_UploadFile_Response_PgmXML submitImport_UploadFile_Response =

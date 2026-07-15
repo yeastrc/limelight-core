@@ -66,8 +66,15 @@ public class AuthTest_Perform_ConnectToServer__Single_Connect_Send_GetResponse {
 		submitImport_AuthTest_Request.setProjectIdentifier( projectIdString );
 		submitImport_AuthTest_Request.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
 
-		SubmitImport_AuthTest_Response_PgmXML submitImport_AuthTest_Response = 
+		SubmitImport_AuthTest_Response_PgmXML submitImport_AuthTest_Response =
 				callSubmitImportWebservice.call_SubmitImport_AuthTest_Webservice(submitImport_AuthTest_Request);
+
+		//  Capture the submit-program version this server is coded for so the caller can select upload
+		//  behavior (e.g. which upload header to populate).  Null on older servers that do not return it
+		//  (a 404 on the auth-test webservice throws before reaching here, which the caller also treats
+		//  as "old server").
+		submitResult.setServerCodedFor_SubmitProgramVersionNumber_OrNull(
+				submitImport_AuthTest_Response.getSubmitProgramVersionNumber_Current_Per_Webapp() );
 
 		if ( submitImport_AuthTest_Response.isStatusSuccess() ) {
 
@@ -82,6 +89,11 @@ public class AuthTest_Perform_ConnectToServer__Single_Connect_Send_GetResponse {
 			System.out.println( "" );
 			System.out.println( statusResultLine_Prefix + "Auth Test Successful." );
 			System.out.println( "" );
+
+			//   DEBUGGING ONLY
+			//  Output the Submit Import Program version the server expects (from the auth-test response).
+//			System.out.println( statusResultLine_Prefix + "Server Submit Import Program version: "
+//					+ submitImport_AuthTest_Response.getSubmitProgramVersionNumber_Current_Per_Webapp() );
 
 		} else {
 

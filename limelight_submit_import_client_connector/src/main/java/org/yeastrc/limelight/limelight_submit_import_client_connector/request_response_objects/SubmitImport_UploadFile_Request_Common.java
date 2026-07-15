@@ -57,8 +57,16 @@ public class SubmitImport_UploadFile_Request_Common {
 	private String absoluteFilename_W_Path_OnSubmitMachine;
 	@XmlAttribute
 	private Integer submitProgram_Version;
-	
-	
+
+	/**
+	 * Format version of the params payload when sent in the new Base64-encoded-XML upload-file header.
+	 * Set only on that path (null on the original raw-XML header path).  For future evolution of the
+	 * new-header payload.  See Limelight_SubmitImport_Version_Constants.
+	 */
+	@XmlAttribute
+	private Integer newHeaderParams_FormatVersion;
+
+
 	public String getCanonicalFilename_W_Path_OnSubmitMachine() {
 		return canonicalFilename_W_Path_OnSubmitMachine;
 	}
@@ -119,5 +127,11 @@ public class SubmitImport_UploadFile_Request_Common {
 	public void setFileSHA256Hash(String fileSHA256Hash) {
 		this.fileSHA256Hash = fileSHA256Hash;
 	}
-	
+	public Integer getNewHeaderParams_FormatVersion() {
+		return newHeaderParams_FormatVersion;
+	}
+	public void setNewHeaderParams_FormatVersion(Integer newHeaderParams_FormatVersion) {
+		this.newHeaderParams_FormatVersion = newHeaderParams_FormatVersion;
+	}
+
 }
