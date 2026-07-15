@@ -2,10 +2,20 @@
 
 **Status:** convention / how-to reference. Captured 2026-07-15. A generic recipe for converting **any**
 browser→server file upload that currently ships JSON metadata in HTTP **headers** to instead carry that
-metadata at the **start of the request body**, framed by a byte length. Companion:
-`compressing_strings_stored_in_the_url.md` (related transport-encoding conventions). The header-encoding
-predecessor to this pattern is the base64-of-UTF-8 header codec
+metadata at the **start of the request body**, framed by a byte length. Companions:
+`compressing_strings_stored_in_the_url.md` (related transport-encoding conventions) and
+`submit_import_upload_header_version_handshake.md` (a *different* upload-header effort — Base64-encoding a
+header for the **submit-program** path, and, crucially, how to roll a header-format change out to a
+widely-distributed client without breaking old peers via a version handshake + new-then-old server read).
+The header-encoding predecessor to this pattern is the base64-of-UTF-8 header codec
 (`HttpHeaderValue_Base64_Encoding.java` / `front_end/.../httpHeaderValue_Base64_EncodeDecode.ts`).
+
+**The base64-of-header effort in general.** Two distinct upload paths base64-encode their params header to
+survive the ISO-8859-1 / raw-header limits: the **browser→webapp** path (`HttpHeaderValue_Base64_Encoding`
+codec, header `limelight_upload_file_params_json_base_64`) and the **submit-program→webapp** path (header
+`limelight_upload_file_params_xml_base_64`, added later via the version handshake — see the companion doc).
+When adding a new upload or changing an existing header's encoding, prefer base64 for a small/bounded
+header; move to the body (this doc) only when the blob can grow past the size cap.
 
 ## When to use this
 
