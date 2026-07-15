@@ -137,3 +137,33 @@ ant -f ant_create_war.xml
 Note: root-level Gradle does NOT work (see `Z_Not_Works_build.gradle` /
 `Z_Not_Works_settings.gradle`). Use the root Ant build for a full build and the
 per-module Ant scripts above for a single module.
+
+## Dependency updates: the JAXB Java-8 vs Java-25 split (and a Dependabot gotcha)
+
+The modules run on **two Java toolchains**, and this splits which JAXB line each may
+use — get it wrong and the build breaks in non-obvious ways:
+
+- **Java 8 modules** — `limelight_submit_import` and `limelight_submit_import_client_connector`
+  (they pin `JavaLanguageVersion.of(8)` so the submit-import client can run under Java 8).
+  These MUST stay on the **Java-8-compatible JAXB lines**: `jakarta.xml.bind:jakarta.xml.bind-api`
+  / `org.glassfish.jaxb:jaxb-runtime` on **3.0.x**. JAXB **4.x** is compiled for Java 11
+  (class-file 55.0) and will NOT compile under a Java 8 toolchain (`cannot access
+  jakarta.xml.bind.annotation.XmlAccessType`).
+- **Java 25 modules** — everything else. They use **jakarta JAXB 4.x**. The **webapp** additionally
+  keeps a *javax* JAXB 2 runtime (`javax.xml.bind:jaxb-api:2.3.x` + `com.sun.xml.bind:jaxb-impl:2.3.x`)
+  for the bundled yeastrc client-connector jars, coexisting with jakarta `jaxb-runtime:4.0.x`.
+  Do **not** bump `com.sun.xml.bind:jaxb-impl` to 3.x/4.x — it breaks the javax pairing and drags in
+  a duplicate `org.glassfish.jaxb:jaxb-core-4.x`, failing the WAR build (`bootWar`: duplicate
+  `WEB-INF/lib` entry).
+
+**The Dependabot gotcha (why the Java-8 ignore isn't enough):**
+`limelight_webapp/settings.gradle` (and `limelight_submit_import/settings.gradle`) **include
+`limelight_submit_import_client_connector` as a Gradle subproject**. So when Dependabot scans the
+**webapp** directory — which is in the **Java-25** Dependabot group — it traverses into the connector
+subproject and tries to bump *its* JAXB to 4.x, **bypassing** the ignore on the separate Java-8 group.
+This recurred in PRs #105 and #107. `.github/dependabot.yml` handles it by adding a **semver-major**
+ignore for `jakarta.xml.bind:jakarta.xml.bind-api` and `org.glassfish.jaxb:jaxb-runtime` to the
+**Java-25 group** (blocks the connector's 3.x→4.x jump while still allowing JAXB 4.x minor/patch on
+the genuine Java-25 modules), plus a `>=3.0.0` ignore on `com.sun.xml.bind:jaxb-impl`. If a Dependabot
+gradle PR ever reintroduces a JAXB-4.x bump on `limelight_submit_import_client_connector`, drop that
+hunk before merging — the rest of the PR is fine.
