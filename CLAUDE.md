@@ -167,3 +167,23 @@ ignore for `jakarta.xml.bind:jakarta.xml.bind-api` and `org.glassfish.jaxb:jaxb-
 the genuine Java-25 modules), plus a `>=3.0.0` ignore on `com.sun.xml.bind:jaxb-impl`. If a Dependabot
 gradle PR ever reintroduces a JAXB-4.x bump on `limelight_submit_import_client_connector`, drop that
 hunk before merging — the rest of the PR is fine.
+
+## Web security: CSP and XSS / URL hardening
+
+Before touching the Content-Security-Policy, adding a link/redirect, rendering a server- or
+user-provided URL, or injecting an HTML string, read
+`limelight_features_docs/web_security_csp_and_xss_url_hardening.md`. Quick pointers:
+
+- **CSP** lives in a `<meta>` tag in
+  `limelight_webapp/src/main/webapp/WEB-INF/jsp/jsp_includes_head_section/head_section_include_every_page.jsp`
+  (no header). It uses hashes, not `'unsafe-inline'`; `'unsafe-eval'` is required by **Plotly WebGL**
+  (`scattergl`/regl), not Google Charts (unused). `gstatic` is narrowed to `/recaptcha/`; `base-uri 'self'`
+  protects the app's `<base href>`-driven relative URLs.
+- **URLs:** route any non-hardcoded URL through
+  `front_end/.../page_js/common_all_pages/sanitizeURL_ForHrefOrNavigation.ts` before it reaches an
+  `href`/`.src`/`location.href`/`window.open` (external vs same-origin variant per intent). Validate
+  redirect/web-link URLs **server-side** too — client checks are bypassable (web links are http/https-only
+  across client form, `Insert_WebLink_RestWebserviceController`, and the render sanitizer).
+- **HTML:** never build HTML from server/user data via string concat + `innerHTML`/`.html()`. Use React
+  (auto-escaped), `<c:out>` on the server, or inject an empty node and set user text via
+  `.textContent`/`.text()`. (`dangerouslySetInnerHTML` is used nowhere.)
