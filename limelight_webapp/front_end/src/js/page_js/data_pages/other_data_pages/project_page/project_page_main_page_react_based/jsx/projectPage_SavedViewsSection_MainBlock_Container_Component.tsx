@@ -9,6 +9,7 @@
 import React from "react";
 import { DataPages_LoggedInUser_CommonObjectsFactory } from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+import { sanitizeURL_ForHrefOrNavigation__SameOriginSafeUrlOrNull } from "page_js/common_all_pages/sanitizeURL_ForHrefOrNavigation";
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from "page_js/data_pages/other_data_pages/project_page/projectPage_SavedViews_Section_LoggedInUsersInteraction";
 import {
@@ -266,11 +267,16 @@ export class Internal__Single_SavedViewEntry_Component extends React.Component< 
             event.preventDefault(); // to stop the
             event.stopPropagation();
 
-            if ( event.ctrlKey || event.metaKey ) {
+            //  Saved-view URLs are app-generated same-origin page URLs; validate before navigating
+            //  so a tampered value cannot become an open redirect / javascript: URL.
+            const safeSavedViewURL = sanitizeURL_ForHrefOrNavigation__SameOriginSafeUrlOrNull( this.props.savedViewItem.url );
+            if ( safeSavedViewURL !== null ) {
+                if ( event.ctrlKey || event.metaKey ) {
 
-                window.open(this.props.savedViewItem.url, "_blank", "noopener");
-            } else {
-                window.location.href = this.props.savedViewItem.url
+                    window.open(safeSavedViewURL, "_blank", "noopener");
+                } else {
+                    window.location.href = safeSavedViewURL
+                }
             }
 
         } catch ( e ) {

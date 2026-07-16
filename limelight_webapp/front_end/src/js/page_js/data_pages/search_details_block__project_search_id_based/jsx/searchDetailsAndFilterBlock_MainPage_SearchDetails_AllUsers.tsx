@@ -12,6 +12,7 @@ import {
     DataPages_LoggedInUser_CommonObjectsFactory
 } from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+import { sanitizeURL_ForHrefOrNavigation__ExternalLinkSafeUrlOrNull } from "page_js/common_all_pages/sanitizeURL_ForHrefOrNavigation";
 import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
 import {
     SearchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback,
@@ -2280,6 +2281,10 @@ class Internal__WebLink_Entry_Component extends React.Component<Internal__WebLin
      */
     render() {
 
+        //  Web link URLs are user-provided and are NOT scheme-validated server-side, so sanitize
+        //  before rendering into href (defense against stored javascript:/data: URL XSS + open redirect).
+        const _webLink_SafeURL = sanitizeURL_ForHrefOrNavigation__ExternalLinkSafeUrlOrNull( this.props.webLink_Entry.linkURL );
+
         return (
             <div
                 ref={ this._webLink_Div_Ref }
@@ -2305,9 +2310,16 @@ class Internal__WebLink_Entry_Component extends React.Component<Internal__WebLin
                         <span> </span>
                     </>
                 ) : null }
-                <a target="_blank" href={ this.props.webLink_Entry.linkURL }>
-                    { this.props.webLink_Entry.linkLabel }
-                </a>
+                { _webLink_SafeURL !== null ? (
+                    <a target="_blank" rel="noopener noreferrer" href={ _webLink_SafeURL }>
+                        { this.props.webLink_Entry.linkLabel }
+                    </a>
+                ) : (
+                    //  URL uses a disallowed scheme (e.g. javascript:) -- show the label without a link.
+                    <span title="Link hidden: URL uses a disallowed scheme">
+                        { this.props.webLink_Entry.linkLabel }
+                    </span>
+                ) }
             </div>
         )
     }

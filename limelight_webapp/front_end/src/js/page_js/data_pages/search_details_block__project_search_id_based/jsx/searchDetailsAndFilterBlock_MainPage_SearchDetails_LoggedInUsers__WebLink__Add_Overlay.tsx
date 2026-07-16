@@ -207,9 +207,13 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
      * @private
      */
     private _weblinks_validateURL(textval : string) {
-        const urlregex = new RegExp(
-            "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
-        return urlregex.test(textval);
+        //  Basic sanity only: require an absolute http(s) URL with a host and no embedded whitespace.
+        //  The security-critical scheme check (blocking javascript:/data:/etc.) is enforced server-side
+        //  (Insert_WebLink_RestWebserviceController) and again at render time
+        //  (sanitizeURL_ForHrefOrNavigation__ExternalLinkSafeUrlOrNull). Do NOT reintroduce a hardcoded
+        //  TLD allowlist here -- the old one rejected valid modern TLDs (.app, .dev, .bio, .science, ...).
+        const urlregex = new RegExp( "^https?://[^\\s/][^\\s]*$", "i" );
+        return urlregex.test( textval.trim() );
     }
 
     /**

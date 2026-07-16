@@ -143,6 +143,14 @@ public class Insert_WebLink_RestWebserviceController {
     			log.warn( "No weblinkURL" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
         	}
+        	//  Server-side backstop for the client-side URL check: web links may point to ANY external
+        	//  site, but only over http/https. Reject javascript:/data:/vbscript:/other schemes so a
+        	//  crafted request cannot store a stored-XSS payload that would be rendered into an <a href>.
+        	//  (The front end also sanitizes at render time; this stops the bad value at the source.)
+        	if ( ! isWeblinkURL_AllowedScheme( weblinkURL ) ) {
+    			log.warn( "weblinkURL is not an allowed http(s)/ftp URL (blocked scheme): " + weblinkURL );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+        	}
         	if ( StringUtils.isEmpty( weblinkLabel ) ) {
     			log.warn( "No weblinkLabel" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
@@ -197,6 +205,30 @@ public class Insert_WebLink_RestWebserviceController {
     	}
     }
     
+
+    /**
+     * @return true if the web link URL uses an allowed scheme (http/https, ANY host).
+     *   Web links intentionally point to external sites, so the host is NOT restricted -- only the
+     *   scheme, to block javascript:/data:/vbscript:/file:/etc. Leading/trailing whitespace is ignored,
+     *   and any embedded ASCII control character (a scheme-obfuscation vector, e.g. "java\tscript:")
+     *   causes rejection.
+     */
+    private static boolean isWeblinkURL_AllowedScheme( String weblinkURL ) {
+    	if ( weblinkURL == null ) {
+    		return false;
+    	}
+    	String trimmed = weblinkURL.trim();
+    	//  Reject any embedded ASCII control character -- no legitimate URL contains one, and they are
+    	//  used to smuggle a scheme past a naive check (browsers strip them before resolving the scheme).
+    	for ( int i = 0; i < trimmed.length(); i++ ) {
+    		char c = trimmed.charAt( i );
+    		if ( c < 0x20 || c == 0x7F ) {
+    			return false;
+    		}
+    	}
+    	String lower = trimmed.toLowerCase();
+    	return lower.startsWith( "http://" ) || lower.startsWith( "https://" );
+    }
 
     public static class WebserviceRequest {
     	

@@ -16,6 +16,7 @@ import { createRoot as createRoot_ReactDOM_Client, Root as Root_ReactDOM_Client 
 
 
 import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
+import { sanitizeURL_ForHrefOrNavigation__SameOriginSafeUrlOrNull } from 'page_js/common_all_pages/sanitizeURL_ForHrefOrNavigation';
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/common_all_pages/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
@@ -295,8 +296,13 @@ export class UserLogin_Subpart {
 			}
 			var requestedURL : any = $requestedURL.val();
 			if ( requestedURL !== "" ) {
-				window.location.href = requestedURL;
-				return;
+				//  requestedURL comes from the ${param.requestedURL} request param (see userLogin.jsp).
+				//  Only navigate if it is a safe same-origin URL -- blocks open redirect / javascript: URL XSS.
+				const safeRequestedURL = sanitizeURL_ForHrefOrNavigation__SameOriginSafeUrlOrNull( requestedURL );
+				if ( safeRequestedURL !== null ) {
+					window.location.href = safeRequestedURL;
+					return;
+				}
 			}
 		} else {
 			var $element = $("#error_message_system_error");
