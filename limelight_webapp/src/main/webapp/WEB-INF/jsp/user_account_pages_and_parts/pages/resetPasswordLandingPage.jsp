@@ -86,7 +86,7 @@
   </div>
 
 	 <div id="get_help_tab" class="bottom-tab"  > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
-		 <a href="https://limelight-ms.readthedocs.io/en/latest/" target="_blank">Get Help</a>
+		 <a href="https://limelight-ms.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">Get Help</a>
 	 </div>
 
   <div id="signin_tab" class="bottom-tab" style="border-right-width: 0px;" > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>

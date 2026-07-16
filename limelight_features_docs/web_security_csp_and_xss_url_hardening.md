@@ -163,6 +163,19 @@ auto-escaped. The raw-HTML sinks, all traced:
 
 ---
 
+## 4b. Reverse tabnabbing: `target="_blank"` anchors
+
+Every `target="_blank"` `<a>` in the app (front end **and** JSPs) carries `rel="noopener noreferrer"`, and
+every `window.open(url, "_blank", …)` call passes `"noopener"`. This is defense-in-depth — modern browsers
+already default `target=_blank` to `noopener`; older ones don't — and all current destinations are
+hardcoded (readthedocs / same-app paths), so there was no live risk, but the attribute is applied
+uniformly. Note the URL auto-linkifier
+`<fe>/data_pages/common_components__react/render_String_InComponent__SeparateOnNewLine__Links_to_A_HREF__Component.tsx`
+renders `<a href={urlMatch}>` from URLs found in free text — it has the rel; if you extend it, also run
+`urlMatch` through the URL sanitizer (§2), since that href is data-derived.
+
+---
+
 ## 5. Two mechanisms you need to test/extend these endpoints
 
 - **Webservice sync-tracking code (anti-stale / soft-CSRF).** Every mutating REST call validates a header
@@ -199,3 +212,5 @@ auto-escaped. The raw-HTML sinks, all traced:
   verify in a browser (no console CSP violation; the affected feature still works).
 - If you ever remove `'unsafe-eval'`, you must first eliminate Plotly WebGL (`scattergl` → `scatter`) and
   re-test the plot pages.
+- **New `target="_blank"` links** must include `rel="noopener noreferrer"`; prefer
+  `window.open(url, "_blank", "noopener")` (see §4b).

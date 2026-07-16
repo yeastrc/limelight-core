@@ -63,7 +63,7 @@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" 
 				<td style=" padding-bottom: 6px; ">
 					<a href="<%= AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER 
 					%>/${ projectEntry.projectId }"
-					 target="_blank" 
+					 target="_blank" rel="noopener noreferrer" 
 					><c:out value="${ projectEntry.projectName }"></c:out></a>
 				</td>
 			</tr>		

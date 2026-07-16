@@ -54,7 +54,7 @@
 	<div >
 		<a 
 			href="d/pg/project-search-list"
-			target="_blank" 
+			target="_blank" rel="noopener noreferrer" 
 			title="Opens in new tab"
 		>
 			List all Projects and contained searches

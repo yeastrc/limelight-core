@@ -285,7 +285,7 @@ class SubmitImportProgramInfo_Overlay_Component extends React.Component< SubmitI
                     <h2>Documentation for using the Submit Import Program</h2>
 
                     <div >
-                        <a target="_blank" href="https://github.com/yeastrc/limelight-core/blob/master/limelight_submit_import/docs/Documentation.md"
+                        <a target="_blank" rel="noopener noreferrer" href="https://github.com/yeastrc/limelight-core/blob/master/limelight_submit_import/docs/Documentation.md"
                         >Documentation</a>
                     </div>
 

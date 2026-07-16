@@ -159,7 +159,7 @@
   	  
   	   <div class="header-right-icons-container" style="position: relative;">
 
-      		<a href="https://limelight-ms.readthedocs.io/en/latest/" id="documentation_header_link" target="_blank"
+      		<a href="https://limelight-ms.readthedocs.io/en/latest/" id="documentation_header_link" target="_blank" rel="noopener noreferrer"
 			  class=" selector_tool_tip_attached "
 			  title="Read Documentation"
 		    ><img src="static/images/icon-help.png" class="header-documentation-image"
@@ -201,7 +201,7 @@
   	   
   	 	<%--  icons will be to the right of username --%>
   	   <div class=" header-right-icons-container " style="position: relative;">
-		   <a href="https://limelight-ms.readthedocs.io/en/latest/" id="documentation_header_link" target="_blank"
+		   <a href="https://limelight-ms.readthedocs.io/en/latest/" id="documentation_header_link" target="_blank" rel="noopener noreferrer"
 			  class=" selector_tool_tip_attached "
 			  title="Read Documentation"
 		   ><img src="static/images/icon-help.png" class="header-documentation-image"

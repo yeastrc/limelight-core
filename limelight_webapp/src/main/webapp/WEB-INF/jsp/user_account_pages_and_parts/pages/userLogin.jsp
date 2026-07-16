@@ -108,7 +108,7 @@
         </div>
 
         <div id="get_help_tab" class="bottom-tab"  > <%-- Add if put box to right for Help: style="border-right-width: 0px;" --%>
-            <a href="https://limelight-ms.readthedocs.io/en/latest/" target="_blank">Get Help</a>
+            <a href="https://limelight-ms.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">Get Help</a>
         </div>
 
         <%-- Not Shown initially --%>
@@ -131,7 +131,7 @@
     </div>
     <div></div>
     <div style="border: 2px solid #d3d3d3;background-color: #fff;display: inline-block;margin-top:20px;width: 466px;">
-        <div style="padding: 10px;">Using Limelight in your work? Remember to <a target="_blank" href="https://limelight-ms.readthedocs.io/en/latest/#citing"><span style="font-weight:bold;">Cite Limelight</span></a>!</div>
+        <div style="padding: 10px;">Using Limelight in your work? Remember to <a target="_blank" rel="noopener noreferrer" href="https://limelight-ms.readthedocs.io/en/latest/#citing"><span style="font-weight:bold;">Cite Limelight</span></a>!</div>
     </div>
 </div>
 

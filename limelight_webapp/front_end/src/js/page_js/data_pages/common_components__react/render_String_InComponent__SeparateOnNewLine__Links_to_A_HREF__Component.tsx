@@ -113,7 +113,7 @@ export class Render_String_InComponent__SeparateOnNewLine__Links_to_A_HREF__Comp
                                     //  Add URL
 
                                     displayElements_Key_Counter++
-                                    displayElements.push( <a key={ displayElements_Key_Counter } target="_blank" href={ urlMatch }>{ urlMatch }</a> )
+                                    displayElements.push( <a key={ displayElements_Key_Counter } target="_blank" rel="noopener noreferrer" href={ urlMatch }>{ urlMatch }</a> )
 
                                     //  Advance textLine_StartIndex beyond the urlMatch
 

@@ -2775,6 +2775,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                                     NCBI Blast
                                     <a href={ this.state.linksToExternalResources.NCBI_Blast_URL }
                                        target="_blank"
+                                       rel="noopener noreferrer"
                                        style={ { marginLeft: 5 } }
                                     ><img className=" icon-small "
                                           src="static/images/icon-linkout-dark.png"
@@ -2785,6 +2786,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                                     UniProtKB Search
                                     <a href={ this.state.linksToExternalResources.UniProtKB_Search_URL }
                                        target="_blank"
+                                       rel="noopener noreferrer"
                                        style={ { marginLeft: 5 } }
                                     ><img className=" icon-small "
                                           src="static/images/icon-linkout-dark.png"
@@ -2795,6 +2797,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                                     NCBI Search
                                     <a href={ this.state.linksToExternalResources.NCBI_Search_URL }
                                        target="_blank"
+                                       rel="noopener noreferrer"
                                        style={ { marginLeft: 5 } }
                                     ><img className=" icon-small "
                                           src="static/images/icon-linkout-dark.png"

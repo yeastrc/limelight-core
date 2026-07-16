@@ -77,7 +77,7 @@ if ( responseStatusCode != null ) {
 	  		        <div>
 		  		      <a 
 		  		      	href="https://limelight-ms.readthedocs.io/en/latest/administration/update-limelight.html"
-		  		      	target="_blank"
+		  		      	target="_blank" rel="noopener noreferrer"
 		  		      >
 		  		      	the instructions for updating Limelight
 		  		      </a>

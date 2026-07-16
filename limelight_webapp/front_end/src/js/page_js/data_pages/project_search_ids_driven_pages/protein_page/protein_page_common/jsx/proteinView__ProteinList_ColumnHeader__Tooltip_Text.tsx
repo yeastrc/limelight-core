@@ -15,7 +15,7 @@ export const proteinView__ProteinList_ColumnHeader__Tooltip_Text = {
         () : React.JSX.Element  => {
         return (
             <span>
-                The adjusted spectral count for a protein as calculated by ABACUS (<a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/21360675/">https://pubmed.ncbi.nlm.nih.gov/21360675/</a>).
+                The adjusted spectral count for a protein as calculated by ABACUS (<a target="_blank" rel="noopener noreferrer" href="https://pubmed.ncbi.nlm.nih.gov/21360675/">https://pubmed.ncbi.nlm.nih.gov/21360675/</a>).
                     At a high level, this is calculated as the number of distinct scans unique to a protein plus the sum of the adjusted scan weight for scans not unique to a protein,
                     which is calculated using how many other proteins a scan identified and how many scans are unique to those proteins.
                 </span>
