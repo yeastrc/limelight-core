@@ -52,7 +52,10 @@ head_section_include_every_page.jsp
     		;
     		object-src 'none';
     		base-uri 'self';  <%-- lock <base> to same-origin; the app hangs all relative URLs off <base href="<contextPath>/">, so an injected off-origin <base> would repoint every relative link/resource --%>
+    		frame-ancestors 'self';  <%-- Anti-clickjacking: only this origin may put Limelight pages in a frame/iframe. Limelight is a stand-alone app and is NOT meant to be embedded in another site. (If an installation needs to embed it, they can raise an issue.) --%>
+    		form-action 'self';  <%-- Forms may only submit to this origin. Every Limelight form submits to the Limelight app itself (incl. the forms TypeScript builds+submits dynamically); Google reCAPTCHA does not submit a parent-page form cross-origin (its token posts to our own server, which then calls Google). --%>
     		">
+
  
 <%-- Included script tests for Internet Explorer. --%>
 <%--  Moved to inline script next

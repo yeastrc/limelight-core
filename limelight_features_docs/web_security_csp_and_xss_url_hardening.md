@@ -36,6 +36,8 @@ script-src 'self'
            https://www.google.com/recaptcha/api.js ;
 object-src 'none' ;
 base-uri   'self' ;
+frame-ancestors 'self' ;                   (anti-clickjacking; app is stand-alone)
+form-action 'self' ;                       (forms submit only to this origin)
 ```
 
 Key facts and the reasoning behind each non-obvious choice:
@@ -60,6 +62,15 @@ Key facts and the reasoning behind each non-obvious choice:
   `<base href="<contextPath>/">` and hangs *all* relative URLs off it, so an injected off-origin
   `<base>` would silently repoint every relative link/script/resource. `'self'` permits the legitimate
   same-origin base while blocking that hijack (verified: legit base unaffected).
+- **`frame-ancestors 'self'`** — anti-clickjacking; only this origin may put Limelight pages in a
+  frame/iframe. Limelight is always a stand-alone app (never embedded), so this is safe; no reCAPTCHA
+  interaction (it governs framing, not forms). Added 2026-07-16.
+- **`form-action 'self'`** — forms may submit only to this origin. All Limelight form submits (incl. the
+  forms TypeScript builds and submits dynamically) target the app itself; reCAPTCHA's own forms live in
+  Google's cross-origin iframe (governed by Google's CSP, not ours) and its verification token posts to
+  our own server. Added 2026-07-16 and **verified with reCAPTCHA v2** (using Google's public test keys) —
+  `form-action 'self'` does NOT break reCAPTCHA. (If a future integration ever conflicts, extend it:
+  `form-action 'self' https://www.google.com https://www.recaptcha.net`.)
 
 ---
 
@@ -156,8 +167,8 @@ auto-escaped. The raw-HTML sinks, all traced:
   `_termsOfService_Text_ConvertForAssignAsHTML` does `\n → <br>` **without** escaping the rest, so an
   author can inject live HTML that renders to all users on the ToS-acceptance page. This is gated to
   **global webapp-admins** (fully trusted), so it's accepted, not a finding. *Optional* future hardening
-  (declined for now): if ToS/footer are meant to be plain-text-with-breaks, HTML-escape first then
-  `\n→<br>`, to limit blast radius if an admin account is compromised.
+  (declined for now, catalogued in §7a): if ToS/footer are meant to be plain-text-with-breaks, HTML-escape
+  first then `\n→<br>`, to limit blast radius if an admin account is compromised.
 
 **Bottom line:** no actionable XSS in the HTML sinks.
 
@@ -214,3 +225,57 @@ renders `<a href={urlMatch}>` from URLs found in free text — it has the rel; i
   re-test the plot pages.
 - **New `target="_blank"` links** must include `rel="noopener noreferrer"`; prefer
   `window.open(url, "_blank", "noopener")` (see §4b).
+
+---
+
+## 7. Deferred / future hardening (identified, NOT yet done)
+
+These were identified during the security pass and deliberately left for a future, separately-tested
+change. **Start here for any future "security / hardening" request.**
+
+### 7a. Terms-of-Service / footer: escape-first
+`_termsOfService_Text_ConvertForAssignAsHTML` (in
+`<fe>/webapp_admin_pages/webapp_manage_terms_of_service_page/manageTermsOfService_Maint.ts`) does
+`termsOfServiceText.replace(/\n/g, "<br>")` and assigns the result as HTML — rendered to **all** users on
+the ToS-acceptance page. The admin footer (`webapp_admin_pages/webapp_config_page/configureLimelightForAdminPage_Main.ts`,
+`input_footer_center_of_page_html_Val`) is the same shape. Neither escapes the rest of the text, so an
+author can inject live HTML. It's gated to **global webapp-admins (trusted)**, so it's accepted today.
+
+**Option:** if ToS/footer are meant to be **plain text with line breaks** (not rich HTML), HTML-escape the
+text FIRST, then convert `\n`→`<br>`. This limits blast radius — a compromised admin account (or any future
+lower-privilege path to ToS) otherwise yields persistent XSS on every user's ToS page. **Confirm intent
+first:** only do this if rich-HTML authoring is NOT a wanted feature (as of 2026-07-16 this was left as-is).
+
+### 7b. Additional CSP directives
+The two **cheap wins were added 2026-07-16** (see §1) and are no longer deferred:
+`frame-ancestors 'self'` (done — safe, app is stand-alone) and `form-action 'self'` (done, reCAPTCHA
+**verified** with reCAPTCHA v2 test keys — see §1). Google's CSP evaluator would still flag the
+remaining missing fallbacks, all of which are the larger lift:
+
+- **Larger lift (needs a source inventory + browser testing first).** Per-directive notes, incorporating
+  what Dan confirmed about this app (2026-07-16):
+  - **`style-src` — effectively off the table.** The repo uses **inline `style=` attributes pervasively**
+    (React `style={{…}}` and JSP `style="…"`), and **that will not change**. So if `style-src` is ever
+    added it **must** include `'unsafe-inline'` — a strict style-src would break the whole UI, and the
+    inline styles won't be refactored. Low payoff; essentially skip.
+  - **`img-src` — must allow `data:`.** Besides self (`static/`), the TS converts some **Plotly plots to a
+    PNG and sets `<img src="data:…">`** (to drop the Plotly plot from the DOM), so `data:` is required.
+    Also enumerate reCAPTCHA images (`www.gstatic.com`) and any Google Analytics pixel.
+  - **`connect-src` — enumerable if we decide it's worth it.** Covers self (all webservice calls) plus
+    whatever Google Analytics and reCAPTCHA fetch — those two are **unconfirmed** and would need a quick
+    investigation before enforcing.
+  - **`font-src` — easy / restrictive.** The app currently uses **no custom (web/@font-face) fonts**, so
+    `font-src 'self'` (or even tighter) is safe today. Re-check if fonts are ever added.
+  - **`frame-src` — must not break reCAPTCHA.** The **only iframe in the app is reCAPTCHA**, so `frame-src`
+    must allow the reCAPTCHA frame origins (`https://www.google.com` and/or `https://www.recaptcha.net`).
+    Test reCAPTCHA (v2) after adding — this is the one that can break it. (Distinct from `frame-ancestors`,
+    already set, which is who may frame *us*.)
+  - **`default-src`** — the fallback for everything above; add last, once the specific fetch directives are
+    settled (otherwise it silently blocks whatever you forgot).
+  - Roll these out via the **`Content-Security-Policy-Report-Only`** HTTP header first (meta tags can't be
+    report-only), watch the console / a `report-to` endpoint for violations across the whole app, then
+    enforce.
+
+  *Provenance:* the `img`/`connect`/`frame` source lists are categories to inventory, **not** a
+  verified-complete list — a full source audit has not been done (Google Analytics and reCAPTCHA fetch/
+  frame targets in particular are unconfirmed).

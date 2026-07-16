@@ -178,7 +178,8 @@ user-provided URL, or injecting an HTML string, read
   `limelight_webapp/src/main/webapp/WEB-INF/jsp/jsp_includes_head_section/head_section_include_every_page.jsp`
   (no header). It uses hashes, not `'unsafe-inline'`; `'unsafe-eval'` is required by **Plotly WebGL**
   (`scattergl`/regl), not Google Charts (unused). `gstatic` is narrowed to `/recaptcha/`; `base-uri 'self'`
-  protects the app's `<base href>`-driven relative URLs.
+  protects the app's `<base href>`-driven relative URLs; `frame-ancestors 'self'` (anti-clickjacking; app
+  is stand-alone) and `form-action 'self'` are set — each directive is commented inline in the JSP.
 - **URLs:** route any non-hardcoded URL through
   `front_end/.../page_js/common_all_pages/sanitizeURL_ForHrefOrNavigation.ts` before it reaches an
   `href`/`.src`/`location.href`/`window.open` (external vs same-origin variant per intent). Validate
@@ -187,3 +188,5 @@ user-provided URL, or injecting an HTML string, read
 - **HTML:** never build HTML from server/user data via string concat + `innerHTML`/`.html()`. Use React
   (auto-escaped), `<c:out>` on the server, or inject an empty node and set user text via
   `.textContent`/`.text()`. (`dangerouslySetInnerHTML` is used nowhere.)
+- **Future security/hardening requests start at §7 of that doc** — deferred items are catalogued there:
+  remaining CSP directives (`default-src`/`img-src`/`style-src`/`connect-src`) and ToS/footer escape-first.
