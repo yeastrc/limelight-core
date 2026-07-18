@@ -29,7 +29,7 @@
     "@stdlib/stats-lowess": "^0.2.3",
     "@types/d3": "^7.4.3",
     "@types/react": "^19.2.17",
-    "caniuse-lite": "^1.0.30001805",
+    "caniuse-lite": "^1.0.30001806",
     "d3": "^7.9.0",
     "jstat": "^1.9.6",
     "ml-savitzky-golay": "^5.0.0",
