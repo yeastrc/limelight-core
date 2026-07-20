@@ -297,7 +297,27 @@ read the console/markers):
 
 ---
 
-## 9. Related
+## 9. Structure-file upload: parse & no-chains error handling
+
+Separate from the render-time mapping above, the map-new-structure overlay validates an uploaded file
+before saving it (`_process_StructureFile_PDB_Etc_Contents__Return_TrueIfValid`, then the caller ~line 706
+of `Protein_Structure_WidgetDisplay__StructureFile_MapNewStructure_Overlay_Component.tsx`). Both failure
+modes are surfaced **in the overlay** — never the generic "Error in Page Code," never a `window.alert`:
+
+- **Unparseable file** — Mol\* fails somewhere in `rawData → parseTrajectory → createModel → createStructure`:
+  the `catch` returns `false` and the overlay shows **"Failed to parse file '<name>'."** in place. The
+  underlying parse error is now `console.warn`'d so a failed parse is diagnosable (it was previously
+  swallowed silently).
+- **Parses but has no polymer chains** — a ligand/water-only file parses fine but yields zero *alignable*
+  chains (the chain extraction skips non-polymer entities). The caller rejects it up front with a distinct
+  **"No alignable chains found in '<name>'."** — rather than uploading a useless structure, or mislabeling
+  it as a parse failure (it *did* parse).
+
+To reproduce the no-chains case, a minimal test file is: the clean cif's `atom_site` loop header followed by
+a handful of `HETATM … HOH …` water rows and no polymer atoms (parses identically, but every chain is a
+`water` entity → 0 polymer chains).
+
+## 10. Related
 
 - Root-cause investigation and the production-safety verification are recorded in the working notes for this
   effort (auto-memory `molstar-ca-not-found-fake-map-investigation`, `molstar-structure-mapping-rewrite-plan`).

@@ -705,17 +705,29 @@ class Protein_Structure_WidgetDisplay__StructureFile_MapNewStructure_Overlay_Com
 
             if ( isValid_Result ) {
 
-                const structureFile_Contents__ChainsData_Root: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Root = {
+                if ( ( ! this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array )
+                    || this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array.length === 0 ) {
 
-                    entries: this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array
+                    //  Parsed OK but has no polymer chains -> nothing to align. Reject with a distinct message
+                    //  (NOT "Failed to parse", which would be misleading since the file parsed fine).
+                    this._errorMessage_StructureFile_Upload = "No alignable chains found in '" + filename + "'."
+
+                    this.forceUpdate()
+
+                } else {
+
+                    const structureFile_Contents__ChainsData_Root: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Root = {
+
+                        entries: this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array
+                    }
+
+                    this._process_ProteinStructureFile_Upload_AfterValidation({
+                        filename,
+                        contentSize_InBytes: fileSize,
+                        description, proteinSequenceStructureFile_Contents, structureFile_PDB_ETC__DataFormat,
+                        structureFile_Contents__ChainsData_Root: structureFile_Contents__ChainsData_Root
+                    })
                 }
-
-                this._process_ProteinStructureFile_Upload_AfterValidation({
-                    filename,
-                    contentSize_InBytes: fileSize,
-                    description, proteinSequenceStructureFile_Contents, structureFile_PDB_ETC__DataFormat,
-                    structureFile_Contents__ChainsData_Root: structureFile_Contents__ChainsData_Root
-                })
 
             } else {
 
