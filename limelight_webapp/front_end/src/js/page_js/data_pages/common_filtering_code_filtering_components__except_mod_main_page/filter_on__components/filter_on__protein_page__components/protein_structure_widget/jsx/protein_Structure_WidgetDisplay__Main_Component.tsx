@@ -38,6 +38,7 @@ import { ModalOverlay_Limelight_Component_v001_B_FlexBox } from "page_js/common_
 import { limelight_add_ReactComponent_JSX_Element_To_DocumentBody, Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import { molstarStructure_ExtractPolymerResidueList_ForChain, molstarStructure_ExtractPolymerResidueList_ForChain__OrdinalForLocation } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstarStructure_ExtractPolymerResidueList_ForChain";
 import { ResidueIndex } from "molstar/lib/mol-model/structure/model/indexing";
+import { ProteinStructure_StructureDisplayError_MessageContent_Component } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/jsx/proteinStructure_StructureDisplayError_MessageContent_Component";
 import { molstar_DevMode_LogChainSelection } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_DevMode_SelectionLogging";
 import { MolScriptBuilder } from 'molstar/lib/mol-script/language/builder';
 import { BuiltInTrajectoryFormat } from "molstar/lib/mol-plugin-state/formats/trajectory";
@@ -530,6 +531,12 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
     private _molstar_modificationSphere_RepresentationRef: string
 
     private _show_Structure_PageBlock = false
+
+    /**
+     * True when the current structure file failed to load in Mol* (ProteinStructure_MolstarLoad_Error).
+     * Drives replacing the user-inputs panel contents with the error message. Reset when a load starts.
+     */
+    private _structureDisplay_Failed = false
 
     /**
      * undefined if proteinSequence is too short, else Set of positions plus '0.5' since between the positions
@@ -2254,6 +2261,9 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
             this._structureFile_PDB_Etc_Contents__CurrentlyDisplayed = structureFile_PDB_Etc_Contents
 
+            //  New load attempt -> clear any prior display-failure state (so a successful reload restores the panel).
+            this._structureDisplay_Failed = false
+
 
             //  Reset saved data
 
@@ -2266,57 +2276,38 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
             //  Then Render the contents of structureFile_PDB_Etc_Contents using format structureFile_PDB_ETC__DataFormat
 
-            //  NOTE  This works with pdbString being the contents of the PDB file
-            const proteinStructureFile_Data = await this._molstar_PluginUIContext_Reference.builders.data.rawData( {
-                data: structureFile_PDB_Etc_Contents.proteinSequenceStructureFile_Contents,
-                label: 'Structure Label Parameter Value'  //  TODO  Used in the Default tooltip in the lower right corner
-            } );
+            //  Load the structure file into Mol* (parse -> model -> structure). Wrap ONLY these Mol* load
+            //  calls so a bad / unloadable file surfaces as a typed ProteinStructure_MolstarLoad_Error. The
+            //  method-level catch then shows the graceful "Structure Display Error" modal for THIS case only,
+            //  while any unrelated Limelight JS error elsewhere in the method still rethrows to the normal handler.
+            let structure_StateObjectSelector: any = undefined
+            let structure: Structure = undefined
 
-            //   Do NOT use '.applyPreset(...,"default")' causes it to be harder to color everything later
-            // await this._molstar_PluginUIContext_Reference.builders.structure.hierarchy.applyPreset(
-            //     trajectory,
-            //     "default"
-            // );
+            try {
 
-            /////////
+                //  NOTE  This works with pdbString being the contents of the PDB file
+                const proteinStructureFile_Data = await this._molstar_PluginUIContext_Reference.builders.data.rawData( {
+                    data: structureFile_PDB_Etc_Contents.proteinSequenceStructureFile_Contents,
+                    label: 'Structure Label Parameter Value'  //  TODO  Used in the Default tooltip in the lower right corner
+                } );
 
-            //  Create Structure for below
+                //   Do NOT use '.applyPreset(...,"default")' -- makes it harder to color everything later.
 
-            const proteinStructureFile_Trajectory = await this._molstar_PluginUIContext_Reference.builders.structure.parseTrajectory( proteinStructureFile_Data, structureFile_PDB_ETC__DataFormat );
+                const proteinStructureFile_Trajectory = await this._molstar_PluginUIContext_Reference.builders.structure.parseTrajectory( proteinStructureFile_Data, structureFile_PDB_ETC__DataFormat );
 
-            // Create a structure hierarchy
-            const proteinStructureFile_Model = await this._molstar_PluginUIContext_Reference.builders.structure.createModel( proteinStructureFile_Trajectory );
+                const proteinStructureFile_Model = await this._molstar_PluginUIContext_Reference.builders.structure.createModel( proteinStructureFile_Trajectory );
 
-            // console.warn( "*************  proteinStructureFile_Model  START" )
-            //
-            // console.warn( "proteinStructureFile_Model: ", proteinStructureFile_Model )
-            // console.warn( "proteinStructureFile_Model.data: ", proteinStructureFile_Model.data )
-            // console.warn( "proteinStructureFile_Model.data.label: ", proteinStructureFile_Model.data.label )
-            // console.warn( "proteinStructureFile_Model.cell: ", proteinStructureFile_Model.cell )
-            //
-            // console.warn( "*************  proteinStructureFile_Model  END" )
+                structure_StateObjectSelector = await this._molstar_PluginUIContext_Reference.builders.structure.createStructure( proteinStructureFile_Model );
 
-            const structure_StateObjectSelector = await this._molstar_PluginUIContext_Reference.builders.structure.createStructure( proteinStructureFile_Model );
+                structure = structure_StateObjectSelector.cell.obj?.data
 
-            // console.warn( "*************  structure_StateObjectSelector  START" )
-            //
-            // console.warn( "structure_StateObjectSelector: ", structure_StateObjectSelector )
-            // console.warn( "structure_StateObjectSelector.data: ", structure_StateObjectSelector.data )
-            // console.warn( "structure_StateObjectSelector.data.label: ", structure_StateObjectSelector.data.label )
-            //
-            // console.warn( "structure_StateObjectSelector.cell: ", structure_StateObjectSelector.cell )
-            //
-            // console.warn( "structure_StateObjectSelector.cell.obj: ", structure_StateObjectSelector.cell.obj )
-            // console.warn( "structure_StateObjectSelector.cell.obj?.data: ", structure_StateObjectSelector.cell.obj?.data )
-            //
-            // console.warn( "*************  structure_StateObjectSelector  END" )
+                if ( ! structure ) {
+                    throw Error( "createStructure produced no structure (structure_StateObjectSelector.cell.obj?.data is null or undefined)" )
+                }
 
-            const structure: Structure = structure_StateObjectSelector.cell.obj?.data
+            } catch ( molstarLoadError ) {
 
-            if ( ! structure ) {
-                const msg = "structure_StateObjectSelector.cell.obj?.data is null or undefined"
-                console.warn( msg )
-                throw Error( msg )
+                throw new ProteinStructure_MolstarLoad_Error( "Mol* could not load/parse the structure file", molstarLoadError )
             }
 
             // console.warn( "*************  structure: Structure  START" )
@@ -2564,9 +2555,77 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
             this._add_StructureData_PDB_Etc__TO__MolStar_Instance__LastCalled = Date.now()
 
         } catch ( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-            throw e
+
+            if ( e instanceof ProteinStructure_MolstarLoad_Error ) {
+
+                //  The structure file itself could not be loaded in Mol*. Report the underlying error to the
+                //  server for review, but with skipDisplayErrorOverlay so it does NOT show the generic
+                //  "Error in Page Code" page -- our graceful "Structure Display Error" modal is shown instead.
+                //  Do NOT rethrow (the caller handles resolve/reject). All guarded so this can't itself throw.
+                try {
+                    reportWebErrorToServer.reportErrorObjectToServer( {
+                        errorException: ( e.originalError instanceof Error ) ? e.originalError : e,
+                        skipDisplayErrorOverlay_SkipCall__errorDisplay_WhenHave_Javascript_Typescript_Error: true
+                    } );
+                } catch ( _reportErr ) { /* ignore reporting failure */ }
+
+                this._add_StructureData_PDB_Etc__TO__MolStar_Instance__CallInProgress = false
+
+                //  Replace the user-inputs panel contents with the error message (see render), and pop the modal once.
+                this._structureDisplay_Failed = true
+
+                try {
+                    this._show_StructureDisplayFailed_Overlay()
+                } catch ( _showErr ) {
+                    console.warn( "Failed to show structure-display-error overlay: ", _showErr )
+                }
+
+                this.forceUpdate()
+
+            } else {
+
+                //  Any OTHER error (e.g. an unrelated Limelight JS bug) -> normal reporting + rethrow to the
+                //  generic handler, so it is NOT mislabeled as a structure-display problem.
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                throw e
+            }
         }
+    }
+
+    /**
+     * Graceful modal shown when a saved structure file fails to load/display in Mol* (parse or render
+     * failure). Replaces the generic "Error in Page Code" for that case.
+     */
+    private _show_StructureDisplayFailed_Overlay(): void {
+
+        let holder: Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF | undefined = undefined
+
+        const closeOverlay = () => {
+            if ( holder ) {
+                holder.removeContents_AndContainer_FromDOM()
+            }
+        }
+
+        const overlayElement = (
+            <ModalOverlay_Limelight_Component_v001_B_FlexBox
+                title={ "Structure Display Error" }
+                heightMinimum={ 180 }
+                heightMaximum={ 320 }
+                widthMinimum={ 360 }
+                widthMaximum={ 560 }
+                close_OnBackgroundClick={ false }
+                callbackOnClicked_Close={ closeOverlay }
+            >
+                <div className="top-level single-entry-variable-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right" style={ { overflowY: "auto" } }>
+                    <ProteinStructure_StructureDisplayError_MessageContent_Component />
+                </div>
+                <div className="top-level fixed-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right modal-overlay-body-standard-margin-bottom" style={ { marginTop: "1em", textAlign: "right" } }>
+                    <button className="clickable" onClick={ closeOverlay }>Close</button>
+                </div>
+            </ModalOverlay_Limelight_Component_v001_B_FlexBox>
+        )
+
+        holder = limelight_add_ReactComponent_JSX_Element_To_DocumentBody( { componentToAdd: overlayElement } )
     }
 
     /**
@@ -4820,8 +4879,15 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                     } }
                                 >
 
+                                    { this._structureDisplay_Failed ? (
+                                        <div style={ { padding: 14 } }>
+                                            <div style={ { fontWeight: "bold", marginBottom: 4 } }>Structure Display Error</div>
+                                            <ProteinStructure_StructureDisplayError_MessageContent_Component />
+                                        </div>
+                                    ) : null }
+
                                     <div
-                                        hidden={ this._structureViewer_UserInputs_ToRight_Of_StructureViewer_Div }
+                                        hidden={ this._structureDisplay_Failed || this._structureViewer_UserInputs_ToRight_Of_StructureViewer_Div }
                                         style={ { marginBottom: 5 } }
                                     >
                                         <span
@@ -4852,7 +4918,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                     </div>
 
                                     <div
-                                        hidden={ ( ! this._structureViewer_UserInputs_ToRight_Of_StructureViewer_Div ) && ( ! this._structureViewer__UserInputs_Expand ) }
+                                        hidden={ this._structureDisplay_Failed || ( ( ! this._structureViewer_UserInputs_ToRight_Of_StructureViewer_Div ) && ( ! this._structureViewer__UserInputs_Expand ) ) }
                                         style={ {
                                             marginLeft: this._structureViewer_UserInputs_ToRight_Of_StructureViewer_Div ? 20 : undefined,
                                             marginRight: this._structureViewer_UserInputs_ToRight_Of_StructureViewer_Div ? 20 : undefined,
@@ -9781,6 +9847,22 @@ class INTERNAL__StructureFile_Data__FromServer_AND_OR_Uploaded_OR_Created__HOLDE
  * @param labelAsymId
  * @param labelSeqId
  */
+/**
+ * Thrown by the display path when a Mol* structure-LOAD call (rawData / parseTrajectory / createModel /
+ * createStructure) fails, so the method-level catch can distinguish "this structure file can't be
+ * displayed" (-> graceful modal) from an unrelated Limelight JS error (-> normal rethrow).
+ */
+class ProteinStructure_MolstarLoad_Error extends Error {
+
+    readonly originalError: unknown
+
+    constructor( message: string, originalError: unknown ) {
+        super( message )
+        this.name = "ProteinStructure_MolstarLoad_Error"
+        this.originalError = originalError
+    }
+}
+
 function _getCAPosition_ByResidueIndex( structure: Structure, residueIndex: number ): Vec3 | null {
 
     const hierarchy = structure.model.atomicHierarchy;

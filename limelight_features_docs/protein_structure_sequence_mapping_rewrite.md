@@ -317,7 +317,31 @@ To reproduce the no-chains case, a minimal test file is: the clean cif's `atom_s
 a handful of `HETATM … HOH …` water rows and no polymer atoms (parses identically, but every chain is a
 `water` entity → 0 polymer chains).
 
-## 10. Related
+## 10. Structure-file display: Mol\* load-failure handling
+
+Distinct from the upload validation (§9), a structure that was *already saved* can fail at **display** time
+(`_add_StructureData_PDB_Etc__TO__MolStar_Instance...` in the Main component) — e.g. a legacy file uploaded
+before the upload validation existed, or a Mol\* render-edge failure. Previously the method's catch reported
+and rethrew, showing the generic "Error in Page Code". Now:
+
+- **Only the Mol\* load calls** (`rawData → parseTrajectory → createModel → createStructure` + the
+  null-`structure` check) are wrapped; a failure there is thrown as a typed
+  **`ProteinStructure_MolstarLoad_Error`**. The method-level catch shows the graceful UI **only** for that
+  type — any *other* error (e.g. an unrelated Limelight JS bug) still rethrows to the normal handler, so it is
+  not mislabeled as a structure problem.
+- The underlying error is reported to the server **with `skipDisplayErrorOverlay...`** (captured for review,
+  but does not itself render the generic error page), and is **not** rethrown (the caller handles
+  resolve/reject, so the page stays intact).
+- The failure is surfaced in **two** places sharing one component
+  (`ProteinStructure_StructureDisplayError_MessageContent_Component`): a one-time modal ("Structure Display
+  Error"), and — in place of the now-meaningless controls — the **user-inputs panel** beside the viewer
+  (driven by a `_structureDisplay_Failed` flag, reset at the start of each load so the panel restores on a
+  successful reload). The message asks the user to report the problem and includes the current page URL for
+  review — the data-page URL's `/q/…` segment is the page state compressed with lz-string
+  (`limelight_webapp/front_end/src/js/libs/lz-string/lz-string.js`), including the selected structure file,
+  so loading the reported URL reproduces the same view.
+
+## 11. Related
 
 - Root-cause investigation and the production-safety verification are recorded in the working notes for this
   effort (auto-memory `molstar-ca-not-found-fake-map-investigation`, `molstar-structure-mapping-rewrite-plan`).
