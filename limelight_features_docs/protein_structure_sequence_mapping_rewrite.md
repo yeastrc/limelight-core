@@ -162,10 +162,18 @@ and offers lookups by **limelightPosition** (forward), **ordinal** (the coloring
   chain *even with insertion codes*) and by **`auth_seq_id` only in the undefined-`label_seq_id` edge**
   (that exact edge — PDB with no SEQRES and no insertion codes — has no insertion codes, so `auth_seq_id` is
   unique there). Both regimes are exact; there is no insertion-code over-match. `ResolvedChainMapping.selectionUsesLabelSeqId`
-  carries the per-chain choice. *Follow-up (approved, not correctness):* convert the mod-ball **spheres** to
-  separate Mesh shapes placed via `residueIndex` (like the disks), unifying every point-marker on the
-  `residueIndex` anchor and decoupling spheres from Mol\*'s representation/selection state. Coloring must
-  stay a selection (overpaint recolors the existing representation in place).
+  carries the per-chain choice. *Considered and DECLINED (2026-07-20):* converting the mod-ball **spheres** to
+  separate Mesh shapes placed via `residueIndex` (like the disks) was evaluated for architectural
+  consistency, then declined. It buys **no correctness** (the keyed selection is already exact), risks
+  disturbing the sphere appearance the scientist is satisfied with, and — decisively — would **lose the
+  residue tooltip the spheres currently inherit for free**: today a sphere *is* the residue's CA atom, so
+  hovering it shows the residue's tooltip; a standalone shape is its own loci and would need the residue
+  tooltip explicitly replicated and kept in sync (and could occlude the residue's own hover). The current
+  split is well-matched to each marker's meaning: a disk sits *between* residues (own tooltip is right); a
+  sphere sits *on* a residue (inherited residue tooltip is right). Coloring must stay a selection anyway
+  (overpaint recolors the existing representation in place). *Reconsider only if a **separate,
+  mod-specific tooltip on the ball** is wanted — that reframes the lost residue tooltip as the feature; see
+  `structure_mod_ball_shape_separate_tooltip.md`.*
 - **Location-driven (hover):** read `residueIndex` off the Location; look up the residueIndex-keyed reverse
   map.
 - **ChimeraX export:** write `auth_seq_id`.
