@@ -178,8 +178,10 @@ user-provided URL, or injecting an HTML string, read
   `limelight_webapp/src/main/webapp/WEB-INF/jsp/jsp_includes_head_section/head_section_include_every_page.jsp`
   (no header). It uses hashes, not `'unsafe-inline'`; `'unsafe-eval'` is required by **Plotly WebGL**
   (`scattergl`/regl), not Google Charts (unused). `gstatic` is narrowed to `/recaptcha/`; `base-uri 'self'`
-  protects the app's `<base href>`-driven relative URLs; `frame-ancestors 'self'` (anti-clickjacking; app
-  is stand-alone) and `form-action 'self'` are set — each directive is commented inline in the JSP.
+  protects the app's `<base href>`-driven relative URLs; `form-action 'self'` is set. Anti-clickjacking
+  (`frame-ancestors`) can't live in a `<meta>` CSP (silently ignored), so it's a **response header**
+  (`Content-Security-Policy: frame-ancestors 'self'` + `X-Frame-Options: SAMEORIGIN`) set in
+  `top_of_every_page_doctype__jsp_cache_directives.jsp`. Each directive is commented inline.
 - **URLs:** route any non-hardcoded URL through
   `front_end/.../page_js/common_all_pages/sanitizeURL_ForHrefOrNavigation.ts` before it reaches an
   `href`/`.src`/`location.href`/`window.open` (external vs same-origin variant per intent). Validate

@@ -36,9 +36,12 @@ script-src 'self'
            https://www.google.com/recaptcha/api.js ;
 object-src 'none' ;
 base-uri   'self' ;
-frame-ancestors 'self' ;                   (anti-clickjacking; app is stand-alone)
 form-action 'self' ;                       (forms submit only to this origin)
 ```
+
+Anti-clickjacking is delivered as **response HEADERS** (NOT in the meta — `frame-ancestors` is ignored in a
+`<meta>` CSP), set in `top_of_every_page_doctype__jsp_cache_directives.jsp`:
+`Content-Security-Policy: frame-ancestors 'self'` + `X-Frame-Options: SAMEORIGIN`. See the bullet below.
 
 Key facts and the reasoning behind each non-obvious choice:
 
@@ -62,9 +65,17 @@ Key facts and the reasoning behind each non-obvious choice:
   `<base href="<contextPath>/">` and hangs *all* relative URLs off it, so an injected off-origin
   `<base>` would silently repoint every relative link/script/resource. `'self'` permits the legitimate
   same-origin base while blocking that hijack (verified: legit base unaffected).
-- **`frame-ancestors 'self'`** — anti-clickjacking; only this origin may put Limelight pages in a
-  frame/iframe. Limelight is always a stand-alone app (never embedded), so this is safe; no reCAPTCHA
-  interaction (it governs framing, not forms). Added 2026-07-16.
+- **Anti-clickjacking is a RESPONSE HEADER, not a meta directive.** `frame-ancestors` (and
+  `X-Frame-Options`, `report-uri`, `sandbox`) are **silently ignored when delivered via a `<meta>` tag** —
+  the browser logs "directive 'frame-ancestors' is ignored when delivered via a `<meta>` element." So it is
+  set as response headers in `<jsp>/jsp_includes_head_section/top_of_every_page_doctype__jsp_cache_directives.jsp`
+  (the file that already sets Cache-Control the same way, proving header delivery works through the deploy's
+  proxy): `Content-Security-Policy: frame-ancestors 'self'` **plus** `X-Frame-Options: SAMEORIGIN`
+  (broad/legacy support). Limelight is always stand-alone (never embedded), so same-origin framing only; no
+  reCAPTCHA interaction (it governs who may frame *us*, not forms). A separate CSP policy containing only
+  `frame-ancestors` does not affect the main meta CSP — each delivered policy is enforced independently.
+  **Verify in DevTools → Network → (page) → Response Headers.** (Added to meta 2026-07-16; moved to header
+  2026-07-20 after the meta-ignored warning.)
 - **`form-action 'self'`** — forms may submit only to this origin. All Limelight form submits (incl. the
   forms TypeScript builds and submits dynamically) target the app itself; reCAPTCHA's own forms live in
   Google's cross-origin iframe (governed by Google's CSP, not ours) and its verification token posts to
@@ -247,10 +258,11 @@ lower-privilege path to ToS) otherwise yields persistent XSS on every user's ToS
 first:** only do this if rich-HTML authoring is NOT a wanted feature (as of 2026-07-16 this was left as-is).
 
 ### 7b. Additional CSP directives
-The two **cheap wins were added 2026-07-16** (see §1) and are no longer deferred:
-`frame-ancestors 'self'` (done — safe, app is stand-alone) and `form-action 'self'` (done, reCAPTCHA
-**verified** with reCAPTCHA v2 test keys — see §1). Google's CSP evaluator would still flag the
-remaining missing fallbacks, all of which are the larger lift:
+The two **cheap wins are done** (see §1): `form-action 'self'` (in the meta CSP, reCAPTCHA **verified**)
+and anti-clickjacking **`frame-ancestors`** — the latter delivered as a **response header**
+(`Content-Security-Policy: frame-ancestors 'self'` + `X-Frame-Options: SAMEORIGIN`) because
+`frame-ancestors` is ignored in a `<meta>` CSP. Google's CSP evaluator would still flag the remaining
+missing fallbacks, all of which are the larger lift:
 
 - **Larger lift (needs a source inventory + browser testing first).** Per-directive notes, incorporating
   what Dan confirmed about this app (2026-07-16):
@@ -268,8 +280,8 @@ remaining missing fallbacks, all of which are the larger lift:
     `font-src 'self'` (or even tighter) is safe today. Re-check if fonts are ever added.
   - **`frame-src` — must not break reCAPTCHA.** The **only iframe in the app is reCAPTCHA**, so `frame-src`
     must allow the reCAPTCHA frame origins (`https://www.google.com` and/or `https://www.recaptcha.net`).
-    Test reCAPTCHA (v2) after adding — this is the one that can break it. (Distinct from `frame-ancestors`,
-    already set, which is who may frame *us*.)
+    Test reCAPTCHA (v2) after adding — this is the one that can break it. (Distinct from `frame-ancestors`
+    — already set as a response header, §1 — which is who may frame *us*.)
   - **`default-src`** — the fallback for everything above; add last, once the specific fetch directives are
     settled (otherwise it silently blocks whatever you forgot).
   - Roll these out via the **`Content-Security-Policy-Report-Only`** HTTP header first (meta tags can't be

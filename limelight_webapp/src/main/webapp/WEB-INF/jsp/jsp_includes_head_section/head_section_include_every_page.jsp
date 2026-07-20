@@ -52,7 +52,9 @@ head_section_include_every_page.jsp
     		;
     		object-src 'none';
     		base-uri 'self';  <%-- lock <base> to same-origin; the app hangs all relative URLs off <base href="<contextPath>/">, so an injected off-origin <base> would repoint every relative link/resource --%>
-    		frame-ancestors 'self';  <%-- Anti-clickjacking: only this origin may put Limelight pages in a frame/iframe. Limelight is a stand-alone app and is NOT meant to be embedded in another site. (If an installation needs to embed it, they can raise an issue.) --%>
+    		<%-- Anti-clickjacking (frame-ancestors) is NOT here: 'frame-ancestors' is IGNORED in a <meta> CSP.
+    		     It is delivered as a response HEADER (Content-Security-Policy: frame-ancestors 'self', plus
+    		     X-Frame-Options: SAMEORIGIN) in top_of_every_page_doctype__jsp_cache_directives.jsp. --%>
     		form-action 'self';  <%-- Forms may only submit to this origin. Every Limelight form submits to the Limelight app itself (incl. the forms TypeScript builds+submits dynamically); Google reCAPTCHA does not submit a parent-page form cross-origin (its token posts to our own server, which then calls Google). --%>
     		">
 
