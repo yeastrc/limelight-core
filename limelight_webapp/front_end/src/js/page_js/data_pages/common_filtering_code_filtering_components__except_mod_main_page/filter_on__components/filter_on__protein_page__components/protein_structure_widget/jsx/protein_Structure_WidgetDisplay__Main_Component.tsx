@@ -33,6 +33,9 @@ import { PluginConfig } from "molstar/lib/mol-plugin/config";
 import { PluginUIContext } from "molstar/lib/mol-plugin-ui/context";
 import { Expression } from "molstar/lib/mol-script/language/expression";
 import { molstar_ChainTest_Expression__For_LabelAsymId } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_ChainTest_Expression";
+import { ProteinStructure_ResolvedChainMapping } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/ProteinStructure_ResolvedChainMapping";
+import { molstarStructure_ExtractPolymerResidueList_ForChain, molstarStructure_ExtractPolymerResidueList_ForChain__OrdinalForLocation } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstarStructure_ExtractPolymerResidueList_ForChain";
+import { ResidueIndex } from "molstar/lib/mol-model/structure/model/indexing";
 import { molstar_DevMode_LogChainSelection } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_DevMode_SelectionLogging";
 import { MolScriptBuilder } from 'molstar/lib/mol-script/language/builder';
 import { BuiltInTrajectoryFormat } from "molstar/lib/mol-plugin-state/formats/trajectory";
@@ -1740,7 +1743,11 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                         // const location = StructureElement.Location.create();
                                         // StructureElement.Loci.getFirstLocation( event.current.loci, location );
 
-                                        const sequenceInChain_Position = StructureProperties.residue.label_seq_id( location )
+                                        //  Structure ORDINAL (position in the chain's residues) -- the key the alignment maps use, NOT label_seq_id.
+                                        const sequenceInChain_Position = molstarStructure_ExtractPolymerResidueList_ForChain__OrdinalForLocation( location )
+                                        if ( sequenceInChain_Position === undefined ) {
+                                            return  // EARLY RETURN -- residue is not a resolvable polymer position
+                                        }
 
                                         // Extract the chain ID (label_asym_id is the standard mmCIF ID)
                                         const chain_label_asym_id = StructureProperties.chain.label_asym_id( location );
@@ -1834,8 +1841,11 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
                                                             found_Structure_Sequence_Location = true
 
-                                                            // Extract sequence information
-                                                            const structureSequence_InChain_Position = StructureProperties.residue.label_seq_id( location );
+                                                            // Structure ORDINAL (position in the chain's residues) -- the key the alignment maps use, NOT label_seq_id.
+                                                            const structureSequence_InChain_Position = molstarStructure_ExtractPolymerResidueList_ForChain__OrdinalForLocation( location );
+                                                            if ( structureSequence_InChain_Position === undefined ) {
+                                                                return  // EARLY RETURN -- residue is not a resolvable polymer position
+                                                            }
 
                                                             // Extract the chain ID (label_asym_id is the standard mmCIF ID)
                                                             const chain_label_asym_id = StructureProperties.chain.label_asym_id( location );
@@ -1870,7 +1880,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                                                     chainData,
                                                                     structure_ResidueName,
                                                                     structureSequence_InChain,
-                                                                    structureSequence_InChain_PositionNumber__From_label_seq_id__ONE_BASED: structureSequence_InChain_Position,
+                                                                    structureSequence_InChain_PositionNumber__Ordinal__ONE_BASED: structureSequence_InChain_Position,
                                                                     sequenceAlignment_DataFor_ProteinSequenceVersionId: undefined  // set below
                                                                 }
 
@@ -2698,6 +2708,23 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     throw Error( msg )
                 }
 
+                //  Resolve alignment ordinals -> REAL structure residues (label_seq_id/auth_seq_id) for this chain.
+                const structure_ForResolvedChainMapping: Structure | undefined = structureRef_First.cell.obj?.data;
+                let resolvedChainMapping: ProteinStructure_ResolvedChainMapping
+                try {
+                    if ( ! structure_ForResolvedChainMapping ) {
+                        throw Error( "structureRef_First.cell.obj?.data is undefined" )
+                    }
+                    resolvedChainMapping = new ProteinStructure_ResolvedChainMapping( {
+                        structure: structure_ForResolvedChainMapping,
+                        chainLabelAsymId: chainData.chainId_Label_AssignedAt_StructureFileCreation,
+                        alignmentEntry: sequenceAlignment_DataFor_ProteinSequenceVersionId.structureFile__ProteinAlignment__CurrentProtein
+                    } )
+                } catch ( e ) {
+                    console.warn( "Coloring: could not resolve chain mapping; skipping chain. " + e )
+                    continue  // EARLY CONTINUE
+                }
+
                 let componentCounter_WithinCurrentChain = 0
 
                 ////////
@@ -2721,20 +2748,35 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                             throw Error(msg)
                         }
 
+                        //  Translate alignment ordinals -> real structure selection values (label_seq_id, or
+                        //  auth_seq_id in the undefined-label_seq_id edge) + auth_seq_id for the ChimeraX export.
+                        const selectionValues: Array<number> = []
+                        const authSeqIds_ForChimeraX: Array<number> = []
+                        for ( const ordinal of sequenceInChain_Positions ) {
+                            const structureResidue = resolvedChainMapping.get_StructureResidue_ForOrdinal( ordinal )
+                            if ( ! structureResidue ) {
+                                continue
+                            }
+                            selectionValues.push( resolvedChainMapping.selectionUsesLabelSeqId ? ( structureResidue.label_seq_id as number ) : structureResidue.auth_seq_id )
+                            authSeqIds_ForChimeraX.push( structureResidue.auth_seq_id )
+                        }
+
                         this._dataFor_ChimeraX_Download.colorSpecs_Internal.push({
                             chainId__label_asym_id: chainData.chainId_Label_AssignedAt_StructureFileCreation,
-                            residueSeqId__label_seq_id__Array: sequenceInChain_Positions,
+                            residueSeqId__label_seq_id__Array: authSeqIds_ForChimeraX,
                             color__MolstarColor: color__MolstarColor
                         })
 
-                        const sequenceIdProperty = MolScriptBuilder.struct.atomProperty.macromolecular.label_seq_id();
+                        const sequenceIdProperty = resolvedChainMapping.selectionUsesLabelSeqId
+                            ? MolScriptBuilder.struct.atomProperty.macromolecular.label_seq_id()
+                            : MolScriptBuilder.struct.atomProperty.macromolecular.auth_seq_id();
 
                         const targetChain = chainData.chainId_Label_AssignedAt_StructureFileCreation; // The chain ID
 
                         const molstar_AtomGroup_Params: Record<string, Expression> = {
                             'chain-test': molstar_ChainTest_Expression__For_LabelAsymId( targetChain ),
                             'residue-test': MolScriptBuilder.core.set.has( [
-                                MolScriptBuilder.core.type.set( sequenceInChain_Positions ),
+                                MolScriptBuilder.core.type.set( selectionValues ),
                                 sequenceIdProperty,
                             ] ),
                         }
@@ -3081,6 +3123,23 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     throw Error( msg )
                 }
 
+                //  Resolve alignment ordinals -> REAL structure residues (label_seq_id/auth_seq_id) for this chain.
+                const structure_ForResolvedChainMapping: Structure | undefined = structureRef_Array[ 0 ]?.cell?.obj?.data;
+                let resolvedChainMapping: ProteinStructure_ResolvedChainMapping
+                try {
+                    if ( ! structure_ForResolvedChainMapping ) {
+                        throw Error( "structureRef_Array[ 0 ]?.cell?.obj?.data is undefined" )
+                    }
+                    resolvedChainMapping = new ProteinStructure_ResolvedChainMapping( {
+                        structure: structure_ForResolvedChainMapping,
+                        chainLabelAsymId: chainData.chainId_Label_AssignedAt_StructureFileCreation,
+                        alignmentEntry: sequenceAlignment_DataFor_ProteinSequenceVersionId.structureFile__ProteinAlignment__CurrentProtein
+                    } )
+                } catch ( e ) {
+                    console.warn( "Modification balls: could not resolve chain mapping; skipping chain. " + e )
+                    continue  // EARLY CONTINUE
+                }
+
                 let componentCounter_WithinCurrentChain = 0
 
                 ////////
@@ -3099,15 +3158,30 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
                     // console.warn("_add_Balls_For_Modifications__FirstDeleteExistingBalls _inlineFcn_InMethod__Add_ModificationBalls_For_Positions_And_Color CALLED ")
 
-                    // Example: Select residues 10, 25, and 40 on Chain A
-                    const targetResidues = sequenceInChain_Positions_WithModifications; // The specific numbers from your PDB
+                    //  Translate alignment ordinals -> real structure selection values (label_seq_id, or
+                    //  auth_seq_id in the undefined-label_seq_id edge) + auth_seq_id for the ChimeraX export.
+                    const selectionValues: Array<number> = []
+                    const authSeqIds_ForChimeraX: Array<number> = []
+                    for ( const ordinal of sequenceInChain_Positions_WithModifications ) {
+                        const structureResidue = resolvedChainMapping.get_StructureResidue_ForOrdinal( ordinal )
+                        if ( ! structureResidue ) {
+                            continue
+                        }
+                        selectionValues.push( resolvedChainMapping.selectionUsesLabelSeqId ? ( structureResidue.label_seq_id as number ) : structureResidue.auth_seq_id )
+                        authSeqIds_ForChimeraX.push( structureResidue.auth_seq_id )
+                    }
+
                     const targetChain = chainData.chainId_Label_AssignedAt_StructureFileCreation; // The chain ID
+
+                    const sequenceIdProperty = resolvedChainMapping.selectionUsesLabelSeqId
+                        ? MolScriptBuilder.struct.atomProperty.macromolecular.label_seq_id()
+                        : MolScriptBuilder.struct.atomProperty.macromolecular.auth_seq_id();
 
                     const modificationPositions_SingleBallSelection = MolScriptBuilder.struct.generator.atomGroups( {
                         'chain-test': molstar_ChainTest_Expression__For_LabelAsymId( targetChain ),
                         'residue-test': MolScriptBuilder.core.set.has( [
-                            MolScriptBuilder.set( ...targetResidues ),
-                            MolScriptBuilder.struct.atomProperty.macromolecular.label_seq_id()
+                            MolScriptBuilder.set( ...selectionValues ),
+                            sequenceIdProperty
                         ] ),
                         // KEY: Select only the Alpha Carbon (CA) to get a single ball per residue
                         'atom-test': MolScriptBuilder.core.rel.eq( [ MolScriptBuilder.struct.atomProperty.macromolecular.label_atom_id(), 'CA' ] )
@@ -3140,7 +3214,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
                         this._dataFor_ChimeraX_Download.modificationBalls_Internal.push( {
                             chainId__label_asym_id: chainData.chainId_Label_AssignedAt_StructureFileCreation,
-                            residueSeqId__label_seq_id__Array: targetResidues,
+                            residueSeqId__label_seq_id__Array: authSeqIds_ForChimeraX,
                             color__MolstarColor: color
                         } )
 
@@ -3537,6 +3611,19 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 continue  // EARLY CONTINUE
             }
 
+            //  Resolve alignment ordinals to REAL structure residues (residueIndex/auth_seq_id) for this chain.
+            //  Throws (FAIL LOUD) if the live chain sequence does not match the saved alignment.
+            let resolvedChainMapping: ProteinStructure_ResolvedChainMapping
+            try {
+                resolvedChainMapping = new ProteinStructure_ResolvedChainMapping( {
+                    structure,
+                    chainLabelAsymId: chainData.chainId_Label_AssignedAt_StructureFileCreation,
+                    alignmentEntry: sequenceAlignment_Chain_FileSequence_to_LimelightSequence__SingleProteinSequenceAlignment.structureFile__ProteinAlignment__CurrentProtein
+                } )
+            } catch ( e ) {
+                console.warn( "Trypsin cut points: could not resolve chain mapping; skipping chain. " + e )
+                continue  // EARLY CONTINUE (skip this chain)
+            }
 
             const proteinLength = this.props.proteinSequenceString.length
 
@@ -3549,45 +3636,41 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     const residue_A_Position_LimelightProtein = proteinPosition
                     const residue_B_Position_LimelightProtein = proteinPosition + 1
 
-                    const residue_A_Position_Structure =
-                        sequenceAlignment_Chain_FileSequence_to_LimelightSequence__SingleProteinSequenceAlignment.structureFile__ProteinAlignment__CurrentProtein.get__structureFile_AlignedSequence_Position__FOR__limelightProteinSequence_Position( residue_A_Position_LimelightProtein )
-                    const residue_B_Position_Structure =
-                        sequenceAlignment_Chain_FileSequence_to_LimelightSequence__SingleProteinSequenceAlignment.structureFile__ProteinAlignment__CurrentProtein.get__structureFile_AlignedSequence_Position__FOR__limelightProteinSequence_Position( residue_B_Position_LimelightProtein )
+                    const structureResidue_A = resolvedChainMapping.get_StructureResidue_ForLimelightPosition( residue_A_Position_LimelightProtein )
+                    const structureResidue_B = resolvedChainMapping.get_StructureResidue_ForLimelightPosition( residue_B_Position_LimelightProtein )
 
-                    if ( ( ! residue_A_Position_Structure ) || ( ! residue_B_Position_Structure ) ) {
+                    if ( ( ! structureResidue_A ) || ( ! structureResidue_B ) ) {
                         //  One of Residues NOT Map to Structure
                         continue  // EARLY CONTINUE
                     }
 
-                    if ( residue_A_Position_Structure + 1 !== residue_B_Position_Structure ) {
-                        //  Residue positions on Structure are NOT adjacent
+                    //  Numbering-adjacent: only draw across a real peptide bond (auth_seq_id B == auth_seq_id A + 1),
+                    //  never across an unmodeled loop (which is adjacent in the modeled list but not bonded).
+                    if ( structureResidue_B.auth_seq_id !== structureResidue_A.auth_seq_id + 1 ) {
+                        //  Residues are NOT adjacent in the structure numbering
                         continue  // EARLY CONTINUE
                     }
 
                     //  Have trypsin cut point so render
 
-                    const posA = _getCAPosition( structure, chainData.chainId_Label_AssignedAt_StructureFileCreation, residue_A_Position_Structure );
-                    const posB = _getCAPosition( structure, chainData.chainId_Label_AssignedAt_StructureFileCreation, residue_B_Position_Structure );
+                    const posA = _getCAPosition_ByResidueIndex( structure, structureResidue_A.residueIndex );
+                    const posB = _getCAPosition_ByResidueIndex( structure, structureResidue_B.residueIndex );
 
                     if ( ! posA ) {
-                        const msg = `CA not found: chain label ${ chainData.chainId_Label_AssignedAt_StructureFileCreation } residue_A_Position_Structure ${ residue_A_Position_Structure }`
+                        const msg = `CA not found: chain label ${ chainData.chainId_Label_AssignedAt_StructureFileCreation } residue_A auth_seq_id ${ structureResidue_A.auth_seq_id }`
                         console.warn( msg )
-                        // throw Error( msg )
-
                         continue  // EARLY CONTINUE
                     }
                     if ( ! posB ) {
-                        const msg = `CA not found: chain label ${ chainData.chainId_Label_AssignedAt_StructureFileCreation } residue_B_Position_Structure ${ residue_B_Position_Structure }`
+                        const msg = `CA not found: chain label ${ chainData.chainId_Label_AssignedAt_StructureFileCreation } residue_B auth_seq_id ${ structureResidue_B.auth_seq_id }`
                         console.warn( msg )
-                        // throw Error( msg )
-
                         continue  // EARLY CONTINUE
                     }
 
                     const bondVec = Molstar_Vec3.sub( Molstar_Vec3.zero(), posB, posA );
                     const bondLen = Molstar_Vec3.magnitude( bondVec );
                     if ( bondLen < 0.001 ) {
-                        console.warn( `residue_A_Position_Structure ${ residue_A_Position_Structure } and residue_B_Position_Structure ${ residue_B_Position_Structure } are at the same position` );
+                        console.warn( `residue_A auth_seq_id ${ structureResidue_A.auth_seq_id } and residue_B auth_seq_id ${ structureResidue_B.auth_seq_id } are at the same position` );
                         continue;
                     }
 
@@ -3616,8 +3699,8 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
                     this._dataFor_ChimeraX_Download.diskSpecs_Internal.push( {
                         chainId__label_asym_id: chainData.chainId_Label_AssignedAt_StructureFileCreation,
-                        residueSeqId1: residue_A_Position_Structure,
-                        residueSeqId2: residue_B_Position_Structure,
+                        residueSeqId1: structureResidue_A.auth_seq_id,
+                        residueSeqId2: structureResidue_B.auth_seq_id,
                         opacity: 1,
                         radius_In_Angstroms__Default_OnePointZero: _TRYPSIN_CUT_POINT__DISK_RADIUS,
                         color__MolstarColor: _TRYPSIN_CUT_POINT__DISK_COLOR
@@ -7182,13 +7265,13 @@ class INTERNAL__Residue_Tooltip__Tooltip_Contents__Component__MethodParameter_Su
     structureSequence_InChain: string
 
     /**
-     * Position in structure
-     *
-     * Computed from StructureProperties.residue.label_seq_id( location )
+     * Position in structure: the 1-based ORDINAL of the residue within the chain's polymer sequence
+     * (the key the alignment maps use). NOT label_seq_id -- computed via
+     * molstarStructure_ExtractPolymerResidueList_ForChain__OrdinalForLocation( location ).
      *
      * ONE based
      */
-    structureSequence_InChain_PositionNumber__From_label_seq_id__ONE_BASED: number
+    structureSequence_InChain_PositionNumber__Ordinal__ONE_BASED: number
 
     /**
      *
@@ -7368,7 +7451,7 @@ class INTERNAL__Residue_Tooltip__Tooltip_Contents__Component extends React.Compo
             }
         }
 
-        const structureSequence_InChain__CenterPosition = this._contents_Object_Root.for__StructurePosition.subpart_FOR__Structure_ONLY.structureSequence_InChain_PositionNumber__From_label_seq_id__ONE_BASED
+        const structureSequence_InChain__CenterPosition = this._contents_Object_Root.for__StructurePosition.subpart_FOR__Structure_ONLY.structureSequence_InChain_PositionNumber__Ordinal__ONE_BASED
 
         const limelightProteinSequence_Position__ONE_BASED =
             this._contents_Object_Root?.
@@ -7639,7 +7722,7 @@ class INTERNAL__Residue_Tooltip__Tooltip_Contents__Component extends React.Compo
             is_LimelightSequence: boolean
         }) : React.JSX.Element  {
 
-        const structureSequence_InChain__CenterPosition = this._contents_Object_Root.for__StructurePosition.subpart_FOR__Structure_ONLY.structureSequence_InChain_PositionNumber__From_label_seq_id__ONE_BASED
+        const structureSequence_InChain__CenterPosition = this._contents_Object_Root.for__StructurePosition.subpart_FOR__Structure_ONLY.structureSequence_InChain_PositionNumber__Ordinal__ONE_BASED
 
         //* !!!   sequence letter at position !!!!
 
@@ -8245,9 +8328,12 @@ const _molstar_ListChains_SingleStructure_Returns__ChainData_Parsed__SequenceInC
 
             result__structureFile_Contents__ChainsData_Entry_Array.push( structureFile_Contents__ChainsData_Entry )
 
-            const label_ToArray = Array.from( structureSequence_Entity.sequence.label.toArray() )
+            //  Build the chain's letters from the atomic hierarchy (polymer residues in order) -- the SAME
+            //  source the render-time mapping uses (ProteinStructure_ResolvedChainMapping), so the live
+            //  sequence, alignment creation, and render all agree on residue order/letters.
+            const chainResidueList_ForLetters = molstarStructure_ExtractPolymerResidueList_ForChain( structure, chainId__From__label_asym_id )
 
-            const label_String = label_ToArray.join( "" )
+            const label_String = chainResidueList_ForLetters ? chainResidueList_ForLetters.map( ( r ) => r.oneLetter ).join( "" ) : ""
 
             sequenceInChain_Map_Key_LimelightAssigned_ChainId.set( limelightAssigned_ChainId, label_String )
 
@@ -9520,41 +9606,21 @@ class INTERNAL__StructureFile_Data__FromServer_AND_OR_Uploaded_OR_Created__HOLDE
  * @param labelAsymId
  * @param labelSeqId
  */
-function _getCAPosition( structure: Structure, labelAsymId: string, labelSeqId: number ): Vec3 | null {
+function _getCAPosition_ByResidueIndex( structure: Structure, residueIndex: number ): Vec3 | null {
 
     const hierarchy = structure.model.atomicHierarchy;
     const conformation = structure.model.atomicConformation;
-    const chains = hierarchy.chains;
 
-    for ( let chainIndex = 0; chainIndex < chains.label_asym_id.rowCount; chainIndex++ ) {
-
-        const chain_label_asym_id = chains.label_asym_id.value( chainIndex )
-        const chain_auth_asym_id = chains.auth_asym_id.value( chainIndex )
-
-        if ( chain_label_asym_id !== labelAsymId )
-            continue;
-
-        const entityId = chains.label_entity_id.value( chainIndex );
-        const residueIndex = hierarchy.index.findResidueLabel( {
-            label_entity_id: entityId,
-            label_asym_id: labelAsymId,
-            label_seq_id: labelSeqId,
-            pdbx_PDB_ins_code: '',
-        } );
-        if ( residueIndex < 0 )
-            continue;
-
-        const atomIndex = hierarchy.index.findAtomOnResidue( residueIndex, 'CA' );
-        if ( atomIndex < 0 )
-            continue;
-
-        return Vec3.create(
-            conformation.x[ atomIndex ],
-            conformation.y[ atomIndex ],
-            conformation.z[ atomIndex ]
-        );
+    const atomIndex = hierarchy.index.findAtomOnResidue( residueIndex as ResidueIndex, 'CA' );
+    if ( atomIndex < 0 ) {
+        return null;
     }
-    return null;
+
+    return Vec3.create(
+        conformation.x[ atomIndex ],
+        conformation.y[ atomIndex ],
+        conformation.z[ atomIndex ]
+    );
 }
 
 /**

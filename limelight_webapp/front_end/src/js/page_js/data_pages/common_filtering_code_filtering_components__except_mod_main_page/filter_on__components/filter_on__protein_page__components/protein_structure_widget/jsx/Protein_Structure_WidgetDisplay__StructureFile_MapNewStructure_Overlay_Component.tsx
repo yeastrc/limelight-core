@@ -23,6 +23,7 @@ import { Color as Molstar_Color } from "molstar/lib/commonjs/mol-util/color";
 import { Expression } from "molstar/lib/mol-script/language/expression";
 import { MolScriptBuilder } from "molstar/lib/mol-script/language/builder";
 import { molstar_ChainTest_Expression__For_LabelAsymId } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_ChainTest_Expression";
+import { molstarStructure_ExtractPolymerResidueList_ForChain } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstarStructure_ExtractPolymerResidueList_ForChain";
 import { molstar_DevMode_LogChainSelection } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_DevMode_SelectionLogging";
 
 
@@ -2874,9 +2875,12 @@ const _molstar_ListChains_SingleStructure_Returns__ChainData_Parsed__SequenceInC
 
             result__structureFile_Contents__ChainsData_Entry_Array.push( structureFile_Contents__ChainsData_Entry )
 
-            const label_ToArray = Array.from( structureSequence_Entity.sequence.label.toArray() )
+            //  Build the chain's letters from the atomic hierarchy (polymer residues in order) -- the SAME
+            //  source the render-time mapping uses (ProteinStructure_ResolvedChainMapping), so the alignment
+            //  created here matches what render re-derives (per-chain, not entity-keyed).
+            const chainResidueList_ForLetters = molstarStructure_ExtractPolymerResidueList_ForChain( structure, chainId__From__label_asym_id )
 
-            const label_String = label_ToArray.join( "" )
+            const label_String = chainResidueList_ForLetters ? chainResidueList_ForLetters.map( ( r ) => r.oneLetter ).join( "" ) : ""
 
             sequenceInChain_Map_Key_LimelightAssigned_ChainId.set( limelightAssigned_ChainId, label_String )
 
