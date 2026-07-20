@@ -35,6 +35,23 @@ import { CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__Stru
 const _ALIGNMENT_FILLER_CHARACTER = "-";
 
 /**
+ * Thrown by the constructor when a valid mapping cannot be built for a chain -- either the live
+ * structure has no such polymer chain, or (the fail-loud guard) the live chain sequence does not match
+ * the saved alignment. Both mean the saved alignment can no longer be applied to this structure; the
+ * user-facing fix is to delete the alignment and create a new one.
+ */
+export class ProteinStructure_ResolvedChainMapping__MismatchError extends Error {
+
+    readonly chainLabelAsymId: string;
+
+    constructor( chainLabelAsymId: string, message: string ) {
+        super( message );
+        this.name = "ProteinStructure_ResolvedChainMapping__MismatchError";
+        this.chainLabelAsymId = chainLabelAsymId;
+    }
+}
+
+/**
  * One resolved structure residue (re-exported shape from the extraction helper).
  */
 export type ProteinStructure_ResolvedChainMapping__StructureResidue =
@@ -78,7 +95,7 @@ export class ProteinStructure_ResolvedChainMapping {
         if ( ! residueList ) {
             const msg = "ProteinStructure_ResolvedChainMapping: no polymer chain for label_asym_id '" + chainLabelAsymId + "'";
             console.warn( msg );
-            throw Error( msg );
+            throw new ProteinStructure_ResolvedChainMapping__MismatchError( chainLabelAsymId, msg );
         }
 
         //  FAIL LOUD guard: the live chain's letters must equal the saved aligned structure sequence (de-gapped)
@@ -91,7 +108,7 @@ export class ProteinStructure_ResolvedChainMapping {
                 + " saved(len " + savedStructureSequence.length + "): " + savedStructureSequence
                 + " derived(len " + derivedStructureSequence.length + "): " + derivedStructureSequence;
             console.warn( msg );
-            throw Error( msg );
+            throw new ProteinStructure_ResolvedChainMapping__MismatchError( chainLabelAsymId, msg );
         }
 
         this._residueList = residueList;

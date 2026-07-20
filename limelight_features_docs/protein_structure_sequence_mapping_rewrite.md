@@ -191,8 +191,34 @@ render == the Nth residue at alignment time" is *guaranteed*.
 
 The one residual — a future **Mol\* upgrade** that changes how a chain's residue sequence is derived — is
 caught by a **fail-loud guard**: the resolver validates that the re-derived structure letter string equals
-the saved one (the widget already computes both, ~1183) and refuses to map (surfacing an error, not a
-silent mismap) on mismatch. Today's ordinal path would mismap silently; this is a net improvement.
+the saved one and, on mismatch, throws a typed `ProteinStructure_ResolvedChainMapping__MismatchError`
+instead of mapping. Today's ordinal path would mismap silently.
+
+**"Fail loud" is loud to the _user_, not just the console** (an unnoticed console warning or a caught
+throw is effectively silent — the user just sees missing markers and can't tell why). When a marker
+consumer catches the mismatch error it calls `_handle_ResolvedChainMapping_Error` (which is written so it
+can **never** throw — otherwise the throw would escape to the generic "Error in Page Code" handler). That
+handler surfaces the problem to the user in **two** places, sharing one message body
+(`_render_ResolvedChainMapping_MismatchMessage_Content`):
+- a **one-time modal** (`ModalOverlay_Limelight_Component_v001_B_FlexBox`, title "Structure Mapping Error")
+  shown **once per `(structureFileId, chainId)`**; and
+- a **persistent message under "Download…" in the right pane**
+  (`_render_ResolvedChainMapping_MismatchMessages`), one block per failing chain, driven by
+  `_resolvedChainMapping_MismatchChains_Map` which is **rebuilt each `_update_AllParts` pass** (via a
+  `this.forceUpdate()` at the end of that pass — loop-safe because `componentDidUpdate` only re-runs the
+  update on *prop* changes) so the message **auto-clears once the alignment is fixed**.
+
+The message states the markers can't be shown for the chain and that this was caused by an **external
+change (e.g. a Limelight update to the structure viewer), _not_ anything the user did**. For users who can
+create/edit/delete (gated on `_userAccessForStructureFileAndAlignment_YES_Can_CreateEditDelete_AllForProject`)
+it offers a **Delete alignment** button calling the shared `_deleteAlignment_ForChain(...)` (same path as
+the delete-icon); after deleting, the user recreates the alignment via the normal flow. A **project owner**
+is named as the person who must redo it for non-editors. **No `reportWebErrorToServer`** — the user
+complaining or fixing their alignment is the intended feedback loop.
+
+The guard should essentially never fire in practice (immutable file + deterministic parse); this is the
+recovery path for the one realistic case (a Mol\* upgrade) so the user isn't left with silently-missing
+markers and no way forward.
 
 ---
 

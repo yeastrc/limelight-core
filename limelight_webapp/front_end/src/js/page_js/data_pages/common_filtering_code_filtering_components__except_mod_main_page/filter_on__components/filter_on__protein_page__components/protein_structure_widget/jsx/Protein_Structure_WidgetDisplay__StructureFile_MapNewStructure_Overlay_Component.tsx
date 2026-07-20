@@ -800,6 +800,10 @@ class Protein_Structure_WidgetDisplay__StructureFile_MapNewStructure_Overlay_Com
 
         } catch ( e ) {
 
+            //  Mol* could not parse the file -> treat as invalid (the caller shows "Failed to parse file ...").
+            //  Log the underlying error so a failed parse is diagnosable (otherwise it is silently swallowed).
+            console.warn( "Failed to parse uploaded structure file (treated as invalid): ", e )
+
             return false
         }
     }

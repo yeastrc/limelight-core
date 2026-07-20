@@ -33,7 +33,9 @@ import { PluginConfig } from "molstar/lib/mol-plugin/config";
 import { PluginUIContext } from "molstar/lib/mol-plugin-ui/context";
 import { Expression } from "molstar/lib/mol-script/language/expression";
 import { molstar_ChainTest_Expression__For_LabelAsymId } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_ChainTest_Expression";
-import { ProteinStructure_ResolvedChainMapping } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/ProteinStructure_ResolvedChainMapping";
+import { ProteinStructure_ResolvedChainMapping, ProteinStructure_ResolvedChainMapping__MismatchError } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/ProteinStructure_ResolvedChainMapping";
+import { ModalOverlay_Limelight_Component_v001_B_FlexBox } from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
+import { limelight_add_ReactComponent_JSX_Element_To_DocumentBody, Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import { molstarStructure_ExtractPolymerResidueList_ForChain, molstarStructure_ExtractPolymerResidueList_ForChain__OrdinalForLocation } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstarStructure_ExtractPolymerResidueList_ForChain";
 import { ResidueIndex } from "molstar/lib/mol-model/structure/model/indexing";
 import { molstar_DevMode_LogChainSelection } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_DevMode_SelectionLogging";
@@ -592,6 +594,19 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
     private _commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project____ROOT: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project____ROOT
 
     private _userAccessForStructureFileAndAlignment_YES_Can_CreateEditDelete_AllForProject: boolean
+
+    /**
+     * De-dup for the "chain mapping mismatch" recovery MODAL: keys of (structureFileId | limelightAssigned_ChainId)
+     * already shown, so the modal opens ONCE and not on every render pass or for each of the three marker consumers.
+     */
+    private _resolvedChainMapping_MismatchOverlay_Shown_Set: Set<string> = new Set()
+
+    /**
+     * Chains (keyed by structureFileId|limelightAssigned_ChainId) that currently fail to map to the structure.
+     * Drives the persistent recovery message under "Download..." in the right pane. Cleared + rebuilt at the
+     * start of each _update_AllParts_Of_CurrentStructure() pass so it clears once the alignment is fixed.
+     */
+    private _resolvedChainMapping_MismatchChains_Map: Map<string, CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry> = new Map()
 
 
     /////////////
@@ -2585,6 +2600,11 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
             return  // EARLY RETURN
         }
 
+        //  Reset the per-pass "chain mapping mismatch" list; the marker methods below repopulate it via
+        //  _handle_ResolvedChainMapping_Error. Rebuilding each pass means the persistent recovery message
+        //  disappears automatically once the alignment is fixed.
+        this._resolvedChainMapping_MismatchChains_Map.clear()
+
         //   Set color of residues in structure chains, setting the color of each residue as required for sequence coverage or user selected color for residue letter
 
         await this._set_Color_To_Residues_In_Chains_In_Structure_TO_Format_and_Color()
@@ -2599,6 +2619,10 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
         //  Next call to add Disks for Trypsin Cut Points
 
         await this._addDisks_for_TrypsinCutPoints__FirstDeleteExistingDisks()
+
+        //  Render the persistent under-"Download..." mismatch message(s) reflecting this pass. forceUpdate is
+        //  loop-safe here: componentDidUpdate only re-runs _update_AllParts on prop changes, not on a re-render.
+        this.forceUpdate()
 
     } catch ( e ) {
         reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
@@ -2721,7 +2745,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                         alignmentEntry: sequenceAlignment_DataFor_ProteinSequenceVersionId.structureFile__ProteinAlignment__CurrentProtein
                     } )
                 } catch ( e ) {
-                    console.warn( "Coloring: could not resolve chain mapping; skipping chain. " + e )
+                    this._handle_ResolvedChainMapping_Error( e, chainData )
                     continue  // EARLY CONTINUE
                 }
 
@@ -3136,7 +3160,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                         alignmentEntry: sequenceAlignment_DataFor_ProteinSequenceVersionId.structureFile__ProteinAlignment__CurrentProtein
                     } )
                 } catch ( e ) {
-                    console.warn( "Modification balls: could not resolve chain mapping; skipping chain. " + e )
+                    this._handle_ResolvedChainMapping_Error( e, chainData )
                     continue  // EARLY CONTINUE
                 }
 
@@ -3551,6 +3575,175 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
     /////////////////////
 
     /**
+     * Delete the saved alignment for a chain (server + local), deselect the chain, and refresh.
+     * Shared by the delete-alignment icon and the mapping-mismatch recovery overlay.
+     */
+    private async _deleteAlignment_ForChain( chainData: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry ): Promise<void> {
+
+        const structureFile__ProteinAlignment_Entry =
+            this._structureFile_Contents_Entry_Value__CurrentlyDisplayed.structureFile__ProteinAlignment__CurrentProtein__Map__LimelightAssigned_ChainId.get( chainData.limelightAssigned_ChainId )
+
+        if ( ! structureFile__ProteinAlignment_Entry ) {
+            const msg = "_deleteAlignment_ForChain: no alignment for chainData.limelightAssigned_ChainId: " + chainData.limelightAssigned_ChainId
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        await
+            this._commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project____ROOT.get_commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO().delete_FromServer( {
+                structureFile_Like_PDB_File_Id: structureFile__ProteinAlignment_Entry.structureFile__ProteinAlignment__CurrentProtein.structureFileId,
+                limelightAssigned_ChainId: structureFile__ProteinAlignment_Entry.structureFile__ProteinAlignment__CurrentProtein.limelightAssigned_ChainId,
+                proteinSequenceVersionId: structureFile__ProteinAlignment_Entry.structureFile__ProteinAlignment__CurrentProtein.proteinSequenceVersionId
+            } )
+
+        this._structureFile_Contents_Entry_Value__CurrentlyDisplayed.structureFile__ProteinAlignment__CurrentProtein__Map__LimelightAssigned_ChainId.delete( chainData.limelightAssigned_ChainId )
+
+        this.props.protein_Structure_Widget_StateObject.selected_LimelightAssigned_ChainId_Set__DELETE( chainData.limelightAssigned_ChainId )
+
+        await this._update_AllParts_Of_CurrentStructure()
+    }
+
+    /**
+     * Handle a failure to resolve a chain's mapping (thrown from ProteinStructure_ResolvedChainMapping).
+     * Reports to the server always; for the typed mismatch error, opens the recovery overlay ONCE per chain.
+     */
+    private _handle_ResolvedChainMapping_Error( e: unknown, chainData: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry ): void {
+
+        console.warn( "Structure mapping: could not resolve chain '" + chainData.chainId_Label_AssignedAt_StructureFileCreation + "'; skipping. ", e )
+
+        if ( ! ( e instanceof ProteinStructure_ResolvedChainMapping__MismatchError ) ) {
+            return  // not the mismatch case -> no user-facing recovery
+        }
+
+        //  Deliberately NOT reporting to the server: the user-facing message + their action (delete/recreate) is the
+        //  feedback loop. Nothing below may throw -- this runs inside a marker consumer's catch, so a throw here would
+        //  escape to the generic "Error in Page Code" handler.
+        try {
+            const structureFileId = this._structureFile_Contents_Entry_Value__CurrentlyDisplayed?.structureFile_Data_Entry?.structureFileId
+            const dedupKey = structureFileId + "|" + chainData.limelightAssigned_ChainId
+
+            //  Persistent under-"Download..." list (rebuilt each _update_AllParts pass -> auto-clears once fixed)
+            this._resolvedChainMapping_MismatchChains_Map.set( dedupKey, chainData )
+
+            //  Modal: show ONCE per (structureFileId, chainId)
+            if ( ! this._resolvedChainMapping_MismatchOverlay_Shown_Set.has( dedupKey ) ) {
+                this._resolvedChainMapping_MismatchOverlay_Shown_Set.add( dedupKey )
+                this._show_ResolvedChainMapping_MismatchOverlay( chainData )
+            }
+        } catch ( handlerError ) {
+            //  Never let recovery handling escape to the page-error handler.
+            console.warn( "Structure mapping: recovery handling failed (suppressed): ", handlerError )
+        }
+    }
+
+    /**
+     * User-facing recovery overlay for a chain whose structure no longer matches its saved alignment.
+     * Explains the missing markers and (for users who can edit/delete) offers a Delete-alignment button.
+     */
+    /**
+     * Shared body content for the chain-mapping-mismatch recovery message, used by BOTH the modal and the
+     * persistent under-"Download..." message. Explains the missing markers, reassures that an external change
+     * (not the user) caused it, and — for users who can create/edit/delete — offers a Delete-alignment button.
+     * @param callbackAfter_Delete optional; called after a successful delete (the modal uses it to close).
+     */
+    private _render_ResolvedChainMapping_MismatchMessage_Content(
+        chainData: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry,
+        callbackAfter_Delete?: () => void
+    ): React.JSX.Element {
+
+        const chainDisplayName = get_DisplayNameString_From_CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry( chainData )
+        const canDelete = this._userAccessForStructureFileAndAlignment_YES_Can_CreateEditDelete_AllForProject
+
+        const onDelete_Clicked = async () => {
+            try {
+                await this._deleteAlignment_ForChain( chainData )
+            } catch ( e ) {
+                console.warn( "Delete alignment (mapping-mismatch recovery) failed: ", e )
+            }
+            if ( callbackAfter_Delete ) {
+                callbackAfter_Delete()
+            }
+        }
+
+        return (
+            <div>
+                <p>The structure file no longer matches the saved alignment for chain <b>{ chainDisplayName }</b>, so modifications, cut points, and coloring can&apos;t be placed on it.</p>
+                <p>This was caused by an external change &mdash; such as a Limelight update to the structure viewer &mdash; <b>not by anything you did.</b></p>
+                { canDelete ? (
+                    <div>
+                        <p>To fix it, delete this alignment and create a new one.</p>
+                        <button className="clickable" onClick={ onDelete_Clicked }>Delete alignment</button>
+                    </div>
+                ) : (
+                    <p>A project owner needs to delete and recreate the alignment for this chain.</p>
+                ) }
+            </div>
+        )
+    }
+
+    /**
+     * The persistent recovery message(s) shown under "Download..." in the right pane, one per chain currently
+     * failing to map. Returns null when there are none.
+     */
+    private _render_ResolvedChainMapping_MismatchMessages(): React.JSX.Element | null {
+
+        if ( this._resolvedChainMapping_MismatchChains_Map.size === 0 ) {
+            return null
+        }
+
+        const messageBlocks: Array<React.JSX.Element> = []
+        for ( const [ dedupKey, chainData ] of this._resolvedChainMapping_MismatchChains_Map ) {
+            messageBlocks.push(
+                <div
+                    key={ dedupKey }
+                    style={ { marginTop: 12, padding: "8px 10px", border: "1px solid #d9b3b3", borderRadius: 3, background: "#fbeeee" } }
+                >
+                    <div style={ { fontWeight: "bold", marginBottom: 4 } }>Structure Mapping Error</div>
+                    { this._render_ResolvedChainMapping_MismatchMessage_Content( chainData ) }
+                </div>
+            )
+        }
+
+        return ( <div style={ { marginTop: 12 } }>{ messageBlocks }</div> )
+    }
+
+    /**
+     * One-time modal for a chain whose structure no longer matches its saved alignment (shown alongside the
+     * persistent under-"Download..." message). Reuses _render_ResolvedChainMapping_MismatchMessage_Content.
+     */
+    private _show_ResolvedChainMapping_MismatchOverlay( chainData: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry ): void {
+
+        let holder: Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF | undefined = undefined
+
+        const closeOverlay = () => {
+            if ( holder ) {
+                holder.removeContents_AndContainer_FromDOM()
+            }
+        }
+
+        const overlayElement = (
+            <ModalOverlay_Limelight_Component_v001_B_FlexBox
+                title={ "Structure Mapping Error" }
+                heightMinimum={ 200 }
+                heightMaximum={ 360 }
+                widthMinimum={ 380 }
+                widthMaximum={ 580 }
+                close_OnBackgroundClick={ false }
+                callbackOnClicked_Close={ closeOverlay }
+            >
+                <div className="top-level single-entry-variable-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right" style={ { overflowY: "auto" } }>
+                    { this._render_ResolvedChainMapping_MismatchMessage_Content( chainData, closeOverlay ) }
+                </div>
+                <div className="top-level fixed-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right modal-overlay-body-standard-margin-bottom" style={ { marginTop: "1em", textAlign: "right" } }>
+                    <button className="clickable" onClick={ closeOverlay }>Close</button>
+                </div>
+            </ModalOverlay_Limelight_Component_v001_B_FlexBox>
+        )
+
+        holder = limelight_add_ReactComponent_JSX_Element_To_DocumentBody( { componentToAdd: overlayElement } )
+    }
+
+    /**
      * Add Disks for Trypsin Cut Points
      */
     private async _addDisks_for_TrypsinCutPoints__FirstDeleteExistingDisks(): Promise<void> { try {
@@ -3621,7 +3814,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     alignmentEntry: sequenceAlignment_Chain_FileSequence_to_LimelightSequence__SingleProteinSequenceAlignment.structureFile__ProteinAlignment__CurrentProtein
                 } )
             } catch ( e ) {
-                console.warn( "Trypsin cut points: could not resolve chain mapping; skipping chain. " + e )
+                this._handle_ResolvedChainMapping_Error( e, chainData )
                 continue  // EARLY CONTINUE (skip this chain)
             }
 
@@ -4825,6 +5018,8 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
 
+                { this._render_ResolvedChainMapping_MismatchMessages() }
+
                 {/*  END Block of User Inputs to go above or to right of structure viewer  */}
 
             </div>
@@ -5048,27 +5243,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                                         return // EARLY RETURN
                                                     }
 
-                                                    const structureFile__ProteinAlignment_Entry =
-                                                        this._structureFile_Contents_Entry_Value__CurrentlyDisplayed.structureFile__ProteinAlignment__CurrentProtein__Map__LimelightAssigned_ChainId.get( chainData.limelightAssigned_ChainId )
-
-                                                    if ( ! structureFile__ProteinAlignment_Entry ) {
-                                                        const msg = "this._structureFile_Contents_Entry_Value__CurrentlyDisplayed.structureFile__ProteinAlignment__CurrentProtein__Map__LimelightAssigned_ChainId.get( chainData.limelightAssigned_ChainId ) returned NOTHING for chainData.limelightAssigned_ChainId: " + chainData.limelightAssigned_ChainId
-                                                        console.warn( msg )
-                                                        throw Error( msg )
-                                                    }
-
-                                                    await
-                                                        this._commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project____ROOT.get_commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO().delete_FromServer( {
-                                                            structureFile_Like_PDB_File_Id: structureFile__ProteinAlignment_Entry.structureFile__ProteinAlignment__CurrentProtein.structureFileId,
-                                                            limelightAssigned_ChainId: structureFile__ProteinAlignment_Entry.structureFile__ProteinAlignment__CurrentProtein.limelightAssigned_ChainId,
-                                                            proteinSequenceVersionId: structureFile__ProteinAlignment_Entry.structureFile__ProteinAlignment__CurrentProtein.proteinSequenceVersionId
-                                                        } )
-
-                                                    this._structureFile_Contents_Entry_Value__CurrentlyDisplayed.structureFile__ProteinAlignment__CurrentProtein__Map__LimelightAssigned_ChainId.delete( chainData.limelightAssigned_ChainId )
-
-                                                    this.props.protein_Structure_Widget_StateObject.selected_LimelightAssigned_ChainId_Set__DELETE( chainData.limelightAssigned_ChainId )
-
-                                                    await this._update_AllParts_Of_CurrentStructure()
+                                                    await this._deleteAlignment_ForChain( chainData )
 
                                                 } catch ( e ) {
                                                     reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
