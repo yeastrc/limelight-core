@@ -39,7 +39,37 @@
       </DefaultRolloverStrategy>
       
     </RollingFile>
-        
+
+    <!-- Rolling File Appender - ERROR level only.  Same as above but with 'limelight' replaced by 'limelight_error' in the file names,
+         and a ThresholdFilter so only ERROR (and higher) log entries are written here. -->
+    <RollingFile name="RollingFile_Error">
+    	<!-- Only accept ERROR (and higher) level entries -->
+      <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+    	<!-- Compared to log4j, the system variable requires 'sys:' before it -->
+    			<!-- append '.current' to the filename so that Ubuntu does not compress the file (compresses files that end in .log).
+			Log4j2 will compress the file when it rolls over the file since '.gz' is at end of  -->
+		<!-- Filename used when create "current" file to log to  -->
+      <FileName>${sys:catalina.base}/logs/limelight_error.log.current</FileName>
+      		<!-- Filename used when roll "current" file to and then create new "current" file.
+      					Log4j2 will compress the file when it rolls over the file since '.gz' is at end of  -->
+      <FilePattern>${sys:catalina.base}/logs/limelight_error-%d{yyyy-MM-dd}.log.gz</FilePattern>
+      <PatternLayout>
+        <Pattern>%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %m{nolookups}%n</Pattern>
+      </PatternLayout>
+      <Policies>
+      		<!-- Roll over the log file based on time  -->
+        <TimeBasedTriggeringPolicy/>
+      </Policies>
+
+      <DefaultRolloverStrategy>
+        <Delete basePath="${sys:catalina.base}/logs" maxDepth="1">
+          <IfFileName glob="limelight_error-*.log.gz" />
+          <IfLastModified age="P20D" /> <!-- Delete older than 20 days -->
+        </Delete>
+      </DefaultRolloverStrategy>
+
+    </RollingFile>
+
   </Appenders>
   <Loggers>
     <Logger name="org.apache.log4j.xml" level="debug"/>
@@ -62,6 +92,7 @@
     -->
     <Root level="info">
       <AppenderRef ref="RollingFile"/>
+      <AppenderRef ref="RollingFile_Error"/>
     </Root>
   </Loggers>
 </Configuration>
