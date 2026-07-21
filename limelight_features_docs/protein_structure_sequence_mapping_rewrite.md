@@ -371,10 +371,19 @@ double-checking the export.
   rest shifted/dropped (`/N:5-8` and `/N:171-186` missing); after the fix, 194 correct, range `5..216`, disks
   repositioned onto the correct CAs. Diff was scripted (scratch `analyze_cxc.py`): 0/20 → 20/20 of the
   previously-missing residues present.
+- **Production impact (checked, 2026-07-21):** the 3 PDB files on the public server were parsed with Mol\*
+  (headless: `parsePDB` → `trajectoryFromPDB`) — 1AO6 & 4BKE (serum albumin) and 1OG5 (CYP2C9). Every polymer
+  chain has a **defined** `label_seq_id` (synthesized from SEQRES), and **`label_seq_id != auth_seq_id` for
+  every residue** (offset author numbering: label 1 = auth 5 / 3 / 30 respectively). So (a) the undefined-label
+  edge below does **not** apply to any current production file, and (b) the auth-feeding bug **did** mis-place
+  the ChimeraX color/symbol/disk output for all three production structures — the fix corrects them. (This is
+  a distinct axis from the live-viewer bug §2 for which "PDB unaffected" holds: the viewer selects by
+  `label_seq_id` when it's defined, so it was fine; only the ChimeraX *export* fed auth into the label key.)
 - **Known remaining edge:** for a structure with **undefined `label_seq_id`** (a PDB with no SEQRES and no
-  insertion codes), the label-keyed CA-extractor skips those residues, so ChimeraX export can't represent that
-  chain — the live Mol\* viewer is unaffected (it selects by auth there). Fixing that would mean re-keying the
-  whole module by auth (and reintroducing the auth-uniqueness/`AuthCollision` concern); deferred.
+  insertion codes — none of the current production files), the label-keyed CA-extractor skips those residues,
+  so ChimeraX export can't represent that chain — the live Mol\* viewer is unaffected (it selects by auth
+  there). Fixing that would mean re-keying the whole module by auth (and reintroducing the
+  auth-uniqueness/`AuthCollision` concern); deferred.
 
 ## 12. Related
 
