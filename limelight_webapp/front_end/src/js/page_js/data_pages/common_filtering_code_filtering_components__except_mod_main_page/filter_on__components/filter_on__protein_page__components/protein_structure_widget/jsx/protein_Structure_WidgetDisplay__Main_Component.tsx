@@ -42,6 +42,7 @@ import { ProteinStructure_StructureDisplayError_MessageContent_Component } from 
 import { molstar_DevMode_LogChainSelection } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_structure_widget/js/molstar_DevMode_SelectionLogging";
 import { MolScriptBuilder } from 'molstar/lib/mol-script/language/builder';
 import { BuiltInTrajectoryFormat } from "molstar/lib/mol-plugin-state/formats/trajectory";
+import { StructureRepresentationRegistry } from "molstar/lib/mol-repr/structure/registry";
 import { InteractivityManager } from "molstar/lib/mol-plugin-state/manager/interactivity";
 import { StructureElement, StructureProperties, StructureSelection, Unit as Molstar_Unit } from "molstar/lib/mol-model/structure";
 import { Color as Molstar_Color } from "molstar/lib/commonjs/mol-util/color";
@@ -62,7 +63,7 @@ import { Mesh } from 'molstar/lib/mol-geo/geometry/mesh/mesh';
 import { MeshBuilder } from 'molstar/lib/mol-geo/geometry/mesh/mesh-builder';
 import { Circle } from 'molstar/lib/mol-geo/primitive/circle';
 import { Mat4, Vec3, Quat } from 'molstar/lib/mol-math/linear-algebra';
-import { StateSelection, StateTransformer } from 'molstar/lib/mol-state';
+import { StateSelection, StateTransformer, StateObjectSelector } from 'molstar/lib/mol-state';
 import { ParamDefinition as PD } from 'molstar/lib/mol-util/param-definition';
 
 import { PluginStateTransform } from "molstar/lib/mol-plugin-state/objects";
@@ -113,7 +114,7 @@ if ( Molstar_Unit_Kind_Atomic === undefined || Molstar_Unit_Kind_Atomic === null
 import { Box, Box as MUI_Box, FormControl, MenuItem, Select, Slider, Slider as MUI_Slider, SliderProps as MUI_SliderProps } from "@mui/material";
 
 //  No longer works in Typescript 5.4.x:  Replace with next statement 'MUI_SliderProps_Marks': import { Mark } from "@mui/material/Slider/useSlider.types";
-export type MUI_SliderProps_Marks = Extract<NonNullable<MUI_SliderProps['marks']>, Array<any>>
+export type MUI_SliderProps_Marks = Extract<NonNullable<MUI_SliderProps['marks']>, Array<unknown>>
 
 //  Limelight imports
 
@@ -212,9 +213,9 @@ import { CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__Stru
  *
  * This is the sub part of values assumed valid for display for user to select from.
  */
-const _MOLSTAR_REPRESENTATION_TYPES_PARTIAL = [ "orientation" , "label" , "line" , "cartoon" , "backbone" , "ball-and-stick" , "carbohydrate" , "ellipsoid" , "gaussian-surface" , "gaussian-volume" , "molecular-surface" , "plane" , "point" , "putty" , "spacefill" ]
+const _MOLSTAR_REPRESENTATION_TYPES_PARTIAL: readonly StructureRepresentationRegistry.BuiltIn[] = [ "orientation" , "label" , "line" , "cartoon" , "backbone" , "ball-and-stick" , "carbohydrate" , "ellipsoid" , "gaussian-surface" , "gaussian-volume" , "molecular-surface" , "plane" , "point" , "putty" , "spacefill" ]
 
-const _MOLSTAR_REPRESENTATION_TYPES__DEFAULT = "cartoon"
+const _MOLSTAR_REPRESENTATION_TYPES__DEFAULT: StructureRepresentationRegistry.BuiltIn = "cartoon"
 
 ///////
 
@@ -575,7 +576,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
     // private _height_Selection: number = _VIEWER_WIDTH_HEIGHT_SELECTION_OPTIONS_DEFAULTS.HEIGHT_DEFAULT
     // private _height_Selection_InitialValue: number = _VIEWER_WIDTH_HEIGHT_SELECTION_OPTIONS_DEFAULTS.HEIGHT_DEFAULT
 
-    private _selected__STRUCTURE_Display_Type = _MOLSTAR_REPRESENTATION_TYPES__DEFAULT
+    private _selected__STRUCTURE_Display_Type: StructureRepresentationRegistry.BuiltIn = _MOLSTAR_REPRESENTATION_TYPES__DEFAULT
 
     /////////////
 
@@ -766,7 +767,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate( nextProps: Readonly<Protein_Structure_WidgetDisplay__Main_Component_Props>, nextState: Readonly<Protein_Structure_WidgetDisplay__Main_Component_State>, nextContext: any ): boolean {
+    shouldComponentUpdate( nextProps: Readonly<Protein_Structure_WidgetDisplay__Main_Component_Props>, nextState: Readonly<Protein_Structure_WidgetDisplay__Main_Component_State> ): boolean {
         try {
 
             if ( nextProps.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds !== this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
@@ -791,7 +792,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
      * @param prevState
      * @param snapshot
      */
-    componentDidUpdate( prevProps: Readonly<Protein_Structure_WidgetDisplay__Main_Component_Props>, prevState: Readonly<Protein_Structure_WidgetDisplay__Main_Component_State>, snapshot?: any ) {
+    componentDidUpdate( prevProps: Readonly<Protein_Structure_WidgetDisplay__Main_Component_Props>, prevState: Readonly<Protein_Structure_WidgetDisplay__Main_Component_State> ) {
         try {
 
             if ( prevProps.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds !== this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
@@ -2280,7 +2281,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
             //  calls so a bad / unloadable file surfaces as a typed ProteinStructure_MolstarLoad_Error. The
             //  method-level catch then shows the graceful "Structure Display Error" modal for THIS case only,
             //  while any unrelated Limelight JS error elsewhere in the method still rethrows to the normal handler.
-            let structure_StateObjectSelector: any = undefined
+            let structure_StateObjectSelector: StateObjectSelector<SO.Molecule.Structure> | undefined = undefined
             let structure: Structure = undefined
 
             try {
@@ -2479,7 +2480,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
                     if ( component ) {
 
-                        const type_Representation = this._selected__STRUCTURE_Display_Type as any
+                        const type_Representation = this._selected__STRUCTURE_Display_Type
 
                         await this._molstar_PluginUIContext_Reference.builders.structure.representation.addRepresentation( component, {
                             type: type_Representation, //   "cartoon",

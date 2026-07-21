@@ -74,8 +74,10 @@ export function molstarStructure_ExtractPolymerResidueList_ForChain(
         }
 
         //  Polymer only (mirrors model.sequence, which is polymer-per-entity). A label_asym_id maps
-        //  to a single entity, so testing the chain's entity type is sufficient.
-        const entityIndex = hierarchy.index.getEntityFromChain( chainIndex as any );
+        //  to a single entity, so testing the chain's entity type is sufficient. Look the entity up by
+        //  the asym-id string (findEntity) rather than by the chain's branded ChainIndex -- returns a
+        //  properly-typed EntityIndex with no cast (the loop counter is a plain number, not a ChainIndex).
+        const entityIndex = hierarchy.index.findEntity( chainLabelAsymId );
         if ( entities.data.type.value( entityIndex ) !== 'polymer' ) {
             return null;
         }

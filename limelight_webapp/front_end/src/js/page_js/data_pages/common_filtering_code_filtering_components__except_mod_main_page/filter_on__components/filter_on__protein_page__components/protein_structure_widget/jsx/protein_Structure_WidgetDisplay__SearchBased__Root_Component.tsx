@@ -262,7 +262,7 @@ export class Protein_Structure_WidgetDisplay__SearchBased__Root_Component extend
     /**
      * @returns true if should update, false otherwise
      */
-    shouldComponentUpdate( nextProps: Readonly<Protein_Structure_WidgetDisplay__SearchBased__Root_Component_Props>, nextState: Readonly<Protein_Structure_WidgetDisplay__SearchBased__Root_Component_State>, nextContext: any ): boolean { try {
+    shouldComponentUpdate( nextProps: Readonly<Protein_Structure_WidgetDisplay__SearchBased__Root_Component_Props>, nextState: Readonly<Protein_Structure_WidgetDisplay__SearchBased__Root_Component_State> ): boolean { try {
 
         if ( nextProps.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds !== this.props.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds) {
 

@@ -13,6 +13,8 @@ import { DefaultPluginSpec } from "molstar/lib/mol-plugin/spec";
 import { PluginContext } from "molstar/lib/mol-plugin/context";
 
 import { Structure, StructureElement, StructureProperties, Unit as Molstar_Unit } from "molstar/lib/mol-model/structure";
+import { StateObjectRef } from "molstar/lib/mol-state";
+import { PluginStateObject as SO } from "molstar/lib/mol-plugin-state/objects";
 import { DefaultPluginUISpec, PluginUISpec } from "molstar/lib/mol-plugin-ui/spec";
 import { PluginConfig } from "molstar/lib/mol-plugin/config";
 import { createPluginUI } from "molstar/lib/mol-plugin-ui";
@@ -1281,7 +1283,7 @@ class Protein_Structure_WidgetDisplay__StructureFile_MapNewStructure_Overlay_Com
             get_commonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO().
             save_OR_Update_SequenceAlignment_ToServer( itemToSave )
 
-        saveResult_Promise.catch( (reason: any) => {  }  );
+        saveResult_Promise.catch( () => {  }  );
 
         saveResult_Promise.then( ( saveResult) => {
             try {
@@ -2422,7 +2424,7 @@ class Protein_Structure_WidgetDisplay__StructureFile_MapNewStructure_Overlay____
         {
             structure_StateObjectSelector_Param
         } : {
-            structure_StateObjectSelector_Param: any
+            structure_StateObjectSelector_Param: StateObjectRef<SO.Molecule.Structure>
         }
     ) {
         try {
@@ -2456,7 +2458,7 @@ class Protein_Structure_WidgetDisplay__StructureFile_MapNewStructure_Overlay____
 
             const structureRef_FirstStructureUnder_Current_FromPlugin = this._molstar_PluginUIContext_Reference.managers.structure.hierarchy.current.structures[ 0 ]
 
-            let structure_StateObjectSelector = this._molstar_PluginUIContext_Reference.managers.structure.hierarchy.current.structures[ 0 ]?.cell
+            let structure_StateObjectSelector: StateObjectRef<SO.Molecule.Structure> | undefined = this._molstar_PluginUIContext_Reference.managers.structure.hierarchy.current.structures[ 0 ]?.cell
 
             if ( ! structure_StateObjectSelector ) {
 
