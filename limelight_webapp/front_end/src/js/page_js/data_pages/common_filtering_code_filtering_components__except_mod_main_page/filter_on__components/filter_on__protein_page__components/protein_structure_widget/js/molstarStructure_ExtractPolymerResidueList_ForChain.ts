@@ -143,6 +143,13 @@ export function molstarStructure_ExtractPolymerResidueList_ForChain__OrdinalForL
             continue;
         }
 
+        //  Polymer only, consistent with molstarStructure_ExtractPolymerResidueList_ForChain (which returns
+        //  null for non-polymer chains). A non-polymer hover (e.g. a ligand) yields no structure ordinal.
+        const entityIndex = hierarchy.index.findEntity( chainLabelAsymId );
+        if ( structure.model.entities.data.type.value( entityIndex ) !== 'polymer' ) {
+            return undefined;
+        }
+
         const firstResidueIndex = residueAtomSegments.index[ chainAtomSegments.offsets[ chainIndex ] ];
         const lastResidueIndex_Exclusive = residueAtomSegments.index[ chainAtomSegments.offsets[ chainIndex + 1 ] - 1 ] + 1;
 

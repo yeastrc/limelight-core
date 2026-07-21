@@ -2833,21 +2833,27 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                         }
 
                         //  Translate alignment ordinals -> real structure selection values (label_seq_id, or
-                        //  auth_seq_id in the undefined-label_seq_id edge) + auth_seq_id for the ChimeraX export.
+                        //  auth_seq_id in the undefined-label_seq_id edge) for the Mol* selection, plus
+                        //  label_seq_id for the ChimeraX export. The ChimeraX module keys its residue map by
+                        //  label_seq_id and converts to auth for its output, so feed it label_seq_id, NOT auth
+                        //  (feeding auth mis-resolves whenever auth != label). Residues with an undefined
+                        //  label_seq_id are not in that map, so skip them for the export.
                         const selectionValues: Array<number> = []
-                        const authSeqIds_ForChimeraX: Array<number> = []
+                        const labelSeqIds_ForChimeraX: Array<number> = []
                         for ( const ordinal of sequenceInChain_Positions ) {
                             const structureResidue = resolvedChainMapping.get_StructureResidue_ForOrdinal( ordinal )
                             if ( ! structureResidue ) {
                                 continue
                             }
                             selectionValues.push( resolvedChainMapping.selectionUsesLabelSeqId ? ( structureResidue.label_seq_id as number ) : structureResidue.auth_seq_id )
-                            authSeqIds_ForChimeraX.push( structureResidue.auth_seq_id )
+                            if ( structureResidue.label_seq_id !== null ) {
+                                labelSeqIds_ForChimeraX.push( structureResidue.label_seq_id )
+                            }
                         }
 
                         this._dataFor_ChimeraX_Download.colorSpecs_Internal.push({
                             chainId__label_asym_id: chainData.chainId_Label_AssignedAt_StructureFileCreation,
-                            residueSeqId__label_seq_id__Array: authSeqIds_ForChimeraX,
+                            residueSeqId__label_seq_id__Array: labelSeqIds_ForChimeraX,
                             color__MolstarColor: color__MolstarColor
                         })
 
@@ -3243,16 +3249,22 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     // console.warn("_add_Balls_For_Modifications__FirstDeleteExistingBalls _inlineFcn_InMethod__Add_ModificationBalls_For_Positions_And_Color CALLED ")
 
                     //  Translate alignment ordinals -> real structure selection values (label_seq_id, or
-                    //  auth_seq_id in the undefined-label_seq_id edge) + auth_seq_id for the ChimeraX export.
+                    //  auth_seq_id in the undefined-label_seq_id edge) for the Mol* selection, plus label_seq_id
+                    //  for the ChimeraX export. The ChimeraX module keys its residue map by label_seq_id and
+                    //  converts to auth for its output, so feed it label_seq_id, NOT auth (feeding auth
+                    //  mis-resolves whenever auth != label). Residues with an undefined label_seq_id are not in
+                    //  that map, so skip them for the export.
                     const selectionValues: Array<number> = []
-                    const authSeqIds_ForChimeraX: Array<number> = []
+                    const labelSeqIds_ForChimeraX: Array<number> = []
                     for ( const ordinal of sequenceInChain_Positions_WithModifications ) {
                         const structureResidue = resolvedChainMapping.get_StructureResidue_ForOrdinal( ordinal )
                         if ( ! structureResidue ) {
                             continue
                         }
                         selectionValues.push( resolvedChainMapping.selectionUsesLabelSeqId ? ( structureResidue.label_seq_id as number ) : structureResidue.auth_seq_id )
-                        authSeqIds_ForChimeraX.push( structureResidue.auth_seq_id )
+                        if ( structureResidue.label_seq_id !== null ) {
+                            labelSeqIds_ForChimeraX.push( structureResidue.label_seq_id )
+                        }
                     }
 
                     const targetChain = chainData.chainId_Label_AssignedAt_StructureFileCreation; // The chain ID
@@ -3298,7 +3310,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
                         this._dataFor_ChimeraX_Download.modificationBalls_Internal.push( {
                             chainId__label_asym_id: chainData.chainId_Label_AssignedAt_StructureFileCreation,
-                            residueSeqId__label_seq_id__Array: authSeqIds_ForChimeraX,
+                            residueSeqId__label_seq_id__Array: labelSeqIds_ForChimeraX,
                             color__MolstarColor: color
                         } )
 
@@ -3665,7 +3677,10 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
     /**
      * Handle a failure to resolve a chain's mapping (thrown from ProteinStructure_ResolvedChainMapping).
-     * Reports to the server always; for the typed mismatch error, opens the recovery overlay ONCE per chain.
+     * Console-warns but deliberately does NOT report to the server -- the user-facing recovery message and
+     * their delete/recreate action are the feedback loop. For the typed mismatch error, adds the chain to the
+     * persistent recovery list and opens the recovery modal ONCE per (structureFileId, chainId). Never throws
+     * (it runs inside a marker consumer's catch, so an escape would hit the generic page-error handler).
      */
     private _handle_ResolvedChainMapping_Error( e: unknown, chainData: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry ): void {
 
@@ -3950,14 +3965,20 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     } );
 
 
-                    this._dataFor_ChimeraX_Download.diskSpecs_Internal.push( {
-                        chainId__label_asym_id: chainData.chainId_Label_AssignedAt_StructureFileCreation,
-                        residueSeqId1: structureResidue_A.auth_seq_id,
-                        residueSeqId2: structureResidue_B.auth_seq_id,
-                        opacity: 1,
-                        radius_In_Angstroms__Default_OnePointZero: _TRYPSIN_CUT_POINT__DISK_RADIUS,
-                        color__MolstarColor: _TRYPSIN_CUT_POINT__DISK_COLOR
-                    } )
+                    //  ChimeraX disk endpoints: feed label_seq_id (the module keys its CA map by label_seq_id
+                    //  and converts to auth for its output), NOT auth. Skip the export disk if either residue
+                    //  has an undefined label_seq_id (not in that map). The Mol* disk above is placed from CA
+                    //  coordinates directly, so it is unaffected.
+                    if ( structureResidue_A.label_seq_id !== null && structureResidue_B.label_seq_id !== null ) {
+                        this._dataFor_ChimeraX_Download.diskSpecs_Internal.push( {
+                            chainId__label_asym_id: chainData.chainId_Label_AssignedAt_StructureFileCreation,
+                            residueSeqId1: structureResidue_A.label_seq_id,
+                            residueSeqId2: structureResidue_B.label_seq_id,
+                            opacity: 1,
+                            radius_In_Angstroms__Default_OnePointZero: _TRYPSIN_CUT_POINT__DISK_RADIUS,
+                            color__MolstarColor: _TRYPSIN_CUT_POINT__DISK_COLOR
+                        } )
+                    }
 
                 }
             }

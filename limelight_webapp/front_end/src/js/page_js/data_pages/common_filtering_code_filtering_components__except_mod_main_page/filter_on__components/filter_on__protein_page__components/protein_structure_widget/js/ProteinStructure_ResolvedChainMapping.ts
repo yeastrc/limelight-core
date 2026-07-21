@@ -64,9 +64,6 @@ export class ProteinStructure_ResolvedChainMapping {
 
     private readonly _alignmentEntry: CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_ProteinSequenceAlignment_Entry_DAO__Single_Entry_Value;
 
-    /** residueIndex -> Limelight protein position (1-based), for residues that map. */
-    private readonly _residueIndex_To_LimelightPosition: Map<number, number> = new Map();
-
     /**
      * True if this chain's residues carry a defined label_seq_id (mmCIF, or PDB with SEQRES/insertion
      * codes) -> property-based Mol* selections use label_seq_id (unique per chain, even with insertion
@@ -114,19 +111,6 @@ export class ProteinStructure_ResolvedChainMapping {
         this._residueList = residueList;
         this._alignmentEntry = alignmentEntry;
         this.selectionUsesLabelSeqId = ( residueList.length > 0 ) && ( residueList[ 0 ].label_seq_id !== null );
-
-        //  Build residueIndex -> Limelight position for the reverse (hover / by-residue) lookups
-        for ( let ordinal_OneBased = 1; ordinal_OneBased <= residueList.length; ordinal_OneBased++ ) {
-            const limelightPosition = alignmentEntry.get__limelightProteinSequence_Position__FOR__structureFile_AlignedSequence_Position( ordinal_OneBased );
-            if ( limelightPosition !== undefined && limelightPosition !== null ) {
-                this._residueIndex_To_LimelightPosition.set( residueList[ ordinal_OneBased - 1 ].residueIndex, limelightPosition );
-            }
-        }
-    }
-
-    /** Number of polymer residues in the chain (== max structure ordinal). */
-    get residueCount(): number {
-        return this._residueList.length;
     }
 
     /**
@@ -154,43 +138,5 @@ export class ProteinStructure_ResolvedChainMapping {
             return undefined;
         }
         return this._residueList[ ordinal_OneBased - 1 ];
-    }
-
-    /**
-     * REVERSE (ordinal-driven, e.g. coloring loop): Limelight position for a 1-based ordinal, or undefined.
-     */
-    get_LimelightPosition_ForOrdinal( ordinal_OneBased: number ): number | undefined {
-        const limelightPosition = this._alignmentEntry.get__limelightProteinSequence_Position__FOR__structureFile_AlignedSequence_Position( ordinal_OneBased );
-        if ( limelightPosition === undefined || limelightPosition === null ) {
-            return undefined;
-        }
-        return limelightPosition;
-    }
-
-    /**
-     * REVERSE (residue-driven, e.g. hover): Limelight position for a residueIndex, or undefined.
-     */
-    get_LimelightPosition_ForResidueIndex( residueIndex: number ): number | undefined {
-        return this._residueIndex_To_LimelightPosition.get( residueIndex );
-    }
-
-    /**
-     * residueIndex -> 1-based structure ordinal (position in the aligned structure sequence), or
-     * undefined if the residueIndex is not one of this chain's polymer residues. A chain's polymer
-     * residues occupy a contiguous residueIndex range, so ordinal === residueIndex - firstResidueIndex + 1;
-     * the result is verified against the residue list before returning.
-     */
-    get_Ordinal_ForResidueIndex( residueIndex: number ): number | undefined {
-        if ( this._residueList.length === 0 ) {
-            return undefined;
-        }
-        const ordinal_OneBased = residueIndex - this._residueList[ 0 ].residueIndex + 1;
-        if ( ordinal_OneBased < 1 || ordinal_OneBased > this._residueList.length ) {
-            return undefined;
-        }
-        if ( this._residueList[ ordinal_OneBased - 1 ].residueIndex !== residueIndex ) {
-            return undefined;
-        }
-        return ordinal_OneBased;
     }
 }
