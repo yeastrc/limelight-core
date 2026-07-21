@@ -38,6 +38,32 @@ Exported names should be long and self-describing so an IDE autocomplete entry t
   import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
   ```
 
+## Error reporting — `reportErrorObjectToServer`, and the "already handled" reject sentinel
+
+Unexpected JS/TS errors are reported to the server (and shown to the user) via
+`reportWebErrorToServer.reportErrorObjectToServer({ errorException })`
+(`page_js/common_all_pages/reportWebErrorToServer.ts`). The house pattern is a `try { … } catch ( e ) {
+reportWebErrorToServer.reportErrorObjectToServer({ errorException: e }); throw e }` around async/handler
+bodies. Two flags matter: `skipDisplayErrorOverlay_SkipCall__errorDisplay_WhenHave_Javascript_Typescript_Error:
+true` reports **without** rendering the generic "Error in Page Code" page (use it when you're showing your
+own graceful UI for that error).
+
+**When an error has ALREADY been fully handled, do NOT reject/throw a raw `Error` — reject with
+`new WebserviceCallStandardPost_RejectObject_Class()`** (`page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class.ts`).
+`reportErrorObjectToServer` **early-returns** (no server log, no overlay) when the exception is an
+`instanceof WebserviceCallStandardPost_RejectObject_Class`, so this sentinel flows harmlessly through every
+`catch` in the promise chain (each of which funnels through `reportErrorObjectToServer`) without producing a
+duplicate report. A raw `Error` in the same spot **would** be logged as a phantom browser error.
+
+- This is the canonical signal for **"a standard AJAX error handler already dealt with this."** The prime
+  case is a `/d/rws/...` webservice call whose HTTP-error branch calls `handleAJAXError(...)`
+  (`page_js/common_all_pages/handleServicesAJAXErrors.ts`) — which reloads the page on 401 `no_session` /
+  403 `forbidden` / sync-tracking-code mismatch, or shows the standard error message otherwise. After that
+  call, `reject( new WebserviceCallStandardPost_RejectObject_Class() )`: the error is surfaced, and the
+  expected 401/403 (e.g. a project made non-public mid-view) is **not** logged to the server as a JS error.
+  `webserviceCallStandardPost.ts` does exactly this; a hand-rolled `window.fetch` on a data webservice must
+  follow the same pattern (see the structure-file-contents load fetch).
+
 ## Colors — use the shared brand-color constants, don't hardcode hex
 
 **Don't hardcode Limelight brand color hex values in TS/TSX.** There is a single shared, frozen constants

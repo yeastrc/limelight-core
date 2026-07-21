@@ -8,6 +8,8 @@
 
 import { getWebserviceSyncTrackingCode, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM } from "page_js/common_all_pages/EveryPageCommon";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+import { handleAJAXError } from "page_js/common_all_pages/handleServicesAJAXErrors";
+import { WebserviceCallStandardPost_RejectObject_Class } from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
 
 
 export class CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents_Entry_Contents_Value__GetResult_Entry {
@@ -148,15 +150,38 @@ export class CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__
                 // console.warn( " fetchResponse", fetch_Response )
 
                 if ( ! fetch_Response.ok ) {
-                    if ( fetch_Response.status === 403 ) {
-                        window.alert( "Need to Log In.   HTTP Status code " + fetch_Response.status + " was returned." )
-                    } else {
-                        window.alert( "Send Structure File contents to server FAILED.  HTTP Status code " + fetch_Response.status + " was returned." )
+
+                    //  Route the error through Limelight's STANDARD handler: it reloads the page on
+                    //  403 "forbidden" / 401 "no_session" / sync-tracking-code mismatch (so the page controller
+                    //  re-runs auth and forwards to login / no-access), and shows the standard error message for
+                    //  other status codes -- instead of the old custom, misleadingly-worded window.alert
+                    //  ("Send Structure File contents to server FAILED" -- this is a LOAD, not a send).
+                    const errorBody_Text_Promise = fetch_Response.text()
+
+                    const handle_With_ResponseText = ( responseText: string ) => {
+                        handleAJAXError( {
+                            fetch_Results: {
+                                fetch_Results_statusCode: fetch_Response.status,
+                                fetch_Results_statusText: fetch_Response.statusText,
+                                fetch_Results_ResponseText: responseText,
+                            },
+                            url,
+                            requestData: requestObj,
+                        } )
+                        //  handleAJAXError has ALREADY fully handled this error (reloaded the page for
+                        //  401 "no_session" / 403 "forbidden" / sync-code mismatch, or shown the standard
+                        //  error message for other status codes). Reject with the standard "already handled"
+                        //  sentinel -- NOT a raw Error -- so reportWebErrorToServer.reportErrorObjectToServer(...)
+                        //  in the callers' catch blocks skips it (no duplicate server log, no second overlay).
+                        //  E.g. making a project non-public then loading -> 401 -> page reload, and this
+                        //  expected auth condition is no longer logged to the server as a browser JS error.
+                        reject( new WebserviceCallStandardPost_RejectObject_Class() )
                     }
 
-                    const msg = "Send Structure File contents to server FAILED. " + "fetch_Response.ok : " + fetch_Response.ok + "'. fetch_Response.status: " + fetch_Response.status
-                    console.warn( msg )
-                    throw Error( msg )
+                    errorBody_Text_Promise.then( ( responseText ) => { handle_With_ResponseText( responseText ) } )
+                    errorBody_Text_Promise.catch( () => { handle_With_ResponseText( "" ) } )
+
+                    return  // EARLY RETURN -- do NOT read the body as file contents
                 }
 
 
