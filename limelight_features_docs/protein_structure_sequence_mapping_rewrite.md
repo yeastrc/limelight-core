@@ -341,7 +341,42 @@ and rethrew, showing the generic "Error in Page Code". Now:
   (`limelight_webapp/front_end/src/js/libs/lz-string/lz-string.js`), including the selected structure file,
   so loading the reported URL reproduces the same view.
 
-## 11. Related
+## 11. ChimeraX export: it wants `label_seq_id`, not `auth_seq_id` (a later, separate bug)
+
+The ChimeraX exporter (`page_js/data_pages/molstar__read_structure_create_chimerax_file/`) is a **second,
+independent** residue-numbering path with its own subtle bug — found *after* the rewrite above, while
+double-checking the export.
+
+- **The module's contract:** its residue map (`CA-extractor.ts`) is **keyed by `label_asym_id:label_seq_id`**,
+  each entry carrying the residue's **auth** identity. Every emitter (`Color-commands`, `Symbol-commands`,
+  `Disk-commands`) looks a spec up by that **label** key and emits the entry's **auth** spec
+  (`/authChain:authSeqId`), because ChimeraX addresses residues in auth space. So the module's input is a
+  `label_seq_id`; it does the label→auth conversion internally. (It keeps label keying deliberately — label is
+  the clean gap-free sequence, and it has `AuthCollision` detection for the out-of-spec case where auth isn't
+  unique across merged label chains.)
+- **The bug:** the widget fed the wrong number into that label-keyed field over time — originally the
+  **ordinal** (`ac96e21e`, ignores gaps), then in the mapping rewrite it was switched to **`auth_seq_id`**
+  (`b7d1556a`). Neither is the `label_seq_id` the module keys on. Feeding auth makes every residue where
+  `auth_seq_id != label_seq_id` resolve to the **wrong** residue (the one whose *label* equals the fed auth
+  number), or drop entirely when the auth number exceeds the label range.
+- **Why it hid:** the same masking as §2 — the hand-made test file had `label_seq_id == auth_seq_id`, so the
+  wrong key coincided with the right one. It bites **every real RCSB mmCIF** (contiguous `label_seq_id`,
+  gapped/offset `auth_seq_id`).
+- **The fix:** feed `structureResidue.label_seq_id` in all three paths (color, mod-ball/symbol, disk), skipping
+  residues whose `label_seq_id` is undefined (they aren't in the label-keyed map anyway). The field name
+  `residueSeqId__label_seq_id` was **correct all along** — only the value was wrong; no rename.
+- **Verification (observed product output):** `5T58_authNEQlabel__label_contiguous.cif` — a real-shaped mmCIF
+  with `label_seq_id` renumbered contiguous `1..N` while `auth_seq_id` keeps the gapped author numbering, so
+  `auth != label` for every residue. Before the fix the exported `.cxc` colored 174 of ~194 residues with the
+  rest shifted/dropped (`/N:5-8` and `/N:171-186` missing); after the fix, 194 correct, range `5..216`, disks
+  repositioned onto the correct CAs. Diff was scripted (scratch `analyze_cxc.py`): 0/20 → 20/20 of the
+  previously-missing residues present.
+- **Known remaining edge:** for a structure with **undefined `label_seq_id`** (a PDB with no SEQRES and no
+  insertion codes), the label-keyed CA-extractor skips those residues, so ChimeraX export can't represent that
+  chain — the live Mol\* viewer is unaffected (it selects by auth there). Fixing that would mean re-keying the
+  whole module by auth (and reintroducing the auth-uniqueness/`AuthCollision` concern); deferred.
+
+## 12. Related
 
 - Root-cause investigation and the production-safety verification are recorded in the working notes for this
   effort (auto-memory `molstar-ca-not-found-fake-map-investigation`, `molstar-structure-mapping-rewrite-plan`).
