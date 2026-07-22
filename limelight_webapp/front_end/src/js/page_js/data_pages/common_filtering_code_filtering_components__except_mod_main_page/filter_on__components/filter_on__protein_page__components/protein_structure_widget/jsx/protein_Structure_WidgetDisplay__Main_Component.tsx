@@ -219,7 +219,9 @@ const _MOLSTAR_REPRESENTATION_TYPES__DEFAULT: StructureRepresentationRegistry.Bu
 
 ///////
 
-const _RIGHT_PANE__FIRST_INDENT = 20
+//  One standard left-indent step (px) for content nested under a heading in the right pane.
+//  Use this everywhere instead of hard-coding an indent, so nesting is visually consistent.
+const _RIGHT_PANE__STANDARD_INDENT = 20
 
 /**
  * All of structure is color this and then use Molstar Overpaint to add other colors on top
@@ -5038,6 +5040,8 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     Structure Options
                 </div>
 
+                <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT } }>
+
                 {/*   Protein Structure - Viewer - Width and Height Selection */ }
 
                 { this._render_ProteinStructure_Viewer_Width_And_Height() }
@@ -5103,7 +5107,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     Limelight Data on Structure
                 </div>
 
-                <div style={ { marginLeft: _RIGHT_PANE__FIRST_INDENT } }>
+                <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT } }>
 
                 { this._render_DataDisplayOptions_SpecificTo_ProteinStructure_Viewer_Width_And_Height() }
 
@@ -5126,12 +5130,15 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
                 </div>{/*  END Limelight Data block  */ }
 
+                </div>{/*  END Structure Options indented content  */ }
+
                         
-                <div style={ { fontSize: 16, fontWeight: "bold", marginTop: 20, marginBottom: 15 } }>
+                {/*  Downloads are actions, not viewer options — a top-level section (peer of "Structure Options")  */ }
+                <div style={ { fontSize: 18, fontWeight: "bold", marginTop: 25, marginBottom: 15 } }>
                     Downloads
                 </div>
 
-                <div style={ { marginLeft: _RIGHT_PANE__FIRST_INDENT } }>
+                <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT } }>
 
                 <div style={ { marginBottom: 20 } }>
 
@@ -5455,7 +5462,9 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     </div>
                 ) }
                 {/*) }*/ }
-                { alignedChains_Elements }
+                <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT } }>
+                    { alignedChains_Elements }
+                </div>
 
                 {/*
                 { this._userAccessForStructureFileAndAlignment_YES_Can_CreateEditDelete_AllForProject ? (
@@ -5706,19 +5715,19 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
             <>
                 <div>
                     <label>
-                        <span>Shade by PSM Count: </span>
+                        <span>Shade by PSM count: </span>
                         <input
                             type="checkbox"
                             checked={ this.props.protein_Structure_Widget_StateObject.get_shade_by_PSM_Count() }
                             onChange={ this._scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count_UserSelection_Checkbox__SelectionChanged_BindThis }
                         />
                     </label>
-                    <span style={ { width: 8 } }>&nbsp;</span>
-                    <span> </span>
-                    <span style={ { whiteSpace: "nowrap" }}>
-                        <span>Max PSM Count for shading: </span>
+                </div>
+                <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT } }>
+                    <label>
+                        <span>Max PSM count for shading: </span>
                         <input
-                            style={ { width: 35 } }
+                            style={ { width: 50 } }
                             value={
                                 (
                                     this.props.protein_Structure_Widget_StateObject.get_shade_by_PSM_Count__Max_PSM_Count()
@@ -5729,12 +5738,12 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                             }
                             onChange={ this._scale_ProteinCoverage_ThatMeets_AllFilters_By_PSM_Count__MaxPsmCount__SelectionChanged_BindThis }
                         />
-                    </span>
+                    </label>
                 </div>
 
                 <div>
                     <label>
-                        <span>Show Trypsin Cut points: </span>
+                        <span>Show trypsin cut points: </span>
                         <input
                             type="checkbox"
                             checked={ this.props.protein_Structure_Widget_StateObject.get_show_TrypsinCutPoints() }
@@ -5779,6 +5788,8 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 <div style={ { fontSize: 14, fontWeight: "bold", marginBottom: 10 } }>
                     Modifications
                 </div>
+
+                <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT } }>
 
                 <div>
                     <label>
@@ -5836,7 +5847,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
                 <div style={ { marginTop: 5 } }>
                     <label>
-                        <span>Hide Variable modifications: </span>
+                        <span>Hide variable modifications: </span>
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
                                 "Hide variable modifications in the 'Modifications:' line in the structure."
@@ -5863,7 +5874,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 { anySearch_Has_OpenModifications ? (
                     <div style={ { marginTop: 2 } }>
                         <label>
-                            <span>Hide Open modifications: </span>
+                            <span>Hide open modifications: </span>
                             <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                                 title={
                                     "Hide open modifications in the 'Modifications:' line in the structure."
@@ -5889,6 +5900,8 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 ) : null }
 
                 { this._render_ModificationBalls_UserSelections() }
+
+                </div>
 
             </div>
         )
@@ -6003,7 +6016,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     </div>
                     <div>
                         <span>
-                            Modification ball color:
+                            { hasCustom_ModColor_Entries ? "OTHER Modification Balls color" : "Modification Balls color" }
                         </span>
 
                         <>
@@ -6149,19 +6162,22 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
                 </div>
 
-                <INTERNAL__Modification_Symbols_Size_Percentage_Value_UserSelect__Component
+                {/*  Ball size applies to ALL balls (not a per-mass color) — separate it with space above, no extra indent  */ }
+                <div style={ { marginTop: 20 } }>
+                    <INTERNAL__Modification_Symbols_Size_Percentage_Value_UserSelect__Component
 
-                    protein_Structure_Widget_StateObject={ this.props.protein_Structure_Widget_StateObject }
-                    stateObject_Change_CallbackFunction={ () => {
-                        try {
-                            this._add_Balls_For_Modifications__FirstDeleteExistingBalls()
+                        protein_Structure_Widget_StateObject={ this.props.protein_Structure_Widget_StateObject }
+                        stateObject_Change_CallbackFunction={ () => {
+                            try {
+                                this._add_Balls_For_Modifications__FirstDeleteExistingBalls()
 
-                        } catch ( e ) {
-                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                            throw e
-                        }
-                    } }
-                />
+                            } catch ( e ) {
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                throw e
+                            }
+                        } }
+                    />
+                </div>
 
             </div>
         )
@@ -6443,7 +6459,9 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     <div>
                         Custom variable mod mass colors:
                     </div>
-                    { variableMods_SelectionEntries_Element_Array }
+                    <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT } }>
+                        { variableMods_SelectionEntries_Element_Array }
+                    </div>
                 </div>
             )
         }
@@ -6720,7 +6738,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     <div>
                         Custom open mod mass colors:
                     </div>
-                    <div style={ { marginLeft: 20 } }>
+                    <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT } }>
                         { openMods_SelectionEntries_Element_Array }
                     </div>
                 </div>
@@ -6743,6 +6761,10 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     NOTE:  For Color Select of mod ball, First mod mass match is used. search variable then open mod selections. search smallest mass first. Search ONLY mod masses that pass ALL filters.
                 </div>
                 */}
+
+                <div style={ { fontWeight: "bold", marginBottom: 5 } }>
+                    Mod Mass Colors
+                </div>
 
                 { variableMods_Selections_Element }
 
@@ -6954,7 +6976,7 @@ class INTERNAL__Modification_Symbols_Size_Percentage_Value_UserSelect__Component
                     <div
                         style={ { alignSelf: "anchor-center", paddingRight: 15 } }
                     >
-                        Modification Ball Size:
+                        Modification ball size:
                     </div>
 
                     <Box sx={ { width: 100 } }>
@@ -7145,7 +7167,7 @@ class INTERNAL__Color_ResidueLetters_UserSelect__Component extends React.Compone
                     ) : (
 
                         <>
-                            <span style={ { fontWeight: "bold" } }>
+                            <span style={ { fontSize: 14, fontWeight: "bold" } }>
                                 Custom amino acid colors
                             </span>
                             <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
@@ -7154,7 +7176,7 @@ class INTERNAL__Color_ResidueLetters_UserSelect__Component extends React.Compone
                         </>
                     ) }
                 </div>
-                <div style={ { marginLeft: 30, marginTop: 10 } }>
+                <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT, marginTop: 10 } }>
 
                     {/* Current Selections  */ }
                     { this._render__CurrentSelections() }
