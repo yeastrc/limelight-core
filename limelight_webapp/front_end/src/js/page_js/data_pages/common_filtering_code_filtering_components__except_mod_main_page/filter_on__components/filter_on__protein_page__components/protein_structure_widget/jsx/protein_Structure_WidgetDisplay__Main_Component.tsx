@@ -219,6 +219,8 @@ const _MOLSTAR_REPRESENTATION_TYPES__DEFAULT: StructureRepresentationRegistry.Bu
 
 ///////
 
+const _RIGHT_PANE__FIRST_INDENT = 20
+
 /**
  * All of structure is color this and then use Molstar Overpaint to add other colors on top
  */
@@ -4987,34 +4989,26 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
      */
     private _render__UserInputs_Above_OR_Right_Of_StructureViewer() {
 
+        //  Only show the viewer / display options when the structure file actually has chains
+        const structureFile_Has_Chains = this._structureFile_Has_Chains()
+
         return (
             <div>
                 { this._render__Show_ProteinStructureFile_Chains_AndTheir_SequenceAlignments() }
+
+                { structureFile_Has_Chains ? (
+                    <>
+                {/*  Big bold heading for the block of viewer / display options below the chains  */ }
+                <div style={ { fontSize: 18, fontWeight: "bold", marginTop: 25, marginBottom: 15 } }>
+                    Structure Options
+                </div>
 
                 {/*   Protein Structure - Viewer - Width and Height Selection */ }
 
                 { this._render_ProteinStructure_Viewer_Width_And_Height() }
 
-                { this._render_DataDisplayOptions_SpecificTo_ProteinStructure_Viewer_Width_And_Height() }
-
-                { this._render_ModificationBalls_UserSelections() }
-
-                <div style={ { marginTop: 20, marginBottom: 20 } }>
-                    <INTERNAL__Color_ResidueLetters_UserSelect__Component
-                        protein_Structure_Widget_StateObject={ this.props.protein_Structure_Widget_StateObject }
-                        stateObject_Change_CallbackFunction={ () => {
-                            try {
-                                this._update_AllParts_Of_CurrentStructure()
-
-                            } catch ( e ) {
-                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                throw e
-                            }
-                        } }
-                    />
-                </div>
-
-                <div style={ { marginTop: 20, marginBottom: 20 } }>
+                {/*   Structure Display Format (cartoon / surface / etc) — grouped with Viewer Size since both are viewer-level display settings */ }
+                <div style={ { marginTop: 2, marginBottom: 20 } }>
                     <label>
                         <span>
                             Structure Display Format
@@ -5065,7 +5059,46 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     </label>
                 </div>
 
+                {/*  Limelight Data block: what Limelight data is painted onto the structure (coverage
+                     shading, trypsin sites, modifications, residue coloring) — as opposed to the
+                     viewer-level settings (size / display format) above  */ }
+                        
+                        
+                <div style={ { fontSize: 16, fontWeight: "bold", marginTop: 25, marginBottom: 15 } }>
+                    Limelight Data on Structure
+                </div>
+
+                <div style={ { marginLeft: _RIGHT_PANE__FIRST_INDENT } }>
+
+                { this._render_DataDisplayOptions_SpecificTo_ProteinStructure_Viewer_Width_And_Height() }
+
+                { this._render_Modifications_Block() }
+
                 <div style={ { marginTop: 20, marginBottom: 20 } }>
+                    <INTERNAL__Color_ResidueLetters_UserSelect__Component
+                        protein_Structure_Widget_StateObject={ this.props.protein_Structure_Widget_StateObject }
+                        stateObject_Change_CallbackFunction={ () => {
+                            try {
+                                this._update_AllParts_Of_CurrentStructure()
+
+                            } catch ( e ) {
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                throw e
+                            }
+                        } }
+                    />
+                </div>
+
+                </div>{/*  END Limelight Data block  */ }
+
+                        
+                <div style={ { fontSize: 16, fontWeight: "bold", marginTop: 20, marginBottom: 15 } }>
+                    Downloads
+                </div>
+
+                <div style={ { marginLeft: _RIGHT_PANE__FIRST_INDENT } }>
+
+                <div style={ { marginBottom: 20 } }>
 
                     <span
                         className=" fake-link "
@@ -5077,6 +5110,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 </div>
 
                 <div>
+
                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                         title={
                             <div>
@@ -5106,7 +5140,11 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
 
+                </div>
+
                 { this._render_ResolvedChainMapping_MismatchMessages() }
+                    </>
+                ) : null }
 
                 {/*  END Block of User Inputs to go above or to right of structure viewer  */}
 
@@ -5195,15 +5233,32 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
     /**
      *
      */
+    /**
+     * @return true if the currently displayed structure file has one or more chains parsed from it
+     */
+    private _structureFile_Has_Chains(): boolean {
+        return Boolean( this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array && this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array.length > 0 )
+    }
+
+    /**
+     *
+     */
     private _render__Show_ProteinStructureFile_Chains_AndTheir_SequenceAlignments() {
 
-        if ( ( ! this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array ) || ( ! ( this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array.length > 0 ) ) ) {
+        if ( ! this._structureFile_Has_Chains() ) {
             //  NO Chains on Structure so SKIP
+
+            //  TODO (deferred 2026-07-21): this also fires during the initial async Mol* parse, before the
+            //  chains array is assigned, so "This structure file contains no chains." flashes briefly then
+            //  self-corrects. `_chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array` is `undefined`
+            //  while loading and a (possibly empty) array once loaded — distinguish loading (undefined ->
+            //  render nothing / "Loading…") from loaded-empty (length 0 -> this message). See
+            //  limelight_features_docs/protein_structure_sequence_mapping_rewrite.md §13.
 
             // EARLY RETURN
 
             return (
-                <div style={ { marginTop: 20, marginBottom: 20 } }>
+                <div style={ { marginTop: 20, marginBottom: 20, fontSize: 18, fontWeight: "bold" } }>
                     This structure file contains no chains.
                 </div>
             )
@@ -5358,14 +5413,14 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
             <div style={ { marginTop: 20, marginBottom: 20 } }>
 
                 { alignedChains_Elements.length > 0 ? (
-                    <div>
+                    <div style={ { fontSize: 18, fontWeight: "bold", marginBottom: 10 } }>
                         <span>Structure chain</span>
                         {/*  Add the 's' for plural if needed  */ }
                         { alignedChains_Elements.length > 1 ? <span>s</span> : null }
                         <span> aligned to this protein:</span>
                     </div>
                 ) : (
-                    <div>
+                    <div style={ { fontSize: 18, fontWeight: "bold", marginBottom: 10 } }>
                         NO alignments for this protein
                     </div>
                 ) }
@@ -5617,26 +5672,6 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
      */
     private _render_DataDisplayOptions_SpecificTo_ProteinStructure_Viewer_Width_And_Height() {
 
-        let anySearch_Has_OpenModifications = false
-
-        {
-            const common_Searches_Flags = this.props.dataPageStateManager.get_DataPage_common_Searches_Flags()
-
-            for ( const projectSearchId of this.props.projectSearchIds ) {
-
-                const common_Flags_SingleSearch_ForProjectSearchId = common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId )
-                if ( ! common_Flags_SingleSearch_ForProjectSearchId ) {
-                    throw Error( "common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
-                }
-
-                if ( common_Flags_SingleSearch_ForProjectSearchId.anyPsmHas_OpenModifications ) {
-                    anySearch_Has_OpenModifications = true
-                    break
-                }
-            }
-        }
-
-
         return (
             <>
                 <div>
@@ -5653,7 +5688,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     <span style={ { whiteSpace: "nowrap" }}>
                         <span>Max PSM Count for shading: </span>
                         <input
-                            style={ { width: 50 } }
+                            style={ { width: 35 } }
                             value={
                                 (
                                     this.props.protein_Structure_Widget_StateObject.get_shade_by_PSM_Count__Max_PSM_Count()
@@ -5676,6 +5711,43 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                             onChange={ this._show_TrypsinCutPoints_SelectionChanged_BindThis }
                         />
                     </label>
+                </div>
+
+            </>
+        )
+    }
+
+    /**
+     * Modifications block — grouped under one bold "Modifications" heading:
+     *   (1) which modifications are shown (Hide unmatched / Include unlocalized / Hide Variable / Hide Open)
+     *   (2) modification-ball appearance (custom per-mass colors, Show OTHER balls, ball size)
+     */
+    private _render_Modifications_Block() {
+
+        let anySearch_Has_OpenModifications = false
+
+        {
+            const common_Searches_Flags = this.props.dataPageStateManager.get_DataPage_common_Searches_Flags()
+
+            for ( const projectSearchId of this.props.projectSearchIds ) {
+
+                const common_Flags_SingleSearch_ForProjectSearchId = common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId )
+                if ( ! common_Flags_SingleSearch_ForProjectSearchId ) {
+                    throw Error( "common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId )
+                }
+
+                if ( common_Flags_SingleSearch_ForProjectSearchId.anyPsmHas_OpenModifications ) {
+                    anySearch_Has_OpenModifications = true
+                    break
+                }
+            }
+        }
+
+        return (
+            <div style={ { marginTop: 20, marginBottom: 20 } }>
+
+                <div style={ { fontSize: 14, fontWeight: "bold", marginBottom: 10 } }>
+                    Modifications
                 </div>
 
                 <div>
@@ -5705,7 +5777,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 </div>
 
                 { anySearch_Has_OpenModifications ? (
-                    <div>
+                    <div style={ { marginTop: 5 }}>
                         <label>
                             <span>Include unlocalized modifications: </span>
                             <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
@@ -5785,7 +5857,10 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                         </label>
                     </div>
                 ) : null }
-            </>
+
+                { this._render_ModificationBalls_UserSelections() }
+
+            </div>
         )
     }
 
@@ -5793,6 +5868,14 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
      * Protein Structure - Viewer - Modification Balls - User Selections
      */
     private _render_ModificationBalls_UserSelections() {
+
+        //  Whether the user has any custom per-mass ball color entries (variable or open).
+        //  When present, those specific/custom entries are shown FIRST and the catch-all checkbox
+        //  below reads "Show OTHER Modification Balls" to make the hierarchy clear.
+        const hasCustom_ModColor_Entries = (
+            ( ! this.props.protein_Structure_Widget_StateObject.get_modificationMass_AND_Color_Selections__Root().get_variable_Modifications_Selections().isEmpty() )
+            || ( ! this.props.protein_Structure_Widget_StateObject.get_modificationMass_AND_Color_Selections__Root().get_open_Modifications_Selections().isEmpty() )
+        )
 
         return (
 
@@ -5828,16 +5911,37 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 </div>
                 */}
 
+                {/*  Custom per-mass ball colors FIRST, then the catch-all "OTHER" checkbox below  */ }
+                { this._render_ModificationBalls_UserSelections_SpecificFor_Variable_Open_Mods_And_ModMass() }
+
                 <div
                     // style={ { display: "flex" } }
                 >
                     <div>
                         <label>
                             <span>
-                                Show Modification Balls
+                                { hasCustom_ModColor_Entries ? "Show OTHER Modification Balls" : "Show Modification Balls" }
                             </span>
                             {/*<span> (NOT in URL State)</span>*/ }
                             <span>:</span>
+                            { hasCustom_ModColor_Entries ? (
+                                <>
+                                    <span> </span>
+                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                        title={
+                                            <div>
+                                                <div>
+                                                    This shows or hides the modification balls for all modifications that do NOT have a custom color set above.
+                                                </div>
+                                                <div style={ { marginTop: 10 } }>
+                                                    Modifications listed under "Custom variable mod mass colors" or "Custom open mod mass colors" above are shown or hidden by their own checkbox there, regardless of this checkbox.
+                                                </div>
+                                            </div>
+                                        }
+                                    />
+                                </>
+                            ) : null }
+                            <span> </span>
                             <input
                                 type="checkbox"
                                 checked={ this.props.protein_Structure_Widget_StateObject.get_show_Modification_Symbols() }
@@ -6014,8 +6118,6 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     </div>
 
                 </div>
-
-                { this._render_ModificationBalls_UserSelections_SpecificFor_Variable_Open_Mods_And_ModMass() }
 
                 <INTERNAL__Modification_Symbols_Size_Percentage_Value_UserSelect__Component
 
@@ -6588,7 +6690,9 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     <div>
                         Custom open mod mass colors:
                     </div>
-                    { openMods_SelectionEntries_Element_Array }
+                    <div style={ { marginLeft: 20 } }>
+                        { openMods_SelectionEntries_Element_Array }
+                    </div>
                 </div>
             )
         }
@@ -6914,6 +7018,24 @@ class INTERNAL__Modification_Symbols_Size_Percentage_Value_UserSelect__Component
 /////  Actual component
 
 /**
+ * Shared tooltip message for the "Custom amino acid colors" feature: explains that the residue
+ * letter used to match a color selection comes from the Limelight protein sequence (not the
+ * structure file's chain sequence). Used by both the empty-state link and the populated label.
+ */
+function _customAminoAcidColors_ResidueLetterSource_Tooltip_Message(): React.JSX.Element {
+    return (
+        <div>
+            <div>
+                The amino acid letter is taken from the Limelight protein sequence, not from the structure file's chain sequence.
+            </div>
+            <div style={ { marginTop: 10 } }>
+                Only structure residues that align to this protein are colored; at each aligned position the letter used to match your selection is the one from the Limelight protein sequence.
+            </div>
+        </div>
+    )
+}
+
+/**
  *
  */
 interface INTERNAL__Color_ResidueLetters_UserSelect__Component_Props {
@@ -6986,12 +7108,20 @@ class INTERNAL__Color_ResidueLetters_UserSelect__Component extends React.Compone
                             >
                                 Add custom color for amino acid
                             </span>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={ _customAminoAcidColors_ResidueLetterSource_Tooltip_Message() }
+                            />
                         </>
                     ) : (
 
-                        <span style={ { fontWeight: "bold" } }>
-                            Custom amino acid colors
-                        </span>
+                        <>
+                            <span style={ { fontWeight: "bold" } }>
+                                Custom amino acid colors
+                            </span>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={ _customAminoAcidColors_ResidueLetterSource_Tooltip_Message() }
+                            />
+                        </>
                     ) }
                 </div>
                 <div style={ { marginLeft: 30, marginTop: 10 } }>
@@ -7436,7 +7566,9 @@ class INTERNAL__Color_ResidueLetters_UserSelect__Component extends React.Compone
 
                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                     title={
-                        "Delete Residue/Color selection"
+                        item.residueLetter === this._RESIDUE_VALUE__NO_SELECTION ?
+                            "Cancel adding this color selection" :
+                            "Delete Residue/Color selection"
                     }
                     { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
@@ -7444,6 +7576,18 @@ class INTERNAL__Color_ResidueLetters_UserSelect__Component extends React.Compone
                         className=" fake-link-image icon-small "
                         src="static/images/icon-circle-delete.png"
                         onClick={ event => {
+
+                            if ( item.residueLetter === this._RESIDUE_VALUE__NO_SELECTION ) {
+
+                                //  Placeholder "Select a residue" row — cancel adding it.
+                                //  Nothing is in state to delete; just dismiss the transient row.
+
+                                this._show_SelectAResidue_Entry = false
+
+                                this.forceUpdate()
+
+                                return  // EARLY RETURN
+                            }
 
                             this.props.protein_Structure_Widget_StateObject.get_residueLetter_AND_Color_Selection_Root().delete_Entry_For_ResidueLetter( item.residueLetter )
 

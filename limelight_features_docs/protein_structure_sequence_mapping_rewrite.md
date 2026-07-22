@@ -389,3 +389,28 @@ double-checking the export.
 
 - Root-cause investigation and the production-safety verification are recorded in the working notes for this
   effort (auto-memory `molstar-ca-not-found-fake-map-investigation`, `molstar-structure-mapping-rewrite-plan`).
+
+## 13. Right pane briefly shows "This structure file contains no chains." during load (deferred)
+
+A cosmetic render-timing bug in the structure widget's right pane, noticed 2026-07-21 while reorganizing
+the options block. **Deferred at user request** — low severity (a brief flash that self-corrects).
+
+- **Symptom:** on initial render, before the async Mol\* parse finishes, the chains section renders the
+  big/bold **"This structure file contains no chains."** message for a moment, then re-renders correctly
+  once the chains load.
+- **Root cause:** `_render__Show_ProteinStructureFile_Chains_AndTheir_SequenceAlignments()` and its gate
+  `_structureFile_Has_Chains()` (`protein_Structure_WidgetDisplay__Main_Component.tsx`) treat **"chains not
+  yet loaded"** and **"loaded, genuinely zero chains"** identically. The chains array
+  `_chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array` is declared without initialization, so
+  it is **`undefined`** until it's assigned *after* the Mol\* parse (~line 2325, inside the async
+  structure-load method). `_structureFile_Has_Chains()` returns `false` for both `undefined` and `[]`, so
+  the early-return "no chains" message shows during the loading window.
+- **Intended fix:** distinguish *loading* from *loaded-but-empty*. The parse helper
+  `_molstar_ListChains_SingleStructure_Returns__ChainData_Parsed__...` initializes
+  `result__structureFile_Contents__ChainsData_Entry_Array = []` and **always returns an array**, so after
+  load the field is a real array (possibly empty) and before load it is `undefined`. So: `undefined` →
+  loading in progress → render nothing (or a "Loading…" indicator); a **defined** array of length 0 → show
+  "This structure file contains no chains." A clearer alternative is an explicit `_chainData_Loaded`
+  boolean set `true` right after the assignment, and gate on that.
+- A `TODO` marking the spot is at the early-return in
+  `_render__Show_ProteinStructureFile_Chains_AndTheir_SequenceAlignments()`.
