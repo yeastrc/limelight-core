@@ -547,6 +547,15 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
     private _trypsin_CutPoints_For_ProteinSequence_Set: Set<number>
 
     /**
+     * True once the currently-displayed structure file has been loaded, parsed, and its chains retrieval
+     * has been attempted (see where the chain arrays are populated). Reset to false at the start of every
+     * structure-file (re)load. Used so the right pane can distinguish "still loading" (show "Loading…")
+     * from "loaded, genuinely no chains" (show the no-chains message) — the chain arrays alone can't tell
+     * those apart (they aren't reset on a file change). See mapping doc §13.
+     */
+    private _currentStructureFile__ChainsRetrieval_Complete: boolean = false
+
+    /**
      * All Parsed Chain data in the Structure.  The order the chains were retrieved from structure file.
      */
     private _chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array: Array<CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry>
@@ -2195,6 +2204,10 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
             this._add_StructureData_PDB_Etc__TO__MolStar_Instance__CallInProgress = true
 
+            //  A structure-file (re)load is starting: the chains for the file about to be displayed have
+            //  not been retrieved yet, so the right pane must show "Loading…" (not stale chains from a
+            //  previously loaded file, and not a premature "no chains"). Set true again once parsed below.
+            this._currentStructureFile__ChainsRetrieval_Complete = false
 
             this._show_Structure_PageBlock = true
 
@@ -2356,6 +2369,13 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                         this._chainData_Parsed_From_OnStructure_Map_Key_Label.set( entry.chainId_Label_AssignedAt_StructureFileCreation, entry )
                     }
                 }
+
+                //  Chains for the currently-displayed structure file have now been parsed (retrieval
+                //  attempted). The right pane can stop showing "Loading…" and render the real chains — or,
+                //  when the array is genuinely empty, the "no chains" message. Re-render to reflect it now;
+                //  the rest of this method continues updating the 3D viewer (left pane) independently.
+                this._currentStructureFile__ChainsRetrieval_Complete = true
+                this.forceUpdate()
 
                 // console.warn( "*************  Chains  Sequence Length and Sequence  START" )
                 //
@@ -4989,6 +5009,21 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
      */
     private _render__UserInputs_Above_OR_Right_Of_StructureViewer() {
 
+        if ( ! this._currentStructureFile__ChainsRetrieval_Complete ) {
+
+            //  Structure file still loading/parsing for the file now being displayed. Blank the whole right
+            //  pane except a "Loading…" indicator, so we neither flash a premature "no chains" message nor
+            //  show stale chains from a previously displayed structure file. See mapping doc §13.
+
+            // EARLY RETURN
+
+            return (
+                <div style={ { marginTop: 20, marginBottom: 20, fontStyle: "italic" } }>
+                    Loading…
+                </div>
+            )
+        }
+
         //  Only show the viewer / display options when the structure file actually has chains
         const structureFile_Has_Chains = this._structureFile_Has_Chains()
 
@@ -5246,14 +5281,9 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
     private _render__Show_ProteinStructureFile_Chains_AndTheir_SequenceAlignments() {
 
         if ( ! this._structureFile_Has_Chains() ) {
-            //  NO Chains on Structure so SKIP
-
-            //  TODO (deferred 2026-07-21): this also fires during the initial async Mol* parse, before the
-            //  chains array is assigned, so "This structure file contains no chains." flashes briefly then
-            //  self-corrects. `_chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array` is `undefined`
-            //  while loading and a (possibly empty) array once loaded — distinguish loading (undefined ->
-            //  render nothing / "Loading…") from loaded-empty (length 0 -> this message). See
-            //  limelight_features_docs/protein_structure_sequence_mapping_rewrite.md §13.
+            //  NO Chains on Structure so SKIP.  (Only reached once the structure file is fully loaded/parsed:
+            //  the right pane shows "Loading…" until then — see _currentStructureFile__ChainsRetrieval_Complete
+            //  and mapping doc §13 — so this message means the file genuinely has zero chains.)
 
             // EARLY RETURN
 

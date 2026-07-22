@@ -390,27 +390,38 @@ double-checking the export.
 - Root-cause investigation and the production-safety verification are recorded in the working notes for this
   effort (auto-memory `molstar-ca-not-found-fake-map-investigation`, `molstar-structure-mapping-rewrite-plan`).
 
-## 13. Right pane briefly shows "This structure file contains no chains." during load (deferred)
+## 13. Right pane showed "This structure file contains no chains." during load — FIXED
 
-A cosmetic render-timing bug in the structure widget's right pane, noticed 2026-07-21 while reorganizing
-the options block. **Deferred at user request** — low severity (a brief flash that self-corrects).
+A render-timing bug in the structure widget's right pane, noticed 2026-07-21 while reorganizing the options
+block; **fixed 2026-07-22** (all in `protein_Structure_WidgetDisplay__Main_Component.tsx`).
 
-- **Symptom:** on initial render, before the async Mol\* parse finishes, the chains section renders the
-  big/bold **"This structure file contains no chains."** message for a moment, then re-renders correctly
-  once the chains load.
+- **Symptom:** before the async Mol\* parse finished, the right pane rendered the big/bold **"This structure
+  file contains no chains."** message for a moment, then corrected once the chains loaded. On a **structure-
+  file change** it was worse: it briefly showed the **previous** file's chains (stale), not even a load
+  state.
 - **Root cause:** `_render__Show_ProteinStructureFile_Chains_AndTheir_SequenceAlignments()` and its gate
-  `_structureFile_Has_Chains()` (`protein_Structure_WidgetDisplay__Main_Component.tsx`) treat **"chains not
-  yet loaded"** and **"loaded, genuinely zero chains"** identically. The chains array
-  `_chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array` is declared without initialization, so
-  it is **`undefined`** until it's assigned *after* the Mol\* parse (~line 2325, inside the async
-  structure-load method). `_structureFile_Has_Chains()` returns `false` for both `undefined` and `[]`, so
-  the early-return "no chains" message shows during the loading window.
-- **Intended fix:** distinguish *loading* from *loaded-but-empty*. The parse helper
-  `_molstar_ListChains_SingleStructure_Returns__ChainData_Parsed__...` initializes
-  `result__structureFile_Contents__ChainsData_Entry_Array = []` and **always returns an array**, so after
-  load the field is a real array (possibly empty) and before load it is `undefined`. So: `undefined` →
-  loading in progress → render nothing (or a "Loading…" indicator); a **defined** array of length 0 → show
-  "This structure file contains no chains." A clearer alternative is an explicit `_chainData_Loaded`
-  boolean set `true` right after the assignment, and gate on that.
-- A `TODO` marking the spot is at the early-return in
-  `_render__Show_ProteinStructureFile_Chains_AndTheir_SequenceAlignments()`.
+  `_structureFile_Has_Chains()` treated **"chains not yet parsed for the file now displayed"** and
+  **"loaded, genuinely zero chains"** identically. The chains array
+  `_chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array` is declared without initialization and
+  **assigned in exactly one place** (after the Mol\* parse), **never reset**. So an `undefined`-vs-`[]` check
+  alone was *not* enough: it catches only the first load; on later file changes the array is never
+  `undefined` again (it holds the prior file's chains until the new parse finishes).
+- **Fix — an explicit per-load "chains retrieval attempted for the current file" flag**
+  (`_currentStructureFile__ChainsRetrieval_Complete`, default `false`):
+  - Reset to `false` at the load choke point, alongside `_show_Structure_PageBlock = true` in
+    `_add_StructureData_PDB_Etc__TO__MolStar_Instance()` — so both first load *and* file change go through
+    the "not ready" state (no stale chains). Deliberately **not** reset on the post-alignment path (line
+    ~1452), where the chains are still valid.
+  - Set to `true` + `forceUpdate()` immediately after the chains-parse block completes (just past where the
+    chain arrays / `_sequenceInChain_Map...` are populated). The rest of that async method keeps updating
+    the 3D viewer (left pane) independently.
+  - The right pane, `_render__UserInputs_Above_OR_Right_Of_StructureViewer()`, early-returns an italic
+    **"Loading…"** while the flag is `false` — blanking the whole right pane (chains header + Structure
+    Options). `_render__Show_...`'s "no chains" early-return then fires only for a genuinely empty array.
+  - A dedicated boolean was chosen over resetting the array to `undefined`, because the array is iterated by
+    several update-time methods (color/balls/etc.); blanking it mid-flight risked a null-deref in that
+    window. The flag touches none of that.
+- **Load-error path (verified):** if the Mol\* load throws **before** the parse (re-thrown as
+  `ProteinStructure_MolstarLoad_Error`, see §10), the flag stays `false`, so the right pane stays on
+  "Loading…" while the graceful "Structure Display Error" modal surfaces the failure. Confirmed 2026-07-22
+  with a temporary forced throw at the top of the Mol\* load `try` block (since removed).
