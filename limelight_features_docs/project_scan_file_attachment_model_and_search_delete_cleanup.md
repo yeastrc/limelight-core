@@ -420,7 +420,13 @@ Because the bump happens up front on every such path, every consequence follows 
 - Constraint: **N must exceed the longest plausible import duration** so an in-progress import is never
   GC'd. This is the same assumption the existing 10-day stuck-search cleanup already relies on. (A single
   up-front bump per import is enough as long as N ≫ import time — same as how `peptide_tbl` bumps once per
-  import.)
+  import.) **Chosen N = 10 days.** Operational basis: an import never runs longer than ~12 h even for a
+  very-very-large file, and since the XSD-validation fixes the largest files import in under **4 h** — so a
+  10-day threshold clears the worst case by ~20× and cannot plausibly catch a live import. (10 days also
+  matches the existing stuck-`IMPORTING`-search cleanup window, keeping the two cleanup horizons aligned.)
+  (N is the age
+  after which a *marked* row becomes GC-eligible; it does not delay hiding, which is immediate via the
+  flag.)
 
 ### Lifecycle
 
@@ -436,8 +442,36 @@ Because the bump happens up front on every such path, every consequence follows 
   delete in the request transaction** — so the delete-search flow no longer needs the compute-before-the-
   cascade gymnastics; it may still compute the now-unattached set purely to populate the overlay notice.
 - **GC sweep (async, run_importer):** physically
-  `DELETE FROM project_scan_file_tbl WHERE marked_for_deletion = 1 AND last_referenced_date_time < NOW() - INTERVAL N DAY`
-  (cascades children).
+  `DELETE FROM project_scan_file_tbl WHERE marked_for_deletion = 1 AND last_referenced_date_time < NOW() - INTERVAL 10 DAY`
+  (cascades children) — but only after the **GC guard re-check** below passes for each candidate.
+
+### GC guard — re-apply the retain rule at sweep time (missed-bump insurance)
+
+`last_referenced` is only a safe liveness signal if **every** reference-creating path actually bumps it
+(and clears `marked_for_deletion`). A code bug that *misses* a bump/clear on one path is the one failure
+mode that could delete a file still in use — and it fails toward **data loss** (worse than the heartbeat
+model, which failed toward retaining). Guard against it cheaply:
+
+**The `marked_for_deletion = 1 AND last_referenced < NOW() - INTERVAL 10 DAY` predicate selects only the
+*candidate* set. Before physically deleting each candidate, the sweep re-applies the full retain rule and
+skips any row that is still referenced:**
+1. no `..._mapping_tbl` row to a search that is `IMPORT_COMPLETE_VIEW` **or** still
+   `IMPORTING(1)` / `IMPORTING_WAITING_FOR_SCAN_FILE_IMPORTS(2)`,
+2. no `feature_detection_root__project_scnfl_mapping_tbl` row,
+3. no gold-standard scan-file mapping row,
+4. `imported_independent_of_search = 0`.
+
+So even if a re-import (or FD-run-start, or re-upload) forgot to bump `last_referenced` / clear the flag, a
+**live mapping — including an in-progress `IMPORTING` search — spares the file**, making premature GC of an
+in-use file impossible short of a genuinely orphaned row.
+
+Notes:
+- **Just status `IMPORTING`, no heartbeat.** The guard only ever *spares*, so it can err toward retaining
+  without reintroducing the zombie-vs-live decision. A died (zombie) `IMPORTING` search referenced by a
+  marked file is still cleaned later by the async search-cleanup path (point B) when that stuck search is
+  removed — and the file is `shown = 0` the whole time, so it's never exposed. No permanent leak.
+- With N = 10 days versus a ≤ 12 h (typically < 4 h) import, **this guard should essentially never fire** —
+  it is pure belt-and-suspenders insurance against a missed bump, not a mechanism the normal flow relies on.
 
 ### Exposure & public-install safety — both handled by the flags
 
