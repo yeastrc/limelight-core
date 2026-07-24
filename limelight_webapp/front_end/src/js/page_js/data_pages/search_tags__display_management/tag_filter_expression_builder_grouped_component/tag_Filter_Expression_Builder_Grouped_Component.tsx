@@ -1,14 +1,16 @@
 /**
- * tag_Filter_Expression_Builder_CNF_Component.tsx
+ * tag_Filter_Expression_Builder_Grouped_Component.tsx
  *
- * Build a CNF (Conjunctive Normal Form) tag filter expression:
+ * Build a grouped tag filter expression:
  *
- *      ( a OR b OR c )  AND  ( d OR e OR f )
+ *      ( a AND b )  OR  ( c OR d )  OR  ( e )
  *
- *   - By default the top level is AND and each group is OR ( the global AND/OR mode toggle flips this to DNF ).
- *   - Each tag literal may be negated ( "NOT tag" ).
+ *   - Each group combines ITS OWN literals with its own operator ( groupOperator: AND or OR ) --
+ *     the groups are independent of one another.
+ *   - A single, independent betweenGroups_Operator ( AND or OR ) combines the groups.
+ *   - Each tag literal may be negated ( "NOT tag" -- matches when the tag is absent ).
  *
- * This component holds its OWN internal state (the CNF expression being built) and notifies the parent
+ * This component holds its OWN internal state ( the expression being built ) and notifies the parent
  * of changes via expression_Changed_Callback ( the parent persists the expression and drives the actual
  * search filtering from it ).
  */
@@ -25,8 +27,7 @@ import {
     Search_Tags_SelectSearchTags_Component_SearchTagData_Root,
     Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry
 } from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
-import {tagFilter_Expression_OperatorChooser_Overlay__openOverlay} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_cnf_component/tag_Filter_Expression_OperatorChooser_Overlay";
-import {tagFilter_Expression_TagPicker_Overlay__openOverlay} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_cnf_component/tag_Filter_Expression_TagPicker_Overlay";
+import {tagFilter_Expression_TagPicker_Overlay__openOverlay} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_grouped_component/tag_Filter_Expression_TagPicker_Overlay";
 
 
 /////
@@ -35,67 +36,67 @@ import {tagFilter_Expression_TagPicker_Overlay__openOverlay} from "page_js/data_
 //  Short alias for the shared Limelight brand-color constants ( used for every brand color in this file )
 const _limelightColors = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants;
 
+const _other_Operator = ( operator : 'AND' | 'OR' ) : 'AND' | 'OR' => ( operator === 'OR' ? 'AND' : 'OR' );
 
-//  A single tag literal inside an OR group
-interface Internal__CNF_Literal {
+
+//  A single tag literal inside a group
+interface Internal__Grouped_Literal {
     _uiId: number
     tagId: number
     negated: boolean
 }
 
-//  A single OR group.  The literals are OR'd together.
-interface Internal__CNF_OrGroup {
+//  A single group.  Its literals are combined with THIS group's own groupOperator.
+interface Internal__Grouped_Group {
     _uiId: number
-    literals: Array<Internal__CNF_Literal>
+    literals: Array<Internal__Grouped_Literal>
+    groupOperator: 'AND' | 'OR'
 }
 
 
 //  Seed shape ( e.g. translated from the existing simple OR/AND/NOT tag selections ).
 //  Plain data ( no internal _uiId ) supplied by the caller.
-export interface Tag_Filter_Expression_Builder_CNF_Component__Seed_Literal {
+export interface Tag_Filter_Expression_Builder_Grouped_Component__Seed_Literal {
     tagId: number
     negated: boolean
 }
-export interface Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup {
-    literals: ReadonlyArray<Tag_Filter_Expression_Builder_CNF_Component__Seed_Literal>
+export interface Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group {
+    literals: ReadonlyArray<Tag_Filter_Expression_Builder_Grouped_Component__Seed_Literal>
+    groupOperator: 'AND' | 'OR'
 }
 
-//  The whole expression -- groups + the within-group operator.  Used for seeding and for change notifications.
-export interface Tag_Filter_Expression_Builder_CNF_Component__Expression {
-    andGroups: ReadonlyArray<Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup>
-    withinGroup_Operator: 'AND' | 'OR'
+//  The whole expression -- groups ( each with its own operator ) + the single between-groups operator.
+//  Used for seeding and for change notifications.
+export interface Tag_Filter_Expression_Builder_Grouped_Component__Expression {
+    groups: ReadonlyArray<Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group>
+    betweenGroups_Operator: 'AND' | 'OR'
 }
 
-interface Internal__Tag_Filter_Expression_Builder_CNF_Component_Props {
+interface Internal__Tag_Filter_Expression_Builder_Grouped_Component_Props {
     searchTagData_Root: Search_Tags_SelectSearchTags_Component_SearchTagData_Root
 
-    //  Optional initial expression.  If omitted OR empty, starts with a single empty OR group.
-    initial_AndGroups?: ReadonlyArray<Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup>
+    //  Optional initial expression.  If omitted OR empty, starts pristine ( no groups yet ).
+    initial_Groups?: ReadonlyArray<Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group>
 
-    //  Optional initial within-group operator ( default 'OR' )
-    initial_WithinGroup_Operator?: 'AND' | 'OR'
+    //  Optional initial between-groups operator ( default 'AND' )
+    initial_BetweenGroups_Operator?: 'AND' | 'OR'
 
     //  Fired whenever the expression changes ( for persistence by the parent )
-    expression_Changed_Callback?: ( expression: Tag_Filter_Expression_Builder_CNF_Component__Expression ) => void
+    expression_Changed_Callback?: ( expression: Tag_Filter_Expression_Builder_Grouped_Component__Expression ) => void
 }
 
-interface Internal__Tag_Filter_Expression_Builder_CNF_Component_State {
-
-    //  The CNF expression:  andGroups are AND'd together;  literals within a group are OR'd.
-    andGroups: Array<Internal__CNF_OrGroup>
-
-    //  Global combine mode:
-    //    'OR'  => OR within each group, AND between groups  ( CNF, the default )
-    //    'AND' => AND within each group, OR between groups   ( DNF )
-    withinGroup_Operator: 'AND' | 'OR'
+//  The expression itself is NOT in React state ( it lives in instance properties -- see the class fields ),
+//  so state carries no real data:  a throwaway object is put here only to force a re-render.
+interface Internal__Tag_Filter_Expression_Builder_Grouped_Component_State {
+    force_Rerender?: unknown
 }
 
 
 /**
  *
  */
-export class Tag_Filter_Expression_Builder_CNF_Component
-    extends React.Component< Internal__Tag_Filter_Expression_Builder_CNF_Component_Props, Internal__Tag_Filter_Expression_Builder_CNF_Component_State > {
+export class Tag_Filter_Expression_Builder_Grouped_Component
+    extends React.Component< Internal__Tag_Filter_Expression_Builder_Grouped_Component_Props, Internal__Tag_Filter_Expression_Builder_Grouped_Component_State > {
 
     private _nextUiId = 1;
 
@@ -105,21 +106,32 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         return result;
     }
 
-    //  While the stay-open tag picker is open, suppress per-change notifications and fire once on close ( performance )
-    private _suppress_ExpressionChanged = false;
+    //  While the stay-open tag picker is open, suppress ALL updates ( both this builder's re-render AND the
+    //  parent notification ) and apply them once on close -- there is no reason for the page under the overlay
+    //  to change per pick, and it avoids the distracting flicker of the block updating beneath the overlay.
+    private _suppress_Updates_WhilePickerOpen = false;
+
+    //  The expression is held as INSTANCE PROPERTIES ( not this.state ) so a value is readable synchronously the
+    //  instant after it is set -- setState is async, and reading it back in the same flow gives a stale value.
+    //  render() reads these directly;  _mutated() / _rerender() force the re-render via a throwaway state object.
+    //    _groups                 -- each group combines its literals with its own groupOperator
+    //    _betweenGroups_Operator -- the single, independent operator that combines the groups
+    private _groups : Array<Internal__Grouped_Group> = [];
+    private _betweenGroups_Operator : 'AND' | 'OR' = 'AND';
 
     /**
      *
      */
-    constructor( props : Internal__Tag_Filter_Expression_Builder_CNF_Component_Props ) {
+    constructor( props : Internal__Tag_Filter_Expression_Builder_Grouped_Component_Props ) {
         super( props );
 
-        let andGroups : Array<Internal__CNF_OrGroup>;
+        let groups : Array<Internal__Grouped_Group>;
 
-        if ( props.initial_AndGroups && props.initial_AndGroups.length > 0 ) {
+        if ( props.initial_Groups && props.initial_Groups.length > 0 ) {
             //  Seed from the caller ( e.g. translated from the existing simple tag selections )
-            andGroups = props.initial_AndGroups.map( seedGroup => ( {
+            groups = props.initial_Groups.map( seedGroup => ( {
                 _uiId: this._generateUiId(),
+                groupOperator: ( seedGroup.groupOperator === 'AND' ) ? 'AND' : 'OR',
                 literals: seedGroup.literals.map( seedLiteral => ( {
                     _uiId: this._generateUiId(),
                     tagId: seedLiteral.tagId,
@@ -128,26 +140,30 @@ export class Tag_Filter_Expression_Builder_CNF_Component
             } ) );
         } else {
             //  Start with NO groups -- render() shows the "Start building a tag filter" empty-state callout.
-            //  ( The first "+ Add a tag" / "add an empty group" action creates the first group. )
-            andGroups = [];
+            //  ( The first "Add tags to first group" action creates the first group. )
+            groups = [];
         }
 
-        this.state = {
-            andGroups,
-            withinGroup_Operator: ( props.initial_WithinGroup_Operator === 'AND' || props.initial_WithinGroup_Operator === 'OR' ) ? props.initial_WithinGroup_Operator : 'OR'
-        };
+        this._groups = groups;
+        this._betweenGroups_Operator = ( props.initial_BetweenGroups_Operator === 'AND' || props.initial_BetweenGroups_Operator === 'OR' ) ? props.initial_BetweenGroups_Operator : 'AND';
+
+        this.state = {};
     }
 
-    //  Notify the parent when the expression changes ( for persistence + filtering )
-    componentDidUpdate( prevProps : Internal__Tag_Filter_Expression_Builder_CNF_Component_Props, prevState : Internal__Tag_Filter_Expression_Builder_CNF_Component_State ) {
-        //  While the stay-open picker is open, batch:  don't notify per pick -- fire once on close
-        if ( this._suppress_ExpressionChanged ) {
+    //  Force a re-render.  The expression lives in instance properties, so state is only a render trigger.
+    private _rerender() {
+        this.setState( { force_Rerender: {} } );
+    }
+
+    //  After mutating the expression:  re-render this builder and notify the parent -- BUT while the stay-open
+    //  picker is open, do neither ( batch ):  the page under the overlay stays put, and one update is applied
+    //  when the overlay closes ( see _openTagPicker_ForGroup's onOverlayClosed ).
+    private _mutated() {
+        if ( this._suppress_Updates_WhilePickerOpen ) {
             return;
         }
-        //  andGroups is replaced with a new array on every mutation, so a reference check is sufficient
-        if ( prevState.andGroups !== this.state.andGroups || prevState.withinGroup_Operator !== this.state.withinGroup_Operator ) {
-            this._fireExpressionChanged();
-        }
+        this._rerender();
+        this._fireExpressionChanged();
     }
 
     private _fireExpressionChanged() {
@@ -156,25 +172,35 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         }
     }
 
-    //  Current expression as plain data ( groups + operator )
-    private _currentExpression() : Tag_Filter_Expression_Builder_CNF_Component__Expression {
-        const andGroups = this.state.andGroups.map( g => ( {
+    //  Current expression as plain data ( groups + per-group operator + between-groups operator )
+    private _currentExpression() : Tag_Filter_Expression_Builder_Grouped_Component__Expression {
+        const groups = this._groups.map( g => ( {
+            groupOperator: g.groupOperator,
             literals: g.literals.map( lit => ( { tagId: lit.tagId, negated: lit.negated } ) )
         } ) );
-        return { andGroups, withinGroup_Operator: this.state.withinGroup_Operator };
+        return { groups, betweenGroups_Operator: this._betweenGroups_Operator };
     }
 
-    //  Between-groups operator is always the opposite of the within-group operator
-    private _betweenGroups_Operator() : 'AND' | 'OR' {
-        return this.state.withinGroup_Operator === 'OR' ? 'AND' : 'OR';
+    ////  ---   Operator mutation helpers   ---
+
+    //  SET ( not toggle ) a specific group's operator -- idempotent ( immune to a double onChange )
+    private _set_GroupOperator = ( groupUiId : number, groupOperator : 'AND' | 'OR' ) : void => {
+        this._groups = this._groups.map( g => g._uiId === groupUiId ? { ...g, groupOperator } : g );
+        this._mutated();
     }
 
-    //  Open the home-grown modal overlay to choose the AND/OR combine mode
-    private _openOperatorChooser = () : void => {
-        tagFilter_Expression_OperatorChooser_Overlay__openOverlay( {
-            current_WithinGroup_Operator: this.state.withinGroup_Operator,
-            onChoose: ( withinGroup_Operator ) => { this.setState( { withinGroup_Operator } ) }
-        } );
+    //  Toggle a specific group's operator ( click on the inline AND/OR shown between that group's tags )
+    private _toggle_GroupOperator = ( groupUiId : number ) : void => {
+        const group = this._groups.find( g => g._uiId === groupUiId );
+        if ( group ) {
+            this._set_GroupOperator( groupUiId, _other_Operator( group.groupOperator ) );
+        }
+    }
+
+    //  Toggle the single between-groups operator ( click on an AND/OR shown between groups )
+    private _toggle_BetweenGroups_Operator = () : void => {
+        this._betweenGroups_Operator = _other_Operator( this._betweenGroups_Operator );
+        this._mutated();
     }
 
     ////  ---   Tag catalog lookup helpers   ---
@@ -199,65 +225,77 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         return result;
     }
 
-    ////  ---   State mutation helpers ( immutable-style: build new arrays, then setState )   ---
+    ////  ---   Expression mutation helpers ( immutable-style: build new arrays, assign, then _mutated() )   ---
 
     private _addGroup = () : void => {
-        const newGroup : Internal__CNF_OrGroup = { _uiId: this._generateUiId(), literals: [] };
-        this.setState( { andGroups: [ ...this.state.andGroups, newGroup ] } );
+        const newGroup : Internal__Grouped_Group = { _uiId: this._generateUiId(), literals: [], groupOperator: 'OR' };
+        this._groups = [ ...this._groups, newGroup ];
+        this._mutated();
     }
 
     //  The "first step" from the empty state:  open the tag picker on the first group ( creating one if needed ),
     //  so the very first thing the user does is add a tag rather than reason about groups.
     private _openTagPicker_StartFirstGroup = () : void => {
         let groupUiId : number;
-        if ( this.state.andGroups.length > 0 ) {
-            groupUiId = this.state.andGroups[ 0 ]._uiId;
+        if ( this._groups.length > 0 ) {
+            groupUiId = this._groups[ 0 ]._uiId;
         } else {
-            const newGroup : Internal__CNF_OrGroup = { _uiId: this._generateUiId(), literals: [] };
+            const newGroup : Internal__Grouped_Group = { _uiId: this._generateUiId(), literals: [], groupOperator: 'OR' };
             groupUiId = newGroup._uiId;
-            this.setState( { andGroups: [ newGroup ] } );
+            //  Create the first group but DON'T re-render / notify now:  the picker opens immediately on top and
+            //  batches, so the page under it stays put until close.  Instance properties are set synchronously, so
+            //  _openTagPicker_ForGroup below sees this group at once ( no re-render needed for that ).
+            this._groups = [ newGroup ];
         }
-        this._openTagPicker_ForGroup( groupUiId, { includeOperatorChooser: true } );
+        this._openTagPicker_ForGroup( groupUiId );
     }
 
     private _removeGroup = ( groupUiId : number ) : void => {
-        const andGroups = this.state.andGroups.filter( g => g._uiId !== groupUiId );
-        this.setState( { andGroups } );
+        this._groups = this._groups.filter( g => g._uiId !== groupUiId );
+        this._mutated();
     }
 
     //  Open the home-grown overlay ( categories-left / tags-right ) to add a tag to an existing group.
-    //  includeOperatorChooser:  show the OR/AND radios ( used when starting the first group ).
-    private _openTagPicker_ForGroup = ( groupUiId : number, options ?: { includeOperatorChooser? : boolean } ) : void => {
-        const includeOperatorChooser = !! ( options && options.includeOperatorChooser );
+    //  When the group is still EMPTY, the picker also shows OR/AND radios so the user can choose how THIS
+    //  group's tags will combine before adding them ( for a group that already has tags, the operator is set
+    //  by clicking the inline AND/OR between its tags instead ).
+    private _openTagPicker_ForGroup = ( groupUiId : number ) : void => {
 
-        const group = this.state.andGroups.find( g => g._uiId === groupUiId );
+        const group = this._groups.find( g => g._uiId === groupUiId );
+        //  ( instance properties are synchronous, so a just-created group is already present here; the
+        //  not-found fallback below is only defensive. )  Treat an empty group as needing the OR/AND chooser.
+        const isEmptyGroup = ( ! group ) || group.literals.length === 0;
+        const includeOperatorChooser = isEmptyGroup;
+        const groupOperator : 'AND' | 'OR' = group ? group.groupOperator : 'OR';
         const initialDisabledTagIds = group ? new Set<number>( group.literals.map( lit => lit.tagId ) ) : new Set<number>();
 
-        //  Stay-open picker:  batch the picks -- suppress notifications until the overlay closes, then fire once
-        this._suppress_ExpressionChanged = true;
+        //  Stay-open picker:  batch -- suppress ALL updates ( re-render + notify ) until the overlay closes
+        this._suppress_Updates_WhilePickerOpen = true;
 
         tagFilter_Expression_TagPicker_Overlay__openOverlay( {
             searchTagData_Root: this.props.searchTagData_Root,
-            title: includeOperatorChooser ? "Add tags to the first group" : "Add a tag to the group",
+            title: includeOperatorChooser ? "Add tags to the group" : "Add a tag to the group",
             promptText: includeOperatorChooser
-                ? "Click tags to add them to the first group.  You can add several, then close."
-                : "Click a tag to add it to this group ( combined with " + this.state.withinGroup_Operator + " ).  You can add several, then close.",
+                ? "Choose how these tags combine, then click tags to add them to this group.  You can add several, then close."
+                : "Click a tag to add it to this group ( combined with " + groupOperator + " ).  You can add several, then close.",
             initialDisabledTagIds,
             disabledReason: "Already in this group",
             onPickTagId: ( tagId ) => this._addTagToGroup( groupUiId, tagId ),
             operatorChooser: includeOperatorChooser ? {
-                initial_WithinGroup_Operator: this.state.withinGroup_Operator,
-                onChoose_WithinGroup_Operator: ( withinGroup_Operator ) => this.setState( { withinGroup_Operator } )
+                initial_GroupOperator: groupOperator,
+                onChoose_GroupOperator: ( chosen ) => this._set_GroupOperator( groupUiId, chosen )
             } : undefined,
             onOverlayClosed: () => {
-                this._suppress_ExpressionChanged = false;
-                this._fireExpressionChanged();   //  apply/persist the accumulated picks once
+                //  Apply everything once, now that the overlay is closed:  re-render this builder AND notify the
+                //  parent ( persist + re-filter the search list ) a single time.
+                this._suppress_Updates_WhilePickerOpen = false;
+                this._mutated();
             }
         } );
     }
 
     private _addTagToGroup = ( groupUiId : number, tagId : number ) : void => {
-        const andGroups = this.state.andGroups.map( g => {
+        this._groups = this._groups.map( g => {
             if ( g._uiId !== groupUiId ) {
                 return g;
             }
@@ -265,25 +303,25 @@ export class Tag_Filter_Expression_Builder_CNF_Component
             if ( g.literals.some( lit => lit.tagId === tagId ) ) {
                 return g;
             }
-            const newLiteral : Internal__CNF_Literal = { _uiId: this._generateUiId(), tagId, negated: false };
+            const newLiteral : Internal__Grouped_Literal = { _uiId: this._generateUiId(), tagId, negated: false };
             return { ...g, literals: [ ...g.literals, newLiteral ] };
         } );
-        this.setState( { andGroups } );
+        this._mutated();
     }
 
     private _removeLiteral = ( groupUiId : number, literalUiId : number ) : void => {
-        const andGroups = this.state.andGroups.map( g => {
+        this._groups = this._groups.map( g => {
             if ( g._uiId !== groupUiId ) {
                 return g;
             }
             return { ...g, literals: g.literals.filter( lit => lit._uiId !== literalUiId ) };
         } );
-        this.setState( { andGroups } );
+        this._mutated();
     }
 
     //  SET ( not toggle ) so it's idempotent -- immune to a control firing onChange more than once per click
     private _setLiteralNegated = ( groupUiId : number, literalUiId : number, negated : boolean ) : void => {
-        const andGroups = this.state.andGroups.map( g => {
+        this._groups = this._groups.map( g => {
             if ( g._uiId !== groupUiId ) {
                 return g;
             }
@@ -292,7 +330,7 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                 literals: g.literals.map( lit => lit._uiId === literalUiId ? { ...lit, negated } : lit )
             };
         } );
-        this.setState( { andGroups } );
+        this._mutated();
     }
 
     ////  ---   Expression preview   ---
@@ -315,13 +353,13 @@ export class Tag_Filter_Expression_Builder_CNF_Component
     ////  ---   Render helpers   ---
 
     /**
-     * Render a clickable AND/OR operator.  Clicking opens the mode-chooser overlay.  variant:
-     *   'inline'  = operator shown between tags inside a group
-     *   'between' = operator shown between groups
+     * Render a clickable AND/OR operator.  variant:
+     *   'inline'  = operator shown between tags inside a group  ( toggles THAT group's operator )
+     *   'between' = operator shown between groups               ( toggles the single between-groups operator )
      */
-    private _render_ClickableOperator( params : { operator : 'AND' | 'OR', variant : 'inline' | 'between' } ) : React.JSX.Element {
+    private _render_ClickableOperator( params : { operator : 'AND' | 'OR', variant : 'inline' | 'between', onClick : () => void, tooltipContents : React.JSX.Element } ) : React.JSX.Element {
 
-        const { operator, variant } = params;
+        const { operator, variant, onClick, tooltipContents } = params;
 
         //  Limelight green ( brand ):  dark green ( site_color_very_dark ) filled with white for the prominent
         //  between-groups operator;  light green ( site_color_medium ) with dark-green text + medium-green border
@@ -330,22 +368,13 @@ export class Tag_Filter_Expression_Builder_CNF_Component
             ? { color: _limelightColors.color_white, backgroundColor: _limelightColors.site_color_very_dark, borderWidth: 1, borderStyle: "solid", borderColor: _limelightColors.site_color_very_dark, borderRadius: 4, paddingTop: 2, paddingBottom: 2, paddingLeft: 7, paddingRight: 7 }
             : { color: _limelightColors.site_color_very_dark, backgroundColor: _limelightColors.site_color_medium, borderWidth: 1, borderStyle: "solid", borderColor: _limelightColors.link_color_underline, borderRadius: 3, paddingTop: 1, paddingBottom: 1, paddingLeft: 4, paddingRight: 4, marginTop: 0, marginBottom: 0, marginLeft: 3, marginRight: 3 };
 
-        const tooltipContents = (
-            <span>
-                <div><b>{ operator }</b> — click to change how tags combine.</div>
-                <div style={ { marginTop: 3 } }>
-                    Switches between: OR inside groups &amp; AND between groups &nbsp;⇄&nbsp; AND inside groups &amp; OR between groups.
-                </div>
-            </span>
-        );
-
         return (
             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                 title={ tooltipContents }
                 { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
             >
                 <span
-                    onClick={ () => this._openOperatorChooser() }
+                    onClick={ onClick }
                     style={ { ...baseStyle, fontWeight: "bold", cursor: "pointer", whiteSpace: "nowrap" } }
                 >
                     { operator } ▾
@@ -354,12 +383,42 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         );
     }
 
+    //  Tooltip for the inline ( within-group ) operator
+    private _inlineOperator_TooltipContents( groupOperator : 'AND' | 'OR' ) : React.JSX.Element {
+        return (
+            <span>
+                <div>Tags in this group are combined with <b>{ groupOperator }</b>.</div>
+                <div style={ { marginTop: 3 } }>
+                    { groupOperator === 'OR'
+                        ? "A search matches this group if it has ANY of these tags."
+                        : "A search matches this group only if it has ALL of these tags." }
+                </div>
+                <div style={ { marginTop: 10 } }>Click to switch this group to <b>{ _other_Operator( groupOperator ) }</b>.</div>
+            </span>
+        );
+    }
+
+    //  Tooltip for the between-groups operator
+    private _betweenOperator_TooltipContents( betweenOperator : 'AND' | 'OR' ) : React.JSX.Element {
+        return (
+            <span>
+                <div>The groups are combined with <b>{ betweenOperator }</b>.</div>
+                <div style={ { marginTop: 3 } }>
+                    { betweenOperator === 'AND'
+                        ? "A search must match EVERY group."
+                        : "A search must match AT LEAST ONE group." }
+                </div>
+                <div style={ { marginTop: 10 } }>Click to switch to <b>{ _other_Operator( betweenOperator ) }</b> ( applies between all groups ).</div>
+            </span>
+        );
+    }
+
     /**
-     * Render one tag literal chip ( inside an OR group ):  [ not ] tagString  x
+     * Render one tag literal chip ( inside a group ):  [ not ] tagString  x
      */
     private _render_LiteralChip(
-        group : Internal__CNF_OrGroup,
-        literal : Internal__CNF_Literal,
+        group : Internal__Grouped_Group,
+        literal : Internal__Grouped_Literal,
         tagEntry_Map : Map<number, Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry>,
         categoryLabel_Map : Map<number, string>
     ) : React.JSX.Element {
@@ -469,10 +528,11 @@ export class Tag_Filter_Expression_Builder_CNF_Component
     }
 
     /**
-     * Render one group box ( a group is AND'd or OR'd internally depending on the current mode )
+     * Render one group box.  The group combines its literals with its own groupOperator ( toggled by clicking
+     * the inline AND/OR between the tags ).
      */
     private _render_Group(
-        group : Internal__CNF_OrGroup,
+        group : Internal__Grouped_Group,
         groupIndex : number,
         tagEntry_Map : Map<number, Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry>,
         categoryLabel_Map : Map<number, string>,
@@ -480,7 +540,7 @@ export class Tag_Filter_Expression_Builder_CNF_Component
     ) : React.JSX.Element {
 
         //  Shared tooltip for the "add tag(s) to this group" controls ( empty-group button and per-group "Add tag" )
-        const addTagTooltip = ( <span>Add a tag to this group.  Opens a picker with the project's tags grouped by category; tags within this group are combined with <b>{ this.state.withinGroup_Operator }</b>.  You can add several, then close.</span> );
+        const addTagTooltip = ( <span>Add a tag to this group.  Opens a picker with the project's tags grouped by category; tags within this group are combined with <b>{ group.groupOperator }</b>.  You can add several, then close.</span> );
 
         return (
             <div
@@ -544,11 +604,16 @@ export class Tag_Filter_Expression_Builder_CNF_Component
 
                 ) : ( <>
 
-                    {/*  Literals ( combined with the within-group operator )  */}
+                    {/*  Literals ( combined with this group's own operator; click the inline AND/OR to toggle it )  */}
                     <div>
                         { group.literals.map( ( literal, literalIndex ) => (
                             <React.Fragment key={ literal._uiId }>
-                                { literalIndex > 0 ? this._render_ClickableOperator( { operator: this.state.withinGroup_Operator, variant: 'inline' } ) : null }
+                                { literalIndex > 0 ? this._render_ClickableOperator( {
+                                    operator: group.groupOperator,
+                                    variant: 'inline',
+                                    onClick: () => this._toggle_GroupOperator( group._uiId ),
+                                    tooltipContents: this._inlineOperator_TooltipContents( group.groupOperator )
+                                } ) : null }
                                 { this._render_LiteralChip( group, literal, tagEntry_Map, categoryLabel_Map ) }
                             </React.Fragment>
                         ) ) }
@@ -659,12 +724,11 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         const tagEntry_Map = this._get_TagEntry_Map();
         const categoryLabel_Map = this._get_CategoryLabel_Map();
 
-        //  A new group is joined to the existing groups by the between-groups operator
-        const betweenGroups_Operator = this._betweenGroups_Operator();
+        const betweenGroups_Operator = this._betweenGroups_Operator;
 
         //  Pristine == no groups at all ( the untouched initial view ).  Show the empty-state callout with one
         //  clear first step.  As soon as there is any group ( even empty ), show the builder instead.
-        const isPristine = this.state.andGroups.length === 0;
+        const isPristine = this._groups.length === 0;
 
         //  Wrap the ( non-pristine ) builder in a light panel that shrink-wraps to its content
         //  ( width: fit-content ) so it does NOT stretch to the page's right edge -- while still letting the
@@ -704,24 +768,30 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                             <div style={ { fontWeight: "bold", fontSize: 18, whiteSpace: "nowrap" } }>
                                 Advanced Search Tag Filter
                             </div>
-                            <div style={ { color: "#666666", maxWidth: 560 } }>
-                                e.g. <code>( a OR b OR c ) AND ( d OR e OR f )</code>.
-                                By default tags within a group are OR'd and groups are AND'd &mdash; <b>click any AND/OR to switch modes</b>.
+                            <div style={ { color: "#666666", maxWidth: 620 } }>
+                                e.g. <code>( a OR b ) AND ( c OR d )</code>.
+                                Each group combines its own tags with <b>AND</b> or <b>OR</b>, and the groups are combined by a
+                                separate between-groups operator &mdash; <b>click any AND/OR to change just that one</b>.
                             </div>
                         </div>
 
-                        {/*  The groups, with "AND"/"OR" separators between them.  The "Add a group" button is
-                             the last item in this same flex-wrap row, so it sits to the RIGHT of the last group
-                             ( and wraps onto a new line only when there isn't room ).  */}
+                        {/*  The groups, with the ( single ) between-groups operator as a separator between them.  The
+                             "Add a group" button is the last item in this same flex-wrap row, so it sits to the RIGHT
+                             of the last group ( and wraps onto a new line only when there isn't room ).  */}
                         <div style={ { display: "flex", flexWrap: "wrap", alignItems: "stretch", gap: 6 } }>
-                            { this.state.andGroups.map( ( group, groupIndex ) => (
+                            { this._groups.map( ( group, groupIndex ) => (
                                 <React.Fragment key={ group._uiId }>
                                     { groupIndex > 0 ? (
                                         <div style={ { display: "flex", alignItems: "center" } }>
-                                            { this._render_ClickableOperator( { operator: this._betweenGroups_Operator(), variant: 'between' } ) }
+                                            { this._render_ClickableOperator( {
+                                                operator: betweenGroups_Operator,
+                                                variant: 'between',
+                                                onClick: () => this._toggle_BetweenGroups_Operator(),
+                                                tooltipContents: this._betweenOperator_TooltipContents( betweenGroups_Operator )
+                                            } ) }
                                         </div>
                                     ) : null }
-                                    { this._render_Group( group, groupIndex, tagEntry_Map, categoryLabel_Map, groupIndex === this.state.andGroups.length - 1 ) }
+                                    { this._render_Group( group, groupIndex, tagEntry_Map, categoryLabel_Map, groupIndex === this._groups.length - 1 ) }
                                 </React.Fragment>
                             ) ) }
 

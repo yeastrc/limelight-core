@@ -193,12 +193,16 @@ user-provided URL, or injecting an HTML string, read
 - **Future security/hardening requests start at §7 of that doc** — deferred items are catalogued there:
   remaining CSP directives (`default-src`/`img-src`/`style-src`/`connect-src`) and ToS/footer escape-first.
 
-## Project page: Advanced (grouped CNF/DNF) search tag filter
+## Project page: Advanced (grouped) search tag filter
 
 The project page Searches section has an **Advanced** grouped tag filter (build boolean expressions
-like `( a OR b ) AND ( c OR d )`, with per-tag NOT and a CNF⇄DNF mode toggle), mutually exclusive with
-the basic "Filter On Tags:" selector. It is **front-end only** (client-side filtering + per-project
-`sessionStorage`; no webservice/DB change). Before changing it, read
+like `( a AND b ) OR ( c OR d )`, with per-tag NOT), mutually exclusive with the basic "Filter On
+Tags:" selector. **Each group has its own AND/OR operator, and a single independent between-groups
+operator combines the groups** (this replaced the original coupled CNF/DNF single-toggle model; old
+saved filters are migrated on load). It is **front-end only** (client-side filtering + per-project
+`sessionStorage`; no webservice/DB change) and lives in
+`.../tag_filter_expression_builder_grouped_component/`. Before changing it, read
 `limelight_features_docs/project_page_advanced_tag_filter.md` — files, the empty-group-blocks-all vs.
-pristine-shows-all rule, basic↔advanced seeding, and the shared "Filtering on…" summary requirement.
-(Note: the code still carries legacy `..._Prototype` naming though the feature is live.)
+pristine-shows-all rule, basic↔advanced seeding, the persistence migration, and the shared
+"Filtering on…" summary requirement. (Note: the code still carries legacy `..._Prototype` naming
+though the feature is live.)

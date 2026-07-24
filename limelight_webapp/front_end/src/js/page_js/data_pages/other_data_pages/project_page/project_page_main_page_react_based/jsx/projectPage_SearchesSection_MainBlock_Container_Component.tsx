@@ -41,10 +41,10 @@ import {ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet} 
 import {ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
 import {
-    Tag_Filter_Expression_Builder_CNF_Component, Tag_Filter_Expression_Builder_CNF_Component__Expression,
-    Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup
-} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_cnf_component/tag_Filter_Expression_Builder_CNF_Component";
-import {Tag_Filter_Expression_Preview_Component} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_cnf_component/tag_Filter_Expression_Preview_Component";
+    Tag_Filter_Expression_Builder_Grouped_Component, Tag_Filter_Expression_Builder_Grouped_Component__Expression,
+    Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group
+} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_grouped_component/tag_Filter_Expression_Builder_Grouped_Component";
+import {Tag_Filter_Expression_Preview_Component} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_grouped_component/tag_Filter_Expression_Preview_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
@@ -157,9 +157,11 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
     private _search_Tags_Selections_Object: Search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
 
-    //  Seed for the Advanced builder ( from the basic selection when switching, or from session storage on load )
-    private _advanced_TagFilter_InitialSeed: Array<Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup> = []
-    private _advanced_TagFilter_Initial_Operator: 'AND' | 'OR' = 'OR'
+    //  Seed for the Advanced builder ( from the basic selection when switching, or from session storage on load ).
+    //  Each group carries its own groupOperator;  _advanced_TagFilter_Initial_BetweenOperator is the single
+    //  independent operator that combines the groups.
+    private _advanced_TagFilter_InitialSeed: Array<Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group> = []
+    private _advanced_TagFilter_Initial_BetweenOperator: 'AND' | 'OR' = 'AND'
 
     //  Bumped to force the Advanced builder to remount ( React key ) when we reset it from outside -- e.g. the
     //  "clear" in the summary.  The builder holds its own state, so a remount is how the parent resets it.
@@ -320,22 +322,22 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
         }
 
-        //  Load the Advanced ( grouped CNF ) tag filter from session storage, dropping any tags no longer in the project.
+        //  Load the Advanced ( grouped ) tag filter from session storage, dropping any tags no longer in the project.
         //  If a non-empty advanced filter exists, default to Advanced mode.
         let use_Advanced_TagFilter_Prototype = false;
         {
             const stored_Advanced = this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.get_Advanced_TagFilter();
             if ( stored_Advanced ) {
-                const filtered_AndGroups: Array<Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup> = [];
-                for ( const group of stored_Advanced.andGroups ) {
+                const filtered_Groups: Array<Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group> = [];
+                for ( const group of stored_Advanced.groups ) {
                     const literals = group.literals.filter( lit => searchesSearchTagsFolders_Result_Root.get_SearchTags_InProject_For_TagId( lit.tagId ) );
                     if ( literals.length > 0 ) {
-                        filtered_AndGroups.push( { literals } );
+                        filtered_Groups.push( { literals, groupOperator: group.groupOperator } );
                     }
                 }
-                if ( filtered_AndGroups.length > 0 ) {
-                    this._advanced_TagFilter_InitialSeed = filtered_AndGroups;
-                    this._advanced_TagFilter_Initial_Operator = stored_Advanced.withinGroup_Operator;
+                if ( filtered_Groups.length > 0 ) {
+                    this._advanced_TagFilter_InitialSeed = filtered_Groups;
+                    this._advanced_TagFilter_Initial_BetweenOperator = stored_Advanced.betweenGroups_Operator;
                     use_Advanced_TagFilter_Prototype = true;
                 }
             }
@@ -385,28 +387,30 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
     /**
      * PROTOTYPE:  Translate the existing simple tag selections ( OR / AND / NOT buckets ) into the
-     * grouped-CNF seed shape for the "Advanced" builder:
-     *   - each AND tag  -> its own 1-tag group        ( AND'd across groups )
+     * grouped seed shape for the "Advanced" builder:
+     *   - each AND tag  -> its own 1-tag group                       ( groups combined by the between-op )
      *   - each NOT tag  -> its own 1-tag negated group ( "NOT tag" )
-     *   - the OR bucket -> a single group of OR'd tags
+     *   - the OR bucket -> a single group with groupOperator 'OR'
+     * The groups are combined with the between-groups operator 'AND' ( see _switchTo_Advanced_TagFilter ), so
+     * this preserves the basic filter's meaning exactly.
      * If there are no existing selections, returns [] and the builder shows the "Start building a tag filter"
      * empty-state callout ( no groups yet ).
      */
-    private _build_CNF_SeedGroups_From_ExistingSelections() : Array<Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup> {
+    private _build_Grouped_SeedGroups_From_ExistingSelections() : Array<Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group> {
 
-        const seedGroups : Array<Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup> = [];
+        const seedGroups : Array<Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group> = [];
 
         const sel = this._search_Tags_Selections_Object;
         if ( sel ) {
             for ( const tagId of sel.searchTagIdsSelected_Boolean__AND ) {
-                seedGroups.push( { literals: [ { tagId, negated: false } ] } );
+                seedGroups.push( { literals: [ { tagId, negated: false } ], groupOperator: 'OR' } );
             }
             for ( const tagId of sel.searchTagIdsSelected_Boolean__NOT ) {
-                seedGroups.push( { literals: [ { tagId, negated: true } ] } );
+                seedGroups.push( { literals: [ { tagId, negated: true } ], groupOperator: 'OR' } );
             }
             if ( sel.searchTagIdsSelected_Boolean__OR.size > 0 ) {
                 const literals = Array.from( sel.searchTagIdsSelected_Boolean__OR ).map( tagId => ( { tagId, negated: false } ) );
-                seedGroups.push( { literals } );
+                seedGroups.push( { literals, groupOperator: 'OR' } );
             }
         }
 
@@ -419,12 +423,12 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
      */
     private _switchTo_Advanced_TagFilter() : void {
 
-        //  Capture the seed BEFORE clearing the basic selection.  Basic maps to OR-within / AND-between.
-        this._advanced_TagFilter_InitialSeed = this._build_CNF_SeedGroups_From_ExistingSelections();
-        this._advanced_TagFilter_Initial_Operator = 'OR';
+        //  Capture the seed BEFORE clearing the basic selection.  Basic maps to OR-within-group / AND-between.
+        this._advanced_TagFilter_InitialSeed = this._build_Grouped_SeedGroups_From_ExistingSelections();
+        this._advanced_TagFilter_Initial_BetweenOperator = 'AND';
 
         //  Persist the advanced filter so a reload defaults to Advanced
-        this._save_Advanced_TagFilter_ToSessionStorage( this._advanced_TagFilter_InitialSeed, this._advanced_TagFilter_Initial_Operator );
+        this._save_Advanced_TagFilter_ToSessionStorage( this._advanced_TagFilter_InitialSeed, this._advanced_TagFilter_Initial_BetweenOperator );
 
         //  Clear the basic tag filter
         this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance();
@@ -441,7 +445,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     private _switchTo_Basic_TagFilter() : void {
 
         this._advanced_TagFilter_InitialSeed = [];
-        this._advanced_TagFilter_Initial_Operator = 'OR';
+        this._advanced_TagFilter_Initial_BetweenOperator = 'AND';
         this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.update_Advanced_TagFilter( null );
 
         //  Advanced now empty and basic empty => re-filter ( no tag filtering )
@@ -452,14 +456,14 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
     /**
      * Clear the advanced tag filter -- remove all groups ( back to the builder's pristine empty state ),
-     * reset the combine mode, clear persistence, and re-run filtering.  Remounts the builder so its own
-     * internal state resets.  Stays in Advanced mode ( parallels the basic "clear tag filters" ).
+     * reset the between-groups operator, clear persistence, and re-run filtering.  Remounts the builder so its
+     * own internal state resets.  Stays in Advanced mode ( parallels the basic "clear tag filters" ).
      */
     private _clearAdvancedTagFilter = () : void => {
         this._advanced_TagFilter_InitialSeed = [];
-        this._advanced_TagFilter_Initial_Operator = 'OR';
+        this._advanced_TagFilter_Initial_BetweenOperator = 'AND';
         this._advanced_Builder_RemountCounter++;
-        this._save_Advanced_TagFilter_ToSessionStorage( this._advanced_TagFilter_InitialSeed, this._advanced_TagFilter_Initial_Operator );
+        this._save_Advanced_TagFilter_ToSessionStorage( this._advanced_TagFilter_InitialSeed, this._advanced_TagFilter_Initial_BetweenOperator );
         this._searchesAndFolders_Update_FilterOnSearchTags();
         this.setState({ force_Rerender: {} });
     }
@@ -468,14 +472,14 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
      * PROTOTYPE:  Save the advanced filter to session storage ( null/empty clears it ).
      */
     private _save_Advanced_TagFilter_ToSessionStorage(
-        andGroups : ReadonlyArray<Tag_Filter_Expression_Builder_CNF_Component__Seed_OrGroup>,
-        withinGroup_Operator : 'AND' | 'OR'
+        groups : ReadonlyArray<Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group>,
+        betweenGroups_Operator : 'AND' | 'OR'
     ) : void {
 
-        const andGroups_Copy = andGroups.map( g => ( { literals: g.literals.map( l => ( { tagId: l.tagId, negated: l.negated } ) ) } ) );
+        const groups_Copy = groups.map( g => ( { groupOperator: g.groupOperator, literals: g.literals.map( l => ( { tagId: l.tagId, negated: l.negated } ) ) } ) );
 
         this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.update_Advanced_TagFilter(
-            andGroups_Copy.length > 0 ? { withinGroup_Operator, andGroups: andGroups_Copy } : null
+            groups_Copy.length > 0 ? { betweenGroups_Operator, groups: groups_Copy } : null
         );
     }
 
@@ -503,8 +507,8 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
     /**
      * Evaluate the advanced ( grouped ) expression against one search's tag id set.
-     * withinGroup_Operator combines literals inside a group;  the opposite operator combines the groups.
-     * A negated literal matches when the tag is ABSENT.
+     * Each group combines its literals with its OWN groupOperator;  the single betweenGroups_Operator combines
+     * the groups.  A negated literal matches when the tag is ABSENT.
      */
     private _advanced_TagFilter_Matches( searchTagIds_Set : ReadonlySet<number> ) : boolean {
 
@@ -515,8 +519,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
             return false;
         }
 
-        const withinOp = this._advanced_TagFilter_Initial_Operator;
-        const betweenOp : 'AND' | 'OR' = ( withinOp === 'OR' ) ? 'AND' : 'OR';
+        const betweenOp = this._advanced_TagFilter_Initial_BetweenOperator;
 
         const nonEmptyGroups = this._advanced_TagFilter_InitialSeed.filter( g => g.literals.length > 0 );
         if ( nonEmptyGroups.length === 0 ) {
@@ -528,7 +531,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                 const present = searchTagIds_Set.has( lit.tagId );
                 return lit.negated ? ( ! present ) : present;
             } );
-            return ( withinOp === 'AND' ) ? literalResults.every( r => r ) : literalResults.some( r => r );
+            return ( group.groupOperator === 'AND' ) ? literalResults.every( r => r ) : literalResults.some( r => r );
         } );
 
         return ( betweenOp === 'AND' ) ? groupResults.every( r => r ) : groupResults.some( r => r );
@@ -1615,20 +1618,20 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                     </button>
                                 </div>
 
-                                <Tag_Filter_Expression_Builder_CNF_Component
+                                <Tag_Filter_Expression_Builder_Grouped_Component
                                     key={ "advanced-tag-filter-builder-" + this._advanced_Builder_RemountCounter }
                                     searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
-                                    initial_AndGroups={ this._advanced_TagFilter_InitialSeed }
-                                    initial_WithinGroup_Operator={ this._advanced_TagFilter_Initial_Operator }
-                                    expression_Changed_Callback={ ( expression: Tag_Filter_Expression_Builder_CNF_Component__Expression ) => {
+                                    initial_Groups={ this._advanced_TagFilter_InitialSeed }
+                                    initial_BetweenGroups_Operator={ this._advanced_TagFilter_Initial_BetweenOperator }
+                                    expression_Changed_Callback={ ( expression: Tag_Filter_Expression_Builder_Grouped_Component__Expression ) => {
 
                                         //  Keep the seed fields in sync ( for remount + the summary preview ), persist, and re-run filtering
-                                        this._advanced_TagFilter_InitialSeed = expression.andGroups.map( g => ( { literals: g.literals.map( l => ( { tagId: l.tagId, negated: l.negated } ) ) } ) )
-                                        this._advanced_TagFilter_Initial_Operator = expression.withinGroup_Operator
+                                        this._advanced_TagFilter_InitialSeed = expression.groups.map( g => ( { groupOperator: g.groupOperator, literals: g.literals.map( l => ( { tagId: l.tagId, negated: l.negated } ) ) } ) )
+                                        this._advanced_TagFilter_Initial_BetweenOperator = expression.betweenGroups_Operator
 
                                         window.setTimeout( ()=> { 	try {
 
-                                            this._save_Advanced_TagFilter_ToSessionStorage( this._advanced_TagFilter_InitialSeed, this._advanced_TagFilter_Initial_Operator )
+                                            this._save_Advanced_TagFilter_ToSessionStorage( this._advanced_TagFilter_InitialSeed, this._advanced_TagFilter_Initial_BetweenOperator )
                                             this._searchesAndFolders_Update_FilterOnSearchTags()
                                             this.setState({ force_Rerender: {} })
 
@@ -1785,8 +1788,8 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                         </div>
                                         <div>
                                             <Tag_Filter_Expression_Preview_Component
-                                                andGroups={ this._advanced_TagFilter_InitialSeed }
-                                                withinGroup_Operator={ this._advanced_TagFilter_Initial_Operator }
+                                                groups={ this._advanced_TagFilter_InitialSeed }
+                                                betweenGroups_Operator={ this._advanced_TagFilter_Initial_BetweenOperator }
                                                 searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
                                             />
                                         </div>

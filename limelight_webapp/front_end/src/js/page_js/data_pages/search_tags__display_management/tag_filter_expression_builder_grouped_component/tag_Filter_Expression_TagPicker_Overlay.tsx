@@ -24,17 +24,26 @@ import {
     Search_Tags_SelectSearchTags_Component_SearchTagData_Root,
     Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry
 } from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
-import {tag_Filter_Expression_OperatorChooser_Overlay__Operator_Title_And_Example} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_cnf_component/tag_Filter_Expression_OperatorChooser_Overlay";
 
 
 /////
 
 
-//  Optional OR/AND chooser shown at the top of the picker ( used when starting the FIRST group ):  lets the
-//  user choose how the tags being added combine.  Setting it drives the builder's within-group operator.
+//  Human-readable description + example for a group-operator ( AND / OR ) choice.  Used as the radio tooltips.
+function _groupOperator_Title_And_Example( groupOperator : 'AND' | 'OR' ) : { title : string, example : string } {
+    const title = groupOperator === 'OR'
+        ? "OR — a search matches this group if it has ANY of these tags"
+        : "AND — a search matches this group only if it has ALL of these tags";
+    const example = groupOperator === 'OR' ? "( 'a' OR 'b' OR 'c' )" : "( 'a' AND 'b' AND 'c' )";
+    return { title, example };
+}
+
+
+//  Optional OR/AND chooser shown at the top of the picker ( used when a group is still empty ):  lets the
+//  user choose how the tags being added to THIS group combine.  Setting it drives that group's operator.
 export interface TagFilter_Expression_TagPicker_Overlay__OperatorChooser {
-    initial_WithinGroup_Operator : 'AND' | 'OR'
-    onChoose_WithinGroup_Operator : ( withinGroup_Operator : 'AND' | 'OR' ) => void
+    initial_GroupOperator : 'AND' | 'OR'
+    onChoose_GroupOperator : ( groupOperator : 'AND' | 'OR' ) => void
 }
 
 
@@ -171,7 +180,7 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
         super( props );
         this.state = {
             locallyPickedTagIds: new Set<number>(),
-            selectedOperator: ( props.operatorChooser && props.operatorChooser.initial_WithinGroup_Operator === 'AND' ) ? 'AND' : 'OR'
+            selectedOperator: ( props.operatorChooser && props.operatorChooser.initial_GroupOperator === 'AND' ) ? 'AND' : 'OR'
         };
     }
 
@@ -182,17 +191,17 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
         this.setState( { locallyPickedTagIds } );
     }
 
-    private _chooseOperator = ( withinGroup_Operator : 'AND' | 'OR' ) : void => {
-        this.setState( { selectedOperator: withinGroup_Operator } );
+    private _chooseOperator = ( groupOperator : 'AND' | 'OR' ) : void => {
+        this.setState( { selectedOperator: groupOperator } );
         if ( this.props.operatorChooser ) {
-            this.props.operatorChooser.onChoose_WithinGroup_Operator( withinGroup_Operator );
+            this.props.operatorChooser.onChoose_GroupOperator( groupOperator );
         }
     }
 
-    //  One OR/AND radio, tooltipped with the SAME description + example as the operator-chooser overlay
-    private _render_OperatorRadio( withinGroup_Operator : 'AND' | 'OR' ) : React.JSX.Element {
+    //  One OR/AND radio, tooltipped with the description + example of how this group's tags will combine
+    private _render_OperatorRadio( groupOperator : 'AND' | 'OR' ) : React.JSX.Element {
 
-        const { title, example } = tag_Filter_Expression_OperatorChooser_Overlay__Operator_Title_And_Example( withinGroup_Operator );
+        const { title, example } = _groupOperator_Title_And_Example( groupOperator );
 
         const tooltipContents = (
             <span>
@@ -209,12 +218,12 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
                 <label style={ { display: "inline-flex", alignItems: "center", marginRight: 18, cursor: "pointer" } }>
                     <input
                         type="radio"
-                        name="tag_Filter_Expression_TagPicker_Overlay__within_group_operator"
-                        checked={ this.state.selectedOperator === withinGroup_Operator }
-                        onChange={ () => this._chooseOperator( withinGroup_Operator ) }
+                        name="tag_Filter_Expression_TagPicker_Overlay__group_operator"
+                        checked={ this.state.selectedOperator === groupOperator }
+                        onChange={ () => this._chooseOperator( groupOperator ) }
                         style={ { marginRight: 6 } }
                     />
-                    <span style={ { fontWeight: "bold" } }>{ withinGroup_Operator }</span>
+                    <span style={ { fontWeight: "bold" } }>{ groupOperator }</span>
                 </label>
             </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         );

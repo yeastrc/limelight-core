@@ -1,15 +1,22 @@
-# Project page — Advanced (grouped CNF/DNF) search tag filter
+# Project page — Advanced (grouped) search tag filter
 
 The project page's **Searches section** has two mutually-exclusive tag filters:
 
 - the original **basic** "Filter On Tags:" selector (OR / AND / NOT buckets), and
 - an **Advanced** grouped filter that builds a boolean expression like
-  `( a OR b OR c ) AND ( d OR e OR f )`.
+  `( a AND b ) OR ( c OR d ) OR ( e )`.
 
 This doc covers the Advanced filter: what it does, the files, and the load-bearing behavior
 decisions. It is a **front-end-only** feature — filtering happens client-side against each
 search's tag id set; there is no server/webservice or DB change. State persists in
 `sessionStorage` per project.
+
+> **Operator model changed (2026-07-24).** The filter was originally a strict **CNF/DNF** builder:
+> one global "within-group" operator, with the between-groups operator forced to its opposite — a
+> single toggle flipped everything. It is now a **general two-level expression**: **each group has its
+> own operator** (`groupOperator`, AND or OR), and a **single, independent `betweenGroups_Operator`**
+> combines the groups. The old "CNF" names were renamed to "Grouped" at the same time. Old persisted
+> filters are migrated on load (see Persistence).
 
 > **Naming note:** the code still carries `..._Prototype` names and `// PROTOTYPE:` comments
 > (e.g. the state flag `use_Advanced_TagFilter_Prototype`), but the feature is **deployed / live**,
@@ -17,11 +24,16 @@ search's tag id set; there is no server/webservice or DB change. State persists 
 
 ## What it does (user-facing)
 
-- Build a grouped tag expression. **Tags within a group** combine with one operator; **groups**
-  combine with the opposite operator. A global **AND/OR mode toggle** flips the whole thing between
-  CNF and DNF:
-  - **within = OR** ⇒ `( a OR b ) AND ( c OR d )` (CNF — the default)
-  - **within = AND** ⇒ `( a AND b ) OR ( c AND d )` (DNF)
+- Build a grouped tag expression. **Each group** combines its own tags with **its own** AND/OR
+  (`groupOperator`); a **single, separate** `betweenGroups_Operator` combines the groups. The two
+  levels are **independent** — changing one group's operator affects only that group, and the
+  between-groups operator is its own choice. Example: `( a AND b ) OR ( c OR d )`.
+- **Setting operators (inline toggle + picker radios):**
+  - Click the AND/OR shown **between a group's tags** → toggles **only that group's** operator.
+  - Click the AND/OR shown **between groups** → toggles the **single** between-groups operator
+    (applies to every group junction — there is one shared between operator, not one per junction).
+  - For an **empty** group (no inline operator visible yet), the tag-picker overlay shows **OR/AND
+    radios** so you choose how that group's tags will combine before adding them.
 - Each tag literal can be **NOT** (negated) — it matches when that tag is **absent** from the search.
 - It's **either/or** with the basic "Filter On Tags:" selector — only one is shown/active at a time.
 - All "Filtering on …" summaries stay together in the one shared
@@ -33,65 +45,78 @@ search's tag id set; there is no server/webservice or DB change. State persists 
 
 All under `limelight_webapp/front_end/src/js/page_js/data_pages/`.
 
-**Builder + overlays** — `search_tags__display_management/tag_filter_expression_builder_cnf_component/`:
+**Builder + overlays** — `search_tags__display_management/tag_filter_expression_builder_grouped_component/`:
 
-- `tag_Filter_Expression_Builder_CNF_Component.tsx` — the builder (main file, ~750 lines),
-  **edit-only**. Holds its own CNF state (`andGroups` + `withinGroup_Operator`). Exports the seed/
-  expression types `..._Seed_Literal` / `..._Seed_OrGroup` / `..._Expression`; props
-  `initial_AndGroups`, `initial_WithinGroup_Operator`, `expression_Changed_Callback`. Internal
+- `tag_Filter_Expression_Builder_Grouped_Component.tsx` — the builder (main file, ~760 lines),
+  **edit-only**. Holds its own state (`groups` — each with a `groupOperator` — plus a top-level
+  `betweenGroups_Operator`). Exports the seed/expression types
+  `Tag_Filter_Expression_Builder_Grouped_Component__{Seed_Literal, Seed_Group, Expression}`; props
+  `initial_Groups`, `initial_BetweenGroups_Operator`, `expression_Changed_Callback`. Internal
   literal/group objects carry a `_uiId` (React keys / mutation targeting) that is **stripped** from
-  the plain-data expression handed back to the parent. Defines a file-level `_limelightColors` alias
-  for the shared brand-color constants.
+  the plain-data expression handed back to the parent. Per-group operator is toggled inline
+  (`_toggle_GroupOperator`) or set from the picker radios (`_set_GroupOperator`); the between operator
+  is toggled by `_toggle_BetweenGroups_Operator`. Defines a file-level `_limelightColors` alias and a
+  file-local `_other_Operator(op)` helper. New groups default to `groupOperator: 'OR'`; a fresh filter
+  defaults `betweenGroups_Operator: 'AND'` (this pair reproduces the old CNF default).
 - `tag_Filter_Expression_Preview_Component.tsx` — **read-only** grouped-expression display (colored
-  chips + parens + AND/OR), or the empty-group warning. Renders from plain seed data (props
-  `andGroups`, `withinGroup_Operator`, `searchTagData_Root`). The **parent** renders this inside the
-  shared summary block.
+  chips + parens + AND/OR), or the empty-group warning. Renders from plain seed data (props `groups`,
+  `betweenGroups_Operator`, `searchTagData_Root`); each group is shown with its own `groupOperator`,
+  groups joined by the between operator. The **parent** renders this inside the shared summary block.
 - `tag_Filter_Expression_TagPicker_Overlay.tsx` — add-tag overlay (home-grown
   `ModalOverlay_Limelight_Component_v001_B_FlexBox`), 2-column categories-left / tags-right layout,
   tags sorted within category (uncategorized last). **Stays open** after each pick so several tags
-  can be added in a row (already-added tags greyed out); batches — `onOverlayClosed` fires once. An
-  optional `operatorChooser` prop shows pinned OR/AND **radios** at the top (used only when starting
-  the very first group) that set the within-group operator live. `closeAfterPick` supports a
-  close-after-one mode (not currently used by the builder). "open" function colocated here.
-- `tag_Filter_Expression_OperatorChooser_Overlay.tsx` — the AND/OR mode-chooser overlay (two radio
-  cards: CNF vs DNF, with monospace examples). Exports
-  `tag_Filter_Expression_OperatorChooser_Overlay__Operator_Title_And_Example(op)` — shared
-  title+example wording, reused as the tag-picker radio tooltips so the two agree.
+  can be added in a row (already-added tags greyed out); batches — `onOverlayClosed` fires once. Its
+  optional `operatorChooser` prop (`initial_GroupOperator` / `onChoose_GroupOperator`) shows pinned
+  OR/AND **radios** at the top, shown whenever the target group is still **empty**, and sets **that
+  group's** operator live. Radio wording comes from a file-local `_groupOperator_Title_And_Example`.
+  "open" function colocated here.
+
+> There is **no** operator-chooser overlay anymore. The former
+> `tag_Filter_Expression_OperatorChooser_Overlay.tsx` (a coupled CNF/DNF "swaps both" chooser) was
+> **deleted** when operators became independent — operators are now set by the inline toggles and the
+> picker radios described above.
 
 **Parent wiring** — `other_data_pages/project_page/project_page_main_page_react_based/jsx/`:
 
 - `projectPage_SearchesSection_MainBlock_Container_Component.tsx` — basic↔advanced either/or wiring,
   seeding, filtering, persistence, and rendering the shared "Filtering on" summary. Key members:
   `_switchTo_Advanced_TagFilter`, `_switchTo_Basic_TagFilter`, `_clearAdvancedTagFilter`,
-  `_build_CNF_SeedGroups_From_ExistingSelections`, `_isAdvanced_TagFilter_Active`,
+  `_build_Grouped_SeedGroups_From_ExistingSelections`, `_isAdvanced_TagFilter_Active`,
   `_advanced_TagFilter_HasEmptyGroup`, `_advanced_TagFilter_Matches`,
-  `_save_Advanced_TagFilter_ToSessionStorage`; fields `_advanced_TagFilter_InitialSeed`,
-  `_advanced_TagFilter_Initial_Operator`, `_advanced_Builder_RemountCounter`; state flag
-  `use_Advanced_TagFilter_Prototype`.
+  `_save_Advanced_TagFilter_ToSessionStorage`; fields `_advanced_TagFilter_InitialSeed` (array of
+  `Seed_Group`, each carrying `groupOperator`), `_advanced_TagFilter_Initial_BetweenOperator`,
+  `_advanced_Builder_RemountCounter`; state flag `use_Advanced_TagFilter_Prototype`.
 - `projectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet.ts` — persistence.
   sessionStorage key `limelight_project_page_advanced_tag_filter`. Exported types
-  `ProjectPage_SearchesSection__Advanced_TagFilter` / `..._OrGroup` / `..._Literal`. Stored value is
-  namespaced by `projectIdentifier` (ignored on load if it doesn't match the URL's project). Load
-  runs through `_validate_Advanced_TagFilter`, which sanitizes (numeric `tagId`, boolean `negated`),
-  **drops empty groups**, and returns `null` if nothing usable remains.
+  `ProjectPage_SearchesSection__Advanced_TagFilter` (`{ betweenGroups_Operator, groups }`) /
+  `..._Group` (`{ literals, groupOperator }`) / `..._Literal`. Stored value is namespaced by
+  `projectIdentifier` (ignored on load if it doesn't match the URL's project). Load runs through
+  `_validate_Advanced_TagFilter` (see Persistence).
 
 ## Behavior & decisions (load-bearing)
 
 - **Basic → Advanced** (`_switchTo_Advanced_TagFilter`): seeds the builder from the current basic
-  selection *before* clearing basic, via `_build_CNF_SeedGroups_From_ExistingSelections` —
+  selection *before* clearing basic, via `_build_Grouped_SeedGroups_From_ExistingSelections` —
   each basic **AND** tag → its own 1-tag group; each **NOT** tag → its own 1-tag negated group;
-  the **OR** bucket → a single OR group. Seeds `withinGroup_Operator = 'OR'` (so basic maps to
-  OR-within / AND-between). Then clears basic and persists the advanced filter (so a reload defaults
-  to Advanced).
+  the **OR** bucket → a single group with `groupOperator: 'OR'`. Sets
+  `betweenGroups_Operator = 'AND'` — so the seeded filter reproduces the basic filter's meaning
+  exactly (OR within the OR-bucket group, AND between groups). Then clears basic and persists the
+  advanced filter (so a reload defaults to Advanced).
 - **Advanced → Basic** (`_switchTo_Basic_TagFilter`): clears the advanced filter (incl.
   sessionStorage) and re-filters.
-- **Persistence / default on load:** persisted to sessionStorage per project. On load, if a
-  non-empty advanced filter is present (after dropping tags no longer in the project), the page
-  **defaults to Advanced mode**.
-- **Builder starts with ZERO groups** (`isPristine = andGroups.length === 0`). Pristine shows a
-  dashed empty-state callout ("Start adding tags to the first group.") with **one** primary button,
-  "Add tags to first group", which opens the picker **with** the OR/AND radios. There is no
-  "add empty group" link in the pristine state.
+- **Persistence / migration / default on load:** persisted to sessionStorage per project.
+  `_validate_Advanced_TagFilter` sanitizes (numeric `tagId`, boolean `negated`, per-group
+  `groupOperator`), **drops empty groups**, and returns `null` if nothing usable remains. It handles
+  **both** shapes: the current `{ groups:[{literals, groupOperator}], betweenGroups_Operator }` and
+  the **old** coupled shape `{ andGroups:[{literals}], withinGroup_Operator }`. For the old shape it
+  **migrates**: every group's `groupOperator = old withinGroup_Operator` and
+  `betweenGroups_Operator = opposite(old)` — preserving each already-saved filter's original CNF/DNF
+  meaning. On load, if a non-empty advanced filter is present (after dropping tags no longer in the
+  project), the page **defaults to Advanced mode**.
+- **Builder starts with ZERO groups** (`isPristine = groups.length === 0`). Pristine shows a dashed
+  empty-state callout ("Start adding tags to the first group.") with **one** primary button, "Add tags
+  to first group", which opens the picker **with** the OR/AND radios (the first group is empty). There
+  is no "add empty group" link in the pristine state.
 - **Empty-group rule** (important, and intentional):
   - `_isAdvanced_TagFilter_Active()` = "seed has ≥1 group" — so an **empty group counts as active**.
   - `_advanced_TagFilter_Matches()` returns **false** if any group is empty ⇒ an **empty group
@@ -101,12 +126,13 @@ All under `limelight_webapp/front_end/src/js/page_js/data_pages/`.
   - So: no groups ⇒ show all; ≥1 group with an empty one ⇒ show none (warning); all groups populated
     ⇒ evaluate the expression.
 - **Evaluation** (`_advanced_TagFilter_Matches`, given a search's tag id `Set`): within each group,
-  literals combine with `withinGroup_Operator` (`every` for AND, `some` for OR); a **negated** literal
-  matches when the tag is **absent**. Groups then combine with the **opposite** operator. This
-  duplicates the preview component's own display logic — a possible future cleanup is to extract one
+  literals combine with **that group's** `groupOperator` (`every` for AND, `some` for OR); a
+  **negated** literal matches when the tag is **absent**. Group results then combine with the single
+  `betweenGroups_Operator`. (Unambiguous because there is one shared between operator — associative.)
+  This duplicates the preview component's display logic — a possible future cleanup is to extract one
   shared evaluator.
 - **clear** (`_clearAdvancedTagFilter`, wired to the summary's "clear"): empties the seed, resets the
-  operator to OR, clears persistence, re-filters, and **remounts the builder** by bumping
+  between operator to `'AND'`, clears persistence, re-filters, and **remounts the builder** by bumping
   `_advanced_Builder_RemountCounter` (used as the builder's React `key`, since the builder owns its
   own internal state). Stays in Advanced mode (parallels the basic "clear tag filters").
 - **Tag-picker applies on overlay close** — while the stay-open picker is open, the builder sets
@@ -136,12 +162,17 @@ All under `limelight_webapp/front_end/src/js/page_js/data_pages/`.
 - The non-pristine builder wraps its header + groups + "Add a group" button in a light panel with
   `width: fit-content` + `maxWidth: 100%` so it **shrink-wraps** (doesn't run to the page's right
   edge) yet still lets the groups row use available width and wrap groups per line. The header
-  explainer is capped `maxWidth: 560` so it can't blow out the panel. The pristine empty-state callout
+  explainer is capped `maxWidth: 620` so it can't blow out the panel. The pristine empty-state callout
   is **not** wrapped in the panel.
 - Per-group UI: header shows "Group N" + a circle-delete icon (`static/images/icon-circle-delete.png`,
-  tooltip "Remove Group"); a populated group shows tag chips + an "Add tag" fake-link; an **empty**
-  group shows an "Add tags to group" button + an italic "(Empty Group)" marker. Bottom control is a
-  real `<button>` "Add a group" (a fake-link was not visible enough).
+  tooltip "Remove Group"); a populated group shows tag chips with the inline (clickable) `groupOperator`
+  between them + an "Add tag" fake-link; an **empty** group shows an "Add tags to group" button + an
+  italic "(Empty Group)" marker.
+- **"Add a group"** is a real `<button>` and is the **last item in the same flex-wrap row as the
+  groups**, so it sits to the right of the last group and wraps to a new line only when out of room.
+  The last group carries an 18px right margin (space that collapses harmlessly to trailing space when
+  the button wraps, so the button stays flush-left — no indent); the button wrapper has top/bottom
+  margin for separation when it wraps to its own line.
 - The advanced **"Filtering on tags:" summary** is rendered by the **parent** inside the shared
   `filter-on-tags--currently-filtering` block via `Tag_Filter_Expression_Preview_Component`. So in
   Advanced mode the expression appears twice by design: editable (builder) + read-only summary

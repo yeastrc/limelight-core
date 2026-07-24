@@ -414,6 +414,11 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
 /**
  * Validate/sanitize an advanced tag filter loaded from session storage.  Returns null if there is
  * no usable ( non-empty ) filter.
+ *
+ * Handles BOTH the current shape ( per-group groupOperator + a single betweenGroups_Operator ) and the
+ * OLD coupled-CNF shape ( a single withinGroup_Operator on `andGroups` ).  For the old shape, every group
+ * gets groupOperator = old withinGroup_Operator and betweenGroups_Operator = its opposite -- preserving the
+ * original CNF/DNF meaning of any already-persisted filter.
  */
 function _validate_Advanced_TagFilter( input : any ) : ProjectPage_SearchesSection__Advanced_TagFilter | null {
 
@@ -421,33 +426,49 @@ function _validate_Advanced_TagFilter( input : any ) : ProjectPage_SearchesSecti
         return null;
     }
 
-    const withinGroup_Operator : 'AND' | 'OR' =
+    //  Old shape used `andGroups` + a single `withinGroup_Operator`;  new shape uses `groups` + per-group
+    //  `groupOperator` + `betweenGroups_Operator`.
+    const isOldShape = ( ! ( input.groups instanceof Array ) ) && ( input.andGroups instanceof Array );
+
+    const rawGroups : Array<any> = ( input.groups instanceof Array ) ? input.groups
+        : ( input.andGroups instanceof Array ? input.andGroups : [] );
+
+    //  Old within-group operator ( used to derive per-group + between operators when migrating )
+    const old_WithinOperator : 'AND' | 'OR' =
         ( input.withinGroup_Operator === "AND" || input.withinGroup_Operator === "OR" ) ? input.withinGroup_Operator : "OR";
 
-    const andGroups : Array<ProjectPage_SearchesSection__Advanced_TagFilter_OrGroup> = [];
+    let betweenGroups_Operator : 'AND' | 'OR';
+    if ( isOldShape ) {
+        betweenGroups_Operator = ( old_WithinOperator === "OR" ) ? "AND" : "OR";  //  old: between = opposite of within
+    } else {
+        betweenGroups_Operator = ( input.betweenGroups_Operator === "AND" || input.betweenGroups_Operator === "OR" ) ? input.betweenGroups_Operator : "AND";
+    }
 
-    if ( input.andGroups instanceof Array ) {
-        for ( const group of input.andGroups ) {
-            if ( ( ! group ) || ( ! ( group.literals instanceof Array ) ) ) {
-                continue;
+    const groups : Array<ProjectPage_SearchesSection__Advanced_TagFilter_Group> = [];
+
+    for ( const group of rawGroups ) {
+        if ( ( ! group ) || ( ! ( group.literals instanceof Array ) ) ) {
+            continue;
+        }
+        const literals : Array<ProjectPage_SearchesSection__Advanced_TagFilter_Literal> = [];
+        for ( const literal of group.literals ) {
+            if ( literal && limelight__variable_is_type_number_Check( literal.tagId ) ) {
+                literals.push( { tagId: literal.tagId, negated: ( literal.negated === true ) } );
             }
-            const literals : Array<ProjectPage_SearchesSection__Advanced_TagFilter_Literal> = [];
-            for ( const literal of group.literals ) {
-                if ( literal && limelight__variable_is_type_number_Check( literal.tagId ) ) {
-                    literals.push( { tagId: literal.tagId, negated: ( literal.negated === true ) } );
-                }
-            }
-            if ( literals.length > 0 ) {
-                andGroups.push( { literals } );
-            }
+        }
+        if ( literals.length > 0 ) {
+            const groupOperator : 'AND' | 'OR' = isOldShape
+                ? old_WithinOperator
+                : ( ( group.groupOperator === "AND" || group.groupOperator === "OR" ) ? group.groupOperator : "OR" );
+            groups.push( { literals, groupOperator } );
         }
     }
 
-    if ( andGroups.length === 0 ) {
+    if ( groups.length === 0 ) {
         return null;
     }
 
-    return { withinGroup_Operator, andGroups };
+    return { betweenGroups_Operator, groups };
 }
 
 
@@ -474,18 +495,20 @@ interface Internal__SearchName_SearchId_FilterValue__SessionStorageObject {
 }
 
 
-//  Advanced ( grouped CNF ) tag filter -- exported so the container can pass it to/from the builder
+//  Advanced ( grouped ) tag filter -- exported so the container can pass it to/from the builder.
+//  Each group carries its own groupOperator;  betweenGroups_Operator is the single operator combining groups.
 
 export interface ProjectPage_SearchesSection__Advanced_TagFilter_Literal {
     tagId: number
     negated: boolean
 }
-export interface ProjectPage_SearchesSection__Advanced_TagFilter_OrGroup {
+export interface ProjectPage_SearchesSection__Advanced_TagFilter_Group {
     literals: Array<ProjectPage_SearchesSection__Advanced_TagFilter_Literal>
+    groupOperator: 'AND' | 'OR'
 }
 export interface ProjectPage_SearchesSection__Advanced_TagFilter {
-    withinGroup_Operator: 'AND' | 'OR'
-    andGroups: Array<ProjectPage_SearchesSection__Advanced_TagFilter_OrGroup>
+    betweenGroups_Operator: 'AND' | 'OR'
+    groups: Array<ProjectPage_SearchesSection__Advanced_TagFilter_Group>
 }
 
 interface Internal__Advanced_TagFilter__SessionStorageObject {
