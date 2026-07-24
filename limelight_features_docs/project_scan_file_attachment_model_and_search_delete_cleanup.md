@@ -4,6 +4,14 @@
 not yet implemented. The current-behavior sections are grounded in the code (traced); the *proposed
 design* (attachment model, new markers, GC) is not yet decided/built — see Open questions.
 
+> **Revised direction (2026-07, preferred):** the section
+> [**Revised design direction: deferred soft-delete + visibility gate**](#revised-design-direction-2026-07-deferred-soft-delete--visibility-gate-preferred--largely-supersedes-the-heartbeatprovisional-model-above)
+> largely **supersedes the heartbeat / "provisional attachment" reasoning** below. Instead of deciding at
+> delete time whether to physically remove a scan file (the zombie-vs-live ambiguity), it decouples UI
+> visibility and exposure from physical deletion and lets a lazy, age-based sweep do the removal — which
+> *dissolves* the ambiguity. Read the earlier sections for grounding/history; treat that section as the
+> current intent.
+
 ## The problem
 
 Historically, scan files in Limelight existed **only** as attachments to searches. Later,
@@ -362,6 +370,169 @@ search-cleanup time; the standalone script (6) is the opt-in backlog clear. No b
 - **Died-import latency (point B).** Today a stuck `IMPORTING` search is only cleaned after `> 10 days`, so
   its orphaned scan file lingers until then. Accept that, or add earlier heartbeat-based detection (more
   work). Recommend accept — it matches how long the stuck search itself lingers.
+
+## Revised design direction (2026-07): deferred soft-delete + visibility gate (preferred; largely supersedes the heartbeat/provisional model above)
+
+Rather than decide at search-delete time whether to *physically* remove a scan file — the decision that
+forces the zombie-vs-live ambiguity and the heartbeat-derived "provisional attachment" — **decouple UI
+visibility and data exposure from physical deletion**, and make physical removal a lazy, age-based sweep.
+This *dissolves* the ambiguity instead of resolving it, and removes most of the moving parts in
+"Recommended approach" above.
+
+### New columns on `project_scan_file_tbl` (all mirror patterns already in the schema)
+
+| Column | Mirrors | Meaning |
+|---|---|---|
+| `imported_independent_of_search TINYINT NOT NULL DEFAULT 0` | doc Decision 1 | imported standalone-for-FD; never auto-deleted |
+| `shown_in_scan_files_tab TINYINT NOT NULL DEFAULT 0` | new | row is confirmed & listed in the Scan Files tab; set `1` when the import **completes** (or immediately for a standalone-for-FD import) |
+| `marked_for_deletion TINYINT UNSIGNED NOT NULL DEFAULT 0` + `marked_for_deletion_timestamp TIMESTAMP NULL` + `marked_for_deletion_user_id INT UNSIGNED NULL` | `project_tbl` (L83, L89–90), `project_search_tbl` (L190–191) | soft-delete; hidden everywhere, awaiting GC |
+| `last_referenced_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP` | `peptide_tbl.last_used_in_search_import` (L122) | bumped on first insert and by **every later operation that creates a reference to the row** — see the bump-event list below |
+
+### `last_referenced` replaces the heartbeat (the key simplification)
+
+**Every operation that creates a reference to a `project_scan_file` row bumps
+`last_referenced_date_time = NOW()` on that row *before* it uses the row's id in any child record.** The
+bump is not search-import-only — it fires on **all** of these reference-creating events (each "locks" the
+file against GC for the next N days):
+
+- **search import** (flow a) — before inserting the `..._mapping_tbl` row;
+- **standalone-for-FD scan-file import** (flow b) — at row insert;
+- **user re-uploads the same scan file** (an upload that resolves to an already-present `project_scan_file`
+  / `scan_file_id` rather than a fresh insert) — re-lock it and clear `marked_for_deletion` if set, so a
+  re-upload revives a soft-deleted file instead of racing its GC;
+- **feature-detection run start** — before inserting `feature_detection_root__project_scnfl_mapping_tbl`,
+  so kicking off FD on an existing scan file re-locks it even if no search currently references it;
+- **import of uploaded feature-detection results** — before wiring the uploaded FD data to the scan file;
+- (and any future path that attaches a `project_scan_file` to something).
+
+**Any bump on a row whose `marked_for_deletion = 1` also clears the flag (revives it)** — so *every*
+re-reference path, not just re-upload, rescues a soft-deleted file from a pending GC instead of racing it.
+
+Because the bump happens up front on every such path, every consequence follows for free:
+
+- A **live import** always keeps a fresh `last_referenced` on the row it is using — so an age-based GC
+  (`marked_for_deletion = 1 AND last_referenced_date_time < NOW() - INTERVAL N DAY`) can never remove a
+  row that is actively being imported, **without consulting any heartbeat.** `last_referenced` *is* the
+  liveness signal.
+- A **died import** leaves its row `shown_in_scan_files_tab = 0` (never flipped to complete) with a
+  `last_referenced` frozen at death; it is never shown, never (per the exposure filter) shared, and simply
+  ages out to GC. No zombie-vs-live decision is ever made at a single instant.
+- Constraint: **N must exceed the longest plausible import duration** so an in-progress import is never
+  GC'd. This is the same assumption the existing 10-day stuck-search cleanup already relies on. (A single
+  up-front bump per import is enough as long as N ≫ import time — same as how `peptide_tbl` bumps once per
+  import.)
+
+### Lifecycle
+
+- **Standalone-for-FD import (flow b):** insert row; `independent = 1`, `shown = 1`; bump `last_referenced`.
+- **Search import (flow a):** insert-or-reuse row; bump `last_referenced` **before** wiring children; on
+  **import complete** set `shown = 1` and clear `marked_for_deletion` if it was set. Never touches
+  `independent`.
+- **New search reuses a previously-deleted (marked) file:** the reuse just clears `marked_for_deletion`
+  and bumps `last_referenced` — no re-creation, no timing race. (This is the "no pressure to delete on
+  time in case a new import references the file" win.)
+- **Delete a search:** for each scan file the deleted search referenced that is now unattached and
+  `independent = 0`, set `marked_for_deletion = 1` (+ timestamp/user) and `shown = 0`. **No physical
+  delete in the request transaction** — so the delete-search flow no longer needs the compute-before-the-
+  cascade gymnastics; it may still compute the now-unattached set purely to populate the overlay notice.
+- **GC sweep (async, run_importer):** physically
+  `DELETE FROM project_scan_file_tbl WHERE marked_for_deletion = 1 AND last_referenced_date_time < NOW() - INTERVAL N DAY`
+  (cascades children).
+
+### Exposure & public-install safety — both handled by the flags
+
+- **Exposure (the primary driver):** satisfied by the visibility / marked-deletion filter — **provided
+  every share/public/read path filters to `marked_for_deletion = 0 AND shown_in_scan_files_tab = 1`**, the
+  same way `project_tbl.marked_for_deletion` projects are excluded. This is the **one gating condition to
+  verify**: if some shared read path reads scan-file data without this filter, bytes leak during the
+  mark→GC window and the aggressive-immediate-delete argument returns. **(Traced 2026-07 — condition holds;
+  see the Exposure trace result subsection below.)**
+- **Backlog / existing rows:** the one-time cleanup becomes "**mark** currently-unattached, non-independent
+  rows `marked_for_deletion = 1`," not hard-delete — reversible and safe on public installs; GC removes
+  them later. And because GC only ever removes **already-marked** rows, a broad background sweep is now
+  safe (it cannot touch an operator's unmarked backlog) — removing the earlier design's reason to forbid a
+  background sweep. Backfill assumption: existing rows get `independent = 0` (assume search-imported),
+  so a later search-delete marks them.
+
+### Exposure trace result (2026-07): the filter is applicable everywhere it needs to be
+
+Traced every read path that surfaces a scan file's listing, metadata, spectra, or raw bytes, and its
+access gate. **Result: the gating condition holds.** Details:
+
+**Access reality.** With one exception (below), *every* scan-file read path — the Scan Files tab list, all
+scan-file metadata controllers, the feature-detection views, all four `scan_data__single_project_scan_file_id`
+spectra controllers, and the raw-download controller — gates only on
+`WebSessionAuthAccessLevel.isPublicAccessCodeReadAllowed()` (the "any read" level). **All are reachable by a
+public/shared non-owner viewer.** So the filter must be applied to essentially all of them, not a subset.
+
+**Two classes of path, by whether `project_scan_file_tbl` is on the lookup:**
+
+1. **`project_scan_file_id`-keyed paths — filter IS feasible (all have `project_scan_file_tbl` on the
+   path).** These are the ones that matter for the mark→GC exposure window:
+   - **List surfaces** (where a viewer would *discover* a scan file): the Scan Files tab list via
+     `ProjectScanFile_For_ProjectId_Searcher` (`SELECT ... FROM project_scan_file_tbl ... WHERE project_id = ?`)
+     and the FD-runs list via `FeatureDetection_Root_Mapping_Entries_For_ProjectId_Searcher` (joins
+     `project_scan_file_tbl`). **Apply `marked_for_deletion = 0 AND shown_in_scan_files_tab = 1` here** so a
+     hidden/soft-deleted file never appears. (`Project_Has_AtLeastOne_ProjectScanFile_..._Searcher` needs
+     the same filter if "has any scan files" should mean "has any *visible* scan files".)
+   - **Spectra / metadata** (`ScanData_WithPeaks...`, `ScanData_NO_Peaks...`, `ScanNumbers_For_mS_1...`) and
+     the metadata/FD detail controllers all resolve the request's `projectScanFileId` through
+     `ProjectScanFileDAO.getById` / `ProjectScanFile[_ProjectId]_For_ProjectScanFileId_Searcher`
+     (`SELECT ... FROM project_scan_file_tbl WHERE id = ?`) before fetching anything. **That resolve is the
+     natural gate** — a gated variant that returns not-found for `marked_for_deletion = 1` rejects the
+     request before it reaches storage (defense-in-depth; in practice a marked file's id is never surfaced
+     to a public viewer once its list entry is filtered out).
+   - **Implementation note:** `ProjectScanFileDAO.getById` is shared by many callers — add a **new gated
+     lookup method** rather than mutating `getById`. Optionally, the currently-unused
+     `SpectralStorageAPIKeyFor_ProjectId_ScanFileId__Using__project_scan_file_tbl_Searcher` already routes
+     the spectral-storage-key lookup *through* `project_scan_file_tbl`; switching the spectra controllers to
+     it (with the filter) would put the gate directly on the byte-key fetch. The scan-data controllers
+     currently key the storage fetch off `scan_file_tbl` (`scanFileDAO.getSpectralStorageAPIKeyById`), which
+     has no project scoping — so the enforcement must live at the `project_scan_file` resolve, not the fetch.
+
+2. **Search-keyed paths where `project_scan_file_tbl` is NOT on the lookup — but they are self-closing under
+   this model, so no filter is needed there.** Two paths reach scan-file data via `projectSearchId` +
+   `searchScanFileId` without touching `project_scan_file_tbl`:
+   - the **raw download** `ScanFileContents...Download_Controller.controllerMainMethod` (URL
+     `.../using-search-scan-file-id-psid`) — resolves via `search_scan_file_tbl` → `scan_file_tbl` → file
+     object storage (returns raw bytes; public/shared reachable);
+   - the **per-search scan-file list**
+     `ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_For_ProjectSearchId` — emits
+     `project_scan_file_id`s via `project_scan_filename_tbl` with no `project_scan_file_tbl` join.
+
+   **Why they don't need the flag:** a scan file only becomes `marked_for_deletion` when it is no longer
+   attached to any live search. Both paths require a *live* `projectSearchId`/`searchScanFileId` to resolve
+   *and* to pass `validatePublicAccessCodeReadAllowed(projectSearchIds, …)`. The moment the search is
+   deleted, its `project_search_tbl` row is hard-deleted and the mapping cascades — so there is no
+   `projectSearchId`/`searchScanFileId` left to reach the file through, and the access check itself fails.
+   I.e. these paths are only open **while a search still references the file — exactly when the file is
+   (correctly) not marked and its `last_referenced` is fresh.** The search deletion that triggers marking is
+   the same event that closes these paths. So the design is self-consistent; **no scan-file soft-delete flag
+   is required on the search-scan-file side.**
+
+**Residual decisions surfaced by the trace:**
+- **Owner-only download during the grace window.** `controllerMainMethod_FromProjectScanFileId` (URL
+  `.../using-project-scan-file-id`) is **owner-gated** (`validateProjectOwnerAllowed`) and has
+  `project_scan_file_tbl` on the path (twice). The owner who "deleted" the file can still download it until
+  GC. Decide whether that's acceptable (owner-initiated delete, owner retains grace-window access — likely
+  fine) or whether to gate it too.
+- **No path reads `project_scan_file_importer_tbl`** in the webapp (it's write-only there) — nothing to
+  filter for the importer table.
+
+**Net:** the one gating condition from the design section is **satisfied** — every public/shared path that
+could expose a soft-deleted scan file either has `project_scan_file_tbl` on its lookup (filterable at the
+list surface + the id-resolve) or is structurally closed by the search deletion that does the marking.
+
+### What this removes from the earlier ("Recommended approach") design
+
+- The **heartbeat-derived "provisional attachment"** (Decision 2) and the entire zombie-vs-live reasoning
+  — replaced by `shown_in_scan_files_tab` + `last_referenced`.
+- **In-transaction physical deletion** inside delete-search (point A) — replaced by a flag flip; physical
+  removal is the async age sweep.
+- The **ban on a broad sweep** — a marked-only sweep is safe.
+
+Retained from the earlier design: the `independent` boolean (Decision 1) and the delete-search overlay as
+an **informational** notice (below).
 
 ## The delete-search overlay (front end)
 
