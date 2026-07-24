@@ -676,6 +676,16 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     }
 
     /**
+     * Number of searches that passed the current filters -- the size of the filtered project-search-id set
+     * ( 0 when everything is filtered out ).  The set is null only when there is NO filtering, in which case
+     * the "Filtering on ..." box ( where this count is shown ) is not rendered.
+     */
+    private _filtered_Searches_PassedCount() : number {
+        const set = this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering;
+        return set ? set.size : 0;
+    }
+
+    /**
      *
      * @param params
      * @private
@@ -1651,11 +1661,11 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                             <div
                                 className=" filter-on-tags--currently-filtering "
-                                style={ { marginTop: 20, marginBottom: 15 } }
+                                style={ { marginTop: 20, marginBottom: 15, padding: 10 } }
                             >
                                 { this._searchName_SearchId_Filter_UserInput.length > 0 ? (  //  User Input value
-                                    <div  //  Add marginBottom if also have Search Tags to display
-                                        style={ { marginTop: 7, marginBottom : this._search_Tags_Selections_Object.is_any_selections() ? 5 : null } }
+                                    <div  //  Add marginBottom if also have Search Tags to display ( basic OR advanced tag filter )
+                                        style={ { marginBottom : ( this._search_Tags_Selections_Object.is_any_selections() || ( this.state.use_Advanced_TagFilter_Prototype && this._isAdvanced_TagFilter_Active() ) ) ? 5 : null } }
                                     >
                                         <span
                                             style={ { fontWeight: "bold", fontSize: 18, whiteSpace: "nowrap" } }
@@ -1705,7 +1715,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                     Filtering on tags:
                                                 </span>
                                             </div>
-                                            <div style={ { fontSize: 10, marginBottom: 10 } }>
+                                            <div style={ { fontSize: 10 } }>
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                                     title={
                                                         <span>
@@ -1767,7 +1777,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                     Filtering on tags:
                                                 </span>
                                             </div>
-                                            <div style={ { fontSize: 10, marginBottom: 10 } }>
+                                            <div style={ { fontSize: 10 } }>
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                                     title={
                                                         <span>
@@ -1795,6 +1805,12 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                         </div>
                                     </div>
                                 ) : null }
+
+                                {/*  Count of searches that passed the active filters ( bottom of the box )  */}
+                                <div style={ { marginTop: 10 } }>
+                                    <b>{ this._filtered_Searches_PassedCount() }</b>
+                                    { this._filtered_Searches_PassedCount() === 1 ? " search passed the filters" : " searches passed the filters" }
+                                </div>
                             </div>
                         ) : null }
 
