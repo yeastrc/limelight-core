@@ -192,3 +192,13 @@ user-provided URL, or injecting an HTML string, read
   `.textContent`/`.text()`. (`dangerouslySetInnerHTML` is used nowhere.)
 - **Future security/hardening requests start at §7 of that doc** — deferred items are catalogued there:
   remaining CSP directives (`default-src`/`img-src`/`style-src`/`connect-src`) and ToS/footer escape-first.
+
+## Project page: Advanced (grouped CNF/DNF) search tag filter
+
+The project page Searches section has an **Advanced** grouped tag filter (build boolean expressions
+like `( a OR b ) AND ( c OR d )`, with per-tag NOT and a CNF⇄DNF mode toggle), mutually exclusive with
+the basic "Filter On Tags:" selector. It is **front-end only** (client-side filtering + per-project
+`sessionStorage`; no webservice/DB change). Before changing it, read
+`limelight_features_docs/project_page_advanced_tag_filter.md` — files, the empty-group-blocks-all vs.
+pristine-shows-all rule, basic↔advanced seeding, and the shared "Filtering on…" summary requirement.
+(Note: the code still carries legacy `..._Prototype` naming though the feature is live.)

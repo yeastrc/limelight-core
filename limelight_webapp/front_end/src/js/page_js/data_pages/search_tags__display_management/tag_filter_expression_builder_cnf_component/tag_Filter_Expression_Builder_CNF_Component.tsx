@@ -475,7 +475,8 @@ export class Tag_Filter_Expression_Builder_CNF_Component
         group : Internal__CNF_OrGroup,
         groupIndex : number,
         tagEntry_Map : Map<number, Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry>,
-        categoryLabel_Map : Map<number, string>
+        categoryLabel_Map : Map<number, string>,
+        isLastGroup : boolean
     ) : React.JSX.Element {
 
         //  Shared tooltip for the "add tag(s) to this group" controls ( empty-group button and per-group "Add tag" )
@@ -494,7 +495,12 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                     paddingBottom: 8,
                     paddingLeft: 8,
                     backgroundColor: _limelightColors.site_color_light,
-                    minWidth: 180
+                    minWidth: 180,
+                    //  Extra space to the right of ONLY the last group, so the "Add a group" button ( the next
+                    //  flex item ) sits with breathing room when on the same line.  Because the space lives on
+                    //  the group ( not before the button ), it becomes harmless trailing space at the end of the
+                    //  line when the button wraps -- the button stays flush-left with no indent.
+                    marginRight: isLastGroup ? 18 : undefined
                 } }
             >
                 {/*  Group header  */}
@@ -704,7 +710,9 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                             </div>
                         </div>
 
-                        {/*  The groups, with "AND"/"OR" separators between them  */}
+                        {/*  The groups, with "AND"/"OR" separators between them.  The "Add a group" button is
+                             the last item in this same flex-wrap row, so it sits to the RIGHT of the last group
+                             ( and wraps onto a new line only when there isn't room ).  */}
                         <div style={ { display: "flex", flexWrap: "wrap", alignItems: "stretch", gap: 6 } }>
                             { this.state.andGroups.map( ( group, groupIndex ) => (
                                 <React.Fragment key={ group._uiId }>
@@ -713,25 +721,28 @@ export class Tag_Filter_Expression_Builder_CNF_Component
                                             { this._render_ClickableOperator( { operator: this._betweenGroups_Operator(), variant: 'between' } ) }
                                         </div>
                                     ) : null }
-                                    { this._render_Group( group, groupIndex, tagEntry_Map, categoryLabel_Map ) }
+                                    { this._render_Group( group, groupIndex, tagEntry_Map, categoryLabel_Map, groupIndex === this.state.andGroups.length - 1 ) }
                                 </React.Fragment>
                             ) ) }
-                        </div>
 
-                        {/*  Add control:  add a new ( empty ) group;  the user then adds tags to it  */}
-                        <div style={ { marginTop: 8, display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" } }>
-                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                title={ <span>Add a <b>new group</b> ( joined to the other groups with <b>{ betweenGroups_Operator }</b> ), then add tags to it.</span> }
-                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                            >
-                                <button
-                                    type="button"
-                                    onClick={ () => this._addGroup() }
-                                    style={ { cursor: "pointer", whiteSpace: "nowrap" } }
+                            {/*  Add control:  add a new ( empty ) group;  the user then adds tags to it.  Kept
+                                 inside the groups row ( vertically centered against the group boxes ) so it
+                                 displays to the right of the last group unless it wraps to the next line.
+                                 marginTop/Bottom give it more vertical separation when it wraps onto its own line.  */}
+                            <div style={ { display: "flex", alignItems: "center", marginTop: 10, marginBottom: 10 } }>
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={ <span>Add a <b>new group</b> ( joined to the other groups with <b>{ betweenGroups_Operator }</b> ), then add tags to it.</span> }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    Add a group
-                                </button>
-                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                    <button
+                                        type="button"
+                                        onClick={ () => this._addGroup() }
+                                        style={ { cursor: "pointer", whiteSpace: "nowrap" } }
+                                    >
+                                        Add a group
+                                    </button>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            </div>
                         </div>
 
                         {/*  NOTE:  the "Filtering on tags:" summary is rendered by the PARENT ( in the shared
