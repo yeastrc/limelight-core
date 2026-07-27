@@ -25,18 +25,15 @@ import {
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 import {
-    Search_Tags_SelectSearchTags_Component_SearchTagData_Root,
-    Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry
+    Search_Tags_SelectSearchTags_Component_SearchTagData_Root
 } from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
 import {tagFilter_Expression_TagPicker_Overlay__openOverlay} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_grouped_component/tag_Filter_Expression_TagPicker_Overlay";
 import { searchTags_SearchCount_Display__countForTagId } from "page_js/data_pages/search_tags__display_management/searchTags_SearchCount_Display";
+import { SearchTags_TagLookupMaps } from "page_js/data_pages/search_tags__display_management/searchTags_TagLookupMaps";
 import {
     groupedTagChip_SharedHelpers__NEGATED_COLOR,
-    groupedTagChip_SharedHelpers__build_TagEntry_Map,
-    groupedTagChip_SharedHelpers__build_CategoryLabel_Map,
     groupedTagChip_SharedHelpers__resolve_TagChipColors,
     groupedTagChip_SharedHelpers__chip_BorderColor,
-    groupedTagChip_SharedHelpers__categoryLabel_For_TagEntry,
     groupedTagChip_SharedHelpers__build_TagTooltipContents
 } from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_grouped_component/groupedTagChip_SharedHelpers";
 
@@ -83,6 +80,9 @@ export interface Tag_Filter_Expression_Builder_Grouped_Component__Expression {
 
 interface Internal__Tag_Filter_Expression_Builder_Grouped_Component_Props {
     searchTagData_Root: Search_Tags_SelectSearchTags_Component_SearchTagData_Root
+
+    //  Tag/category lookup maps, built once per data load and passed down ( not rebuilt per render ).
+    searchTags_TagLookupMaps: SearchTags_TagLookupMaps
 
     //  Number of searches ( in the whole project ) that have each tag, keyed by tagId.  Shown in the tag picker.
     searchesPerTagId_Map?: ReadonlyMap<number, number>
@@ -555,15 +555,13 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
      */
     private _render_LiteralChip(
         group : Internal__Grouped_Group,
-        literal : Internal__Grouped_Literal,
-        tagEntry_Map : Map<number, Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry>,
-        categoryLabel_Map : Map<number, string>
+        literal : Internal__Grouped_Literal
     ) : React.JSX.Element {
 
-        const tagEntry = tagEntry_Map.get( literal.tagId );
+        const tagEntry = this.props.searchTags_TagLookupMaps.get_TagEntry_ForTagId( literal.tagId );
 
         const { backgroundColor, fontColor, borderColor, tagString } = groupedTagChip_SharedHelpers__resolve_TagChipColors( tagEntry, literal.tagId );
-        const categoryLabel = groupedTagChip_SharedHelpers__categoryLabel_For_TagEntry( tagEntry, categoryLabel_Map );
+        const categoryLabel = this.props.searchTags_TagLookupMaps.get_CategoryLabel_ForTagEntry( tagEntry );
 
         const searchCount = searchTags_SearchCount_Display__countForTagId( this.props.searchesPerTagId_Map, literal.tagId );
         const tooltipContents = groupedTagChip_SharedHelpers__build_TagTooltipContents( { tagString, categoryLabel, negated: literal.negated, searchCount } );
@@ -667,8 +665,6 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
     private _render_Group(
         group : Internal__Grouped_Group,
         groupIndex : number,
-        tagEntry_Map : Map<number, Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry>,
-        categoryLabel_Map : Map<number, string>,
         isLastGroup : boolean
     ) : React.JSX.Element {
 
@@ -748,7 +744,7 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
                                     onChoose: ( chosen ) => this._set_GroupOperator( group._uiId, chosen ),
                                     pillTooltipContents: this._inlineOperator_TooltipContents( group.groupOperator )
                                 } ) : null }
-                                { this._render_LiteralChip( group, literal, tagEntry_Map, categoryLabel_Map ) }
+                                { this._render_LiteralChip( group, literal ) }
                             </React.Fragment>
                         ) ) }
                     </div>
@@ -855,9 +851,6 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
      */
     render() {
 
-        const tagEntry_Map = groupedTagChip_SharedHelpers__build_TagEntry_Map( this.props.searchTagData_Root );
-        const categoryLabel_Map = groupedTagChip_SharedHelpers__build_CategoryLabel_Map( this.props.searchTagData_Root );
-
         const betweenGroups_Operator = this._betweenGroups_Operator;
 
         //  Pristine == no groups at all ( the untouched initial view ).  Show the empty-state callout with one
@@ -926,7 +919,7 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
                                             } ) }
                                         </div>
                                     ) : null }
-                                    { this._render_Group( group, groupIndex, tagEntry_Map, categoryLabel_Map, groupIndex === this._groups.length - 1 ) }
+                                    { this._render_Group( group, groupIndex, groupIndex === this._groups.length - 1 ) }
                                 </React.Fragment>
                             ) ) }
 

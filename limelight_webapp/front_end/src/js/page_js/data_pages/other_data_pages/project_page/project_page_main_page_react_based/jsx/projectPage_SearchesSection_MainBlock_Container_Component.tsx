@@ -45,6 +45,7 @@ import {
     Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group
 } from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_grouped_component/tag_Filter_Expression_Builder_Grouped_Component";
 import {Tag_Filter_Expression_Preview_Component} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_grouped_component/tag_Filter_Expression_Preview_Component";
+import {SearchTags_TagLookupMaps} from "page_js/data_pages/search_tags__display_management/searchTags_TagLookupMaps";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
@@ -170,6 +171,11 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     //  Number of searches in the WHOLE project that have each tag, keyed by tagId ( shown as "( N )" in the
     //  tag-picker overlay ).  Computed once when the search/tag data is (re)built.
     private _searchesPerTagId_Map : Map<number, number> = new Map()
+
+    //  tagId -> tag entry and category id -> label lookups for the advanced builder/preview.  Built once when
+    //  the search/tag data is (re)built ( see _process_New__... ) and passed down as an instance, so the maps
+    //  are not rebuilt per render.
+    private _searchTags_TagLookupMaps : SearchTags_TagLookupMaps = new SearchTags_TagLookupMaps( undefined )
 
     private _searchName_SearchId_Filter_UserInput = ""
 
@@ -391,6 +397,10 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
         const search_Tags_SelectSearchTags_Component_SearchTagData_Root: Search_Tags_SelectSearchTags_Component_SearchTagData_Root = {
             searchTagCategory_Array: searchTagCategory_Array_Filter_AllEntries, searchTag_Array: searchTagEntries_Filter_AllEntries
         }
+
+        //  Build the tag/category lookup maps ONCE here ( same place as the per-tag count map ), passed down as
+        //  an instance so the advanced builder/preview don't rebuild them on every render.
+        this._searchTags_TagLookupMaps = new SearchTags_TagLookupMaps( search_Tags_SelectSearchTags_Component_SearchTagData_Root )
 
         this.setState({
             search_Tags_SelectSearchTags_Component_SearchTagData_Root,
@@ -1651,6 +1661,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                 <Tag_Filter_Expression_Builder_Grouped_Component
                                     key={ "advanced-tag-filter-builder-" + this._advanced_Builder_RemountCounter }
                                     searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
+                                    searchTags_TagLookupMaps={ this._searchTags_TagLookupMaps }
                                     searchesPerTagId_Map={ this._searchesPerTagId_Map }
                                     initial_Groups={ this._advanced_TagFilter_InitialSeed }
                                     initial_BetweenGroups_Operator={ this._advanced_TagFilter_Initial_BetweenOperator }
@@ -1822,7 +1833,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                             <Tag_Filter_Expression_Preview_Component
                                                 groups={ this._advanced_TagFilter_InitialSeed }
                                                 betweenGroups_Operator={ this._advanced_TagFilter_Initial_BetweenOperator }
-                                                searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
+                                                searchTags_TagLookupMaps={ this._searchTags_TagLookupMaps }
                                                 searchesPerTagId_Map={ this._searchesPerTagId_Map }
                                             />
                                         </div>
