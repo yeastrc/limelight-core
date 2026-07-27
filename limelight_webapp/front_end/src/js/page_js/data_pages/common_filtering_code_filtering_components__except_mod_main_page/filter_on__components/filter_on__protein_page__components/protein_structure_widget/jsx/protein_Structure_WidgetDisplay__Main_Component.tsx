@@ -145,7 +145,7 @@ import {
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import { ModificationMass_UserSelections_StateObject } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
 
-import { limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer, Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import { limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer, limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition, Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 import { limelight__variable_is_type_number_Check } from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import { limelight__Sort_ArrayOfNumbers_SortArrayInPlace } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 import {
@@ -286,6 +286,10 @@ const _MODIFICATION_BALL_MOLSTAR_REPRESENTATION_TAG_STRING = "modification_ball_
 const _MODIFICATION_BALL__DEFAULT_COLOR__ALL_MODIFICATIONS = "#00ACFF"
 
 const _MODIFICATION_BALL__DEFAULT_COLOR__MODIFICATION_SPECIFIC_MASS = "#FF00FF"
+
+//  Opacity applied to a custom mod mass entry's mass, "choose color", and color ball when its
+//  checkbox is NOT checked (the mass is not actively selected).
+const _NOT_SELECTED_OPACITY = 0.4
 
 const _SEQUENCE_SINGLE_POSITION__COLOR_FOR_LIMELIGHT_PROTEIN_SEQUENCE_LETTER__DEFAULT_COLOR = "#FF00FF"
 
@@ -5098,12 +5102,16 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     </label>
                 </div>
 
+                </div>{/*  END Structure Options indented content  */ }
+
                 {/*  Limelight Data block: what Limelight data is painted onto the structure (coverage
                      shading, trypsin sites, modifications, residue coloring) — as opposed to the
-                     viewer-level settings (size / display format) above  */ }
+                     viewer-level settings (size / display format) above.
+                     Top-level section (peer of "Structure Options"), so its heading and content
+                     align left with "Structure Options" rather than being nested inside it.  */ }
                         
                         
-                <div style={ { fontSize: 16, fontWeight: "bold", marginTop: 25, marginBottom: 15 } }>
+                <div style={ { fontSize: 18, fontWeight: "bold", marginTop: 25, marginBottom: 15 } }>
                     Limelight Data on Structure
                 </div>
 
@@ -5130,9 +5138,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
                 </div>{/*  END Limelight Data block  */ }
 
-                </div>{/*  END Structure Options indented content  */ }
 
-                        
                 {/*  Downloads are actions, not viewer options — a top-level section (peer of "Structure Options")  */ }
                 <div style={ { fontSize: 18, fontWeight: "bold", marginTop: 25, marginBottom: 15 } }>
                     Downloads
@@ -5316,6 +5322,9 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     continue  // EARLY CONTINUE
                 }
 
+                //  Dim the chain name (NOT the checkbox or the edit/delete icons) when this chain is not selected.
+                const style_DimWhenNotSelected: React.CSSProperties = this.props.protein_Structure_Widget_StateObject.selected_LimelightAssigned_ChainId_Set__CONTAINS( chainData.limelightAssigned_ChainId ) ? undefined : { opacity: _NOT_SELECTED_OPACITY }
+
                 const perChain_Element = (
                     <div key={ chainData.limelightAssigned_ChainId }>
                         <div>
@@ -5362,7 +5371,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                             }
                                         />
                                         &nbsp;
-                                        <span>
+                                        <span style={ style_DimWhenNotSelected }>
                                             Chain: { get_DisplayNameString_From_CommonData_LoadedFromServer_StructureFile_Data_Within_ONE_Project__StructureFile_Contents__ChainsData_Entry( chainData ) }
                                         </span>
                                     </span>
@@ -5782,15 +5791,31 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
             }
         }
 
+        //  Variable + open modification masses currently being filtered on, ascending, for the
+        //  "Currently filtering on:" line shown under "Hide unmatched modifications:".
+        const filteringOn_ModMass_Entries: Array<{ modMass: number, variableOrOpen: string }> = []
+        {
+            const modificationMass_UserSelections = this.props.modificationMass_UserSelections_StateObject
+            for ( const modMass of modificationMass_UserSelections.get_VariableModificationSelections().get_ModificationsSelected__OnlyModMasses_AsSet() ) {
+                filteringOn_ModMass_Entries.push( { modMass, variableOrOpen: "variable" } )
+            }
+            for ( const modMass of modificationMass_UserSelections.get_OpenModificationSelections().get_ModificationsSelected__OnlyModMasses_AsSet() ) {
+                filteringOn_ModMass_Entries.push( { modMass, variableOrOpen: "open" } )
+            }
+            filteringOn_ModMass_Entries.sort( ( a, b ) => a.modMass - b.modMass )
+        }
+
         return (
             <div style={ { marginTop: 20, marginBottom: 20 } }>
 
-                <div style={ { fontSize: 14, fontWeight: "bold", marginBottom: 10 } }>
+                <div style={ { fontWeight: "bold", marginBottom: 10 } }>
                     Modifications
                 </div>
 
                 <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT } }>
 
+                { this.props.modificationMass_UserSelections_StateObject.is_Any_Modification_Selected__Excluding_StaticModifications() ? (
+                <>
                 <div>
                     <label>
                         <span>Hide unmatched modifications: </span>
@@ -5816,6 +5841,27 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                         />
                     </label>
                 </div>
+
+                {/*  List the variable/open modifications currently being filtered on (ascending); each shows
+                     "variable <mass>" / "open <mass>" on hover.  */ }
+                { filteringOn_ModMass_Entries.length > 0 ? (
+                    <div style={ { marginTop: 3, marginLeft: _RIGHT_PANE__STANDARD_INDENT } }>
+                        <span>Currently filtering on: </span>
+                        { filteringOn_ModMass_Entries.map( ( filteringOn_Entry, index ) => (
+                            <React.Fragment key={ filteringOn_Entry.variableOrOpen + "_" + filteringOn_Entry.modMass }>
+                                { index > 0 ? <span>, </span> : null }
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={ filteringOn_Entry.variableOrOpen + " " + filteringOn_Entry.modMass }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <span>{ filteringOn_Entry.modMass }</span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            </React.Fragment>
+                        ) ) }
+                    </div>
+                ) : null }
+                </>
+                ) : null }
 
                 { anySearch_Has_OpenModifications ? (
                     <div style={ { marginTop: 5 }}>
@@ -5850,7 +5896,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                         <span>Hide variable modifications: </span>
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
-                                "Hide variable modifications in the 'Modifications:' line in the structure."
+                                "Hide the modification balls for variable modifications on the structure."
                             }
                         />
                         <input
@@ -5877,7 +5923,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                             <span>Hide open modifications: </span>
                             <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                                 title={
-                                    "Hide open modifications in the 'Modifications:' line in the structure."
+                                    "Hide the modification balls for open modifications on the structure."
                                 }
                             />
                             <input
@@ -5899,9 +5945,30 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     </div>
                 ) : null }
 
-                { this._render_ModificationBalls_UserSelections() }
+                {/*  Modification ball size (applies to ALL modification balls). Last item in the
+                     Modifications group — sits above the "Mod Mass Colors" section below.  */ }
+                <div style={ { marginTop: 5 } }>
+                    <INTERNAL__Modification_Symbols_Size_Percentage_Value_UserSelect__Component
 
+                        protein_Structure_Widget_StateObject={ this.props.protein_Structure_Widget_StateObject }
+                        stateObject_Change_CallbackFunction={ () => {
+                            try {
+                                this._add_Balls_For_Modifications__FirstDeleteExistingBalls()
+
+                            } catch ( e ) {
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                throw e
+                            }
+                        } }
+                    />
                 </div>
+
+                </div>{/*  END Modifications indented content  */ }
+
+                {/*  "Mod Mass Colors" is a section peer of "Modifications" — its heading aligns left
+                     with the "Modifications" heading; its own content is indented inside
+                     _render_ModificationBalls_UserSelections().  */ }
+                { this._render_ModificationBalls_UserSelections() }
 
             </div>
         )
@@ -5922,7 +5989,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
         return (
 
-            <div style={ { marginTop: 20, marginBottom: 20 } }>
+            <div style={ { marginTop: 10, marginBottom: 20 } }>
 
                 {/*  TEST ONLY code
 
@@ -5954,7 +6021,15 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 </div>
                 */}
 
-                {/*  Custom per-mass ball colors FIRST, then the catch-all "OTHER" checkbox below  */ }
+                {/*  "Mod Mass Colors" heading — peer of "Modifications" (indent 0). Its content
+                     (custom per-mass colors + the catch-all "OTHER" checkbox) is indented below.  */ }
+                <div style={ { fontWeight: "bold", marginBottom: 5 } }>
+                    Custom modification mass colors
+                </div>
+
+                <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT } }>
+
+                {/*  Custom per-mass ball colors, then the catch-all "OTHER" checkbox below  */ }
                 { this._render_ModificationBalls_UserSelections_SpecificFor_Variable_Open_Mods_And_ModMass() }
 
                 <div
@@ -5963,7 +6038,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                     <div>
                         <label>
                             <span>
-                                { hasCustom_ModColor_Entries ? "Show OTHER Modification Balls" : "Show Modification Balls" }
+                                { hasCustom_ModColor_Entries ? "Hide non-custom modifications" : "Hide modifications" }
                             </span>
                             {/*<span> (NOT in URL State)</span>*/ }
                             <span>:</span>
@@ -5974,10 +6049,10 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                         title={
                                             <div>
                                                 <div>
-                                                    This shows or hides the modification balls for all modifications that do NOT have a custom color set above.
+                                                    Hides the modification balls for non-custom modifications: modifications with no custom color set above, and custom mod mass entries above whose checkbox is unchecked.
                                                 </div>
                                                 <div style={ { marginTop: 10 } }>
-                                                    Modifications listed under "Custom variable mod mass colors" or "Custom open mod mass colors" above are shown or hidden by their own checkbox there, regardless of this checkbox.
+                                                    A custom mod mass entry above whose checkbox is checked is shown in its own custom color and is not affected by this checkbox.
                                                 </div>
                                             </div>
                                         }
@@ -5987,10 +6062,10 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                             <span> </span>
                             <input
                                 type="checkbox"
-                                checked={ this.props.protein_Structure_Widget_StateObject.get_show_Modification_Symbols() }
+                                checked={ ! this.props.protein_Structure_Widget_StateObject.get_show_Modification_Symbols() } //  Checkbox is INVERSE of Stored State
                                 onChange={ async event => {
                                     try {
-                                        this.props.protein_Structure_Widget_StateObject.set_show_Modification_Symbols( event.target.checked )
+                                        this.props.protein_Structure_Widget_StateObject.set_show_Modification_Symbols( ! event.target.checked ) //  Checkbox is INVERSE of Stored State
 
                                         this.forceUpdate()
 
@@ -6014,10 +6089,18 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                             />
                         </label>
                     </div>
-                    <div>
+                    <div style={ { marginTop: 3 } }>
                         <span>
-                            { hasCustom_ModColor_Entries ? "OTHER Modification Balls color" : "Modification Balls color" }
+                            { hasCustom_ModColor_Entries ? "Non-custom modification color" : "Modification color" }
                         </span>
+
+                        { hasCustom_ModColor_Entries ? (
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    "The color used for non-custom modification balls: modifications with no custom color set above, and custom mod mass entries above whose checkbox is unchecked."
+                                }
+                            />
+                        ) : null }
 
                         <>
                             <span> </span>
@@ -6162,25 +6245,122 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
                 </div>
 
-                {/*  Ball size applies to ALL balls (not a per-mass color) — separate it with space above, no extra indent  */ }
-                <div style={ { marginTop: 20 } }>
-                    <INTERNAL__Modification_Symbols_Size_Percentage_Value_UserSelect__Component
-
-                        protein_Structure_Widget_StateObject={ this.props.protein_Structure_Widget_StateObject }
-                        stateObject_Change_CallbackFunction={ () => {
-                            try {
-                                this._add_Balls_For_Modifications__FirstDeleteExistingBalls()
-
-                            } catch ( e ) {
-                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
-                                throw e
-                            }
-                        } }
-                    />
-                </div>
+                </div>{/*  END Mod Mass Colors indented content  */ }
 
             </div>
         )
+    }
+
+    /**
+     * Compute the variable / open mod masses the user can still ADD as a custom mod mass color:
+     * masses that pass all filters AND map to a currently-displayed chain, MINUS any already added
+     * as a custom entry.
+     *
+     * Called at render time (to decide whether to show the "Add custom mod mass color" link) and on
+     * click (to populate the Select-Modification overlay). Recomputed every time so deleting a custom
+     * entry (or a filter change) makes newly-available masses reappear.
+     *
+     * `dataReady` is false when the structure's derived data isn't loaded yet — callers treat that as
+     * "don't hide the link", so a transient not-ready render never hides an otherwise-available link.
+     */
+    private _compute_ModMasses_AvailableToAdd__ForSelectModificationOverlay() {
+
+        const variable_Mods_Pass_ALL_Filters_Set: Set<number> = new Set()
+        const open_Mods_Pass_ALL_Filters_Set: Set<number> = new Set()
+
+        //  True if any variable/open mod passes all filters and maps to the structure, even if it
+        //  has already been added as a custom entry.  Lets the overlay show "already added" instead
+        //  of "none pass filters" when the two select-from sets above come back empty.
+        let anyModMass_PassesAllFilters_RegardlessOfAlreadyAdded = false
+
+        if ( ( ! this._mainData_Computed_For_ComponentsInThisFile_Root_Result )
+            || ( ! this._structureFile_Contents_Entry_Value__CurrentlyDisplayed )
+            || ( ! this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array ) ) {
+
+            //  Derived structure data not loaded yet — report NOT ready so the link stays visible.
+            return { variable_Mods_Pass_ALL_Filters_Set, open_Mods_Pass_ALL_Filters_Set, anyModMass_PassesAllFilters_RegardlessOfAlreadyAdded, dataReady: false }
+        }
+
+        {
+            const modificationMass_AND_Color_Selections__Root = this.props.protein_Structure_Widget_StateObject.get_modificationMass_AND_Color_Selections__Root()
+
+            for ( const modifications_Map_Key_ProteinPosition_MapEntry of this._mainData_Computed_For_ComponentsInThisFile_Root_Result.modifications_Map_Key_ProteinPosition.entries() ) {
+
+                const limelight_ProteinPosition = modifications_Map_Key_ProteinPosition_MapEntry[ 0 ]
+                const modifications_Values = modifications_Map_Key_ProteinPosition_MapEntry[ 1 ]
+
+                {
+                    let found_ProteinPosition_IN_StructureSequence_Mapping = false
+
+
+                    for ( const chainData of this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array ) {
+
+                        if ( ! this.props.protein_Structure_Widget_StateObject.selected_LimelightAssigned_ChainId_Set__CONTAINS( chainData.limelightAssigned_ChainId ) ) {
+                            // NOT currently displaying so skip
+                            continue  // EARLY CONTINUE
+                        }
+
+                        const sequenceAlignment_DataForChain = this._structureFile_Contents_Entry_Value__CurrentlyDisplayed.structureFile__ProteinAlignment__CurrentProtein__Map__LimelightAssigned_ChainId.get( chainData.limelightAssigned_ChainId )
+                        if ( ! sequenceAlignment_DataForChain ) {
+                            //  NO Alignment data for this chain so skip
+                            continue  // EARLY CONTINUE
+                        }
+
+                        const sequenceAlignment_DataFor_ProteinSequenceVersionId = sequenceAlignment_DataForChain // sequenceAlignment_DataForChain.get_DataFor_ProteinSequenceVersionId( this.props.proteinSequenceVersionId )
+                        if ( ! sequenceAlignment_DataFor_ProteinSequenceVersionId ) {
+                            //  NO Alignment data for this proteinSequenceVersionId so skip
+                            continue  // EARLY CONTINUE
+                        }
+
+                        if ( sequenceAlignment_DataFor_ProteinSequenceVersionId.structureFile__ProteinAlignment__CurrentProtein.get__structureFile_AlignedSequence_Position__FOR__limelightProteinSequence_Position( limelight_ProteinPosition ) ) {
+
+                            found_ProteinPosition_IN_StructureSequence_Mapping = true
+
+                            break
+                        }
+
+                    }
+
+                    if ( ! found_ProteinPosition_IN_StructureSequence_Mapping ) {
+
+                        //  Limelight Protein Position NOT MAPPED to Structure Sequence Position so SKIP.  Assume would check all chains.
+
+                        continue  //  EARLY CONTINUE
+                    }
+                }
+
+                if ( modifications_Values.modifications_Passes_ALL_Filters.variableModification_Masses_RoundedPer_VariableModMassRoundingRules ) {
+
+                    const variable_Modifications_Selections = modificationMass_AND_Color_Selections__Root.get_variable_Modifications_Selections()
+
+                    for ( const variable_Mod of modifications_Values.modifications_Passes_ALL_Filters.variableModification_Masses_RoundedPer_VariableModMassRoundingRules ) {
+
+                        anyModMass_PassesAllFilters_RegardlessOfAlreadyAdded = true
+
+                        if ( ! variable_Modifications_Selections.get_Entry_For_ModificationMass( variable_Mod ) ) {
+                            //  NOT already selected so add it
+                            variable_Mods_Pass_ALL_Filters_Set.add( variable_Mod )
+                        }
+                    }
+                }
+                if ( modifications_Values.modifications_Passes_ALL_Filters.openModifications_Masses_RoundToWholeNumber ) {
+
+                    const open_Modifications_Selections = modificationMass_AND_Color_Selections__Root.get_open_Modifications_Selections()
+
+                    for ( const open_Mod of modifications_Values.modifications_Passes_ALL_Filters.openModifications_Masses_RoundToWholeNumber ) {
+
+                        anyModMass_PassesAllFilters_RegardlessOfAlreadyAdded = true
+
+                        if ( ! open_Modifications_Selections.get_Entry_For_ModificationMass( open_Mod ) ) {
+                            //  NOT already selected so add it
+                            open_Mods_Pass_ALL_Filters_Set.add( open_Mod )
+                        }
+                    }
+                }
+            }
+        }
+
+        return { variable_Mods_Pass_ALL_Filters_Set, open_Mods_Pass_ALL_Filters_Set, anyModMass_PassesAllFilters_RegardlessOfAlreadyAdded, dataReady: true }
     }
 
     /**
@@ -6213,12 +6393,39 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
             for ( const variable_Modifications_Selection_Entry of variable_Modifications_Selections ) {
 
+                const tooltipContents_LabelAroundCheckbox_GreenQuestionMark = (
+                    <div>
+                        <div>
+                            When checked, this variable mod mass { variable_Modifications_Selection_Entry.modificationMass } is shown as a modification ball in its custom color.
+                        </div>
+                        <div style={ { marginTop: 8 } }>
+                            When unchecked, { variable_Modifications_Selection_Entry.modificationMass } becomes a non-custom modification —
+                        </div>
+                        <div>
+                            shown in the 'Non-custom modification color',
+                        </div>
+                        <div>
+                            or hidden when 'Hide non-custom modifications' is checked.
+                        </div>
+                    </div>
+                )
+
+                //  Dim the mass, "choose color", and color ball (NOT the checkbox, green "?", or trailing
+                //  icons) when this entry's checkbox is unchecked.
+                const style_DimWhenNotSelected: React.CSSProperties = variable_Modifications_Selection_Entry.selectionActivelySelected ? undefined : { opacity: _NOT_SELECTED_OPACITY }
+
                 const element = (
                     <React.Fragment
                         key={ variable_Modifications_Selection_Entry.modificationMass }
                     >
                         <div style={ _SingleModificationEntry_OutermostDiv_Style }>
 
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    tooltipContents_LabelAroundCheckbox_GreenQuestionMark
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition() }
+                            >
                             <label>
                                 <input
                                     type="checkbox"
@@ -6255,12 +6462,19 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                 />
 
                                 <span> </span>
-                                <span>
+                                <span style={ style_DimWhenNotSelected }>
                                     { variable_Modifications_Selection_Entry.modificationMass }
                                 </span>
                             </label>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
-                            <span> choose color </span>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    tooltipContents_LabelAroundCheckbox_GreenQuestionMark
+                                }
+                            />
+
+                            <span style={ style_DimWhenNotSelected }> choose color </span>
 
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                 title={
@@ -6277,6 +6491,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                             >
                                 <span
                                     className=" clickable "
+                                    style={ style_DimWhenNotSelected }
                                 >
                                     <svg
                                         width={ _MODIFICATION_BALL__IN_HTML__RADIUS * 2 }
@@ -6455,7 +6670,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
             }
 
             variableMods_Selections_Element = (
-                <div>
+                <div style={ { marginBottom: 12 } }>
                     <div>
                         Custom variable mod mass colors:
                     </div>
@@ -6489,12 +6704,39 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
 
             for ( const open_Modifications_Selection_Entry of open_Modifications_Selections ) {
 
+                const tooltipContents_LabelAroundCheckbox_GreenQuestionMark = (
+                    <div>
+                        <div>
+                            When checked, this open mod mass { open_Modifications_Selection_Entry.modificationMass } is shown as a modification ball in its custom color.
+                        </div>
+                        <div style={ { marginTop: 8 } }>
+                            When unchecked, { open_Modifications_Selection_Entry.modificationMass } becomes a non-custom modification —
+                        </div>
+                        <div>
+                            shown in the 'Non-custom modification color',
+                        </div>
+                        <div>
+                            or hidden when 'Hide non-custom modifications' is checked.
+                        </div>
+                    </div>
+                )
+
+                //  Dim the mass, "choose color", and color ball (NOT the checkbox, green "?", or trailing
+                //  icons) when this entry's checkbox is unchecked.
+                const style_DimWhenNotSelected: React.CSSProperties = open_Modifications_Selection_Entry.selectionActivelySelected ? undefined : { opacity: _NOT_SELECTED_OPACITY }
+
                 const element = (
                     <React.Fragment
                         key={ open_Modifications_Selection_Entry.modificationMass }
                     >
                         <div style={ _SingleModificationEntry_OutermostDiv_Style }>
 
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    tooltipContents_LabelAroundCheckbox_GreenQuestionMark
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition() }
+                            >
                             <label>
                                 <input
                                     type="checkbox"
@@ -6534,12 +6776,19 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                                 />
 
                                 <span> </span>
-                                <span>
+                                <span style={ style_DimWhenNotSelected }>
                                     { open_Modifications_Selection_Entry.modificationMass }
                                 </span>
                             </label>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
-                            <span> choose color </span>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    tooltipContents_LabelAroundCheckbox_GreenQuestionMark
+                                }
+                            />
+
+                            <span style={ style_DimWhenNotSelected }> choose color </span>
 
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                 title={
@@ -6556,6 +6805,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                             >
                                 <span
                                     className=" clickable "
+                                    style={ style_DimWhenNotSelected }
                                 >
                                     <svg
                                         width={ _MODIFICATION_BALL__IN_HTML__RADIUS * 2 }
@@ -6734,7 +6984,7 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
             }
 
             openMods_Selections_Element = (
-                <div>
+                <div style={ { marginBottom: 12 } }>
                     <div>
                         Custom open mod mass colors:
                     </div>
@@ -6745,10 +6995,21 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
             )
         }
 
+        //  Recomputed every render: which masses can still be ADDED as a custom mod mass color.
+        //  Hide the "Add custom mod mass color" link when nothing is available (all passing masses already
+        //  added, or none pass).  Deleting a custom entry re-renders and makes the link reappear.
+        //  When the derived data is not yet loaded ( ! dataReady ) keep the link visible.
+        const modMasses_AvailableToAdd = this._compute_ModMasses_AvailableToAdd__ForSelectModificationOverlay()
+        const show_AddCustomModMassColor_Link = (
+            ( ! modMasses_AvailableToAdd.dataReady )
+            || ( modMasses_AvailableToAdd.variable_Mods_Pass_ALL_Filters_Set.size > 0 )
+            || ( modMasses_AvailableToAdd.open_Mods_Pass_ALL_Filters_Set.size > 0 )
+        )
+
 
         return (
 
-            <div style={ { marginLeft: 0, marginTop: 10 } }>
+            <div style={ { marginTop: 10 } }>
 
                 {/*
                 <div>
@@ -6762,101 +7023,25 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                 </div>
                 */}
 
-                <div style={ { fontWeight: "bold", marginBottom: 5 } }>
-                    Mod Mass Colors
-                </div>
-
                 { variableMods_Selections_Element }
 
                 { openMods_Selections_Element }
 
+                { show_AddCustomModMassColor_Link ? (
                 <div style={ { marginTop: 10, marginBottom: 10 } }>
                     <span
                         className=" fake-link "
                         onClick={ event => {
 
-                            const variable_Mods_Pass_ALL_Filters_Set: Set<number> = new Set()
-                            const open_Mods_Pass_ALL_Filters_Set: Set<number> = new Set()
-
-                            {
-                                const modificationMass_AND_Color_Selections__Root = this.props.protein_Structure_Widget_StateObject.get_modificationMass_AND_Color_Selections__Root()
-
-                                for ( const modifications_Map_Key_ProteinPosition_MapEntry of this._mainData_Computed_For_ComponentsInThisFile_Root_Result.modifications_Map_Key_ProteinPosition.entries() ) {
-
-                                    const limelight_ProteinPosition = modifications_Map_Key_ProteinPosition_MapEntry[ 0 ]
-                                    const modifications_Values = modifications_Map_Key_ProteinPosition_MapEntry[ 1 ]
-
-                                    {
-                                        let found_ProteinPosition_IN_StructureSequence_Mapping = false
-
-
-                                        for ( const chainData of this._chainData_Parsed_From_OnStructure_In_StructureFile_Order_Array ) {
-
-                                            if ( ! this.props.protein_Structure_Widget_StateObject.selected_LimelightAssigned_ChainId_Set__CONTAINS( chainData.limelightAssigned_ChainId ) ) {
-                                                // NOT currently displaying so skip
-                                                continue  // EARLY CONTINUE
-                                            }
-
-                                            const sequenceAlignment_DataForChain = this._structureFile_Contents_Entry_Value__CurrentlyDisplayed.structureFile__ProteinAlignment__CurrentProtein__Map__LimelightAssigned_ChainId.get( chainData.limelightAssigned_ChainId )
-                                            if ( ! sequenceAlignment_DataForChain ) {
-                                                //  NO Alignment data for this chain so skip
-                                                continue  // EARLY CONTINUE
-                                            }
-
-                                            const sequenceAlignment_DataFor_ProteinSequenceVersionId = sequenceAlignment_DataForChain // sequenceAlignment_DataForChain.get_DataFor_ProteinSequenceVersionId( this.props.proteinSequenceVersionId )
-                                            if ( ! sequenceAlignment_DataFor_ProteinSequenceVersionId ) {
-                                                //  NO Alignment data for this proteinSequenceVersionId so skip
-                                                continue  // EARLY CONTINUE
-                                            }
-
-                                            if ( sequenceAlignment_DataFor_ProteinSequenceVersionId.structureFile__ProteinAlignment__CurrentProtein.get__structureFile_AlignedSequence_Position__FOR__limelightProteinSequence_Position( limelight_ProteinPosition ) ) {
-
-                                                found_ProteinPosition_IN_StructureSequence_Mapping = true
-
-                                                break
-                                            }
-
-                                        }
-
-                                        if ( ! found_ProteinPosition_IN_StructureSequence_Mapping ) {
-
-                                            //  Limelight Protein Position NOT MAPPED to Structure Sequence Position so SKIP.  Assume would check all chains.
-
-                                            continue  //  EARLY CONTINUE
-                                        }
-                                    }
-
-                                    if ( modifications_Values.modifications_Passes_ALL_Filters.variableModification_Masses_RoundedPer_VariableModMassRoundingRules ) {
-
-                                        const variable_Modifications_Selections = modificationMass_AND_Color_Selections__Root.get_variable_Modifications_Selections()
-
-                                        for ( const variable_Mod of modifications_Values.modifications_Passes_ALL_Filters.variableModification_Masses_RoundedPer_VariableModMassRoundingRules ) {
-
-                                            if ( ! variable_Modifications_Selections.get_Entry_For_ModificationMass( variable_Mod ) ) {
-                                                //  NOT already selected so add it
-                                                variable_Mods_Pass_ALL_Filters_Set.add( variable_Mod )
-                                            }
-                                        }
-                                    }
-                                    if ( modifications_Values.modifications_Passes_ALL_Filters.openModifications_Masses_RoundToWholeNumber ) {
-
-                                        const open_Modifications_Selections = modificationMass_AND_Color_Selections__Root.get_open_Modifications_Selections()
-
-                                        for ( const open_Mod of modifications_Values.modifications_Passes_ALL_Filters.openModifications_Masses_RoundToWholeNumber ) {
-
-                                            if ( ! open_Modifications_Selections.get_Entry_For_ModificationMass( open_Mod ) ) {
-                                                //  NOT already selected so add it
-                                                open_Mods_Pass_ALL_Filters_Set.add( open_Mod )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            //  Reuse the sets computed for this render (used above to decide whether to show
+                            //  this link).  Recomputed every render, so always current.
+                            const { variable_Mods_Pass_ALL_Filters_Set, open_Mods_Pass_ALL_Filters_Set, anyModMass_PassesAllFilters_RegardlessOfAlreadyAdded } = modMasses_AvailableToAdd
 
                             open_protein_Structure_WidgetDisplay_Select_ModificationMass_AndColor_Overlay_Component( {
                                 commonParams: {
                                     variable_Mods_Pass_ALL_Filters_Set,
                                     open_Mods_Pass_ALL_Filters_Set,
+                                    anyModMass_PassesAllFilters_RegardlessOfAlreadyAdded,
                                     alignmentComplete_Callback: ( params: Protein_Structure_WidgetDisplay_Select_ModificationMass_AndColor_Overlay_Component_AlignmentComplete_Callback_Params ) => {
 
                                         if ( params.variable_Mod_Mass_Selected !== undefined ) {
@@ -6903,9 +7088,10 @@ export class Protein_Structure_WidgetDisplay__Main_Component extends React.Compo
                             } )
                         } }
                     >
-                        Choose ball color for specific mod mass
+                        Add custom mod mass color
                     </span>
                 </div>
+                ) : null }
 
             </div>
         )
@@ -7145,60 +7331,31 @@ class INTERNAL__Color_ResidueLetters_UserSelect__Component extends React.Compone
         return (
             <div>
                 <div>
-                    { ( ! this._show_SelectAResidue_Entry )
-                    && this.props.protein_Structure_Widget_StateObject.get_residueLetter_AND_Color_Selection_Root().isEmpty() ? (
-                        // fake link here when NO selections
-                        <>
-                            <span
-                                className=" fake-link "
-                                onClick={ event => {
-
-                                    this._show_SelectAResidue_Entry = true
-
-                                    this.forceUpdate()
-                                } }
-                            >
-                                Add custom color for amino acid
-                            </span>
-                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                title={ _customAminoAcidColors_ResidueLetterSource_Tooltip_Message() }
-                            />
-                        </>
-                    ) : (
-
-                        <>
-                            <span style={ { fontSize: 14, fontWeight: "bold" } }>
-                                Custom amino acid colors
-                            </span>
-                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                                title={ _customAminoAcidColors_ResidueLetterSource_Tooltip_Message() }
-                            />
-                        </>
-                    ) }
+                    <span style={ { fontWeight: "bold" } }>
+                        Custom amino acid colors
+                    </span>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={ _customAminoAcidColors_ResidueLetterSource_Tooltip_Message() }
+                    />
                 </div>
                 <div style={ { marginLeft: _RIGHT_PANE__STANDARD_INDENT, marginTop: 10 } }>
 
                     {/* Current Selections  */ }
                     { this._render__CurrentSelections() }
 
-                    { ( ! this._show_SelectAResidue_Entry )
-                    && ( ! this.props.protein_Structure_Widget_StateObject.get_residueLetter_AND_Color_Selection_Root().isEmpty() ) ? (
-                        // Button here Below selections when YES selections
-                        <div style={ { marginTop: 5 } }>
-                            <span
-                                className=" fake-link "
-                                onClick={ event => {
+                    <div style={ { marginTop: 5 } }>
+                        <span
+                            className=" fake-link "
+                            onClick={ event => {
 
-                                    this._show_SelectAResidue_Entry = true
+                                this._show_SelectAResidue_Entry = true
 
-                                    this.forceUpdate()
-                                } }
-                            >
-                                Add custom color for amino acid
-                            </span>
-                        </div>
-                    ) : null }
-
+                                this.forceUpdate()
+                            } }
+                        >
+                            Add custom color for amino acid
+                        </span>
+                    </div>
                 </div>
             </div>
         )
@@ -7251,6 +7408,11 @@ class INTERNAL__Color_ResidueLetters_UserSelect__Component extends React.Compone
      *
      */
     private _render__Single_CurrentSelection( item: Protein_Structure_Widget_StateObject__ResidueLetter_AND_Color_Selections__SingleEntry ) {
+
+        //  Dim the residue <select> and color ball <svg> when this entry's checkbox is unchecked (not
+        //  selected for display).  The transient "Select a residue" placeholder defaults to selected, so
+        //  it is not dimmed.
+        const style_DimWhenNotSelected: React.CSSProperties = item.residueLetter_SelectedForDisplay ? undefined : { opacity: _NOT_SELECTED_OPACITY }
 
         const residueLetter_SelectOptions_ElementArray: Array<React.JSX.Element> = []
 
@@ -7369,6 +7531,7 @@ class INTERNAL__Color_ResidueLetters_UserSelect__Component extends React.Compone
                     { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
                     <select
+                        style={ style_DimWhenNotSelected }
                         value={ item.residueLetter }
                         onChange={ event => {
 
@@ -7488,6 +7651,7 @@ class INTERNAL__Color_ResidueLetters_UserSelect__Component extends React.Compone
                                 className=" clickable "
                             >
                                 <svg
+                                    style={ style_DimWhenNotSelected }
                                     width={ _MODIFICATION_BALL__IN_HTML__RADIUS * 2 }
                                     height={ _MODIFICATION_BALL__IN_HTML__RADIUS * 2 }
                                 >

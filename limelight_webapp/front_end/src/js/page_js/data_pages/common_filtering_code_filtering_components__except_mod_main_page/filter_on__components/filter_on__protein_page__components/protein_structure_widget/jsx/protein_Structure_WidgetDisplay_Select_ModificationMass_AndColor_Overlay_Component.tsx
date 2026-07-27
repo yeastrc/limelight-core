@@ -33,6 +33,14 @@ class Protein_Structure_WidgetDisplay_Select_ModificationMass_AndColor_Overlay_C
     variable_Mods_Pass_ALL_Filters_Set: Set<number>
     open_Mods_Pass_ALL_Filters_Set: Set<number>
 
+    /**
+     * True if at least one variable or open modification passes all filters AND maps to the structure,
+     * regardless of whether it has already been added as a custom mod mass color entry. Lets the overlay
+     * tell "nothing passes filters" apart from "everything that passes was already added" when both
+     * select-from sets above are empty.
+     */
+    anyModMass_PassesAllFilters_RegardlessOfAlreadyAdded: boolean
+
     alignmentComplete_Callback: ( params: Protein_Structure_WidgetDisplay_Select_ModificationMass_AndColor_Overlay_Component_AlignmentComplete_Callback_Params ) => void
 }
 
@@ -246,9 +254,15 @@ class Protein_Structure_WidgetDisplay_Select_ModificationMass_AndColor_Overlay_C
                 >
                     <div style={ {  } }>
                         { variableMod_Elements.length === 0 && openMod_Elements.length === 0 ? (
-                            <div>
-                                No Variable or Open modifications pass filters
-                            </div>
+                            this.props.commonParams.anyModMass_PassesAllFilters_RegardlessOfAlreadyAdded ? (
+                                <div>
+                                    All variable and open modifications that pass filters have already been added.
+                                </div>
+                            ) : (
+                                <div>
+                                    No Variable or Open modifications pass filters
+                                </div>
+                            )
                         ) : (
                             <div>
                                 { variableMod_Elements.length > 0 ? (

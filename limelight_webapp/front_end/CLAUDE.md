@@ -84,6 +84,25 @@ colors (e.g. a `#bbbbbb` divider) can stay inline.
 
 ---
 
+## Layout / CSS — no negative margins without asking first
+
+**Do NOT use negative margins to position or realign anything** — `marginLeft: -X`, `marginTop: -X`,
+a negative `margin`/`marginRight`/`marginBottom`, negative `inset`/`top`/`left`, etc. Negative margins
+hide the real DOM-nesting problem and drift when the surrounding structure changes.
+
+- If an element is indented one level too deep, or needs to line up with something at a different
+  nesting level, **restructure the JSX** — close/reopen the indent container, or move the element to its
+  correct parent — so its natural position is right. Don't pull it back with a negative margin.
+- If you truly believe a negative margin is the only reasonable option for one specific spot, **STOP and
+  ask Dan first for that specific usage.** Approval is per-usage — a prior OK does not carry to the next
+  case. Never add one silently.
+
+Why: an earlier "just nudge it left with `marginLeft: -20`" masked that a block ("Mod Mass Colors") was
+nested one indent too deep; the correct fix was to restructure the containers so its heading sat at its
+proper level as a peer section.
+
+---
+
 ## How the front end is actually built
 
 **Entry point:** an Ant script calls Gradle. There is no npm build script — `package.json` `scripts` is empty, and `npm install` is run separately (it's slow) outside Gradle.

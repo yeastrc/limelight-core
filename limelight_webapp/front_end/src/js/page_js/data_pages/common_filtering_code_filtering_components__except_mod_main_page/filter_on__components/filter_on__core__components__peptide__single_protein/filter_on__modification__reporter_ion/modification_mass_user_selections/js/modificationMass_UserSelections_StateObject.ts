@@ -277,6 +277,23 @@ export class ModificationMass_UserSelections_StateObject {
         return  false;
     }
 
+    /**
+     * return true if any modification selected of variable OR open but NOT static of any condition (OR, AND, NOT)
+     */
+    is_Any_Modification_Selected__Excluding_StaticModifications() : boolean {
+        if ( this._variableModificationsSelected ) {
+            if ( this._variableModificationsSelected.is_Any_Modification_Selected() ) {
+                return true; // EARLY RETURN
+            }
+        }
+        if ( this._openModificationsSelected ) {
+            if ( this._openModificationsSelected.is_Any_Modification_Selected() ) {
+                return true; // EARLY RETURN
+            }
+        }
+        return  false;
+    }
+
     //   Variable Mods External
 
     /**
