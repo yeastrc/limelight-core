@@ -71,6 +71,65 @@
 	<property name="tomcat.jsp" value="${tomcat.limelight.webapp.root}${file.separator}WEB-INF${file.separator}jsp" />
 	
 	
+	<!-- =======================  -->
+
+	<!--
+		Directory sync helper.
+
+		If the program 'rsync' is available it is used to sync the source dir into the
+		destination dir, INSTEAD of deleting/recreating the destination and copying:
+		  rsync -a (delete) (checksum) SRC/ DEST/
+		    delete flag   : remove any destination files not present in the source
+		    checksum flag : compare by checksum only, ignoring file timestamps (unwar
+		                    sometimes changes timestamps, which would otherwise force copies)
+
+		If 'rsync' is NOT available, fall back to the original delete-dest, mkdir-dest, copy.
+
+		Callers antcall 'sync_dir_Src_To_Dest' with params 'sync.src' and 'sync.dest'.
+	-->
+
+	<!-- Detect once whether 'rsync' is available on this machine (guarded so it only runs once) -->
+	<target name="detect_rsync_Available" unless="rsync.detected">
+		<!-- failifexecutionfails=false: if rsync isn't installed, don't fail the build, just leave rsync.result unset -->
+		<exec executable="rsync" failifexecutionfails="false" resultproperty="rsync.result">
+			<arg value="--version" />
+		</exec>
+		<condition property="rsync.available">
+			<equals arg1="${rsync.result}" arg2="0" />
+		</condition>
+		<property name="rsync.detected" value="true" />
+		<echo>rsync available (empty if not): '${rsync.available}'</echo>
+	</target>
+
+	<!-- Sync ${sync.src} into ${sync.dest}: rsync if available, else delete/mkdir/copy -->
+	<target name="sync_dir_Src_To_Dest" depends="detect_rsync_Available">
+		<antcall target="sync_dir_Src_To_Dest__rsync" />
+		<antcall target="sync_dir_Src_To_Dest__delete_copy" />
+	</target>
+
+	<target name="sync_dir_Src_To_Dest__rsync" if="rsync.available">
+		<echo>rsync '${sync.src}' -> '${sync.dest}'</echo>
+		<mkdir dir="${sync.dest}" />
+		<exec executable="rsync" failonerror="true">
+			<arg value="-a" />
+			<arg value="--delete" />
+			<arg value="--checksum" />
+			<!-- trailing separator on source so its CONTENTS are synced into dest (not nested in a subdir) -->
+			<arg value="${sync.src}${file.separator}" />
+			<arg value="${sync.dest}${file.separator}" />
+		</exec>
+	</target>
+
+	<target name="sync_dir_Src_To_Dest__delete_copy" unless="rsync.available">
+		<echo>rsync not available; delete + copy '${sync.src}' -> '${sync.dest}'</echo>
+		<delete dir="${sync.dest}" />
+		<mkdir  dir="${sync.dest}" />
+		<copy todir="${sync.dest}" overwrite="true">
+			<fileset dir="${sync.src}" />
+		</copy>
+	</target>
+
+
 	<!-- MAIN / DEFAULT Target  -->
 	
 	<target name="built-copy-front-end" description="">
@@ -91,19 +150,15 @@
 		</exec>
 		
 		
-	      <delete dir="${tomcat.static}"/>
-	      <mkdir  dir="${tomcat.static}"/>
-		
-	      <delete dir="${tomcat.jsp}"/>
-	      <mkdir  dir="${tomcat.jsp}"/>
-		
-		<copy todir="${tomcat.static}" overwrite="true" >
-  		    <fileset dir="..${file.separator}src${file.separator}main${file.separator}webapp${file.separator}static" />
-		</copy>			 
-				
-		<copy todir="${tomcat.jsp}" overwrite="true" >
-  		    <fileset dir="..${file.separator}src${file.separator}main${file.separator}webapp${file.separator}WEB-INF${file.separator}jsp" />
-		</copy>			 
+		<antcall target="sync_dir_Src_To_Dest">
+			<param name="sync.src"  value="..${file.separator}src${file.separator}main${file.separator}webapp${file.separator}static" />
+			<param name="sync.dest" value="${tomcat.static}" />
+		</antcall>
+
+		<antcall target="sync_dir_Src_To_Dest">
+			<param name="sync.src"  value="..${file.separator}src${file.separator}main${file.separator}webapp${file.separator}WEB-INF${file.separator}jsp" />
+			<param name="sync.dest" value="${tomcat.jsp}" />
+		</antcall>
 
 	</target>
 	
@@ -293,19 +348,15 @@
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 
-	      <delete dir="${tomcat.static}${file.separator}js_generated_bundles"/>
-	      <mkdir  dir="${tomcat.static}${file.separator}js_generated_bundles"/>
-		
-		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" overwrite="true" >
-		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
-		</copy>
+		<antcall target="sync_dir_Src_To_Dest">
+			<param name="sync.src"  value="webpack_build_output${file.separator}js_generated_bundles" />
+			<param name="sync.dest" value="${tomcat.static}${file.separator}js_generated_bundles" />
+		</antcall>
 
-		<delete dir="${tomcat.static}${file.separator}css_generated"/>
-		<mkdir  dir="${tomcat.static}${file.separator}css_generated"/>
-
-		<copy todir="${tomcat.static}${file.separator}css_generated" overwrite="true" >
-			<fileset dir="webpack_build_output${file.separator}css_generated" />
-		</copy>
+		<antcall target="sync_dir_Src_To_Dest">
+			<param name="sync.src"  value="webpack_build_output${file.separator}css_generated" />
+			<param name="sync.dest" value="${tomcat.static}${file.separator}css_generated" />
+		</antcall>
 
 	</target>
 </project>
