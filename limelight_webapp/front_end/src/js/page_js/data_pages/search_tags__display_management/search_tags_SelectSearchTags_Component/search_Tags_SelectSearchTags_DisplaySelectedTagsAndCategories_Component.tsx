@@ -538,7 +538,6 @@ const _render_SingleSearchTag = function(
     div_Inner_Style.borderWidth = 2;
 
     let className_Addition_Inner = "";
-    let tooltip_Inner = undefined // "Search Tag: " + tag_Entry.tagString
 
     if ( search_Tags_Selections_Object.searchTagIdsSelected_Boolean__OR.has( tag_Entry.tagId ) ) {
         div_Inner_Style.borderStyle = "dashed"

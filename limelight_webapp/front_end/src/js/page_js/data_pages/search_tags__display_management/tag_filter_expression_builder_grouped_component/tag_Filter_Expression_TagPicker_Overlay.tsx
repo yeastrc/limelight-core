@@ -320,7 +320,7 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
                 >
                     { tag.tagString }
                     { searchCount !== undefined ? (
-                        <span style={ { marginLeft: 5, fontSize: 11, opacity: 0.75 } }>( { searchCount === 0 ? "Zero" : searchCount } )</span>
+                        <span style={ { marginLeft: 5, fontSize: 11, opacity: 0.75 } }>( { searchCount === 0 ? "None" : searchCount } )</span>
                     ) : null }
                 </span>
             </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>

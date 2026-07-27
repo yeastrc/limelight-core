@@ -28,12 +28,14 @@ search's tag id set; there is no server/webservice or DB change. State persists 
   (`groupOperator`); a **single, separate** `betweenGroups_Operator` combines the groups. The two
   levels are **independent** — changing one group's operator affects only that group, and the
   between-groups operator is its own choice. Example: `( a AND b ) OR ( c OR d )`.
-- **Setting operators (inline toggle + picker radios):**
-  - Click the AND/OR shown **between a group's tags** → toggles **only that group's** operator.
-  - Click the AND/OR shown **between groups** → toggles the **single** between-groups operator
-    (applies to every group junction — there is one shared between operator, not one per junction).
-  - For an **empty** group (no inline operator visible yet), the tag-picker overlay shows **OR/AND
-    radios** so you choose how that group's tags will combine before adding them.
+- **Setting operators (AND/OR dropdown + picker radios):**
+  - Click the AND/OR pill shown **between a group's tags** → opens a small dropdown to choose AND or OR
+    for **only that group**. Each option has a tooltip; clicking outside closes it (like a `<select>`).
+  - Click the AND/OR pill shown **between groups** → opens the same dropdown for the **single**
+    between-groups operator (applies to every group junction — one shared between operator, not one per
+    junction).
+  - For an **empty** group (no inline pill visible yet), the tag-picker overlay shows **OR/AND radios**
+    so you choose how that group's tags will combine before adding them.
 - Each tag literal can be **NOT** (negated) — it matches when that tag is **absent** from the search.
 - It's **either/or** with the basic "Filter On Tags:" selector — only one is shown/active at a time.
 - All "Filtering on …" summaries stay together in the one shared
@@ -53,11 +55,13 @@ All under `limelight_webapp/front_end/src/js/page_js/data_pages/`.
   `Tag_Filter_Expression_Builder_Grouped_Component__{Seed_Literal, Seed_Group, Expression}`; props
   `initial_Groups`, `initial_BetweenGroups_Operator`, `expression_Changed_Callback`. Internal
   literal/group objects carry a `_uiId` (React keys / mutation targeting) that is **stripped** from
-  the plain-data expression handed back to the parent. Per-group operator is toggled inline
-  (`_toggle_GroupOperator`) or set from the picker radios (`_set_GroupOperator`); the between operator
-  is toggled by `_toggle_BetweenGroups_Operator`. Defines a file-level `_limelightColors` alias and a
-  file-local `_other_Operator(op)` helper. New groups default to `groupOperator: 'OR'`; a fresh filter
-  defaults `betweenGroups_Operator: 'AND'` (this pair reproduces the old CNF default).
+  the plain-data expression handed back to the parent. Per-group and between-groups operators are set
+  via a small custom AND/OR **dropdown** — clicking a pill opens `_render_OperatorDropdownMenu`
+  (per-option tooltips; outside-click closes it via a document `mousedown` listener added in
+  `componentDidMount`); a selection calls `_set_GroupOperator` / `_set_BetweenGroups_Operator`. Empty
+  groups can also set their operator from the picker radios. Defines a file-level `_limelightColors`
+  alias. New groups default to `groupOperator: 'OR'`; a fresh filter defaults
+  `betweenGroups_Operator: 'AND'` (this pair reproduces the old CNF default).
 - `tag_Filter_Expression_Preview_Component.tsx` — **read-only** grouped-expression display (colored
   chips + parens + AND/OR), or the empty-group warning. Renders from plain seed data (props `groups`,
   `betweenGroups_Operator`, `searchTagData_Root`); each group is shown with its own `groupOperator`,
@@ -73,8 +77,9 @@ All under `limelight_webapp/front_end/src/js/page_js/data_pages/`.
 
 > There is **no** operator-chooser overlay anymore. The former
 > `tag_Filter_Expression_OperatorChooser_Overlay.tsx` (a coupled CNF/DNF "swaps both" chooser) was
-> **deleted** when operators became independent — operators are now set by the inline toggles and the
-> picker radios described above.
+> **deleted** when operators became independent — operators are now chosen via the small custom AND/OR
+> **dropdown** (opened from each pill; per-option tooltips; outside-click closes) and the tag-picker
+> radios described above.
 
 **Parent wiring** — `other_data_pages/project_page/project_page_main_page_react_based/jsx/`:
 
@@ -177,6 +182,37 @@ All under `limelight_webapp/front_end/src/js/page_js/data_pages/`.
   `filter-on-tags--currently-filtering` block via `Tag_Filter_Expression_Preview_Component`. So in
   Advanced mode the expression appears twice by design: editable (builder) + read-only summary
   (parallels basic: selector + summary).
+
+## Search-count displays (searches-section-wide)
+
+The searches section shows several **search counts**, all computed client-side (no server change):
+
+- **Per-tag count — how many searches in the project have each tag.** The container computes
+  `_searchesPerTagId_Map` (`Map<tagId, count>`) in one pass over every search's `searchTagIds_Set` when
+  the search/tag data is (re)built, and threads it as an **optional `searchesPerTagId_Map` prop** through
+  the tag components (no-op where a caller doesn't supply it). It appears in:
+  - the **advanced tag-picker overlay** — as `( N )` after each tag name (`( None )` when zero), plus a
+    line at the bottom of each tag's tooltip;
+  - the **advanced builder chips** and the **advanced "Filtering on tags:" summary** (preview) — in each
+    tag's tooltip;
+  - the **basic "Filter On Tags:" selector** — appended to each tag's existing tooltip;
+  - the **basic "Filtering on tags:" summary** — as a tooltip (these tags previously had none — a real
+    Limelight tooltip replaced an empty native `title`).
+  - Tooltip wording is sentence-case: "3 searches have this tag" / "1 search has this tag" / "No searches
+    have this tag" (8px above the line). The overlay chip uses the terse `( N )` / `( None )` form. A tag
+    **absent** from the map has **zero** searches (the value is `undefined` only when no map is supplied).
+- **"N searches passed the filters"** — at the bottom of the "Filtering on …" box, shown whenever text
+  and/or tag filtering is active (`_filtered_Searches_PassedCount()` = size of the filtered
+  projectSearchId set). Pluralized; reads "0 searches …" when a filter excludes everything.
+- **Per-folder count `(N searches)`** — after each folder name in the search/folder list
+  (`FolderEntry._folder_PassingSearchCount()` in `projectPage_SearchesSection_SearchesAndFoldersList_Component.tsx`):
+  searches in that folder that pass the filters, or the folder total when no filter. Pluralized, zero →
+  `(No searches)`, hover tooltip "Folder contains N searches[ that pass the filters]". While filtering,
+  folders with zero passing searches are hidden (`folderIds_ToDisplay...`), so `(No searches)` mostly
+  appears for empty folders with no filter active.
+
+Note the intentional wording split: the tag chip's zero form is **`None`**, while the sentence tooltips and
+the folder count use **`No`** ("No searches …") — the terse chip vs. natural-sentence contexts.
 
 ## Possible follow-ups (noted, not done)
 
