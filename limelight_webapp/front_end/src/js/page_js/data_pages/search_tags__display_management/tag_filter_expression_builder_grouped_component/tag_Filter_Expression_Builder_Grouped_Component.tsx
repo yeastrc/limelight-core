@@ -29,6 +29,16 @@ import {
     Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry
 } from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
 import {tagFilter_Expression_TagPicker_Overlay__openOverlay} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_grouped_component/tag_Filter_Expression_TagPicker_Overlay";
+import { searchTags_SearchCount_Display__countForTagId } from "page_js/data_pages/search_tags__display_management/searchTags_SearchCount_Display";
+import {
+    groupedTagChip_SharedHelpers__NEGATED_COLOR,
+    groupedTagChip_SharedHelpers__build_TagEntry_Map,
+    groupedTagChip_SharedHelpers__build_CategoryLabel_Map,
+    groupedTagChip_SharedHelpers__resolve_TagChipColors,
+    groupedTagChip_SharedHelpers__chip_BorderColor,
+    groupedTagChip_SharedHelpers__categoryLabel_For_TagEntry,
+    groupedTagChip_SharedHelpers__build_TagTooltipContents
+} from "page_js/data_pages/search_tags__display_management/tag_filter_expression_builder_grouped_component/groupedTagChip_SharedHelpers";
 
 
 /////
@@ -237,26 +247,6 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
 
     ////  ---   Tag catalog lookup helpers   ---
 
-    private _get_TagEntry_Map() : Map<number, Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry> {
-        const result = new Map<number, Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry>();
-        if ( this.props.searchTagData_Root && this.props.searchTagData_Root.searchTag_Array ) {
-            for ( const tagEntry of this.props.searchTagData_Root.searchTag_Array ) {
-                result.set( tagEntry.tagId, tagEntry );
-            }
-        }
-        return result;
-    }
-
-    private _get_CategoryLabel_Map() : Map<number, string> {
-        const result = new Map<number, string>();
-        if ( this.props.searchTagData_Root && this.props.searchTagData_Root.searchTagCategory_Array ) {
-            for ( const category of this.props.searchTagData_Root.searchTagCategory_Array ) {
-                result.set( category.category_id, category.category_label );
-            }
-        }
-        return result;
-    }
-
     ////  ---   Expression mutation helpers ( immutable-style: build new arrays, assign, then _mutated() )   ---
 
     private _addGroup = () : void => {
@@ -268,18 +258,19 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
     //  The "first step" from the empty state:  open the tag picker on the first group ( creating one if needed ),
     //  so the very first thing the user does is add a tag rather than reason about groups.
     private _openTagPicker_StartFirstGroup = () : void => {
-        let groupUiId : number;
         if ( this._groups.length > 0 ) {
-            groupUiId = this._groups[ 0 ]._uiId;
-        } else {
-            const newGroup : Internal__Grouped_Group = { _uiId: this._generateUiId(), literals: [], groupOperator: 'OR' };
-            groupUiId = newGroup._uiId;
-            //  Create the first group but DON'T re-render / notify now:  the picker opens immediately on top and
-            //  batches, so the page under it stays put until close.  Instance properties are set synchronously, so
-            //  _openTagPicker_ForGroup below sees this group at once ( no re-render needed for that ).
-            this._groups = [ newGroup ];
+            this._openTagPicker_ForGroup( this._groups[ 0 ]._uiId );
+            return;
         }
-        this._openTagPicker_ForGroup( groupUiId );
+        //  Create the first group but DON'T re-render / notify now:  the picker opens immediately on top and
+        //  batches, so the page under it stays put until close.  Instance properties are set synchronously, so
+        //  _openTagPicker_ForGroup below sees this group at once ( no re-render needed for that ).
+        //  removeGroupIfLeftEmpty:  this group is auto-created only to hold the first tags, so if the user closes
+        //  the picker without adding any, discard it ( back to pristine ) -- otherwise it would be an active empty
+        //  group that hides ALL searches with the "no searches pass" warning.
+        const newGroup : Internal__Grouped_Group = { _uiId: this._generateUiId(), literals: [], groupOperator: 'OR' };
+        this._groups = [ newGroup ];
+        this._openTagPicker_ForGroup( newGroup._uiId, { removeGroupIfLeftEmpty: true } );
     }
 
     private _removeGroup = ( groupUiId : number ) : void => {
@@ -291,7 +282,7 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
     //  When the group is still EMPTY, the picker also shows OR/AND radios so the user can choose how THIS
     //  group's tags will combine before adding them ( for a group that already has tags, the operator is set
     //  by clicking the inline AND/OR between its tags instead ).
-    private _openTagPicker_ForGroup = ( groupUiId : number ) : void => {
+    private _openTagPicker_ForGroup = ( groupUiId : number, options ?: { removeGroupIfLeftEmpty ?: boolean } ) : void => {
 
         const group = this._groups.find( g => g._uiId === groupUiId );
         //  ( instance properties are synchronous, so a just-created group is already present here; the
@@ -322,6 +313,15 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
                 //  Apply everything once, now that the overlay is closed:  re-render this builder AND notify the
                 //  parent ( persist + re-filter the search list ) a single time.
                 this._suppress_Updates_WhilePickerOpen = false;
+                //  If this group was auto-created for the "first group" flow and the user closed the picker
+                //  without adding any tag, discard the now-empty group ( else it is an active empty group that
+                //  hides all searches ).
+                if ( options && options.removeGroupIfLeftEmpty ) {
+                    const group = this._groups.find( g => g._uiId === groupUiId );
+                    if ( group && group.literals.length === 0 ) {
+                        this._groups = this._groups.filter( g => g._uiId !== groupUiId );
+                    }
+                }
                 this._mutated();
             }
         } );
@@ -364,31 +364,6 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
             };
         } );
         this._mutated();
-    }
-
-    ////  ---   Expression preview   ---
-
-    //  Shared tooltip contents for a tag chip.  Uses a 2-column CSS grid so the values left-align.
-    //  searchCount:  number of searches in the project that have this tag ( undefined = count data not available ).
-    private _build_TagTooltipContents( tagString : string, categoryLabel : string, negated : boolean, searchCount : number | undefined ) : React.JSX.Element {
-        return (
-            <span>
-                <div style={ { display: "grid", gridTemplateColumns: "max-content 1fr", columnGap: 8, rowGap: 2 } }>
-                    <div>Tag:</div>
-                    <div><b>{ tagString }</b></div>
-                    <div>Category:</div>
-                    <div>{ categoryLabel ? categoryLabel : "(uncategorized)" }</div>
-                </div>
-                { searchCount !== undefined ? (
-                    <div style={ { marginTop: 8 } }>
-                        { searchCount === 0
-                            ? "No searches have this tag"
-                            : ( searchCount + ( searchCount === 1 ? " search has this tag" : " searches have this tag" ) ) }
-                    </div>
-                ) : null }
-                { negated ? ( <div style={ { marginTop: 4, fontStyle: "italic" } }>Negated ( NOT ) — tag must be ABSENT</div> ) : null }
-            </span>
-        );
     }
 
     ////  ---   Render helpers   ---
@@ -587,18 +562,13 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
 
         const tagEntry = tagEntry_Map.get( literal.tagId );
 
-        const backgroundColor = tagEntry ? tagEntry.tag_Color_Background : "#eeeeee";
-        const fontColor = tagEntry ? tagEntry.tag_Color_Font : "#000000";
-        const borderColor = tagEntry ? tagEntry.tag_Color_Border : "#999999";
-        const tagString = tagEntry ? tagEntry.tagString : ( "tagId " + literal.tagId );
+        const { backgroundColor, fontColor, borderColor, tagString } = groupedTagChip_SharedHelpers__resolve_TagChipColors( tagEntry, literal.tagId );
+        const categoryLabel = groupedTagChip_SharedHelpers__categoryLabel_For_TagEntry( tagEntry, categoryLabel_Map );
 
-        const categoryLabel = ( tagEntry && tagEntry.tagCategoryId !== undefined && tagEntry.tagCategoryId !== null )
-            ? categoryLabel_Map.get( tagEntry.tagCategoryId ) : null;
+        const searchCount = searchTags_SearchCount_Display__countForTagId( this.props.searchesPerTagId_Map, literal.tagId );
+        const tooltipContents = groupedTagChip_SharedHelpers__build_TagTooltipContents( { tagString, categoryLabel, negated: literal.negated, searchCount } );
 
-        const searchCount : number | undefined = this.props.searchesPerTagId_Map ? ( this.props.searchesPerTagId_Map.get( literal.tagId ) ?? 0 ) : undefined;
-        const tooltipContents = this._build_TagTooltipContents( tagString, categoryLabel, literal.negated, searchCount );
-
-        const _NEGATED_COLOR = "#c0392b";  //  red
+        const _NEGATED_COLOR = groupedTagChip_SharedHelpers__NEGATED_COLOR;  //  red ( shared )
 
         //  Tooltip for the NOT pill:  explain what it does and that clicking adds/removes the NOT
         const notPill_TooltipContents = literal.negated
@@ -617,7 +587,7 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
                     //  "stuck red border" bug ).  Also matches the house style of explicit longhand properties.
                     borderWidth: 2,
                     borderStyle: "solid",
-                    borderColor: literal.negated ? _NEGATED_COLOR : ( borderColor ? borderColor : "transparent" ),
+                    borderColor: groupedTagChip_SharedHelpers__chip_BorderColor( literal.negated, borderColor ),
                     borderRadius: 4,
                     paddingTop: 1,
                     paddingRight: 4,
@@ -885,8 +855,8 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
      */
     render() {
 
-        const tagEntry_Map = this._get_TagEntry_Map();
-        const categoryLabel_Map = this._get_CategoryLabel_Map();
+        const tagEntry_Map = groupedTagChip_SharedHelpers__build_TagEntry_Map( this.props.searchTagData_Root );
+        const categoryLabel_Map = groupedTagChip_SharedHelpers__build_CategoryLabel_Map( this.props.searchTagData_Root );
 
         const betweenGroups_Operator = this._betweenGroups_Operator;
 

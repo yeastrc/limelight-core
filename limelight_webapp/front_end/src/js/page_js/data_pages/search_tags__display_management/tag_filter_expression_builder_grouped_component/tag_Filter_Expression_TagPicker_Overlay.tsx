@@ -24,6 +24,7 @@ import {
     Search_Tags_SelectSearchTags_Component_SearchTagData_Root,
     Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry
 } from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
+import { searchTags_SearchCount_Display__countForTagId, searchTags_SearchCount_Display__tooltipLine } from "page_js/data_pages/search_tags__display_management/searchTags_SearchCount_Display";
 
 
 /////
@@ -272,20 +273,13 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
         const actionText = disabled ? ( this.props.disabledReason ? this.props.disabledReason : "Already added" ) : "Add";
 
         //  Number of searches in the project that have this tag.  When the count map is provided, a tag that is
-        //  NOT in the map has ZERO searches ( shown as "( Zero )" ).  undefined only when no map was passed.
-        const searchesPerTagId_Map = this.props.searchesPerTagId_Map;
-        const searchCount : number | undefined = searchesPerTagId_Map ? ( searchesPerTagId_Map.get( tag.tagId ) ?? 0 ) : undefined;
+        //  NOT in the map has ZERO searches ( shown as "( None )" ).  undefined only when no map was passed.
+        const searchCount = searchTags_SearchCount_Display__countForTagId( this.props.searchesPerTagId_Map, tag.tagId );
 
         const tooltipContents = (
             <span>
                 <div>{ actionText }</div>
-                { searchCount !== undefined ? (
-                    <div style={ { marginTop: 8 } }>
-                        { searchCount === 0
-                            ? "No searches have this tag"
-                            : ( searchCount + ( searchCount === 1 ? " search has this tag" : " searches have this tag" ) ) }
-                    </div>
-                ) : null }
+                { searchTags_SearchCount_Display__tooltipLine( searchCount, 8 ) }
             </span>
         );
 

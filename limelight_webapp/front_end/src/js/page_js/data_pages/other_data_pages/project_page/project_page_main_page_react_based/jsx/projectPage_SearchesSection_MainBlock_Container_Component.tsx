@@ -1832,7 +1832,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                 {/*  Count of searches that passed the active filters ( bottom of the box )  */}
                                 <div style={ { marginTop: 10 } }>
                                     <b>{ this._filtered_Searches_PassedCount() }</b>
-                                    { this._filtered_Searches_PassedCount() === 1 ? " search pass the filters" : " searches pass the filters" }
+                                    { this._filtered_Searches_PassedCount() === 1 ? " search passes the filters" : " searches pass the filters" }
                                 </div>
                             </div>
                         ) : null }

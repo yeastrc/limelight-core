@@ -13,6 +13,7 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import { searchTags_SearchCount_Display__countForTagId, searchTags_SearchCount_Display__tooltipLine } from "page_js/data_pages/search_tags__display_management/searchTags_SearchCount_Display";
 
 /////
 
@@ -558,7 +559,7 @@ const _render_SingleSearchTag = function(
     }
 
     //  Tooltip showing how many searches ( in the project ) have this tag.  null when no count data -> no tooltip.
-    const searchCount_TooltipLine = _searchCount_TooltipLine( searchesPerTagId_Map, tag_Entry.tagId );
+    const searchCount_TooltipLine = searchTags_SearchCount_Display__tooltipLine( searchTags_SearchCount_Display__countForTagId( searchesPerTagId_Map, tag_Entry.tagId ) );
 
     return (
         <div
@@ -578,18 +579,6 @@ const _render_SingleSearchTag = function(
             </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         </div>
     )
-}
-
-//  Tooltip line showing how many searches ( in the project ) have this tag.  null when no count data provided.
-function _searchCount_TooltipLine( searchesPerTagId_Map : ReadonlyMap<number, number> | undefined, tagId : number ) : React.JSX.Element {
-    if ( ! searchesPerTagId_Map ) {
-        return null;
-    }
-    const count = searchesPerTagId_Map.get( tagId ) ?? 0;
-    const text = ( count === 0 )
-        ? "No searches have this tag"
-        : ( count + ( count === 1 ? " search has this tag" : " searches have this tag" ) );
-    return <div>{ text }</div>;
 }
 
 class INTERNAL__SearchTagData_Display_Root {

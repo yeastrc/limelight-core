@@ -17,6 +17,7 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import { searchTags_SearchCount_Display__countForTagId, searchTags_SearchCount_Display__tooltipLine } from "page_js/data_pages/search_tags__display_management/searchTags_SearchCount_Display";
 
 /////
 
@@ -301,20 +302,6 @@ export class Search_Tags_SelectSearchTags_Component extends React.Component< Sea
 
 ////////////////////////////////////////
 
-//  Tooltip line showing how many searches ( in the project ) have this tag.  null when no count data provided.
-function _searchCount_TooltipLine( searchesPerTagId_Map : ReadonlyMap<number, number> | undefined, tagId : number ) : React.JSX.Element {
-    if ( ! searchesPerTagId_Map ) {
-        return null;
-    }
-    const count = searchesPerTagId_Map.get( tagId ) ?? 0;
-    const text = ( count === 0 )
-        ? "No searches have this tag"
-        : ( count + ( count === 1 ? " search has this tag" : " searches have this tag" ) );
-    return <div style={ { marginTop: 8 } }>{ text }</div>;
-}
-
-////////////////////////////////////////
-
 //  INTERNAL   React Components
 
 
@@ -525,7 +512,7 @@ export class INTERNAL__Search_Tag_SINGLE_Component extends React.Component< INTE
                     title={
                         <div className=" word-break-break-word-backup-break-all ">
                             { tooltip_Inner }
-                            { _searchCount_TooltipLine( this.props.searchesPerTagId_Map, tag_Entry.tagId ) }
+                            { searchTags_SearchCount_Display__tooltipLine( searchTags_SearchCount_Display__countForTagId( this.props.searchesPerTagId_Map, tag_Entry.tagId ), 8 ) }
                         </div>
                     }
                     { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
