@@ -210,6 +210,26 @@ The searches section shows several **search counts**, all computed client-side (
 Note the intentional wording split: the tag chip's zero form is **`None`**, while the sentence tooltips and
 the folder count use **`No`** ("No searches …") — the terse chip vs. natural-sentence contexts.
 
+### Freshness — counts (and all searches-section derived state) refresh via a server data reload, not a browser reload
+
+`_searchesPerTagId_Map` is (re)built inside `_process_New__searchesSearchTagsFolders_Result_Root`, which the
+container runs on initial load **and** whenever `componentDidUpdate` sees a new
+`force_ReloadFromServer_EmptyObjectReference` prop object. **Every tag-edit entry point triggers exactly
+that reload**, so the counts stay correct after a tag change *without* a full browser page reload:
+
+- **Change Tags** (single search — the `fake-link` under a search name) → `searchChanged_Callback` →
+  container `_callback_SearchChanged()`;
+- **Tag Searches** (bulk, on the selected searches) → `_bulk_set_update_TagsOnSearches`;
+- **Manage Tags** (project-wide) → `_manageTagsInProject`;
+
+all call **`update_force_ReloadFromServer_EmptyObjectReference_Callback()`** after saving → the parent
+re-fetches and passes down a **new** `force_ReloadFromServer_EmptyObjectReference` object → the container
+re-runs `_searchesAndFolders_GetFromFunctionPassedFromParent()` → `_process_New__...` rebuilds the map (and
+everything else derived from the search/tag data: folder lists, tag lists, counts). A
+`limelight__ReloadPage_Function()` full-page-reload fallback fires only if that callback is ever absent.
+So: **derived state on this section is safe to compute once per data load** — it is not stale after tag
+edits. (Traced/verified 2026-07-27.)
+
 ## Possible follow-ups (noted, not done)
 
 - Extract the duplicated group-expression evaluator (`_advanced_TagFilter_Matches` vs. the preview
