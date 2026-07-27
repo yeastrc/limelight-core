@@ -14,9 +14,19 @@ design* (attachment model, new markers, GC) is not yet decided/built — see Ope
 
 ## The problem
 
-Historically, scan files in Limelight existed **only** as attachments to searches. Later,
-`project_scan_file_tbl` was added so a user can run **feature detection** on any scan file in a project —
-not just scan files attached to a search. So a scan file can now live in a project for its own sake.
+Historically, scan files in Limelight existed **only** as attachments to searches, reachable solely
+through `search_tbl → search_scan_file_tbl → scan_file_tbl` — there was **no project-scoped scan-file
+table at all**. `project_scan_file_tbl` was later introduced to give a scan file a project-scoped
+existence, motivated by **standalone-for-FD imports** (running **feature detection** on a scan file that
+isn't attached to any search) **and** a scan-file viewer page. So a scan file can now live in a project for
+its own sake.
+
+**Crucially, from that table's inception both origins have populated it:** a search import inserts a
+`project_scan_file` row **plus** a `project_scan_filename__search_scan_file__mapping_tbl` row (linking back
+to `search_scan_file_tbl`), while a standalone-for-FD import inserts the `project_scan_file` row **without**
+a mapping row. The two were never marked apart — the presence/absence of the mapping row was the only
+signal — so the missing origin flag was a **day-one omission**, not a later-evolution surprise. That signal
+worked fine until search-delete cascades began erasing the mapping row (see the crux section below).
 
 Today a user may delete a `project_scan_file` from the **Scan Files tab only if** it is not attached to
 any search or feature-detection run.
@@ -341,6 +351,11 @@ instances whose operators choose to run it.
 
 ### Recommended scope
 
+> _Superseded on schema shape:_ steps 1–2 below say "add a column to `project_scan_file_tbl`"; the current
+> plan instead adds **two companion tables** (`project_scan_file_lifecycle_tbl` + `project_scan_file_visible_tbl`)
+> and leaves `project_scan_file_tbl` untouched — see the Physical-model subsection in the Revised-direction
+> section. The step *intent* (schema first, then set state at import) is unchanged.
+
 1. Schema: the new column + version-upgrade SQL. **No data backfill** — the column defaults `0`; existing
    unattached rows are handled by the separate opt-in script (6), not by a migration.
 2. Import: set the column in flow (b) (standalone-for-FD).
@@ -379,14 +394,85 @@ visibility and data exposure from physical deletion**, and make physical removal
 This *dissolves* the ambiguity instead of resolving it, and removes most of the moving parts in
 "Recommended approach" above.
 
-### New columns on `project_scan_file_tbl` (all mirror patterns already in the schema)
+### Physical model: two companion tables — `project_scan_file_tbl` is left UNTOUCHED
 
-| Column | Mirrors | Meaning |
-|---|---|---|
-| `imported_independent_of_search TINYINT NOT NULL DEFAULT 0` | doc Decision 1 | imported standalone-for-FD; never auto-deleted |
-| `shown_in_scan_files_tab TINYINT NOT NULL DEFAULT 0` | new | row is confirmed & listed in the Scan Files tab; set `1` when the import **completes** (or immediately for a standalone-for-FD import) |
-| `marked_for_deletion TINYINT UNSIGNED NOT NULL DEFAULT 0` + `marked_for_deletion_timestamp TIMESTAMP NULL` + `marked_for_deletion_user_id INT UNSIGNED NULL` | `project_tbl` (L83, L89–90), `project_search_tbl` (L190–191) | soft-delete; hidden everywhere, awaiting GC |
-| `last_referenced_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP` | `peptide_tbl.last_used_in_search_import` (L122) | bumped on first insert and by **every later operation that creates a reference to the row** — see the bump-event list below |
+**Decision (2026-07): do not add any column to `project_scan_file_tbl`. Put the new state in two new
+companion tables, each keyed 1:1-or-subset on `project_scan_file_id`.** This supersedes the "add columns"
+sketch and Decision 1's "one boolean column" stance. Two reasons drove it:
+
+1. **Don't disturb `project_scan_file_tbl`.** Its `id` is referenced in many important places, and the goal
+   is zero risk of a rebuild/reload — the DB is ~1.8 TB and a test import ran ~4 days. Two `CREATE TABLE`s
+   issue **no `ALTER`** against `project_scan_file_tbl` at all (its bytes, id, indexes, FKs untouched).
+   (`project_scan_file_tbl` is itself a tiny metadata table — one narrow row per (project, scan_file); the
+   1.8 TB lives in the PSM/scan-data tables and external spectral/file-object storage, which neither option
+   touches — but the companion approach removes even the theoretical risk.)
+2. **Precedent.** `project_scan_file_tbl` already has a 1:1 companion — `project_scan_file_importer_tbl`
+   (PK `project_scan_file_id`, FK → `project_scan_file_tbl`, `ON DELETE CASCADE`). These mirror it.
+
+**They cover different row populations — which is *why* it is two tables, not one:**
+- **Lifecycle companion = (nearly) every scan file**, because a *hidden* file still needs
+  `last_referenced_date_time` (drives GC) and `marked_for_deletion`. Those cannot live in the visible table
+  (which has no row for a hidden file).
+- **Visible table = a subset** (only files that should appear in the Scan Files tab). Visibility is
+  represented by **presence of a row**, not a boolean — you insert when the file becomes visible and delete
+  when it is hidden. The `shown_in_scan_files_tab` column idea is **replaced by presence in this table.**
+
+```sql
+-- Companion 1: lifecycle/state — 1:1, exists for hidden files too (drives GC + the retain rule)
+CREATE TABLE project_scan_file_lifecycle_tbl (
+  project_scan_file_id INT UNSIGNED NOT NULL,
+  imported_independent_of_search TINYINT UNSIGNED NOT NULL DEFAULT 0,  -- standalone-for-FD; never auto-deleted
+  marked_for_deletion TINYINT UNSIGNED NOT NULL DEFAULT 0,             -- soft-delete, awaiting GC
+  marked_for_deletion_timestamp TIMESTAMP NULL,
+  marked_for_deletion_user_id INT UNSIGNED NULL,
+  last_referenced_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- like peptide_tbl.last_used_in_search_import
+  PRIMARY KEY (project_scan_file_id),
+  CONSTRAINT fk_psf_lifecycle_psf FOREIGN KEY (project_scan_file_id)
+    REFERENCES project_scan_file_tbl (id) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB;
+
+-- Companion 2: visibility — presence = shown in the Scan Files tab (subset; no boolean flag)
+CREATE TABLE project_scan_file_visible_tbl (
+  project_scan_file_id INT UNSIGNED NOT NULL,
+  project_id INT UNSIGNED NOT NULL,   -- denormalized (immutable per scan file) so the tab list is a pure index range scan
+  PRIMARY KEY (project_scan_file_id),
+  INDEX project_id_visible_idx (project_id, project_scan_file_id),
+  CONSTRAINT fk_psf_visible_psf FOREIGN KEY (project_scan_file_id)
+    REFERENCES project_scan_file_tbl (id) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB;
+```
+
+**Why the visible-as-presence table is the robust choice (not just faster):** because the table contains
+*only* visible rows, the Scan Files tab list is a range scan over it and **physically cannot surface a
+hidden / soft-deleted / in-progress file** — you are no longer depending on every current and future query
+remembering a `WHERE shown = 1`. (The denser per-project index is a bonus on top.) This is the direct
+answer to the standing "every read path must filter" risk.
+
+**Read routing — which surface reads which:**
+- **Scan Files tab list / discovery** → drive from `project_scan_file_visible_tbl` (presence). Cannot leak a
+  hidden file.
+- **By-id spectra / metadata / download** (the `getById`-resolved paths in the Exposure trace below) → gate
+  on `project_scan_file_lifecycle_tbl.marked_for_deletion = 0` at the id-resolve (defense-in-depth for a
+  stale/guessed id).
+- **Feature-detection runs list** → unchanged, still driven by the FD mapping table. FD visibility is
+  independent of the Scan Files tab, so it does **not** route through the visible table.
+
+**The tables move together (the one consistency rule).** Because visibility and marked-state are now two
+rows, each transition writes both, in one transaction:
+- **Import completes / standalone-for-FD import:** `INSERT` the visible row (+ the lifecycle row if absent).
+- **Soft-delete** (search deleted → now unattached, `independent = 0`): `DELETE` the visible row **and** set
+  `lifecycle.marked_for_deletion = 1` (+ ts/user).
+- **Revive on re-reference:** `INSERT` the visible row back **and** clear `marked_for_deletion`, bump
+  `last_referenced_date_time`.
+- **In-progress / died import:** never inserts a visible row — so a zombie is invisible *by construction*.
+
+A missed "delete visible row" leaves a hidden file wrongly *listed* (annoyance, not exposure — the by-id
+gate still blocks its data); a missed "insert visible row" hides a live file (a re-visit/re-import fixes
+it). Both writes sit in the same delete/import transaction, so the risk is low.
+
+Throughout the rest of this doc, read the shorthand columns as their companion homes: `independent` /
+`marked_for_deletion` / `last_referenced` live in `project_scan_file_lifecycle_tbl`; "`shown` / visible"
+means **presence in `project_scan_file_visible_tbl`**.
 
 ### `last_referenced` replaces the heartbeat (the key simplification)
 
@@ -414,8 +500,8 @@ Because the bump happens up front on every such path, every consequence follows 
   (`marked_for_deletion = 1 AND last_referenced_date_time < NOW() - INTERVAL N DAY`) can never remove a
   row that is actively being imported, **without consulting any heartbeat.** `last_referenced` *is* the
   liveness signal.
-- A **died import** leaves its row `shown_in_scan_files_tab = 0` (never flipped to complete) with a
-  `last_referenced` frozen at death; it is never shown, never (per the exposure filter) shared, and simply
+- A **died import** never inserts a visible row (never flipped to complete) and its lifecycle row carries a
+  `last_referenced` frozen at death; it is never shown, never (per the exposure routing) shared, and simply
   ages out to GC. No zombie-vs-live decision is ever made at a single instant.
 - Constraint: **N must exceed the longest plausible import duration** so an in-progress import is never
   GC'd. This is the same assumption the existing 10-day stuck-search cleanup already relies on. (A single
@@ -425,25 +511,32 @@ Because the bump happens up front on every such path, every consequence follows 
   10-day threshold clears the worst case by ~20× and cannot plausibly catch a live import. (10 days also
   matches the existing stuck-`IMPORTING`-search cleanup window, keeping the two cleanup horizons aligned.)
   (N is the age
-  after which a *marked* row becomes GC-eligible; it does not delay hiding, which is immediate via the
-  flag.)
+  after which a *marked* row becomes GC-eligible; it does not delay hiding, which is immediate via deleting
+  the `project_scan_file_visible_tbl` row.)
 
 ### Lifecycle
 
-- **Standalone-for-FD import (flow b):** insert row; `independent = 1`, `shown = 1`; bump `last_referenced`.
-- **Search import (flow a):** insert-or-reuse row; bump `last_referenced` **before** wiring children; on
-  **import complete** set `shown = 1` and clear `marked_for_deletion` if it was set. Never touches
-  `independent`.
-- **New search reuses a previously-deleted (marked) file:** the reuse just clears `marked_for_deletion`
-  and bumps `last_referenced` — no re-creation, no timing race. (This is the "no pressure to delete on
-  time in case a new import references the file" win.)
+(These reference the two companion tables above — "visible row" = a `project_scan_file_visible_tbl` row;
+the flags live in `project_scan_file_lifecycle_tbl`.)
+
+- **Standalone-for-FD import (flow b):** insert the lifecycle row with `independent = 1` and the visible
+  row; bump `last_referenced`.
+- **Search import (flow a):** ensure the lifecycle row exists; bump `last_referenced` **before** wiring
+  children; on **import complete** insert the visible row and clear `marked_for_deletion` if it was set.
+  Never touches `independent`.
+- **New search reuses a previously-deleted (marked) file:** the reuse just clears `marked_for_deletion`,
+  bumps `last_referenced`, and re-inserts the visible row — no re-creation, no timing race. (This is the "no
+  pressure to delete on time in case a new import references the file" win.)
 - **Delete a search:** for each scan file the deleted search referenced that is now unattached and
-  `independent = 0`, set `marked_for_deletion = 1` (+ timestamp/user) and `shown = 0`. **No physical
-  delete in the request transaction** — so the delete-search flow no longer needs the compute-before-the-
-  cascade gymnastics; it may still compute the now-unattached set purely to populate the overlay notice.
-- **GC sweep (async, run_importer):** physically
-  `DELETE FROM project_scan_file_tbl WHERE marked_for_deletion = 1 AND last_referenced_date_time < NOW() - INTERVAL 10 DAY`
-  (cascades children) — but only after the **GC guard re-check** below passes for each candidate.
+  `independent = 0`, set `marked_for_deletion = 1` (+ timestamp/user) and **delete its visible row**. **No
+  physical delete in the request transaction** — so the delete-search flow no longer needs the
+  compute-before-the-cascade gymnastics; it may still compute the now-unattached set purely to populate the
+  overlay notice.
+- **GC sweep (async, run_importer):** candidates are `project_scan_file_id`s whose
+  `project_scan_file_lifecycle_tbl` row has `marked_for_deletion = 1 AND last_referenced_date_time < NOW() -
+  INTERVAL 10 DAY`; physically `DELETE FROM project_scan_file_tbl WHERE id IN (…candidates…)` (cascades the
+  lifecycle / visible / filename / importer / mapping children) — but only after the **GC guard re-check**
+  below passes for each candidate.
 
 ### GC guard — re-apply the retain rule at sweep time (missed-bump insurance)
 
@@ -469,18 +562,19 @@ Notes:
 - **Just status `IMPORTING`, no heartbeat.** The guard only ever *spares*, so it can err toward retaining
   without reintroducing the zombie-vs-live decision. A died (zombie) `IMPORTING` search referenced by a
   marked file is still cleaned later by the async search-cleanup path (point B) when that stuck search is
-  removed — and the file is `shown = 0` the whole time, so it's never exposed. No permanent leak.
+  removed — and the file has no visible row the whole time, so it's never exposed. No permanent leak.
 - With N = 10 days versus a ≤ 12 h (typically < 4 h) import, **this guard should essentially never fire** —
   it is pure belt-and-suspenders insurance against a missed bump, not a mechanism the normal flow relies on.
 
-### Exposure & public-install safety — both handled by the flags
+### Exposure & public-install safety — handled by the visible table + the marked flag
 
-- **Exposure (the primary driver):** satisfied by the visibility / marked-deletion filter — **provided
-  every share/public/read path filters to `marked_for_deletion = 0 AND shown_in_scan_files_tab = 1`**, the
-  same way `project_tbl.marked_for_deletion` projects are excluded. This is the **one gating condition to
-  verify**: if some shared read path reads scan-file data without this filter, bytes leak during the
-  mark→GC window and the aggressive-immediate-delete argument returns. **(Traced 2026-07 — condition holds;
-  see the Exposure trace result subsection below.)**
+- **Exposure (the primary driver):** satisfied by the two-table routing — **list/discovery surfaces drive
+  from `project_scan_file_visible_tbl` (presence, so a hidden file is unreachable by construction) and
+  by-id data surfaces gate on `project_scan_file_lifecycle_tbl.marked_for_deletion = 0`**, analogous to how
+  `project_tbl.marked_for_deletion` projects are excluded. The **one gating condition to verify** was that
+  every shared/public read path can be routed this way; if some shared path reads scan-file data outside
+  this routing, bytes leak during the mark→GC window and the aggressive-immediate-delete argument returns.
+  **(Traced 2026-07 — condition holds; see the Exposure trace result subsection below.)**
 - **Backlog / existing rows:** the one-time cleanup becomes "**mark** currently-unattached, non-independent
   rows `marked_for_deletion = 1`," not hard-delete — reversible and safe on public installs; GC removes
   them later. And because GC only ever removes **already-marked** rows, a broad background sweep is now
@@ -506,16 +600,17 @@ public/shared non-owner viewer.** So the filter must be applied to essentially a
    - **List surfaces** (where a viewer would *discover* a scan file): the Scan Files tab list via
      `ProjectScanFile_For_ProjectId_Searcher` (`SELECT ... FROM project_scan_file_tbl ... WHERE project_id = ?`)
      and the FD-runs list via `FeatureDetection_Root_Mapping_Entries_For_ProjectId_Searcher` (joins
-     `project_scan_file_tbl`). **Apply `marked_for_deletion = 0 AND shown_in_scan_files_tab = 1` here** so a
+     `project_scan_file_tbl`). **Re-point the tab-list searcher to drive from `project_scan_file_visible_tbl`
+     (presence)** so a
      hidden/soft-deleted file never appears. (`Project_Has_AtLeastOne_ProjectScanFile_..._Searcher` needs
      the same filter if "has any scan files" should mean "has any *visible* scan files".)
    - **Spectra / metadata** (`ScanData_WithPeaks...`, `ScanData_NO_Peaks...`, `ScanNumbers_For_mS_1...`) and
      the metadata/FD detail controllers all resolve the request's `projectScanFileId` through
      `ProjectScanFileDAO.getById` / `ProjectScanFile[_ProjectId]_For_ProjectScanFileId_Searcher`
      (`SELECT ... FROM project_scan_file_tbl WHERE id = ?`) before fetching anything. **That resolve is the
-     natural gate** — a gated variant that returns not-found for `marked_for_deletion = 1` rejects the
-     request before it reaches storage (defense-in-depth; in practice a marked file's id is never surfaced
-     to a public viewer once its list entry is filtered out).
+     natural gate** — a gated variant that `LEFT JOIN project_scan_file_lifecycle_tbl` and returns not-found
+     when `marked_for_deletion = 1` rejects the request before it reaches storage (defense-in-depth; in
+     practice a marked file's id is never surfaced to a public viewer once its visible row is gone).
    - **Implementation note:** `ProjectScanFileDAO.getById` is shared by many callers — add a **new gated
      lookup method** rather than mutating `getById`. Optionally, the currently-unused
      `SpectralStorageAPIKeyFor_ProjectId_ScanFileId__Using__project_scan_file_tbl_Searcher` already routes
@@ -560,13 +655,15 @@ list surface + the id-resolve) or is structurally closed by the search deletion 
 ### What this removes from the earlier ("Recommended approach") design
 
 - The **heartbeat-derived "provisional attachment"** (Decision 2) and the entire zombie-vs-live reasoning
-  — replaced by `shown_in_scan_files_tab` + `last_referenced`.
-- **In-transaction physical deletion** inside delete-search (point A) — replaced by a flag flip; physical
-  removal is the async age sweep.
+  — replaced by presence in `project_scan_file_visible_tbl` + `last_referenced`.
+- **In-transaction physical deletion** inside delete-search (point A) — replaced by marking + deleting the
+  visible row; physical removal is the async age sweep.
 - The **ban on a broad sweep** — a marked-only sweep is safe.
+- Any **`ALTER` of `project_scan_file_tbl`** — the new state lives in two companion tables, so the heavily
+  referenced base table is untouched.
 
-Retained from the earlier design: the `independent` boolean (Decision 1) and the delete-search overlay as
-an **informational** notice (below).
+Retained from the earlier design: the `independent` marker (now a column on the lifecycle companion, not on
+`project_scan_file_tbl`) and the delete-search overlay as an **informational** notice (below).
 
 ## The delete-search overlay (front end)
 
@@ -613,3 +710,100 @@ Model it on `Project_List_Experiments_Containing_ProjectSearchIds_RestWebservice
   in a test), its orphaned scan file is removed (point B). (g) **Standalone backlog script:** on a copy of
   a real DB, run it in **count/log-only mode first**, eyeball the rows/projects it would delete, then run
   the destructive pass and confirm only unattached (no complete/live search, no FD, no gold) rows went.
+
+## Reconstructing origin for EXISTING rows — identify search-less scan-file imports (SQL)
+
+Although `project_scan_file_tbl` never stored an origin flag (see the crux section), the **file-import
+tracking records** can reconstruct which existing scan files were imported *without* a search — i.e. the
+standalone-for-FD imports we would want to **mark `independent` / spare** rather than sweep in the one-time
+backlog clear. (This revives the "sha1 → import-history reconstruction" idea the earlier plan had dropped;
+it is now a viable input to the existing-rows decision.)
+
+**Discriminator:** a search-less import = a `file_import_tracking_tbl` submission that has ≥1 **Scan File**
+child and **no Limelight XML File** child. File types in `file_import_tracking_single_file_type_lookup_tbl`:
+**`1 = Limelight XML File`, `2 = Scan File`**, `3 = FASTA File`, `4 = Generic Other File`. The submitting
+user is `file_import_tracking_tbl.user_id` (= `user_tbl.id`; the User-Mgmt account record is external, so
+that id is the identity).
+
+### Query A — search-less scan-file imports + submitting user (tracking side only)
+
+```sql
+-- Scan files imported WITHOUT a search, from the file-import tracking records.
+-- file_type_id: 1 = Limelight XML File, 2 = Scan File, 3 = FASTA, 4 = Other.
+SELECT
+    fit.id                    AS file_import_tracking_id,
+    fit.project_id,
+    fit.user_id               AS submitted_by_user_id,   -- user_tbl.id (User Mgmt record is external)
+    fit.status_id             AS import_status_id,        -- file_import_tracking_status_values_lookup_tbl
+    fit.marked_for_deletion   AS import_record_marked_for_deletion,
+    fit.record_submit_date_time,
+    sf.file_index,
+    sf.filename_in_upload     AS scan_filename,
+    sf.sha1_sum,
+    sf.file_size
+FROM file_import_tracking_tbl fit
+JOIN file_import_tracking_single_file_tbl sf
+      ON sf.file_import_tracking_id = fit.id
+     AND sf.file_type_id = 2                    -- Scan File present
+WHERE NOT EXISTS (                              -- ...and NO Limelight XML => no search
+        SELECT 1
+        FROM file_import_tracking_single_file_tbl xml
+        WHERE xml.file_import_tracking_id = fit.id
+          AND xml.file_type_id = 1
+      )
+ORDER BY fit.project_id, fit.id, sf.file_index;
+```
+
+### Query B — map to the existing `project_scan_file` rows (the recovery list)
+
+Links each search-less scan-file import to the current `project_scan_file` row it created (by sha1 within
+the same project), so the backfill can mark those `independent` instead of deleting them.
+
+```sql
+SELECT DISTINCT
+    psf.id                    AS project_scan_file_id,
+    psf.project_id,
+    fit.user_id               AS submitted_by_user_id,   -- user_tbl.id
+    sf.sha1_sum,
+    sf.filename_in_upload     AS scan_filename,
+    fit.record_submit_date_time
+FROM file_import_tracking_tbl fit
+JOIN file_import_tracking_single_file_tbl sf
+      ON sf.file_import_tracking_id = fit.id
+     AND sf.file_type_id = 2
+JOIN project_scan_file_importer_tbl psfi
+      ON psfi.sha1sum = sf.sha1_sum
+JOIN project_scan_file_tbl psf
+      ON psf.id = psfi.project_scan_file_id
+     AND psf.project_id = fit.project_id        -- same-project (sha1 alone is shared across projects)
+WHERE NOT EXISTS (
+        SELECT 1 FROM file_import_tracking_single_file_tbl xml
+        WHERE xml.file_import_tracking_id = fit.id AND xml.file_type_id = 1 )
+ORDER BY psf.project_id, psf.id;
+```
+
+To narrow B to **only rows the backlog clear would otherwise delete** (standalone-imported *and* currently
+unattached), add:
+
+```sql
+  AND NOT EXISTS (SELECT 1 FROM project_scan_filename_tbl pscfn
+                  JOIN project_scan_filename__search_scan_file__mapping_tbl m
+                       ON m.project_scan_filename_id = pscfn.id
+                  WHERE pscfn.project_scan_file_id = psf.id)                    -- no search mapping
+  AND NOT EXISTS (SELECT 1 FROM feature_detection_root__project_scnfl_mapping_tbl fd
+                  WHERE fd.project_scan_file_id = psf.id)                       -- no FD run
+  AND NOT EXISTS (SELECT 1 FROM gold_standard_for_scan_file_root__project_scnfl_mapping_tbl gs
+                  WHERE gs.project_scan_file_id = psf.id)                       -- no gold standard
+```
+
+### Caveats
+
+- **Heuristic:** "scan file present, no Limelight XML in the same submission" = standalone-for-FD. Matches
+  flow (a) vs (b), but it is inferred from the submission shape, not a stored origin flag.
+- **`sha1_sum` can be NULL** on old `file_import_tracking_single_file_tbl` rows — those don't join in B (and
+  can't be matched); Query A still lists them.
+- **Pruned tracking history:** if any `file_import_tracking` rows were purged / `marked_for_deletion`, those
+  standalone imports aren't recoverable this way. Decide whether to include `fit.marked_for_deletion = 1`
+  rows (left in above, flagged).
+- **Run counts first** (`COUNT(*)`, `COUNT(DISTINCT psf.id)` per project) before any mutating/destructive
+  step.
