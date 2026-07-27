@@ -18,10 +18,6 @@ search's tag id set; there is no server/webservice or DB change. State persists 
 > combines the groups. The old "CNF" names were renamed to "Grouped" at the same time. Old persisted
 > filters are migrated on load (see Persistence).
 
-> **Naming note:** the code still carries `..._Prototype` names and `// PROTOTYPE:` comments
-> (e.g. the state flag `use_Advanced_TagFilter_Prototype`), but the feature is **deployed / live**,
-> not an experiment. Treat "prototype" in these identifiers as legacy naming, not status.
-
 ## What it does (user-facing)
 
 - Build a grouped tag expression. **Each group** combines its own tags with **its own** AND/OR
@@ -90,7 +86,7 @@ All under `limelight_webapp/front_end/src/js/page_js/data_pages/`.
   `_advanced_TagFilter_HasEmptyGroup`, `_advanced_TagFilter_Matches`,
   `_save_Advanced_TagFilter_ToSessionStorage`; fields `_advanced_TagFilter_InitialSeed` (array of
   `Seed_Group`, each carrying `groupOperator`), `_advanced_TagFilter_Initial_BetweenOperator`,
-  `_advanced_Builder_RemountCounter`; state flag `use_Advanced_TagFilter_Prototype`.
+  `_advanced_Builder_RemountCounter`; state flag `use_Advanced_TagFilter`.
 - `projectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet.ts` — persistence.
   sessionStorage key `limelight_project_page_advanced_tag_filter`. Exported types
   `ProjectPage_SearchesSection__Advanced_TagFilter` (`{ betweenGroups_Operator, groups }`) /
@@ -221,5 +217,3 @@ the folder count use **`No`** ("No searches …") — the terse chip vs. natural
 - Migrate the other consumers of `Search_Tags_Selections_Object` /
   `Search_Tags_SelectSearchTags_Component` toward this grouped model, if the basic filter is ever
   retired.
-- The "prototype" naming (`use_Advanced_TagFilter_Prototype`, `// PROTOTYPE:` comments) could be
-  renamed now that the feature is live.

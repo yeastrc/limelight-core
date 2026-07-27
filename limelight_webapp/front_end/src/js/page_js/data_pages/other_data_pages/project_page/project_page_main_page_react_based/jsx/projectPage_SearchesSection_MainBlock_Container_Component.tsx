@@ -115,8 +115,8 @@ interface ProjectPage_SearchesSection_MainBlock_Component_State {
 
     show_SearchTag_Categories: boolean
 
-    //  PROTOTYPE:  which tag filter is active -- false/undefined = basic "Filter On Tags:", true = Advanced grouped (CNF).  Either/or.
-    use_Advanced_TagFilter_Prototype?: boolean
+    //  Which tag filter is active -- false/undefined = basic "Filter On Tags:", true = Advanced grouped filter.  Either/or.
+    use_Advanced_TagFilter?: boolean
 
     force_Rerender?: object
 }
@@ -328,7 +328,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
         //  Load the Advanced ( grouped ) tag filter from session storage, dropping any tags no longer in the project.
         //  If a non-empty advanced filter exists, default to Advanced mode.
-        let use_Advanced_TagFilter_Prototype = false;
+        let use_Advanced_TagFilter = false;
         {
             const stored_Advanced = this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.get_Advanced_TagFilter();
             if ( stored_Advanced ) {
@@ -342,7 +342,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                 if ( filtered_Groups.length > 0 ) {
                     this._advanced_TagFilter_InitialSeed = filtered_Groups;
                     this._advanced_TagFilter_Initial_BetweenOperator = stored_Advanced.betweenGroups_Operator;
-                    use_Advanced_TagFilter_Prototype = true;
+                    use_Advanced_TagFilter = true;
                 }
             }
         }
@@ -397,7 +397,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
             showNoSearchesMessage_NoSearchesLoadedFromServer,
             show_UpdatingMessage: false,
             show_LoadingMessage_InitialLoad: false,
-            use_Advanced_TagFilter_Prototype
+            use_Advanced_TagFilter
         });
 
         this._searchesAndFolders_Update_FilterOnSearchTags()
@@ -405,7 +405,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     }
 
     /**
-     * PROTOTYPE:  Translate the existing simple tag selections ( OR / AND / NOT buckets ) into the
+     * Translate the existing simple tag selections ( OR / AND / NOT buckets ) into the
      * grouped seed shape for the "Advanced" builder:
      *   - each AND tag  -> its own 1-tag group                       ( groups combined by the between-op )
      *   - each NOT tag  -> its own 1-tag negated group ( "NOT tag" )
@@ -437,7 +437,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     }
 
     /**
-     * PROTOTYPE:  Switch to the Advanced grouped filter -- seed the builder from the current basic
+     * Switch to the Advanced grouped filter -- seed the builder from the current basic
      * selection, then clear the basic selection.
      */
     private _switchTo_Advanced_TagFilter() : void {
@@ -455,11 +455,11 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
         this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.
             update_SearchTagIds_Selected({ updated_SearchTagIds_Selected: this._search_Tags_Selections_Object });
 
-        this.setState({ use_Advanced_TagFilter_Prototype: true });
+        this.setState({ use_Advanced_TagFilter: true });
     }
 
     /**
-     * PROTOTYPE:  Return to the basic filter -- discard/clear the advanced filter ( incl. session storage ).
+     * Return to the basic filter -- discard/clear the advanced filter ( incl. session storage ).
      */
     private _switchTo_Basic_TagFilter() : void {
 
@@ -470,7 +470,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
         //  Advanced now empty and basic empty => re-filter ( no tag filtering )
         this._searchesAndFolders_Update_FilterOnSearchTags();
 
-        this.setState({ use_Advanced_TagFilter_Prototype: false });
+        this.setState({ use_Advanced_TagFilter: false });
     }
 
     /**
@@ -488,7 +488,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     }
 
     /**
-     * PROTOTYPE:  Save the advanced filter to session storage ( null/empty clears it ).
+     * Save the advanced filter to session storage ( null/empty clears it ).
      */
     private _save_Advanced_TagFilter_ToSessionStorage(
         groups : ReadonlyArray<Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group>,
@@ -1585,7 +1585,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                             </div>
                         ) : null }
 
-                        { ( ! this.state.use_Advanced_TagFilter_Prototype ) && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root.searchTag_Array.length > 0 ? (
+                        { ( ! this.state.use_Advanced_TagFilter ) && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root.searchTag_Array.length > 0 ? (
 
                             <div
                                 style={ { display: "grid", gridTemplateColumns: "min-content auto", marginTop: 3 } }
@@ -1634,7 +1634,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                              search-name/id input, seeded from the basic selection.  The "Filtering on tags:" summary
                              is rendered further down in the shared "filter-on-tags--currently-filtering" block.  */}
 
-                        { this.state.use_Advanced_TagFilter_Prototype && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root.searchTag_Array.length > 0 ? (
+                        { this.state.use_Advanced_TagFilter && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root.searchTag_Array.length > 0 ? (
 
                             <div style={ { marginTop: 10 } }>
                                 {/*  "Use basic tag filter" button at the top of the advanced area  */}
@@ -1677,8 +1677,8 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                         {/*  Display "Filtering On" to show what search name, search id, and search tags filtering on  */}
 
                         { this._searchName_SearchId_Filter_UserInput.length > 0
-                            || ( ( ! this.state.use_Advanced_TagFilter_Prototype ) && this._search_Tags_Selections_Object.is_any_selections() )
-                            || ( this.state.use_Advanced_TagFilter_Prototype && this._isAdvanced_TagFilter_Active() ) ? (
+                            || ( ( ! this.state.use_Advanced_TagFilter ) && this._search_Tags_Selections_Object.is_any_selections() )
+                            || ( this.state.use_Advanced_TagFilter && this._isAdvanced_TagFilter_Active() ) ? (
 
                             <div
                                 className=" filter-on-tags--currently-filtering "
@@ -1686,7 +1686,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                             >
                                 { this._searchName_SearchId_Filter_UserInput.length > 0 ? (  //  User Input value
                                     <div  //  Add marginBottom if also have Search Tags to display ( basic OR advanced tag filter )
-                                        style={ { marginBottom : ( this._search_Tags_Selections_Object.is_any_selections() || ( this.state.use_Advanced_TagFilter_Prototype && this._isAdvanced_TagFilter_Active() ) ) ? 5 : null } }
+                                        style={ { marginBottom : ( this._search_Tags_Selections_Object.is_any_selections() || ( this.state.use_Advanced_TagFilter && this._isAdvanced_TagFilter_Active() ) ) ? 5 : null } }
                                     >
                                         <span
                                             style={ { fontWeight: "bold", fontSize: 18, whiteSpace: "nowrap" } }
@@ -1724,7 +1724,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                     </div>
                                 ) : null }
 
-                                { ( ! this.state.use_Advanced_TagFilter_Prototype ) && this._search_Tags_Selections_Object.is_any_selections() ? (
+                                { ( ! this.state.use_Advanced_TagFilter ) && this._search_Tags_Selections_Object.is_any_selections() ? (
 
                                     <div
                                         style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }
@@ -1787,7 +1787,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                 ) : null }
 
                                 {/*  Advanced ( grouped CNF ) tag filter summary -- same shared block as "Filtering on text:"  */}
-                                { this.state.use_Advanced_TagFilter_Prototype && this._isAdvanced_TagFilter_Active() ? (
+                                { this.state.use_Advanced_TagFilter && this._isAdvanced_TagFilter_Active() ? (
 
                                     <div
                                         style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }

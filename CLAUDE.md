@@ -204,5 +204,4 @@ saved filters are migrated on load). It is **front-end only** (client-side filte
 `.../tag_filter_expression_builder_grouped_component/`. Before changing it, read
 `limelight_features_docs/project_page_advanced_tag_filter.md` — files, the empty-group-blocks-all vs.
 pristine-shows-all rule, basic↔advanced seeding, the persistence migration, and the shared
-"Filtering on…" summary requirement. (Note: the code still carries legacy `..._Prototype` naming
-though the feature is live.)
+"Filtering on…" summary requirement.
