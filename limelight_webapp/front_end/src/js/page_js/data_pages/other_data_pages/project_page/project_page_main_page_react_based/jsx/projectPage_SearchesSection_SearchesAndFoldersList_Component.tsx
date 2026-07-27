@@ -807,6 +807,51 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
     }
 
     /**
+     * Number of searches in THIS folder that pass the current filters -- or the folder's total when there is
+     * no filtering ( projectSearchIds_ToDisplay_... is null ).  Shown as "( N Searches )" after the folder name.
+     */
+    private _folder_PassingSearchCount() : number {
+        if ( ! this.props.folderEntry ) {
+            return 0;
+        }
+        const projectSearchIds_InFolder = this.props.folderEntry.searchesInFolder_ProjectSearchIds_InDisplayOrder;
+        if ( ! projectSearchIds_InFolder ) {
+            return 0;
+        }
+        const filterSet = this.props.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering;
+        if ( ! filterSet ) {
+            return projectSearchIds_InFolder.length;   //  no filtering -> all searches in the folder
+        }
+        let count = 0;
+        for ( const projectSearchId of projectSearchIds_InFolder ) {
+            if ( filterSet.has( projectSearchId ) ) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    //  The "( N searches )" chip text shown after the folder name;  zero is written as "No".  Sentence case
+    //  ( only the leading word capitalized ) -- "searches" stays lower-case.
+    private _folder_CountChipText() : string {
+        const count = this._folder_PassingSearchCount();
+        const countWord = ( count === 0 ) ? "No" : String( count );
+        return "(" + countWord + ( count === 1 ? " search" : " searches" ) + ")";
+    }
+
+    //  Tooltip text for the folder search-count:  mentions the filters only when filtering is active;
+    //  zero is written as "no".
+    private _folder_CountTooltip() : string {
+        const count = this._folder_PassingSearchCount();
+        const countWord = ( count === 0 ) ? "no" : String( count );
+        const isFiltering = !! this.props.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering;
+        if ( isFiltering ) {
+            return "Folder contains " + countWord + ( count === 1 ? " search that passes" : " searches that pass" ) + " the filters";
+        }
+        return "Folder contains " + countWord + ( count === 1 ? " search" : " searches" );
+    }
+
+    /**
      *
      */
     render(): React.ReactNode {
@@ -940,6 +985,19 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                                     </span>
                                 )}
                             </span>
+
+                            {/*  Count of searches in this folder that pass the filters ( or the folder total when
+                                 no filters ).  */}
+                            { this.props.folderEntry ? (
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={ <span>{ this._folder_CountTooltip() }</span> }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <span style={ { marginLeft: 6, fontWeight: "normal", color: "#666666" } }>
+                                        { this._folder_CountChipText() }
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            ) : null }
 
                             { ( this.props.searchesSearchTagsFolders_Result_Root.is_userIsProjectOwner() ) ? (
                                 <React.Fragment>
