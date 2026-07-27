@@ -359,12 +359,52 @@ body.data-page {
                             word-break: break-all; // Backup in case break-word is not supported
                             word-break: break-word; //  Keep this here as long as it works since not all cells will have the <span> with the class name 'table-data-cell-property-value'
 
+                          //  Cell hover highlight.
+                          //
+                          //  The ROW hover outline (on div.data-table-data-rows-inner-containing-div-container-div)
+                          //  already draws the TOP and BOTTOM lines spanning the full row.  Here we add only the
+                          //  hovered cell's LEFT and RIGHT vertical lines, positioned to JOIN that row outline so
+                          //  the cell reads as one box of uniform thickness (matching top/bottom).
+                          //
+                          //  We deliberately do NOT use 'outline' for the cell:  outline-offset is identical on all
+                          //  four sides, and because the table's horizontal border-spacing (12px) differs from the
+                          //  vertical (6px) -- an intentional difference -- an outline can align on top/bottom OR
+                          //  left/right but never both (that was the old 6px near-miss on the left/right edges).
+                          //  Positioned pseudo-elements let us place each side line independently.
+                          //
+                          //  ::before = LEFT line, ::after = RIGHT line.  Each is:
+                          //    - the row-outline thickness ($data-table-hover-outline-width),
+                          //    - centered in the border-spacing gap on that side (half the horizontal spacing out
+                          //      from the cell edge, minus half the line width to center on that point),
+                          //    - extended past the cell top & bottom by (vertical spacing + line width) so its ends
+                          //      overlap the row outline's top/bottom lines for a solid corner.
+                          //  (The vertical extent assumes table-top == row-container-top, i.e. no 'row-border' on
+                          //   the inner containing div; that border-highlight case would shift it by its 2px.)
+
                           &:hover {
-                            outline-color: $data-table-hover-outline-color;
-                            outline-style: $data-table-hover-outline-style;
-                            outline-width: $data-table-hover-outline-width;
-                            outline-offset: $data-table-react-border-spacing-vertical;
+                            position: relative;  //  containing block for the ::before / ::after side lines
+
+                            &::before, &::after {
+                              content: "";
+                              position: absolute;
+                              top:    -( $data-table-react-border-spacing-vertical + $data-table-hover-outline-width );
+                              bottom: -( $data-table-react-border-spacing-vertical + $data-table-hover-outline-width );
+                              width: $data-table-hover-outline-width;
+                              background-color: $data-table-hover-outline-color;
+                            }
+
+                            &::before {  //  LEFT line
+                              left:  -( $data-table-react-border-spacing-horizontal-half + $data-table-hover-outline-width * 0.5 );
+                            }
+                            &::after {   //  RIGHT line
+                              right: -( $data-table-react-border-spacing-horizontal-half + $data-table-hover-outline-width * 0.5 );
+                            }
                           }
+
+                          //  Leftmost cell: the row outline IS the left edge, so draw only the RIGHT line.
+                          &:first-child:hover::before { content: none; }
+                          //  Rightmost cell: the row outline IS the right edge, so draw only the LEFT line.
+                          &:last-child:hover::after   { content: none; }
 
                           &.data-table-data-cell-align-bottom {
                             vertical-align: bottom;  // Override above vertical alignment
