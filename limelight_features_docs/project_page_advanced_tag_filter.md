@@ -230,6 +230,25 @@ everything else derived from the search/tag data: folder lists, tag lists, count
 So: **derived state on this section is safe to compute once per data load** — it is not stale after tag
 edits. (Traced/verified 2026-07-27.)
 
+## Shared helper modules (post code-review dedup)
+
+The tag-chip rendering was de-duplicated into shared modules (all under
+`search_tags__display_management/`):
+
+- `searchTags_SearchCount_Display.tsx` — single source for the "N search(es) has/have this tag" sentence /
+  tooltip line (`__sentence`, `__tooltipLine`, `__countForTagId`). Used by **all five** tag components
+  (overlay, builder, advanced summary/preview, basic selector, basic summary). (The `__sentence` /
+  `__tooltipLine` returns are `… | null` when there's no count map.)
+- `tag_filter_expression_builder_grouped_component/groupedTagChip_SharedHelpers.tsx` — tag-chip tooltip
+  contents, chip color resolution + negated styling, and the single `groupedTagChip_SharedHelpers__NEGATED_COLOR`
+  (`#c0392b`). Shared by the builder and the preview (were byte-identical copies before).
+- `searchTags_TagLookupMaps.ts` — class **`SearchTags_TagLookupMaps`** holding the `tagId → entry` and
+  `categoryId → label` lookups. Built **once per data load** in the container's
+  `_process_New__searchesSearchTagsFolders_Result_Root` (next to `_searchesPerTagId_Map`) and passed down as
+  an **instance** to the builder/preview, so the maps are not rebuilt per render. This is an explicit
+  instance-field cache rebuilt on data load — **not** memoization (a deliberate style choice; there is no
+  `useMemo`/hidden cache anywhere here).
+
 ## Possible follow-ups (noted, not done)
 
 - Extract the duplicated group-expression evaluator (`_advanced_TagFilter_Matches` vs. the preview
