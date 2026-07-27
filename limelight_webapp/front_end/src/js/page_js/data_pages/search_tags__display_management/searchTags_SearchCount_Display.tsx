@@ -23,7 +23,7 @@ export function searchTags_SearchCount_Display__countForTagId(
 
 //  Sentence:  "No searches have this tag" / "1 search has this tag" / "N searches have this tag".
 //  null when searchCount is undefined ( no count data ).
-export function searchTags_SearchCount_Display__sentence( searchCount : number | undefined ) : string {
+export function searchTags_SearchCount_Display__sentence( searchCount : number | undefined ) : string | null {
     if ( searchCount === undefined ) {
         return null;
     }
@@ -34,7 +34,7 @@ export function searchTags_SearchCount_Display__sentence( searchCount : number |
 }
 
 //  A <div> tooltip line with the sentence ( marginTop optional ), or null when there is no count data.
-export function searchTags_SearchCount_Display__tooltipLine( searchCount : number | undefined, marginTop ?: number ) : React.JSX.Element {
+export function searchTags_SearchCount_Display__tooltipLine( searchCount : number | undefined, marginTop ?: number ) : React.JSX.Element | null {
     const sentence = searchTags_SearchCount_Display__sentence( searchCount );
     if ( sentence === null ) {
         return null;

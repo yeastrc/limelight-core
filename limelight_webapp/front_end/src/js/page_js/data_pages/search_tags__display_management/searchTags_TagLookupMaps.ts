@@ -48,7 +48,7 @@ export class SearchTags_TagLookupMaps {
     }
 
     //  Category label for a tag entry ( or null when uncategorized / unknown ).
-    get_CategoryLabel_ForTagEntry( tagEntry : Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry | undefined ) : string {
+    get_CategoryLabel_ForTagEntry( tagEntry : Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry | undefined ) : string | null {
         if ( tagEntry && tagEntry.tagCategoryId !== undefined && tagEntry.tagCategoryId !== null ) {
             return this._categoryLabel_Map.get( tagEntry.tagCategoryId );
         }

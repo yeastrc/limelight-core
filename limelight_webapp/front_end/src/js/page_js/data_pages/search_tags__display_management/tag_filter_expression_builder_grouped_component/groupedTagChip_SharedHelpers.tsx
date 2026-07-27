@@ -52,7 +52,7 @@ export function groupedTagChip_SharedHelpers__build_TagTooltipContents(
     {
         tagString, categoryLabel, negated, searchCount
     } : {
-        tagString : string, categoryLabel : string, negated : boolean, searchCount : number | undefined
+        tagString : string, categoryLabel : string | null, negated : boolean, searchCount : number | undefined
     }
 ) : React.JSX.Element {
     return (
