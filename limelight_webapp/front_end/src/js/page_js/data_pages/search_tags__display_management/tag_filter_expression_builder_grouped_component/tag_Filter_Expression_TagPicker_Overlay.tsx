@@ -269,15 +269,30 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
 
         const disabled = this.props.initialDisabledTagIds.has( tag.tagId ) || this.state.locallyPickedTagIds.has( tag.tagId );
 
-        const tooltipText = disabled ? ( this.props.disabledReason ? this.props.disabledReason : "Already added" ) : "Add";
+        const actionText = disabled ? ( this.props.disabledReason ? this.props.disabledReason : "Already added" ) : "Add";
 
-        //  Number of searches in the project that have this tag ( shown as "( N )" after the tag name )
-        const searchCount = this.props.searchesPerTagId_Map ? this.props.searchesPerTagId_Map.get( tag.tagId ) : undefined;
+        //  Number of searches in the project that have this tag.  When the count map is provided, a tag that is
+        //  NOT in the map has ZERO searches ( shown as "( Zero )" ).  undefined only when no map was passed.
+        const searchesPerTagId_Map = this.props.searchesPerTagId_Map;
+        const searchCount : number | undefined = searchesPerTagId_Map ? ( searchesPerTagId_Map.get( tag.tagId ) ?? 0 ) : undefined;
+
+        const tooltipContents = (
+            <span>
+                <div>{ actionText }</div>
+                { searchCount !== undefined ? (
+                    <div style={ { marginTop: 8 } }>
+                        { searchCount === 0
+                            ? "No searches have this tag"
+                            : ( searchCount + ( searchCount === 1 ? " search has this tag" : " searches have this tag" ) ) }
+                    </div>
+                ) : null }
+            </span>
+        );
 
         return (
             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                 key={ tag.tagId }
-                title={ tooltipText }
+                title={ tooltipContents }
                 { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
             >
                 <span
@@ -305,7 +320,7 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
                 >
                     { tag.tagString }
                     { searchCount !== undefined ? (
-                        <span style={ { marginLeft: 5, fontSize: 11, opacity: 0.75 } }>( { searchCount } )</span>
+                        <span style={ { marginLeft: 5, fontSize: 11, opacity: 0.75 } }>( { searchCount === 0 ? "Zero" : searchCount } )</span>
                     ) : null }
                 </span>
             </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>

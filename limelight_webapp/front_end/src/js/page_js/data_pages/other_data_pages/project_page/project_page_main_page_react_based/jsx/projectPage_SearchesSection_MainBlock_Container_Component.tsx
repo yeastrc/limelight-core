@@ -1610,6 +1610,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                     <Search_Tags_SelectSearchTags_Component
                                         searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
                                         search_Tags_Selections_Object={ this._search_Tags_Selections_Object }
+                                        searchesPerTagId_Map={ this._searchesPerTagId_Map }
                                         searchTagsSelected_Changed_Callback={ (params) => {
 
                                             this._search_Tags_Selections_Object = params.search_Tags_Selections_Object
@@ -1768,6 +1769,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                             <Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component
                                                 searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
                                                 search_Tags_Selections_Object={ this._search_Tags_Selections_Object }
+                                                searchesPerTagId_Map={ this._searchesPerTagId_Map }
                                                 clearSelection_Callback={ () => {
 
                                                     this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
@@ -1821,6 +1823,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                 groups={ this._advanced_TagFilter_InitialSeed }
                                                 betweenGroups_Operator={ this._advanced_TagFilter_Initial_BetweenOperator }
                                                 searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
+                                                searchesPerTagId_Map={ this._searchesPerTagId_Map }
                                             />
                                         </div>
                                     </div>

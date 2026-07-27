@@ -39,6 +39,8 @@ interface Internal__Tag_Filter_Expression_Preview_Component_Props {
     groups : ReadonlyArray<Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group>
     betweenGroups_Operator : 'AND' | 'OR'
     searchTagData_Root : Search_Tags_SelectSearchTags_Component_SearchTagData_Root
+    //  Number of searches ( in the project ) that have each tag, keyed by tagId -- shown in each tag's tooltip.
+    searchesPerTagId_Map? : ReadonlyMap<number, number>
 }
 
 
@@ -66,7 +68,8 @@ export class Tag_Filter_Expression_Preview_Component
     }
 
     //  Shared tooltip contents for a tag chip.  Uses a 2-column CSS grid so the values left-align.
-    private _build_TagTooltipContents( tagString : string, categoryLabel : string, negated : boolean ) : React.JSX.Element {
+    //  searchCount:  number of searches in the project that have this tag ( undefined = count data not available ).
+    private _build_TagTooltipContents( tagString : string, categoryLabel : string, negated : boolean, searchCount : number | undefined ) : React.JSX.Element {
         return (
             <span>
                 <div style={ { display: "grid", gridTemplateColumns: "max-content 1fr", columnGap: 8, rowGap: 2 } }>
@@ -75,6 +78,13 @@ export class Tag_Filter_Expression_Preview_Component
                     <div>Category:</div>
                     <div>{ categoryLabel ? categoryLabel : "(uncategorized)" }</div>
                 </div>
+                { searchCount !== undefined ? (
+                    <div style={ { marginTop: 8 } }>
+                        { searchCount === 0
+                            ? "No searches have this tag"
+                            : ( searchCount + ( searchCount === 1 ? " search has this tag" : " searches have this tag" ) ) }
+                    </div>
+                ) : null }
                 { negated ? ( <div style={ { marginTop: 4, fontStyle: "italic" } }>Negated ( NOT ) — tag must be ABSENT</div> ) : null }
             </span>
         );
@@ -97,7 +107,8 @@ export class Tag_Filter_Expression_Preview_Component
         const categoryLabel = ( tagEntry && tagEntry.tagCategoryId !== undefined && tagEntry.tagCategoryId !== null )
             ? categoryLabel_Map.get( tagEntry.tagCategoryId ) : null;
 
-        const tooltipContents = this._build_TagTooltipContents( tagString, categoryLabel, literal.negated );
+        const searchCount : number | undefined = this.props.searchesPerTagId_Map ? ( this.props.searchesPerTagId_Map.get( literal.tagId ) ?? 0 ) : undefined;
+        const tooltipContents = this._build_TagTooltipContents( tagString, categoryLabel, literal.negated, searchCount );
 
         return (
             <span

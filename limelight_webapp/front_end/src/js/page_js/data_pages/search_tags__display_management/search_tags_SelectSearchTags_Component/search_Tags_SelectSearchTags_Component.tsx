@@ -74,6 +74,9 @@ interface Search_Tags_SelectSearchTags_Component_Props {
     searchTagData_Root: Search_Tags_SelectSearchTags_Component_SearchTagData_Root
     search_Tags_Selections_Object: Search_Tags_Selections_Object
     searchTagsSelected_Changed_Callback: Search_Tags_SelectSearchTags_Component_SelectedSearchTagIds_Callback
+    //  Optional:  number of searches ( in the project ) that have each tag, keyed by tagId -- shown in each
+    //  tag's tooltip.  Optional so this shared component works where the count isn't available.
+    searchesPerTagId_Map?: ReadonlyMap<number, number>
 }
 
 /**
@@ -288,11 +291,26 @@ export class Search_Tags_SelectSearchTags_Component extends React.Component< Sea
                 key={ tag_Internal.tag_Entry.tagId }
                 tag_Internal={ tag_Internal }
                 search_Tags_Selections_Object={ this.props.search_Tags_Selections_Object }
+                searchesPerTagId_Map={ this.props.searchesPerTagId_Map }
 
                 searchTagsSelected_Changed_Callback={ this.props.searchTagsSelected_Changed_Callback }
             />
         )
     }
+}
+
+////////////////////////////////////////
+
+//  Tooltip line showing how many searches ( in the project ) have this tag.  null when no count data provided.
+function _searchCount_TooltipLine( searchesPerTagId_Map : ReadonlyMap<number, number> | undefined, tagId : number ) : React.JSX.Element {
+    if ( ! searchesPerTagId_Map ) {
+        return null;
+    }
+    const count = searchesPerTagId_Map.get( tagId ) ?? 0;
+    const text = ( count === 0 )
+        ? "No searches have this tag"
+        : ( count + ( count === 1 ? " search has this tag" : " searches have this tag" ) );
+    return <div style={ { marginTop: 8 } }>{ text }</div>;
 }
 
 ////////////////////////////////////////
@@ -308,6 +326,7 @@ interface INTERNAL__Search_Tag_SINGLE_Component_Props {
 
     tag_Internal: INTERNAL__Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry
     search_Tags_Selections_Object: Search_Tags_Selections_Object
+    searchesPerTagId_Map?: ReadonlyMap<number, number>
 
     searchTagsSelected_Changed_Callback: Search_Tags_SelectSearchTags_Component_SelectedSearchTagIds_Callback
 }
@@ -506,6 +525,7 @@ export class INTERNAL__Search_Tag_SINGLE_Component extends React.Component< INTE
                     title={
                         <div className=" word-break-break-word-backup-break-all ">
                             { tooltip_Inner }
+                            { _searchCount_TooltipLine( this.props.searchesPerTagId_Map, tag_Entry.tagId ) }
                         </div>
                     }
                     { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }

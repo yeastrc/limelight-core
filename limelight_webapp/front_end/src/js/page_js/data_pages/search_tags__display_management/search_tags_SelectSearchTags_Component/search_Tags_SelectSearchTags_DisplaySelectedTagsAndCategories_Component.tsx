@@ -9,6 +9,10 @@
 import React from 'react'
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /////
 
@@ -49,6 +53,9 @@ interface Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Componen
     searchTagData_Root: Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component_SearchTagData_Root
     search_Tags_Selections_Object: Search_Tags_Selections_Object
     clearSelection_Callback: () => void
+    //  Optional:  number of searches ( in the project ) that have each tag, keyed by tagId -- shown in each
+    //  tag's tooltip.  Optional so this shared component works where the count isn't available.
+    searchesPerTagId_Map?: ReadonlyMap<number, number>
 }
 
 /**
@@ -195,19 +202,22 @@ export class Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Compo
         const details_AND = render_OR_AND_or_NOT__ReactComponent({
             enum__OR__AND__NOT: INTERNAL_ENUM__OR__AND__NOT.AND,
             search_Tags_Selections_Object: this.props.search_Tags_Selections_Object,
-            searchTagData_Display_Root: this.state.searchTagData_Display_Root
+            searchTagData_Display_Root: this.state.searchTagData_Display_Root,
+            searchesPerTagId_Map: this.props.searchesPerTagId_Map
         })
 
         const details_OR = render_OR_AND_or_NOT__ReactComponent({
             enum__OR__AND__NOT: INTERNAL_ENUM__OR__AND__NOT.OR,
             search_Tags_Selections_Object: this.props.search_Tags_Selections_Object,
-            searchTagData_Display_Root: this.state.searchTagData_Display_Root
+            searchTagData_Display_Root: this.state.searchTagData_Display_Root,
+            searchesPerTagId_Map: this.props.searchesPerTagId_Map
         })
 
         const details_NOT = render_OR_AND_or_NOT__ReactComponent({
             enum__OR__AND__NOT: INTERNAL_ENUM__OR__AND__NOT.NOT,
             search_Tags_Selections_Object: this.props.search_Tags_Selections_Object,
-            searchTagData_Display_Root: this.state.searchTagData_Display_Root
+            searchTagData_Display_Root: this.state.searchTagData_Display_Root,
+            searchesPerTagId_Map: this.props.searchesPerTagId_Map
         })
 
         let group_AND_OR_NOT_Count = 0;
@@ -324,11 +334,12 @@ export class Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Compo
  */
 const render_OR_AND_or_NOT__ReactComponent = function(
     {
-        searchTagData_Display_Root, search_Tags_Selections_Object, enum__OR__AND__NOT
+        searchTagData_Display_Root, search_Tags_Selections_Object, enum__OR__AND__NOT, searchesPerTagId_Map
     } : {
         search_Tags_Selections_Object: Search_Tags_Selections_Object
         searchTagData_Display_Root: INTERNAL__SearchTagData_Display_Root
         enum__OR__AND__NOT: INTERNAL_ENUM__OR__AND__NOT
+        searchesPerTagId_Map?: ReadonlyMap<number, number>
     }
 ) : React.JSX.Element {
 
@@ -391,7 +402,7 @@ const render_OR_AND_or_NOT__ReactComponent = function(
                     {/*  column 2:  Search Tags  */}
                     <div>
                         { categoryEntry.all_SearchTags_InCategory_In_DisplayOrder.map( (tag, index, array) => {
-                            return _render_SingleSearchTag({ tag_Internal: tag, search_Tags_Selections_Object, enum__OR__AND__NOT })
+                            return _render_SingleSearchTag({ tag_Internal: tag, search_Tags_Selections_Object, enum__OR__AND__NOT, searchesPerTagId_Map })
                         })}
                     </div>
                 </React.Fragment>
@@ -450,7 +461,7 @@ const render_OR_AND_or_NOT__ReactComponent = function(
                         {/*  column 2:  Search Tags  */}
                         <div>
                             { searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder.map( (tag, index, array) => {
-                                return _render_SingleSearchTag({ tag_Internal: tag, search_Tags_Selections_Object, enum__OR__AND__NOT })
+                                return _render_SingleSearchTag({ tag_Internal: tag, search_Tags_Selections_Object, enum__OR__AND__NOT, searchesPerTagId_Map })
                             })}
                         </div>
                     </React.Fragment>
@@ -492,12 +503,13 @@ const render_OR_AND_or_NOT__ReactComponent = function(
  */
 const _render_SingleSearchTag = function(
     {
-        tag_Internal, search_Tags_Selections_Object, enum__OR__AND__NOT
+        tag_Internal, search_Tags_Selections_Object, enum__OR__AND__NOT, searchesPerTagId_Map
     } :
         {
             tag_Internal: INTERNAL__Search_Tags_FilterOnSearchTags_DisplaySelectedTagsAndCategories_Component_SingleSearchTag_Entry
             search_Tags_Selections_Object: Search_Tags_Selections_Object
             enum__OR__AND__NOT: INTERNAL_ENUM__OR__AND__NOT
+            searchesPerTagId_Map?: ReadonlyMap<number, number>
         }
 ) : React.JSX.Element {
 
@@ -546,20 +558,39 @@ const _render_SingleSearchTag = function(
         return null;  // EARLY RETURN
     }
 
+    //  Tooltip showing how many searches ( in the project ) have this tag.  null when no count data -> no tooltip.
+    const searchCount_TooltipLine = _searchCount_TooltipLine( searchesPerTagId_Map, tag_Entry.tagId );
+
     return (
         <div
             key={ tag_Entry.tagId }
             style={ div_Outer_Style }
         >
-            <div
-                className={ " search-tag-display-everywhere " + className_Addition_Inner }
-                style={ div_Inner_Style }
-                title={ tooltip_Inner }
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                title={ searchCount_TooltipLine }
+                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
             >
-                { tag_Entry.tagString }
-            </div>
+                <div
+                    className={ " search-tag-display-everywhere " + className_Addition_Inner }
+                    style={ div_Inner_Style }
+                >
+                    { tag_Entry.tagString }
+                </div>
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         </div>
     )
+}
+
+//  Tooltip line showing how many searches ( in the project ) have this tag.  null when no count data provided.
+function _searchCount_TooltipLine( searchesPerTagId_Map : ReadonlyMap<number, number> | undefined, tagId : number ) : React.JSX.Element {
+    if ( ! searchesPerTagId_Map ) {
+        return null;
+    }
+    const count = searchesPerTagId_Map.get( tagId ) ?? 0;
+    const text = ( count === 0 )
+        ? "No searches have this tag"
+        : ( count + ( count === 1 ? " search has this tag" : " searches have this tag" ) );
+    return <div>{ text }</div>;
 }
 
 class INTERNAL__SearchTagData_Display_Root {
