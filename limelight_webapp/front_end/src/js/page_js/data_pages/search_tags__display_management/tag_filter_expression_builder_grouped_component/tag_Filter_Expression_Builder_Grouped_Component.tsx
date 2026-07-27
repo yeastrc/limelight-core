@@ -21,6 +21,7 @@ import Switch from '@mui/material/Switch'
 import { limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants } from "page_js/common_all_pages/limelight__Limelight_Colors_Etc__SyncWith_global.scss__Constants";
 import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 import {
@@ -35,8 +36,6 @@ import {tagFilter_Expression_TagPicker_Overlay__openOverlay} from "page_js/data_
 
 //  Short alias for the shared Limelight brand-color constants ( used for every brand color in this file )
 const _limelightColors = limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants;
-
-const _other_Operator = ( operator : 'AND' | 'OR' ) : 'AND' | 'OR' => ( operator === 'OR' ? 'AND' : 'OR' );
 
 
 //  A single tag literal inside a group
@@ -74,6 +73,9 @@ export interface Tag_Filter_Expression_Builder_Grouped_Component__Expression {
 
 interface Internal__Tag_Filter_Expression_Builder_Grouped_Component_Props {
     searchTagData_Root: Search_Tags_SelectSearchTags_Component_SearchTagData_Root
+
+    //  Number of searches ( in the whole project ) that have each tag, keyed by tagId.  Shown in the tag picker.
+    searchesPerTagId_Map?: ReadonlyMap<number, number>
 
     //  Optional initial expression.  If omitted OR empty, starts pristine ( no groups yet ).
     initial_Groups?: ReadonlyArray<Tag_Filter_Expression_Builder_Grouped_Component__Seed_Group>
@@ -119,6 +121,12 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
     private _groups : Array<Internal__Grouped_Group> = [];
     private _betweenGroups_Operator : 'AND' | 'OR' = 'AND';
 
+    //  Which AND/OR operator dropdown is currently open ( unique key per operator pill ), or null if none.
+    //  The dropdown is a small custom menu; clicking outside closes it ( see the document mousedown listener ).
+    private _operatorDropdown_OpenKey : string | null = null;
+    //  Ref to the currently-open operator dropdown's wrapper ( pill + menu ), for outside-click detection.
+    private _operatorDropdown_Wrapper_Ref = React.createRef<HTMLSpanElement>();
+
     /**
      *
      */
@@ -148,6 +156,26 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
         this._betweenGroups_Operator = ( props.initial_BetweenGroups_Operator === 'AND' || props.initial_BetweenGroups_Operator === 'OR' ) ? props.initial_BetweenGroups_Operator : 'AND';
 
         this.state = {};
+    }
+
+    componentDidMount() {
+        document.addEventListener( 'mousedown', this._onDocumentMouseDown_ForOperatorDropdown );
+    }
+    componentWillUnmount() {
+        document.removeEventListener( 'mousedown', this._onDocumentMouseDown_ForOperatorDropdown );
+    }
+
+    //  Close the operator dropdown when a mousedown lands outside its wrapper ( like a native <select> ).
+    private _onDocumentMouseDown_ForOperatorDropdown = ( ev : MouseEvent ) : void => {
+        if ( this._operatorDropdown_OpenKey === null ) {
+            return;
+        }
+        const wrapper = this._operatorDropdown_Wrapper_Ref.current;
+        if ( wrapper && ev.target instanceof Node && wrapper.contains( ev.target ) ) {
+            return;   //  click inside the open dropdown ( its pill or menu ) -- leave it open
+        }
+        this._operatorDropdown_OpenKey = null;
+        this._rerender();
     }
 
     //  Force a re-render.  The expression lives in instance properties, so state is only a render trigger.
@@ -189,18 +217,22 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
         this._mutated();
     }
 
-    //  Toggle a specific group's operator ( click on the inline AND/OR shown between that group's tags )
-    private _toggle_GroupOperator = ( groupUiId : number ) : void => {
-        const group = this._groups.find( g => g._uiId === groupUiId );
-        if ( group ) {
-            this._set_GroupOperator( groupUiId, _other_Operator( group.groupOperator ) );
-        }
+    //  SET ( not toggle ) the single between-groups operator
+    private _set_BetweenGroups_Operator = ( betweenGroups_Operator : 'AND' | 'OR' ) : void => {
+        this._betweenGroups_Operator = betweenGroups_Operator;
+        this._mutated();
     }
 
-    //  Toggle the single between-groups operator ( click on an AND/OR shown between groups )
-    private _toggle_BetweenGroups_Operator = () : void => {
-        this._betweenGroups_Operator = _other_Operator( this._betweenGroups_Operator );
-        this._mutated();
+    //  Open ( or close, if already open ) the small AND/OR dropdown for a given operator pill
+    private _toggle_OperatorDropdown = ( dropdownKey : string ) : void => {
+        this._operatorDropdown_OpenKey = ( this._operatorDropdown_OpenKey === dropdownKey ) ? null : dropdownKey;
+        this._rerender();
+    }
+    private _close_OperatorDropdown = () : void => {
+        if ( this._operatorDropdown_OpenKey !== null ) {
+            this._operatorDropdown_OpenKey = null;
+            this._rerender();
+        }
     }
 
     ////  ---   Tag catalog lookup helpers   ---
@@ -274,6 +306,7 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
 
         tagFilter_Expression_TagPicker_Overlay__openOverlay( {
             searchTagData_Root: this.props.searchTagData_Root,
+            searchesPerTagId_Map: this.props.searchesPerTagId_Map,
             title: includeOperatorChooser ? "Add tags to the group" : "Add a tag to the group",
             promptText: includeOperatorChooser
                 ? "Choose how these tags combine, then click tags to add them to this group.  You can add several, then close."
@@ -353,13 +386,23 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
     ////  ---   Render helpers   ---
 
     /**
-     * Render a clickable AND/OR operator.  variant:
-     *   'inline'  = operator shown between tags inside a group  ( toggles THAT group's operator )
-     *   'between' = operator shown between groups               ( toggles the single between-groups operator )
+     * Render a clickable AND/OR operator pill.  Clicking it opens a small dropdown to choose AND or OR
+     * ( each option has a tooltip; clicking outside closes it, like a <select> ).  variant:
+     *   'inline'  = operator shown between tags inside a group  ( chooses THAT group's operator )
+     *   'between' = operator shown between groups               ( chooses the single between-groups operator )
+     * The two variants are styled differently ( see below ) so in-group vs between-groups stay distinct.
      */
-    private _render_ClickableOperator( params : { operator : 'AND' | 'OR', variant : 'inline' | 'between', onClick : () => void, tooltipContents : React.JSX.Element } ) : React.JSX.Element {
+    private _render_ClickableOperator( params : {
+        operator : 'AND' | 'OR',
+        variant : 'inline' | 'between',
+        dropdownKey : string,
+        onChoose : ( operator : 'AND' | 'OR' ) => void,
+        pillTooltipContents : React.JSX.Element
+    } ) : React.JSX.Element {
 
-        const { operator, variant, onClick, tooltipContents } = params;
+        const { operator, variant, dropdownKey, onChoose, pillTooltipContents } = params;
+
+        const isOpen = this._operatorDropdown_OpenKey === dropdownKey;
 
         //  Limelight green ( brand ):  dark green ( site_color_very_dark ) filled with white for the prominent
         //  between-groups operator;  light green ( site_color_medium ) with dark-green text + medium-green border
@@ -369,17 +412,128 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
             : { color: _limelightColors.site_color_very_dark, backgroundColor: _limelightColors.site_color_medium, borderWidth: 1, borderStyle: "solid", borderColor: _limelightColors.link_color_underline, borderRadius: 3, paddingTop: 1, paddingBottom: 1, paddingLeft: 4, paddingRight: 4, marginTop: 0, marginBottom: 0, marginLeft: 3, marginRight: 3 };
 
         return (
-            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                title={ tooltipContents }
-                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+            <span
+                //  ref only on the OPEN pill's wrapper -- outside-click detection uses it ( wrapper holds pill + menu )
+                ref={ isOpen ? this._operatorDropdown_Wrapper_Ref : undefined }
+                style={ { position: "relative", display: "inline-block" } }
             >
-                <span
-                    onClick={ onClick }
-                    style={ { ...baseStyle, fontWeight: "bold", cursor: "pointer", whiteSpace: "nowrap" } }
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={ isOpen ? null : pillTooltipContents /* hide the pill tooltip while the menu is open */ }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    { operator } ▾
+                    <span
+                        onClick={ () => this._toggle_OperatorDropdown( dropdownKey ) }
+                        style={ { ...baseStyle, fontWeight: "bold", cursor: "pointer", whiteSpace: "nowrap" } }
+                    >
+                        { operator } ▾
+                    </span>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                { isOpen ? this._render_OperatorDropdownMenu( { variant, current: operator, onChoose } ) : null }
+            </span>
+        );
+    }
+
+    /**
+     * The small AND/OR dropdown menu shown under an operator pill.  Two options ( OR, AND ), each with a
+     * tooltip; the current one is checked.  Styled to echo the pill's variant ( between = dark-green accent,
+     * inline = medium-green accent ) so the in-group vs between-groups distinction carries into the menu.
+     */
+    private _render_OperatorDropdownMenu( params : { variant : 'inline' | 'between', current : 'AND' | 'OR', onChoose : ( operator : 'AND' | 'OR' ) => void } ) : React.JSX.Element {
+
+        const { variant, current, onChoose } = params;
+
+        const selected_BackgroundColor = variant === 'between' ? _limelightColors.site_color_very_dark : _limelightColors.site_color_medium;
+        const selected_Color = variant === 'between' ? _limelightColors.color_white : _limelightColors.site_color_very_dark;
+
+        const options : Array<'OR' | 'AND'> = [ 'OR', 'AND' ];
+
+        return (
+            <div
+                style={ {
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    marginTop: 3,
+                    zIndex: 1400,   //  below the MUI tooltip ( z 1500 ) so the per-option tooltips render on top
+                    minWidth: 92,
+                    backgroundColor: _limelightColors.color_white,
+                    //  Thicker, darker border + a white halo ring + stronger shadow so the menu reads as a
+                    //  floating surface, clearly separated from the pale-green panel and any content around/under
+                    //  it ( e.g. the "Add a group" button when the between-groups pill wraps right above it ).
+                    //  The white ring ( first box-shadow ) is the key separator:  it keeps the dark menu edge from
+                    //  visually merging with the green button below.
+                    borderWidth: 2,
+                    borderStyle: "solid",
+                    borderColor: _limelightColors.site_color_very_dark,
+                    borderRadius: 4,
+                    boxShadow: "0 0 0 3px " + _limelightColors.color_white + ", 0 4px 16px rgba(0,0,0,0.30)",
+                    paddingTop: 3,
+                    paddingBottom: 3
+                } }
+            >
+                { options.map( option => {
+                    const isSelected = option === current;
+                    const baseBackgroundColor = isSelected ? selected_BackgroundColor : _limelightColors.color_white;
+                    const baseColor = isSelected ? selected_Color : _limelightColors.font_color_default;
+                    return (
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            key={ option }
+                            title={ this._operatorOption_TooltipContents( variant, option ) }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition() }
+                        >
+                            <div
+                                onClick={ () => { onChoose( option ); this._close_OperatorDropdown(); } }
+                                //  Simple hover highlight for non-selected options ( direct DOM, avoids extra state )
+                                onMouseEnter={ ev => { if ( ! isSelected ) { ev.currentTarget.style.backgroundColor = _limelightColors.site_color_light } } }
+                                onMouseLeave={ ev => { ev.currentTarget.style.backgroundColor = baseBackgroundColor } }
+                                style={ {
+                                    display: "flex",
+                                    alignItems: "center",
+                                    paddingTop: 4,
+                                    paddingBottom: 4,
+                                    paddingLeft: 8,
+                                    paddingRight: 12,
+                                    cursor: "pointer",
+                                    whiteSpace: "nowrap",
+                                    fontWeight: "bold",
+                                    backgroundColor: baseBackgroundColor,
+                                    color: baseColor
+                                } }
+                            >
+                                <span style={ { display: "inline-block", width: 14 } }>{ isSelected ? "✓" : "" }</span>
+                                <span>{ option }</span>
+                            </div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                    );
+                } ) }
+            </div>
+        );
+    }
+
+    //  Tooltip for an AND / OR option in the operator dropdown, per context ( within a group vs between groups )
+    private _operatorOption_TooltipContents( variant : 'inline' | 'between', option : 'AND' | 'OR' ) : React.JSX.Element {
+        if ( variant === 'inline' ) {
+            return (
+                <span>
+                    <div><b>{ option }</b> within this group.</div>
+                    <div style={ { marginTop: 3 } }>
+                        { option === 'OR'
+                            ? "A search matches this group if it has ANY of the group's tags."
+                            : "A search matches this group only if it has ALL of the group's tags." }
+                    </div>
                 </span>
-            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+            );
+        }
+        return (
+            <span>
+                <div><b>{ option }</b> between groups.</div>
+                <div style={ { marginTop: 3 } }>
+                    { option === 'OR'
+                        ? "A search passes if it matches AT LEAST ONE group."
+                        : "A search passes only if it matches EVERY group." }
+                </div>
+            </span>
         );
     }
 
@@ -393,7 +547,7 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
                         ? "A search matches this group if it has ANY of these tags."
                         : "A search matches this group only if it has ALL of these tags." }
                 </div>
-                <div style={ { marginTop: 10 } }>Click to switch this group to <b>{ _other_Operator( groupOperator ) }</b>.</div>
+                <div style={ { marginTop: 10 } }>Click to choose <b>AND</b> or <b>OR</b> for this group.</div>
             </span>
         );
     }
@@ -408,7 +562,7 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
                         ? "A search must match EVERY group."
                         : "A search must match AT LEAST ONE group." }
                 </div>
-                <div style={ { marginTop: 10 } }>Click to switch to <b>{ _other_Operator( betweenOperator ) }</b> ( applies between all groups ).</div>
+                <div style={ { marginTop: 10 } }>Click to choose <b>AND</b> or <b>OR</b> ( applies between all groups ).</div>
             </span>
         );
     }
@@ -611,8 +765,9 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
                                 { literalIndex > 0 ? this._render_ClickableOperator( {
                                     operator: group.groupOperator,
                                     variant: 'inline',
-                                    onClick: () => this._toggle_GroupOperator( group._uiId ),
-                                    tooltipContents: this._inlineOperator_TooltipContents( group.groupOperator )
+                                    dropdownKey: "group:" + group._uiId + ":op" + literalIndex,
+                                    onChoose: ( chosen ) => this._set_GroupOperator( group._uiId, chosen ),
+                                    pillTooltipContents: this._inlineOperator_TooltipContents( group.groupOperator )
                                 } ) : null }
                                 { this._render_LiteralChip( group, literal, tagEntry_Map, categoryLabel_Map ) }
                             </React.Fragment>
@@ -786,8 +941,9 @@ export class Tag_Filter_Expression_Builder_Grouped_Component
                                             { this._render_ClickableOperator( {
                                                 operator: betweenGroups_Operator,
                                                 variant: 'between',
-                                                onClick: () => this._toggle_BetweenGroups_Operator(),
-                                                tooltipContents: this._betweenOperator_TooltipContents( betweenGroups_Operator )
+                                                dropdownKey: "between:" + groupIndex,
+                                                onChoose: ( chosen ) => this._set_BetweenGroups_Operator( chosen ),
+                                                pillTooltipContents: this._betweenOperator_TooltipContents( betweenGroups_Operator )
                                             } ) }
                                         </div>
                                     ) : null }

@@ -55,6 +55,8 @@ const _Overlay_Height_Max = 640;
 
 interface TagFilter_Expression_TagPicker_Overlay__OpenParams {
     searchTagData_Root : Search_Tags_SelectSearchTags_Component_SearchTagData_Root
+    //  Number of searches ( in the project ) that have each tag, keyed by tagId -- shown as "( N )" per tag.
+    searchesPerTagId_Map? : ReadonlyMap<number, number>
     title : string
     promptText : string
     initialDisabledTagIds : Set<number>
@@ -134,6 +136,7 @@ export function get_TagFilter_Expression_TagPicker_Overlay_Container(
         >
             <TagFilter_Expression_TagPicker_OverlayBody
                 searchTagData_Root={ params.searchTagData_Root }
+                searchesPerTagId_Map={ params.searchesPerTagId_Map }
                 promptText={ params.promptText }
                 initialDisabledTagIds={ params.initialDisabledTagIds }
                 disabledReason={ params.disabledReason }
@@ -151,6 +154,7 @@ export function get_TagFilter_Expression_TagPicker_Overlay_Container(
 
 interface Internal__OverlayBody_Props {
     searchTagData_Root : Search_Tags_SelectSearchTags_Component_SearchTagData_Root
+    searchesPerTagId_Map? : ReadonlyMap<number, number>
     promptText : string
     initialDisabledTagIds : Set<number>
     disabledReason : string
@@ -267,6 +271,9 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
 
         const tooltipText = disabled ? ( this.props.disabledReason ? this.props.disabledReason : "Already added" ) : "Add";
 
+        //  Number of searches in the project that have this tag ( shown as "( N )" after the tag name )
+        const searchCount = this.props.searchesPerTagId_Map ? this.props.searchesPerTagId_Map.get( tag.tagId ) : undefined;
+
         return (
             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                 key={ tag.tagId }
@@ -297,6 +304,9 @@ class TagFilter_Expression_TagPicker_OverlayBody extends React.Component< Intern
                     } }
                 >
                     { tag.tagString }
+                    { searchCount !== undefined ? (
+                        <span style={ { marginLeft: 5, fontSize: 11, opacity: 0.75 } }>( { searchCount } )</span>
+                    ) : null }
                 </span>
             </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         );

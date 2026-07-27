@@ -167,6 +167,10 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     //  "clear" in the summary.  The builder holds its own state, so a remount is how the parent resets it.
     private _advanced_Builder_RemountCounter = 0
 
+    //  Number of searches in the WHOLE project that have each tag, keyed by tagId ( shown as "( N )" in the
+    //  tag-picker overlay ).  Computed once when the search/tag data is (re)built.
+    private _searchesPerTagId_Map : Map<number, number> = new Map()
+
     private _searchName_SearchId_Filter_UserInput = ""
 
     private _projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet: ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet
@@ -361,6 +365,21 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
         for (const tagEntry of searchTagStrings_AllSearches_ArraySorted) {
 
             searchTagEntries_Filter_AllEntries.push(tagEntry)
+        }
+
+        //  Count how many searches in the project have each tag ( shown as "( N )" next to each tag in the
+        //  tag-picker overlay ).  One pass over all searches' tag id sets.
+        {
+            const searchesPerTagId_Map = new Map<number, number>()
+            for ( const projectSearchId of searchesSearchTagsFolders_Result_Root.get_all_Searches_ProjectSearchIds_Set() ) {
+                const searchData = searchesSearchTagsFolders_Result_Root.get_SearchData_For_ProjectSearchId( projectSearchId )
+                if ( searchData && searchData.searchTagIds_Set ) {
+                    for ( const tagId of searchData.searchTagIds_Set ) {
+                        searchesPerTagId_Map.set( tagId, ( searchesPerTagId_Map.get( tagId ) ?? 0 ) + 1 )
+                    }
+                }
+            }
+            this._searchesPerTagId_Map = searchesPerTagId_Map
         }
 
         let showNoSearchesMessage_NoSearchesLoadedFromServer = false;
@@ -1631,6 +1650,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                 <Tag_Filter_Expression_Builder_Grouped_Component
                                     key={ "advanced-tag-filter-builder-" + this._advanced_Builder_RemountCounter }
                                     searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
+                                    searchesPerTagId_Map={ this._searchesPerTagId_Map }
                                     initial_Groups={ this._advanced_TagFilter_InitialSeed }
                                     initial_BetweenGroups_Operator={ this._advanced_TagFilter_Initial_BetweenOperator }
                                     expression_Changed_Callback={ ( expression: Tag_Filter_Expression_Builder_Grouped_Component__Expression ) => {
@@ -1809,7 +1829,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                 {/*  Count of searches that passed the active filters ( bottom of the box )  */}
                                 <div style={ { marginTop: 10 } }>
                                     <b>{ this._filtered_Searches_PassedCount() }</b>
-                                    { this._filtered_Searches_PassedCount() === 1 ? " search passed the filters" : " searches passed the filters" }
+                                    { this._filtered_Searches_PassedCount() === 1 ? " search pass the filters" : " searches pass the filters" }
                                 </div>
                             </div>
                         ) : null }
