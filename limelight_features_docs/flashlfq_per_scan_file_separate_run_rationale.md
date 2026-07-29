@@ -7,6 +7,15 @@ Companion to `flashlfq_quant_data_model_and_display_grains.md` (storage grain is
 `flashlfq_output_to_limelight_mapping.md` (the identity round-trip). The authoritative decision record is
 **§19** of `Claude_SeparateAssessment_20260706.md` (repo root); this doc is the standalone explanation.
 
+**Implementation status (2026-07-29):** the per-file design below is **NOT yet implemented** — the
+webapp + service still run **one joint FlashLFQ run per search** over all of that search's scan files
+(MBR on, un-disableable in this `CMD.dll` build). As an interim guard, the run-request controller
+(`FlashLFQ_Run__Request_Creation_RestWebserviceController`) now **rejects the whole request, all-or-
+nothing, if any selected search has more than one scan file** (raw `search_scan_file_tbl` count, pre-
+cutoff), surfaced via the `errorAtLeastOneSearchHasMoreThanOneScanFile` response flag and a browser
+alert; nothing is submitted. So multi-scan-file searches are **blocked at submit** until per-file runs
+(this doc) land, rather than silently producing MBR-contaminated quant.
+
 **Terminology note:** avoid the word **"tag"** here — Limelight already uses *search tags* (user-assigned
 labels). Use the precise ids: **`projectSearchId`**, **`scanFileId`** (`search_scan_file_id`),
 **`reportedPeptideId`**, and *peptidoform / display form* for the receive-side form key
