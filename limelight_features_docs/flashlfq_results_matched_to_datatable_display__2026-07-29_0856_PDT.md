@@ -334,15 +334,23 @@ only in *which rpids are grouped into a row* and *whether the result is scoped t
   key `integrate`) **defaults to `false`**, and in that default mode `Peak intensity` is the peak's
   **APEX HEIGHT**, not an integrated chromatographic area (area is reported only with `--int true`). So
   by default each cell sums **apex heights** across a peptidoform's features/charge states. Apex heights
-  are a **shakier / less-additive** physical quantity than integrated areas: summing them conflates
-  tall-narrow and short-wide peaks and will not match an area-based chromatogram cross-check unless
-  `--int` is on. Whether the summed display should instead be driven by `--int true` (an additive area)
-  is an **open design decision**, not a settled one. (Note FlashLFQ itself does not recommend
-  integration — it calls the area noisier — so apex-vs-area trades additivity against noise.) This is a
-  distinct issue from the cross-row "do not sum the column" point above: that one is about double-counting
-  a shared feature across rows; this one is about the summed-within-a-row value not being an area.
-  *(Provenance: the `--int` default and the sum are read directly from the code; the "apex heights are
-  shakier than areas" judgement is a design/review assertion, not a measurement from a live run.)*
+  are **less rigorous than integrated areas, but not invalid**: area is the physically additive quantity
+  (area ∝ abundance, so abundances add), while apex height is a proxy — for a peak of area `A` and width
+  `W`, apex ≈ `A/W`, so a sum of heights is proportional to a sum of abundances **only when the summed
+  peaks share a width** (narrow peaks over-weighted otherwise). Two things keep it defensible:
+  (i) **FlashLFQ itself sums apex heights** to build its own `QuantifiedPeptides` intensities (apex is the
+  tool's deliberate default — it calls area integration noisier / "not recommended"), so this is the
+  field's convention, not our invention; and (ii) for **comparing one peptide across samples** (the
+  differential use case) the width factor cancels in the ratio, so apex is fine and robust there. It is
+  weakest when summing across differently-shaped peaks and will not match an area-based chromatogram
+  cross-check unless `--int` is on. Whether the summed display should instead be driven by `--int true`
+  (an additive area) is an **open design decision**, not a settled one — see
+  `flashlfq_quant_mapping_critical_review_2026-07-29.md` ("Open decision — apex vs area for the summed
+  display"). This is a distinct issue from the cross-row "do not sum the column" point above: that one is
+  about double-counting a shared feature across rows; this one is about the summed-within-a-row value not
+  being an area.
+  *(Provenance: the `--int` default and the sum are read directly from the code; the "less rigorous, not
+  invalid" judgement is a design/review assertion, not a measurement from a live run.)*
 - **Not charge-scoped, not filtered by secondary UI filters.** The value is the peptidoform total over
   the *submitted* PSMs; frozen at run-request cutoffs; does not react to charge / RT / m/z / scan-number
   row filters. Intensity is not charge-decomposable, so multi-charge forms report one combined number.
