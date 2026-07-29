@@ -326,7 +326,23 @@ only in *which rpids are grouped into a row* and *whether the result is scoped t
 
 - **Union-once / not additive down the column.** A shared MS1 feature is counted under every row it maps
   to (near-isobaric peptides, and forms of one reported peptide) — same convention as PSM Count.
-  **Do not sum the column.** Marked with `⚭`.
+  **Do not sum the column.** Marked with `⚭`. *(This is the cross-row caveat; the apex-vs-area caveat
+  below is a separate, within-row concern about the value the sum is built from.)*
+- **Apex-vs-area caveat (the summed value's physical basis).** The number in each cell is a **sum of the
+  `Peak intensity` column** across the row's matched features (§6/§4) — and the value being summed is
+  **not necessarily an integrated area.** FlashLFQ's `--int` flag (`quant/quant_FlashLFQ_Parameters.ts`,
+  key `integrate`) **defaults to `false`**, and in that default mode `Peak intensity` is the peak's
+  **APEX HEIGHT**, not an integrated chromatographic area (area is reported only with `--int true`). So
+  by default each cell sums **apex heights** across a peptidoform's features/charge states. Apex heights
+  are a **shakier / less-additive** physical quantity than integrated areas: summing them conflates
+  tall-narrow and short-wide peaks and will not match an area-based chromatogram cross-check unless
+  `--int` is on. Whether the summed display should instead be driven by `--int true` (an additive area)
+  is an **open design decision**, not a settled one. (Note FlashLFQ itself does not recommend
+  integration — it calls the area noisier — so apex-vs-area trades additivity against noise.) This is a
+  distinct issue from the cross-row "do not sum the column" point above: that one is about double-counting
+  a shared feature across rows; this one is about the summed-within-a-row value not being an area.
+  *(Provenance: the `--int` default and the sum are read directly from the code; the "apex heights are
+  shakier than areas" judgement is a design/review assertion, not a measurement from a live run.)*
 - **Not charge-scoped, not filtered by secondary UI filters.** The value is the peptidoform total over
   the *submitted* PSMs; frozen at run-request cutoffs; does not react to charge / RT / m/z / scan-number
   row filters. Intensity is not charge-decomposable, so multi-charge forms report one combined number.
