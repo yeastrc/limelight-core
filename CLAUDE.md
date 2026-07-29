@@ -85,6 +85,16 @@ A few cross-cutting concepts that aren't obvious from the schema:
   show only on single-search views. For the full stack (schema → import → searchers → REST → UI) and why
   this matters for MS1 quant, see `limelight_features_docs/limelight_search_sub_groups_deep_dive.md`.
 
+**MS1 quant aggregation — before you sum quant across anything, read this.** Whenever you write code that
+combines, sums, or shows a single quant/abundance number for a group of units — multiple **scan files** of
+one search, multiple **sub-groups**, multiple **searches**, or an experiment **condition** — read
+`limelight_features_docs/flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md`
+first. Short version: **PSM count may sum across those; quant may NOT.** A quant value is a physical MS1
+measurement tied to one scan file and one run, so it may only be aggregated over units that were
+co-measured in one run and are known-valid to combine (Limelight has no fraction-vs-replicate metadata and
+won't). Where that doesn't hold (a multi-scan-file search, a condition spanning searches), **decline the
+quant — never silently sum it the way PSM count does.**
+
 ## Building
 
 ### Full project

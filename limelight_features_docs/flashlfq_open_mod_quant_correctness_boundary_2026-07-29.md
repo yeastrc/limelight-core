@@ -24,6 +24,9 @@ chromatographic feature). *form / display form* = a peptidoform at the display g
 - `flashlfq_usage_critical_review_2026-07-29.md` — end-to-end, code-observed usage audit.
 - `flashlfq_open_mod_quant_deferred_mass_doublecount.md` — the deferred open-mod defects + in-code `throw`
   tripwires (the concrete bugs in the held prototype that this doc's "what can be correct" presupposes fixed).
+- `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` — the governing rule for
+  when quant may/may not be summed across scan files, sub-groups, searches, or conditions (PSM count may
+  sum; quant may not).
 
 ---
 

@@ -64,6 +64,17 @@ case; sub-groups collapse to search level when multiple searches are shown). The
 **"Quant (<search label>)"** (multi-search), replacing the current "Quant (form) (Primary)"; the
 "Quant (peptide) for validation" column is dropped.
 
+> **⚠ "sum the search's scan files" DOES NOT carry over to quant the way it does to PSM Count — read the
+> aggregation rule before implementing these roll-ups.** The "sum the search's scan files" cells above are
+> valid for quant **only when the search has one scan file** (or genuine fractions). For a search with
+> **multiple** scan files, summing quant is the fraction-vs-replicate trap — it is **declined for now** (a
+> temporary guard), NOT summed the way PSM Count is; and a **condition** spanning searches is worse
+> (cross-run non-comparability too). PSM Count may sum across all of these; quant may not. The governing
+> rule — which of these roll-ups are valid, and why a multi-scan-file search is declined rather than summed
+> — is `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md`. (Mode 3 sub-group
+> summing is valid only when sub-groups **partition** scan files — see
+> `flashlfq_quant_subgroup_scanfile_eligibility.md`.)
+
 ## 3. A search can have multiple scan files and no sub-groups
 
 Important constraint that rules out shortcuts: **scan files and sub-groups are independent.** A search may

@@ -28,6 +28,9 @@ and `flashlfq_quant_data_model_and_display_grains.md` (the deferral scope note).
 - `flashlfq_usage_critical_review_2026-07-29.md` — end-to-end, code-observed usage audit (non-open-mod path).
 - `flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md` — what open-mod quant can vs. can never be
   correct (the ceiling a fixed implementation could claim).
+- `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` — the governing rule for
+  when quant may/may not be summed across scan files, sub-groups, searches, or conditions (PSM count may
+  sum; quant may not).
 
 ---
 

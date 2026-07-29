@@ -29,6 +29,9 @@ code before acting.
   correct (MS1 precursor-physics ceiling).
 - `flashlfq_open_mod_quant_deferred_mass_doublecount.md` — the deferred open-mod defects + in-code `throw`
   tripwires.
+- `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` — the governing rule for
+  when quant may/may not be summed across scan files, sub-groups, searches, or conditions (PSM count may
+  sum; quant may not) — the underlying rule behind H1/H2.
 
 ---
 
