@@ -12,6 +12,14 @@ about the live, non-open-mod path plus the core mechanics.
 are reasoning about consequences (consistent with the companion design docs) and were **not** produced
 by executing a run.
 
+**See also — the 2026-07-29 FlashLFQ quant review set (peer docs):**
+- `flashlfq_quant_mapping_critical_review_2026-07-29.md` — composed-design holes (H1–H9): matrix→scalar,
+  cross-file sum, apex-vs-area, identity/rollup.
+- `flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md` — what open-mod quant can vs. can never be
+  correct (MS1 precursor-physics ceiling).
+- `flashlfq_open_mod_quant_deferred_mass_doublecount.md` — the deferred open-mod defects + in-code `throw`
+  tripwires.
+
 ---
 
 ## Bottom line

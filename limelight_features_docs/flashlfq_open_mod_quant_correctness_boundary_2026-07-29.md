@@ -18,6 +18,13 @@ open-mod evidence run; they were not re-measured for this analysis.
 chromatographic feature). *form / display form* = a peptidoform at the display grain
 (`reportedPeptideId` + open-mod `{kind, roundedMass}`). Avoid "tag" (Limelight uses *search tags*).
 
+**See also — the 2026-07-29 FlashLFQ quant review set (peer docs):**
+- `flashlfq_quant_mapping_critical_review_2026-07-29.md` — composed-design holes (H1–H9): matrix→scalar,
+  cross-file sum, apex-vs-area, identity/rollup.
+- `flashlfq_usage_critical_review_2026-07-29.md` — end-to-end, code-observed usage audit.
+- `flashlfq_open_mod_quant_deferred_mass_doublecount.md` — the deferred open-mod defects + in-code `throw`
+  tripwires (the concrete bugs in the held prototype that this doc's "what can be correct" presupposes fixed).
+
 ---
 
 ## 1. Framing: the raw measurement is not the problem — attribution and grain are

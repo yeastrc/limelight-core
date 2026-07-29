@@ -22,6 +22,13 @@ the mass double-count, marked confirmed), the 2026-07-29 critical review
 `flashlfq_quant_mapping_critical_review_2026-07-29.md` (H8 = mass double-count, H4 = receive-side key),
 and `flashlfq_quant_data_model_and_display_grains.md` (the deferral scope note).
 
+**See also — the 2026-07-29 FlashLFQ quant review set (peer docs):**
+- `flashlfq_quant_mapping_critical_review_2026-07-29.md` — composed-design holes (H1–H9); this doc's bugs
+  are H8 (mass double-count) and H4 (receive-side key), verified against the held code.
+- `flashlfq_usage_critical_review_2026-07-29.md` — end-to-end, code-observed usage audit (non-open-mod path).
+- `flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md` — what open-mod quant can vs. can never be
+  correct (the ceiling a fixed implementation could claim).
+
 ---
 
 ## Root cause (one paragraph)

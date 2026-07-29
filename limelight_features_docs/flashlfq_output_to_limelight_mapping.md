@@ -7,29 +7,40 @@ open-modification search (FlashLFQ 1.0.0.0), request `aebff14a…`. Companion do
 
 ## Framing (read first)
 
-**Quant is peptide-level, and it is exactly what you picture: extract the peptide's XIC and integrate
-the area under the chromatographic peak. That does not change.** *(Same XIC-extract-and-integrate-area
-model as Skyline; think of each `QuantifiedPeaks` row as one Skyline-style integrated chromatographic
-peak, and the open-mod case as the familiar co-eluting/isobaric peptides sharing one peak.)* The only
-decision here is *which FlashLFQ output file we read to get those integrated areas* — a lossiness
-problem, not a change of level or method:
+**Quant is peptide-level, and it is close to what you picture: FlashLFQ traces the peptide's XIC
+(extracted-ion chromatogram) and measures that chromatographic peak.** **IMPORTANT — by default
+(`--int` off) the reported `Peak intensity` is the peak's APEX HEIGHT, not an integrated area; the
+integrated area is reported only with `--int true`.** Either way it is one **per-feature value for one
+chromatographic peak**, and everything below (which file to read, shared-peak attribution) is identical
+whether the value is apex height or area. *(Same XIC-peak model as Skyline; think of each
+`QuantifiedPeaks` row as one Skyline-style chromatographic peak, and the open-mod case as the familiar
+co-eluting/isobaric peptides sharing one peak.)* The only decision here is *which FlashLFQ output file we
+read to get those per-feature values* — a lossiness problem, not a change of level or method:
 
-- **Each row of FlashLFQ's `QuantifiedPeaks.tsv` is one integrated XIC — the area under one
-  chromatographic peak.** That *is* the quant measurement. It is **not a "lower level"**; it is the
-  areas-under-the-curve themselves, one per detected chromatographic peak, each tagged with the
-  peptide form(s) it belongs to.
+- **Each row of FlashLFQ's `QuantifiedPeaks.tsv` is one MS1 feature — one chromatographic peak, reported
+  as its apex height (default) or integrated area (`--int`).** That per-feature value *is* the quant
+  measurement. It is **not a "lower level"**; it is the peak measurements themselves, one per detected
+  chromatographic peak, each tagged with the peptide form(s) it belongs to.
 - **The open-modification catch:** several open-mod forms of a peptide fall at the same — or within
-  instrument tolerance — precursor m/z, so they **share one XIC**. There is a single area under the
-  curve, and it belongs to all of them.
-- FlashLFQ's **peptide file (`QuantifiedPeptides.tsv`) discards every shared curve** — it sets those
-  forms to zero. For open-mod data that is ~90% of peptides and **~93% of the integrated signal**
-  (measured below). The peaks file keeps that area and lists which forms share it.
+  instrument tolerance — precursor m/z, so they **share one XIC peak**. There is a single peak value, and
+  it belongs to all of them.
+- FlashLFQ's **peptide file (`QuantifiedPeptides.tsv`) discards every shared peak** — it sets those
+  forms to zero. For open-mod data that is ~90% of peptides and **~93% of the measured signal**
+  (measured below). The peaks file keeps that value and lists which forms share it.
 
-So we read the integrated XIC areas from the peaks file (complete) and assign each area to its peptide
-form(s) inside Limelight — one curve integrated once, shown under each form it belongs to — the **same
+So we read the per-feature peak values from the peaks file (complete) and assign each to its peptide
+form(s) inside Limelight — one peak measured once, shown under each form it belongs to — the **same
 many-to-one accounting Limelight already does when it counts one PSM under multiple peptide forms.**
-This is precisely the fix for the open-modification problem, applied to integrated area instead of
+This is precisely the fix for the open-modification problem, applied to the peak value instead of
 counts.
+
+> **Apex-vs-area caveat (was flagged as an internal contradiction).** This doc previously called the
+> value an "integrated area" throughout while its own chromatogram-comparison section (below) correctly
+> said "default = apex". Corrected above: the shipped default is **apex height**. Whether the *summed*
+> display should instead use `--int true` (an additive area, comparable to Limelight's PSM chromatogram)
+> is an **open decision** — see `flashlfq_usage_critical_review_2026-07-29.md` (Finding 1) and
+> `flashlfq_quant_mapping_critical_review_2026-07-29.md` ("Open decision — apex vs area for the summed
+> display").
 
 ## The question
 

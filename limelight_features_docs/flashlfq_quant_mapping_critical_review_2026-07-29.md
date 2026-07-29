@@ -1,8 +1,8 @@
 # Critical review: mapping FlashLFQ quant onto Limelight — holes in the composed design
 
 **Date:** 2026-07-29
-**Status:** independent critical analysis / design review. Standalone — intentionally **not** linked from
-any other doc or index. Reviews (does not supersede) the FlashLFQ quant design docs listed under
+**Status:** independent critical analysis / design review. Part of the **2026-07-29 FlashLFQ quant review
+set** (cross-links below). Reviews (does not supersede) the FlashLFQ quant design docs listed under
 "Docs reviewed" below.
 
 > **⚠ NOTE — OPEN MODIFICATIONS ARE DEFERRED.** Per the current design
@@ -21,6 +21,14 @@ source docs**, not re-measured in this session. The criticisms are analytical (m
 pieces compose); none is a screenshot of running product behavior. Nothing here was verified against live
 code this session — file/line and behavior claims in the source docs should be re-checked against current
 code before acting.
+
+**See also — the 2026-07-29 FlashLFQ quant review set (peer docs):**
+- `flashlfq_usage_critical_review_2026-07-29.md` — end-to-end, code-observed usage audit (how FlashLFQ is
+  invoked/consumed; multi-file MBR; the apex-vs-area mislabel).
+- `flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md` — what open-mod quant can vs. can never be
+  correct (MS1 precursor-physics ceiling).
+- `flashlfq_open_mod_quant_deferred_mass_doublecount.md` — the deferred open-mod defects + in-code `throw`
+  tripwires.
 
 ---
 
