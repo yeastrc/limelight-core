@@ -409,9 +409,20 @@ area-vs-apex + fixed-window effects.
 
 1. **No-open-mod ambiguity fraction** — measure on a real static+variable-only search to confirm Route
    1 "just works" (expected ~1–2% ambiguous). Not yet measured.
-2. **Multi-position open-mod mass encoding** — verify the controller emits an open-mod delta **once**,
-   not once per candidate position, so the monoisotopic mass isn't double-counted (the mass is now Σ over
-   the per-PSM `modifications` map, computed in the webapp — see the binning section above).
+2. **Multi-position open-mod mass encoding — CONFIRMED BUG (code-verified 2026-07-29).** The controller
+   counts an open-mod delta **once per candidate position**, so the monoisotopic mass is **over-counted by
+   `(N-1)×delta`** for any open mod localized to `N ≥ 2` candidate positions. Chain: the searcher
+   `PsmOpenModification_Masses_Positions_For_PsmIds_Searcher` `LEFT OUTER JOIN`s
+   `psm_open_modification_position_tbl`, so one open mod with N candidate positions returns **N rows, each
+   repeating the same `psm_open_modification_tbl.mass`**; the controller puts each row into the per-PSM
+   `openModifications` map at its distinct position key; and `collapse_NearIsobaric_OpenMod_MassForms` sums
+   **every** entry of that map into the neutral mass (`monoisotopic_mass = base + Σmodifications + ΣopenModifications`).
+   ⇒ inflated neutral mass → wrong precursor m/z sent to FlashLFQ → wrong/failed XIC for those PSMs.
+   Unaffected: unlocalized open mods (0 positions → one null-position `u` row) and single-position open
+   mods. Fix before resuming open-mod support: contribute each open-mod delta to the neutral mass **once**
+   regardless of candidate-position count (position multiplicity is a localization-ambiguity set, not
+   multiple mods). Full write-up: `flashlfq_quant_mapping_critical_review_2026-07-29.md` (H8). Deferred with
+   the rest of the open-mod path, so not a v1 blocker.
 3. **Identity embedding** — *partially done.* Shipped: `reportedPeptideId` is embedded in the `Full
    Sequence`, and the per-peptidoform **mass is computed webapp-side and binned** so the round-trip has no
    silent data loss (see "Open-modification mass binning" above). **Still open:** send the full decomposed
