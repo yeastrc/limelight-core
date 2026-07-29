@@ -247,9 +247,21 @@ under-cost that.
   single-position, are both fine). Open-mod is deferred, so not a v1 blocker, but fix before resuming
   open-mod support. (Code-trace finding, not observed on a live run.)
 - FlashLFQ tolerating non-standard residues U/O/J in `Base Sequence`: *"untested."*
-- **Apex vs area:** default `--int` off means you're **summing apex *heights*** across ~55 cloud
-  features/charges to form "quant." Summing heights is a shakier physical quantity than summing areas, and
-  guarantees the chromatogram cross-check (which uses area) never matches unless `--int` is on.
+- **Apex vs area — the displayed quant sums apex *heights* (default `--int` off), which is an approximate,
+  not additive, sum.** The peptide-list value is a **sum of FlashLFQ peak values** across a form's features
+  (charge states, open-mod cloud). Integrated **area** is the physically additive quantity (area ∝
+  abundance; abundances add), so summing areas is exact. **Apex height** is a proxy: for a peak of area `A`
+  and width `W`, apex ≈ `A/W`, so a sum of heights is proportional to a sum of abundances **only when the
+  summed peaks share a width** — narrow peaks get over-weighted otherwise. So it is **not "invalid," but
+  less rigorous**: summing areas is exact; summing apex heights is a width-dependent approximation. Two
+  mitigating facts keep it from being wrong: (i) **FlashLFQ itself sums apex heights** to build its own
+  `QuantifiedPeptides` intensities (apex is the tool's deliberate default — more robust than integration,
+  which its wiki calls "not recommended" as noisier), so this is the field's convention, not our invention;
+  and (ii) for **comparing one peptide across samples** (the differential use case) the width factor cancels
+  in the ratio, so apex is fine and robust there. It is weakest when **summing across differently-shaped
+  peaks** (protein rollup) and it **guarantees the chromatogram cross-check (which reports an area) never
+  matches** unless `--int` is on. **See the explicit open decision in "Open decision — apex vs area for the
+  summed display" below.**
 
 ### H9 — Track B (DB model) has an unresolved primary-key tension
 Option 1 defines quant as "peptidoform total over the **submit-time** filter set"; Option 3 (deferred) would
@@ -257,6 +269,29 @@ make the **full filter-state hash** the run's primary key. These imply different
 Option 1 a run is keyed on `(projectSearchId, submit-filter-state, scanFileId)`, and **changing any
 submit-time filter forces a new run.** Run accumulation, reuse, and GC are unaddressed. The stale-quant
 handling (URL-strip on reload) is a *display* patch, not a *storage* policy.
+
+---
+
+## Open decision — apex vs area for the summed display
+
+**The runs are done in FlashLFQ's default mode (`--int` off = apex height), and the peptide-list quant is a
+sum of those peak values — so today it sums apex heights.** Per the H8 apex-vs-area point, a sum of heights
+is a width-dependent approximation, not a physically additive quantity, and it will never match Limelight's
+existing area-based PSM chromatogram. This needs an explicit call:
+
+- **Option A — run FlashLFQ with `--int true` (integrated areas).** The summed display becomes rigorously
+  additive (area ∝ abundance) and directly comparable to the Limelight chromatogram area. **Cost:** FlashLFQ
+  documents area integration as noisier per feature ("not recommended" in its wiki), so per-feature values
+  are noisier — a real trade of rigor-of-the-sum against per-feature stability.
+- **Option B — keep the default apex height.** Robust per feature, and correct for the *differential*
+  use case (one peptide across samples, where peak width cancels in the ratio), but the summed number is a
+  "robust **relative** abundance," not an additive area. **Then the column label / tooltip must not imply an
+  additive area**, and the chromatogram mismatch must be documented as expected.
+
+**Recommendation:** if the summed peptide/protein rollup is meant to read as an *abundance total* (and to
+line up with the chromatogram), choose **Option A (`--int true`)**. If the value is framed purely as a
+robust relative signal for cross-sample comparison, **Option B** is defensible — but the wording must say so.
+Not yet decided; pick before the summed display is presented as a total.
 
 ---
 
@@ -283,6 +318,8 @@ handling (URL-strip on reload) is a *display* patch, not a *storage* policy.
    Don't ship the "rare" hand-wave into a phosphoproteomics context.
 4. **Specify the protein-page cross-base-sequence attribution (H5).** It's a headline output left as a TODO.
 5. **Establish an open-mod rollup oracle (H6).** The cross-check you have covers only the easy case.
+6. **Decide apex vs area for the summed display (H8 / "Open decision" above).** The rollup currently sums
+   apex heights (approximate); choose `--int true` (additive area) if it's presented as an abundance total.
 
 ---
 
