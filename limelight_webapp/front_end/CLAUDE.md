@@ -136,6 +136,25 @@ Both Gradle tasks run the same pipeline (production minifies; development does n
 
 ---
 
+## Data pages: per-search data loaded from the server (`CommonData_LoadedFromServer` tree)
+
+The data pages fetch and cache everything they read per search — reported peptides, PSMs, proteins,
+modifications, annotations, scan data, feature-detection data — through one client-side pull-model tree rooted at
+`page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.ts`
+(plus sibling ROOT trees for scan data and feature-detection data). Serves the Peptide/Protein main pages, the
+Single Protein Overlay, and the QC page; **excludes the Mod Main Page**.
+
+Before adding a loader, changing an endpoint, or tracing where a page gets a piece of data, read
+`limelight_features_docs/front_end_data_loading__common_data_loaded_from_server_per_search.md`. It has: the
+load-once / rebuild-on-input-change contract (`getNewInstance`, instance-field caches, in-flight dedup — no
+memoization), the Root → 4-levels + 2-sibling-ROOTs hierarchy, the `ReportedPeptideId_Based_Data` dependency
+chain, a full catalog of all ~55 leaf loaders with their `d/rws/…` endpoints and cache keys, and the anomalies
+(two bare non-`d/rws` paths, derived/no-call loaders, delegating scan loaders, columnar/delta/base-36 wire
+encodings, the `ZZ_UNUSED_Untested_` files). The per-search flags below (via `DataPageStateManager`) are an input
+to that tree's Root.
+
+---
+
 ## Per-search capability flags (gate UI on what a search supports)
 
 Data pages carry a per-search "flags" object describing what each loaded search supports. **Use it to show/enable a feature only when every selected search can support it** — don't let the user trigger a webservice that will reject the request. (E.g. the "Run FlashLFQ" button only renders when all searches have scan data; otherwise the server returns invalid-parameter.)
