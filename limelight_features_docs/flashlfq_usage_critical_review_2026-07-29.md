@@ -103,7 +103,8 @@ files are distinct conditions/bioreps rather than fractions of one sample. If th
 fractions, this is the wrong treatment, and it makes the display's cross-file sum a sum across
 conditions (which FlashLFQ deliberately avoids).
 
-**Fix (ranked):**
+**Fix (ranked):** *(what per-file gives up — MBR + normalization — and where those belong is covered in
+`flashlfq_quant_multi_sample_comparison_mode.md`.)*
 1. Implement **per-scan-file runs** (one `--rep` dir / one FlashLFQ invocation per scan file; sum the
    per-file peaks on the receive side), collapsing the multi-file case into the validated single-file
    topology — this forces MBR off by construction.

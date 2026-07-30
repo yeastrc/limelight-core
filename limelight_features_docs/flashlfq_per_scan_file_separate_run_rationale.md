@@ -129,6 +129,9 @@ for peaks a finer-than-proteoform filter fully de-seeds, and **every peak is bac
 
 ## 5. What per-file runs cost — and the decision that surrounds it
 
+> See `flashlfq_quant_multi_sample_comparison_mode.md` for the full treatment of what per-file gives up
+> (MBR + normalization) and where those features belong (a committed multi-sample comparison mode).
+
 Turning MBR off is not free; be explicit about the trade:
 
 - **You give up MBR's value-recovery.** MBR's purpose is to fill *missing values* — quantify a peptide in a

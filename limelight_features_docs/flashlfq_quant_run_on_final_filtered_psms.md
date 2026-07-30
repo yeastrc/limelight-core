@@ -125,6 +125,9 @@ correct values for that view, and **invalidates them when filters change**.
 
 ### Option 3 (strictest) — the "locked-filter run"
 
+> Generalized to multiple samples, this becomes the committed comparison mode where MBR + normalization
+> are valid — see `flashlfq_quant_multi_sample_comparison_mode.md`.
+
 Bind a FlashLFQ run to a complete, frozen filter state:
 
 1. The user selects **all** filtering (annotation/cutoff **and** secondary: charge, mod mass, RT, m/z,
