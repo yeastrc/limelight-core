@@ -70,8 +70,10 @@ Only the **docs** are committed.
   `reportedPeptideId` spans multiple peptidoform mass forms, so the rpid-keyed rollup under-splits.
   Reported-peptide-level variable mods are fine (one mass form per rpid). Revisit with the
   decomposed-component identity (open item #3 in the mapping doc).
-- **Mode 3 (per-sub-group columns)** — deferred; needs the `scanFileId → searchSubGroupId` mapping
-  (DB/backfill).
+- **Mode 3 (per-sub-group columns) — sub-groups (a.k.a. sub-searches)** — deferred **as a demo
+  simplification** (get something running first), **not** because it has a hard DB dependency. It needs the
+  per-search `scanFileId → searchSubGroupId` mapping; the prior assumption was DB/backfill, but see Open
+  decision #5 — that mapping looks derivable client-side from data the page already loads.
 - **Track B (DB ingest of `QuantifiedPeaks`)** — not built. This is the gate to committing the feature (see
   below).
 
@@ -88,6 +90,24 @@ Only the **docs** are committed.
    quant for the whole view; and a visible "n/a — why" message (recommended) vs silent absence.
 4. **Track B DB model** — run keying under Option 1 (`projectSearchId` + submit-filter-state + scanFileId),
    run accumulation/GC (H9).
+5. **Does mode-3 (sub-groups) actually need the DB?** — *observation, unverified.* Sub-groups were deferred
+   only to simplify getting a demo running, and the "mode-3 needs a `scanFileId → searchSubGroupId`
+   DB/backfill" premise may be wrong: the front-end data-loading subsystem
+   (`front_end_data_loading__common_data_loaded_from_server_per_search.md`) shows the page **already loads**
+   `SearchSubGroupId_ForPSM_ID_NOT_Filtered` (`Map<psmId, searchSubGroupId>`) and per-PSM `searchScanFileId`
+   (PSM table data), so `scanFile → subGroup` looks **derivable client-side** without a new backfill.
+   *Caveat:* the eligibility doc deliberately chose to compute this **server-side in Java for authority**, so
+   "can derive client-side" ≠ "should"; and the unfiltered loader's coverage must be verified before relying
+   on it. Re-examine when mode-3 is picked up rather than assuming the DB is required.
+   **Precondition either way — INVARIANT:** sub-group and scan file are **independent** per-PSM attributes
+   with **no guaranteed alignment** (PSMs sharing a sub-group are not guaranteed to share a scan file, and
+   vice versa). So the `scanFile → subGroup` mapping is **well-defined only when sub-groups *partition* scan
+   files** (no scan file has PSMs in >1 sub-group). This **must always be validated true before a search
+   with sub-groups is allowed to produce per-sub-group quant** — it is the existing eligibility rule
+   (`flashlfq_quant_subgroup_scanfile_eligibility.md` §9; searcher
+   `Search_AnyScanFile_HasPsms_In_MultipleSubGroups_ForSearchId_Searcher`). The same client data
+   (`psmId → subGroupId` + per-PSM `searchScanFileId`) that could derive the mapping also supports this
+   validation.
 
 ## Commit gate
 
