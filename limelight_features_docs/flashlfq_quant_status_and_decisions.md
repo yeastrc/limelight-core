@@ -6,8 +6,8 @@ reasoning/analysis lives in the linked docs (see the **Doc map** at the bottom);
 **state and decisions**, kept current. If you're picking up quant work, **start here**, then read the
 governing-rule docs flagged below.
 
-> **What v1 honestly is (today):** correct MS1 abundance **per (search, scan file)** for a **single
-> non-open-mod search over one scan file** (or genuine fractions), reported as **summed apex heights** by
+> **What v1 honestly is (today):** correct MS1 abundance **per (search, scan file)** for a **single search
+> with no open mods and no PSM-level variable mods, over one scan file** (or genuine fractions), reported as **summed apex heights** by
 > default, **not sample-resolved**. Multiple searches can be shown **side by side** (each its own per-search
 > run + column). That's it — the "abundance matrix" ambition is **not** what the current path delivers (see
 > Open decision #1).
@@ -51,6 +51,7 @@ Only the **docs** are committed.
 | Quant aggregation, generally | **PSM count may sum; quant may NOT** — across scan files, sub-groups, searches, conditions | 2026-07-29 |
 | Experiment-page **conditions** | **Declined** — combining searches into one condition = fraction/replicate gap **+** cross-run non-comparability | 2026-07-30 |
 | Open-mod quant | **DEFERRED**, fenced with tripwires | 2026-07-29 |
+| Searches with **PSM-level variable (dynamic) mods** | **Excluded** — FE hides the button + a single server tripwire at the top of the submit controller (`isAnyPsmHas_DynamicModifications`). Same rpid-spans-multiple-mass-forms problem as open mods | 2026-07-30 |
 | Non-standard residues | keep 20 AA + U/O/J; drop X/B/Z/\* (explainability rule) | boss 2026-06-29 |
 | Mass computation | in Java, single source of truth; service does no chemistry | boss decision |
 
@@ -63,6 +64,12 @@ Only the **docs** are committed.
 - **Multi-scan-file-within-one-search** — declined (guard). If ever built: **per-file runs**, and — because
   Limelight has **no fraction-vs-replicate metadata and won't** — **do not silently sum**; use per-scan-file
   values or an explicit user "these are fractions" assertion.
+- **Searches with PSM-level variable (dynamic) modifications** — excluded, same treatment as open mods (FE
+  hides the button; a single server tripwire at the top of the submit controller rejects a bypassed
+  request). Same root problem: variable mods carried on the PSM (not the reported-peptide identity) mean one
+  `reportedPeptideId` spans multiple peptidoform mass forms, so the rpid-keyed rollup under-splits.
+  Reported-peptide-level variable mods are fine (one mass form per rpid). Revisit with the
+  decomposed-component identity (open item #3 in the mapping doc).
 - **Mode 3 (per-sub-group columns)** — deferred; needs the `scanFileId → searchSubGroupId` mapping
   (DB/backfill).
 - **Track B (DB ingest of `QuantifiedPeaks`)** — not built. This is the gate to committing the feature (see
