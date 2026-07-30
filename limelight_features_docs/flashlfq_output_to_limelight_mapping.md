@@ -164,12 +164,13 @@ state, a scan, a retention-time range) and the row's **PSM count drops but its Q
 This is correct, not a bug — and it comes straight from what MS1 label-free quant *is*.
 
 **Why.** A PSM count is a count of *identifications*, so it responds to any filter that removes
-identifications. **Quant is not a count of PSMs — it is the integrated area of a precursor
-chromatographic feature (the XIC peak).** FlashLFQ computed that area **once**, over the identifications
-we submitted, and an integrated peak area is **not decomposable into per-PSM contributions**: there is no
-"the charge-3 part of this peak" to subtract. So narrowing the *displayed* PSM subset cannot move the
-number — the feature, and its area, are unchanged. Put plainly: **the filtered PSM subset was never sent
-to FlashLFQ; the quant was measured on the originally-submitted set and reflects the whole feature.**
+identifications. **Quant is not a count of PSMs — it is the measured value of a precursor chromatographic
+feature (the XIC peak): its apex height by default, or its integrated area with `--int`.** FlashLFQ
+computed that value **once**, over the identifications we submitted, and a single peak measurement is
+**not decomposable into per-PSM contributions**: there is no "the charge-3 part of this peak" to subtract.
+So narrowing the *displayed* PSM subset cannot move the number — the feature, and its value, are
+unchanged. Put plainly: **the filtered PSM subset was never sent to FlashLFQ; the quant was measured on
+the originally-submitted set and reflects the whole feature.**
 
 **When Quant *does* change:** only when a filter changes **which features roll up to the row**, not when
 it merely thins the PSMs within the row. Concretely:
@@ -180,12 +181,13 @@ it merely thins the PSMs within the row. Concretely:
   no quant).
 - **Does *not* move the number** — filters that subset **PSMs within** a reported peptide it keeps
   (charge, scan number, precursor RT/m-z, individual PSM). These change the identification count, not the
-  precursor feature, so the area is unchanged.
+  precursor feature, so the peak value (apex or area) is unchanged.
 
-**How to say it to a user (one line):** *"Quant is the area of the precursor's chromatographic peak,
-measured once over all the matches for this peptide. Filtering the peptide/PSM list changes which matches
-you're looking at, but it doesn't re-integrate the peak — so the intensity only changes when a filter
-removes whole peptide forms (or a sample), not when it just narrows the PSMs shown."*
+**How to say it to a user (one line):** *"Quant is the measured value of the precursor's chromatographic
+peak (its apex height, or integrated area if the run used --int), measured once over all the matches for
+this peptide. Filtering the peptide/PSM list changes which matches you're looking at, but it doesn't
+re-measure the peak — so the intensity only changes when a filter removes whole peptide forms (or a
+sample), not when it just narrows the PSMs shown."*
 
 *(Filtering to a subset does **not** require re-running FlashLFQ — the peaks are fixed and we re-attribute
 them client-side. Re-running on the subset is possible but pointless here: it still can't split one
