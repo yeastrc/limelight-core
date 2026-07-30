@@ -106,6 +106,8 @@ quantity?* (apex-vs-area).
 ---
 
 ## Related docs
+- `flashlfq_quant_status_and_decisions.md` — **START HERE**: the quant feature's current status + all
+  settled/open decisions (this rule is one of them).
 - `flashlfq_quant_data_model_and_display_grains.md` — the display roll-up grains; **this rule governs which
   of those roll-ups are valid.**
 - `flashlfq_quant_subgroup_scanfile_eligibility.md` — the sub-group instance of this rule (partition vs

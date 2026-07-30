@@ -1,0 +1,111 @@
+# FlashLFQ quant — current status & decisions (living doc)
+
+**Last updated:** 2026-07-30
+**Purpose:** the single at-a-glance page for *where the quant feature stands and what's been decided*. The
+reasoning/analysis lives in the linked docs (see the **Doc map** at the bottom); this page is the index of
+**state and decisions**, kept current. If you're picking up quant work, **start here**, then read the
+governing-rule docs flagged below.
+
+> **What v1 honestly is (today):** correct MS1 abundance **per (search, scan file)** for a **single
+> non-open-mod search over one scan file** (or genuine fractions), reported as **summed apex heights** by
+> default, **not sample-resolved**. Multiple searches can be shown **side by side** (each its own per-search
+> run + column). That's it — the "abundance matrix" ambition is **not** what the current path delivers (see
+> Open decision #1).
+
+---
+
+## Must-read governing rules (before writing quant code)
+
+- **`flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md`** — PSM count may sum
+  across scan files / sub-groups / searches / conditions; **quant may not**. This is the rule behind the
+  multi-file guard and the experiment-condition decline.
+- **`flashlfq_open_mod_quant_deferred_mass_doublecount.md`** — open-mod quant is deferred and fenced with
+  in-code `throw` tripwires; **don't delete a throw to fix a build error.**
+
+## Current state (all feature CODE is HELD / uncommitted)
+
+Everything below is **built + deployed but held uncommitted** (lands as one commit when Track B is done).
+Only the **docs** are committed.
+
+**Implemented & working (held):**
+- Peaks-as-source-of-truth ingest design (`QuantifiedPeaks`, not the zeroed `QuantifiedPeptides`).
+- **Per-search runs** — one FlashLFQ run per search; multi-search button enabled.
+- Prototype receive/display: URL-hash TSV fetch; **one "Quant" column per search** after its PSM Count
+  column; **⚭ shared-signal flag**; Option-1 labeling.
+- Mass computed in **Java** (canonical calculator) + open-mod jitter **binning**.
+- **Multi-scan-file guard** — the submit controller rejects the whole request if any selected search has >1
+  raw scan file (see Declined below).
+- **Open-mod tripwires** — throw guards at every open-mod processing site (deferred).
+- **Sub-group eligibility** — cross-cutting sub-groups declined.
+
+## Settled decisions
+
+| Decision | Ruling | When / who |
+|---|---|---|
+| Per-search vs cross-search | **Model A** (per-search quant); Model B (cross-search joint run) NOT pursued | boss 2026-06-29 |
+| Sample identity | `scan_file_tbl.id` | 2026-06-29 |
+| Which output file to ingest | **`QuantifiedPeaks`** (feature grain); attribute + roll up ourselves | design |
+| Filter scoping | **Option 1** — quant = peptidoform total over the *submit-time* PSM/peptide filters; NOT narrowed by secondary charge/RT/m·z/scan filters | boss 2026-07-10 |
+| MBR | **off**, forced by single-file runs | design |
+| Multi-scan-file within one search | **DECLINED for now** (temporary submit guard) — do **not** sum quant across the files | 2026-07 |
+| Quant aggregation, generally | **PSM count may sum; quant may NOT** — across scan files, sub-groups, searches, conditions | 2026-07-29 |
+| Experiment-page **conditions** | **Declined** — combining searches into one condition = fraction/replicate gap **+** cross-run non-comparability | 2026-07-30 |
+| Open-mod quant | **DEFERRED**, fenced with tripwires | 2026-07-29 |
+| Non-standard residues | keep 20 AA + U/O/J; drop X/B/Z/\* (explainability rule) | boss 2026-06-29 |
+| Mass computation | in Java, single source of truth; service does no chemistry | boss decision |
+
+## Deferred / declined (with why)
+
+- **Open-mod quant (whole path)** — deferred. Two **confirmed code bugs** (mass double-count = H8;
+  receive-side positional-isomer key collision = H4) and a **physics ceiling**: per-open-mod-form abundance
+  is **unobtainable from MS1 DDA** (needs MS2/DIA). Honest achievable deliverable = peptide/protein totals +
+  well-resolved forms, everything else flagged. See the correctness-boundary + deferred-bug docs.
+- **Multi-scan-file-within-one-search** — declined (guard). If ever built: **per-file runs**, and — because
+  Limelight has **no fraction-vs-replicate metadata and won't** — **do not silently sum**; use per-scan-file
+  values or an explicit user "these are fractions" assertion.
+- **Mode 3 (per-sub-group columns)** — deferred; needs the `scanFileId → searchSubGroupId` mapping
+  (DB/backfill).
+- **Track B (DB ingest of `QuantifiedPeaks`)** — not built. This is the gate to committing the feature (see
+  below).
+
+## Open decisions (NOT yet decided)
+
+1. **Strategic — what is v1? (H1/H2).** The composed decisions collapse the abundance **matrix** into a
+   **per-(search, scan-file) scalar** (sample axis summed/deferred/declined). Decide on purpose: is v1 that
+   scalar, or must the sample/condition axis survive? Everything else is downstream.
+2. **Apex vs area.** The summed display sums **apex heights** by default (`--int` off). Switch to
+   `--int true` (additive area, matches the chromatogram) or keep apex (robust, but label it as relative,
+   not an additive area)? See the review doc's "Open decision — apex vs area."
+3. **Decline scope & messaging** (the deferred "one decision"): when a search is ineligible (multi-file,
+   open-mod, cross-cutting sub-groups) in a mixed view — decline just that **column** (recommended) vs hide
+   quant for the whole view; and a visible "n/a — why" message (recommended) vs silent absence.
+4. **Track B DB model** — run keying under Option 1 (`projectSearchId` + submit-filter-state + scanFileId),
+   run accumulation/GC (H9).
+
+## Commit gate
+
+**All feature code is held uncommitted and lands as ONE commit when Track B (DB ingest) is done.** Only the
+design/analysis/status docs are committed. In-code open-mod `throw` tripwires and the multi-file guard live
+with that held code.
+
+## Doc map (the quant doc set)
+
+**Status / rules (start here):**
+- `flashlfq_quant_status_and_decisions.md` — *this doc.*
+- `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` — the aggregation rule.
+- `flashlfq_open_mod_quant_deferred_mass_doublecount.md` — open-mod deferred + in-code tripwires.
+
+**Design:**
+- `quant_maxquant_design_discussion.md` — overarching design + Model A/B history.
+- `flashlfq_output_to_limelight_mapping.md` — peaks-as-source-of-truth ingest + identity round-trip.
+- `flashlfq_quant_data_model_and_display_grains.md` — storage grain + display roll-up modes.
+- `flashlfq_quant_subgroup_scanfile_eligibility.md` — sub-group partition-vs-cross-cut rule.
+- `flashlfq_per_scan_file_separate_run_rationale.md` — one run per scan file; MBR incompatibility.
+- `flashlfq_quant_run_on_final_filtered_psms.md` — within-feature non-decomposability (charge ~54%).
+- `flashlfq_results_matched_to_datatable_display__2026-07-29_0856_PDT.md` — how results match the DataTable.
+- `flashlfq_summary_and_comparison.md` — FlashLFQ technical summary + tool comparison.
+
+**Reviews (2026-07-29 set):**
+- `flashlfq_quant_mapping_critical_review_2026-07-29.md` — composed-design holes H1–H9.
+- `flashlfq_usage_critical_review_2026-07-29.md` — end-to-end code-observed usage audit.
+- `flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md` — open-mod correctness ceiling (MS1 physics).

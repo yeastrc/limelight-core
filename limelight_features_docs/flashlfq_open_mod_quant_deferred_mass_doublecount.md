@@ -31,6 +31,8 @@ and `flashlfq_quant_data_model_and_display_grains.md` (the deferral scope note).
 - `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` — the governing rule for
   when quant may/may not be summed across scan files, sub-groups, searches, or conditions (PSM count may
   sum; quant may not).
+- `flashlfq_quant_status_and_decisions.md` — **START HERE**: current status + settled/open decisions (the
+  entry point for the quant doc set).
 
 ---
 
