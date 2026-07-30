@@ -94,6 +94,24 @@ leaves MBR on. (See assessment §4a/§17; confirmed by `FlashLfqSettings.toml` s
 `MatchBetweenRuns = true` and stdout running the MBR stage even when the UI box was unchecked.) So you
 cannot express "MBR off" through the CLI directly.
 
+**Empirical re-confirmation (2026-07-30) — including the frequently-suggested `--mbr no`.** A web/AI
+answer sometimes claims "pass `--mbr no` to turn it off." That is **false for this build.** Ran the actual
+image (`flashlfq-local:latest`, `dotnet /flashlfq/CMD.dll`) on a copy of a real single-file run's inputs,
+outside `finaldir`, and read each output's `FlashLfqSettings.toml` + log:
+
+| CLI argument           | `MatchBetweenRuns` (toml) | MBR stage ran? | exit |
+|------------------------|---------------------------|----------------|------|
+| *(no `--mbr` flag)*    | **true**                  | yes            | 0    |
+| `--mbr no`             | **true**                  | yes            | 0    |
+| `--mbr false`          | **true**                  | yes            | 0    |
+| `--mbr` (bare)         | **true**                  | yes            | 0    |
+
+Every form leaves MBR **on** (exit 0, no parse error — a value token like `no`/`false` is silently
+ignored, and the flag's mere presence, or its `true` default, keeps it on). This matches the official
+wiki (booleans are bare presence-flags with no value syntax; `--mbr` defaults `true`). **There is no CLI
+way to disable MBR in this build** — do not rely on `--mbr no` / `--mbr false` (same trap as `--nor
+false`). The single-file run below is the only guarantee.
+
 But **a single-file run has no donor**, so MBR is a **guaranteed no-op** — there is nothing to match
 between. Running one scan file at a time therefore **forces MBR off by construction.** This is the cleanest
 MBR-off path available, and one the earlier analysis (§17) did not list — it needs **neither**:
