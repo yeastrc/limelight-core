@@ -132,6 +132,12 @@ with that held code.
 - `flashlfq_results_matched_to_datatable_display__2026-07-29_0856_PDT.md` — how results match the DataTable.
 - `flashlfq_summary_and_comparison.md` — FlashLFQ technical summary + tool comparison.
 
+**Plans:**
+- `flashlfq_quant_per_scanfile_run_keying_plan.md` — per-(search, scan file) run keying to support a single
+  search with sub-searches (multiple scan files): the §5 dual gate (button + submit), server-side fan-out,
+  `searchScanFileId` in the URL hash, per-sub-group Quant columns, and the ordered task list. Resolves the
+  multi-scan-file "DECLINED" row and Open decision #5 (mode-3).
+
 **Reviews (2026-07-29 set):**
 - `flashlfq_quant_mapping_critical_review_2026-07-29.md` — composed-design holes H1–H9.
 - `flashlfq_usage_critical_review_2026-07-29.md` — end-to-end code-observed usage audit.
