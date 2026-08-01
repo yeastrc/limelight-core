@@ -18,8 +18,8 @@
     "sass": "^1.102.0",
     "sass-loader": "^17.0.0",
     "typescript": "^7.0.2",
-    "webpack": "^5.109.0",
-    "webpack-cli": "^7.2.1"
+    "webpack": "^5.109.2",
+    "webpack-cli": "^7.2.2"
   },
   "dependencies": {
     "@adaptabletools/react-beautiful-dnd": "^14.0.8",
