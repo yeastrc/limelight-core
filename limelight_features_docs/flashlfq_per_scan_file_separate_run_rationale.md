@@ -7,14 +7,21 @@ Companion to `flashlfq_quant_data_model_and_display_grains.md` (storage grain is
 `flashlfq_output_to_limelight_mapping.md` (the identity round-trip). The authoritative decision record is
 **§19** of `Claude_SeparateAssessment_20260706.md` (repo root); this doc is the standalone explanation.
 
-**Implementation status (2026-07-29):** the per-file design below is **NOT yet implemented** — the
-webapp + service still run **one joint FlashLFQ run per search** over all of that search's scan files
-(MBR on, un-disableable in this `CMD.dll` build). As an interim guard, the run-request controller
-(`FlashLFQ_Run__Request_Creation_RestWebserviceController`) now **rejects the whole request, all-or-
-nothing, if any selected search has more than one scan file** (raw `search_scan_file_tbl` count, pre-
-cutoff), surfaced via the `errorAtLeastOneSearchHasMoreThanOneScanFile` response flag and a browser
-alert; nothing is submitted. So multi-scan-file searches are **blocked at submit** until per-file runs
-(this doc) land, rather than silently producing MBR-contaminated quant.
+**Implementation status (2026-08-03): the per-file design below is now the LIVE path (held/uncommitted).**
+The run-request controller (`FlashLFQ_Run__Request_Creation_RestWebserviceController`) no longer rejects
+multi-scan-file searches wholesale and no longer runs one joint per-search run. Instead the **server fans
+out one FlashLFQ run per scan file** (the browser still submits ONE request; scan files are derived
+server-side from the cutoffs), each run seeing exactly one scan file so **MBR is off by construction**. Each
+run returns its own `requestId`, tagged by `searchScanFileId` and written into the URL hash
+(`projectSearchId_searchScanFileId_requestId`); results are **never summed across scan files** — each scan
+file's quant renders in its own per-sub-group column.
+
+The old interim guard (`errorAtLeastOneSearchHasMoreThanOneScanFile`, all-or-nothing reject of any
+multi-scan-file search) is **replaced** by the **§5 gate**: a >1-scan-file search is now *permitted*, but
+**only** when it is the sole selected search, has sub-groups, and its sub-groups map **1:1 to scan files**;
+otherwise it is rejected with a typed reason (`FlashLFQ_Run_Reject_Reason`, 4 values). See the plan
+`flashlfq_quant_per_scanfile_run_keying_plan.md` §5 and the eligibility doc's 1:1 invariant. Everything is
+still **held uncommitted** behind the Track-B (DB ingest) commit gate.
 
 **Terminology note:** avoid the word **"tag"** here — Limelight already uses *search tags* (user-assigned
 labels). Use the precise ids: **`projectSearchId`**, **`scanFileId`** (`search_scan_file_id`),
@@ -25,12 +32,18 @@ labels). Use the precise ids: **`projectSearchId`**, **`scanFileId`** (`search_s
 
 ## TL;DR — the rule
 
-> **Run FlashLFQ once per scan file, feeding each run only that file's PSMs, and sum per displayed form
-> across the per-file runs.** This holds for the multi-search topology already in use (each search = one
-> scan file) **and** for the previously-unhandled case of one search with several scan files. The reason is
-> not performance or convenience — it is that **Match-Between-Runs (MBR) is fundamentally incompatible with
-> the way Limelight displays quant**, and running one file at a time is the clean way to guarantee MBR is
-> off.
+> **Run FlashLFQ once per scan file, feeding each run only that file's PSMs.** This holds for the
+> multi-search topology already in use (each search = one scan file) **and** for the previously-unhandled
+> case of one search with several scan files. The reason is not performance or convenience — it is that
+> **Match-Between-Runs (MBR) is fundamentally incompatible with the way Limelight displays quant**, and
+> running one file at a time is the clean way to guarantee MBR is off.
+>
+> **Whether to then *sum* the per-file runs is a separate decision** (fraction-vs-replicate; §5). The
+> **implemented** path does **not** sum across scan files — because Limelight has no fraction-vs-replicate
+> metadata, it keeps each scan file's quant in its own **per-sub-group column** (the conservative end of §5's
+> trade), rather than combining them into one displayed total. Summing per displayed form across per-file
+> runs remains the correct model *only* where the files are known-combinable (e.g. genuine fractions), which
+> the current gate does not attempt to assert.
 
 ---
 

@@ -1,6 +1,7 @@
 # FlashLFQ quant: sub-group / scan-file eligibility
 
-**Status:** design argument + implementation spec. Written 2026-07-07.
+**Status:** design argument + implementation spec. Written 2026-07-07. **Implemented 2026-08-03**
+(held/uncommitted) — see the box below; the shipped gate is **stronger** than the original partition rule.
 **Audience:** §1–§8 are a decision memo that can be forwarded as-is; §9–§12 are the engineering spec.
 **Companion:** for *why a single search with multiple scan files is quantified with one FlashLFQ run per
 scan file* (MBR is incompatible with Limelight's run-once/display-many model), see
@@ -11,6 +12,20 @@ because MS1 label-free quant of such sub-groups is not physically meaningful. Fo
 offer quant at all** — show a short, plain-language message explaining that it isn't available and why.
 (Every Limelight-XML converter we have written *never produces this shape* anyway — see §8 — so this is a
 guard for a case our own pipeline doesn't create, not a feature we're declining to build.)
+
+> **Implementation note (2026-08-03) — the shipped gate is a 1:1 bijection, tighter than "partition."**
+> This doc's original eligibility rule (§9) required only that sub-groups **partition** scan files — no scan
+> file may hold PSMs from >1 sub-group. The implemented FlashLFQ per-scan-file gate enforces that **and its
+> dual**: no sub-group may hold PSMs in >1 scan file. Both together ⇒ **each sub-group ↔ exactly one scan
+> file (1:1)**. The extra half is required because the per-sub-group Quant **column restricts to a single
+> `searchScanFileId`**; a sub-group whose PSMs spanned several scan files would force summing its quant
+> across files, which is not allowed (`flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md`).
+> Two shared-code searchers enforce it, **both must return FALSE** (see §9–§10):
+> `Search_AnyScanFile_HasPsms_In_MultipleSubGroups_ForSearchId_Searcher` (no scan file mixes sub-groups) and
+> `Search_AnySubGroup_HasPsms_In_MultipleScanFiles_ForSearchId_Searcher` (no sub-group spans scan files). The
+> check runs **server-side in the run-submit controller's §5 gate** (typed `FlashLFQ_Run_Reject_Reason`), and
+> the FE mirrors it to hide the button. It fires **only for a >1-scan-file search** — a single-file search
+> partitions trivially and never calls either searcher.
 
 ---
 
@@ -91,6 +106,24 @@ files**:
 | Sub-groups that **partition** scan files (no scan file mixes sub-groups) | per sub-group = sum over that sub-group's scan files | ✅ valid |
 | Sub-groups that **cross-cut** scan files | — | ❌ **decline quant; show a message (§11)** |
 
+**Physical validity vs. the implemented gate (a deliberate scope choice).** This table is about *physical
+validity*, and **partition is sufficient for it** — a sub-group that owns several whole, exclusive scan
+files is a legitimate sum over those files. The **implemented** gate is nonetheless stricter (a 1:1
+sub-group↔scan-file bijection; §9–§10): a sub-group owning >1 scan file is **rejected**, not summed. This is
+**intentional**, for two reasons:
+
+- **Consistency with the no-combine-sub-groups decision.** The current plan is that a search's
+  sub-groups are **not** combined into one number when that search is compared against other searches — which
+  is already why multi-scan-file quant is offered only in a **single-search** view. Summing a single
+  sub-group's quant across its several scan files is the same "combine across the physical measurement units"
+  move at a smaller scale, so it is skipped for now by the same reasoning, rather than being the one place we
+  silently sum.
+- **Our converters never produce it (§8).** As with cross-cutting sub-groups, **every Limelight-XML converter
+  we have written gives a sub-group exactly one scan file** — so a sub-group spanning >1 scan file does not
+  arise from the real pipeline. It is not an edge case we need to support now, if ever. (If a hand-authored /
+  third-party XML ever needs it, the shape is physically summable — revisit then; the display would need a
+  per-sub-group column that aggregates a sub-group's exclusively-owned scan files.)
+
 **Parallel caveat, same principle:** since a scan file is *not* always 1:1 with a search, if a scan file is
 shared across searches, per-*search* quant double-claims that file's peaks — the same rule applies (a grain
 must aggregate scan files it exclusively owns).
@@ -103,10 +136,12 @@ Two independent reasons, either sufficient on its own:
   reproducible, and comparable**, and prevents the product from emitting fabricated differential abundance
   (§1–§6).
 - **Practical — our own tooling never creates this shape:** **every converter we have written from search
-  results to Limelight XML produces searches in which sub-groups do *not* cross-cut scan files.** So this
-  data shape does not arise from the Limelight pipeline at all — it could appear only in hand-authored or
-  third-party XML. There is no reason to engineer a quant model for a shape our converters never emit; the
-  correct response is to **detect it and decline**, not to invent apportionment logic for it.
+  results to Limelight XML produces searches in which sub-groups do *not* cross-cut scan files — and in which
+  each sub-group has exactly one scan file** (so neither a scan file mixing sub-groups nor a sub-group
+  spanning scan files arises). So these data shapes do not arise from the Limelight pipeline at all — they
+  could appear only in hand-authored or third-party XML. There is no reason to engineer a quant model for a
+  shape our converters never emit; the correct response is to **detect it and decline**, not to invent
+  apportionment (cross-cut) or cross-file summing (sub-group spanning files) logic for it.
 
 The underlying data-model gap (sub-group and scan file are independent per-PSM attributes, never constrained
 to align) is real and pre-existing. Rather than block quant on locking that model down, we simply **detect
@@ -121,31 +156,49 @@ Per search, define quant eligibility by grain:
 
 - **Whole-search grain** — always eligible *for that search's own scan files*. (Cross-search sharing is a
   separate concern; see §12.)
-- **Per–sub-group grain** — eligible **iff every scan file used by the search contains PSMs from at most one
-  sub-group.** Equivalently: the map `scanFileId → { subGroupId }` is single-valued for every scan file.
-  Any scan file mapping to ≥2 distinct sub-groups ⇒ **cross-cutting ⇒ ineligible.**
+- **Per–sub-group grain** — eligible **iff sub-groups and scan files map 1:1**, i.e. BOTH directions are
+  single-valued:
+  1. **No scan file mixes sub-groups** — `scanFileId → { subGroupId }` is single-valued (the original
+     partition condition; a scan file with ≥2 distinct sub-groups ⇒ cross-cutting ⇒ ineligible), AND
+  2. **No sub-group spans scan files** — `subGroupId → { scanFileId }` is single-valued (a sub-group whose
+     PSMs land in ≥2 distinct scan files ⇒ ineligible).
+  Condition 2 is the **implemented tightening** over the original partition-only rule: the per-sub-group
+  quant column restricts to a single `searchScanFileId`, so a sub-group must resolve to exactly one scan
+  file (else its quant would have to be summed across files — not allowed). Together (1)+(2) ⇒ a **1:1
+  bijection** between the search's sub-groups and its scan files.
 
-A search with **no** sub-groups is trivially eligible (grain = whole search).
+A search with **no** sub-groups is trivially eligible (grain = whole search). The check is only performed
+for a search with **>1 scan file**; a single-file search is trivially 1:1.
 
-## 10. Detection (cheap, exact)
+## 10. Detection (cheap, exact) — the two searchers as implemented
 
-Group the search's PSMs by `(scanFileId, subGroupId)` and check for any scan file with >1 distinct
-sub-group. Conceptually:
+Ineligible if **either** direction is many-valued. Conceptually:
 
 ```
 ineligible(search) :=
-    EXISTS scanFileId USED BY search
-    SUCH THAT COUNT(DISTINCT subGroupId OVER psm WHERE psm.scanFileId = scanFileId) > 1
+       EXISTS scanFileId USED BY search
+       SUCH THAT COUNT(DISTINCT subGroupId OVER psm WHERE psm.scanFileId = scanFileId) > 1   -- cross-cut
+    OR EXISTS subGroupId USED BY search
+       SUCH THAT COUNT(DISTINCT scanFileId OVER psm WHERE psm.subGroupId = subGroupId) > 1    -- sub-group spans files
 ```
 
-- Both inputs are **per-PSM** attributes the FlashLFQ request builder already gathers (scan file per PSM;
-  sub-group label per PSM), so no new data source is needed — it's one pass over the PSM set the controller
-  already assembles.
-- Compute it **in Java** (authoritative, next to the identity/mass logic already moving server-side, and in
-  line with the plan to store a generic quant format Java-side). Expose the result as a **per-search
-  capability flag** consumed by the front end, mirroring the existing `DataPage_common_Searches_Flags`
-  pattern the UI already uses to gate the "Run FlashLFQ" button (`is__All_Searches_Have_ScanData()` etc.).
-  Add e.g. `quant_SubGroupGrain_Eligible` per search.
+- Both inputs are **per-PSM** attributes (`psm_tbl.search_scan_file_id`; `psm_search_sub_group_tbl.search_sub_group_id`),
+  so no new data source is needed.
+- **Implemented (2026-08-03) — two shared-code searchers under
+  `limelight_shared_code/.../search_sub_group_scan_file/searchers/`**, each a `GROUP BY … HAVING COUNT(DISTINCT …) > 1`
+  over `psm_tbl` joined to `psm_search_sub_group_tbl`, both returning a boolean per `searchId`:
+  - `Search_AnyScanFile_HasPsms_In_MultipleSubGroups_ForSearchId_Searcher` — the cross-cut check (condition 1
+    of §9): `GROUP BY search_scan_file_id HAVING COUNT(DISTINCT search_sub_group_id) > 1`.
+  - `Search_AnySubGroup_HasPsms_In_MultipleScanFiles_ForSearchId_Searcher` — the dual (condition 2, the
+    implemented tightening): `GROUP BY search_sub_group_id HAVING COUNT(DISTINCT search_scan_file_id) > 1`.
+  - A search is per-sub-group eligible **iff BOTH return FALSE**.
+- **Where it runs (differs from the original spec above):** the check is done **in the FlashLFQ run-submit
+  controller's §5 gate** (`FlashLFQ_Run__Request_Creation_RestWebserviceController`), all-or-nothing, surfaced
+  as a typed `FlashLFQ_Run_Reject_Reason` (`MULTI_SCAN_FILE_SUB_GROUPS_CROSS_CUT_SCAN_FILES` /
+  `MULTI_SCAN_FILE_SUB_GROUP_SPANS_MULTIPLE_SCAN_FILES`) — **not** as a `DataPage_common_Searches_Flags`
+  per-search `quant_SubGroupGrain_Eligible` capability flag as originally sketched. The front-end button gate
+  mirrors the same rule (calling the cross-cut webservice only for a >1-scan-file search) so the user never
+  submits a request the server will reject; the server gate is the authority.
 
 ## 11. What is offered — and the message when quant is declined
 
@@ -157,8 +210,9 @@ user asked for.
 | Search shape | Behavior |
 |---|---|
 | No sub-groups | per-search quant (summed across its scan files) |
-| Sub-groups **partition** scan files | per-sub-group quant |
-| Sub-groups **cross-cut** scan files | **Quant declined — show the message below.** (Our converters don't produce this shape; §8.) |
+| Sub-groups **1:1 with** scan files (partition **and** each sub-group = one file) | per-sub-group quant (one column per sub-group, each = one scan file) |
+| Sub-groups **cross-cut** scan files (a file mixes sub-groups) | **Quant declined — show a message.** (Our converters don't produce this shape; §8.) |
+| A sub-group **spans** multiple scan files | **Quant declined** — intentionally out of scope (§7 note): physically summable, but skipped for consistency with the no-combine-sub-groups decision, and our converters never produce it. Rejected rather than summed across files. |
 
 **When quant is declined, say so plainly** — don't silently hide it, and don't substitute a grain the user
 didn't ask for. Show a short, plain-language message, e.g.:
@@ -167,9 +221,13 @@ didn't ask for. Show a short, plain-language message, e.g.:
 > search's sub-groups are spread across shared raw files, so a separate quant value per sub-group can't be
 > measured from the data.
 
-**UI gating:** treat per–sub-group quant like any other per-search capability — render/enable it only when
-**all** selected searches are `quant_SubGroupGrain_Eligible` (same pattern as gating the "Run FlashLFQ"
-button on scan data today). For an ineligible search, show the message instead of a quant control.
+**UI gating (as implemented):** the eligibility check is enforced **server-side in the run-submit §5 gate**
+(§10), not via a `quant_SubGroupGrain_Eligible` per-search flag as originally sketched. The front end mirrors
+the same rule to hide the "View/Add Quant" button (calling the cross-cut webservice only for a >1-scan-file
+search), and the button is additionally shown only to a logged-in project owner with the run service
+configured (`canRunQuant`). A bypassed/stale request is still rejected by the server with a typed
+`FlashLFQ_Run_Reject_Reason`. The plain-language "not available" message (above) remains the right UX for the
+declined shapes.
 
 ## 12. The generic quant format should make this fall out for free
 
