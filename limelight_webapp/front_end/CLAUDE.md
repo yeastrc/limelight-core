@@ -155,6 +155,49 @@ to that tree's Root.
 
 ---
 
+## `DataPageStateManager` — treat every property as SUSPECT; always validate before use
+
+**`DataPageStateManager` (`page_js/data_pages/data_pages_common/dataPageStateManager.ts`) is instantiated
+TWICE on a data page and the two instances are populated with DIFFERENT data.** So a given accessor may
+return a real value on one instance and `undefined` on the other — an accessor being defined does NOT mean
+it's populated on the instance you happen to hold. This is a known, unfixed rough edge (Dan: "I just never
+got around to fixing this; step carefully when using it").
+
+**The two instances and what each holds** (names from the page-root classes, e.g.
+`peptideViewPage_RootClass_Common.ts`):
+- **`_dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay`** — gets `set_projectSearchIds(...)`
+  (the projectSearchIds + their filters / annotation-type display), but NOT the server-loaded data below.
+- **`_dataPageStateManager_DataFrom_Server`** — gets the server-loaded data:
+  `set_DataPage_common_Searches_Flags(...)` and `set_SearchSubGroups_Root(...)` (in
+  `loadCoreData_ProjectSearchIds_Based.ts`), but is **NOT** given `set_projectSearchIds(...)` — so
+  `get_projectSearchIds()` on it returns **`undefined`**.
+
+Components are typically handed the `_DataFrom_Server` instance (it's the one called
+`dataPageStateManager_DataFrom_Server` in props), so **`get_DataPage_common_Searches_Flags()` /
+`get_SearchSubGroups_Root()` work but `get_projectSearchIds()` is `undefined` there.** (`SearchSubGroups_Root`
+may still read `undefined` when a search simply has no sub-groups — the root is only set when present — so
+treat "no root" as "no sub-groups," not "unknown instance.")
+
+**So: get `projectSearchIds` from a dedicated prop, NOT from `dataPageStateManager.get_projectSearchIds()`.**
+Most components already receive (or should receive) `projectSearchIds` as its own prop; thread it down
+explicitly. This both dodges the undefined-on-`_DataFrom_Server` trap AND future-proofs the case where a
+**subset** of projectSearchIds is flowed down to a component (a page-level manager would carry the full set,
+a prop can carry the subset the component actually operates on). (Real bug, 2026-08-03: the quant button
+gate read `dataPageStateManager.get_projectSearchIds()` off the `_DataFrom_Server` instance, got `undefined`,
+and its `if ( !projectSearchIds ) → eligible` guard showed the button for a search it should have rejected.)
+
+**Practical rules when reading from a `DataPageStateManager`:**
+- **Never assume a getter is populated.** Guard EVERY read (`get_projectSearchIds()`,
+  `get_DataPage_common_Searches_Flags()`, `get_SearchSubGroups_Root()`, …) for `undefined`/empty before
+  using it. A missing value means "this instance wasn't populated with that," not "there is none."
+- **Don't treat "value missing" as a real answer.** Decide explicitly what an unpopulated read means for your
+  logic — usually "not decided yet / can't tell," NOT a definitive negative (see the 2026-08-03 quant-gate
+  bug above, where a missing `projectSearchIds` was wrongly read as "no searches → eligible").
+- **Confirm you hold the RIGHT instance.** Two instances exist; the one threaded to your component may be the
+  one lacking the data you need. When a `DataPageStateManager` value is unexpectedly empty, first suspect
+  you're reading the other instance — verify by checking a property you KNOW should be set, or by tracing
+  where that instance was constructed/populated, before assuming the data doesn't exist.
+
 ## Per-search capability flags (gate UI on what a search supports)
 
 Data pages carry a per-search "flags" object describing what each loaded search supports. **Use it to show/enable a feature only when every selected search can support it** — don't let the user trigger a webservice that will reject the request. (E.g. the "Run FlashLFQ" button only renders when all searches have scan data; otherwise the server returns invalid-parameter.)
