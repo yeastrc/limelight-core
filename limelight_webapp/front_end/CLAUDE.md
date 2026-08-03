@@ -153,6 +153,26 @@ chain, a full catalog of all ~55 leaf loaders with their `d/rws/…` endpoints a
 encodings, the `ZZ_UNUSED_Untested_` files). The per-search flags below (via `DataPageStateManager`) are an input
 to that tree's Root.
 
+### Reuse the page's already-loaded data — NEVER re-instantiate a loader / re-fetch (webservice calls are expensive)
+
+**When a component needs data that the page already loaded (or can load once) through the `CommonData_LoadedFromServer`
+tree — or any other shared page-level loader — reach the EXISTING instance and reuse its cache. Do NOT call a
+loader's `getNewInstance(...)` (or otherwise stand up a second copy) just because the current component doesn't
+already have a reference.** A fresh instance has its own empty cache and makes its own `d/rws/…` AJAX call,
+duplicating a fetch the page already paid for.
+
+- If the data isn't reachable from the props you currently have, **thread the already-loaded holder/Root (or the
+  `commonData_LoadedFromServer_…__Root`) DOWN as a new prop** from a parent that already has it, rather than
+  instantiating a new loader locally. Add the prop; don't add a fetch.
+- The tree's load-once / in-flight-dedup contract only helps you if you call it on the **same** instance the rest of
+  the page uses. A second `getNewInstance` defeats it entirely.
+- This applies to every shared loader, not just this tree: prefer "pass the loaded object down" over "load it again
+  here."
+
+Why: caching across the page only works if everyone shares one instance. Each duplicate webservice call costs real
+server work (and latency); re-instantiating a loader silently throws away the page's cache and re-fetches. When in
+doubt, plumb the existing object through props — never mint a second loader to make a component self-contained.
+
 ---
 
 ## `DataPageStateManager` — treat every property as SUSPECT; always validate before use
