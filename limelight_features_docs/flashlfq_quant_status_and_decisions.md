@@ -1,10 +1,26 @@
 # FlashLFQ quant — current status & decisions (living doc)
 
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-05
 **Purpose:** the single at-a-glance page for *where the quant feature stands and what's been decided*. The
 reasoning/analysis lives in the linked docs (see the **Doc map** at the bottom); this page is the index of
 **state and decisions**, kept current. If you're picking up quant work, **start here**, then read the
 governing-rule docs flagged below.
+
+> ## 🚩 BIGGEST UNRESOLVED CHOICES — how to turn FlashLFQ output into one displayed number
+> **These two decisions dominate quant correctness and are NOT yet made on purpose. Decide them before Track B
+> hardens the ingest — both rules carry straight into Track B.** (Detail: Open decisions #2 and #2b below;
+> full data + source trace in `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.)
+>
+> 1. **Feature aggregation — SUM vs MAX vs deliberate.** Limelight currently **SUMs** a peptidoform's peaks.
+>    FlashLFQ itself takes the **MAX** (single most-intense peak) and zeroes shared forms — pin-verified vs
+>    mzLib `1.0.566`; **the old "FlashLFQ sums too" justification is FALSE, so SUM is not the magic answer.**
+>    Measured (run `36b59`): SUM == MAX for **77%** of peptidoforms, **over-counts the other 23%** (median
+>    +12%, up to 4.5×; ~7% run aggregate), mostly by summing spurious secondary peaks FlashLFQ discards — but
+>    raw MAX under-counts genuine multi-feature peptides. Pick a rule deliberately.
+> 2. **Per-feature quantity — apex height vs `--int` integrated area.** Today = **apex height** (`--int` off);
+>    a **sum of apex heights is not physically additive** and never matches Limelight's area-based
+>    chromatogram. Area is additive but FlashLFQ calls it noisier. Today's display is a SUM of apex heights —
+>    the least-additive corner of the space.
 
 > **What v1 honestly is (today):** correct MS1 abundance **per (search, scan file)** for searches with **no
 > open mods and no PSM-level variable mods**, reported as **summed apex heights** by default, **not
@@ -105,9 +121,21 @@ Only the **docs** are committed.
 1. **Strategic — what is v1? (H1/H2).** The composed decisions collapse the abundance **matrix** into a
    **per-(search, scan-file) scalar** (sample axis summed/deferred/declined). Decide on purpose: is v1 that
    scalar, or must the sample/condition axis survive? Everything else is downstream.
-2. **Apex vs area.** The summed display sums **apex heights** by default (`--int` off). Switch to
-   `--int true` (additive area, matches the chromatogram) or keep apex (robust, but label it as relative,
-   not an additive area)? See the review doc's "Open decision — apex vs area."
+2. **Apex vs area** (one of the **two biggest FlashLFQ-processing choices** — see 2b). The summed display
+   sums **apex heights** by default (`--int` off). Switch to `--int true` (additive area, matches the
+   chromatogram) or keep apex (robust, but label it as relative, not an additive area)? See the review doc's
+   "Open decision — apex vs area" and `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
+2b. **Feature aggregation — SUM vs MAX vs deliberate (NEW, 2026-08-05; the other biggest choice).** How to
+   combine a peptidoform's multiple `QuantifiedPeaks` rows into one number. Limelight currently **SUMs** them;
+   FlashLFQ's own `QuantifiedPeptides` takes the **MAX** (single most-intense peak) and zeroes shared forms —
+   pin-verified against mzLib `1.0.566`. **SUM is not a magically-correct default** (the earlier "FlashLFQ
+   sums too" justification was FALSE). Measured on run `36b59`: SUM == MAX for **77%** of peptidoforms but
+   **over-counts the other 23%** (median +12%, up to 4.5×; ~7% at the run aggregate), per-peptide-variable,
+   mostly by summing small secondary/spurious peaks FlashLFQ discards. But raw MAX **under-counts** genuine
+   multi-feature peptides — so decide a rule on purpose (match FlashLFQ / dominant feature / sum vetted real
+   features only). Together with (2) apex-vs-area, these are the two largest decisions in processing FlashLFQ
+   results, and both carry into Track B. Full data + source trace:
+   `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
 3. **Decline scope & messaging** (the deferred "one decision"): when a search is ineligible (multi-file,
    open-mod, cross-cutting sub-groups) in a mixed view — decline just that **column** (recommended) vs hide
    quant for the whole view; and a visible "n/a — why" message (recommended) vs silent absence.
@@ -141,6 +169,9 @@ gate (typed `FlashLFQ_Run_Reject_Reason`) live with that held code.
 
 **Status / rules (start here):**
 - `flashlfq_quant_status_and_decisions.md` — *this doc.*
+- `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md` — **the two biggest processing
+  decisions (SUM vs MAX, apex vs area)**; FlashLFQ MAX-picks (not sum), pin-verified vs mzLib `1.0.566` +
+  data head-to-head on run `36b59`.
 - `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` — the aggregation rule.
 - `flashlfq_open_mod_quant_deferred_mass_doublecount.md` — open-mod deferred + in-code tripwires.
 
