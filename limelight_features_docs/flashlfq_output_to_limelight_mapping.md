@@ -212,8 +212,18 @@ Essentially none that are both meaningful for open-mod data and not reproducible
 
 **The real cost is ownership**, not a lost statistic: we take on the peptide-sum (sum a peptidoform's
 peaks across charge states) and protein-rollup (replicate FlashLFQ's top-3, or define our own) logic —
-which for open-mod data we *want* to own anyway. Keep the summary files as a validation cross-check
-(they should match our numbers wherever FlashLFQ marks a peptide unambiguous).
+which for open-mod data we *want* to own anyway. Keep the summary files as a validation cross-check — but
+**not as an equality oracle** (see correction).
+
+> **CORRECTION (2026-08-05, pin-verified against FlashLFQ/mzLib `1.0.566`):** an earlier version said the
+> summary files "should match our numbers wherever FlashLFQ marks a peptide unambiguous." That is only true
+> for a peptidoform with a **single** contributing peak. FlashLFQ's `QuantifiedPeptides` intensity is the
+> **MAX** of a peptidoform's peaks in a file — `sequenceWithPeaks.Value.Max(p => p.Intensity)`
+> (`FlashLFQResults.cs:156`), zero if shared (`:214-217`) — whereas our rollup **SUMS** those peaks. So for
+> any unambiguous peptidoform with **more than one** peak (e.g. multiple charge-state features — common),
+> FlashLFQ MAX < our SUM and the two **will not match**. The cross-check is still useful for single-peak
+> unambiguous forms and for directional sanity, but it is **not** an equality check. See
+> `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
 
 ## Searches with NO open modifications (a large fraction of Limelight use)
 
@@ -231,8 +241,10 @@ Two options:
 - **Route 1 (recommended): uniform peaks-as-truth.** One ingest path. For no-open-mod searches it
   self-simplifies — each peak's mapped-forms list is almost always a single reported peptide, so the
   feature table effectively becomes a per-reported-peptide table with no extra work, and the residual
-  positional-isomer case is still handled correctly. Build the rollup once; make it match FlashLFQ on
-  the unambiguous majority.
+  positional-isomer case is still handled correctly. Build the rollup once. (It will match FlashLFQ's
+  `QuantifiedPeptides` only for single-peak unambiguous forms — FlashLFQ MAX-picks one peak while we sum;
+  see the 2026-08-05 correction above — so treat the summary files as a directional cross-check, not an
+  equality target.)
 - **Route 2: fast path for no-open-mod** — ingest `QuantifiedPeptides`/`QuantifiedProteins` directly
   (free FlashLFQ rollup, less code). Costs: a second code path + open-mod detection, quant that means
   subtly different things by search type, and the residual positional-isomer signal still dropped.

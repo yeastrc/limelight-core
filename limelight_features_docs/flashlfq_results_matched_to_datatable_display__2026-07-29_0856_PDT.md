@@ -2,6 +2,15 @@
 
 **Determined: 2026-07-29 08:56 PDT.**
 
+> **Amendment — 2026-08-05:** one claim in this snapshot was later found false and is retracted. The apex-vs-area
+> bullet (§ near the end) said *"FlashLFQ itself sums apex heights to build its own `QuantifiedPeptides`
+> intensities … the field's convention, not our invention."* **Pin-verified against FlashLFQ/mzLib `1.0.566`,
+> that is wrong:** FlashLFQ takes the **single most-intense peak (MAX)** per peptidoform per file
+> (`FlashLFQResults.cs:156`) and **zeroes** shared peptidoforms (`:214-217`); it does **not** sum. Summing a
+> peptidoform's features is **Limelight's** choice, not FlashLFQ's convention. The apex-height *default* is
+> confirmed. The body below is left as the original 2026-07-29 snapshot except for a short inline retraction
+> marker at that bullet. Authoritative write-up: `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
+
 Source of this write-up: read directly from the (at the time) **uncommitted working-tree code** in
 `limelight-core` — the new `front_end/.../data_pages/quant/` and `.../flashlfq_run/` directories, the
 modified single-protein / peptide page files, and the new Java run-creation controller. Everything here
@@ -338,10 +347,11 @@ only in *which rpids are grouped into a row* and *whether the result is scoped t
   (area ∝ abundance, so abundances add), while apex height is a proxy — for a peak of area `A` and width
   `W`, apex ≈ `A/W`, so a sum of heights is proportional to a sum of abundances **only when the summed
   peaks share a width** (narrow peaks over-weighted otherwise). Two things keep it defensible:
-  (i) **FlashLFQ itself sums apex heights** to build its own `QuantifiedPeptides` intensities (apex is the
-  tool's deliberate default — it calls area integration noisier / "not recommended"), so this is the
-  field's convention, not our invention; and (ii) for **comparing one peptide across samples** (the
-  differential use case) the width factor cancels in the ratio, so apex is fine and robust there. It is
+  (i) ~~**FlashLFQ itself sums apex heights** to build its own `QuantifiedPeptides` intensities … the
+  field's convention, not our invention~~ **[RETRACTED 2026-08-05 — FALSE; FlashLFQ MAX-picks one peak and
+  zeroes shared forms, it does not sum. See the Amendment at top of this file.]**; and (ii) for **comparing
+  one peptide across samples** (the differential use case) the width factor cancels in the ratio, so apex is
+  fine and robust there. It is
   weakest when summing across differently-shaped peaks and will not match an area-based chromatogram
   cross-check unless `--int` is on. Whether the summed display should instead be driven by `--int true`
   (an additive area) is an **open design decision**, not a settled one — see
