@@ -9,7 +9,8 @@ governing-rule docs flagged below.
 > ## 🚩 BIGGEST UNRESOLVED CHOICES — how to turn FlashLFQ output into one displayed number
 > **These two decisions dominate quant correctness and are NOT yet made on purpose. Decide them before Track B
 > hardens the ingest — both rules carry straight into Track B.** (Detail: Open decisions #2 and #2b below;
-> full data + source trace in `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.)
+> full data + source trace in `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
+> **One-page meeting brief: `flashlfq_quant_aggregation_decision_brief_2026-08-05.md`.**)
 >
 > 1. **Feature aggregation — SUM vs MAX vs deliberate.** Limelight currently **SUMs** a peptidoform's peaks.
 >    FlashLFQ itself takes the **MAX** (single most-intense peak) and zeroes shared forms — pin-verified vs
@@ -169,6 +170,8 @@ gate (typed `FlashLFQ_Run_Reject_Reason`) live with that held code.
 
 **Status / rules (start here):**
 - `flashlfq_quant_status_and_decisions.md` — *this doc.*
+- `flashlfq_quant_aggregation_decision_brief_2026-08-05.md` — **one-page meeting brief**: SUM-vs-MAX &
+  apex-vs-area, options × use-cases × tradeoffs, with the run-`36b59` numbers. For deciding the two axes.
 - `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md` — **the two biggest processing
   decisions (SUM vs MAX, apex vs area)**; FlashLFQ MAX-picks (not sum), pin-verified vs mzLib `1.0.566` +
   data head-to-head on run `36b59`.
