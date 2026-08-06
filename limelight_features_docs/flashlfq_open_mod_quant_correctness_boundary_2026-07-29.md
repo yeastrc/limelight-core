@@ -1,5 +1,13 @@
 # FlashLFQ open-modification quant: what can and cannot ever be correct
 
+> **Note (2026-08-06) — PSM-level variable mods are a related, also-deferred issue.** This doc analyzes
+> **open** mods, but **PSM-level variable (dynamic) modifications** raise a sibling problem for quant: a PSM's
+> variable-mod mass can **differ from the reported-peptide-level variable-mod mass**, so — like an open mod —
+> the distinguishing mass lives on the **PSM** and one `reportedPeptideId` can span multiple peptidoform mass
+> forms. Quant therefore also **excludes/declines** variable-mod searches (`HAS_DYNAMIC_MODIFICATIONS`, FE gate
+> `quant_Container_Component.tsx:169-173` + a server tripwire). See the scope note in
+> `flashlfq_quant_data_model_and_display_grains.md`. The correctness-boundary analysis below is open-mod-specific.
+
 **Status:** method / correctness-boundary analysis for the DEFERRED open-modification quant feature.
 Written 2026-07-29. Argues where MS1 label-free quant of open-modification (mass-tolerant search) data
 can be made correct and where it is *irreducibly* unrecoverable — the distinction being physics, not

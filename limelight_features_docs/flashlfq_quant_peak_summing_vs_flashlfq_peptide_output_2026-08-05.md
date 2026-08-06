@@ -247,7 +247,7 @@ more trustworthy number.**
 
 **Caveats on this measurement.** One run (search 418; modified peptides present, e.g. oxidation +15.995;
 single mzML, MBR inactive) — a multi-file or open-mod search could shift the fractions (open mods add the
-mass-cloud dimension on top, and open-mod quant is deferred). Grouped by exact `Full Sequence`, which is ~1:1
+mass-cloud dimension on top; open-mod **and PSM-level variable-mod** quant are both deferred). Grouped by exact `Full Sequence`, which is ~1:1
 with reportedPeptideId here. **Observed** = the counts/ratios (from the real files); **inferred** = that the
 secondary peaks are spurious-ID XIC artifacts (from the engine mechanism), though the
 one-dominant-plus-scattered-RT-tail pattern strongly supports it. Analysis scripts were run from the session

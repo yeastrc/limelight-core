@@ -50,8 +50,10 @@ convention, has a built-in validation oracle, and avoids the 23% spurious over-c
 
 ## Scope / don't conflate
 
-- **Open modifications are DEFERRED.** Decide the **non-open-mod** case first (there `reportedPeptideId ↔
-  mass` is ~1:1 — the clean case). Open mods add a mass-cloud dimension on top.
+- **Open modifications AND PSM-level variable mods are DEFERRED.** Decide the clean case first — a search
+  with **no open mods and no PSM-level variable mods**, where `reportedPeptideId ↔ mass` is ~1:1. Both
+  deferred kinds break that 1:1 (open mods add a mass-cloud dimension; PSM-level variable mods put multiple
+  mass forms / positional isomers under one reported peptide), so they're out of scope for this decision.
 - **Shared-peak handling is a THIRD, separate axis:** Limelight attributes a shared peak to **all** forms;
   FlashLFQ **zeroes** shared forms. Independent of SUM-vs-MAX — keep it out of this decision unless raised.
 - The two axes above are **independent** and can be decided separately; both carry into **Track B** (DB ingest).

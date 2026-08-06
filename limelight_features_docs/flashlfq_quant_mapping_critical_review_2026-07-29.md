@@ -14,10 +14,12 @@ set** (cross-links below). Reviews (does not supersede) the FlashLFQ quant desig
 > stands (now the primary defense). The inline bullet below is struck through with the correction; full
 > source trace: `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
 
-> **⚠ NOTE — OPEN MODIFICATIONS ARE DEFERRED.** Per the current design
+> **⚠ NOTE — OPEN MODIFICATIONS (AND PSM-LEVEL VARIABLE MODS) ARE DEFERRED.** Per the current design
 > (`flashlfq_quant_data_model_and_display_grains.md` scope note), open-modification searches are **out of
-> scope for now**: quant is offered only for searches **without** open mods, and the "View / Add Quant"
-> button + quant display are hidden when any selected search has open modifications. Several holes below
+> scope for now**: quant is offered only for searches **without** open mods **and without PSM-level variable
+> (dynamic) mods** *(variable-mod exclusion noted here 2026-08-06; same rpid-spans-multiple-mass-forms reason
+> as open mods)*, and the "View / Add Quant" button + quant display are hidden when any selected search has
+> open modifications **or PSM-level variable mods**. Several holes below
 > (H4 identity/positional-isomer collision, H5 cross-base-sequence shared peaks, H6 open-mod rollup oracle,
 > and the open-mod portions of H8) therefore describe the **later** open-mod phase, not what v1 ships. They
 > are recorded here so they aren't rediscovered when open-mod support is picked back up — **not** as v1

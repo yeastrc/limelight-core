@@ -11,6 +11,14 @@
 > confirmed. The body below is left as the original 2026-07-29 snapshot except for a short inline retraction
 > marker at that bullet. Authoritative write-up: `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
 
+> **Note (2026-08-06) — PSM-level variable mods are also an issue (deferred/excluded from quant).** This
+> snapshot flags **open-mod mass support** as the deferred piece; **PSM-level variable (dynamic) modifications**
+> are a sibling problem too: a PSM's variable-mod mass can **differ from the reported-peptide-level variable-mod
+> mass**, so — like an open mod — the distinguishing mass lives on the **PSM** and one `reportedPeptideId` can
+> span multiple peptidoform mass forms. Quant therefore also **excludes/declines** variable-mod searches
+> (`HAS_DYNAMIC_MODIFICATIONS`, FE gate `quant_Container_Component.tsx:169-173` + a server tripwire). See the
+> scope note in `flashlfq_quant_data_model_and_display_grains.md`.
+
 Source of this write-up: read directly from the (at the time) **uncommitted working-tree code** in
 `limelight-core` — the new `front_end/.../data_pages/quant/` and `.../flashlfq_run/` directories, the
 modified single-protein / peptide page files, and the new Java run-creation controller. Everything here

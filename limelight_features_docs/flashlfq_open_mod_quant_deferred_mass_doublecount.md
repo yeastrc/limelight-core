@@ -7,6 +7,15 @@ silently, the code has **deliberate `throw` tripwires** at every place open-mod 
 carrying a unique anchor string that points back to a section in THIS doc. **Do not "fix" a build/runtime
 error by deleting a throw** — the throw is intentional until the defects below are fixed.
 
+> **Note (2026-08-06) — PSM-level variable mods are a related, also-deferred issue.** This doc is about
+> **open** mods, but **PSM-level variable (dynamic) modifications** are a sibling problem for quant: a PSM's
+> variable-mod mass can **differ from the reported-peptide-level variable-mod mass**, so — like an open mod —
+> the distinguishing mass lives on the **PSM** and one `reportedPeptideId` can span multiple peptidoform mass
+> forms. Quant therefore also **excludes/declines** variable-mod searches (`HAS_DYNAMIC_MODIFICATIONS`, FE gate
+> `quant_Container_Component.tsx:169-173` + a server tripwire). See the scope note in
+> `flashlfq_quant_data_model_and_display_grains.md`. The tripwires/analysis below are open-mod-specific, but the
+> same caution applies to PSM-level variable mods.
+
 **Why you can't just test a change here:** the UI does not allow a quant submit for a search that has open
 modifications (the "View / Add Quant" button + quant display are hidden when any selected search has open
 mods). So these code paths are unreachable through normal use, and the throws are tripwires/markers rather
