@@ -127,9 +127,20 @@ Example (one shared peak): base `THFPLATYAPVISAEK`, six forms `T[+12.03624]…`,
 
 ### `QuantifiedProteins.tsv` — built on the zeroed peptides, so also undercounts
 
-Columns: `Protein Groups, Gene Name, Organism, Intensity_<sample>` (intensity = FlashLFQ's top-3
-peptide rollup). Because it's derived from the zeroed peptide intensities, it undercounts open-mod
-proteins: total **3.5e11** (from the ~7% that survives), 26 of 343 proteins outright 0.
+Columns: `Protein Groups, Gene Name, Organism, Intensity_<sample>` (intensity = FlashLFQ's per-sample
+peptide rollup — a **weighted median polish** as of mzLib `1.0.566`; see correction). Because it's derived
+from the zeroed peptide intensities, it undercounts open-mod proteins: total **3.5e11** (from the ~7% that
+survives), 26 of 343 proteins outright 0.
+
+> **CORRECTION (2026-08-07, source-verified vs mzLib `1.0.566`):** earlier text in this doc called
+> `QuantifiedProteins.tsv` a **"top-3 rollup"** (sum of a protein's 3 most-intense peptides). That is
+> **outdated** — the default run computes protein intensity by **weighted median polish**
+> (`CalculateProteinResultsMedianPolish`, `FlashLFQResults.cs:371-582`, called at `FlashLfqEngine.cs:307`;
+> `2^columnEffect × 2^overallEffect × peptideCount`). A `Top3` method still exists (`FlashLFQResults.cs:316`)
+> but the default run never calls it. Verified numerically on run `36b59`: reported protein intensity matched
+> the single-sample median-polish estimate for 7/7 proteins; a top-3 sum is ~3–4× larger (BSA: reported
+> 1.43e9 vs top-3 4.18e9). Full detail: `flashlfq_output_file__QuantifiedProteins.md`. The "top-3" mentions
+> below are corrected inline to "median polish."
 
 ## Design conclusion: ingest `QuantifiedPeaks`, attribute ourselves
 
@@ -202,16 +213,16 @@ Essentially none that are both meaningful for open-mod data and not reproducible
   zeroes).
 - **Peptide `Detection Type`** (MSMS / AmbiguousPeakfinding / IdentifiedButNotQuantified) — derivable
   from the peak's `Full Sequences Mapped` + peak presence.
-- **Protein `Intensity`** (top-3 rollup) — the only genuinely computed statistic; but it's built on the
-  zeroed peptides, so it undercounts open-mod data and is not the number we want. We recompute our own
-  rollup regardless.
+- **Protein `Intensity`** (weighted median-polish rollup as of mzLib `1.0.566`; not the older top-3 sum) —
+  the only genuinely computed statistic; but it's built on the zeroed peptides, so it undercounts open-mod
+  data and is not the number we want. We recompute our own rollup regardless.
 - **Fold-change / PEP / q-values** — only produced with `--bay` (Bayesian, cross-condition), which we
   don't run. Nothing dropped that was produced.
 - **Gained**, not lost: peaks carry `PIP Q-Value`, `PIP PEP`, `Peak Apex Mass Error (ppm)`, RT bounds,
   charge, `Num Charge States Observed`, per-feature detection type, and the mapped-forms lists.
 
 **The real cost is ownership**, not a lost statistic: we take on the peptide-sum (sum a peptidoform's
-peaks across charge states) and protein-rollup (replicate FlashLFQ's top-3, or define our own) logic —
+peaks across charge states) and protein-rollup (replicate FlashLFQ's median polish, or define our own) logic —
 which for open-mod data we *want* to own anyway. Keep the summary files as a validation cross-check — but
 **not as an equality oracle** (see correction).
 
@@ -289,8 +300,8 @@ inputs the generated-peptide-string builder consumes:
 **Rollups are derived axes over the same feature store:**
 - **Peptide page** — group features by the current generated-peptide-string grain (collation-dependent).
 - **Protein page** — sum a protein's peptides' features, **deduped by feature**, with a shared-peptide
-  rule across protein groups (our own rollup — not FlashLFQ's top-3 `QuantifiedProteins`, which is built
-  on the zeroed peptides).
+  rule across protein groups (our own rollup — not FlashLFQ's median-polish `QuantifiedProteins`, which is
+  built on the zeroed peptides).
 - **Mod page** — group features by modification (open or variable): sum the features whose peptidoform
   carries that mod.
 

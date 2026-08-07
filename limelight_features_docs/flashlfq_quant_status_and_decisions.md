@@ -189,6 +189,12 @@ gate (typed `FlashLFQ_Run_Reject_Reason`) live with that held code.
 - `flashlfq_results_matched_to_datatable_display__2026-07-29_0856_PDT.md` — how results match the DataTable.
 - `flashlfq_summary_and_comparison.md` — FlashLFQ technical summary + tool comparison.
 
+**FlashLFQ output-file reference (source-verified vs mzLib `1.0.566`):**
+- `flashlfq_output_file__QuantifiedPeptides.md` — what the peptide file contains: per-modified-sequence **MAX**
+  of unambiguous peaks (shared → 0); a MAX-reduction of the peaks file.
+- `flashlfq_output_file__QuantifiedProteins.md` — what the protein file contains: **weighted median polish**
+  over unambiguous single-protein peptides (NOT top-3 — verified on real data); two reductions off the peaks file.
+
 **Plans:**
 - `flashlfq_quant_per_scanfile_run_keying_plan.md` — per-(search, scan file) run keying to support a single
   search with sub-searches (multiple scan files): the §5 dual gate (button + submit), server-side fan-out,
