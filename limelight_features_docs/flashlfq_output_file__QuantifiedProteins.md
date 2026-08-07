@@ -1,5 +1,12 @@
 # FlashLFQ output — `QuantifiedProteins.tsv` (what it contains, and how it derives from the peptide/peaks files)
 
+> **🚩 FlashLFQ-REFERENCE ONLY — this is NOT a Limelight feature.** Limelight does **not** process FlashLFQ
+> protein output. There is **no Limelight code that reads `QuantifiedProteins.tsv`** (verified: the only repo
+> mentions are comments about the `psvid_` identifier round-trip; the quant loader parses **only**
+> `QuantifiedPeaks.tsv`). All FlashLFQ-results processing in Limelight is **peptide-level, from the peaks
+> file**. This doc exists purely to document what FlashLFQ writes, for reference — not because any protein
+> path exists or is planned.
+
 **Date: 2026-08-07.** Source-of-truth: FlashLFQ's own C# engine (**mzLib**, the line FlashLFQ's `CMD.csproj`
 pins — `mzLib 1.0.566`, git tag `1.0.566`, commit `703edec`). All file:line citations are that tag, read in
 full, plus a numerical spot-check against the real Limelight run `36b59…` output. Companions:
