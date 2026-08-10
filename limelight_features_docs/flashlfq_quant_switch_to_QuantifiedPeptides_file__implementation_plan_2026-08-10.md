@@ -361,6 +361,33 @@ authoritative backstop (like the `MULTI_SCAN_FILE_*` reasons).
 `anyReportedPeptideHas_VariableModifications` flag and no new server call. (Left here so a future reader doesn't
 re-introduce the flag.)
 
+**6.7 Rewrite the "About the Quant column" info box + audit ALL user-facing quant wording — the value is no
+longer a "total".** The current box
+(`..._GeneratedReportedPeptideListSection_Component.tsx:599-626`) describes the value as each peptidoform's
+**"total MS1 abundance"** over the submitted PSMs (`:607`) and says values are "counted under each row it maps
+to — **the same convention as PSM Count**" with the **⚭** glyph meaning shared peaks (`:619-624`). Both are
+**wrong** under the peptide-file design and MUST be rewritten:
+- **Not a total/sum.** The value is FlashLFQ's per-peptidoform MS1 label-free intensity = the intensity of its
+  **single most-intense unambiguous chromatographic feature (a MAX)** — apex height by default, integrated
+  area with `--int`. Reword "total MS1 abundance" to something like *"FlashLFQ's MS1 label-free intensity for
+  that peptidoform — its dominant chromatographic feature, not a sum of peaks."* For a single-feature peptide
+  this is its abundance; for a multi-feature peptide it is the largest feature, not a sum. **Point users to
+  FlashLFQ's documentation** (being able to cite FlashLFQ is the whole reason for the switch).
+- **⚭ meaning changed.** It no longer means "peaks shared with other reported peptides, attributed to all." It
+  now means **one FlashLFQ peptidoform (grouped non-positionally by base sequence + summed variable-mod mass)
+  is displayed on more than one table row** (localization/positional or equal-summed-mass variants), each
+  showing the **same measured value** — hence "not additive down the column." Reword the `:619-624` paragraph
+  to that; drop the "same convention as PSM Count" framing (PSM count sums; this value does not).
+- **Add the overlap case (D5), distinct from ⚭.** Peptidoforms whose MS1 signal FlashLFQ cannot separate from
+  a near-isobaric peptide get **no value** — shown as the `overlapping signal` marker (keep consistent with the
+  bold note above the table, §6.3).
+- **Keep the still-accurate parts:** apex-vs-area (`--int`), "not narrowed by secondary row filters," "not
+  charge-scoped" (FlashLFQ folds charge states).
+- **Audit the same wording elsewhere:** the Quant column header/tooltip (`_build_Quant_Column_Header`
+  ~`:386-437`) and the per-row hover tooltip (`_build_Quant_DataRow_ColumnEntry` ~`:462-491`) — remove any
+  "summed"/"total"/"sum of peaks" language and describe the FlashLFQ per-peptidoform value. (This pairs with
+  the §6.2 tooltip/download rework.)
+
 ---
 
 ## 7. Cross-scan-file combine — ALREADY PREVENTED by existing gates (validated 2026-08-10)
