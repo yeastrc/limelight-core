@@ -364,8 +364,8 @@ with the boss.
 >   OpenMS, Proteome Discoverer.
 > - **`flashlfq_output_to_limelight_mapping.md`** — mapping FlashLFQ output back to Limelight
 >   (esp. modifications): why to ingest `QuantifiedPeaks` (feature-level, dedupe done) rather than
->   `QuantifiedPeptides` (which zeroes ~93% of open-mod signal), attribution like PSM counts, what
->   stats are/aren't lost, and the no-open-mod case.
+>   `QuantifiedPeptides` (which zeroes shared peptidoforms), attribution like PSM counts, and what
+>   stats are/aren't lost.
 
 The FlashLFQ pipeline-service approach (§5c) was **built and validated end-to-end**:
 Run-FlashLFQ button → webapp REST controller → Python service → spectr → mzML → FlashLFQ →

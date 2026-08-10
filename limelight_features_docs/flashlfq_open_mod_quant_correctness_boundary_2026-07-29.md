@@ -30,8 +30,9 @@ chromatographic feature). *form / display form* = a peptidoform at the display g
 - `flashlfq_quant_mapping_critical_review_2026-07-29.md` — composed-design holes (H1–H9): matrix→scalar,
   cross-file sum, apex-vs-area, identity/rollup.
 - `flashlfq_usage_critical_review_2026-07-29.md` — end-to-end, code-observed usage audit.
-- `flashlfq_open_mod_quant_deferred_mass_doublecount.md` — the deferred open-mod defects + in-code `throw`
-  tripwires (the concrete bugs in the held prototype that this doc's "what can be correct" presupposes fixed).
+- (`flashlfq_open_mod_quant_deferred_mass_doublecount.md` — **removed 2026-08-07** along with the buggy
+  prototype code it described; the concrete send-side traps it recorded are preserved in "Known traps from the
+  removed first attempt" below, and the non-support decision is in `flashlfq_quant_status_and_decisions.md`.)
 - `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` — the governing rule for
   when quant may/may not be summed across scan files, sub-groups, searches, or conditions (PSM count may
   sum; quant may not).
@@ -156,3 +157,26 @@ MS2-level quant (reporter-ion or DIA fragment-level). No amount of FlashLFQ conf
 attribution logic changes that; it is a limit of the acquisition, not of the software. The achievable and
 honest deliverable here is: **correct peptide/protein totals and correct quant for well-resolved forms,
 with everything else surfaced as a flagged total rather than a fabricated per-form split.**
+
+---
+
+## Known traps from the removed first attempt (2026-08-07)
+
+The first (held, never-shipped) open-mod quant prototype was **removed** on 2026-08-07 — only the reject
+tripwires remain (open-mod and PSM-level variable-mod searches are rejected; see
+`flashlfq_quant_status_and_decisions.md`, "Searches not supported for quant"). These are the concrete traps
+that attempt hit, preserved here so a future implementation avoids them (this content previously lived in the
+now-deleted `flashlfq_open_mod_quant_deferred_mass_doublecount.md`):
+
+- **Send-side mass double-count per candidate position.** The open-mod searcher `LEFT OUTER JOIN`s the
+  position table, so one open mod with N candidate positions returns N rows repeating the same mass. Summing
+  every entry into the neutral mass over-counted it by `(N-1)×delta` → wrong precursor m/z → wrong/failed XIC.
+- **Send-side Full-Sequence token per candidate position.** The grouping string emitted an open-mod token at
+  **every** candidate residue (e.g. `PEP[o+80]T[o+80]IDE`) instead of "one of {3,5}", corrupting FlashLFQ's
+  peptidoform grouping key.
+- **Receive-side form key omitted position.** The rollup key was `reportedPeptideId | kind | roundedMass`
+  (no position), so two localized open-mod forms at the same rounded mass but different residue collided.
+
+Root cause common to all three: an open mod's distinguishing **mass/position lives on the PSM**, and a
+`reportedPeptideId` spans multiple such forms — so any correct implementation must key on a decomposed
+per-form identity, not on `reportedPeptideId` alone.

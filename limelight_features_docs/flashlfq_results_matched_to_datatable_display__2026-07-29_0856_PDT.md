@@ -11,6 +11,12 @@
 > confirmed. The body below is left as the original 2026-07-29 snapshot except for a short inline retraction
 > marker at that bullet. Authoritative write-up: `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
 
+> **Amendment — 2026-08-10:** the receive-side open-mod machinery this snapshot describes
+> (`collapse_NearIsobaric_OpenMod_MassForms`, `openModDescriptor`, `quant_openModDescriptor_prototype`, the
+> `get_QuantForDisplayForm(openModDescriptor)` form-key path) was **REMOVED** — open-mod / PSM-level-variable-mod
+> searches are now rejected and the Quant column keys on `reportedPeptideId` only. This snapshot predates that;
+> for the current state see `flashlfq_quant_status_and_decisions.md`, "Searches not supported for quant".
+
 > **Note (2026-08-06) — PSM-level variable mods are also an issue (deferred/excluded from quant).** This
 > snapshot flags **open-mod mass support** as the deferred piece; **PSM-level variable (dynamic) modifications**
 > are a sibling problem too: a PSM's variable-mod mass can **differ from the reported-peptide-level variable-mod

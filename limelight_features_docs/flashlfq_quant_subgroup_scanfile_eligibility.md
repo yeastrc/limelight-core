@@ -232,7 +232,7 @@ declined shapes.
 ## 12. The generic quant format should make this fall out for free
 
 Store the generic quant record at the physical atom: **`(peptidoform-identity, scan_file, intensity)`**,
-where `peptidoform-identity = reportedPeptideId + open-mod form {kind, roundedMass}` and `scan_file` is the
+where `peptidoform-identity = reportedPeptideId` and `scan_file` is the
 sample. Then **every valid reporting grain is a `GROUP BY` over scan files**:
 
 - per-scan-file = the raw records;

@@ -25,8 +25,7 @@ still **held uncommitted** behind the Track-B (DB ingest) commit gate.
 
 **Terminology note:** avoid the word **"tag"** here — Limelight already uses *search tags* (user-assigned
 labels). Use the precise ids: **`projectSearchId`**, **`scanFileId`** (`search_scan_file_id`),
-**`reportedPeptideId`**, and *peptidoform / display form* for the receive-side form key
-(`reportedPeptideId` + open-mod `{kind, roundedMass}`).
+**`reportedPeptideId`**, and *peptidoform / display form* for the receive-side key (`reportedPeptideId`).
 
 ---
 

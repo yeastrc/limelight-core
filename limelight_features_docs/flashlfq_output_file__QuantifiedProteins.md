@@ -102,9 +102,9 @@ default. So the protein number is built only from the cleanly-attributable subse
 ## Why Limelight ignores this file
 
 Limelight ingests `QuantifiedPeaks.tsv` and does its **own** peptide/protein rollup (so it can attribute
-shared signal and handle the open-mod grain itself). The FlashLFQ protein file is additionally unsuitable for
-open-mod data because it is built on the peptide file's zeroed-shared values
-(`flashlfq_output_to_limelight_mapping.md`). If Limelight ever wanted to *match* FlashLFQ's protein number it
+shared signal itself). The FlashLFQ protein file is additionally built on the peptide file's zeroed-shared
+values (`flashlfq_output_to_limelight_mapping.md`). If Limelight ever wanted to *match* FlashLFQ's protein
+number it
 would have to replicate median polish (not a top-3 sum) — one input to the SUM-vs-MAX / apex-vs-area decision
 in `flashlfq_quant_aggregation_decision_brief_2026-08-05.md`.
 

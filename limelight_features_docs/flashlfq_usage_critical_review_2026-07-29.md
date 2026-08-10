@@ -17,8 +17,9 @@ by executing a run.
   cross-file sum, apex-vs-area, identity/rollup.
 - `flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md` — what open-mod quant can vs. can never be
   correct (MS1 precursor-physics ceiling).
-- `flashlfq_open_mod_quant_deferred_mass_doublecount.md` — the deferred open-mod defects + in-code `throw`
-  tripwires.
+- (`flashlfq_open_mod_quant_deferred_mass_doublecount.md` — **removed 2026-08-07**; non-support now in
+  `flashlfq_quant_status_and_decisions.md` ("Searches not supported for quant"), open-mod rationale in
+  `flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md`.)
 - `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` — the governing rule for
   when quant may/may not be summed across scan files, sub-groups, searches, or conditions (PSM count may
   sum; quant may not).

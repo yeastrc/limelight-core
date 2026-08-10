@@ -14,6 +14,11 @@ set** (cross-links below). Reviews (does not supersede) the FlashLFQ quant desig
 > stands (now the primary defense). The inline bullet below is struck through with the correction; full
 > source trace: `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
 
+> **Amendment — 2026-08-10:** the open-mod / PSM-level-variable-mod send-side processing and the receive-side
+> form-key machinery this snapshot discusses (`collapse_NearIsobaric_OpenMod_MassForms`, the `openModDescriptor`
+> form key, etc.) were **REMOVED** — only the reject tripwires remain. This snapshot predates that; for the
+> current state see `flashlfq_quant_status_and_decisions.md`, "Searches not supported for quant".
+
 > **⚠ NOTE — OPEN MODIFICATIONS (AND PSM-LEVEL VARIABLE MODS) ARE DEFERRED.** Per the current design
 > (`flashlfq_quant_data_model_and_display_grains.md` scope note), open-modification searches are **out of
 > scope for now**: quant is offered only for searches **without** open mods **and without PSM-level variable
@@ -38,8 +43,9 @@ code before acting.
   invoked/consumed; multi-file MBR; the apex-vs-area mislabel).
 - `flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md` — what open-mod quant can vs. can never be
   correct (MS1 precursor-physics ceiling).
-- `flashlfq_open_mod_quant_deferred_mass_doublecount.md` — the deferred open-mod defects + in-code `throw`
-  tripwires.
+- (`flashlfq_open_mod_quant_deferred_mass_doublecount.md` — **removed 2026-08-07**; non-support now in
+  `flashlfq_quant_status_and_decisions.md` ("Searches not supported for quant"), open-mod rationale in
+  `flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md`.)
 - `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` — the governing rule for
   when quant may/may not be summed across scan files, sub-groups, searches, or conditions (PSM count may
   sum; quant may not) — the underlying rule behind H1/H2.

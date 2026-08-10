@@ -9,7 +9,7 @@ that guarantees correctness. Companion to `flashlfq_quant_data_model_and_display
 Authoritative decision record: **§16** (filter model) + this doc, in `Claude_SeparateAssessment_20260706.md`.
 
 **Terminology:** avoid "tag" (Limelight uses *search tags*). Use `reportedPeptideId`, `projectSearchId`,
-*display form* = the receive-side key `reportedPeptideId + open-mod {kind, roundedMass}` (charge-agnostic).
+*display form* = the receive-side key `reportedPeptideId` (charge-agnostic).
 
 ---
 
@@ -17,7 +17,7 @@ Authoritative decision record: **§16** (filter model) + this doc, in `Claude_Se
 
 - FlashLFQ is run **once** over the submit-time PSM set; the page then sums the stored peaks per display
   form and presence-gates rows client-side (§16).
-- **That is exact for filters that remove *whole* display forms** (e.g. an open-mod mass filter): the gated
+- **That is exact for filters that remove *whole* display forms** (e.g. a whole-peptidoform filter): the gated
   rows disappear and the survivors keep all their PSMs — measured **0% over-count**.
 - **It over-counts for filters that thin PSMs *within* a surviving display form.** Measured over-count vs a
   re-run on exactly the surviving PSMs: **charge filter ≈ 54%**, random-50% ≈ 6%, RT-window ≈ 1%.
@@ -29,7 +29,7 @@ Authoritative decision record: **§16** (filter model) + this doc, in `Claude_Se
 
 ## 1. The measurement (Tier-1 offline differential harness, 2026-07-08)
 
-Run against the validated single-file open-mod search `b3a49a5d…` (single scan file → no MBR). Method:
+Run against the validated single-file search `b3a49a5d…` (single scan file → no MBR). Method:
 take the exact `flashlfq_identifications.tsv` FlashLFQ was fed, delete PSM subsets that stand in for real
 page filters, **re-run `CMD.dll`** (same flags, same mzML) on each subset, and compare — per display form —
 the **webpage value** (sum of full-run peaks for forms that still have ≥1 surviving PSM) against the
@@ -40,7 +40,7 @@ forms, max relative error 0). So the differences below are real FlashLFQ behavio
 
 | Filter (PSMs kept)              | forms shown | exact | de-seeded | **over-count** |
 |---------------------------------|-------------|-------|-----------|----------------|
-| drop open-mod +14 (92.8%)       | 5,999       | 5,983 | 0         | **0.000%**     |
+| drop one mass form (92.8%)      | 5,999       | 5,983 | 0         | **0.000%**     |
 | RT window 54–145 (79.5%)        | 5,137       | 4,825 | 310       | **1.04%**      |
 | random 50% (50%)                | 4,249       | 3,198 | 911       | **5.96%**      |
 | drop charge 2 (45%)             | 3,277       | 2,617 | 357+301*  | **54.2%**      |
@@ -49,14 +49,14 @@ forms, max relative error 0). So the differences below are real FlashLFQ behavio
 charge filter, "drift" (301) is charge-substitution, not recalibration — read it with de-seed.*
 
 **Area-invariance holds** (the load-bearing assumption): removing *some* of a form's PSMs does not move its
-integrated peak — the open-mod filter is essentially exact and retained-peak drift on non-charge filters is
+integrated peak — the whole-form filter is essentially exact and retained-peak drift on non-charge filters is
 ≤3.2%. The divergence is entirely **within-form de-seeding**: the webpage keeps summing a peak whose seed
 the filter removed.
 
 ## 2. Why the charge case cannot be fixed client-side (non-decomposability)
 
 The front end *has* a charge per peak (`_Peak.charge` from the `Precursor Charge` column) but
-`get_QuantForDisplayForm(reportedPeptideIds, openModDescriptor, projectSearchId)` never uses it — so today
+`get_QuantForDisplayForm(reportedPeptideIds, projectSearchId)` never uses it — so today
 it *does not* charge-filter. But it also *could not do so correctly*, because the stored intensity is not a
 single-charge quantity (observed in the production `QuantifiedPeaks.tsv`):
 
@@ -152,6 +152,6 @@ The over-count numbers and the reproduction check are **observed** from FlashLFQ
 2026-07-08 (harness under `…/flashlfq-service-data/tier1_harness/`, outside any repo). The "webpage value"
 is a faithful **reconstruction** of the receive-side rollup (`quant_PrototypeData.ts`), verified against the
 call site `proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Create_TableData.tsx:1247`
-(only `reportedPeptideIds`, `openModDescriptor`, `projectSearchId` are passed — no charge) — it is **not** a
+(only `reportedPeptideIds`, `projectSearchId` are passed — no charge) — it is **not** a
 screenshot of the running UI. The charge-pooling percentages and ID-charge≠peak-charge examples are read
 directly from the production `QuantifiedPeaks.tsv`. Single scan file → MBR absent by construction.

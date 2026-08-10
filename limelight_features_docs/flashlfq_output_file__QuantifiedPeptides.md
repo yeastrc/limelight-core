@@ -90,9 +90,9 @@ QuantifiedPeaks rows (features)  ──group by modified sequence, unambiguous o
 Limelight ingests `QuantifiedPeaks.tsv` and computes its **own** per-reported-peptide value by **summing** a
 peptidoform's peaks and **attributing shared peaks to all** claiming forms — the opposite of this file's
 **MAX + zero-shared**. On real run `36b59`, the two agree for 77% of peptidoforms and diverge for 23% (see
-`flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`). The peptide file also **zeroes ~93%
-of open-mod signal** (shared-peak zeroing), which is why the ingest design rejected it
-(`flashlfq_output_to_limelight_mapping.md`).
+`flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`). The peptide file also **zeroes every
+shared peptidoform** (any peak claimed by >1 full sequence), which is why the design ingests `QuantifiedPeaks`
+and does its own attribution (`flashlfq_output_to_limelight_mapping.md`).
 
 ## Provenance
 All mechanics OBSERVED in mzLib `1.0.566` source at the cited lines. Column/behavior spot-checked against the

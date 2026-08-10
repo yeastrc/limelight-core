@@ -1,6 +1,6 @@
 # FlashLFQ quant — current status & decisions (living doc)
 
-**Last updated:** 2026-08-05
+**Last updated:** 2026-08-07
 **Purpose:** the single at-a-glance page for *where the quant feature stands and what's been decided*. The
 reasoning/analysis lives in the linked docs (see the **Doc map** at the bottom); this page is the index of
 **state and decisions**, kept current. If you're picking up quant work, **start here**, then read the
@@ -39,8 +39,33 @@ governing-rule docs flagged below.
   across scan files / sub-groups / searches / conditions; **quant may not**. This is the rule behind the
   per-scan-file run split (each scan file quantified separately, never summed) and the experiment-condition
   decline.
-- **`flashlfq_open_mod_quant_deferred_mass_doublecount.md`** — open-mod quant is deferred and fenced with
-  in-code `throw` tripwires; **don't delete a throw to fix a build error.**
+- **"Searches not supported for quant" (next section)** — quant is rejected for searches with open mods or
+  PSM-level variable (dynamic) mods; the submit controller enforces this with reject **tripwires** —
+  **don't delete a reject throw to fix a build error.**
+
+## Searches not supported for quant (rejected by the submit controller)
+
+Quant is **not supported** for a search that has **either**:
+- **open modifications**, or
+- **PSM-level variable (dynamic) modifications**.
+
+**Why (same problem for both):** each puts *multiple peptidoform mass forms under one `reportedPeptideId`* — the
+distinguishing mass lives on the **PSM**, not the reported peptide — so the rpid-keyed quant rollup under-splits.
+(Open mods add a mass-per-candidate-position "cloud"; PSM-level variable mods vary per PSM.) Correctly
+quantifying either needs a decomposed-component identity that is **deferred** (see
+`flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md` for the open-mod correctness ceiling).
+
+**Enforcement (two layers):**
+- **Front end** hides the "View / Add Quant" button when any selected search has open mods
+  (`is__anyPsmHas_OpenModifications__TrueForAnySearch()`) or dynamic mods
+  (`is__anyPsmHas_DynamicModifications__TrueForAnySearch()`) — decline reasons `HAS_OPEN_MODIFICATIONS` /
+  `HAS_DYNAMIC_MODIFICATIONS` in `quant_Container_Component.tsx`.
+- **Submit controller** (`FlashLFQ_Run__Request_Creation_RestWebserviceController`) **throws** if a request for
+  such a search reaches it (backstop for the FE gate). These reject throws are the tripwires the code comments
+  point back to *here*.
+
+**The deferred, known-buggy open-mod and PSM-level-variable-mod _processing_ code was removed (2026-08-07)** —
+only the reject tripwires remain. A future implementation will be written fresh.
 
 ## Current state (all feature CODE is HELD / uncommitted)
 
@@ -61,12 +86,13 @@ Only the **docs** are committed.
   each restricted to that sub-group's single scan file (`restrictToSearchScanFileId`). Verified populating.
 - Prototype receive/display: URL-hash TSV fetch; per-search / per-sub-group Quant columns; **⚭ shared-signal
   flag**; Option-1 labeling.
-- Mass computed in **Java** (canonical calculator) + open-mod jitter **binning**.
+- Mass computed in **Java** (canonical calculator).
 - **`canRunQuant` owner/service gate** — the "View/Add Quant" button is shown **only** to a logged-in
   project owner (owner for ALL projectSearchIds) when the run service is configured
   (`RUN_FLASHLFQ_SERVICE_WEB_SERVICE_BASE_URL` non-empty). READ-level webservice returns `{ canRunQuant }`
   (a non-owner gets `false`, not a 403); the authoritative gate is still the owner-checked submit controller.
-- **Open-mod tripwires** — throw guards at every open-mod processing site (deferred).
+- **Open-mod & PSM-level variable-mod searches rejected** — reject tripwires only (the deferred processing
+  code was removed); see "Searches not supported for quant".
 - **1:1 invariant (was: sub-group partition)** — cross-cutting sub-groups declined, AND a sub-group spanning
   multiple scan files declined; together ⇒ sub-groups↔scan-files 1:1. The extra "spans multiple files"
   decline is a **deliberate scope choice** (not a limitation to fix): it's consistent with the current plan
@@ -87,17 +113,17 @@ Only the **docs** are committed.
 | Who may run quant (button) | **Logged-in project owner only** + run service configured (`canRunQuant` gate); non-owner/public = button hidden, no 403 | 2026-08-03 |
 | Quant aggregation, generally | **PSM count may sum; quant may NOT** — across scan files, sub-groups, searches, conditions | 2026-07-29 |
 | Experiment-page **conditions** | **Declined** — combining searches into one condition = fraction/replicate gap **+** cross-run non-comparability | 2026-07-30 |
-| Open-mod quant | **DEFERRED**, fenced with tripwires | 2026-07-29 |
+| Open-mod quant | **DEFERRED** — searches rejected (out of scope); see "Searches not supported for quant" | 2026-07-29 |
 | Searches with **PSM-level variable (dynamic) mods** | **Excluded** — FE hides the button + a single server tripwire at the top of the submit controller (`isAnyPsmHas_DynamicModifications`). Same rpid-spans-multiple-mass-forms problem as open mods | 2026-07-30 |
 | Non-standard residues | keep 20 AA + U/O/J; drop X/B/Z/\* (explainability rule) | boss 2026-06-29 |
 | Mass computation | in Java, single source of truth; service does no chemistry | boss decision |
 
 ## Deferred / declined (with why)
 
-- **Open-mod quant (whole path)** — deferred. Two **confirmed code bugs** (mass double-count = H8;
-  receive-side positional-isomer key collision = H4) and a **physics ceiling**: per-open-mod-form abundance
-  is **unobtainable from MS1 DDA** (needs MS2/DIA). Honest achievable deliverable = peptide/protein totals +
-  well-resolved forms, everything else flagged. See the correctness-boundary + deferred-bug docs.
+- **Open-mod quant (whole path)** — **out of scope / deferred**; searches are rejected (see "Searches not
+  supported for quant"). Physics ceiling: per-form abundance is **unobtainable from MS1 DDA** (needs MS2/DIA).
+  See `flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md` (correctness ceiling) and the archived
+  analysis `flashlfq_open_mod_quant_out_of_scope__mapping_analysis_archive_2026-08-07.md`.
 - ~~**Multi-scan-file-within-one-search** — declined (guard).~~ **NOW IMPLEMENTED** (2026-08-03) as
   **per-scan-file runs** (see Settled decisions + Implemented list). Consistent with the original caveat:
   because Limelight has **no fraction-vs-replicate metadata and won't**, the values are **never silently
@@ -163,8 +189,8 @@ Only the **docs** are committed.
 ## Commit gate
 
 **All feature code is held uncommitted and lands as ONE commit when Track B (DB ingest) is done.** Only the
-design/analysis/status docs are committed. In-code open-mod `throw` tripwires and the §5 multi-scan-file
-gate (typed `FlashLFQ_Run_Reject_Reason`) live with that held code.
+design/analysis/status docs are committed. In-code open-mod / PSM-level variable-mod reject `throw` tripwires
+and the §5 multi-scan-file gate (typed `FlashLFQ_Run_Reject_Reason`) live with that held code.
 
 ## Doc map (the quant doc set)
 
@@ -176,7 +202,9 @@ gate (typed `FlashLFQ_Run_Reject_Reason`) live with that held code.
   decisions (SUM vs MAX, apex vs area)**; FlashLFQ MAX-picks (not sum), pin-verified vs mzLib `1.0.566` +
   data head-to-head on run `36b59`.
 - `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` — the aggregation rule.
-- `flashlfq_open_mod_quant_deferred_mass_doublecount.md` — open-mod deferred + in-code tripwires.
+- (`flashlfq_open_mod_quant_deferred_mass_doublecount.md` — **removed 2026-08-07**; its tripwire-anchor content
+  described code that has since been deleted. Non-support is now stated in the "Searches not supported for quant"
+  section above; open-mod rationale lives in `flashlfq_open_mod_quant_correctness_boundary_2026-07-29.md`.)
 
 **Design:**
 - `quant_maxquant_design_discussion.md` — overarching design + Model A/B history.

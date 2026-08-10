@@ -96,6 +96,9 @@ The peptide-table Quant cell is built by `get_QuantForDisplayForm`, called at
 ```tsx
 455      const quantForForm = quant_PrototypeData.get_QuantForDisplayForm( reportedPeptideIds_ForQuant, openModDescriptor, projectSearchId, restrictToSearchScanFileId );
 ```
+*(Signature as of 2026-08-05. The `openModDescriptor` param was **removed 2026-08-10** when open-mod support
+was dropped from quant — the call now passes `( reportedPeptideIds_ForQuant, projectSearchId, restrictToSearchScanFileId )`.
+The SUM point below is unaffected.)*
 
 (NB: that file is one of the misleadingly-named `proteinPage_Display__SingleProtein_...` files that
 **also drives the peptide page** peptide list — per `front_end/CLAUDE.md`.)

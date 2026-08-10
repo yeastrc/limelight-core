@@ -14,21 +14,14 @@ schema → import → searchers → REST → UI, and the §7 display-grain rule 
 Use the precise ids: **`projectSearchId`**, **`searchSubGroupId`**, **`scanFileId`** (`search_scan_file_id`),
 **`reportedPeptideId`**.
 
-**Scope note — open modifications AND PSM-level variable (dynamic) mods are deferred (addressed much later).**
-Both kinds of search are **out of scope for now**. An open mod is a *mass + zero-to-many candidate positions*
-stored on the **PSM**, so a single `reportedPeptideId` spans many distinct peptidoform mass forms (the open-mod
-"cloud"); quantifying it correctly (per open-mod form, keyed on the PSM's distinguishing mass/position, not just
-`reportedPeptideId`) is a substantially larger problem that we will **address much later**. **PSM-level variable
-(dynamic) modifications are deferred for the same reason:** a variable mod that varies per-PSM likewise puts
-multiple mass forms / positional isomers under one `reportedPeptideId` (the same rpid-spans-multiple-mass-forms
-problem), so those searches are out of scope for now too. Until then, quant is only offered for searches
-**without** open modifications **and without PSM-level variable (dynamic) mods**: on the peptide page the
-**"View / Add Quant" button and all quant display are hidden when any selected search has open modifications**
-(`DataPage_common_Searches_Flags.is__anyPsmHas_OpenModifications__TrueForAnySearch()`) **or PSM-level variable
-(dynamic) modifications** (`...is__anyPsmHas_DynamicModifications__TrueForAnySearch()`; decline reasons
-`HAS_OPEN_MODIFICATIONS` / `HAS_DYNAMIC_MODIFICATIONS` in `quant_Container_Component.tsx:169-173`, plus a server
-tripwire in the submit controller). Everything below is written for the **non-open-mod, non-variable-mod** case
-unless it explicitly says otherwise.
+**Scope note — open modifications and PSM-level variable (dynamic) mods are OUT OF SCOPE for quant (deferred).**
+Searches with either are **not supported** and are rejected: the "View / Add Quant" button is hidden
+(`is__anyPsmHas_OpenModifications__TrueForAnySearch()` / `is__anyPsmHas_DynamicModifications__TrueForAnySearch()`
+→ `HAS_OPEN_MODIFICATIONS` / `HAS_DYNAMIC_MODIFICATIONS` in `quant_Container_Component.tsx`), and the submit
+controller throws as a backstop. (Both put multiple peptidoform mass forms under one `reportedPeptideId` — the
+distinguishing mass lives on the PSM — so the `reportedPeptideId`-keyed rollup can't represent them; see
+`flashlfq_quant_status_and_decisions.md`, "Searches not supported for quant".) **Everything below is the
+non-open-mod, non-variable-mod case** unless it explicitly says otherwise.
 
 ---
 
@@ -39,8 +32,7 @@ record is:
 
 > **(projectSearchId, scanFileId, peptidoform-identity) → intensity**
 
-where `peptidoform-identity = reportedPeptideId + open-mod form {kind, roundedMass}` (the receive-side form
-key already used by the prototype).
+where `peptidoform-identity = reportedPeptideId` (the receive-side key used by the prototype).
 
 Each stored FlashLFQ **run** carries the provenance needed to reproduce/trust it. Per Dan, a run in the DB
 must be associated with:
@@ -121,7 +113,7 @@ scanFile→subGroup mapping, and dropping the throwaway TSV fetch/URL-hash selec
 
 For the roll-ups above, each parsed peak (`_Peak` in `quant_PrototypeData.ts`) needs:
 
-- **`reportedPeptideId`(s) + open-mod form** — the peptidoform identity (already present).
+- **`reportedPeptideId`(s)** — the peptidoform identity (already present).
 - **`projectSearchId`** — for the **search-level** roll-up (modes 1 & 2). Supplied by the URL-hash mapping;
   `undefined` for the no-hash single fixed file (then treat all peaks as the one displayed search).
 - **`scanFileId` / `File Name`** — for the **sub-group** roll-up (mode 3), combined with the §4 mapping.

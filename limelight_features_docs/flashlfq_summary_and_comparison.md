@@ -76,15 +76,19 @@ at, say, 2+ also contributes signal detected at 3+.
 
 **Protein rollup (per sample).** Peptides are assigned to proteins under **parsimony**; `Use Shared
 Peptides` controls whether peptides mapping to multiple protein groups are used (commonly disabled).
-The default `QuantifiedProteins` intensity is the **sum of the protein's 3 most intense peptides** in
-that sample — a standard, outlier-robust protein-abundance estimate. (The optional Bayesian model
-produces fold-changes + PEPs across conditions; not used here.)
+The default `QuantifiedProteins` intensity is computed by a **weighted median polish** over the protein's
+unambiguous peptide intensities (`CalculateProteinResultsMedianPolish`, mzLib `1.0.566`) — an outlier-robust
+protein-abundance estimate; for a single sample it reduces to ~(median-central peptide intensity × peptide
+count). (A **top-3-sum** method still exists in the code but the default run does not call it — this doc
+previously mislabeled the default as top-3; corrected 2026-08-07, source-verified. See
+`flashlfq_output_file__QuantifiedProteins.md`. The optional Bayesian model produces fold-changes + PEPs
+across conditions; not used here.)
 
 **Validation.** FlashLFQ peptide intensities correlate with MaxQuant's at **Pearson r ≈ 0.99**, at
 ~10× the speed.
 
 For a **single scan file (one sample)** that is the complete computation: per-peptidoform apex
-intensities + the top-3 protein rollup, with **no cross-sample step** involved.
+intensities + the median-polish protein rollup, with **no cross-sample step** involved.
 
 ---
 
@@ -168,8 +172,8 @@ is a toolkit to assemble; everything else either re-searches (MaxQuant), is not 
 ## 7. Bottom line
 
 For per-search quant (commonly a single scan file), FlashLFQ takes the search's PSMs and reports each
-peptidoform's MS1 precursor-envelope apex intensity (multi-charge, ≥2-isotope, ~10 ppm) and a top-3
-protein rollup — the standard, validated MS1-LFQ method, fast, agreeing with the field reference. It
+peptidoform's MS1 precursor-envelope apex intensity (multi-charge, ≥2-isotope, ~10 ppm) and a
+median-polish protein rollup — the standard, validated MS1-LFQ method, fast, agreeing with the field reference. It
 is open source, headless, and purpose-built for "quantify these identifications," making it the
 strongest fit among the options. The multi-run features that prompted concern are inactive for single
 files and otherwise confined to a single search's own data.

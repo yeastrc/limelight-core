@@ -119,8 +119,8 @@ habit).
 - **`WebserviceResult_PerSearch` (~`:1658-1681`) + `WebserviceResult` (~`:1640-1656`)** — add
   `searchScanFileId` (result is now one entry per (search, file)); replace
   `errorAtLeastOneSearchHasMoreThanOneScanFile` with the typed reject reason.
-- **Untouched:** open-mod tripwires (`:906`, `:1089`, `:1177`), dynamic-mod tripwire (`:373`), the
-  `scan_file_id` sample identity, mass computation.
+- **Untouched:** the open-mod and PSM-level variable-mod reject tripwires, the `scan_file_id` sample
+  identity, mass computation.
 
 ### 7.2 Webservice-call TS — `flashLFQ_Run_RequestCreation_WebserviceCall.ts`
 - `..._Result_PerSearch` (~`:24-30`) — add `searchScanFileId : number`; entries are now per (search, file).
@@ -146,7 +146,7 @@ habit).
 ### 7.5 Display — peptide-list table (drives peptide page AND single-protein overlay)
 `proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Create_TableData.tsx`:
 - Today: one Quant column per search restricted by `projectSearchId` — header ~`:558`, cell ~`:1251-1265`
-  (`get_QuantForDisplayForm(rpids, openModDescriptor, projectSearchId)`).
+  (`get_QuantForDisplayForm(rpids, projectSearchId)`).
 - Change: emit a Quant column **per sub-group**, parallel to the existing per-sub-group PSM-count columns
   (~`:456-490` headers, ~`:1076-1120` cells), each restricted by `(projectSearchId, searchScanFileId(s) of
   that sub-group)`.
