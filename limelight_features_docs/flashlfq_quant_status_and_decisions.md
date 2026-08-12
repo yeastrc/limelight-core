@@ -229,6 +229,10 @@ and the §5 multi-scan-file gate (typed `FlashLFQ_Run_Reject_Reason`) live with 
   `searchScanFileId` in the URL hash, per-sub-group Quant columns, and the ordered task list. **Implemented
   2026-08-03** (tasks 1–8; plus the 1:1-invariant dual searcher and the `canRunQuant` owner gate added during
   implementation) — this resolved the multi-scan-file "DECLINED" row and Open decision #5 (mode-3).
+- `flashlfq_quant_sum_across_variable_mod_forms_when_collate_unchecked__implementation_plan_2026-08-12.md` —
+  **reverses switch-plan D6**: when "Collate: Variable Modifications" is unchecked, SUM quant over distinct
+  `groupId`s into the collapsed row (any overlapping form → whole row `overlapping signal`); allow running
+  regardless of the toggle. **APPROVED, not yet implemented.**
 
 **Reviews (2026-07-29 set):**
 - `flashlfq_quant_mapping_critical_review_2026-07-29.md` — composed-design holes H1–H9.
