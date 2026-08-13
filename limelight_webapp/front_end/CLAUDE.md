@@ -175,6 +175,67 @@ doubt, plumb the existing object through props — never mint a second loader to
 
 ---
 
+## Adding a column to a `DataTable` — copy an adjacent column's FULL construction, not just the value logic
+
+When you add a column to an existing `DataTable` (e.g. the protein-list / peptide-list tables built in the
+`…Create_…DataTable_RootTableDataObject.tsx` files), **model it on the sibling columns already in that same
+builder and copy their ENTIRE construction — header text, header tooltip, `width`, `sortable`, the
+per-group display flag, the download-table entry, and any per-search / per-sub-group identity block — not
+only the parts needed to render a value.** Match the neighbor, then change only what is genuinely
+column-specific.
+
+- The load-bearing flags are easy to remember (`onlyShow_ValueDisplay_FirstRowOfGroup`, `id`, `displayName`,
+  the per-search / per-sub-group loop). The **easy-to-miss** part is the header **tooltip convention**:
+  multi-search and sub-search (mode-3) sibling columns don't use a plain
+  `columnHeader_Tooltip_HTML_TitleAttribute` string — they build a JSX-function tooltip
+  (`columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element`) that appends a **`Search:`** block (search id
+  + short name + name) or a **`Sub Search:`** block (via the shared
+  `DataTable__HeaderTooltip__Partial_For_SubSearch_SearchSubGroup_Component`). A hand-written string that omits
+  those blocks is inconsistent with every other column and has to be retro-fitted later.
+- **Do the diff BEFORE writing:** open the adjacent column(s) in the same `for` loop / builder and copy their
+  tooltip builder, not a fresh string.
+- **Replicate in EVERY display mode the column appears in:** the same table renders single-search,
+  multi-search, AND single-search-with-sub-groups (mode 3) from three separate column-construction blocks —
+  add/patch the convention in all of them, not just one.
+- Real miss (2026-08-13): the FlashLFQ/Limelight quant columns shipped with plain-string header tooltips that
+  lacked the `Search:` / `Sub Search:` identity blocks the neighboring PSMs/NSAF columns had right beside them
+  — they had to be fixed one mode at a time afterward.
+
+### Sorting null / no-data cells in a column — `sort_Null_BeforeValues_AfterValues_Enum` (and its limits)
+
+The `DataTable` has a built-in way to order **no-data** cells in a sortable column, but it does **NOT** offer
+"always at the visual bottom regardless of sort direction" — know this before designing a column's no-data sort.
+
+- **How to use it:** set the *cell's* `valueSort` to **`null`** AND set the *column's*
+  `sort_Null_BeforeValues_AfterValues_Enum` to one of
+  `DataTable_Column_Sort_Null_BeforeSmallestValue_AfterLargestValue_Enum.SORT_NULL_BEFORE_SMALLEST_VALUE` /
+  `SORT_NULL_AFTER_LARGEST_VALUE` (enum in `data_table_react/dataTable_React_DataObjects.ts`; sort logic in
+  `dataTable_React/dataTable_SortDataRows.ts:120-186`). If a cell's `valueSort` is `null` and the column enum
+  is **not** set, the sort **throws** (`dataTable_React_DataObjects_Validator.ts` enforces this).
+- **What it actually does — direction-relative, not "always last":** it only pins null to one **numeric end**
+  (smaller-than-smallest, or larger-than-largest). Because the sort engine is inherently direction-relative,
+  the null's **visual** position flips with ascending/descending:
+  - `SORT_NULL_BEFORE_SMALLEST_VALUE` → null at **top when ascending, bottom when descending**
+  - `SORT_NULL_AFTER_LARGEST_VALUE` → null at **bottom when ascending, top when descending**
+  There is no option for "always visually last regardless of direction"; that would require changing the sort
+  engine (not worth it — it would also make one column behave unlike every other).
+- **Existing convention (pre-existing columns):** null is placed at the metric's **worst** end —
+  `filterDirectionBelow` (lower is better, e.g. a q-value) → `SORT_NULL_AFTER_LARGEST_VALUE`;
+  `filterDirectionAbove` (higher is better) → `SORT_NULL_BEFORE_SMALLEST_VALUE`. Live examples: the
+  annotation / best-PSM score columns (`…protein_page__single_protein/…Create_TableData.tsx`,
+  `…scan_file_to_searches_page/…MainContent_Component.tsx`) and the PSM-list child table
+  (`…psm_list/js/psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects.ts`).
+- **Alternative — a real-number `valueSort` sentinel (no enum):** instead of the null mechanism, a column can
+  give no-data a real sentinel number so it sorts at a fixed numeric end. The **FlashLFQ Quant columns**
+  (peptide-list and protein-list — **all part of the in-progress Quant project, still open to discussion**)
+  currently do this: real intensities sort by magnitude, `overlapping signal` / measured-zero low, **blank =
+  `-1` (lowest)** → no-data sorts below everything, i.e. to the bottom when sorting **descending** (the common
+  "biggest first" quant sort). Chosen over the null-enum because the enum is direction-relative (doesn't give
+  "always bottom") and the sentinel keeps blank distinctly **below** measured-zero. Not settled — revisit
+  freely as the Quant feature firms up.
+
+---
+
 ## `DataPageStateManager` — treat every property as SUSPECT; always validate before use
 
 **`DataPageStateManager` (`page_js/data_pages/data_pages_common/dataPageStateManager.ts`) is instantiated
@@ -335,6 +396,76 @@ own**, so a hash survives the rewrite (its post-`replaceState` self-validation s
 - Example consumer: the throwaway FlashLFQ-quant per-search test selection
   `#<projectSearchId>_<requestId>-<projectSearchId>_<requestId>…`, parsed in `quant_PrototypeData.ts` to fetch
   one served `QuantifiedPeaks.tsv` per search and tag its peaks with that projectSearchId.
+
+## Data-page filters/options are COLLAPSED behind "Click to Show Filters and Options" — the controls aren't in the DOM until expanded
+
+On the projectSearchId data pages (peptide / protein / mod / QC), the whole **Search Filters / Modification
+Filters / PSM Filters / "Collate Peptides Using" / etc.** block is wrapped in
+`FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component`
+(`.../filter_on__components/filter_on__show_hide__expand_collapse_container_component/filterSection_DataPage_ShowHide_ExpandCollapse_Container_Component.tsx`),
+which starts **collapsed**. The toggle is a `<div class="show-hide-text">` reading **"Click to Show Filters
+and Options"** (it flips to "Click to Hide Filters and Options" when open).
+
+- **Collapsed means the children are NOT rendered** — the component does `{ showChildren ? this.props.children
+  : null }` (it can't use `display:none` because of a 2-column CSS-grid layout constraint, see the inline
+  comment). So the filter inputs — e.g. the **Collate Peptides Using: Variable Modifications / Static
+  Modifications** checkboxes — are **absent from the DOM entirely** until you expand, not merely hidden.
+- **Consequence for any UI automation / DOM inspection** (e.g. a headless-Chrome/CDP harness, see the
+  auto-memory `headless-browser-cdp-test-harness`): a `querySelector` for a filter control returns nothing on
+  a freshly-loaded page. **First click the expander** — `Array.from(document.querySelectorAll('.show-hide-text'))
+  .find(el => /Click to Show/.test(el.textContent)).click()` — then the controls exist and are clickable.
+- The checkboxes themselves are plain `<label><input type="checkbox"><span>Variable Modifications</span></label>`
+  (React reacts to a native `.click()` on the `<input>`).
+
+## Single-protein view — separate from the main page (DOM, state, URL)
+
+The "single-protein overlay" (reachable from the protein / peptide / mod pages, rendered by
+`proteinPage_Display__SingleProtein_Root_Component`) is **not** a lightweight modal over the main page — it is a
+near-duplicate view with its **own DOM subtree** and its **own state objects / URL state**. The two subsections
+below are the gotchas that follow from that; read both before scripting against, or reasoning about, this view.
+
+### DOM: the main page stays in the DOM (hidden `display:none`) — scope DOM searches to the overlay subtree
+
+When a single protein is shown, the **whole main data page is left in the DOM
+and merely hidden** — its root `div#data_page_overall_enclosing_block_div` (class `overall-enclosing-block`) gets
+`display:none`. So the page now contains **two** of everything (two "Peptide Sequence" tables, two of each
+control): the hidden main-page copy and the visible single-protein copy.
+
+- **Scope every DOM query to the single-protein subtree**, which is the element that is the **next sibling** of
+  `<div class="single-protein-modal-dialog-overlay-background">` (that visible sibling is a
+  `div.overall-enclosing-block` containing `.view-single-protein-overlay-div`). E.g.:
+  ```js
+  const spRoot = document.querySelector('.single-protein-modal-dialog-overlay-background').nextElementSibling;
+  spRoot.querySelectorAll('tr.data-table-data-row');   // NOT document.querySelectorAll(...)
+  ```
+  A page-wide `document.querySelector(...)` will otherwise hit the **hidden main-page** copy (which sorts first
+  in the DOM) and read stale/hidden data.
+- **Don't disambiguate by class** — `overall-enclosing-block` is used by *both* the main page and the overlay
+  (see the inline comment in the Root component). The reliable discriminator is the sibling-of-the-overlay-
+  background relationship above (the main-page root additionally carries `id="data_page_overall_enclosing_block_div"`,
+  but see the next point).
+- **Stable `id`s are scarce on purpose** (they are being intentionally minimized; a DOM-searchability pass is
+  planned later), so prefer **structural** selectors (class + the sibling/containment relationships above) over
+  `id`s for any UI automation / DOM inspection here.
+
+### State objects & URL: separate instances, copied from the main page on open
+
+The single-protein view keeps **its own state objects, distinct from the main page's** — they are NOT the same
+instances:
+
+- **Most single-protein state objects are separate instances** from the corresponding main-page state objects,
+  and are **serialized to the URL separately** (their own segment of the page URL state). So the single-protein
+  view has its own filters/selections/display state independent of the main page underneath it.
+- On **opening** single protein, those separate instances are **copied from the current main-page state
+  objects** (a snapshot at open time) — so the overlay starts matching the main page, then diverges as the user
+  changes things in the overlay.
+- Because the single-protein state lives in the URL, **reloading a URL that is open to a single protein re-opens
+  directly to that single protein** (the view is URL-restorable, not just an in-session overlay).
+- **Mod page only — load-time exception:** if the **mod page** opens straight to single protein on page load
+  (URL already pointing at a single protein), the **main mod page may not be rendered until the single protein
+  is closed**. (This is specific to the mod page; the protein/peptide pages render their hidden main page in the
+  DOM as described in the section above.) So don't assume the main mod-page DOM/state exists while a
+  load-time single-protein mod view is open.
 
 ## Modal overlay (home-grown) — `ModalOverlay_Limelight_Component_v001_B_FlexBox`
 
