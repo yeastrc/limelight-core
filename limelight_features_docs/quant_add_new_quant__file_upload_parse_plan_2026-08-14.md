@@ -1,5 +1,13 @@
 # "Add New Quant" — file upload, parse & search-mapping — IMPLEMENTATION HANDOFF (standalone, 2026-08-14)
 
+> ## ⚠️ SUPERSEDED — do not implement from this doc
+> **Replaced by `quant_add_new_quant__file_upload_parse_plan_v2_2026-08-14.md` (v2).** v2 is the source of
+> truth. It corrects/extends this doc with: the **sub-group / scan-file eligibility gate** (candidate searches
+> must have sub-groups ↔ scan files 1:1, or no sub-groups, or a single scan file); match target granularity
+> **`(projectSearchId, searchScanFileId)`**; **record number** as the stable row key; parser-owned BOM /
+> CRLF / blank-line handling (no hand-rolled normalization); `#` comment lines; case-**insensitive** matching;
+> and researcher-level auth (`validateAssistantProjectOwnerAllowed`). Kept here for history only.
+
 Status: **Design fully locked; ready to implement.** This doc is written to be implemented by a **fresh
 session with NO prior conversation context** (it is self-contained). The overlay shell that hosts this
 feature is ALREADY built (see "Current state"); what remains is the upload → detect → preview → validate →
