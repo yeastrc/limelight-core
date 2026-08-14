@@ -239,6 +239,18 @@ Path constants live in per-area `AA_*Paths_Constants` classes. Roots:
 - **User account pages** — `spring_mvc_parts/user_account_pages/` (login, account, invites).
 - **App admin pages** — `spring_mvc_parts/webapp_admin_pages/`.
 
+### `projectIdentifier` request param — it is just the project id (as a string)
+
+Many `/d/rws/...` webservice request bodies carry a **`projectIdentifier`** field. Despite the abstract
+name, **it is simply the numeric `project_tbl.id` rendered as a string** — the same id that appears in the
+`/d/pg/project/{projectId}` URL. Parse it back to an int and use it directly as the project id; there is no
+lookup/decode step and no separate opaque code.
+
+- The name was chosen up front to allow **decoupling** an external project *identifier* (e.g. an opaque
+  shareable code) from the internal numeric id. **That decoupling was never implemented and will not be** —
+  do not build anything that assumes `projectIdentifier` is (or will become) anything other than the numeric
+  project id as a string. (Confirmed by Dan, 2026-08-14.)
+
 ### User authentication & account management (`user_account_pages/`)
 
 This is **authentication / identity**, separate from the per-project authorization

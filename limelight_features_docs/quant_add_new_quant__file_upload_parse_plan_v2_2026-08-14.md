@@ -182,46 +182,73 @@ and **Continue / Cancel**. Continue gates validation + mapping.
 
 ## Eligibility — which searches are valid candidates
 
-**Not every search is a valid quant target.** A search is a candidate only if its scan files are clean quant
-units. Reuse the shipped rule (see `limelight_features_docs/flashlfq_quant_subgroup_scanfile_eligibility.md`):
+**Not every search is a valid quant target.** A search is a candidate only if it has no modification shape
+that breaks the one-reported-peptide-to-one-mass-form assumption AND its scan files are clean quant units.
+The gate rejects **five** search shapes, evaluated **cheap-first** (persisted `search_tbl` flag columns first,
+then the trivial scan-file-count check, and only last — for the one remaining case — the two expensive
+PSM-aggregation sub-group searchers). See `flashlfq_quant_status_and_decisions.md` ("Searches not supported
+for quant") and `flashlfq_quant_subgroup_scanfile_eligibility.md`.
 
-- **No sub-groups** → eligible (whole-search grain).
-- **Exactly 1 scan file** → trivially eligible (the eligibility searchers are not called).
-- **>1 scan file with sub-groups** → eligible **iff sub-groups ↔ scan files are 1:1**, i.e. BOTH shipped
-  shared-code searchers under
-  `limelight_shared_code/.../search_sub_group_scan_file/searchers/` return **FALSE**:
-  1. `Search_AnyScanFile_HasPsms_In_MultipleSubGroups_ForSearchId_Searcher` — no scan file mixes sub-groups
-     (`GROUP BY search_scan_file_id HAVING COUNT(DISTINCT search_sub_group_id) > 1`).
-  2. `Search_AnySubGroup_HasPsms_In_MultipleScanFiles_ForSearchId_Searcher` — no sub-group spans scan files
-     (`GROUP BY search_sub_group_id HAVING COUNT(DISTINCT search_scan_file_id) > 1`).
+Order (first matching rule wins; wire-value reason in parentheses):
 
-Both facts come from per-PSM attributes (`psm_tbl.search_scan_file_id`,
-`psm_search_sub_group_tbl.search_sub_group_id`) — no new data source. An **ineligible** search is excluded
-from the candidate set, and we retain its **reason** so the not-found UX can explain it (see §Validation
-step 3). Reason values mirror the shipped `FlashLFQ_Run_Reject_Reason`:
-`SUB_GROUPS_CROSS_CUT_SCAN_FILES` (a scan file mixes sub-groups) and
-`SUB_GROUP_SPANS_MULTIPLE_SCAN_FILES` (a sub-group spans scan files).
+1. **Open (mass-shift) modifications** (`search_tbl.any_psm_has_open_modificaton_masses`) →
+   ineligible (`HAS_OPEN_MODIFICATIONS`). The open-mod mass lives on the PSM, so one reported peptide spans
+   multiple peptidoform mass forms — not quantifiable here.
+2. else **PSM-level variable (dynamic) modifications** (`search_tbl.any_psm_has_dynamic_modifications`) →
+   ineligible (`HAS_DYNAMIC_MODIFICATIONS`). Same reported-peptide-spans-multiple-mass-forms problem.
+3. else **≤ 1 scan file** → **eligible** (trivially; the sub-group searchers are not called).
+4. else **> 1 scan file WITHOUT sub-groups** → ineligible (`MULTIPLE_SCAN_FILES_WITHOUT_SUB_GROUPS`); quant
+   would have to be summed across scan files. *(Behavior change: such a search was eligible before this
+   extension.)*
+5. else **> 1 scan file WITH sub-groups** → eligible **iff sub-groups ↔ scan files are 1:1**, i.e. BOTH shipped
+   shared-code searchers under `limelight_shared_code/.../search_sub_group_scan_file/searchers/` return **FALSE**:
+   - `Search_AnyScanFile_HasPsms_In_MultipleSubGroups_ForSearchId_Searcher` TRUE → a scan file mixes sub-groups
+     (`GROUP BY search_scan_file_id HAVING COUNT(DISTINCT search_sub_group_id) > 1`) → `SUB_GROUPS_CROSS_CUT_SCAN_FILES`.
+   - `Search_AnySubGroup_HasPsms_In_MultipleScanFiles_ForSearchId_Searcher` TRUE → a sub-group spans scan files
+     (`GROUP BY search_sub_group_id HAVING COUNT(DISTINCT search_scan_file_id) > 1`) → `SUB_GROUP_SPANS_MULTIPLE_SCAN_FILES`.
 
-**There is a single-search version of this check already in the uncommitted code** —
+**Data sources.** The two mod flags (rules 1–2) come from persisted `search_tbl` columns, fetched in one batch
+for all the project's searchIds via **`SearchFlagsForSearchIdSearcher.getSearchFlags_ForSearchIds(searchIds)`**
+(`.getResultItems()` → items with `getSearchId()`, `isAnyPsmHas_OpenModifications()`,
+`isAnyPsmHas_DynamicModifications()`). The sub-group facts (rule 5) come from per-PSM attributes
+(`psm_tbl.search_scan_file_id`, `psm_search_sub_group_tbl.search_sub_group_id`) — no new data source. An
+**ineligible** search is excluded from the candidate set, and we retain its **reason** so the not-found UX can
+explain it (see §Validation step 3).
+
+**Deliberately NOT adopted from `FlashLFQ_Run_Reject_Reason`:** `MULTI_SCAN_FILE_REQUIRES_SINGLE_SEARCH`
+(a joint-run-only constraint — this feature maps each filename per-search, there is no joint run) and
+`VARIABLE_MOD_MASSES_COLLIDE_AT_2_DECIMAL_PLACES` (a display-only D4 gate; per the approved sum-across-varmod
+plan those forms are summed, not gated). The sub-group reason names mirror the FlashLFQ ones without the
+`MULTI_SCAN_FILE_` prefix; the mod-flag reasons mirror the FlashLFQ open-mod / dynamic-mod submit tripwires.
+
+**There is a single-search version of the sub-group check already in the uncommitted code** —
 `FlashLFQ_Quant__AnyScanFile_HasPsms_In_MultipleSubGroups__Single_ProjSearchID_RestWebserviceController`
-(returns both facts for one projectSearchId). Our new webservice computes the same thing for **all** the
+(returns both facts for one projectSearchId). Our new webservice computes eligibility for **all** the
 project's searches.
 
 **Performance + future flags table.** The two `GROUP BY … HAVING` queries over `psm_tbl` are the cost center;
-run them **only for >1-scan-file searches** (single-file / no-sub-group searches skip them entirely, and most
-searches are single-scan-file). The FE/loader must treat per-search eligibility as an **opaque
-boolean + reason**, so that a future optimization — caching eligibility in a per-search flags table — is a
-**backend-only** change with no FE impact.
+they run **only in rule 5** (single-file searches, no-sub-group searches, and any open/dynamic-mod search skip
+them entirely, and most searches are single-scan-file). The FE/loader must treat per-search eligibility as an
+**opaque boolean + reason**, so that a future optimization — caching eligibility in a per-search flags table —
+is a **backend-only** change with no FE impact.
 
 ---
 
 ## Validation + mapping pipeline (all errors in the overlay; stop at the first failing gate)
 
 1. **Parse → preview/confirm** (Phase 1).
-2. **Uniqueness.** All column-0 scan filenames must be **unique** under the **same normalization as matching**
-   (trim + case-insensitive), so `Sample1` / `sample1 ` count as a duplicate here (a clear "duplicate" error)
-   rather than slipping through to a step-5 collision. Duplicates → error listing the non-unique values **by
-   record number**; stop.
+2. **Non-empty key + uniqueness.**
+   - **Non-empty scan filename (col 0).** Phase 1's column-count guard does **not** reject an empty first cell:
+     a row like `\t\tvalue` (or `,,value`) parses to the right column count with `cells[0] === ""` and becomes a
+     valid record. Phase 3 **must** explicitly reject any record whose trimmed col-0 value is empty, with a
+     clear message listing the offending record number(s) — otherwise an empty key falls through to the
+     existence step and surfaces as a confusing "not found" (or, after trim+case-insensitive normalization,
+     multiple empty keys collide as spurious "duplicates"). Check this **before** uniqueness so the message is
+     precise. (Added from the Phase 1 review, 2026-08-14.)
+   - **Uniqueness.** All column-0 scan filenames must be **unique** under the **same normalization as matching**
+     (trim + case-insensitive), so `Sample1` / `sample1 ` count as a duplicate here (a clear "duplicate" error)
+     rather than slipping through to a step-5 collision. Duplicates → error listing the non-unique values **by
+     record number**; stop.
 3. **Existence.** Every column-0 filename must match **≥ 1 eligible `(search, searchScanFileId)`** via the
    cascade. **Report ALL misses at once** (so the user never works through pickers only to discover misses):
    for each unmatched filename, state what was tried (exact → base-name); if it matches **only ineligible**
@@ -346,6 +373,39 @@ matching > 1 eligible search (single match auto-maps); then reject any two recor
 ## Data model note
 Store parsed columns as an **ordered list** (`headers` + per-record `cells`), keyed by **record number** — NOT
 header-keyed row objects (PapaParse `header:true` collides on duplicate/blank headers and loses order).
+
+## Testing gaps to close in a later phase (from the Phase 1 review, 2026-08-14)
+- **✅ CLOSED — quoted / embedded-delimiter / embedded-newline / `""`-escape fixtures driven live (2026-08-14).**
+  Confirmed via CDP by reading the component's held `_parseOutcome` off the React fiber (and cross-checked against
+  the preview `<td>` text): quoted embedded delimiter `"1,000"` stays one cell (3 columns); `""` escape →
+  `He said "hi"`; **embedded newline preserved in-cell (`line1\nline2`) as ONE logical record, and the following
+  record gets recordNumber 2 while sitting on physical line 4 — record number ≠ file line number, proven live**;
+  a `#`-prefixed continuation line inside a quoted field is NOT dropped as a comment (`note:\n#keepme` intact);
+  BOM + quoted first field → BOM stripped, cell correct. Also confirmed the **known detection limitation**: a header
+  with a quoted field containing a tab auto-picks Tab (wrong) → the equal-column-count guard trips with a clear
+  "Record 1 has 1 column(s) but the header row has 2" error, and the **Comma override recovers it** (header cell
+  `a\tb` with the tab preserved). No misbehavior; the equal-column-count backstop worked as the sole guard.
+  *(Original gap, for history:* Phase 1 leaned on PapaParse for all of these but was verified only with plain
+  unquoted fixtures; the two load-bearing worries were record# ≠ line# on an embedded newline, and that
+  `parseWithDelimiter` ignores non-fatal PapaParse `errors` when any rows return so the equal-column-count check is
+  the sole backstop — both now observed to behave correctly.)*
+- **✅ MOSTLY CLOSED — the ineligible path/UX is now driven live (2026-08-14); residual gate narrowed to the
+  two sub-group-searcher TRUE outputs.** After the eligibility gate was extended (open-mod / dynamic-mod /
+  multi-scan-file-without-sub-groups), project 25 now returns real ineligible searches — 11
+  `HAS_OPEN_MODIFICATIONS` + 2 `MULTIPLE_SCAN_FILES_WITHOUT_SUB_GROUPS` — and the **"matches only an ineligible
+  search" not-found UX was exercised end-to-end live** (a filename present only in open-mod searches rendered
+  `eligible:false` with the correct plain-language reason). So the general concern — that `eligible:false` +
+  a populated `ineligibleReason` renders correctly through the loader + component — is **closed**.
+  - **REQUIRED RELEASE GATE (residual, narrower).** The two **sub-group** searcher TRUE branches —
+    `SUB_GROUPS_CROSS_CUT_SCAN_FILES` and `SUB_GROUP_SPANS_MULTIPLE_SCAN_FILES` — are **still code-verified
+    only**: no cross-cutting or scan-file-spanning search exists in either driven project (every multi-file
+    sub-group search is 1:1), so those two searchers were never observed returning TRUE. The branches are
+    code-identical to the shipped single-search controller
+    (`FlashLFQ_Quant__AnyScanFile_HasPsms_In_MultipleSubGroups__Single_ProjSearchID_RestWebserviceController`)
+    and use the same two shared-code searchers. Before user-facing release, exercise them for real via a
+    searcher-level test **or** a synthetic ineligible DB row (a scan file with PSMs in >1 sub group, and/or a
+    sub group whose PSMs span >1 scan file) and confirm the response carries `eligible:false` with the correct
+    reason. No local data can surface a regression here, so treat this as a hard gate, not a nice-to-have.
 
 ## For future reference (not this step)
 - The **column header** is the display label for that column of data.
