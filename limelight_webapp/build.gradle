@@ -134,10 +134,10 @@ dependencies {
 	//   AWS  S3
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/s3
-	implementation 'software.amazon.awssdk:s3:2.49.3'
+	implementation 'software.amazon.awssdk:s3:2.52.0'
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/apache-client
-	implementation 'software.amazon.awssdk:apache-client:2.49.3'
+	implementation 'software.amazon.awssdk:apache-client:2.52.0'
 	
 	
 	//   OLD V1
