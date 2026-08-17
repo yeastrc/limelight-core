@@ -5,9 +5,13 @@ go-ahead for a phase.** This doc is the single source of truth (it supersedes th
 framing and the ephemeral plan-mode file `~/.claude/plans/wait-i-thought-we-temporal-badger.md`). Skeptical
 bar: reuse claims cited to source `file:line`; a couple of items marked *(unverified)*.
 
-This is a **new, independent quant subsystem**. It does **not** modify the existing per-(search, scan file)
-FlashLFQ feature (`FlashLFQ_Run__Request_Creation_RestWebserviceController` + the peptide/protein-page quant
-column), which stays as-is. No Model-A/B framing — nothing is a reversal.
+This is a **new, independent quant *run model*** (a joint run over the uploaded set). It has **two deliberate,
+non-breaking touches to existing code**: (1) **Q7 unifies the shared grouping identity
+`FlashLFQ_GroupingIdentity_Common` across BOTH this subsystem and the existing peptide page** — its identity
+*strings* change but stay grouping-equivalent, and existing runs are already deleted (§7); (2) **D8 is a
+behavior-preserving refactor** of `FlashLFQ_Run__Request_Creation_RestWebserviceController` (extract the shared
+gather/send; the existing per-search per-scan-file fan-out is unchanged). No Model-A/B framing — nothing is a
+reversal.
 
 **Build order (decided):** **Phase A = Submit side first** (project page → new Submit controller), then
 **Phase B = a minimal raw peptide-TSV viewer** as the initial link target. The full Quant peptide page and
@@ -25,12 +29,19 @@ in-memory mapping store on the overlay container instance field `_inMemoryMappin
    request). MBR is always on (see D-MBR); normalize is a user choice defaulting on.
 2. **Key.** The FlashLFQ **service generates and returns its own random `request_id`** (`uuid4().hex`); we do
    **not** mint our own and we do **not** change the service.
-3. **Hash (no DB).** The new page's URL = `projectId` in the path + a **composite hash** in the fragment:
-   reuse the existing peptide-page format `projectSearchId_searchScanFileId_requestId` (`-`-joined) with
-   **every entry sharing the one joint-run `request_id`**, optionally prefixed with a **`quant_run_`** scheme
-   marker. The marker + the `(psid, ssfid)` pairs live **only in the Limelight URL hash**; the service still
-   only ever sees `request_id`. This puts the projectSearchId set in the hash — what the later peptide page
-   needs to re-derive identity→reportedPeptideId — with **no persistence**.
+3. **Hash (no DB).** The new page's URL = `projectId` in the path + a **composite hash** in the fragment,
+   **reusing the existing peptide-page format and parser unchanged**, with only a leading marker added:
+   ```
+   #qr;<psid>_<ssfid>_<requestId>-<psid>_<ssfid>_<requestId>-…
+   ```
+   `_` splits the 3 fields, `-` splits entries (exactly the existing scheme, `quant_PrototypeData.ts:301-321`),
+   and **every entry shares the one joint-run `request_id`**. The only new piece is the leading marker `qr;`
+   — it uses a **non-`_` delimiter** so it can't collide with the field separator; the page strips the leading
+   `qr;` and feeds the remainder to the existing `_parseHash_ToPairs` as-is (no new parser, no format change).
+   The marker + the `(psid, ssfid)` pairs live **only in the Limelight URL hash**; the service still only ever
+   sees `request_id`. The pairs give the later peptide page the projectSearchId set it needs to re-derive
+   identity→reportedPeptideId — with **no persistence**. *(The earlier `quant_run_` collision was self-inflicted
+   by putting `_` in the marker inside a `_`-delimited format; `qr;` removes it.)*
 4. **Project-page run list (no DB).** Submitted runs are held in **project-page JS**; a **"Refresh"** button
    re-polls their status; each **completed** run is a link that opens the viewer in a **new tab**. The list is
    session-scoped (lost on project-page reload — acceptable interim).
@@ -66,16 +77,19 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
 | D2 | **New dedicated Submit controller** (no branch in the existing controller). |
 | D3 | Results shown **only on new data page(s)** — not injected into existing tables. |
 | D4 | **Run identifier = the FlashLFQ service's own random `request_id`.** No service change; we do not mint our own id. |
-| D5 | **Composite hash, no DB:** `quant_run_` marker + `psid_ssfid_requestId` pairs (all sharing one `request_id`), in the URL hash only. Metadata labeling + cross-session listing need the DB (deferred). |
+| D5 | **Composite hash, no DB:** `#qr;` marker + existing `psid_ssfid_requestId` pairs (all sharing one `request_id`), URL hash only; reuse `_parseHash_ToPairs` unchanged (strip `qr;`, feed the rest). Metadata labeling + cross-session listing need the DB (deferred). |
 | D6 | **Server-side default PSM/Peptide cutoffs** decide what PSMs are sent. |
 | D7 | **Sample key sent to the service = `searchScanFileId`** (not `scan_file_tbl.id`) so results parse back per (search, scan file) — see §4. |
 | D8 | **Reuse via extraction:** move the gather/DTO/send logic into a `services/` class (public static nested request/response) and **repoint the existing controller** at it (no duplication). |
 | D9 | **New projectId-keyed status webservice**; runs held in project-page JS; Refresh polls; links open a new tab. |
 | D-MBR | **MBR always ON** (`--mbr` is a switch defaulting TRUE and cannot be disabled from the CLI — `flashlfq_command.py:14-17, 51`); show a "MBR is on" message, no toggle. |
 | D-NRM | **normalize = user choice, default ON** (`--nor` is a controllable switch — `flashlfq_command.py:49, 112-116`); submit UI = a checkbox defaulting on. |
-| D-Q7 | **Include static mods in the grouping identity NOW** (identity mass = total mod mass = static+variable); Dan deletes all existing FlashLFQ runs after it lands. See §7. |
+| D-Q7 | **Unify BOTH features on a static-inclusive grouping identity** (bracket mass = variable + residue-static). One change to the shared `FlashLFQ_GroupingIdentity_Common`; the existing peptide page and this subsystem share it. Existing runs were **already deleted** — no forced-deletion cost. See §7. |
+| D-VAL | **Submit backstops mods only** (open-mod / dynamic-mod). It does NOT re-enforce the scan-file-count / sub-group eligibility conditions at submit — those are enforced at the upload front door (D-ELIG). |
+| D-ELIG | **Do NOT relax the Add-New eligibility gate.** A >1-scan-file, no-sub-groups search (condition (d), `Eligibility...:282-288`) stays **INELIGIBLE**. The joint run removes per-search *summing* but not the underlying ambiguity: with no sub-groups, multiple scan files may be separate samples (→ separate columns, fine) OR fractions of one sample (→ should be combined; separate columns mislead and FlashLFQ+MBR mis-match across them). Sub-groups are the disambiguator; the uploaded metadata structure is not honored this slice. Stays gated unless a user / Dan's boss explicitly requests relaxing it. |
 | D-AUTH | Submit = project **OWNER**; viewer page + retrieval/status webservices = project **READ**. |
 | D-SCOPE | Viewer does **not** verify the run's scan files belong to the project this slice (temporary + isolated/alt server context) — code comment only; real check deferred to the DB phase. |
+| D-PROV | The **cross-search joint run is Dan-owned** (this session): the task prompt said "submit ONE FlashLFQ run over ALL of those scan files," and when the Model-B-reversal concern was raised Dan replied it is "completely disconnected from what was done before… nothing is a reversal." The user asserts comparability by uploading the set; Limelight does not validate it. |
 
 ---
 
@@ -90,7 +104,7 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
 - **Scan-file → spectr API key + filename** — `gather_ScanFiles` (`:681-727`): each `SearchScanFileDTO` gives
   `searchScanFileId` (`:715`), `scanFileId` (`:700, 716`), `scanFileDAO.getSpectralStorageAPIKeyById` (`:707`).
 - **Grouping identity** — `FlashLFQ_GroupingIdentity_Common.buildFlashLFQ_GroupingIdentity`
-  (`FlashLFQ_GroupingIdentity_Common.java:67-101`). Single source of truth; used on both submit and
+  (`FlashLFQ_GroupingIdentity_Common.java:67-83`). Single source of truth; used on both submit and
   re-derive. **Q7 changes this** (§7).
 - **Default cutoffs (D6)** — `SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds`
   (`.../search_data_lookup_parameters_code/main/...:74-80`) builds a `SearchDataLookupParamsRoot` from default
@@ -132,11 +146,29 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
   **new service under `limelight_webapp/src/main/java/.../services/`**, with the **request + response as
   `public static` nested classes inside that service class** (not a separate package). **Change the existing
   controller to call the extracted service.** `FlashLFQ_GroupingIdentity_Common` is already standalone.
+  - **Preserve existing behavior:** the existing controller keeps its **per-scan-file fan-out** (`:634-649`,
+    one request per file) — it loops and calls the extracted service once per file; the new joint controller
+    calls the same service **once** with all files. The extraction boundary must expose "gather-per-search" +
+    "send-one-request(spectral_data list)" so both compose it differently.
+  - **Fix the stale comment (item 6):** the class javadoc `Request_Creation:124-129` ("one FlashLFQ run PER
+    SEARCH … NOT a joint run across searches … cannot be assumed valid") correctly describes the *existing*
+    controller but its "cannot be assumed valid" claim is contradicted by this new subsystem. **Scope that
+    comment to the existing controller and cross-reference the new joint subsystem** (don't delete it).
 - **New Submit controller** `.../rest_controllers/other_like_project/Quant_AddNew_Submit_JointFlashLFQ_Run_RestWebserviceController.java`:
   - Request `{ projectIdentifier, mappedFiles:[{projectSearchId, searchScanFileId}], normalize:boolean }`.
   - Auth = **OWNER**: `ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds.validateProjectOwnerAllowed(...)`;
-    re-verify every `projectSearchId`/`searchScanFileId` belongs to the project; backstop-reject open-mod /
-    dynamic-mod searches (mirror the eligibility controller).
+    re-verify every `projectSearchId`/`searchScanFileId` belongs to the project.
+  - **Validation scope (D-VAL):** backstop-reject **only** open-mod / dynamic-mod searches — mirror the
+    existing throws: **dynamic-mod at `Request_Creation:362-365`, open-mod at `:1004-1013`** — those break the
+    grouping identity (one reported peptide spans multiple mass forms). Do **NOT** re-enforce the eligibility
+    controller's scan-file-count / sub-group conditions (`Quant_AddNew_..._Eligibility...:275-320`) at submit.
+  - **Eligibility gate stays (D-ELIG, DECIDED — do NOT relax):** the Add-New upload eligibility keeps
+    **multi-scan-file-without-sub-groups searches INELIGIBLE** (`Quant_AddNew_..._Eligibility...:282-288`),
+    enforced at the **upload front door** (not re-checked at submit). Rationale: the joint run removes the
+    per-search *summing* problem but not the underlying ambiguity — with no sub-groups, multiple scan files may
+    be separate samples (→ separate columns, fine) or fractions of one sample (→ should be combined; separate
+    columns mislead and FlashLFQ+MBR would mis-match across them). Sub-groups are the disambiguator; the
+    uploaded metadata structure is not honored this slice. Relax only on an explicit user / boss request.
   - Distinct projectSearchIds → default-cutoffs params root → per-search `SearcherCutoffValuesSearchLevel`;
     for each search gather via the extracted service and **keep only the mapped `searchScanFileId`s**; build
     ONE `spectral_data` list; send ONE request; return `request_id`. Set `flashlfq_parameters` = MBR
@@ -153,7 +185,7 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
 ### Front end (project-page Quant section)
 - **Submit action** in the Add-New-Quant overlay terminal state: POST the store's `(projectSearchId,
   searchScanFileId)` pairs + normalize choice; on success take `request_id` and build the composite hash
-  (`quant_run_` + `psid_ssfid_requestId-…`, all sharing `request_id`).
+  `qr;<psid>_<ssfid>_<requestId>-…` (all entries sharing the one `request_id`).
 - Show **"MBR is on"** + a **normalize checkbox (default on)**.
 - **Runs list in project-page JS**: each run's composite hash + status; **"Refresh"** polls the new status
   webservice; each completed run links (new tab) to `/d/pg/qt/flashlfq-peptide-data-file/{projectId}#<hash>`.
@@ -193,8 +225,9 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
   Uses the already-added path constant.
 
 ### Front end
-- **esbuild entry** in `front_end/build.gradle` — add to the data-pages entry list (in
-  `frontEndBuild__Esbuild__CommandLine_Args_DataPages__Add_DataPage_EntryPoints__Fcn`, ~line 278):
+- **esbuild entry** in `front_end/build.gradle` — add a string to the data-pages entry array inside
+  `ext.frontEndBuild__Esbuild__CommandLine_Args_DataPages__Add_DataPage_EntryPoints__Fcn` (`build.gradle:224`;
+  the `commandLine_Args += [ … ]` array starts `:228`):
   `"./src/js/page_js/data_pages/quant_data_file_pages/flashlfq_peptide_data_file_page/flashlfqPeptideDataFilePage.ts"`.
   Output bundle name = entry basename + `-bundle` → `flashlfqPeptideDataFilePage-bundle.js` under
   `static/js_generated_bundles/data_pages/`.
@@ -204,9 +237,10 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
     `try/catch → reportErrorObjectToServer; throw`).
   - `FlashlfqPeptideDataFilePage_Root_Component.tsx` — read `projectId` via
     `currentProjectId_ProjectSearchId_Based_DataPages_FromDOM()` (reads the `main_page_current_project_id`
-    element); read `window.location.hash` **lazily in `componentDidMount`**, strip the leading `#` + optional
-    `quant_run_` marker, and take the shared `request_id` (3rd `_`-field of any entry); fetch the TSV as
-    **text** via hand-rolled `window.fetch` following the reject-sentinel / `handleAJAXError` contract
+    element); read `window.location.hash` **lazily in `componentDidMount`**, strip the leading `#qr;`, feed the
+    remainder to the existing `_parseHash_ToPairs` (`quant_PrototypeData.ts:301-321`) → pairs (all sharing the
+    one `request_id`; keep the pairs — the later peptide page needs them); use that `request_id` to fetch the
+    TSV as **text** via hand-rolled `window.fetch` following the reject-sentinel / `handleAJAXError` contract
     (`quant_PrototypeData.ts:351-386`); render the TSV verbatim in a `<pre>`.
   - `flashlfqPeptideDataFile_LoadFromServer.ts` — the fetch module.
 
@@ -222,7 +256,7 @@ re-derive identity→rpid per search from default cutoffs.
 **Parse (per search + per scan file):**
 - **Peptide rows do NOT carry `reportedPeptideId`.** The TSV `Sequence` column = the grouping identity (NO
   rpid). Re-derive `groupingIdentity → [reportedPeptideId]` per search from default cutoffs (same approach as
-  `FlashLFQ_Run__Result_Retrieval_Joined...:217-218, 260-340, 408`) and look up each row.
+  `FlashLFQ_Run__Result_Retrieval_Joined...:217-218, 260-341, 408`) and look up each row.
 - **Protein rows DO round-trip** — `proteinSequenceVersionId` is embedded in `Protein Group(s)` as `psvid_<id>`.
 - Columns: each `Intensity_scanfile_id_<searchScanFileId>` → one sample = one (search, scan file).
 - **Cross-search identity ambiguity:** the same `Sequence` string can map to reported peptides in multiple
@@ -247,34 +281,70 @@ re-derive identity→rpid per search from default cutoffs.
 
 ---
 
-## 7. Q7 — include static mods in the grouping identity (DO NOW, Phase A)
+## 7. Q7 — unify BOTH features on a static-inclusive grouping identity (Phase A)
 
-**Change (do now):** make the grouping identity's summed mass = **total mod mass (static + variable) =
-monoisotopicMass − basePeptideMass**, instead of the current variable-only. Edit the single shared builder
-`FlashLFQ_GroupingIdentity_Common` and its two call sites: the submit side
-(`buildFlashLFQ_GroupingIdentity` at `FlashLFQ_Run__Request_Creation...:1048-1050`, which moves into the
-extracted service per D8) **and** the existing joined-retrieval re-derivation
-(`FlashLFQ_Run__Result_Retrieval_Joined...:333`) so the round-trip still matches. **Reuse existing masses
-(`StaticModDTO.getMass()` + already-computed per-position mods) — do NOT add a new mass calculator.**
+**Change (single shared builder, both features):** the existing peptide page **and** this new subsystem move to
+the same convention — the grouping-identity bracket mass = **variable + residue-static mod mass** (full
+precision), instead of variable-only. Make the change in ONE place, `FlashLFQ_GroupingIdentity_Common`, with the
+static expansion **inside** the builder. **No `includeStaticMods` flag, no separate builder.**
+
+**Single formula (approach B — the only one both paths can compute):**
+> bracket mass = Σ(reported-peptide-level variable-mod masses) + Σ over each residue-occurrence in
+> `baseSequence` matching a static mod, of that static mod's `StaticModDTO.getMass()` — summed at full precision
+> (the builder sorts+sums deterministically, `FlashLFQ_GroupingIdentity_Common:71-83`).
+>
+> *(The subtraction form `monoisotopicMass − basePeptideMass` is NOT usable: the retrieval re-derivation has no
+> monoisotopic/base mass — only the sequence + variable masses. Reuse existing masses; no new mass calculator.)*
+
+**Signature + callers (exactly 2, grep-confirmed):**
+- `buildFlashLFQ_GroupingIdentity(baseSequence, Collection<Double> reportedPeptideLevelVariableModMasses, List<StaticModDTO> staticMods)`
+  — all **required**; static residue-occurrence expansion lives inside the builder (one implementation both
+  paths share, replicating the submit static block `Request_Creation:1015-1041`, residue match `:1026`).
+- Submit `Request_Creation:1049` — already has the static list (`:745`); pass it. (This call moves into the
+  extracted service per D8.)
+- Retrieval `Result_Retrieval_Joined:333` — **does not fetch static mods today** (`:260-341` only pulls
+  sequence + variable masses). Add `staticModDTOForSearchIdSearcher.getListForSearchId(searchId)` there so both
+  call sites feed the builder identical inputs.
+- Fix the now-wrong "static excluded" / "variable"-named artifacts: `FlashLFQ_GroupingIdentity_Common:30-38`
+  (class doc), `Request_Creation:1043-1050` (submit comment), and the helper `summedVariableModMass_Token`
+  (`FlashLFQ_GroupingIdentity_Common:84-101`) — its name/token says "variable" but it now formats
+  variable+static (rename/comment it).
+
+**Round-trip correctness is guaranteed by the shared builder** — submit and retrieval run identical logic on
+identical inputs (same variable masses from the same searcher, same static list from the same searcher, same
+sequence), so the strings match **by construction**. This holds **independently of the terminal-mod question**.
 
 **Why (reduce FlashLFQ zeroing):** FlashLFQ keys peptidoforms by the Full Sequence string but quantifies by
 mass → m/z → XIC. Two **different** strings at the **same mass** claim one MS1 peak → FlashLFQ marks it
-ambiguous and **zeros it** (the "overlapping signal" state). Fewer distinct strings at a given mass ⇒ fewer
-zeros. Today identity excludes static while the sent mass includes it — so a cross-search case (search 1 has a
-mod as **static**; search 2 has the same mod as **variable** with all sites occupied) is the same molecule /
-same mass but two identity strings → FlashLFQ zeros both. Making them one string quantifies the peak; it moves
-data from the zeroed bucket into the quantified-but-shared (`⚭`) bucket. (Same-mass co-eluting species can't
-be separated by MS1 anyway, so distinct strings only ever earn a zero — merging is strictly better.)
+ambiguous and **zeros it** (the "overlapping signal" state). Making static-vs-variable same-mass forms share one
+string quantifies the peak instead — moving data from the zeroed bucket into the quantified-but-shared (`⚭`)
+bucket. Merges only when occupancy matches (all-sites variable == static-all-sites); partial variable forms
+differ in mass *and* identity → correctly stay separate.
 
-**Consequences / caveats:**
-- **Existing single-search feature: quant numbers unchanged** (mass-driven; the relabeling
-  `base[+varSum]` → `base[+varSum+staticSum(base)]` is injective, static uniform within a search, its runs are
-  per-scan-file with MBR off). **But cached runs must be deleted** — the peptide match-back joins the TSV
-  `Sequence` column by exact string equality (`FlashLFQ_Run__Result_Retrieval_Joined...:333, 408`), so old
-  variable-only TSVs stop joining. **Dan deletes all existing FlashLFQ service runs** after this lands (webapp
-  persists nothing; delete the service-side run dirs; old hashes then return `NOT_FOUND`).
-- **Merge condition:** only when occupancy matches (all-sites variable == static-all-sites); partial variable
-  forms differ in mass *and* identity → correctly stay separate.
+**No run-deletion cost:** the existing FlashLFQ runs have **already been deleted**, so there is nothing to
+preserve and no forced-deletion step; both features regenerate consistent identities going forward.
+
+**Two build-time checks to record (cheap):**
+- **Grep other consumers of the grouping-identity / "Full Sequence" string** — confirm nothing *parses or
+  displays* the bracket mass expecting variable-only semantics (grouping key + TSV join are fine; a
+  display/parse elsewhere would silently show changed numbers). Verify it is internal-only.
+- **Confirm `StaticModDTO.residue` can't carry a terminal sentinel token** (e.g. `"["`/`"]"`). The DTO is
+  residue + mass with no terminal field, so residue-match expansion is complete unless `residue` is overloaded
+  for terminals — a quick confirm closes the edge.
+
+---
+
+## 7b. Interim limitations (accepted for this slice)
+- **(a)** Uploaded metadata columns have **no effect** this slice — not sent to the run, not shown.
+- **(b)** A project-page **reload permanently orphans** a submitted run: the `request_id` lives only in JS and
+  the service has no "list runs for a project" endpoint, so it becomes unrecoverable.
+- **(c)** The viewer authorizes on the URL `projectId` but retrieves by an **unbound `request_id`** → a
+  leaked/guessed id enables cross-project view. Accepted: temporary + isolated/alt server context; `request_id`
+  is an unguessable uuid.
+- **(d)** For the **deferred** peptide page, round-trip correctness depends on the **default cutoffs** (which
+  reported peptides get re-derived) not drifting between submit and view, with nothing persisted to pin them.
+  The identity *formula* is safe — the shared builder guarantees it (§7). Harmless for the Phase-B raw dump
+  (no re-derivation).
 
 ---
 
@@ -286,7 +356,9 @@ be separated by MS1 anyway, so distinct strings only ever earn a zero — mergin
 - **Phase A:** drive Add-New-Quant to a mapping → Submit → confirm ONE run at the FlashLFQ service (one
   request over all mapped files), `request_id` returned, run in the JS list, Refresh reflects PROCESSING→READY.
   Confirm the composite hash + new-tab link. Verify the extracted service didn't change existing-feature
-  behavior. Verify Q7 identity change + (Dan) delete existing runs.
+  behavior. Verify the Q7 static-inclusive identity round-trips on both features (existing runs already
+  deleted — nothing to preserve). Run the two §7 build-time checks (grep identity consumers; StaticModDTO
+  residue-only).
 - **Phase B:** click a completed run → new tab `/d/pg/qt/flashlfq-peptide-data-file/{projectId}#<hash>` → raw
   `QuantifiedPeptides.tsv` renders in the `<pre>`. Confirm read-auth (a public/non-owner reader can view),
   and that an unknown/missing run degrades cleanly (404 → "unavailable").
