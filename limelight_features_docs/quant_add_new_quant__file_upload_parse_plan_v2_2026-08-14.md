@@ -389,23 +389,34 @@ header-keyed row objects (PapaParse `header:true` collides on duplicate/blank he
   unquoted fixtures; the two load-bearing worries were record# ≠ line# on an embedded newline, and that
   `parseWithDelimiter` ignores non-fatal PapaParse `errors` when any rows return so the equal-column-count check is
   the sole backstop — both now observed to behave correctly.)*
-- **✅ MOSTLY CLOSED — the ineligible path/UX is now driven live (2026-08-14); residual gate narrowed to the
-  two sub-group-searcher TRUE outputs.** After the eligibility gate was extended (open-mod / dynamic-mod /
+- **✅ CLOSED — the ineligible eligibility path is fully driven live (2026-08-14 UX + reasons; 2026-08-17 the
+  two sub-group-searcher TRUE outputs).** After the eligibility gate was extended (open-mod / dynamic-mod /
   multi-scan-file-without-sub-groups), project 25 now returns real ineligible searches — 11
   `HAS_OPEN_MODIFICATIONS` + 2 `MULTIPLE_SCAN_FILES_WITHOUT_SUB_GROUPS` — and the **"matches only an ineligible
   search" not-found UX was exercised end-to-end live** (a filename present only in open-mod searches rendered
   `eligible:false` with the correct plain-language reason). So the general concern — that `eligible:false` +
-  a populated `ineligibleReason` renders correctly through the loader + component — is **closed**.
-  - **REQUIRED RELEASE GATE (residual, narrower).** The two **sub-group** searcher TRUE branches —
-    `SUB_GROUPS_CROSS_CUT_SCAN_FILES` and `SUB_GROUP_SPANS_MULTIPLE_SCAN_FILES` — are **still code-verified
-    only**: no cross-cutting or scan-file-spanning search exists in either driven project (every multi-file
-    sub-group search is 1:1), so those two searchers were never observed returning TRUE. The branches are
-    code-identical to the shipped single-search controller
-    (`FlashLFQ_Quant__AnyScanFile_HasPsms_In_MultipleSubGroups__Single_ProjSearchID_RestWebserviceController`)
-    and use the same two shared-code searchers. Before user-facing release, exercise them for real via a
-    searcher-level test **or** a synthetic ineligible DB row (a scan file with PSMs in >1 sub group, and/or a
-    sub group whose PSMs span >1 scan file) and confirm the response carries `eligible:false` with the correct
-    reason. No local data can surface a regression here, so treat this as a hard gate, not a nice-to-have.
+  a populated `ineligibleReason` renders correctly through the loader + component — is **closed**. The two
+  sub-group-searcher TRUE branches were closed 2026-08-17 via temporary crafted DB data (see the sub-bullet).
+  - **✅ RELEASE GATE CLOSED — both sub-group searcher TRUE branches driven end-to-end via the endpoint
+    (2026-08-17), using temporary DB edits (applied + reverted turn-by-turn; DB restored to baseline).** No
+    cross-cutting or scan-file-spanning search exists naturally (every multi-file sub-group search is 1:1), so
+    the data was crafted with reverts built from captured original values — only `psm_search_sub_group_tbl` was
+    touched (no schema, no `psm_tbl`/`search_tbl`), and the eligibility endpoint recomputes live (no cache):
+    - **`SUB_GROUPS_CROSS_CUT_SCAN_FILES`** — on project 25 search 420 (projectSearchId 584), reassigning one
+      PSM in scan file 277 to file 278's sub-group made a scan file hold 2 sub-groups → endpoint returned
+      `eligible:false, SUB_GROUPS_CROSS_CUT_SCAN_FILES`; searcher-1's exact `GROUP BY search_scan_file_id
+      HAVING COUNT(DISTINCT search_sub_group_id) > 1` returned scan file 277 (TRUE). Reverted → 584
+      `eligible:true`, searcher-1 FALSE, distribution back to 11/11/2.
+    - **`SUB_GROUP_SPANS_MULTIPLE_SCAN_FILES`** (in isolation, cross-cut FALSE) — on project 25 search 379
+      (projectSearchId 442; 20 files / 20 sub-groups 1:1), moving *all* of the smallest file's PSMs (file 240,
+      2,962 PSMs, sub-group 18) into a neighbor file's sub-group (10) made sub-group 10 span files 234 + 240
+      while no file mixed sub-groups → endpoint returned `eligible:false, SUB_GROUP_SPANS_MULTIPLE_SCAN_FILES`;
+      **searcher-1 (cross-cut) returned 0 rows (FALSE)** so the spans reason was genuinely in isolation (not
+      masked by the earlier cross-cut check), and searcher-2's exact `GROUP BY search_sub_group_id HAVING
+      COUNT(DISTINCT search_scan_file_id) > 1` returned sub-group 10 (TRUE). Reverted → 442 `eligible:true`,
+      both searchers FALSE, distribution back to 11/11/2.
+    All five ineligible reasons + the eligible path are now observed live end-to-end; no residual release gate
+    remains for the eligibility gate.
 
 ## For future reference (not this step)
 - The **column header** is the display label for that column of data.
