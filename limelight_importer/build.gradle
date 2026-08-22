@@ -83,10 +83,10 @@ dependencies {
 	//   AWS  S3
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/s3
-	implementation 'software.amazon.awssdk:s3:2.49.3'
+	implementation 'software.amazon.awssdk:s3:2.53.3'
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/apache-client
-	implementation 'software.amazon.awssdk:apache-client:2.49.3'
+	implementation 'software.amazon.awssdk:apache-client:2.53.3'
 	
 	
 	//   OLD V1
@@ -105,7 +105,7 @@ dependencies {
 	implementation 'org.apache.commons:commons-dbcp2:2.14.0'
 	
 	// https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
-	implementation('com.mysql:mysql-connector-j:9.7.0') {
+	implementation('com.mysql:mysql-connector-j:26.7.0') {
 		//  protobuf-java is only used by the MySQL X DevAPI (X Protocol). Limelight uses
 		//  classic JDBC (com.mysql.cj.jdbc.Driver), so exclude it to drop the transitive
 		//  protobuf CVEs (X DevAPI code path is never reached).
@@ -134,10 +134,10 @@ dependencies {
 	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.26.1'
 		
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-	implementation 'com.fasterxml.jackson.core:jackson-core:2.22.1'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.22.2'
 	
 	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.2'
 	
 
 	// JAXB 4.0 (jakarta.xml.bind) - jakarta-only. Binds the published jakarta limelight-import-api
