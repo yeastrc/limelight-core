@@ -160,7 +160,7 @@ const _create_SearchFilterValues_SingleSearchContents = (
 
     //   Default Annotation Type Ids to display
 
-    // Process PSM filters
+    // Process PSM Display
     if ( searchAnnotationTypesData.psmFilterableAnnotationTypes || searchAnnotationTypesData.psmDescriptiveAnnotationTypes ) {
         const psmAnnTypeDisplay = _getDefaultsAnnTypeDisplayForType({ 
             param_FilterableAnnotationTypes : searchAnnotationTypesData.psmFilterableAnnotationTypes, 
@@ -168,7 +168,7 @@ const _create_SearchFilterValues_SingleSearchContents = (
         });
         data_conditionGroupsDataContainer.set_psmAnnTypeDisplay_PerProjectSearchId( psmAnnTypeDisplay );
     }
-    // Process Reported Peptide filters
+    // Process Reported Peptide Display
     if ( searchAnnotationTypesData.reportedPeptideFilterableAnnotationTypes || searchAnnotationTypesData.reportedPeptideDescriptiveAnnotationTypes ) {
         const reportedPeptideAnnTypeDisplay = _getDefaultsAnnTypeDisplayForType({ 
             param_FilterableAnnotationTypes : searchAnnotationTypesData.reportedPeptideFilterableAnnotationTypes, 
@@ -176,7 +176,7 @@ const _create_SearchFilterValues_SingleSearchContents = (
         });
         data_conditionGroupsDataContainer.set_reportedPeptideAnnTypeDisplay_PerProjectSearchId( reportedPeptideAnnTypeDisplay );
     }
-    // Process Matched Protein filters
+    // Process Matched Protein Display
     if ( searchAnnotationTypesData.matchedProteinFilterableAnnotationTypes || searchAnnotationTypesData.matchedProteinDescriptiveAnnotationTypes ) {
         const matchedProteinAnnTypeDisplay = _getDefaultsAnnTypeDisplayForType({
             param_FilterableAnnotationTypes : searchAnnotationTypesData.matchedProteinFilterableAnnotationTypes,
@@ -184,14 +184,7 @@ const _create_SearchFilterValues_SingleSearchContents = (
         });
         data_conditionGroupsDataContainer.set_matchedProteinAnnTypeDisplay_PerProjectSearchId( matchedProteinAnnTypeDisplay );
     }
-    // Process Modification Position filters
-    if ( searchAnnotationTypesData.modificationPositionFilterableAnnotationTypes || searchAnnotationTypesData.modificationPositionDescriptiveAnnotationTypes ) {
-        const modificationPositionAnnTypeDisplay = _getDefaultsAnnTypeDisplayForType({
-            param_FilterableAnnotationTypes : searchAnnotationTypesData.modificationPositionFilterableAnnotationTypes,
-            param_DescriptiveAnnotationTypes : searchAnnotationTypesData.modificationPositionDescriptiveAnnotationTypes
-        });
-        data_conditionGroupsDataContainer.set_matchedProteinAnnTypeDisplay_PerProjectSearchId( modificationPositionAnnTypeDisplay );
-    }
+    // There are NO Modification Position Display
 }
 
 /**
