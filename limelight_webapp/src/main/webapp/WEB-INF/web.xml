@@ -6,12 +6,13 @@
                              
 	<!-- Changed 'version' to '6.0' so that Eclipse WTP will accept it.  not recognize '6.1' -->
 
-    <!-- HttpSession inactivity timeout. Left empty (comment-only) here so the shared
-         war falls back to Tomcat's default; the per-site value is injected at Docker
-         build time by replacing the anchor comment below. -->
-    <session-config>
-        <!-- LIMELIGHT_DOCKER_SESSION_TIMEOUT -->
-    </session-config>
+    <!-- Optional per-deployment HttpSession inactivity-timeout override via the
+         env var LIMELIGHT_SESSION_TIMEOUT_MINUTES. Opt-in: when the env var is
+         unset/blank/invalid, no override is applied and the Tomcat container's
+         default session timeout applies. -->
+    <listener>
+        <listener-class>org.yeastrc.limelight.limelight_webapp.servlet_context_listener.HttpSession_InactivityTimeout_EnvVarOverride_Listener</listener-class>
+    </listener>
 
 
     <error-page>

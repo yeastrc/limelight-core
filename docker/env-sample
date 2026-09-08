@@ -48,6 +48,14 @@ SMTP_PASSWORD=smtp_password
 # yes = always delete working directory (default), no = never delete, "on success" = only delete on successful requests
 # FEATURE_DETECTION_CLEAN_WORKDIR=yes
 
+# Override the Limelight webapp's HttpSession inactivity timeout.
+# Value is a positive integer number of MINUTES (e.g. 2880 for 48 hours).
+# Leave unset/commented to use the Tomcat container's own default timeout
+# (the stock Tomcat Docker image default is 30 minutes); Limelight does not set
+# a session timeout of its own. An unset, blank, or invalid value applies no
+# override. Larger values keep users logged in longer but increase server memory use.
+# LIMELIGHT_SESSION_TIMEOUT_MINUTES=2880
+
 #
 # End Optional config options
 #
