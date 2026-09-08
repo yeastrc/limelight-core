@@ -6,6 +6,14 @@
                              
 	<!-- Changed 'version' to '6.0' so that Eclipse WTP will accept it.  not recognize '6.1' -->
 
+    <!-- HttpSession inactivity timeout. Left empty (comment-only) here so the shared
+         war falls back to Tomcat's default; the per-site value is injected at Docker
+         build time by replacing the anchor comment below. -->
+    <session-config>
+        <!-- LIMELIGHT_DOCKER_SESSION_TIMEOUT -->
+    </session-config>
+
+
     <error-page>
 	    <!-- Page Not Found -->
 	    <error-code>404</error-code>
