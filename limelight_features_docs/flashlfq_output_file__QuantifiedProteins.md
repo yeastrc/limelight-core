@@ -118,4 +118,4 @@ in `flashlfq_quant_aggregation_decision_brief_2026-08-05.md`.
 ## Provenance
 Mechanics OBSERVED in mzLib `1.0.566` source at the cited lines; the median-polish-vs-top-3 conclusion is
 **verified numerically** against the `36b59…` `QuantifiedProteins.tsv` + `QuantifiedPeptides.tsv` (7/7). Clone
-(outside any repo): `/spinning-disk-02/code_downloads_for_research/from Github/mzLib` (tag `1.0.566`).
+(outside any repo): the mzLib clone (tag `1.0.566`).

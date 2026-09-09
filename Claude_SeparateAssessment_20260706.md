@@ -5,9 +5,9 @@
 **Scope reviewed:**
 
 - **limelight-core** working tree — 6 modified files + 10 new (git-untracked) files
-  (`/data/code_checkouts/Github/Limelight_Primary_Development/GIT_CLONE/limelight-core`)
+  (the `limelight-core` repo clone)
 - **limelight-flashlfq-service** — new Python microservice, entire tree (repo has **no commits yet**)
-  (`/data/code_checkouts/Github/limelight-flashlfq-service/GIT_CLONE/limelight-flashlfq-service`)
+  (the `limelight-flashlfq-service` repo clone)
 
 **Goal being pursued:** add MS1 label-free quant to Limelight, computed by FlashLFQ, driven from
 the PSMs already stored in Limelight. The central complication is that Limelight PSMs carry **open
@@ -474,7 +474,7 @@ mass column from the same rounded value.
 Container-internal path is always `/data/app/finaldir/<request_id>/`, mapped by compose:
 - **Production (`docker-compose.yml`):** named Docker volume `flashlfq_finaldir` → `/data/app/finaldir`.
 - **Standalone/dev (`docker-compose.standalone.yml`):** host bind-mount, default
-  `/spinning-disk-02/run-space--spinning-disk-02/Limelight/flashlfq-service-data/finaldir/<request_id>/`
+  a host bind-mount to the FlashLFQ service `finaldir` output dir (`finaldir/<request_id>/`)
   (override `FLASHLFQ_FINALDIR`). Outputs now live **outside** the repo (resolves item 4 / §7).
 - `.env-sample` still shows the stale `APP_FINALDIR=./finaldir`; compose overrides it.
 
@@ -506,7 +506,7 @@ substantially reworked; the frontend `.ts`/`.tsx`, `web_listener.py`, `spectr_cl
 - **Run-endpoint authorization (§5a).** Changed `validatePublicAccessCodeReadAllowed` →
   **`validateProjectOwnerAllowed`** (controller line 310). Compute-trigger now requires project owner.
 - **.gitignore / repo hygiene (item 4 / §7).** `/flashlfq_data/` added; outputs moved outside the repo
-  (standalone bind-mount to `/spinning-disk-02/...`).
+  (standalone bind-mount to a host data volume).
 
 ### ⚠️ Partially addressed
 

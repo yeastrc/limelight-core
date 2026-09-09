@@ -146,4 +146,4 @@ and **zeroes every shared peptidoform** (any peak claimed by >1 full sequence), 
 ## Provenance
 All mechanics OBSERVED in mzLib `1.0.566` source at the cited lines. Column/behavior spot-checked against the
 `36b59…` `QuantifiedPeptides.tsv`. Clone (outside any repo):
-`/spinning-disk-02/code_downloads_for_research/from Github/mzLib` (checked out at tag `1.0.566`).
+the mzLib clone (checked out at tag `1.0.566`).

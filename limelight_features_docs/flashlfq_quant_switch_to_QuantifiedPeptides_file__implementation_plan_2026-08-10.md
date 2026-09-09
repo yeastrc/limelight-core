@@ -231,7 +231,7 @@ RESULT (display):
 ## 4. PREREQUISITE — separate FlashLFQ service repo (return side) — SCOPED 2026-08-10
 
 The FlashLFQ service is a **separate Python (FastAPI) repo**, checked out on the dev machine at
-`/data/code_checkouts/Github/limelight-flashlfq-service/GIT_CLONE/`. **Use the `limelight-flashlfq-service`
+a local clone. **Use the `limelight-flashlfq-service`
 (main) app** — it is the clean, current line: Full Sequence + monoisotopic mass are **webapp-supplied** (the
 service does no chemistry; `request_processor.py` raises if they're missing), scans come from spectr, and it
 names each sample **`scanfile_id_<scan_file_tbl.id>`**. **Do NOT use `__PeptideQuantWorks`** — it is an older,

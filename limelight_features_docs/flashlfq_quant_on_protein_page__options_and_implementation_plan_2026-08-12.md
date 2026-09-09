@@ -8,7 +8,7 @@
 
 **Provenance rule:** every load-bearing claim below was read directly from source in this session and is cited
 `file:line`. FlashLFQ/mzLib-internal facts are cited to the mzLib `1.0.566` clone at
-`/spinning-disk-02/code_downloads_for_research/from Github/mzLib`. Anything not verified is marked
+the mzLib clone. Anything not verified is marked
 **(unverified)**. Nothing here was runtime-observed — it is a static read of the code as it stands (most quant
 *feature* code is held/uncommitted; see the status doc).
 

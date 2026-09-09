@@ -284,7 +284,7 @@ scratchpad against the run's output under the FlashLFQ service `finaldir` (both 
   read in full: `ChromatographicPeak.cs`, `FlashLFQResults.cs` (through the entire `CalculatePeptideResults`),
   `IsotopicEnvelope.cs`, `Peptide.cs`, plus `FlashLFQ/Util/FlashLfqSettings.cs`. Substance identical to mzLib
   master. Local clones (research downloads, outside any repo):
-  `/spinning-disk-02/code_downloads_for_research/from Github/{mzLib,FlashLFQ}`.
+  the mzLib and FlashLFQ clones.
 - **Empirical head-to-head (2026-08-05 section):** read-only parse of the completed run `36b59…` output
   (`QuantifiedPeaks.tsv` + `QuantifiedPeptides.tsv`) under the FlashLFQ service `finaldir`; **no FlashLFQ
   invocation** (FlashLFQ runs only in its Docker image — this only *reads* already-produced files). The

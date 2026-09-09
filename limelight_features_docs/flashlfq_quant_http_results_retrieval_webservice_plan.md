@@ -68,7 +68,7 @@ cross-host and tells the user a truthful per-run status:
 ## 1. Current state — exact anchors (verify line numbers by grepping symbols; they drift)
 
 ### 1a. FlashLFQ Python service
-Repo: `/data/code_checkouts/Github/limelight-flashlfq-service/GIT_CLONE/limelight-flashlfq-service`
+Repo: `limelight-flashlfq-service` (dev-machine clone)
 (git-init'd, **NOT committed**; Python/Flask/Docker; sibling of the blib / feature-detection services.
 Caveat: minimal-directive prototype — treat as not-yet-production; the §2a robustness fix is part of this work.)
 
@@ -92,7 +92,7 @@ Caveat: minimal-directive prototype — treat as not-yet-production; the §2a ro
     are written but **no `QuantifiedPeaks.tsv` is ever produced**. The demo runs with it **true**.
 - **`app/config.py`** — `Config` dataclass; `finaldir` from env `APP_FINALDIR` (default `./finaldir`);
   `service_port` from env `WEBAPP_PORT` (default `3434`). On the dev box `finaldir` is bind-mounted to
-  `/spinning-disk-02/run-space--spinning-disk-02/Limelight/flashlfq-service-data/finaldir`.
+  a host bind-mount to the FlashLFQ service `finaldir` output dir.
 - `request_id` is generated server-side as `uuid.uuid4().hex` → **32 lowercase hex chars**. Use that shape
   (`^[0-9a-f]{32}$`, **lowercase**) for every traversal-safety allowlist — keep the service and Java regexes
   **identical and lowercase** (see §6-D).
