@@ -132,7 +132,9 @@ An earlier concern was that the webapp sends only `scan_number`, not retention t
 that the service resolves each PSM's RT by scan number from spectr scan metadata and **converts seconds
 → minutes** before writing the TSV, matching FlashLFQ's minutes requirement; the MS2-scan RT is the
 correct peak-tracing anchor. One thin edge: a scan number absent from the metadata writes an **empty**
-RT cell (FlashLFQ requires RT), so a scan-number mismatch would mishandle that PSM — rare, worth a guard.
+RT cell (FlashLFQ requires RT), so a scan-number mismatch would mishandle that PSM — rare; **now GUARDED (2026-09-09): the service fails the whole request on any missing scan rather than writing an empty RT.**
+
+**Full, code-cited end-to-end confirmation of the RT units:** see `flashlfq_retention_time_units_confirmation.md` (this section is a summary).
 
 ---
 
