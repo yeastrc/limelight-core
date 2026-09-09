@@ -182,16 +182,23 @@ and **Continue / Cancel**. Continue gates validation + mapping.
 
 ## Eligibility — which searches are valid candidates
 
-**Not every search is a valid quant target.** A search is a candidate only if it has no modification shape
-that breaks the one-reported-peptide-to-one-mass-form assumption AND its scan files are clean quant units.
-The gate rejects **five** search shapes, evaluated **cheap-first** (persisted `search_tbl` flag columns first,
-then the trivial scan-file-count check, and only last — for the one remaining case — the two expensive
-PSM-aggregation sub-group searchers). See `flashlfq_quant_status_and_decisions.md` ("Searches not supported
-for quant") and `flashlfq_quant_subgroup_scanfile_eligibility.md`.
+**Not every search is a valid quant target.** A search is a candidate only if it has MS1 scan data, has no
+modification shape that breaks the one-reported-peptide-to-one-mass-form assumption, AND its scan files are
+clean quant units. The gate rejects **six** search shapes, evaluated **cheap-first** (persisted `search_tbl`
+flag columns first, then the trivial scan-file-count check, and only last — for the one remaining case — the
+two expensive PSM-aggregation sub-group searchers). See `flashlfq_quant_status_and_decisions.md` ("Searches
+not supported for quant") and `flashlfq_quant_subgroup_scanfile_eligibility.md`.
 
 Order (first matching rule wins; wire-value reason in parentheses):
 
-1. **Open (mass-shift) modifications** (`search_tbl.any_psm_has_open_modificaton_masses`) →
+0. **No MS1 scan data** (`search_tbl.has_scan_data` = false) → ineligible (`SEARCH_HAS_NO_SCAN_DATA`). Checked
+   **FIRST**, before the scan-file-count rules: FlashLFQ quant needs the scans, and a scanless search's
+   `search_scan_file_tbl` rows carry `scan_file_id` NULL, so a submitted run would 400 at scan-file / PSM
+   gather. The search-level flag is a **complete** gate — the importer sets `has_scan_data` all-or-nothing (if
+   any referenced filename has a scan file, all do), so no per-row `scan_file_id` filter is needed. *(Bug fix,
+   2026-08-18: such a scanless search was wrongly marked **eligible** before — it could reach rule 3/6, be
+   mapped, then fail at submit. See `flashlfq_quant_subgroup_scanfile_eligibility.md`.)*
+1. else **Open (mass-shift) modifications** (`search_tbl.any_psm_has_open_modificaton_masses`) →
    ineligible (`HAS_OPEN_MODIFICATIONS`). The open-mod mass lives on the PSM, so one reported peptide spans
    multiple peptidoform mass forms — not quantifiable here.
 2. else **PSM-level variable (dynamic) modifications** (`search_tbl.any_psm_has_dynamic_modifications`) →
@@ -207,9 +214,10 @@ Order (first matching rule wins; wire-value reason in parentheses):
    - `Search_AnySubGroup_HasPsms_In_MultipleScanFiles_ForSearchId_Searcher` TRUE → a sub-group spans scan files
      (`GROUP BY search_sub_group_id HAVING COUNT(DISTINCT search_scan_file_id) > 1`) → `SUB_GROUP_SPANS_MULTIPLE_SCAN_FILES`.
 
-**Data sources.** The two mod flags (rules 1–2) come from persisted `search_tbl` columns, fetched in one batch
-for all the project's searchIds via **`SearchFlagsForSearchIdSearcher.getSearchFlags_ForSearchIds(searchIds)`**
-(`.getResultItems()` → items with `getSearchId()`, `isAnyPsmHas_OpenModifications()`,
+**Data sources.** The scan-data flag (rule 0) and the two mod flags (rules 1–2) come from persisted `search_tbl`
+columns, fetched in one batch for all the project's searchIds via
+**`SearchFlagsForSearchIdSearcher.getSearchFlags_ForSearchIds(searchIds)`** (`.getResultItems()` → items with
+`getSearchId()`, `isHasScanData()`, `isAnyPsmHas_OpenModifications()`,
 `isAnyPsmHas_DynamicModifications()`). The sub-group facts (rule 5) come from per-PSM attributes
 (`psm_tbl.search_scan_file_id`, `psm_search_sub_group_tbl.search_sub_group_id`) — no new data source. An
 **ineligible** search is excluded from the candidate set, and we retain its **reason** so the not-found UX can

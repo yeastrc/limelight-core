@@ -64,6 +64,29 @@ duplicate report. A raw `Error` in the same spot **would** be logged as a phanto
   `webserviceCallStandardPost.ts` does exactly this; a hand-rolled `window.fetch` on a data webservice must
   follow the same pattern (see the structure-file-contents load fetch).
 
+### Page reload goes through ONE function; blocking `beforeunload` guards must use the registry
+
+- **Single reload chokepoint:** `limelight__ReloadPage_Function`
+  (`page_js/common_all_pages/limelight__ReloadPage_Function.ts`) is the ONLY place that calls
+  `window.location.reload(...)`. Every page reload in the app routes through it — including all of
+  `handleServicesAJAXErrors.ts`'s 401 `no_session` / 403 `forbidden` reloads. **Do not call
+  `window.location.reload()` directly anywhere else.**
+- **Blocking-guard registry:** an overlay that wants an unsaved-work "Leave site?" prompt must register it via
+  `limelight__BeforeUnload_AddBlockingGuard()`
+  (`page_js/common_all_pages/limelight__BeforeUnload_BlockingGuard_Registry.ts`) and hold the returned no-arg
+  remover closure, calling it on unmount — **instead of** hand-rolling
+  `window.addEventListener("beforeunload", …)`. Why: `limelight__ReloadPage_Function` calls
+  `limelight__BeforeUnload_RemoveAllBlockingGuards()` **first**, so a programmatic reload (e.g. the 401/403
+  auth-failure reload) isn't blocked by an active guard.
+  - **Gotcha:** a raw `beforeunload` guard added OUTSIDE the registry silently re-breaks the reload-on-403
+    flow — the browser blocks the programmatic reload and the page sticks at its current state instead of
+    reloading. (This was the real bug: the Add-New-Quant overlay's hand-rolled guard interrupted the
+    eligibility-403 reload, hanging the overlay at "Validating scan filenames…".)
+  - The registry is intentionally **narrow — only these blocking guards register.** The passive `beforeunload`
+    listeners do NOT and are left alone: the blib download `{passive:true}` cancel
+    (`data_pages/blib_spectral_library_file__download/Blib_SpectralLibrary_File_Download__Overlay_Component_And_SendRequest_Code.tsx:163`),
+    `handleServicesAJAXErrors.ts:56`, and `reportWebErrorToServer.ts:244`.
+
 ## Colors — use the shared brand-color constants, don't hardcode hex
 
 **Don't hardcode Limelight brand color hex values in TS/TSX.** There is a single shared, frozen constants
@@ -416,6 +439,27 @@ and Options"** (it flips to "Click to Hide Filters and Options" when open).
   .find(el => /Click to Show/.test(el.textContent)).click()` — then the controls exist and are clickable.
 - The checkboxes themselves are plain `<label><input type="checkbox"><span>Variable Modifications</span></label>`
   (React reacts to a native `.click()` on the `<input>`).
+
+## `DataTable` pagination — only the current page's rows are in the DOM; select "All" to render every row
+
+A `DataTable` **paginates** and renders **only the rows of the current page** into the DOM (default page size
+is 50). So any UI automation / DOM inspection (e.g. a headless-Chrome/CDP harness) that scans
+`tr.data-table-data-row` sees **only ~50 rows**, not the full result set — a value present in the data can be
+absent from the DOM simply because it's on another page (a row read that "finds nothing" may just mean the
+matching row isn't on the visible page, NOT that the data is missing).
+
+- **To render every row**, set the **items-per-page `<select>`** to value **`-1`** ("All"). It sits just before
+  a `<div style="…">items per page</div>` and offers `10/25/50/100/250/500/1000/All(-1)`. In automation:
+  ```js
+  const sel = Array.from(document.querySelectorAll('select'))
+      .find(s => Array.from(s.options).some(o => o.value === '-1'));
+  const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value').set;
+  setter.call(sel, '-1'); sel.dispatchEvent(new Event('change', { bubbles: true }));
+  ```
+  Then all rows are in the DOM (fine unless the result set is huge enough to bog the browser down).
+- The **table's "Find all rows containing:" filter** is the other way to bring specific off-page rows into
+  view (it filters the full set, then the first page of matches renders) — use it when you only need particular
+  rows rather than all of them.
 
 ## Single-protein view — separate from the main page (DOM, state, URL)
 

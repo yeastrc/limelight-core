@@ -78,10 +78,10 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
 | D3 | Results shown **only on new data page(s)** — not injected into existing tables. |
 | D4 | **Run identifier = the FlashLFQ service's own random `request_id`.** No service change; we do not mint our own id. |
 | D5 | **Composite hash, no DB:** `#qr;` marker + existing `psid_ssfid_requestId` pairs (all sharing one `request_id`), URL hash only; reuse `_parseHash_ToPairs` unchanged (strip `qr;`, feed the rest). Metadata labeling + cross-session listing need the DB (deferred). |
-| D6 | **Server-side default PSM/Peptide cutoffs** decide what PSMs are sent. |
+| D6 | **Server-side default PSM/Peptide cutoffs** decide what PSMs are sent. The default-cutoffs `SearchDataLookupParamsRoot` is built **persist-free** (NO DB write — no params code is stored) via a new public, internal-only wrapper (see §3); the DB-persisting `..._Create_Save_...` builder is deliberately NOT used. |
 | D7 | **Sample key sent to the service = `searchScanFileId`** (not `scan_file_tbl.id`) so results parse back per (search, scan file) — see §4. |
 | D8 | **Reuse via extraction:** move the gather/DTO/send logic into a `services/` class (public static nested request/response) and **repoint the existing controller** at it (no duplication). |
-| D9 | **New projectId-keyed status webservice**; runs held in project-page JS; Refresh polls; links open a new tab. |
+| D9 | **New projectId-keyed status webservice**; runs held in project-page JS; Refresh polls; links open a new tab. **Status contract = BATCH `requestIds:[...]`** (a LIST, not the singular `requestId` in some prose below): the Refresh button polls all listed runs at once, and the FlashLFQ service status endpoint (`flashLFQRunStatus`) is inherently batch. (Approved A3 deviation from the singular-`requestId` plan text.) |
 | D-MBR | **MBR always ON** (`--mbr` is a switch defaulting TRUE and cannot be disabled from the CLI — `flashlfq_command.py:14-17, 51`); show a "MBR is on" message, no toggle. |
 | D-NRM | **normalize = user choice, default ON** (`--nor` is a controllable switch — `flashlfq_command.py:49, 112-116`); submit UI = a checkbox defaulting on. |
 | D-Q7 | **Unify BOTH features on a static-inclusive grouping identity** (bracket mass = variable + residue-static). One change to the shared `FlashLFQ_GroupingIdentity_Common`; the existing peptide page and this subsystem share it. Existing runs were **already deleted** — no forced-deletion cost. See §7. |
@@ -106,13 +106,20 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
 - **Grouping identity** — `FlashLFQ_GroupingIdentity_Common.buildFlashLFQ_GroupingIdentity`
   (`FlashLFQ_GroupingIdentity_Common.java:67-83`). Single source of truth; used on both submit and
   re-derive. **Q7 changes this** (§7).
-- **Default cutoffs (D6)** — `SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds`
-  (`.../search_data_lookup_parameters_code/main/...:74-80`) builds a `SearchDataLookupParamsRoot` from default
-  cutoffs; `ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.getPeptideDataList(...)`
-  has a default-cutoffs fast path (`ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearcher:44-57`).
-  Convert params root → `SearcherCutoffValuesRootLevel` via
+- **Default cutoffs (D6)** — build the default-cutoffs `SearchDataLookupParamsRoot` **persist-free (NO DB
+  write)**. The only default-cutoffs *object* builder,
+  `SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds{,IF}`, is
+  **package-private** and its sole public wrapper
+  (`SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds`) **persists a params
+  code to the DB** — deliberately NOT used here. Instead a **new public, internal-only wrapper**
+  `SearchDataLookupParams_Create_ForDefaultCutoffs_NoDBSave_InternalProcessingOnly_FromProjectSearchIds{,IF}`
+  (same `.../search_data_lookup_parameters_code/main/` package, so it can see the package-private builder)
+  exposes `create_ForDefaultCutoffs_NoDBSave_InternalProcessingOnly_FromProjectSearchIds(projectId,
+  projectSearchIds, projectSearchIdsToSearchIds)` — returns the same root object, no DB persist. Convert params
+  root → `SearcherCutoffValuesRootLevel` via
   `searcherCutoffValuesRootLevel_Factory.createSearcherCutoffValuesRootLevel_From_WebserviceRequestCutoffs`
-  (`FlashLFQ_Run__Request_Creation...:487-492`).
+  (`SearcherCutoffValues_Factory:81-124`). (`ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.getPeptideDataList(...)`
+  also has a default-cutoffs fast path, `ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearcher:44-57`.)
 - **Request DTOs already support many files** — `Request_To_FlashLFQ_Service_Root.spectral_data` is a `List`
   (`:1353-1386`); today it sends one-element lists (`:634-649`). (Being extracted per D8.)
 - **HTTP send** — `sendRequestToServer(...)` POST `<base>/requestNewFlashLFQRun` (`:1174-1320`; base URL from
@@ -121,7 +128,7 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
   file is a clean copy target: config lookup, `HttpURLConnection` GET, `^[0-9a-f]{32}$` validation, 404/500).
 
 ### The FlashLFQ service already does a joint multi-file run — NO service change
-*(verified by file read, active clone `/data/code_checkouts/Github/limelight-flashlfq-service/GIT_CLONE/limelight-flashlfq-service`)*
+*(verified by file read of the `limelight-flashlfq-service` repo clone)*
 - Request carries `spectral_data: List<SpectralStorageFile>`, one per scan file (`app/request_models.py:118-137, 63-77`).
 - FlashLFQ invoked **once** over a dir of all mzML (`app/flashlfq_command.py:101-118`,
   `app/request_processor.py:65-115, 135-138`) → MBR + normalization apply (`flashlfq_command.py:55-83`).
@@ -130,6 +137,42 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
   `flashlfq_identifications_tsv_writer.py:16-24`).
 - Async: POST returns `{request_id}` (`app/web_listener.py:65-75`); status/result by `request_id`
   (`web_listener.py:83-126`); `request_id = uuid4().hex`, validated `^[0-9a-f]{32}$` (`:29, 65`).
+
+### An empty (no-PSM) scan file in a JOINT run gets NO column — DECISION (b), mechanism VERIFIED from source (2026-08-24)
+
+**Decision (FINAL): a mapped scan file with no passing PSMs at default cutoffs is silently dropped from a JOINT
+run** (the submit controller sends only files that received ≥1 PSM; whole-joint-zero is still caught by
+`noPsmsToQuantify`). The alternative once considered — option (a): send the empty file as an empty-`psms` entry
+with a real `spectr_file_id` so **MBR** would infer an `Intensity_scanfile_id_<ssfid>` column for it — is
+**impossible against this FlashLFQ build**, so (b) stands. Verified two ways:
+
+1. **VERIFIED from source — FlashLFQ derives its sample set (and thus its output columns and MBR-acceptor set)
+   from the identifications, not from the spectra folder.** Even though the service stages the empty file's mzML
+   into `--rep` and lists it in `ExperimentalDesign.tsv` (`request_processor.py:65-84,120,270-278` — the per-file
+   loop runs regardless of `psms`; the per-PSM row loop `:90-112` simply adds zero rows for it), and even though
+   the CMD executable builds a folder-scanned `spectraFileInfos` (`CMD/FlashLFQExecutable.cs:70-72,141-165`),
+   that folder list is used **only** to resolve the ID file's `File Name` column. The engine is created from
+   `ids` alone (`FlashLFQExecutable.cs:198,242-244`) and **rebuilds its file set from the identifications**:
+   `SpectraFileInfoList = allIdentifications.Select(p => p.FileInfo).Distinct()...`
+   (`mzLib/FlashLFQ/FlashLfqEngine.cs:89`, primary ctor; the loose-arg ctor `:118-188` chains into it).
+   Consequences, all from `SpectraFileInfoList`:
+   - `Run()` builds `_results` from it (`FlashLfqEngine.cs:193`); the peptides-TSV header emits one
+     `Intensity_<file>` **per file in that list** (`mzLib/FlashLFQ/Peptide.cs:47-63`). Zero-ID file ⇒ absent ⇒ **no column.**
+   - The **MBR** driver loops over `SpectraFileInfoList` for acceptors (`FlashLfqEngine.cs:269-279`, and matches
+     only within the acceptor's own condition among that list `:902`). Zero-ID file ⇒ never an MBR acceptor.
+   So an empty-`psms` entry can never become an output column, MBR-filled or otherwise. No `if (psms.Count==0)`
+   skip/error exists in the service (it dutifully stages the file); FlashLFQ just ignores a file with no IDs.
+   *(Supersedes the earlier "one `Intensity_scanfile_id_<id>` column per file" line above: it's one column per
+   file that contributed ≥1 identification.)*
+2. **OBSERVED empirically (throwaway experiment, reverted; two runs on localhost project 25).** A JOINT run was
+   submitted with a real donor + an injected empty-`psms` acceptor (`ssfid 667`). Sanity-checked on the wire
+   (app log): donor psms 11478/10779, acceptor psms 0, both with a real `spectr_file_id`; runs reached `READY`
+   (no error on `psms:[]`). Both runs' `QuantifiedPeptides.tsv` had **no `Intensity_scanfile_id_667` column** —
+   cross-file (distinct raws, run `c90a5c018f254225a3e153592891f72a`) and same-raw (donor+empty share the
+   identical raw ⇒ guaranteed MBR overlap, run `23a40cdf4b3f4a82a79d6ad7039bb6a4`). The same-raw "dedup"
+   confound is refuted: the service writes a distinctly-named mzML per entry (no dedup by `spectr_file_id`), and
+   FlashLFQ's only dup check is by filename (`FlashLFQExecutable.cs:74-88`), which distinct names pass. So the
+   missing column is the zero-ID mechanism above, not dedup or no-overlap.
 
 ---
 
@@ -169,7 +212,8 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
     be separate samples (→ separate columns, fine) or fractions of one sample (→ should be combined; separate
     columns mislead and FlashLFQ+MBR would mis-match across them). Sub-groups are the disambiguator; the
     uploaded metadata structure is not honored this slice. Relax only on an explicit user / boss request.
-  - Distinct projectSearchIds → default-cutoffs params root → per-search `SearcherCutoffValuesSearchLevel`;
+  - Distinct projectSearchIds → default-cutoffs params root (persist-free, via the new no-DB-save wrapper —
+    see §3 D6) → per-search `SearcherCutoffValuesSearchLevel`;
     for each search gather via the extracted service and **keep only the mapped `searchScanFileId`s**; build
     ONE `spectral_data` list; send ONE request; return `request_id`. Set `flashlfq_parameters` = MBR
     intended-on + `normalize` per request (other numeric/boolean params left at service defaults).
@@ -246,24 +290,37 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
 
 ---
 
-## 6. Deferred (later phases, NOT now)
+## 6. Full Quant peptide page — a NEW page (in progress; DECISIONS DOC governs)
 
-### Full Quant peptide page — a NEW page (not the existing peptide page)
-The real results view under the `d/pg/qt/` family that replaces the raw dump: reported peptides (rows) ×
-mapped scan files / samples (columns), MS1 intensity per cell. Driven by the composite hash → ONE TSV fetch →
-re-derive identity→rpid per search from default cutoffs.
+**Decisions resolved 2026-08-19** in `quant_add_new__full_quant_peptide_page_decisions_2026-08-19.md` (Dan
+confirmed against source). Read that doc for the settled choices, source cites, and the gated build. Key points:
+
+**Staged FE delivery (recorded per Dan):** the FE is delivered FIRST as a **dummy `<table>` debug dump** at the
+**permanent `d/pg/qt/` route** for the full page (e.g. `flashlfq-peptide-quant`) — it calls the new backend
+retrieval webservice and dumps the returned per-cell records into a plain `<table>` (one HTML row per wire
+record, all DTO fields as columns) so real data can be seen on the real page. It is **upgraded to the real
+matrix in place in a later phase (behind the deferred Q-C row-identity model)** — NOT a separate throwaway
+harness. Two links per READY run on the project-page runs list (this full page + the kept raw viewer, Q-A).
+
+The real results view (later): reported peptides (rows) × mapped scan files / samples (columns), MS1 intensity
+per cell. Driven by the composite hash → ONE TSV fetch → re-derive identity→rpid per search from default cutoffs.
 
 **Parse (per search + per scan file):**
 - **Peptide rows do NOT carry `reportedPeptideId`.** The TSV `Sequence` column = the grouping identity (NO
   rpid). Re-derive `groupingIdentity → [reportedPeptideId]` per search from default cutoffs (same approach as
-  `FlashLFQ_Run__Result_Retrieval_Joined...:217-218, 260-341, 408`) and look up each row.
-- **Protein rows DO round-trip** — `proteinSequenceVersionId` is embedded in `Protein Group(s)` as `psvid_<id>`.
-- Columns: each `Intensity_scanfile_id_<searchScanFileId>` → one sample = one (search, scan file).
-- **Cross-search identity ambiguity:** the same `Sequence` string can map to reported peptides in multiple
-  searches; build the re-derivation map per search, and a row may fan out to rpids across searches.
-- **Needs the multi-`Intensity_*`-column parser** — the existing joined parser hard-requires exactly one
-  column (`FlashLFQ_Run__Result_Retrieval_Joined...:381-387`); a joint TSV has many.
-- *(unverified: exact `Sequence` / `Protein Group(s)` header spellings — confirm against a real TSV first.)*
+  `FlashLFQ_Run__Result_Retrieval_Joined...:266-353`, now EXTRACTED to a shared `@Component`) and look up each row.
+- **Protein rows DO round-trip** — `proteinSequenceVersionId` is embedded in **`Protein Groups`** as `psvid_<id>`.
+  *(CORRECTED 2026-08-19: the real output header is `Protein Groups`, NO parentheses — verified against a real
+  multi-file joint `QuantifiedPeptides.tsv`; the earlier `Protein Group(s)` was a guess.)*
+- Columns: each `Intensity_scanfile_id_<searchScanFileId>` → one sample = one (search, scan file). The `<N>`
+  suffix is the **searchScanFileId** (D7); the sample column resolves the search via the hash pairs, so cell-level
+  cross-search identity ambiguity is resolved by the column (decisions doc, Decision 4).
+- **Needs the multi-`Intensity_*`-column parser** — the existing joined parser hard-requires exactly one column
+  (`FlashLFQ_Run__Result_Retrieval_Joined...` header loop `:379-390` + throw `:393-399`); a joint TSV has many.
+  New parser is a separate impl; the single-column one is left untouched.
+- **Header spellings CONFIRMED** against a real multi-file TSV: `Sequence`, `Base Sequence`, `Protein Groups`,
+  `Gene Names`, `Organism`, `Intensity_scanfile_id_<N>`, `Detection Type_scanfile_id_<N>`. `MSMSAmbiguousPeakfinding`
+  confirmed present, per-cell (Q-D closed).
 
 **Display — reproduce BOTH shared-value representations the existing display has** (validated against
 `.../protein_page__single_protein/jsx/proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Create_TableData.tsx`
@@ -278,6 +335,16 @@ re-derive identity→rpid per search from default cutoffs.
 ### Other deferred
 - **Metadata-column sample labeling** + **cross-session run listing** → need DB persistence.
 - **Run-scope access check** (verify a run's scan files belong to the project) → DB phase.
+- **Service-side READY-gating mismatch (latent, not live; fix belongs in the FlashLFQ *service* repo).** The
+  service gates a run **READY on `QuantifiedPeaks.tsv`** (`flashlfq-service` `app/web_listener.py:149-151`:
+  status marker `SUCCESS` AND `QuantifiedPeaks.tsv` present), while the Phase-B viewer / joined retrieval read
+  **`QuantifiedPeptides.tsv`** (and the protein page reads `QuantifiedProteins.tsv`). Safe today only because
+  the SUCCESS marker is written LAST, after FlashLFQ has written all three files
+  (`request_processor.py:169-172`), and SUCCESS is gated solely on peaks (`:161-163`). This peaks-vs-peptides
+  mismatch **already exists** in the shipped peptide/protein quant pages
+  (`quant_PrototypeData.ts:54-55`, `flashlfq_proteinQuant_PrototypeData.ts:50-51`), so this plan does not
+  introduce it. Proper fix = gate READY on the file(s) actually read (or require all three) in the service —
+  out of Phase-A/B scope, awaiting Dan's call.
 
 ---
 

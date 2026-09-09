@@ -1,35 +1,49 @@
 # FlashLFQ quant — current status & decisions (living doc)
 
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-27
 **Purpose:** the single at-a-glance page for *where the quant feature stands and what's been decided*. The
 reasoning/analysis lives in the linked docs (see the **Doc map** at the bottom); this page is the index of
 **state and decisions**, kept current. If you're picking up quant work, **start here**, then read the
 governing-rule docs flagged below.
 
-> ## 🚩 BIGGEST UNRESOLVED CHOICES — how to turn FlashLFQ output into one displayed number
-> **These two decisions dominate quant correctness and are NOT yet made on purpose. Decide them before Track B
-> hardens the ingest — both rules carry straight into Track B.** (Detail: Open decisions #2 and #2b below;
-> full data + source trace in `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
-> **One-page meeting brief: `flashlfq_quant_aggregation_decision_brief_2026-08-05.md`.**)
+> **Since 2026-08-07 a large round of quant work landed** (all still **held uncommitted**): the project-page
+> **"Add New Quant"** flow, a real **psb Quant Peptide page**, **MBR display**, a submit-time **JOINT vs
+> PER_FILE run-model** choice, and the protein-page **NaN** crash fix — see **"New since 2026-08-07"** under
+> Current state. Separately, the **peak-aggregation choice was resolved** — delegated to FlashLFQ by ingesting
+> `QuantifiedPeptides.tsv` (front-end peak-summing removed), boss-approved 2026-08-10. **Track B (DB ingest)
+> is still not built** and remains the commit gate.
+
+> ## 🚩 BIGGEST UNRESOLVED CHOICE — how to turn FlashLFQ output into one displayed number
+> **One decision still dominates quant correctness and is NOT yet made on purpose. Decide it before Track B
+> hardens the ingest.** (Detail: Open decision #2 below.)
 >
-> 1. **Feature aggregation — SUM vs MAX vs deliberate.** Limelight currently **SUMs** a peptidoform's peaks.
->    FlashLFQ itself takes the **MAX** (single most-intense peak) and zeroes shared forms — pin-verified vs
->    mzLib `1.0.566`; **the old "FlashLFQ sums too" justification is FALSE, so SUM is not the magic answer.**
->    Measured (run `36b59`): SUM == MAX for **77%** of peptidoforms, **over-counts the other 23%** (median
->    +12%, up to 4.5×; ~7% run aggregate), mostly by summing spurious secondary peaks FlashLFQ discards — but
->    raw MAX under-counts genuine multi-feature peptides. Pick a rule deliberately.
-> 2. **Per-feature quantity — apex height vs `--int` integrated area.** Today = **apex height** (`--int` off);
->    a **sum of apex heights is not physically additive** and never matches Limelight's area-based
->    chromatogram. Area is additive but FlashLFQ calls it noisier. Today's display is a SUM of apex heights —
->    the least-additive corner of the space.
+> **Per-feature quantity — apex height vs `--int` integrated area.** FlashLFQ's per-peptide value is either the
+> feature's **apex height** (default, `--int` off) or its **integrated peak area** (`--int true`). Today's runs
+> use **apex height**. Area is additive across a feature's extent and matches Limelight's area-based
+> chromatogram; apex is more robust but FlashLFQ calls area noisier. Pick on purpose — the choice carries into
+> Track B.
+>
+> **(RESOLVED — the companion "SUM vs MAX" question is decided.)** How to combine a peptidoform's peaks into one
+> number is **no longer ours to pick**: Limelight ingests FlashLFQ's own per-peptide file
+> (`QuantifiedPeptides.tsv`) so **FlashLFQ owns the aggregation**, and front-end peak-summing was removed
+> (boss-approved 2026-08-10; see Settled decisions). So the value is FlashLFQ's single per-peptide number
+> (above), **not** a Limelight sum of peaks. (The run-`36b59` SUM-vs-MAX data is now the *record of why we
+> delegated*, not an open question.)
 
 > **What v1 honestly is (today):** correct MS1 abundance **per (search, scan file)** for searches with **no
-> open mods and no PSM-level variable mods**, reported as **summed apex heights** by default, **not
-> sample-resolved**. Each run sees **exactly one scan file** (MBR off by construction). Two topologies are
-> supported: (a) multiple **searches** shown side by side (each its own per-search run + column); and (b) a
-> **single search with sub-groups** whose sub-groups map **1:1 to scan files** — one FlashLFQ run per scan
-> file, one Quant **column per sub-group** (mode 3), never summed across scan files. That's it — the
-> "abundance matrix" ambition is **not** what the current path delivers (see Open decision #1).
+> open mods and no PSM-level variable mods**, **not sample-resolved**. Each Quant cell is **FlashLFQ's own
+> per-peptide value** from `QuantifiedPeptides.tsv` (apex height by default; `--int` area optional) — **not a
+> Limelight sum of peaks** (front-end peak-summing was removed, 2026-08-10). Limelight still sums **across
+> distinct variable-mod forms** (groupIds) when "Collate: Variable Modifications" is off — a *different*
+> mechanism, not peak-summing (`quant_PrototypeData.ts` `get_SummedQuantForDisplayForm`). Two topologies are
+> supported: (a) multiple **searches** side by side (each its own per-search run + column); and (b) a **single
+> search with sub-groups** mapping **1:1 to scan files**, with a submit-time **run-model choice** — **PER_FILE**
+> (one run per scan file, **MBR off**, one Quant **column per sub-group**, mode 3, never summed across scan
+> files) or **JOINT** (one run over the search's scan files together, **MBR on**, transferred cells marked
+> **(MBR)**). Quant surfaces in three places: the injected Quant **column** on the existing peptide/protein/QC
+> pages, a dedicated **psb Quant Peptide page** (`d/pg/psb/quant-peptide/`), and the project-page **"Add New
+> Quant"** section. The "abundance matrix" ambition is still **not** what the current path delivers (see Open
+> decision #1).
 
 ---
 
@@ -73,7 +87,11 @@ Everything below is **built + deployed but held uncommitted** (lands as one comm
 Only the **docs** are committed.
 
 **Implemented & working (held):**
-- Peaks-as-source-of-truth ingest design (`QuantifiedPeaks`, not the zeroed `QuantifiedPeptides`).
+- **FlashLFQ owns aggregation** — Limelight ingests FlashLFQ's own per-peptide file (`QuantifiedPeptides.tsv`),
+  joined to reported peptides in **Java** by grouping identity; **front-end peak-summing was removed**
+  (2026-08-10). Replaces the earlier `QuantifiedPeaks` + FE-summing design (see Settled decisions). A single
+  peptidoform's cell is FlashLFQ's own value; Limelight sums only **across distinct variable-mod forms** when
+  "Collate: Variable Modifications" is off.
 - **Per-(search, scan file) run keying** — one FlashLFQ run **per scan file** (server fans out; the browser
   submits one request). A normal single-file search = 1 run (unchanged); the one allowed multi-file search =
   N runs. `searchScanFileId` is in the URL hash (`projectSearchId_searchScanFileId_requestId`) and keys the
@@ -99,15 +117,51 @@ Only the **docs** are committed.
   to not combine a search's sub-groups when comparing across searches, and our converters never emit a
   sub-group with >1 scan file anyway (see the eligibility doc §7–§8).
 
+**New since 2026-08-07 (built + held, uncommitted — rounds landed):**
+- **Ingest switched to `QuantifiedPeptides.tsv`** (2026-08-10) — FlashLFQ owns aggregation; FE peak-summing
+  removed; the join runs in Java (`FlashLFQ_Run__Result_Retrieval_Joined_RestWebserviceController`), FE reads
+  the `…-joined` endpoint. See Settled decisions + `flashlfq_quant_switch_to_QuantifiedPeptides_file…2026-08-10.md`.
+- **Sum across collapsed variable-mod forms** (2026-08-12) — when "Collate: Variable Modifications" is off,
+  quant sums over distinct `groupId`s into the collapsed row (any overlapping form ⇒ whole row `overlapping
+  signal`); runs regardless of the toggle. Reverses switch-plan D6. **Implemented + runtime-verified** (held).
+- **Quant on the Protein page** (2026-08-13) — two per-protein columns, **Quant (FlashLFQ)** (FlashLFQ's own
+  per-protein weighted median-polish value, ingested from its **`QuantifiedProteins.tsv`** — proteins
+  controller parses it, `flashlfq_proteinQuant_PrototypeData.ts` loads it) + **Quant (Limelight)** (a Limelight
+  rollup of the per-peptide quant, deduped by `groupId`), shown per protein like NSAF (a protein group has no
+  single quant value). See `flashlfq_quant_on_protein_page__as_shipped…2026-08-13.md`.
+- **Project-page "Add New Quant" flow** — upload → parse → validate/map (in-memory store), **Category-A/B**
+  eligible-search matching, submit (with the JOINT/PER_FILE run-model), **no-PSMs** handling, a **runs list**,
+  and views. Lives in `.../project_page_quant_section/`. Decisions:
+  `quant_add_new__{eligible_search_matching_categoryA_categoryB,full_quant_peptide_page}…2026-08-19.md`,
+  `quant_add_new__{submit_run_model_change,submit_no_psms}…2026-08-20.md`,
+  `quant_add_new__submit_joint_flashlfq_run_and_results_page_plan_2026-08-17.md`.
+- **psb Quant Peptide page** — a real projectSearchId-based page at **`d/pg/psb/quant-peptide/`**
+  (`AA_PageControllerPaths_Constants.java`), multi-run quant; the old dummy `d/pg/qt/flashlfq-peptide-quant`
+  page was replaced.
+- **MBR display** — MBR-transferred cells marked **`(MBR)`** + a **"Mark MBR when: any / all"** radio, both
+  gated on `Quant_PrototypeData.hasAnyMbrData()` (box hidden when the loaded data has no MBR, e.g. PER_FILE
+  runs). Includes the **JOINT-retrieval fix** (count guard retired; exact per-scan-file column selection) and
+  the **`search_scan_file_id_<ssfid>`** column-name rename across the service + both retrieval controllers.
+- **Existing peptide/protein/QC pages — run-model + MBR + fixes:** **phase-1** submit-time JOINT/PER_FILE
+  run-model choice (`FlashLFQ_Run__Request_Creation_RestWebserviceController`, `runMode`); **phase-2** MBR
+  display ported into the canonical page layer; the **`(MBR)` own-download-column** fix; and the protein-page
+  **non-finite (NaN) crash fix** — a NaN protein now surfaces as **"FlashLFQ: NaN — not quantifiable across
+  runs"** with a count **warning box**, instead of throwing (see `quant_things_to_deal_with_when_start_store_in_db.md`).
+- **beforeunload-blocks-403-reload fix** — a blocking-guard **registry**
+  (`limelight__BeforeUnload_BlockingGuard_Registry.ts`, cleared first by the single reload chokepoint) that the
+  quant + experiments overlays now use instead of hand-rolled `beforeunload` listeners (+ a front_end/CLAUDE.md note).
+- **"No Quant Runs" empty state** — the project-page Quant section renders the runs list for **all users**
+  (owner-only "Add New Quant" button), showing a muted "No Quant Runs" message when there are none.
+
 ## Settled decisions
 
 | Decision | Ruling | When / who |
 |---|---|---|
 | Per-search vs cross-search | **Model A** (per-search quant); Model B (cross-search joint run) NOT pursued | boss 2026-06-29 |
 | Sample identity | `scan_file_tbl.id` | 2026-06-29 |
-| Which output file to ingest | **`QuantifiedPeaks`** (feature grain); attribute + roll up ourselves | design |
+| Peak aggregation / which output file | **Delegated to FlashLFQ** — ingest FlashLFQ's own output files: **peptides → `QuantifiedPeptides.tsv`** (per-peptide value); **proteins → `QuantifiedProteins.tsv`** (per-protein weighted median-polish value, the protein-page **Quant (FlashLFQ)** column). Same "let FlashLFQ own the aggregation, point at its docs" approach at both levels; **front-end peak-summing removed**. Rationale (Dan/boss): defer the aggregation method to FlashLFQ rather than owning & defending a combine rule — so **SUM-vs-MAX is not ours to pick**. (The protein page's other column, **Quant (Limelight)**, is a *Limelight* rollup of the per-peptide values deduped by `groupId` — not a FlashLFQ file.) Replaces the earlier `QuantifiedPeaks` + FE-sum design | boss-approved 2026-08-10 |
 | Filter scoping | **Option 1** — quant = peptidoform total over the *submit-time* PSM/peptide filters; NOT narrowed by secondary charge/RT/m·z/scan filters | boss 2026-07-10 |
-| MBR | **off**, forced by single-file runs | design |
+| MBR | **off** for **PER_FILE** runs (each run = one scan file); **on** for a **JOINT** multi-scan-file run (submit-time run-model choice, for eligible sub-group searches). MBR-transferred cells are marked **`(MBR)`** in the display | design; JOINT run-model 2026-08-20 (held) |
 | Combining a search's sub-groups | **Do NOT combine** a search's sub-groups into one number when comparing that search against other searches — hence multi-scan-file quant is single-search-only, and a sub-group is not summed across scan files either | 2026-08-03 |
 | Multi-scan-file within one search | **IMPLEMENTED** — one FlashLFQ run **per scan file** (never summed), allowed only for a single search whose sub-groups map **1:1 to scan files** (§5 dual gate); per-sub-group columns (mode 3) | 2026-08-03 |
 | Who may run quant (button) | **Logged-in project owner only** + run service configured (`canRunQuant` gate); non-owner/public = button hidden, no 403 | 2026-08-03 |
@@ -140,29 +194,27 @@ Only the **docs** are committed.
   `psmId → searchSubGroupId` joined with per-PSM `searchScanFileId` from the **filtered** main-filters PSM
   table data (NOT the unfiltered loader). Under the 1:1 invariant the map is single-valued, so each
   sub-group's column restricts to exactly one scan file.
-- **Track B (DB ingest of `QuantifiedPeaks`)** — not built. This is the gate to committing the feature (see
-  below).
+- **Track B (DB ingest of the quant results)** — not built. Would persist the joined per-peptide /
+  per-protein values (from `QuantifiedPeptides` / `QuantifiedProteins`) at import time instead of the current
+  on-demand HTTP fetch + per-render interpretation. This is the gate to committing the feature (see below).
+  - **Ingest-time program-specific-value handling & multi-program design:** see
+    `quant_things_to_deal_with_when_start_store_in_db.md`.
 
 ## Open decisions (NOT yet decided)
 
 1. **Strategic — what is v1? (H1/H2).** The composed decisions collapse the abundance **matrix** into a
    **per-(search, scan-file) scalar** (sample axis summed/deferred/declined). Decide on purpose: is v1 that
    scalar, or must the sample/condition axis survive? Everything else is downstream.
-2. **Apex vs area** (one of the **two biggest FlashLFQ-processing choices** — see 2b). The summed display
-   sums **apex heights** by default (`--int` off). Switch to `--int true` (additive area, matches the
-   chromatogram) or keep apex (robust, but label it as relative, not an additive area)? See the review doc's
-   "Open decision — apex vs area" and `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
-2b. **Feature aggregation — SUM vs MAX vs deliberate (NEW, 2026-08-05; the other biggest choice).** How to
-   combine a peptidoform's multiple `QuantifiedPeaks` rows into one number. Limelight currently **SUMs** them;
-   FlashLFQ's own `QuantifiedPeptides` takes the **MAX** (single most-intense peak) and zeroes shared forms —
-   pin-verified against mzLib `1.0.566`. **SUM is not a magically-correct default** (the earlier "FlashLFQ
-   sums too" justification was FALSE). Measured on run `36b59`: SUM == MAX for **77%** of peptidoforms but
-   **over-counts the other 23%** (median +12%, up to 4.5×; ~7% at the run aggregate), per-peptide-variable,
-   mostly by summing small secondary/spurious peaks FlashLFQ discards. But raw MAX **under-counts** genuine
-   multi-feature peptides — so decide a rule on purpose (match FlashLFQ / dominant feature / sum vetted real
-   features only). Together with (2) apex-vs-area, these are the two largest decisions in processing FlashLFQ
-   results, and both carry into Track B. Full data + source trace:
+2. **Apex vs area** (the remaining biggest FlashLFQ-processing choice). FlashLFQ's per-peptide value is the
+   feature's **apex height** by default (`--int` off) — today's setting — or its **integrated area**
+   (`--int true`). Area is additive across the feature and matches Limelight's area-based chromatogram; apex is
+   more robust but FlashLFQ calls area noisier. Decide on purpose; the choice carries into Track B. See
    `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`.
+2b. **~~Feature aggregation — SUM vs MAX~~ — RESOLVED (2026-08-10).** No longer ours to pick: Limelight ingests
+   FlashLFQ's own per-peptide file (`QuantifiedPeptides.tsv`) so **FlashLFQ owns the aggregation**, and
+   front-end peak-summing was removed (see Settled decisions). The run-`36b59` SUM-vs-MAX data
+   (`flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md` + the
+   `…aggregation_decision_brief_2026-08-05.md`) is now the **record of why we delegated**, not an open question.
 3. **Decline scope & messaging** (the deferred "one decision"): when a search is ineligible (multi-file,
    open-mod, cross-cutting sub-groups) in a mixed view — decline just that **column** (recommended) vs hide
    quant for the whole view; and a visible "n/a — why" message (recommended) vs silent absence.
@@ -197,10 +249,11 @@ and the §5 multi-scan-file gate (typed `FlashLFQ_Run_Reject_Reason`) live with 
 **Status / rules (start here):**
 - `flashlfq_quant_status_and_decisions.md` — *this doc.*
 - `flashlfq_quant_aggregation_decision_brief_2026-08-05.md` — **one-page meeting brief**: SUM-vs-MAX &
-  apex-vs-area, options × use-cases × tradeoffs, with the run-`36b59` numbers. For deciding the two axes.
-- `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md` — **the two biggest processing
-  decisions (SUM vs MAX, apex vs area)**; FlashLFQ MAX-picks (not sum), pin-verified vs mzLib `1.0.566` +
-  data head-to-head on run `36b59`.
+  apex-vs-area, options × use-cases × tradeoffs, run-`36b59` numbers. **SUM-vs-MAX is now decided** (delegated
+  to FlashLFQ, 2026-08-10) — read this for *why*; **apex-vs-area is still open**.
+- `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md` — the SUM-vs-MAX & apex-vs-area data;
+  FlashLFQ MAX-picks (not sum), pin-verified vs mzLib `1.0.566` + head-to-head on run `36b59`. **The record of
+  why SUM-vs-MAX was resolved by switching to `QuantifiedPeptides` (still the reference for apex-vs-area).**
 - `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` — the aggregation rule.
 - (`flashlfq_open_mod_quant_deferred_mass_doublecount.md` — **removed 2026-08-07**; its tripwire-anchor content
   described code that has since been deleted. Non-support is now stated in the "Searches not supported for quant"
@@ -208,8 +261,15 @@ and the §5 multi-scan-file gate (typed `FlashLFQ_Run_Reject_Reason`) live with 
 
 **Design:**
 - `quant_maxquant_design_discussion.md` — overarching design + Model A/B history.
-- `flashlfq_output_to_limelight_mapping.md` — peaks-as-source-of-truth ingest + identity round-trip.
+- `flashlfq_output_to_limelight_mapping.md` — original peaks-as-source-of-truth ingest + identity round-trip
+  (**superseded 2026-08-10** by the `QuantifiedPeptides` switch below; still useful for the identity round-trip).
+- `flashlfq_quant_switch_to_QuantifiedPeptides_file__implementation_plan_2026-08-10.md` — **the ingest switch**:
+  parse `QuantifiedPeptides.tsv` in Java, join to reported peptides by grouping identity, remove FE peak-summing.
+  **Boss-approved + IMPLEMENTED (held).** This is what resolved the SUM-vs-MAX choice.
 - `flashlfq_quant_data_model_and_display_grains.md` — storage grain + display roll-up modes.
+- `quant_things_to_deal_with_when_start_store_in_db.md` — **Track B design memo**: per-program tracking,
+  translating program-specific sentinels like FlashLFQ's `NaN` to a common representation at ingest,
+  store-explanation-by-message-id, multi-program support.
 - `flashlfq_quant_subgroup_scanfile_eligibility.md` — sub-group eligibility; the 1:1 sub-group↔scan-file
   invariant + the two searchers that enforce it.
 - `flashlfq_per_scan_file_separate_run_rationale.md` — one run per scan file; MBR incompatibility.
@@ -232,7 +292,19 @@ and the §5 multi-scan-file gate (typed `FlashLFQ_Run_Reject_Reason`) live with 
 - `flashlfq_quant_sum_across_variable_mod_forms_when_collate_unchecked__implementation_plan_2026-08-12.md` —
   **reverses switch-plan D6**: when "Collate: Variable Modifications" is unchecked, SUM quant over distinct
   `groupId`s into the collapsed row (any overlapping form → whole row `overlapping signal`); allow running
-  regardless of the toggle. **APPROVED, not yet implemented.**
+  regardless of the toggle. **IMPLEMENTED + runtime-verified 2026-08-12 (held).**
+
+**Add New Quant + page surfaces (2026-08-12 → 2026-08-27; all held):**
+- `flashlfq_quant_on_protein_page__as_shipped_option_C_2026-08-13.md` — the two per-protein columns as shipped
+  (**Quant (FlashLFQ)** + **Quant (Limelight)**); `…options_and_implementation_plan_2026-08-12.md` is the plan.
+- `flashlfq_quant_on_qc_page__run_and_load_results__implementation_plan_2026-08-12.md` — QC-page quant.
+- `quant_add_new_quant__file_upload_parse_plan_v2_2026-08-14.md` — the "Add New Quant" upload/parse/map flow
+  (v2 supersedes the v1 plan).
+- `quant_add_new__eligible_search_matching_categoryA_categoryB_decisions_2026-08-19.md` — Category-A/B search
+  matching; `quant_add_new__full_quant_peptide_page_decisions_2026-08-19.md` — the psb Quant Peptide page.
+- `quant_add_new__submit_run_model_change_decisions_2026-08-20.md` — JOINT/PER_FILE run model;
+  `quant_add_new__submit_no_psms_to_run_decisions_2026-08-20.md` (+ the peptide-page variant) — no-PSMs handling;
+  `quant_add_new__submit_joint_flashlfq_run_and_results_page_plan_2026-08-17.md` — joint run + results page.
 
 **Reviews (2026-07-29 set):**
 - `flashlfq_quant_mapping_critical_review_2026-07-29.md` — composed-design holes H1–H9.

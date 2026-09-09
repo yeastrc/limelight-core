@@ -57,6 +57,14 @@ rest are libraries consumed by them.
 - `docs` — Sphinx source for the readthedocs site.
 - `deploy` — build output (jars + WAR).
 
+## Things to do sooner than later
+
+- **Quant pages — remaining work / TODO:** `limelight_features_docs/quant_pages_TODO.md` — the living to-do
+  list for the FlashLFQ-quant pages (near-term roadmap: standalone quant single-protein page, charts/stats, DB
+  persistence). The single-protein-overlay tab widgets (§1) and per-peptide child-table expansion (§2) are now
+  re-enabled. Details live in that doc; the quant *status & decisions* hub is
+  `limelight_features_docs/flashlfq_quant_status_and_decisions.md`.
+
 ## Identifications data model (PSMs, reported peptides, open modifications)
 
 A few cross-cutting concepts that aren't obvious from the schema:
@@ -94,6 +102,107 @@ measurement tied to one scan file and one run, so it may only be aggregated over
 co-measured in one run and are known-valid to combine (Limelight has no fraction-vs-replicate metadata and
 won't). Where that doesn't hold (a multi-scan-file search, a condition spanning searches), **decline the
 quant — never silently sum it the way PSM count does.**
+
+## Never substitute a projectSearchId for a "search id" (they are DIFFERENT ids)
+
+**`projectSearchId` (`project_search_tbl.id`) and search id (`search_tbl.id`) are two DIFFERENT identifiers.
+Never use a `projectSearchId` where a search id is asked for, and never label/name a `projectSearchId` as a
+"search id".** They are not interchangeable: `search_tbl.id` is the global search id; `project_search_tbl.id`
+is a per-project handle onto a search. Conflating them produces wrong lookups and misleading UI/labels.
+
+- **When a request (from a human or a spec) says "search id", it means `search_tbl.id`** — supply that, not a
+  `projectSearchId`. If only a `projectSearchId` is in hand, resolve it to the real search id rather than
+  passing the `projectSearchId` and calling it a "search id".
+- **When cloning/adapting code (or copying a label/field/param) that calls something "search id", it means
+  `search_tbl.id`** — do NOT bind a `projectSearchId` to it. Match the id the source actually means; if the
+  source is itself wrong, flag it, don't propagate it.
+- **Applies everywhere:** user-facing text, tooltips, column headers, variable/param/field names, comments,
+  DTO/JSON keys, and log messages. A value named or labeled "search id" must carry `search_tbl.id`.
+- **If you genuinely only have / only need the `projectSearchId`, call it `projectSearchId`** in *code* —
+  never dress it up as "search id". **But it must NOT reach the user (see the next rule).**
+
+### NEVER show the `projectSearchId` to the user
+
+**The `projectSearchId` (`project_search_tbl.id`) is an internal handle — NEVER display it in the UI.** Any
+id a user sees for "a search" must be the real **search id (`search_tbl.id`)**. This includes visible text,
+labels, tooltips, table cells, messages, and anything rendered on a page. If a UI needs to show "the search's
+id", show `search_tbl.id`, not the `projectSearchId` — and never relabel the problem away by calling a
+displayed `projectSearchId` a "project search id" either; resolve to the real search id instead.
+
+**This rule governs ids rendered as page CONTENT, not opaque functional keys in URLs.** A `projectSearchId`
+carried in a URL / query string / URL-hash fragment (e.g. as a lookup key the page reads back) is a functional
+identifier, not a displayed "search id", so it is EXEMPT from this rule — do not "fix" it to a `search_tbl.id`
+just because it appears in the address bar. (Example: the Add-New-Quant viewer hash
+`#qr;<projectSearchId>_<searchScanFileId>_<requestId>` is fine as-is.) The rule still applies in full to any id
+the user reads as "the search's id" in the page body.
+
+### The search NAME + real search id: get them from the STANDARD source (varies by page)
+
+The search **name** obeys a rule: it comes from **`project_search_tbl.search_name`** — a **PER-PROJECT** name
+(the column lives on `project_search_tbl`, keyed by `projectSearchId`, NOT on `search_tbl`), so the same
+shared `search_tbl` search can carry a **different name in each project**. **When that name is null/empty the
+standard display name is computed server-side** as `"Search: " + searchId` by
+`web_utils/SearchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchNameFromDB, searchId )` (the only
+place `search_tbl.id` enters the name). **Always run the raw DB name through that util** — never display a raw
+possibly-null name, and never hand-roll the default. The standard source returns BOTH ids alongside the name
+(`project_search_tbl.id AS project_search_id`, `search_tbl.id AS search_id`), so the real **search id**
+(`search_tbl.id`) is always on hand for display.
+
+The standard source is NOT the same on every page — do not reuse one page's mechanism on another:
+- **Main data pages (Peptide / Protein / Mod, etc.)** load names once, early, via the front-end module
+  `data_pages_common/searchNameRetrieval.ts` (`retrieveSearchNamesFromServer`), which POSTs
+  `d/rws/for-page/psb/search-name-list-from-psi` and returns, per search, `{ projectSearchId, searchId, name
+  (fallback-applied), searchShortName, subgroups }`. On those pages, read from that already-loaded data — do
+  not re-fetch or invent a per-page path.
+- **Server side**, the canonical builder is `SearchMinimalForProjectSearchIdSearcher` /
+  `SearchListForProjectIdSearcher` → `SearchItemMinimal` (carries `projectSearchId` + `searchId` + raw name),
+  **then** the `SearchNameReturnDefaultIfNull` fallback. The webservice
+  `SearchNameList_From_ProjectSearchIds_RestWebserviceController` is the reference implementation.
+- If you can't determine the correct standard source for a given page/context, **STOP and ask** — do not fall
+  back to showing the `projectSearchId`.
+
+**Caution — not every existing endpoint sources the name correctly; verify, don't assume.** The "Add New Quant"
+eligibility webservice (`Quant_AddNew_ProjectSearches_ScanFiles_Eligibility_List_RestWebserviceController`)
+ORIGINALLY set `searchName = search.getName()` **raw** (skipping `SearchNameReturnDefaultIfNull`) and did not
+return `searchId` to the front end — a broken template. It has since been fixed (it now returns `searchId` and
+applies `SearchNameReturnDefaultIfNull`); the lesson stands — check each endpoint rather than assume it sources
+the name/ids correctly.
+
+Real miss to learn from: the "Add New Quant" overlay
+(`.../project_page_quant_section/projPg_Quant_UploadParse_Component.tsx`) displayed `(search id
+<projectSearchId>)` in three spots (ineligible-search list, multi-match picker, collision error) — the label
+said "search id" but the value was the `projectSearchId`. The fix (implemented + verified) keeps the "search id"
+label and shows the real `search_tbl.id` sourced the standard way above (which also fixed the raw-name gap) — NOT
+relabeling it "project search id", and NEVER showing the `projectSearchId`.
+
+## Page links: always use `<span class="fake-link">`, not `<a>` (unless explicitly asked)
+
+For any NEW clickable navigation link on a page, use a `<span class="fake-link">` (or similar element) with a JS onClick handler — NOT a real anchor `<a href>`. Use a real `<a href>` ONLY when explicitly asked for one. Limelight's predominant pattern is the fake-link because it lets us run code at navigation time (inject behavior before/instead of the browser navigating).
+
+Because a fake-link isn't a real anchor, its onClick handler MUST re-implement the ctrl/cmd-click → new-tab affordance the browser gives an `<a>` for free: check `event.ctrlKey || event.metaKey` and, when true, open the target in a NEW TAB (e.g. `window.open(url, "_blank")`) and return — instead of the in-page navigation. Without this, ctrl/cmd-click silently does a same-tab nav.
+
+When reviewing or touching an EXISTING link, look at how it's rendered in the code: a real `<a href>` handles ctrl/cmd-click natively (fine as-is); a fake-link onClick handler must have the ctrl/meta → new-tab check above.
+
+## Webservice-response ("off-the-wire") shape types: declare fields REQUIRED, validate at runtime — do NOT use `?`
+
+**When declaring the TypeScript type that describes a webservice/JSON response shape** — the loose
+`responseData as { ... }` "off-the-wire" type inside a loader — **declare every field the server always sends as
+REQUIRED (no `?`)**, then validate each field at runtime (the house `limelight__variable_is_type_number_Check` /
+string-check + `throw` pattern) before constructing the strict internal type the rest of the code uses.
+
+- **Do NOT mark a field `?` merely because it is unvalidated at that point.** `?` is reserved for a field that is
+  genuinely sometimes-present / sometimes-absent BY DESIGN. Using it for an always-sent-but-not-yet-checked field
+  is misleading: a reader can no longer tell "actually optional" from "just not validated yet".
+- The runtime validation is the real guard (the `as` assertion is untrusted either way, and the per-field
+  runtime check still catches a missing/wrong value even when the field is typed required). Typing the field
+  required simply states the true contract — "the server sends this" — instead of a misleading "maybe".
+- This is about the off-the-wire response-shape type specifically. The strict INTERNAL type the loader
+  constructs from it is required too (and `?` there would be a genuine leftover-optional footgun).
+
+Why: `?` carries a specific meaning — "may or may not be populated". Spending it on "present but unverified"
+dilutes that signal everywhere `?` appears, so every optional becomes a question ("is this truly optional, or did
+someone just not validate it yet?"). Keep `?` meaningful: required + runtime-validated for what the server always
+sends; `?` only for genuinely optional fields.
 
 ## Building
 
@@ -215,3 +324,48 @@ saved filters are migrated on load). It is **front-end only** (client-side filte
 `limelight_features_docs/project_page_advanced_tag_filter.md` — files, the empty-group-blocks-all vs.
 pristine-shows-all rule, basic↔advanced seeding, the persistence migration, and the shared
 "Filtering on…" summary requirement.
+
+## Identifier/record "matching" code: discuss the match — and what to do on a mismatch — with the maintainer first
+
+When you write or change code that **matches records or identifiers across sources or systems** — e.g.
+matching a PSM's scan number to the spectral-storage (spectr) scan metadata, matching scan-file filenames
+across searches, matching ids across DB tables, or reconciling data between Limelight and an adjacent service —
+do **NOT** unilaterally decide the behavior **when they don't match** (a lookup miss, an absent record, a
+partial / short result). Raise **both** the matching logic **and** the mismatch / failure handling with **the
+maintainer**, and get a decision, before implementing it. This applies to Limelight **and its adjacent
+services** (e.g. the FlashLFQ quant service).
+
+- **Default toward failing loudly, not silently degrading.** A mismatch usually means the inputs disagree in a
+  way that can corrupt downstream results, and a silent or partial fallback hides it. Do **not**, on your own,
+  choose "write an empty / placeholder value and keep going," drop the offending row, or otherwise paper over
+  the gap.
+- **The policy is the maintainer's call, not an implementation detail** — error the whole request,
+  skip-with-report, substitute a documented default, etc. It is a correctness / data-integrity decision.
+  Surface it; don't pick it.
+
+**Why (concrete):** the FlashLFQ quant service looks up each PSM's retention time by **scan number** against
+spectr's all-scans metadata. A scan number absent from that metadata originally wrote an **empty**
+retention-time value and continued — a silent, partial result feeding quant. The maintainer's decision: **if
+any scan number does not return data from spectr, the whole request must error.** The match / mismatch policy
+was the maintainer's to set, not the code's to assume.
+
+## Never put machine-specific / absolute host paths in repo files (only under the gitignored `.claude/`)
+
+Do **NOT** write machine-specific or absolute host filesystem paths — e.g. `/data/...`, `/spinning-disk-02/...`,
+`/home/<user>/...`, or any developer's local clone / output / data / run-space path — into **any file tracked in
+this repo**: docs (`limelight_features_docs/`), code, comments, `CLAUDE.md`, everything. This repo is **public**
+and paper-cited; an absolute host path leaks private infrastructure layout, is useless to anyone else, and rots
+(it's specific to one box).
+
+- **Refer to locations generically instead:** the repo/service name ("the `limelight-flashlfq-service` repo
+  clone"), a repo-relative or output-relative path (`flashlfq_output/QuantifiedPeptides.tsv`), a config/env-var
+  name, or "the run-space data volume" — never the absolute host path. Keep the shareable fact (what the file is,
+  its columns, which repo it's in) and drop the host path.
+- **The only place a machine path may live is under the repo-root `.claude/` directory**, which is **gitignored**
+  (`.gitignore`: `/.claude/` and `**/.claude`, verified) so it is never committed. Machine-specific scratch notes
+  go there, not in tracked files.
+- **Before committing a doc/code change, scan it** for `/data/`, `/spinning-disk-02/`, `/home/`, and similar
+  host-absolute paths and remove them.
+
+Why: a machine path in a public repo is a hard-to-undo leak once pushed/indexed, and exposes internal infra
+layout.
