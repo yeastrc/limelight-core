@@ -1,5 +1,12 @@
 # Add-New-Quant — SUBMIT run-model change — DECISIONS (2026-08-20)
 
+> **SUPERSEDED IN PART (2026-09-10).** §0 below states that opt1's joint run is "scoped to the single Route-A
+> search" and that "cross-search joint-over-all-searches goes away," with Route B always per-scan-file (no
+> ask). **That is no longer true:** the run-mode choice is now offered for Route B (Option B) as well, which
+> **re-enables cross-search JOINT** (gated by pre-submit same-FASTA + retention-time condition checks). See
+> `quant_add_new__project_page_run_mode_choice_and_joint_conditions_decisions_2026-09-10.md`. The rest of this
+> doc (the MBR/normalize/per-pair-response decisions) still holds.
+
 **Status: DECISIONS-FIRST. Nothing is built.** This doc surfaces every load-bearing choice as a question
 with a recommendation and `file:line` grounding, for Dan + the reviewing claude to settle **before** any
 code. Stop at this doc.

@@ -1,6 +1,6 @@
 # FlashLFQ quant — current status & decisions (living doc)
 
-**Last updated:** 2026-08-27
+**Last updated:** 2026-09-10
 **Purpose:** the single at-a-glance page for *where the quant feature stands and what's been decided*. The
 reasoning/analysis lives in the linked docs (see the **Doc map** at the bottom); this page is the index of
 **state and decisions**, kept current. If you're picking up quant work, **start here**, then read the
@@ -12,6 +12,14 @@ governing-rule docs flagged below.
 > Current state. Separately, the **peak-aggregation choice was resolved** — delegated to FlashLFQ by ingesting
 > `QuantifiedPeptides.tsv` (front-end peak-summing removed), boss-approved 2026-08-10. **Track B (DB ingest)
 > is still not built** and remains the commit gate.
+
+> **Update 2026-09-10 (held uncommitted):** the project-page "Add New Quant" **run-mode choice** ("How should
+> these scan files be quantified?" — JOINT vs PER_FILE) is now offered for **multiple searches (Option B)**, not
+> just a single multi-file search — this **re-enables a cross-search JOINT run** (reversing the 2026-08-20
+> "cross-search joint goes away" decision; no submit-controller logic change was needed). JOINT now runs two
+> **pre-submit condition checks** (warn → Continue): **same FASTA** across searches (Option B only) and **MS1
+> retention-time compatibility** (first-scan RTs within 60 s, last-scan RTs within 10%; any JOINT with ≥ 2 scan
+> files). See **`quant_add_new__project_page_run_mode_choice_and_joint_conditions_decisions_2026-09-10.md`**.
 
 > ## 🚩 BIGGEST UNRESOLVED CHOICE — how to turn FlashLFQ output into one displayed number
 > **One decision still dominates quant correctness and is NOT yet made on purpose. Decide it before Track B
