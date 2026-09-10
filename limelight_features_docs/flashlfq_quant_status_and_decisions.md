@@ -237,6 +237,18 @@ Only the **docs** are committed.
    be FALSE: `Search_AnyScanFile_HasPsms_In_MultipleSubGroups_ForSearchId_Searcher` (no scan file mixes
    sub-groups) **and** `Search_AnySubGroup_HasPsms_In_MultipleScanFiles_ForSearchId_Searcher` (no sub-group
    spans scan files). See `flashlfq_quant_subgroup_scanfile_eligibility.md` §9 (updated).
+6. **Silent exclusion of mass-uncomputable peptides — user MUST be informed (major, disclosure
+   correctness).** Quant currently drops any reported peptide whose monoisotopic mass can't be computed
+   **silently** — a blanket `catch ( Exception e )` in `FlashLFQ_Run_GatherPsms_And_SendRequest_Service`
+   (~:526 / ~:576) is the *sole* enforcement of the non-standard-residue policy (there is no explicit
+   residue allow-list; whatever the mass calculator can't mass is dropped) and only `log.warn`s; nothing
+   reaches the user. **Principle: the user MUST always be informed of ALL excluded data and why.** NOW
+   (no DB): surface the **count** of excluded reported peptides (and their PSMs) at run time; keep the
+   broad catch with a generic *"mass could not be computed"* label + log specifics server-side (decision:
+   generic label, not a residue-specific reason). LATER (Track B / DB): persist the excluded **peptide
+   ids** so the excluded peptides can be displayed on demand — storage location TBD (the run is not yet
+   persisted in the DB). Open sub-choices: *where* the "now" count is surfaced (transient submit-time vs
+   recompute-at-display) and the exact count granularity.
 
 ## Commit gate
 
