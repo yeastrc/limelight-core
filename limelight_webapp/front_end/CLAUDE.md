@@ -16,6 +16,7 @@ This directory is the entire TypeScript/React front end (all `.ts`/`.tsx` in the
 - **File-scoped variables and functions, and class properties (instance _and_ static), start with a leading `_`** to mark them as private to that file or class.
   - e.g. `const _myHelper = ...`, `private _spinnerManager`, `private static _CACHE`.
 - **If something becomes exported, or a class member becomes non-private, remove the leading `_`.** A leading underscore must never appear on an exported / public name.
+- **Methods follow the same rule: non-public (internal) methods start with `_`; a method with NO leading `_` is intended to be public/external.** The maintainer keeps Java-style access discipline — a method stays public only when it is actually called from *outside* the class; everything else is `_`-prefixed and private. **Caveat:** some code converted from the original JavaScript was not held to this as strictly, so a non-`_` method there may not truly be external — verify, don't assume.
 
 ## Naming: exported symbols are prefixed with their source file
 
@@ -35,6 +36,14 @@ Exported names should be long and self-describing so an IDE autocomplete entry t
   - `class INTERNAL__UserEntry_Component extends React.Component< … >` — used in JSX as `<INTERNAL__UserEntry_Component … />`. The capital initial (the `I` of `INTERNAL__`) is what keeps JSX treating it as a component rather than a lowercase DOM/intrinsic tag, same reason exported components are capitalized (above).
   - So the split is: **file-internal variables & functions → leading `_`** (see the first bullet); **file-internal classes / interfaces / components → `INTERNAL__`**.
   - (Historic code also uses mixed-case `Internal__`; the going-forward convention is all-caps `INTERNAL__`. No need to change existing.)
+
+## Researching a class's public methods and who calls them
+
+When you need a class's public surface — to find every caller, or to understand it before reusing/changing it — **enumerate ALL of its public methods (every method with no leading `_`), not just the first one you find.** A class frequently exposes several public methods and they are all used; tracing only one undercounts the call sites.
+
+- **Public methods often call other public methods on the same class.** When tracing who invokes a given public method, also check whether sibling public methods call it internally — those internal callers are part of "what uses it." Survey all public methods first, then all of their call sites.
+- The public surface is exactly the **non-`_`** methods (subject to the JS-converted caveat above), so listing it is quick: grep the class for method definitions and drop the `_`-prefixed ones.
+- Real example: `GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class` exposes **two** public compute methods — `…_ReturnPromise(...)` (always-async) and `getReportedPeptideIdsForDisplay_AllProjectSearchIds(...)` (the `{ data, promise }` sync-fast-path) — plus `getNewInstance`; different callers use different ones. Tracing only the first misses real usage.
 
 ## Imports
 
