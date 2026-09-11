@@ -29,7 +29,12 @@ Exported names should be long and self-describing so an IDE autocomplete entry t
     `export enum chromatogram_Common_Options__PlotType_IonCurrent_VS_Ions_Select_Enum {...}`
 - **This applies to all export kinds** — consts, functions, enums, interfaces, and classes/components.
 - **React component classes use a Capitalized prefix** (`Chromatogram_Common_OptionSelector_Components__...`), because JSX treats a lowercase-initial tag as a DOM/intrinsic element. The filename basename starts lowercase, so capitalize its first letter only for component classes.
-- **Non-exported, file-local types** keep the existing `Internal__` marker prefix (e.g. `Internal__Foo_Component_Props`); they are not exported, so they get neither the filename prefix nor a leading `_`.
+- **Non-exported, file-internal classes, interfaces, and React components start with the `INTERNAL__` prefix** (all caps, `__` separator). They are not exported, so they get neither the filename prefix nor a leading `_`. Examples in the tree:
+  - `class INTERNAL__Request_Holder`, `class INTERNAL__WebserviceResponse_Class`
+  - `interface INTERNAL__UserEntry_Component_Props` / `interface INTERNAL__UserEntry_Component_State`
+  - `class INTERNAL__UserEntry_Component extends React.Component< … >` — used in JSX as `<INTERNAL__UserEntry_Component … />`. The capital initial (the `I` of `INTERNAL__`) is what keeps JSX treating it as a component rather than a lowercase DOM/intrinsic tag, same reason exported components are capitalized (above).
+  - So the split is: **file-internal variables & functions → leading `_`** (see the first bullet); **file-internal classes / interfaces / components → `INTERNAL__`**.
+  - (Historic code also uses mixed-case `Internal__`; the going-forward convention is all-caps `INTERNAL__`. No need to change existing.)
 
 ## Imports
 
