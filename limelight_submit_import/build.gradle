@@ -83,10 +83,10 @@ dependencies {
 	implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.26.1'
 
 	//  Pin the SLF4J 2.0.x API explicitly (also pulled transitively by the binding above).
-	implementation 'org.slf4j:slf4j-api:2.0.18'
+	implementation 'org.slf4j:slf4j-api:2.0.19'
 
 	//  Jakarta Commons Logging to SLF4J (2.0.x, aligned with slf4j-api 2.x)
-	implementation 'org.slf4j:jcl-over-slf4j:2.0.18'
+	implementation 'org.slf4j:jcl-over-slf4j:2.0.19'
 	
 	//  Log4j 1 to 2 bridge
 	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.26.1'
