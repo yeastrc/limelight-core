@@ -26,9 +26,9 @@ lands on the current view — standard SPA behavior (this differs from stock Lim
 - **Reuse ONLY the single-protein overlay** (`quant_single_protein_page/…`, central-state key `'v'`) unchanged.
 - **Leave the existing Quant Peptide and Quant Protein pages entirely alone** — they stay live so the new
   page's output is validated by **side-by-side comparison** against them.
-- **Two new routes**, distinct from the existing quant routes: `d/pg/psb/quant-peptide-view/` and
-  `d/pg/psb/quant-protein-view/`. The route encodes the current view.
-- **Two new Project-page links** ("Quant Peptide Common", "Quant Protein Common") in the runs list, alongside
+- **Two new routes**, distinct from the existing quant routes: `d/pg/psb/quant-common-peptide/` and
+  `d/pg/psb/quant-common-protein/` (maintainer-decided 2026-09-11). The route encodes the current view.
+- **Two new Project-page links** ("Quant Common Peptide", "Quant Common Protein") in the runs list, alongside
   the existing "Quant"/"Quant Protein" links.
 - **Shared infrastructure is off-limits to modify — with ONE sanctioned exception:** four shared files get a
   small **additive, optional, backward-compatible** "controller-path callback" (§7) so the new page can tell
@@ -247,17 +247,18 @@ which is exactly what lets the nav-skip (§6.10) reuse the held set.
 ### 6.1 Server side (new)
 
 - **Two route constants** in `AA_PageControllerPaths_Constants.java`:
-  `QUANT_PEPTIDE_VIEW__COMMON_SPA__PAGE_CONTROLLER = "d/pg/psb/quant-peptide-view/"` and
-  `QUANT_PROTEIN_VIEW__COMMON_SPA__PAGE_CONTROLLER = "d/pg/psb/quant-protein-view/"` (final constant names at
-  impl; must differ from the existing `quant-peptide`/`quant-protein`).
+  `QUANT_COMMON_PEPTIDE_VIEW__PAGE_CONTROLLER = "d/pg/psb/quant-common-peptide/"` and
+  `QUANT_COMMON_PROTEIN_VIEW__PAGE_CONTROLLER = "d/pg/psb/quant-common-protein/"` (constant names illustrative,
+  finalized at impl; the route strings `quant-common-peptide`/`quant-common-protein` are maintainer-decided and
+  must differ from the existing `quant-peptide`/`quant-protein`).
 - **One controller** `QuantCommonSPAView_Controller.java` — clone `QuantPeptideView_Controller.java`, with
   **two `@GetMapping`s** (one per route) both calling one `controllerEntryInternal` that keeps the two
   `*_SetForJSP` calls and forwards to the **one** JSP `quantCommonSPAView.jsp`. Auth via the `d/pg/psb/**`
   interceptor (both new paths are `d/pg/psb/…`, so covered). The controller does **not** need to tell the JSP
   which route was hit for view-selection (the FE reads the URL — §6.5), but it may set nothing view-specific.
 - **One JSP** `quantCommonSPAView.jsp` — clone `quantPeptideView.jsp`, except: **emit BOTH route strings** for
-  the FE (e.g. two `<script type="text/text">` elements with ids like `controller_path__quant_peptide_view`
-  and `controller_path__quant_protein_view`, or one JSON blob) — the FE reads `window.location` to decide which
+  the FE (e.g. two `<script type="text/text">` elements with ids like `controller_path__quant_common_peptide`
+  and `controller_path__quant_common_protein`, or one JSON blob) — the FE reads `window.location` to decide which
   is current (§6.5). Include the psb `head_section_include_data_pages.jsp` and the shared
   `body_after_header_include_data_pages.jsp` (supplies `data_page_overall_enclosing_block_div`); declare one
   React root container `<div id="main_quantCommonSPAView_outer_block_react_root_container">`; and the
@@ -403,9 +404,9 @@ optionally during within-view recompute). Deferred — implement after the core 
 ### 6.14 New Project-page links (two)
 
 In `projPg_Quant_RunsList_Component.tsx` `_render_ViewLink` (`~:375`), add **two** links —
-"Quant Peptide Common" and "Quant Protein Common" — cloning `_quantLink_Clicked` (`~:459`) into
+"Quant Common Peptide" and "Quant Common Protein" — cloning `_quantLink_Clicked` (`~:459`) into
 `_quantCommonSPAView_Peptide_Link_Clicked` / `_quantCommonSPAView_Protein_Link_Clicked`, each building the URL
-for the respective new route (`quant-peptide-view` / `quant-protein-view`) from `run.searchDataLookupParamsCode`
+for the respective new route (`quant-common-peptide` / `quant-common-protein`) from `run.searchDataLookupParamsCode`
 + `run.hashFragment` (same async new-tab pattern; reuse `_quantLinkErrorMessage`). This RunsList file is
 existing uncommitted project-page quant code — the two links are the one existing FE file the new feature edits.
 
@@ -415,6 +416,16 @@ existing uncommitted project-page quant code — the two links are the one exist
 
 All four default to the existing DOM read when the callback is unset, so **every other page is unaffected**.
 Safe as module-global because exactly one page runs per page-load.
+
+**Load-bearing (verified):** the DOM helper `controllerPath_forCurrentPage_FromDOM()`
+(`controllerPath_forCurrentPage_FromDOM.ts:39-46`) reads a **single** element `getElementById("controller_path")`
+and **throws** if it is absent/empty (then caches the first value it reads for the page's lifetime). The new JSP
+emits **two** route elements, not a single `controller_path`, so on the new page the "DOM fallback" is **not
+graceful — it is a hard throw**. Therefore on the new page these callbacks are **mandatory, not optional**: every
+route-dependent URL builder that can run there must have its callback wired before it runs. The DOM fallback only
+protects the *existing* pages (which still carry the single `controller_path`). This is why all four hooks are
+wired in phase 1 even though Share/Save-view UI is deferred (§10) — an unwired path that later reaches a builder
+would throw, not silently degrade.
 
 1. **`centralPageStateManager.ts`** — add an optional constructor param `get_ControllerPath_Callback?: () =>
    string`, store it, and at `:330`:
@@ -482,12 +493,18 @@ Existing pages are intact → validate by **side-by-side comparison** on the sam
 
 ## 10. Open decisions remaining
 
-- Final route-constant names + exact route strings (`quant-peptide-view` / `quant-protein-view` proposed).
-- Nav toggle visual form (tabs vs segmented buttons vs links) — §6.12.
-- Whether Share / Save-view are in scope for v1 (if not, §7 #3/#4 can be deferred, but they're cheap).
+- Nav toggle visual form (tabs vs segmented buttons vs links) — §6.12; deferred to impl (segmented-button lean).
 - The "Updating…" cover div (§6.13) — deferred.
 
-Decided (for reference): two routes; one controller/JSP/bundle; state key `'x'`; view in the route (no
+Decided 2026-09-11 (maintainer):
+- **Route strings** `d/pg/psb/quant-common-peptide/` and `d/pg/psb/quant-common-protein/`; project-page link
+  labels "Quant Common Peptide" / "Quant Common Protein" (word order mirrors the routes). Final Java constant
+  names finalized at impl.
+- **Share / Save-view UI deferred for v1** — but all four §7 callback hooks are still wired in phase 1. They are
+  additive/cheap, and (see §7) the DOM fallback is a *hard throw* on the new page, so wiring all four removes a
+  latent footgun rather than being optional polish.
+
+Decided earlier (for reference): two routes; one controller/JSP/bundle; state key `'x'`; view in the route (no
 `viewMode` state field); Root = error boundary; MainContent persistent (nav+label+cutoffs+shared data),
 children regenerate on nav; merged filter block with per-filter conditionals; fixed DOM
 `searchDataLookupParamsRoot`; ControllerPathHolder + four additive shared-file callbacks; pushState nav +
