@@ -1,9 +1,11 @@
 # QuantCommonSPAView — single-MainContent refactor: continuation plan
 
-**Date:** 2026-09-14. **Status:** Stages 1–2 + the protein-disable toggle item DONE & review-verified (all
-feature code still uncommitted). The deeper filter-integration steps (unify compute / merge FilterSections /
-nav-skip) are ON HOLD pending a maintainer demo to colleagues. In-place `onpopstate` was decided against.
-See §5 for per-stage progress and §6 for the settled decisions.
+**Date:** 2026-09-14 (updated 2026-09-15). **Status:** FEATURE ESSENTIALLY COMPLETE. Stages 1–2 + the
+protein-disable toggle item are DONE & review-verified (all feature code still uncommitted). The deeper
+filter-integration steps (unify compute / merge FilterSections / nav-skip) are **PERMANENTLY PARKED** (not
+just deferred — see §6); in-place `onpopstate` was decided against; filters are **kept SHARED** between the
+two views. Final architecture: one common data layer feeding two separate per-view renderers. See §5 for
+per-stage progress and §6 for the settled decisions.
 
 **What this doc is:** a self-contained continuation plan for the remaining QuantCommonSPAView work, written
 so a fresh session can pick up with full context. It is the companion to the committed background spec
@@ -42,9 +44,11 @@ coexisting and switching at a high level (that earlier direction was wrong and i
   aggregation of the reported-peptide set** (not a separate query). So with those three filters empty the
   peptide and protein reported-peptide sets are identical. This shared reported-peptide set + PSMs is the
   natural feed for any future common reports/graphs.
-- Whether common reports/graphs exist is an open product question — but the common **data** foundation is
-  nearly free (it is the same architecture that gives fast switching), so we build the foundation and defer
-  any actual reports.
+- ~~Whether common reports/graphs exist is an open product question~~ — **RESOLVED (2026-09-15):** even
+  where the two views end up with similar-looking tables/charts, each renders its OWN data (peptide vs
+  protein), so they are never the same display — there is no single common report/graph to build. The shared
+  **data** foundation (loader + held CommonData root) is kept because it gives the fast switching; the deeper
+  compute-unification it would have enabled is permanently parked (see §5/§6).
 - **Do NOT merge the peptide-list renderer and the protein-table renderer into one component** — they are
   genuinely different displays; forcing them together is exactly the "problematic code" to avoid.
 
@@ -168,14 +172,15 @@ peptide/protein pages AND against the current per-view output). Do NOT stuff it 
   (`! dataPageStateManager.get_DataPage_common_Searches_Flags().is__searchNotContainProteins_True__TrueFor_Any_Search()`)
   — deliberately NOT the generic nav's `searches_all_contain_proteins` DOM-element path (so no JSP/controller
   change). No redirect on a direct protein-route load (agreed "leave it").
-- **Later, separate steps (the deeper "common" wins) — CURRENTLY ON HOLD (see §6):**
-  - Unify the reported-peptide compute onto the parent (hold the result; feed both children).
-  - Merge the two FilterSections into one conditional filter block (shared filters always; peptide-only in
-    peptide view; protein-only in protein view).
-  - The nav-skip optimization (reuse the held reported-peptide set on toggle when the three peptide-only
-    filters are empty — see the merged-plan spec §6.10).
-  - ~~In-place `onpopstate`~~ — **DECIDED AGAINST (option A: keep reload-on-popstate); see §6.** No longer a
-    planned step.
+- **Later, separate steps (the deeper "common" wins) — PERMANENTLY PARKED (maintainer, 2026-09-15; see §6).**
+  These will NOT be built. Rationale: similar-looking per-view tables/charts each render their own (peptide
+  vs protein) data, so there is no common display to justify unifying the compute or merging the renderers.
+  The final shape stays: shared data loader + per-child compute + two separate FilterSections + two separate
+  renderers.
+  - ~~Unify the reported-peptide compute onto the parent~~ — parked.
+  - ~~Merge the two FilterSections into one conditional filter block~~ — parked.
+  - ~~The nav-skip optimization~~ (merged-plan spec §6.10) — parked (it depended on the compute unification).
+  - ~~In-place `onpopstate`~~ — **DECIDED AGAINST (option A: keep reload-on-popstate); see §6.**
 
 ---
 
@@ -208,16 +213,16 @@ peptide/protein pages AND against the current per-view output). Do NOT stuff it 
   sequence). The bootstrap's `onpopstate` comment was updated to record this as the deliberate final behavior.
 - **Single-protein overlay from both views:** confirmed working from BOTH the peptide and protein views — no
   change needed (was deferred item §9.6).
-- **Deeper filter integration is ON HOLD** (maintainer, pending a demo to colleagues). The current design
-  SHARES filters between the two views (one merged `'x'` central-state + shared filter-state objects): the
-  *shared* filters (mods, reporter ions, charge, scan-file, RT, PSM counts) actively carry across a toggle;
-  the *view-specific* filters (peptide-only: peptideUnique / peptideSequence / proteinPositionFilter;
-  protein-only: the protein-list ones) persist in the shared object but apply only in their own view. **If
-  reviewers prefer INDEPENDENT filters per view,** the fallback is to give each view its own central-state +
-  its own filter-state-object instances (copy the legacy quant peptide/protein page-state objects): filters
-  then do NOT carry, at the cost of a longer URL (the shared fields get encoded in both objects) — but this
-  is decoupled from the architectural wins and would actually simplify the per-view compute (no "pass the
-  three peptide-only filters as undefined" dance). Decision deferred until after the demo.
+- **Filters are KEPT SHARED between the two views; deeper filter integration is PERMANENTLY PARKED**
+  (maintainer, 2026-09-15). The design SHARES filters via one merged `'x'` central-state + shared
+  filter-state objects: the *shared* filters (mods, reporter ions, charge, scan-file, RT, PSM counts) carry
+  across a toggle; the *view-specific* filters (peptide-only: peptideUnique / peptideSequence /
+  proteinPositionFilter; protein-only: the protein-list ones) persist in the shared object but apply only in
+  their own view. **This shared-filter behavior is the FINAL, accepted design.** The separate-per-view-filters
+  fallback (own central-state + own filter-state objects per view — no carry-over, longer URL) was considered
+  and **not pursued**. Unifying the reported-peptide compute / merging the two FilterSections / the nav-skip
+  optimization are likewise permanently parked (see §5): similar-looking per-view tables/charts each render
+  their own data, so there is no common display to motivate them.
 
 ---
 
@@ -314,11 +319,12 @@ are kept off-repo in the review session's notes.)
 
 1. **Protein-disable when a search lacks protein data. ✅ DONE** (2026-09-14; see §5). Greys the "Quant
    Common Proteins" toggle option using the data-driven flag (NOT the generic nav's DOM-element path).
-2. Unify the reported-peptide compute onto the persistent parent (hold + reuse). **ON HOLD (see §6).**
-3. Merge the two FilterSections into one conditional filter block. **ON HOLD (see §6).**
-4. The nav-skip optimization (merged-plan spec §6.10). **ON HOLD (depends on #2).**
+2. ~~Unify the reported-peptide compute onto the persistent parent~~ — **PERMANENTLY PARKED (2026-09-15; see §6).**
+3. ~~Merge the two FilterSections into one conditional filter block~~ — **PERMANENTLY PARKED (see §6).**
+4. ~~The nav-skip optimization (merged-plan spec §6.10)~~ — **PERMANENTLY PARKED (it depended on #2).**
 5. ~~In-place `onpopstate`~~ — **DECIDED AGAINST (option A: keep reload-on-popstate); see §6.**
 6. ~~Launch the single-protein overlay (key `'v'`) from both views~~ — **✅ CONFIRMED WORKING** from both
    views; no change needed (see §6).
-7. Whether any common reports/graphs actually exist to justify the common reported-peptide foundation
-   (open product question — the foundation is built regardless because it is nearly free).
+7. ~~Whether any common reports/graphs actually exist~~ — **RESOLVED (2026-09-15):** none to build as a
+   *common* display — similar-looking per-view tables/charts each render their own (peptide vs protein) data
+   (see §2 / §6). The shared data foundation is kept for the fast switching.
