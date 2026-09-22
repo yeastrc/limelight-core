@@ -177,6 +177,7 @@ Only the **docs** are committed.
 | Experiment-page **conditions** | **Declined** — combining searches into one condition = fraction/replicate gap **+** cross-run non-comparability | 2026-07-30 |
 | Open-mod quant | **DEFERRED** — searches rejected (out of scope); see "Searches not supported for quant" | 2026-07-29 |
 | Searches with **PSM-level variable (dynamic) mods** | **Excluded** — FE hides the button + a single server tripwire at the top of the submit controller (`isAnyPsmHas_DynamicModifications`). Same rpid-spans-multiple-mass-forms problem as open mods | 2026-07-30 |
+| Non-centroid (profile) scan data | **Blocked** — a scan file must be centroided at **every** MS level, **not just MS1**; FE upload gate + server submit guard reject non-centroid files with a per-filename message. All-levels because mzLib throws on **any** profile spectrum at read time (before FlashLFQ's MS1-only filter runs) — an MS1-only gate would pass files that then fail the run. Convenience/fail-fast, **not** data-correctness (mzLib never reads profile data, so no bad quant is ever produced). See `quant_profile_centroid_detection__all_ms_levels_gate.md` | 2026-09-17; source-verified 2026-09-22 |
 | Non-standard residues | keep 20 AA + U/O/J; drop X/B/Z/\* (explainability rule) | boss 2026-06-29 |
 | Mass computation | in Java, single source of truth; service does no chemistry | boss decision |
 
@@ -325,6 +326,11 @@ and the §5 multi-scan-file gate (typed `FlashLFQ_Run_Reject_Reason`) live with 
 - `quant_add_new__submit_run_model_change_decisions_2026-08-20.md` — JOINT/PER_FILE run model;
   `quant_add_new__submit_no_psms_to_run_decisions_2026-08-20.md` (+ the peptide-page variant) — no-PSMs handling;
   `quant_add_new__submit_joint_flashlfq_run_and_results_page_plan_2026-08-17.md` — joint run + results page.
+- `quant_profile_centroid_detection__all_ms_levels_gate.md` — the **profile/centroid detection gate**: a
+  scan file must be centroided at **every** MS level (mzLib throws on any profile spectrum at read time,
+  before FlashLFQ's MS1-only filter — so **NOT** MS1-only). Detection webservice + FE upload gate + server
+  submit guard, all three layers `file:line`-grounded; mzLib rationale source-verified vs `1.0.566`.
+  **Do not narrow this to MS1-only.**
 
 **Reviews (2026-07-29 set):**
 - `flashlfq_quant_mapping_critical_review_2026-07-29.md` — composed-design holes H1–H9.

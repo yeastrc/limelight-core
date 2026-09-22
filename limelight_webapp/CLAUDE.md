@@ -150,6 +150,32 @@ controller does use the getter, it must add the level check itself
 The throwing validator is the simplest correct choice — prefer it for every new REST
 data controller.
 
+### Exactly ONE project per request — Limelight has no cross-project data pages
+
+Every data page/webservice operates on a **single** project. There are **no cross-project
+data pages**, and (per the maintainer) there never will be — the only exception is the
+project-**list** pages (which are not project-scoped data). So a request whose input ids
+resolve to **more than one distinct project is invalid and is rejected, not serviced.**
+
+This is enforced at every auth layer, so you get it for free if you follow the normal pattern:
+
+- The page-controller getter
+  `GetWebSessionAuthAccessLevelForProjectIds.getAuthAccessLevelForProjectIds(projectIds, …)`
+  **and** the REST throwing validator
+  `ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds` BOTH `throw` on
+  `projectIds.size() > 1` (a `LimelightInternalErrorException`).
+- The `/d/pg/psb/**` interceptor
+  (`DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor`)
+  forwards a projectSearchId-based *page* request to a 404 when its searches span more
+  than one project (`projectIdsSet.size() > 1`), **before** the auth call.
+
+For a controller whose input is a **list** (of ids/entities, possibly spanning searches or
+scan files): resolve every input to its project, build the **distinct** project-id set, and
+pass that **one** set to a **single** auth call. Do **NOT** loop over the distinct projects
+authorizing each — that would *service* a cross-project request instead of rejecting it. A
+distinct set of size > 1 must fail (the single auth call already throws; an explicit up-front
+check returning a clear error is also fine). `projectIds` of size 1 is the only valid case.
+
 ### Page ↔ webservice auth must agree — the reload-on-403 contract
 
 A data page and the webservices it calls authorize **independently**, and the
