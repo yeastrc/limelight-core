@@ -3,11 +3,29 @@
 **Status: RESOLVED (Dan, 2026-08-20) — building phased + STOP-gated.** All load-bearing questions are
 settled (resolutions inline below). Phase 1 (backend) is the first build step.
 
+> **⚠ UPDATE 2026-09-23 — the §3 / Q-JOINT resolution is CORRECTED: Option (a) is CLOSED, not deferred.**
+> The original Q-JOINT rationale below ("MBR is meant to infer its peaks"; Option (a) = send empty-psms
+> files so MBR infers a column) rested on a **misconception of FlashLFQ MBR**. Verified against mzLib
+> **v1.0.566** source: FlashLFQ **cannot quantify a scan file that has zero identifications of its own** —
+> (1) the engine's run set is derived ONLY from the identifications
+> (`FlashLfqEngine.cs:89-93`: `SpectraFileInfoList = allIdentifications.Select(p => p.FileInfo).Distinct()…`),
+> so a zero-ID file is never registered as a run at all — no column; (2) MBR refuses an acceptor that lacks
+> **≥3 of its OWN unambiguous MS/MS-identified peaks** (`MbrScorer.cs:56-59`, via `scorer == null → return`
+> at `FlashLfqEngine.cs:894-895`). MBR transfers *additional* peptides into a file that **already** has its
+> own IDs; it does **not** quantify a file from scratch. **So dropping an empty mapped file from a JOINT run
+> is CORRECT — there is no quant to recover — and Option (a) would not work.** The only residual is a
+> pure-**display** choice (whether to surface a mapped-but-unquantifiable no-PSMs file in the metadata
+> panel), decoupled from quant. The `noPsmsPairs` = PER_FILE-only decision is UNAFFECTED and stands. (The
+> "needs external-C# verification" instinct was right — the verification is now done, against mzLib 1.0.566
+> at `/spinning-disk-02/code_downloads_for_research/from Github/mzLib`.)
+
 **Resolutions (authoritative, Dan 2026-08-20):**
 - **§3 / Q-JOINT → (b).** JOINT empty-file behavior stays as-is: an empty mapped file is silently absent
-  from the joint run (no marker, no column). Option (a) (send empty-psms files so MBR infers a column) is
-  **deferred to the view-matrix round** (needs external-C# verification; only renders there). So
-  `noPsmsPairs` is a **PER_FILE-only** concept — JOINT never emits it.
+  from the joint run (no marker, no column). Option (a) (send empty-psms files so MBR infers a column) was
+  **deferred to the view-matrix round** (needs external-C# verification; only renders there) — **⚠ now
+  CLOSED (2026-09-23): FlashLFQ cannot quantify a zero-ID file, so Option (a) would not work; see the UPDATE
+  banner at the top.** So `noPsmsPairs` is a **PER_FILE-only** concept — JOINT never emits it (this part
+  stands).
 - **Q-A → A-opt1.** `gatherPsms_ForSingleSearch` `void`→`GatherPsms_Result { Set<Integer>
   searchScanFileIds_WithPsms }`.
 - **Q-B → B-opt1.** Separate `List<WebserviceResult_NoPsmsPair> noPsmsPairs` on `WebserviceResult`; rides on
@@ -35,8 +53,10 @@ not read here). Per Dan's global rule, structural claims (which id/column/return
 
 1. **Trigger = NO PSMs to a SINGLE FlashLFQ RUN** (the *run* is the unit).
    - **JOINT** run (opt1, MBR on) → triggers **only when the WHOLE joint run has zero PSMs**. One empty file
-     within a multi-file joint run is **not** a trigger (MBR is meant to infer its peaks — but see the
-     ⚠ discovered gap in §3, which affects whether that rationale currently holds).
+     within a multi-file joint run is **not** a trigger — it is silently dropped from the run. *(The original
+     rationale "MBR is meant to infer its peaks" was WRONG — see the 2026-09-23 UPDATE banner at top:
+     FlashLFQ cannot quantify a zero-ID file, so an empty file yields no column regardless; dropping it is
+     correct.)*
    - **PER_FILE** run (opt2 / Route B, MBR off) → triggers when **that file's single-file run** has zero PSMs.
    - When triggered, **never run FlashLFQ for that run (send nothing).**
 2. **Detection lives at the PSM-gather point** — in the shared service
