@@ -86,6 +86,28 @@ page** for the same peptide (multi-search rows also expand through the `#6` leve
   [`quant_things_to_deal_with_when_start_store_in_db.md`](quant_things_to_deal_with_when_start_store_in_db.md)
   for the schema/ingest considerations catalogued so far.
 
+## 4. No-PSMs / skipped-file user-facing display — deferred follow-ups (ROADMAP)
+
+**Context.** When a mapped scan file has zero passing PSMs (its search's filters exclude everything), FlashLFQ
+cannot quantify it — a file needs its own identifications; Match-Between-Runs cannot recover a zero-PSM file
+(see [`quant_add_new__submit_no_psms_to_run_decisions_2026-08-20.md`](quant_add_new__submit_no_psms_to_run_decisions_2026-08-20.md)).
+Limelight already expresses this in places; two more are wanted so the user is never left expecting quant that
+will never appear.
+
+**Already expressed (done):**
+- **PER_FILE runs:** an empty mapped file surfaces via `noPsmsPairs` + the runs-list count breakdown (e.g.
+  `3 (1 no PSMs)`).
+- **JOINT runs (2026-09-23, uncommitted):** empty mapped files now appear in the "Uploaded Metadata & Quant
+  Run Settings" run-info panel as a greyed/italic row, PSM count `0 — no PSMs (not quantified)`, with an
+  explaining hover tooltip (`hasPsms:false`). See the decisions doc above.
+
+**Deferred follow-ups (both display-policy decisions — the maintainer's call):**
+
+| # | Surface | User sees now | Desired improvement | Constraints / open choices |
+|---|---|---|---|---|
+| 1 | Main **quant peptide DataTable**, the per-file `Quant (<searchId>)` column | Empty cells for a file whose search had no PSMs, unexplained | A **message block** (leaning away from the already-large column-header tooltip) stating: no PSMs for that search → no quant, **even in a single JOINT run with MBR** | Must fit the table's existing non-value semantics (blank vs `overlapping signal` vs measured-zero; `-1` sort sentinel — see `front_end` CLAUDE.md). Decide: which columns, block vs header-tooltip vs per-cell, exact wording. |
+| 2 | Run-info panel disclosure (JOINT) | Empty files ARE shown, but the panel is collapsed-by-default → skipped files are "buried" | **Prominently point out** which scan files are fully skipped in a single JOINT/MBR run, so there is no expectation of any quant for them | E.g. a header badge/count, auto-expand when an empty file exists, or a main-area line. Purely presentational; builds on the 2026-09-23 panel work. |
+
 ---
 
 ## Related docs

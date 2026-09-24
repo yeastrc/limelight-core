@@ -19,6 +19,20 @@ settled (resolutions inline below). Phase 1 (backend) is the first build step.
 > "needs external-C# verification" instinct was right — the verification is now done, against mzLib 1.0.566
 > at `/spinning-disk-02/code_downloads_for_research/from Github/mzLib`.)
 
+> **UPDATE 2026-09-23 (display follow-up) — JOINT empty mapped files are now DISPLAYED, not just correctly
+> dropped.** Building on the correction above (FlashLFQ can't quantify a zero-PSM file), a **display-only**
+> improvement was implemented (uncommitted, review-verified against source — no defects): a JOINT run now
+> **keeps the mapped-but-empty files' `quant_metadata` records** flagged **`hasPsms:false`** (server-computed
+> in `buildQuantMetadataSubset_ForRequest`; the empty set = mapped scan files minus files-with-PSMs, passed
+> only on the JOINT send — PER_FILE passes an empty set and still surfaces its empty files via `noPsmsPairs`).
+> The **"Uploaded Metadata & Quant Run Settings" run-info panel** renders those rows greyed/italic, PSM count
+> **"0 — no PSMs (not quantified)"**, with an explaining hover tooltip. The empty file is **still NOT sent to
+> FlashLFQ** (never enters `spectral_data`) — this only surfaces the uploaded metadata for a file the user
+> mapped. Backward-compatible: older runs' `quant_metadata.json` lack `hasPsms`; the panel treats absent as
+> quantified. Further user-facing-display follow-ups (a message on the main quant DataTable's empty
+> `Quant (<searchId>)` column; making skipped files more prominent than a collapsed panel) are tracked in
+> [`quant_pages_TODO.md`](quant_pages_TODO.md) §4.
+
 **Resolutions (authoritative, Dan 2026-08-20):**
 - **§3 / Q-JOINT → (b).** JOINT empty-file behavior stays as-is: an empty mapped file is silently absent
   from the joint run (no marker, no column). Option (a) (send empty-psms files so MBR infers a column) was
