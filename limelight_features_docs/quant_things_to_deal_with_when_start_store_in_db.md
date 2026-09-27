@@ -78,6 +78,41 @@ Design storage + retrieval + display to be **program-agnostic** end to end:
 This keeps adding a second/third quant program a matter of writing a new ingest adapter, not touching shared
 storage or display code.
 
+## 5. Give each quant run an authoritative, stored copy of its SUBMIT-TIME filters (and retrieve results against those, not page state)
+
+The prototype has a subtle filtering asymmetry between the peptide and protein result-retrieval paths that a
+DB-backed design should eliminate by giving each run its own stored submit-time filter basis.
+
+**The asymmetry (code-verified):**
+- **Protein retrieval is filter-agnostic.** `QuantifiedProteins.tsv` embeds the Limelight key
+  `proteinSequenceVersionId` directly (`psvid_<id>` in the 'Protein Groups' column), so the protein controller
+  maps rows with **no cutoffs and no DB work** and returns exactly the run's submit-time-quantified set
+  (`FlashLFQ_Run__Result_Retrieval_Proteins_RestWebserviceController` — request body is just
+  `{projectSearchId, searchScanFileId, requestId}`).
+- **Peptide retrieval is filter-dependent.** `QuantifiedPeptides.tsv` keys rows only by *chemistry* (sequence +
+  summed mod masses = a "grouping identity"), which is not a Limelight id, so the peptide controller must
+  reconstruct `grouping-identity → reportedPeptideId` from the DB. Today it produces that reported-peptide
+  enumeration *from* a `searchDataLookupParamsRoot`, and the join emits only TSV rows whose identity is in that
+  enumeration — so the returned **set** is the intersection of "FlashLFQ-quantified" ∩ "passes the supplied
+  cutoffs" (`FlashLFQ_Run__Result_Retrieval_Joined_RestWebserviceController` +
+  `FlashLFQ_Quant_ReDerive_GroupingIdentity_To_ReportedPeptideIds_Service` ~lines 74–91 — the single coupling to
+  the params object; identity construction and TSV parsing do NOT depend on it).
+
+**Why it's acceptable in the prototype (not a live bug today):** on the quant common pages the filters are not
+free page state — they are fixed by the `searchDataLookupParamsCode` carried in the project URL hash (and
+sessionStorage) from the run's launch context, and **the user has no control to change them on the quant common
+page**. So the "current" filters the peptide FE sends are effectively the submit-time filters, and the peptide
+and protein sets stay consistent in normal use. The invariant is a **convention**, not enforced — it would only
+break if a run's page filters could diverge from what was used at submit.
+
+**What the DB-backed design should do:** store each quant run's **submit-time filter basis authoritatively**
+(the `searchDataLookupParams` used to run it — this is also §4's per-run metadata, and relates to what
+`params_manifest.json` already captures). Then retrieval derives the peptide `reportedPeptideId` enumeration
+from the **run's stored submit-time filters**, never from live page state — making the peptide path
+filter-agnostic w.r.t. the page, exactly like the protein path, and enforcing the "results reflect what was
+quantified" invariant by construction rather than by convention. (The maintainer's standing decision: leave the
+prototype as-is; fix this here, when quant runs are stored in the DB.)
+
 ---
 
 *Cross-reference:* the current prototype's non-finite handling (the first real case of §2) lives in the

@@ -10,6 +10,93 @@ Each item is tagged **OBSERVED** (verified against current source, with file:lin
 
 ---
 
+## ⚠ TOP-PRIORITY DEFERRED — MUST be done (added 2026-09-26)
+
+Cross-cutting cleanups the maintainer explicitly wants tracked so they are not lost. Each is its own change + review.
+
+**STATUS 2026-09-26:** items **A DONE** (both standalone list pages deleted) and **B DONE** (single-requestId full
+sweep landed) — both review-verified, uncommitted. Item **C (future)** added below.
+
+### A. DELETE the two standalone quant LIST pages (retire the clones)
+The standalone **Quant peptide LIST page** and **Quant protein LIST page** (psb routes `d/pg/psb/quant-peptide/`
+and `d/pg/psb/quant-protein/`) are **retired in favor of the Quant Common pages** (`quantCommonSPAView...`). No
+live navigation reaches them (project-page run-list links removed 2026-09-23; URL builders only build quant-common
+URLs; no external importers — GROUNDED 2026-09-26).
+
+**⚠ CORRECTION (grounded 2026-09-26 — supersedes any earlier "delete the overlay/shared" wording):** the
+single-protein **overlay** (`quant_single_protein_page/`) and `quant_peptide_and_single_protein_shared/` are
+**NOT deletable — they are LIVE dependencies of the KEPT Quant Common page** (Quant Common ProteinView/PeptideView
+import + instantiate the overlay; PeptideView imports 3 modules from the shared dir). KEEP them. (Optional later
+cleanup, deferred: relocate those two dirs out of the `quant_pages/` "standalone" location to shed the misleading
+naming — pure import-path churn, Quant Common would be the only importer once the list pages are gone.)
+
+**Deletion footprint (GROUNDED 2026-09-26):**
+- DELETE FE dirs `quant_peptide_page/` (8 files) + `quant_protein_page/` (9 files).
+- DELETE Java `QuantPeptideView_Controller.java` + `QuantProteinView_Controller.java`; JSPs `quantPeptideView.jsp`
+  + `quantProteinView.jsp`; path consts `QUANT_PEPTIDE_VIEW_PAGE_CONTROLLER` / `QUANT_PROTEIN_VIEW_PAGE_CONTROLLER`
+  (AA_PageControllerPaths_Constants.java); `build.gradle` esbuild entries for both RootLaunch bundles.
+- EDIT the now-dead references: the `"quant"` nav block in `head_section_include_data_pages.jsp` (the only external
+  user of those two path constants) and, in `navigation_dataPages_Maint_Component.tsx`, the `NavigationType_Enum.QUANT`
+  member + its else-if branch + the `quant:` type field (set ONLY by the two standalone pages).
+- KEEP: the overlay + shared dirs (above), `data_pages/quant/` shared utilities, and all FlashLFQ result-retrieval
+  controllers (shared).
+This is the endgame for sections 1–3 below (which describe the now-shared forked overlay/section that stays).
+
+### B. FINISH the single-requestId sweep (light guard landed; full sweep deferred)
+Post-redesign, **one user submit → one FlashLFQ-service request → one requestId**, permanently — so a
+result-*viewer* page can never legitimately have more than one requestId.
+- **Light guard (2026-09-26, being added now):** the Quant Common page's `MainContent` hard-fatals if it
+  resolves **>1** distinct requestId — `quantCommonSPAView_MainContent_Component.tsx` (guard at the
+  `distinctRequestIds` derivation, ~L205–L213). The plural plumbing is left intact (it just runs over a
+  length-1 set).
+- **Full sweep (DEFERRED — this item):** convert the SHARED `QuantRunInfoPanel_Component`
+  (`page_js/data_pages/quant/quantRunInfoPanel_Component.tsx`) prop `requestIds: Array<string>` → a single
+  `requestId: string`, and **remove its union/group-across-requestIds internals** (the "union across a run's
+  requestIds deduped by searchScanFileId" at ~L182/L197/L273 and the "shared settings when identical across
+  requestIds else per-group" at ~L300/L338 all collapse to one run's single manifest + metadata). Then update
+  **all three** mount sites — each derives its own `_distinctRequestIds` today — to derive + pass a single
+  `requestId` and enforce single (hard-fatal if >1), reusing the light-guard logic:
+  - `quantCommonSPAView_MainContent_Component.tsx:413` (already guarded per above),
+  - `FlashlfqPeptideDataFilePage_Root_Component.tsx:371` (raw peptide data-file page — an A2 viewer, NOT a
+    retiring page),
+  - `FlashlfqProteinDataFilePage_Root_Component.tsx:414` (raw protein data-file page).
+- **EXCLUDE (do NOT touch):** the project-page quant section — `projPg_Quant_RunsList_Component.tsx` and
+  `projPg_Quant_FlashLFQ_Run_Status_FromServer.ts` — also use plural `requestIds`, but that is a **legitimately
+  different concept** (a project has *many* quant runs; the runs list enumerates all of them). The
+  single-requestId invariant is only about a viewer page showing **one** submit.
+- Why deferred: the sweep spans the shared panel + 3 viewer page types (wider review/drive surface); the light
+  guard already delivers the safety behavior on the Quant Common page now.
+
+*(All file:line anchors OBSERVED against source 2026-09-26; re-verify before editing — line numbers drift.)*
+
+---
+
+### C. Feature-major quant response + store — CONSIDERED + DECLINED 2026-09-27 (do not re-litigate)
+**Decision (the maintainer + review, 2026-09-27): NOT worth doing.** Reasoning: (1) peptide `reportedPeptideId` is a
+per-search identifier, NOT cross-search-safe, so `Sequence → reportedPeptideId` is an inherent per-search TRANSFORM
+(not fixable shape-churn) — a feature-major store wouldn't remove it. (2) Protein `proteinSequenceVersionId` is
+globally unique/safe, but the only gain would be removing the cheap in-memory charts transpose (marginal), and
+protein-only would leave peptide + protein on different store shapes. (3) The "re-parse the file over and over"
+concern is ALREADY solved by the single-fetch refactor (each combined file is fetched + parsed ONCE per request;
+the remaining transpose is in-memory on cutoff-filtered data — not a real cost). (4) "Store the service's files as
+canonical, no DB reshape" is about STORAGE shape and does not dictate the FE's in-memory structure. Net: the
+meaningful wins are already captured by the single-fetch refactor. Left as-is. (Original description retained below
+for context.)
+
+### C (original description — feature-major quant response + store)
+During the single-fetch retrieval refactor (see
+[`quant_common_single_fetch_retrieval_refactor_plan_2026-09-26.md`](quant_common_single_fetch_retrieval_refactor_plan_2026-09-26.md)),
+the chosen response shape is **per-ssfid** (outer = scan file, inner = that sample's records) — minimal change,
+because the FE store is sample-major (`Map<ssfid, Map<featureKey,value>>`) and both consumers read it via getters.
+**Deferred cleaner end-state (the maintainer's preference, saved for later):** a **feature-major** response that
+matches the file — outer array per feature (peptide/protein), inner array per scan file, plus a root-level
+`searchScanFileIds` array declaring the column order — AND a **feature-major store** to match, which would remove
+the charts accessor's sample-major→feature-major transpose. It was NOT done in the refactor because it requires
+rewriting the whole `quant_PrototypeData` / `flashlfq_proteinQuant_PrototypeData` store class + every consumer
+(~10 methods + both table paths) — out of scope for a fetch-shape change. Revisit as its own change.
+
+---
+
 ## 1. Quant single-protein overlay — tab-view widgets — RE-ENABLED / resolved (OBSERVED)
 
 **Resolved 2026-08-28.** The three protein-sequence/structure tab-view widgets on the quant single-protein
