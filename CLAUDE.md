@@ -6,6 +6,10 @@ Building below) plus a TypeScript/webpack front end. User-facing docs live at
 https://limelight-ms.readthedocs.io/ — this section covers only what isn't obvious
 from the code.
 
+**Durable design notes / decisions / plans live in `limelight_features_docs/`** (repo root) — the
+committed, cross-session home for feature design records, decisions, and implementation plans (e.g. the
+FlashLFQ/quant work). Look there (and add to it) rather than re-deriving; it is public, so no secrets.
+
 ## Architecture
 
 ### Data flow
