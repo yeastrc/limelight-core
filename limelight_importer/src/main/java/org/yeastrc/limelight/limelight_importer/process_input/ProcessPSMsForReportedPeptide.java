@@ -86,6 +86,17 @@ public class ProcessPSMsForReportedPeptide {
 
 	private static final int PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__INDEPENDENTDECOY = 2;
 
+	//  Order values are assigned ONLY to Target (1) and Independent Decoy (2) PSMs.  The order drives the
+	//  PSM sort and the per-type "first saved PSM id" bookkeeping in the save loop (savePSMs).
+	//
+	//  Plain decoy PSMs ( psm.isIsDecoy() ) are deliberately NOT given an order value (it stays 0).  A decoy
+	//  is instead flagged with the boolean field 'psm_IsDecoy' on InternalClass_PsmSortingContainer, and
+	//  decoys are excluded from the first-saved-psm-id bookkeeping via that flag.
+	//
+	//  A DECOY order value (3) formerly existed only to populate the best-value lookup table below, which has
+	//  since been DELETED (never read).  With that table gone there is no remaining use for a decoy order
+	//  value, so the constant is kept commented rather than reassigned.
+	//
 	//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
 //	private static final int PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY = 3;
 
@@ -184,11 +195,12 @@ public class ProcessPSMsForReportedPeptide {
 					//  Independent Decoy order: 2
 					psmSortingContainer.target_IndependentDecoy_Decoy_Order = PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__INDEPENDENTDECOY;
 				} else if ( psm.isIsDecoy() != null && psm.isIsDecoy() ) {
-					
+
 					//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
-					//  Decoy order: 3
-//					psmSortingContainer.target_IndependentDecoy_Decoy_Order = PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY;
-					
+					//  Decoy: leave target_IndependentDecoy_Decoy_Order unset (stays 0); flag it a decoy instead.
+					//  Decoys are excluded from the target/independent-decoy first-saved-psm-id bookkeeping in the save loop.
+					psmSortingContainer.psm_IsDecoy = true;
+
 				} else {
 					//  Target order: 1
 					psmSortingContainer.target_IndependentDecoy_Decoy_Order = PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__TARGET;
@@ -333,31 +345,32 @@ public class ProcessPSMsForReportedPeptide {
 			
 			lastSavedPsmId = psmDTO.getId();
 
-			if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order != prev__target_IndependentDecoy_Decoy_Order ) {
+			//  Decoys carry no target/independent-decoy order and are excluded from this first-saved-psm-id
+			//  bookkeeping.  ( Table For PSMs that are Target/Independent Decoy/Decoy was DELETED since NOT USED:
+			//  search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl ; firstSavedPsmId_Is_Decoy stays 0. )
+			if ( ! psmSortingContainer.psm_IsDecoy ) {
 
-				long psmId = psmDTO.getId();
+				if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order != prev__target_IndependentDecoy_Decoy_Order ) {
 
-				if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order == PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__TARGET ) {
-					
-					firstSavedPsmId_Is_Target = psmId;
-				
-				} else if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order == PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__INDEPENDENTDECOY ) {
-					
-					firstSavedPsmId_Is_IndependentDecoy = psmId;
-					
-					//  	Table DELETED since NOT USED:  Table For PSMs that are Target or Independent Decoy or Decoy - table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
-					
-//				} else if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order == PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY ) {
-//					
-//					firstSavedPsmId_Is_Decoy = psmId;
-					
-				} else {
-					String msg = "psmSortingContainer.target_IndependentDecoy_Decoy_Order value not expected.  value: " + psmSortingContainer.target_IndependentDecoy_Decoy_Order;
-					log.error(msg);
-					throw new LimelightImporterInternalException(msg);
+					long psmId = psmDTO.getId();
+
+					if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order == PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__TARGET ) {
+
+						firstSavedPsmId_Is_Target = psmId;
+
+					} else if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order == PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__INDEPENDENTDECOY ) {
+
+						firstSavedPsmId_Is_IndependentDecoy = psmId;
+
+					} else {
+						//  now only reachable by a non-decoy PSM with an unexpected order value ( defensive )
+						String msg = "psmSortingContainer.target_IndependentDecoy_Decoy_Order value not expected.  value: " + psmSortingContainer.target_IndependentDecoy_Decoy_Order;
+						log.error(msg);
+						throw new LimelightImporterInternalException(msg);
+					}
+
+					prev__target_IndependentDecoy_Decoy_Order = psmSortingContainer.target_IndependentDecoy_Decoy_Order;
 				}
-
-				prev__target_IndependentDecoy_Decoy_Order = psmSortingContainer.target_IndependentDecoy_Decoy_Order;
 			}
 			
 			
@@ -1023,10 +1036,18 @@ public class ProcessPSMsForReportedPeptide {
 		Psm psm; 
 		
 		/**
-		 * set to 1 for target, 2 for independent decoy, 3 for decoy - Use constants at top file root class
+		 * set to 1 for target, 2 for independent decoy - Use constants at top file root class.
+		 * NOT set for a (plain) decoy PSM; a decoy is flagged via psm_IsDecoy instead (see below).
 		 */
 		int target_IndependentDecoy_Decoy_Order;
-		
+
+		/**
+		 * true for a plain decoy PSM ( psm.isIsDecoy() ).  A decoy carries no
+		 * target_IndependentDecoy_Decoy_Order (it stays 0) and is excluded from the
+		 * target/independent-decoy first-saved-psm-id bookkeeping in the save loop.
+		 */
+		boolean psm_IsDecoy;
+
 		int originalOrder;
 		
 		@Override
