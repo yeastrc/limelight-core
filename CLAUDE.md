@@ -261,6 +261,36 @@ Note: root-level Gradle does NOT work (see `Z_Not_Works_build.gradle` /
 `Z_Not_Works_settings.gradle`). Use the root Ant build for a full build and the
 per-module Ant scripts above for a single module.
 
+## Gradle dependencies: centralize common libs in `limelight_shared_code` — don't re-declare in leaf modules
+
+There is **no root Gradle build** (Ant drives per-module Gradle; each deployable module's
+`settings.gradle` includes the shared library modules as subprojects). So the way a common
+dependency is kept at one version across modules is to **declare it once in
+`limelight_shared_code` and let it flow transitively** into the deployable modules and their
+`.jar`/`.war`.
+
+- **Declare shared/common libs ONCE in `limelight_shared_code`** (or the relevant shared
+  library) and do **NOT** re-declare them in the plain-Java deployable modules
+  (`limelight_importer`, `limelight_run_importer`, `limelight_feature_detection_run_import`).
+  To bump one, edit only the shared module.
+- Use **`api`** for a shared dep the leaves compile against (`import` it) — it flows to their
+  compile + runtime classpath. Use **`implementation`/`runtimeOnly`** for a runtime-only
+  provider (flows to their runtime classpath). Currently centralized: `jackson-databind` /
+  `jackson-core` (`api`), `jakarta.xml.bind-api` (`api`), `jaxb-runtime` (runtime),
+  `slf4j-api` (`api`), `commons-lang3` (`api`).
+- **The webapp is a deliberate exception — keep its own declarations, do NOT consolidate them
+  into shared.** Its versions are governed by the Spring Boot BOM (which *overrides* transitive
+  versions, so a shared `api` version won't change what the webapp resolves for BOM-managed
+  libs), and its `jakarta.xml.bind-api`/`jaxb-runtime`/`jaxb-impl` are part of the delicate
+  javax↔jakarta JAXB coexistence (see the next section).
+
+Why: re-declaring `jackson-databind` in both the shared module (2.22.1) and the leaves
+(2.22.2) let a security bump update the leaves but miss the shared module, keeping the
+vulnerable version in every module's dependency graph and a Dependabot HIGH open. Full
+rationale (api-vs-implementation, the compiled-vs-runtime-version caveat, and how the
+`dependency-submission` workflow surfaces this to Dependabot) is in
+**`README__Gradle_Dependencies_TransitiveInfo.md`** (repo root).
+
 ## Dependency updates: the JAXB Java-8 vs Java-25 split (and a Dependabot gotcha)
 
 The modules run on **two Java toolchains**, and this splits which JAXB line each may

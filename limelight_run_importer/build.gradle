@@ -59,9 +59,6 @@ dependencies {
 	// compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.416'
 
 	
-	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-	implementation 'org.apache.commons:commons-lang3:3.20.0'
-	
 	// https://mvnrepository.com/artifact/commons-io/commons-io
 	implementation 'commons-io:commons-io:2.22.0'
 	
@@ -88,28 +85,18 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl
 	implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.26.1'
 
-	//  Pin the SLF4J 2.0.x API explicitly (also pulled transitively by the binding above).
-	implementation 'org.slf4j:slf4j-api:2.0.18'
-	
 	//  Jakarta Commons Logging to SLF4J
 	implementation 'org.slf4j:jcl-over-slf4j:2.0.18'
 	
 	//  Log4j 1 to 2 bridge
 	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.26.1'
 		
-	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
-	implementation 'com.fasterxml.jackson.core:jackson-core:2.22.2'
-	
-	// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.2'
+	//  jackson (core + databind), jakarta.xml.bind-api, and jaxb-runtime are inherited transitively from
+	//  limelight_shared_code (declared there as 'api' / runtime).  See README__Gradle_Dependencies_TransitiveInfo.md
 	
 	
 	
-	// JAXB dependencies (Required for Java 11+)
-	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.5'
-	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.9'
+	//  (jackson-databind, jakarta.xml.bind-api, jaxb-runtime removed — inherited from limelight_shared_code)
 	
 	
 	//  NOT FOUND in mavenCentral()
