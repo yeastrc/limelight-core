@@ -134,10 +134,10 @@ dependencies {
 	//   AWS  S3
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/s3
-	implementation 'software.amazon.awssdk:s3:2.55.7'
+	implementation 'software.amazon.awssdk:s3:2.55.8'
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/apache-client
-	implementation 'software.amazon.awssdk:apache-client:2.55.7'
+	implementation 'software.amazon.awssdk:apache-client:2.55.8'
 	
 	
 	//   OLD V1
@@ -192,7 +192,7 @@ dependencies {
 	//  compile group: 'com.google.guava', name: 'guava', version: '24.0-jre'
 	
 	// https://mvnrepository.com/artifact/com.google.guava/guava
-	implementation 'com.google.guava:guava:33.6.0-jre'
+	implementation 'com.google.guava:guava:33.7.2-jre'
 	
 	//  JSTL (Jakarta, jakarta.tags.* taglibs) for JSP pages: API + Glassfish impl
 	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2'
@@ -202,7 +202,7 @@ dependencies {
 	//   Apache Commons
 	
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-	implementation 'org.apache.commons:commons-lang3:3.20.0'
+	implementation 'org.apache.commons:commons-lang3:3.21.0'
 	
 	// https://mvnrepository.com/artifact/commons-io/commons-io
 	implementation 'commons-io:commons-io:2.22.0'
