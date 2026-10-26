@@ -36,7 +36,6 @@ import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightWebappConfigException;
-import org.yeastrc.sendmail.SendMailFacade;
 
 /**
  * Send Email
@@ -50,23 +49,6 @@ public class SendEmail implements SendEmailIF {
 	@Autowired
 	private ConfigSystemDAO_IF configSystemDAO;
 	
-	private boolean useEmailWebservice = false;
-
-	/**
-	 * Package Private
-	 * 
-	 * Set by SendMail_ReadConfigFileOnStartup
-	 * 
-	 * @param useEmailWebservice
-	 */
-	void setUseEmailWebservice(boolean useEmailWebservice) {
-		this.useEmailWebservice = useEmailWebservice;
-
-		if ( log.isInfoEnabled() ) {
-			log.info( "useEmailWebservice: " + useEmailWebservice );
-		}
-	}
-
 	/**
 	 * @param sendEmailItem
 	 * @throws Exception
@@ -78,225 +60,208 @@ public class SendEmail implements SendEmailIF {
 			log.info( "About to send email: " + sendEmailItem );
 		}
 		
-		if ( useEmailWebservice ) {
+		String smtpServerHost = null;
+		String smtpServerPort = null;
 		
-			//  Send via email service
+		String smtpAuthUsername = null;
+		String smtpAuthPassword = null;
+		
+		if ( StringUtils.isNotEmpty(sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET() ) ) {
+			
+			smtpServerHost = sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET();
+			smtpServerPort = sendEmailItem.getSmtpServerPort_Override_NORMALLY_NOT_SET();
+			smtpAuthUsername = sendEmailItem.getSmtpAuthUsername_Override_NORMALLY_NOT_SET();
+			smtpAuthPassword = sendEmailItem.getSmtpAuthPassword_Override_NORMALLY_NOT_SET();
 
 			if ( log.isInfoEnabled() ) {
-				log.info( "useEmailWebservice is true so send email using SendMailFacade. sendEmailItem : " + sendEmailItem );
+				log.info( "sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET() is NOT empty so send email using ..._Override_NORMALLY_NOT_SET() properties. sendEmailItem : " + sendEmailItem );
 			}
 			
-			SendMailFacade sendMailFacade = SendMailFacade.getSingtonInstance();
-			sendMailFacade.send( 
-					sendEmailItem.getToEmailAddress(),
-					sendEmailItem.getFromEmailAddress(),
-					sendEmailItem.getEmailSubject(),
-					sendEmailItem.getEmailBody() );
 		} else {
-			
-			String smtpServerHost = null;
-			String smtpServerPort = null;
-			
-			String smtpAuthUsername = null;
-			String smtpAuthPassword = null;
-			
-			if ( StringUtils.isNotEmpty(sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET() ) ) {
-				
-				smtpServerHost = sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET();
-				smtpServerPort = sendEmailItem.getSmtpServerPort_Override_NORMALLY_NOT_SET();
-				smtpAuthUsername = sendEmailItem.getSmtpAuthUsername_Override_NORMALLY_NOT_SET();
-				smtpAuthPassword = sendEmailItem.getSmtpAuthPassword_Override_NORMALLY_NOT_SET();
 
+			if ( log.isInfoEnabled() ) {
+				log.info( "sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET() IS empty so NOT send email using ..._Override_NORMALLY_NOT_SET() properties.  Send using values from Config DB table.  sendEmailItem : " + sendEmailItem );
+			}
+		
+			smtpServerHost = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_HOST_KEY );
+			smtpServerPort = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_PORT_KEY );
+
+			if ( StringUtils.isEmpty( smtpServerHost ) ) {
+
+				String msg = "Cannot send email: No entry in config table for key '" + ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_HOST_KEY
+						+ "'.";
+				log.error(msg);
+				throw new LimelightWebappConfigException( msg );
+			}
+
+			//  Both smtpAuthUsername and smtpAuthPassword MUST be populated.  Ignored if only one is populated
+
+			smtpAuthUsername = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_USERNAME_KEY );
+			smtpAuthPassword = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_PASSWORD_KEY );
+		}
+
+		if ( log.isInfoEnabled() ) {
+			log.info( "SMTP values used for connect. smtpServerHost: " + smtpServerHost 
+					+ ", smtpServerPort: " + smtpServerPort
+					+ ", smtpAuthUsername: " + smtpAuthUsername
+					+ ", smtpAuthPassword has value: " + ( StringUtils.isNotEmpty( smtpAuthPassword ) ? "true" : "false" )
+					+ ", sendEmailItem : " + sendEmailItem );
+		}
+	
+		// Generate and send the email to the user.
+		try {
+			
+			String fromEmailAddress = sendEmailItem.getFromEmailAddress();
+
+			// set the SMTP host property value
+			Properties properties = System.getProperties();
+
+			final String SMTP_TIMEOUT = "3000";  // in Milliseconds.  String since put in Properties object
+			
+			properties.put("mail.smtp.timeout", SMTP_TIMEOUT);    
+			properties.put("mail.smtp.connectiontimeout", SMTP_TIMEOUT); 
+			
+			properties.put( "mail.smtp.host", smtpServerHost );
+			
+			if ( StringUtils.isNotEmpty(smtpServerPort) ) {
+				properties.put( "mail.smtp.port", smtpServerPort );
+			}
+
+			if ( StringUtils.isNotEmpty(smtpAuthUsername) && StringUtils.isNotEmpty(smtpAuthPassword) ) {
+				
+				//  YES SMTP Username/Password
+				
 				if ( log.isInfoEnabled() ) {
-					log.info( "sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET() is NOT empty so send email using ..._Override_NORMALLY_NOT_SET() properties. sendEmailItem : " + sendEmailItem );
+					log.info( "smtpAuthUsername and smtpAuthPassword have values. setting specific values for 'mail.smtp.ssl.protocols' 'mail.smtp.auth' 'mail.smtp.starttls.enable' 'mail.smtp.starttls.required'.  smtpAuthUsername: " + smtpAuthUsername );
 				}
+
+				// Force modern TLS for older JVMs / strict servers
+				properties.put("mail.smtp.ssl.protocols", "TLSv1.2");    // or "TLSv1.3 TLSv1.2"
+				
+				properties.put("mail.smtp.auth", "true");
+				properties.put("mail.smtp.starttls.enable", "true");
+				properties.put("mail.smtp.starttls.required", "true");
 				
 			} else {
 
+				//  NO SMTP Username/Password
+				
 				if ( log.isInfoEnabled() ) {
-					log.info( "sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET() IS empty so NOT send email using ..._Override_NORMALLY_NOT_SET() properties.  Send using values from Config DB table.  sendEmailItem : " + sendEmailItem );
-				}
-			
-				smtpServerHost = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_HOST_KEY );
-				smtpServerPort = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_PORT_KEY );
-
-				if ( StringUtils.isEmpty( smtpServerHost ) ) {
-
-					String msg = "Cannot send email: No entry in config table for key '" + ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_HOST_KEY
-							+ "'.";
-					log.error(msg);
-					throw new LimelightWebappConfigException( msg );
+					log.info( "smtpAuthUsername or smtpAuthPassword NOT have values. NOT setting specific values for 'mail.smtp.ssl.protocols''mail.smtp.starttls.required'. Set 'mail.smtp.auth' 'false' 'mail.smtp.starttls.enable' 'false'.  smtpAuthUsername: " + smtpAuthUsername );
 				}
 
-				//  Both smtpAuthUsername and smtpAuthPassword MUST be populated.  Ignored if only one is populated
-
-				smtpAuthUsername = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_USERNAME_KEY );
-				smtpAuthPassword = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_PASSWORD_KEY );
+				properties.put("mail.smtp.auth", "false"); // Explicitly disable authentication
+				properties.put("mail.smtp.starttls.enable", "false"); // Disable TLS (if not required)
 			}
+			
+			
+			// create a JavaMail session
+			jakarta.mail.Session mailSession = jakarta.mail.Session.getInstance(properties, null);
+			// create a new MIME message
+			
+			MimeMessage message = null;
+			try {
+				message = new MimeMessage(mailSession);
 
-			if ( log.isInfoEnabled() ) {
-				log.info( "SMTP values used for connect. smtpServerHost: " + smtpServerHost 
+			} catch ( Exception e ) {
+				log.error( "Error in 'new MimeMessage' to sending email to Smtp Server.  Exception: smtpServerHost: '"
+						+ smtpServerHost + "', sendEmailItem: " + sendEmailItem
 						+ ", smtpServerPort: " + smtpServerPort
 						+ ", smtpAuthUsername: " + smtpAuthUsername
-						+ ", smtpAuthPassword has value: " + ( StringUtils.isNotEmpty( smtpAuthPassword ) ? "true" : "false" )
-						+ ", sendEmailItem : " + sendEmailItem );
+						+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
+				throw e; 
 			}
-		
-			// Generate and send the email to the user.
+			
+			// set the from address
+			Address fromAddress = new InternetAddress( fromEmailAddress );
+			message.setFrom(fromAddress);
+			// set the to address
+			Address[] toAddress = InternetAddress.parse( sendEmailItem.getToEmailAddress() );
+			message.setRecipients(Message.RecipientType.TO, toAddress);
+			// set the subject
+			message.setSubject( sendEmailItem.getEmailSubject() );
+			message.setText( sendEmailItem.getEmailBody() );
+			
+			Transport mailTransport = null;
 			try {
 				
-				String fromEmailAddress = sendEmailItem.getFromEmailAddress();
-
-				// set the SMTP host property value
-				Properties properties = System.getProperties();
-
-				final String SMTP_TIMEOUT = "3000";  // in Milliseconds.  String since put in Properties object
+				log.info( "Send Email: Prep for connect then connect" );
 				
-				properties.put("mail.smtp.timeout", SMTP_TIMEOUT);    
-				properties.put("mail.smtp.connectiontimeout", SMTP_TIMEOUT); 
-				
-				properties.put( "mail.smtp.host", smtpServerHost );
-				
-				if ( StringUtils.isNotEmpty(smtpServerPort) ) {
-					properties.put( "mail.smtp.port", smtpServerPort );
-				}
-
 				if ( StringUtils.isNotEmpty(smtpAuthUsername) && StringUtils.isNotEmpty(smtpAuthPassword) ) {
 					
 					//  YES SMTP Username/Password
-					
+
 					if ( log.isInfoEnabled() ) {
-						log.info( "smtpAuthUsername and smtpAuthPassword have values. setting specific values for 'mail.smtp.ssl.protocols' 'mail.smtp.auth' 'mail.smtp.starttls.enable' 'mail.smtp.starttls.required'.  smtpAuthUsername: " + smtpAuthUsername );
+						log.info( "smtpAuthUsername and smtpAuthPassword have values. YES using smtpAuthUsername and smtpAuthPassword when calling 'connect( smtpAuthUsername, smtpAuthPassword )' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
 					}
 
-					// Force modern TLS for older JVMs / strict servers
-					properties.put("mail.smtp.ssl.protocols", "TLSv1.2");    // or "TLSv1.3 TLSv1.2"
+					mailTransport = mailSession.getTransport("smtp");
 					
-					properties.put("mail.smtp.auth", "true");
-					properties.put("mail.smtp.starttls.enable", "true");
-					properties.put("mail.smtp.starttls.required", "true");
+					mailTransport.connect( smtpAuthUsername, smtpAuthPassword );
 					
 				} else {
-
 					//  NO SMTP Username/Password
-					
+
 					if ( log.isInfoEnabled() ) {
-						log.info( "smtpAuthUsername or smtpAuthPassword NOT have values. NOT setting specific values for 'mail.smtp.ssl.protocols''mail.smtp.starttls.required'. Set 'mail.smtp.auth' 'false' 'mail.smtp.starttls.enable' 'false'.  smtpAuthUsername: " + smtpAuthUsername );
+						log.info( "smtpAuthUsername or smtpAuthPassword NOT have values. Not using smtpAuthUsername or smtpAuthPassword when calling 'connect()' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
 					}
 
-					properties.put("mail.smtp.auth", "false"); // Explicitly disable authentication
-					properties.put("mail.smtp.starttls.enable", "false"); // Disable TLS (if not required)
+					mailTransport = mailSession.getTransport("smtp");
+					
+					mailTransport.connect();	
 				}
 				
-				
-				// create a JavaMail session
-				jakarta.mail.Session mailSession = jakarta.mail.Session.getInstance(properties, null);
-				// create a new MIME message
-				
-				MimeMessage message = null;
-				try {
-					message = new MimeMessage(mailSession);
+				message.saveChanges();      // don't forget this
 
-				} catch ( Exception e ) {
-					log.error( "Error in 'new MimeMessage' to sending email to Smtp Server.  Exception: smtpServerHost: '"
-							+ smtpServerHost + "', sendEmailItem: " + sendEmailItem
-							+ ", smtpServerPort: " + smtpServerPort
-							+ ", smtpAuthUsername: " + smtpAuthUsername
-							+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
-					throw e; 
+				log.info( "Send Email: Send Message" );
+				
+				mailTransport.sendMessage(message, message.getAllRecipients());
+
+				log.info( "Send Email: After Send Message if no exception in send message" );
+				
+			} finally {
+				if ( mailTransport != null ) {
+					mailTransport.close();
 				}
-				
-				// set the from address
-				Address fromAddress = new InternetAddress( fromEmailAddress );
-				message.setFrom(fromAddress);
-				// set the to address
-				Address[] toAddress = InternetAddress.parse( sendEmailItem.getToEmailAddress() );
-				message.setRecipients(Message.RecipientType.TO, toAddress);
-				// set the subject
-				message.setSubject( sendEmailItem.getEmailSubject() );
-				message.setText( sendEmailItem.getEmailBody() );
-				
-				Transport mailTransport = null;
-				try {
-					
-					log.info( "Send Email: Prep for connect then connect" );
-					
-					if ( StringUtils.isNotEmpty(smtpAuthUsername) && StringUtils.isNotEmpty(smtpAuthPassword) ) {
-						
-						//  YES SMTP Username/Password
-
-						if ( log.isInfoEnabled() ) {
-							log.info( "smtpAuthUsername and smtpAuthPassword have values. YES using smtpAuthUsername and smtpAuthPassword when calling 'connect( smtpAuthUsername, smtpAuthPassword )' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
-						}
-
-						mailTransport = mailSession.getTransport("smtp");
-						
-						mailTransport.connect( smtpAuthUsername, smtpAuthPassword );
-						
-					} else {
-						//  NO SMTP Username/Password
-
-						if ( log.isInfoEnabled() ) {
-							log.info( "smtpAuthUsername or smtpAuthPassword NOT have values. Not using smtpAuthUsername or smtpAuthPassword when calling 'connect()' on mailTransport object (class Transport).  smtpAuthUsername: " + smtpAuthUsername );
-						}
-
-						mailTransport = mailSession.getTransport("smtp");
-						
-						mailTransport.connect();	
-					}
-					
-					message.saveChanges();      // don't forget this
-
-					log.info( "Send Email: Send Message" );
-					
-					mailTransport.sendMessage(message, message.getAllRecipients());
-
-					log.info( "Send Email: After Send Message if no exception in send message" );
-					
-				} finally {
-					if ( mailTransport != null ) {
-						mailTransport.close();
-					}
-				}
-				
 			}
-			catch (AddressException e) {
-				// Invalid email address format
-				//				errors.add("email", new ActionMessage("error.resetpassword.sendmailerror"));
-				log.warn( "Error sending email to Smtp Server.  AddressException: smtpServerHost: '"
-				+ smtpServerHost + "', sendEmailItem: " + sendEmailItem
-				+ ", smtpServerPort: " + smtpServerPort
-				+ ", smtpAuthUsername: " + smtpAuthUsername
-				+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
-				throw e; 
-			}
-			catch (SendFailedException e) {
-				// Invalid email address format
-				log.error( "Error sending email to Smtp Server.  SendFailedException: smtpServerHost: '" + smtpServerHost + "', sendEmailItem: " + sendEmailItem
-						+ ", Smtp Server Host: " + smtpServerHost
-						+ ", smtpServerPort: " + smtpServerPort
-						+ ", smtpAuthUsername: " + smtpAuthUsername
-						+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
-				throw e; 
-			}
-			catch (MessagingException e) {
-				// Invalid email address format
-				log.error( "Error sending email to Smtp Server.  MessagingException: smtpServerHost: '" + smtpServerHost + "', sendEmailItem: " + sendEmailItem
-						+ ", Smtp Server Host: " + smtpServerHost
-						+ ", smtpServerPort: " + smtpServerPort
-						+ ", smtpAuthUsername: " + smtpAuthUsername
-						+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
-				throw e; 
-			}
-			catch (Exception e) {
-				// Invalid email address format
-				log.error( "Error sending email to Smtp Server.  Exception: smtpServerHost: '" + smtpServerHost + "', sendEmailItem: " + sendEmailItem
-						+ ", Smtp Server Host: " + smtpServerHost
-						+ ", smtpServerPort: " + smtpServerPort
-						+ ", smtpAuthUsername: " + smtpAuthUsername
-						+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
-				throw e; 
-			}
+			
+		}
+		catch (AddressException e) {
+			// Invalid email address format
+			//				errors.add("email", new ActionMessage("error.resetpassword.sendmailerror"));
+			log.warn( "Error sending email to Smtp Server.  AddressException: smtpServerHost: '"
+			+ smtpServerHost + "', sendEmailItem: " + sendEmailItem
+			+ ", smtpServerPort: " + smtpServerPort
+			+ ", smtpAuthUsername: " + smtpAuthUsername
+			+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
+			throw e; 
+		}
+		catch (SendFailedException e) {
+			// Invalid email address format
+			log.error( "Error sending email to Smtp Server.  SendFailedException: smtpServerHost: '" + smtpServerHost + "', sendEmailItem: " + sendEmailItem
+					+ ", Smtp Server Host: " + smtpServerHost
+					+ ", smtpServerPort: " + smtpServerPort
+					+ ", smtpAuthUsername: " + smtpAuthUsername
+					+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
+			throw e; 
+		}
+		catch (MessagingException e) {
+			// Invalid email address format
+			log.error( "Error sending email to Smtp Server.  MessagingException: smtpServerHost: '" + smtpServerHost + "', sendEmailItem: " + sendEmailItem
+					+ ", Smtp Server Host: " + smtpServerHost
+					+ ", smtpServerPort: " + smtpServerPort
+					+ ", smtpAuthUsername: " + smtpAuthUsername
+					+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
+			throw e; 
+		}
+		catch (Exception e) {
+			// Invalid email address format
+			log.error( "Error sending email to Smtp Server.  Exception: smtpServerHost: '" + smtpServerHost + "', sendEmailItem: " + sendEmailItem
+					+ ", Smtp Server Host: " + smtpServerHost
+					+ ", smtpServerPort: " + smtpServerPort
+					+ ", smtpAuthUsername: " + smtpAuthUsername
+					+ ", sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(): " + sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET(), e );
+			throw e; 
 		}
 		
 		if ( log.isInfoEnabled() ) {
