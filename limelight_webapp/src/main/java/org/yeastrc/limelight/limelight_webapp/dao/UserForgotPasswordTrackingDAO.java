@@ -85,8 +85,7 @@ public class UserForgotPasswordTrackingDAO extends Limelight_JDBC_Base implement
 				}
 			}
 		} catch ( Exception e ) {
-			String msg = "Failed to select UserForgotPasswordTrackingDTO, forgotPasswordTrackingCode: " + forgotPasswordTrackingCode
-					 + ", sql: " + querySQL;
+			String msg = "Failed to select UserForgotPasswordTrackingDTO, sql: " + querySQL;
 			log.error( msg, e );
 			throw e;
 		}

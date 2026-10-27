@@ -50,7 +50,7 @@ public class UserInviteTrackingDTO {
 	@Override
 	public String toString() {
 		return "UserInviteTrackingDTO [id=" + id + ", submittingUserId=" + submittingUserId + ", submitIP=" + submitIP
-				+ ", inviteTrackingCode=" + inviteTrackingCode + ", invitedUserEmail=" + invitedUserEmail
+				+ ", inviteTrackingCode=" + ( inviteTrackingCode != null ? "NOT SHOWN" : "null" ) + ", invitedUserEmail=" + invitedUserEmail
 				+ ", invitedUserAccessLevel=" + invitedUserAccessLevel + ", invitedProjectId=" + invitedProjectId
 				+ ", inviteCreateDate=" + inviteCreateDate + ", inviteUsed=" + inviteUsed + ", inviteUsedDate="
 				+ inviteUsedDate + ", useIP=" + useIP + ", codeReplacedByNewer=" + codeReplacedByNewer

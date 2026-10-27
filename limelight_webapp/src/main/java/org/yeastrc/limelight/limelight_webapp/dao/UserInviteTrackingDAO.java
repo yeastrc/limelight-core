@@ -96,8 +96,7 @@ public class UserInviteTrackingDAO extends Limelight_JDBC_Base implements UserIn
 				}
 			}
 		} catch ( Exception e ) {
-			String msg = "Failed to select UserInviteTrackingDTO, inviteTrackingCode: " + inviteTrackingCode
-					+ ", sql: " + querySQL;
+			String msg = "Failed to select UserInviteTrackingDTO, sql: " + querySQL;
 			log.error( msg, e );
 			throw e;
 		}

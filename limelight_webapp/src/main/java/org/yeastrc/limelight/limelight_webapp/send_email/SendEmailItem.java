@@ -39,7 +39,7 @@ public class SendEmailItem {
 	@Override
 	public String toString() {
 		return "SendEmailItem [toEmailAddress=" + toEmailAddress + ", fromEmailAddress=" + fromEmailAddress
-				+ ", emailSubject=" + emailSubject + ", emailBody=" + emailBody
+				+ ", emailSubject=" + emailSubject + ", emailBody=" + ( emailBody != null ? "<" + emailBody.length() + " chars>" : "null" )
 				+ ", smtpServerHost_Override_NORMALLY_NOT_SET=" + smtpServerHost_Override_NORMALLY_NOT_SET
 				+ ", smtpServerPort_Override_NORMALLY_NOT_SET=" + smtpServerPort_Override_NORMALLY_NOT_SET
 				+ ", smtpAuthUsername_Override_NORMALLY_NOT_SET=" + smtpAuthUsername_Override_NORMALLY_NOT_SET

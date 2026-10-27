@@ -171,7 +171,7 @@ public class User_ResetPassword_Change_Password_RestWebserviceController {
 		Integer userMgmtUserId = user_Validate_ResetPassword_Code_Service_Result.getUserMgmtUserId(); // userMgmtUserId assoc with Forgot Pwd Tracking code
 		
 		if ( userMgmtUserId == null ) {
-			String msg = "No userMgmtUserId found for resetPasswordTrackingCode: " + resetPasswordTrackingCode;
+			String msg = "No userMgmtUserId found for resetPasswordTrackingCode. UserForgotPasswordTrackingDTO id: " + forgotPwdTrk.getId();
 			log.error( msg );
 			throw new LimelightInternalErrorException(msg);
 		}
