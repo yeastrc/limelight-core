@@ -89,8 +89,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j2-impl
 	implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.26.1'
 
-	//  Jakarta Commons Logging to SLF4J
-	implementation 'org.slf4j:jcl-over-slf4j:2.0.18'
+	//  No jcl-over-slf4j: Commons Logging 1.3 routes to the Log4j API itself
 	
 	//  Log4j 1 to 2 bridge
 	implementation 'org.apache.logging.log4j:log4j-1.2-api:2.26.1'

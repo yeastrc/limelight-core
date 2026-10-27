@@ -171,8 +171,7 @@ dependencies {
 	//  Route SLF4J 2.x (Spring Boot 3) to Log4j2  (slf4j2 bridge, not the old slf4j1 impl)
 	implementation 'org.apache.logging.log4j:log4j-slf4j2-impl'
 	
-	//  Jakarta Commons Logging to SLF4J
-	implementation 'org.slf4j:jcl-over-slf4j'
+	//  No jcl-over-slf4j: Commons Logging 1.3 (from Spring) routes to the Log4j API itself
 	
 	//  Log4j 1 to 2 bridge
 	implementation 'org.apache.logging.log4j:log4j-1.2-api'
