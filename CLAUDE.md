@@ -281,8 +281,8 @@ dependency is kept at one version across modules is to **declare it once in
 - **The webapp is a deliberate exception — keep its own declarations, do NOT consolidate them
   into shared.** Its versions are governed by the Spring Boot BOM (which *overrides* transitive
   versions, so a shared `api` version won't change what the webapp resolves for BOM-managed
-  libs), and its `jakarta.xml.bind-api`/`jaxb-runtime`/`jaxb-impl` are part of the delicate
-  javax↔jakarta JAXB coexistence (see the next section).
+  libs), and its `jakarta.xml.bind-api`/`jaxb-runtime` follow the Java-25 JAXB line (see the next
+  section).
 
 Why: re-declaring `jackson-databind` in both the shared module (2.22.1) and the leaves
 (2.22.2) let a security bump update the leaves but miss the shared module, keeping the
@@ -302,12 +302,9 @@ use — get it wrong and the build breaks in non-obvious ways:
   / `org.glassfish.jaxb:jaxb-runtime` on **3.0.x**. JAXB **4.x** is compiled for Java 11
   (class-file 55.0) and will NOT compile under a Java 8 toolchain (`cannot access
   jakarta.xml.bind.annotation.XmlAccessType`).
-- **Java 25 modules** — everything else. They use **jakarta JAXB 4.x**. The **webapp** additionally
-  keeps a *javax* JAXB 2 runtime (`javax.xml.bind:jaxb-api:2.3.x` + `com.sun.xml.bind:jaxb-impl:2.3.x`)
-  for the bundled yeastrc client-connector jars, coexisting with jakarta `jaxb-runtime:4.0.x`.
-  Do **not** bump `com.sun.xml.bind:jaxb-impl` to 3.x/4.x — it breaks the javax pairing and drags in
-  a duplicate `org.glassfish.jaxb:jaxb-core-4.x`, failing the WAR build (`bootWar`: duplicate
-  `WEB-INF/lib` entry).
+- **Java 25 modules** — everything else. They use **jakarta JAXB 4.x** only. (The webapp used to also
+  carry a *javax* JAXB 2 runtime; it was needed only by older yeastrc user-mgmt jars and was removed once
+  they moved to jakarta. Don't re-add `javax.xml.bind:jaxb-api` / `com.sun.xml.bind:jaxb-impl`.)
 
 **The Dependabot gotcha (why the Java-8 ignore isn't enough):**
 `limelight_webapp/settings.gradle` (and `limelight_submit_import/settings.gradle`) **include
@@ -317,9 +314,8 @@ subproject and tries to bump *its* JAXB to 4.x, **bypassing** the ignore on the 
 This recurred in PRs #105 and #107. `.github/dependabot.yml` handles it by adding a **semver-major**
 ignore for `jakarta.xml.bind:jakarta.xml.bind-api` and `org.glassfish.jaxb:jaxb-runtime` to the
 **Java-25 group** (blocks the connector's 3.x→4.x jump while still allowing JAXB 4.x minor/patch on
-the genuine Java-25 modules), plus a `>=3.0.0` ignore on `com.sun.xml.bind:jaxb-impl`. If a Dependabot
-gradle PR ever reintroduces a JAXB-4.x bump on `limelight_submit_import_client_connector`, drop that
-hunk before merging — the rest of the PR is fine.
+the genuine Java-25 modules). If a Dependabot gradle PR ever reintroduces a JAXB-4.x bump on
+`limelight_submit_import_client_connector`, drop that hunk before merging — the rest of the PR is fine.
 
 ## Web security: CSP and XSS / URL hardening
 

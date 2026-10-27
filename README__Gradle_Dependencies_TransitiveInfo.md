@@ -67,12 +67,12 @@ deployable modules — **do not re-declare them in `limelight_importer`,
    jackson-databind 2.22.x into the webapp build, yet the webapp resolves the BOM's
    2.21.5.) Consequently, the versions declared in `limelight_shared_code` govern the
    **non-Spring** importer modules; the webapp follows its BOM.
-2. **JAXB javax↔jakarta coexistence.** The webapp intentionally carries both a javax
-   JAXB-2 runtime (for bundled yeastrc client-connector jars) and jakarta JAXB-4, and the
-   WAR build is sensitive to duplicate `WEB-INF/lib` JAXB entries (see the root
+2. **JAXB.** The webapp uses jakarta JAXB-4 only (the javax JAXB-2 runtime it used to carry
+   was needed only by older yeastrc user-mgmt jars and was removed once they moved to
+   jakarta). The WAR build is sensitive to duplicate `WEB-INF/lib` JAXB entries (see the root
    `CLAUDE.md`, "Dependency updates: the JAXB Java-8 vs Java-25 split"). Do not disturb
-   the webapp's `jakarta.xml.bind-api` / `jaxb-runtime` / `jaxb-impl` declarations by
-   consolidating them into shared.
+   the webapp's `jakarta.xml.bind-api` / `jaxb-runtime` declarations by consolidating them
+   into shared.
 
 ## Caveat: compiled-against vs run-against version
 

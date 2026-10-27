@@ -228,12 +228,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
 	implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.9'
 
-	// javax JAXB 2 (javax.xml.bind) - still required by the bundled yeastrc client-connector jars
-	// in libs_yeastrc_github_jars (file_object_store + spectral_storage_*), which use javax JAXB.
-	// OLD javax.xml.bind:jaxb-api coordinate + com.sun.xml.bind:jaxb-impl runtime so both runtimes
-	// coexist with the jakarta jaxb-runtime above (distinct Maven coordinates, no version collision).
-	implementation 'javax.xml.bind:jaxb-api:2.3.1'
-	implementation 'com.sun.xml.bind:jaxb-impl:2.3.9'
+	// No javax JAXB (javax.xml.bind).  It was needed only by older yeastrc user-mgmt jars;
+	// removed once they moved to jakarta JAXB.
 	
 	//  Other Limelight Jars
 		
