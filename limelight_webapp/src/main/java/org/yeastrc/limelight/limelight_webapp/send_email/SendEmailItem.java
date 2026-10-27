@@ -43,7 +43,7 @@ public class SendEmailItem {
 				+ ", smtpServerHost_Override_NORMALLY_NOT_SET=" + smtpServerHost_Override_NORMALLY_NOT_SET
 				+ ", smtpServerPort_Override_NORMALLY_NOT_SET=" + smtpServerPort_Override_NORMALLY_NOT_SET
 				+ ", smtpAuthUsername_Override_NORMALLY_NOT_SET=" + smtpAuthUsername_Override_NORMALLY_NOT_SET
-				+ ", smtpAuthPassword_Override_NORMALLY_NOT_SET=" + smtpAuthPassword_Override_NORMALLY_NOT_SET + "]";
+				+ ", smtpAuthPassword_Override_NORMALLY_NOT_SET=" + ( smtpAuthPassword_Override_NORMALLY_NOT_SET != null ? "NOT SHOWN" : "null" ) + "]";
 	}
 	
 	public String getSmtpAuthUsername_Override_NORMALLY_NOT_SET() {

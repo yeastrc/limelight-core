@@ -182,7 +182,7 @@ public class UserChangeAccountInfo_RestWebserviceController {
 
 		if ( webserviceRequest.password != null
 				&& webserviceRequest.password.length() > FieldLengthConstants.PASSWORD_MAX_LENGTH ) {
-			log.warn( " password too long: length: " + webserviceRequest.username.length() );
+			log.warn( " password too long: length: " + webserviceRequest.password.length() );
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
 

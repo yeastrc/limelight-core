@@ -17,6 +17,8 @@
  */
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.rest_controllers;
 
+import java.nio.charset.StandardCharsets;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -455,7 +457,8 @@ public class UserCreateAccount_RestWebserviceController {
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();  //  Early Exit with Data Exception
 		}
 		if ( createAccountRequest.password.length() > FieldLengthConstants.PASSWORD_MAX_LENGTH ) {
-			log.warn( "AccountMaintService:  password too long: " + createAccountRequest.password );
+			log.warn( "UserCreateAccount_RestWebserviceController:  password too long: length (characters): " + createAccountRequest.password.length()
+					+ ", length (UTF-8 bytes): " + createAccountRequest.password.getBytes( StandardCharsets.UTF_8 ).length );
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();  //  Early Exit with Data Exception
 		}
 
