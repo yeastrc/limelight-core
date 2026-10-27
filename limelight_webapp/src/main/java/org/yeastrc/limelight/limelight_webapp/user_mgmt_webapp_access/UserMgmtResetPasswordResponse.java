@@ -9,11 +9,13 @@ public class UserMgmtResetPasswordResponse {
 	private boolean userIdNotValid;
 	private String errorMessage;
 	
+	private boolean passwordTooLong;
+	
 	
 	@Override
 	public String toString() {
 		return "UserMgmtResetPasswordResponse [success=" + success + ", userIdNotValid=" + userIdNotValid
-				+ ", errorMessage=" + errorMessage + "]";
+				+ ", errorMessage=" + errorMessage + ", passwordTooLong=" + passwordTooLong + "]";
 	}
 	public boolean isSuccess() {
 		return success;
@@ -34,4 +36,10 @@ public class UserMgmtResetPasswordResponse {
 		this.errorMessage = errorMessage;
 	}
 	
+	public boolean isPasswordTooLong() {
+		return passwordTooLong;
+	}
+	public void setPasswordTooLong(boolean passwordTooLong) {
+		this.passwordTooLong = passwordTooLong;
+	}
 }

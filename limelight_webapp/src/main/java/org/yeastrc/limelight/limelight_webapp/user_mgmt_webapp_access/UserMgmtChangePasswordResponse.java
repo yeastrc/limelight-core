@@ -13,11 +13,13 @@ public class UserMgmtChangePasswordResponse {
 
 	private String errorMessage;
 	
+	private boolean passwordTooLong;
+	
 
 	@Override
 	public String toString() {
 		return "UserMgmtChangePasswordResponse [success=" + success + ", sessionKeyNotValid=" + sessionKeyNotValid
-				+ ", oldPasswordNotValid=" + oldPasswordNotValid + ", errorMessage=" + errorMessage + "]";
+				+ ", oldPasswordNotValid=" + oldPasswordNotValid + ", errorMessage=" + errorMessage + ", passwordTooLong=" + passwordTooLong + "]";
 	}
 
 	public boolean isSuccess() {
@@ -50,5 +52,11 @@ public class UserMgmtChangePasswordResponse {
 
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
+	}
+	public boolean isPasswordTooLong() {
+		return passwordTooLong;
+	}
+	public void setPasswordTooLong(boolean passwordTooLong) {
+		this.passwordTooLong = passwordTooLong;
 	}
 }

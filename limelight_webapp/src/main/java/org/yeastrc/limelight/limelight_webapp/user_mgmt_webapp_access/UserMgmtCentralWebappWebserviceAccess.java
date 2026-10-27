@@ -1,5 +1,7 @@
 package org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access;
 
+import java.nio.charset.StandardCharsets;
+
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -60,7 +62,26 @@ public class UserMgmtCentralWebappWebserviceAccess implements UserMgmtCentralWeb
 		
 		instanceInitialized = true;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF#getMaxPasswordLength_UTF8_Bytes()
+	 */
+	@Override
+	public int getMaxPasswordLength_UTF8_Bytes() {
+		if ( ! instanceInitialized ) {
+			throw new IllegalStateException( "Not initialized" );
+		}
+		return userMgmtCentral_Embedded_Facade.getMaxPasswordLength_UTF8_Bytes();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF#isPasswordTooLong_UTF8_Bytes(java.lang.String)
+	 */
+	@Override
+	public boolean isPasswordTooLong_UTF8_Bytes( String password ) {
+		return password.getBytes( StandardCharsets.UTF_8 ).length > getMaxPasswordLength_UTF8_Bytes();
+	}
+
 
 
 	/* (non-Javadoc)
@@ -117,6 +138,7 @@ public class UserMgmtCentralWebappWebserviceAccess implements UserMgmtCentralWeb
 		userMgmtCreateAccountResponse.setDuplicateEmail( facadeResponse.isDuplicateEmail() );
 		userMgmtCreateAccountResponse.setDuplicateUsername( facadeResponse.isDuplicateUsername() );
 		userMgmtCreateAccountResponse.setErrorMessage( facadeResponse.getErrorMessage() );
+		userMgmtCreateAccountResponse.setPasswordTooLong( facadeResponse.isPasswordTooLong() );
 		
 		return userMgmtCreateAccountResponse;
 	}
@@ -175,6 +197,7 @@ public class UserMgmtCentralWebappWebserviceAccess implements UserMgmtCentralWeb
 		userMgmtChangePasswordResponse.setSessionKeyNotValid( facadeResponse.isSessionKeyNotValid() );
 		userMgmtChangePasswordResponse.setOldPasswordNotValid( facadeResponse.isOldPasswordNotValid() );
 		userMgmtChangePasswordResponse.setErrorMessage( facadeResponse.getErrorMessage() );
+		userMgmtChangePasswordResponse.setPasswordTooLong( facadeResponse.isPasswordTooLong() );
 
 		return userMgmtChangePasswordResponse;
 	}
@@ -201,6 +224,7 @@ public class UserMgmtCentralWebappWebserviceAccess implements UserMgmtCentralWeb
 		userMgmtResetPasswordResponse.setSuccess( facadeResponse.isSuccess() );
 		userMgmtResetPasswordResponse.setUserIdNotValid( facadeResponse.isUserIdNotValid() );
 		userMgmtResetPasswordResponse.setErrorMessage( facadeResponse.getErrorMessage() );
+		userMgmtResetPasswordResponse.setPasswordTooLong( facadeResponse.isPasswordTooLong() );
 
 		return userMgmtResetPasswordResponse;
 	}

@@ -13,6 +13,11 @@ import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorT
 import { showErrorMsg, hideAllErrorMessages } from 'page_js/common_all_pages/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
+import {
+	passwordTooLong_PageCheck__Get_Message_IfTooLong,
+	passwordTooLong_PageCheck__Get_Message_ServerSaidTooLong,
+	passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage
+} from "page_js/user_account_page_js/sub_parts/passwordTooLong_PageCheck";
 
 const adminGlobals: {
 	logged_in_user_id: number
@@ -162,6 +167,15 @@ const createAccountGetFormDataAndValidate = function() {
 			showErrorMsg( $element );
 			return null;  //  !!!  EARLY EXIT
 		} 
+		{
+			const passwordTooLong_Message = passwordTooLong_PageCheck__Get_Message_IfTooLong({
+				password : password as string, maxBytes : passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage()
+			});
+			if ( passwordTooLong_Message ) {
+				_showPasswordTooLongMessage( passwordTooLong_Message );
+				return null;  //  !!!  EARLY EXIT
+			}
+		}
 
 		var formPageData = {
 				accessLevel : accessLevel,
@@ -201,7 +215,8 @@ const createAccountFormSubmit = function() {
 	promise_webserviceCallStandardPost.then( ({ responseData }) => {
 		try {
             createAccountComplete({
-				responseData : responseData
+				responseData : responseData,
+				password : requestData.password as string
 			});
 		} catch( e ) {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -214,7 +229,14 @@ const createAccountComplete = function( params: any ) {
 	var responseData = params.responseData;
 	
 	if ( ! responseData.status ) {
-		if ( responseData.duplicateUsername && responseData.duplicateEmail ) {
+		if ( responseData.passwordTooLong ) {
+			const passwordTooLong_Message = passwordTooLong_PageCheck__Get_Message_ServerSaidTooLong({
+				password : params.password, maxBytes : passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage()
+			});
+			_showPasswordTooLongMessage( passwordTooLong_Message );
+			var $passwordInput = $("#password");
+			$passwordInput.focus();
+		} else if ( responseData.duplicateUsername && responseData.duplicateEmail ) {
 			var $element = $("#error_message_username_email_taken");
 			showErrorMsg( $element );
 			var $emailInput = $("#email");
@@ -241,5 +263,15 @@ const createAccountComplete = function( params: any ) {
 	}
 
 	_refresh_UserList_Callback_LOCAL();
+};
+
+/**
+ * 
+ */
+const _showPasswordTooLongMessage = function( passwordTooLong_Message: string ) {
+
+	$("#error_message_password_too_long_text").text( passwordTooLong_Message );
+	const $element = $("#error_message_password_too_long");
+	showErrorMsg( $element );
 };
 

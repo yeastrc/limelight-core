@@ -456,10 +456,12 @@ public class UserCreateAccount_RestWebserviceController {
 			log.warn( "AccountMaintService:  username too long: " + createAccountRequest.username );
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();  //  Early Exit with Data Exception
 		}
-		if ( createAccountRequest.password.length() > FieldLengthConstants.PASSWORD_MAX_LENGTH ) {
+		if ( userMgmtCentralWebappWebserviceAccess.isPasswordTooLong_UTF8_Bytes( createAccountRequest.password ) ) {
 			log.warn( "UserCreateAccount_RestWebserviceController:  password too long: length (characters): " + createAccountRequest.password.length()
 					+ ", length (UTF-8 bytes): " + createAccountRequest.password.getBytes( StandardCharsets.UTF_8 ).length );
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();  //  Early Exit with Data Exception
+			createAccountResult.setPasswordTooLong(true);
+			createAccountResult.setStatus(false);
+			return createAccountResult;  //  EARLY EXIT
 		}
 
 		// Google Captcha Check
@@ -551,6 +553,15 @@ public class UserCreateAccount_RestWebserviceController {
 					createAccountResult.setStatus(false);
 					return createAccountResult;   //  EARLY EXIT
 				}
+				if ( userMgmtCreateAccountResponse.isPasswordTooLong() ) {
+					createAccountResult.setPasswordTooLong(true);
+					createAccountResult.setStatus(false);
+					return createAccountResult;   //  EARLY EXIT
+				}
+				
+				String msg = "Failed to create account in User Mgmt.  userMgmtCreateAccountResponse: " + userMgmtCreateAccountResponse;
+				log.error( msg );
+				throw new LimelightInternalErrorException( msg );
 			}
 			
 			int createdUserMgmtUserId = userMgmtCreateAccountResponse.getCreatedUserId();
@@ -724,6 +735,7 @@ public class UserCreateAccount_RestWebserviceController {
 		private boolean duplicateUsername = false;
 		private boolean duplicateEmail = false;
 		private boolean userTestValidated = false;
+		private boolean passwordTooLong = false;
 		
 		private ValidateUserInviteTrackingCodeResult_NotValidReason inviteTrackingCodeNotValidReason;
 		
@@ -767,6 +779,14 @@ public class UserCreateAccount_RestWebserviceController {
 
 		public void setErrorMessage(String errorMessage) {
 			this.errorMessage = errorMessage;
+		}
+
+		public boolean isPasswordTooLong() {
+			return passwordTooLong;
+		}
+
+		public void setPasswordTooLong(boolean passwordTooLong) {
+			this.passwordTooLong = passwordTooLong;
 		}
 
 		public ValidateUserInviteTrackingCodeResult_NotValidReason getInviteTrackingCodeNotValidReason() {

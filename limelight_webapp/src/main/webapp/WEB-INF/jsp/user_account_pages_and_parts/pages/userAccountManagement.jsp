@@ -34,6 +34,9 @@
 
 		<div id="manage_account_main_block"></div>
 		
+		<%-- Max password length (UTF-8 bytes) when setting a password.  Read by passwordTooLong_PageCheck.ts --%>
+		<script type="text/text" id="password_max_length_utf8_bytes"><c:out value="${ configSystemValues.passwordMaxLength_UTF8_Bytes }"></c:out></script>
+		
 		
   <c:if test="${ displaySendImportCompleteEmailMgmtBlock }">
   

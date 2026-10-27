@@ -17,6 +17,11 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    passwordTooLong_PageCheck__Get_Message_IfTooLong,
+    passwordTooLong_PageCheck__Get_Message_ServerSaidTooLong,
+    passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage
+} from "page_js/user_account_page_js/sub_parts/passwordTooLong_PageCheck";
 
 
 ///////
@@ -106,6 +111,8 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
     private _enableSaveButton = false
     private _mainBlock_VisibilityShow = false
 
+    private _passwordTooLong_Message : string = null  //  Displayed when not null.  Cleared on any input change
+
     /**
      *
      */
@@ -194,6 +201,8 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
      */
     private _password_Input_Changed(event: React.ChangeEvent<HTMLInputElement>) : void {
 
+        this._passwordTooLong_Message = null;
+
         this._get_Password_InputField_AndValidate();
     }
 
@@ -213,6 +222,21 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
             if ( ! isValid ) {
 
                 return;  // EARLY EXIT
+            }
+
+            {
+                const passwordTooLong_Message = passwordTooLong_PageCheck__Get_Message_IfTooLong({
+                    password : newPasswordValue, maxBytes : passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage()
+                });
+                if ( passwordTooLong_Message ) {
+
+                    this._passwordTooLong_Message = passwordTooLong_Message;
+                    this._enableSaveButton = false
+
+                    this.setState({ force_ReRender: {} });
+
+                    return;  // EARLY EXIT
+                }
             }
 
             this.setState({ show_SavingMessage: true });
@@ -244,6 +268,18 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
                         this._enableSaveButton = false
 
                         this.setState({ oldPasswordIncorrect: true, show_SavingMessage: false });
+
+                        return;  // EARLY RETURN
+                    }
+
+                    if ( responseData.passwordTooLong ) {
+
+                        this._passwordTooLong_Message = passwordTooLong_PageCheck__Get_Message_ServerSaidTooLong({
+                            password : newPasswordValue, maxBytes : passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage()
+                        });
+                        this._enableSaveButton = false
+
+                        this.setState({ show_SavingMessage: false, force_ReRender: {} });
 
                         return;  // EARLY RETURN
                     }
@@ -297,7 +333,6 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
                                 >
                                     <input type="password" placeholder="Old Password"
                                            className="edit-value-input-field  "
-                                           maxLength={ 40 }
                                            autoFocus={true}
                                            ref={ this._password_Old_Input_Ref }
                                            defaultValue={ "" }
@@ -320,12 +355,16 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
                                 >
                                     <input type="password" placeholder="New Password"
                                            className="edit-value-input-field  "
-                                           maxLength={ 40 }
                                            ref={ this._password_New_Input_Ref }
                                            defaultValue={ "" }
                                            onChange={ this._password_Input_Changed_BndThis }
                                     />
                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                { ( this._passwordTooLong_Message ) ? (
+                                    <div style={ { color: "red", marginTop: 3 } }>
+                                        { this._passwordTooLong_Message }
+                                    </div>
+                                ) : null }
                             </div>
                             <div style={ { marginTop: 5, marginBottom: 6 } }>
                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -336,7 +375,6 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
                                 >
                                     <input type="password" placeholder="Confirm New Password"
                                            className="edit-value-input-field  "
-                                           maxLength={ 40 }
                                            ref={ this._password_NewConfirm_Input_Ref }
                                            defaultValue={ "" }
                                            onChange={ this._password_Input_Changed_BndThis }

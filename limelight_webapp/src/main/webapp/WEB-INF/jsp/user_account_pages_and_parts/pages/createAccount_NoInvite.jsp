@@ -26,6 +26,9 @@
  	<script type="text/text" id="terms_of_service_id_string"><html><body><c:out value="${ termsOfServiceKey }"></body></html></c:out></script>
  </c:if>
  
+ <%-- Max password length (UTF-8 bytes) when setting a password.  Read by passwordTooLong_PageCheck.ts --%>
+ <script type="text/text" id="password_max_length_utf8_bytes"><c:out value="${ configSystemValues.passwordMaxLength_UTF8_Bytes }"></c:out></script>
+ 
  
 </head>
 <body class="

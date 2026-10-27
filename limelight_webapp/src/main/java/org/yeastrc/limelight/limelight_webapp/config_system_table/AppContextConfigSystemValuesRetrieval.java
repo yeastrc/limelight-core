@@ -9,6 +9,7 @@ import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsFileObjectStorageFileImportAllowedViaWebSubmit_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsScanFileImportAllowedViaWebSubmitIF;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
 
 
 /**
@@ -37,7 +38,18 @@ public class AppContextConfigSystemValuesRetrieval {
 	
 	@Autowired
 	private IsScanFileImportAllowedViaWebSubmitIF isScanFileImportAllowedViaWebSubmit;
-	
+
+	@Autowired
+	private UserMgmtCentralWebappWebserviceAccessIF userMgmtCentralWebappWebserviceAccess;
+
+	/**
+	 * Max password length, in UTF-8 bytes, when setting a password.  Put on pages that set a password.
+	 * @return
+	 */
+	public int getPasswordMaxLength_UTF8_Bytes() {
+		return userMgmtCentralWebappWebserviceAccess.getMaxPasswordLength_UTF8_Bytes();
+	}
+
 	/**
 	 * @return
 	 */

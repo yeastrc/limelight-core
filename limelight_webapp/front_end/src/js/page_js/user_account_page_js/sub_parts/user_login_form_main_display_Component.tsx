@@ -121,7 +121,7 @@ export class User_login_form_main_display_Component extends React.Component< Use
                                maxLength={ 40 }/><br/> {/*  size="20" size controlled by CSS  */ }
                         <input type="password" id="login_password" placeholder="Password"
                                className="input-field input_field_jq"
-                               maxLength={ 40 }/><br/> {/*  size="20" size controlled by CSS  */ }
+                               /><br/> {/*  size="20" size controlled by CSS  */ }
 
                         <input type="submit" className="submit-button" value="Sign In" id="login_person_button"/>
                     </form>

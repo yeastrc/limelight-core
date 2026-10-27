@@ -32,6 +32,19 @@ public interface UserMgmtCentralWebappWebserviceAccessIF {
 	void init( UserMgmtEmbed_SQL_Connection_Provider_IF userMgmtEmbed_SQL_Connection_Provider );
 
 	/**
+	 * Max password length, in UTF-8 bytes, when setting a password (create, change, reset). Not used for login.
+	 * @return
+	 */
+	int getMaxPasswordLength_UTF8_Bytes();
+
+	/**
+	 * Is the password longer, in UTF-8 bytes, than getMaxPasswordLength_UTF8_Bytes(). For setting a password only, never for login.
+	 * @param password
+	 * @return
+	 */
+	boolean isPasswordTooLong_UTF8_Bytes( String password );
+
+	/**
 	 * @param userMgmtSessionKeyAliveRequest
 	 * @return
 	 * @throws Exception

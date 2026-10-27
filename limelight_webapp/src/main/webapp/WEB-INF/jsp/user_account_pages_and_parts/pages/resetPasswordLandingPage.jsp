@@ -17,6 +17,9 @@
 	<title>Limelight - Reset Password</title>
  <%@ include file="/WEB-INF/jsp/user_account_pages_and_parts/jsp_includes/head_section_include_user_pages.jsp" %>
 	
+	<%-- Max password length (UTF-8 bytes) when setting a password.  Read by passwordTooLong_PageCheck.ts --%>
+	<script type="text/text" id="password_max_length_utf8_bytes"><c:out value="${ configSystemValues.passwordMaxLength_UTF8_Bytes }"></c:out></script>
+	
 </head>
 <body class="
 <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_inset_pages.jsp" %>
@@ -50,6 +53,12 @@
 	  			<div class="error-message-text" >Password and Confirm Password must match</div>
 	  		</div>
 	  	</div>
+  		<div class="error-message-container error_message_container_jq" id="error_message_password_too_long">
+  			<div class="error-message-inner-container" >
+  				<div class="error-message-close-x error_message_close_x_jq">X</div>
+	  			<div class="error-message-text" id="error_message_password_too_long_text"></div> <%-- Text set in JS --%>
+	  		</div>
+	  	</div>
 
   		<div class="error-message-container error_message_container_jq" id="error_message_from_server">
   			<div class="error-message-inner-container" >
@@ -77,8 +86,8 @@
   	</div>
 
  	<form id="reset_password_form" action="" >
- 				<input type="password" value="" placeholder="New Pasword" class="input-field input_field_jq"  id="password_change_field"  maxlength="40"><br>
-				<input type="password" value="" placeholder="Confirm New Pasword" class="input-field input_field_jq"  id="password_confirm_field"  maxlength="40"><br>
+ 				<input type="password" value="" placeholder="New Pasword" class="input-field input_field_jq"  id="password_change_field"><br>
+				<input type="password" value="" placeholder="Confirm New Pasword" class="input-field input_field_jq"  id="password_confirm_field"><br>
 		
 	 	<INPUT TYPE="submit" class="submit-button" VALUE="Change Password">
 	</form>

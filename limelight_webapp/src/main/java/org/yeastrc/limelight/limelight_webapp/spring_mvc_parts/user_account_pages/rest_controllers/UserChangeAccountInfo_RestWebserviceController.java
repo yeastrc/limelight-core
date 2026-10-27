@@ -180,16 +180,15 @@ public class UserChangeAccountInfo_RestWebserviceController {
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
 
-		if ( webserviceRequest.password != null
-				&& webserviceRequest.password.length() > FieldLengthConstants.PASSWORD_MAX_LENGTH ) {
-			log.warn( " password too long: length: " + webserviceRequest.password.length() );
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-		}
+		//  No length check on oldPassword.  It is only verified against the existing password, like login.
 
-		if ( webserviceRequest.oldPassword != null
-				&& webserviceRequest.oldPassword.length() > FieldLengthConstants.PASSWORD_MAX_LENGTH ) {
-			log.warn( " oldPassword too long: length: " + webserviceRequest.oldPassword.length() );
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+		if ( webserviceRequest.password != null
+				&& userMgmtCentralWebappWebserviceAccess.isPasswordTooLong_UTF8_Bytes( webserviceRequest.password ) ) {
+			log.warn( " password too long: length (characters): " + webserviceRequest.password.length() );
+			WebserviceResult webserviceResult = new WebserviceResult();
+			webserviceResult.setStatus(false);
+			webserviceResult.setPasswordTooLong(true);
+			return webserviceResult; //  EARLY EXIT
 		}
 
 		UserSession userSession =
@@ -364,6 +363,11 @@ public class UserChangeAccountInfo_RestWebserviceController {
 						webserviceResult.setOldPasswordInvalid(true);
 						return webserviceResult; //  EARLY EXIT
 					}
+					if ( userMgmtChangePasswordResponse.isPasswordTooLong() ) {
+						webserviceResult.setStatus(false);
+						webserviceResult.setPasswordTooLong(true);
+						return webserviceResult; //  EARLY EXIT
+					}
 					throw new Limelight_WS_InternalServerError_Exception();
 				}
 			}
@@ -447,6 +451,7 @@ public class UserChangeAccountInfo_RestWebserviceController {
 		private boolean emailValueAlreadyExists;
 		private boolean usernameValueAlreadyExists;
 		private boolean oldPasswordInvalid;
+		private boolean passwordTooLong;
 		
 		public boolean isStatus() {
 			return status;
@@ -471,6 +476,12 @@ public class UserChangeAccountInfo_RestWebserviceController {
 		}
 		public void setOldPasswordInvalid(boolean oldPasswordInvalid) {
 			this.oldPasswordInvalid = oldPasswordInvalid;
+		}
+		public boolean isPasswordTooLong() {
+			return passwordTooLong;
+		}
+		public void setPasswordTooLong(boolean passwordTooLong) {
+			this.passwordTooLong = passwordTooLong;
 		}
 
 	}

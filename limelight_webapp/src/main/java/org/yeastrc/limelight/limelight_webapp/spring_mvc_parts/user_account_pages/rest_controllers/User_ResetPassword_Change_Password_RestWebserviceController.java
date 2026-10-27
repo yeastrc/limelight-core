@@ -156,6 +156,12 @@ public class User_ResetPassword_Change_Password_RestWebserviceController {
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
 
+		if ( userMgmtCentralWebappWebserviceAccess.isPasswordTooLong_UTF8_Bytes( password ) ) {
+			log.warn( "password too long: length (characters): " + password.length() );
+			webserviceResult.setPasswordTooLong(true);
+			return webserviceResult;  //  EARLY EXIT
+		}
+
 		User_Validate_ResetPassword_Code_Service_Result user_Validate_ResetPassword_Code_Service_Result =
 				user_Validate_ResetPassword_Code_Service.user_Validate_ResetPassword_Code_Service( resetPasswordTrackingCode );
 
@@ -183,6 +189,11 @@ public class User_ResetPassword_Change_Password_RestWebserviceController {
 		UserMgmtResetPasswordResponse userMgmtResetPasswordResponse = 
 				userMgmtCentralWebappWebserviceAccess.resetPassword( userMgmtResetPasswordRequest );
 		if ( ! userMgmtResetPasswordResponse.isSuccess() ) {
+			if ( userMgmtResetPasswordResponse.isPasswordTooLong() ) {
+				//  Reset code is NOT marked used so the user can try again
+				webserviceResult.setPasswordTooLong(true);
+				return webserviceResult;  //  EARLY EXIT
+			}
 			if ( userMgmtResetPasswordResponse.isUserIdNotValid() ) {
 				String msg = "Failed to update password in User Mgmt Webapp.  User id not valid for user id: " + userMgmtUserId;
 				log.error( msg );
@@ -224,6 +235,7 @@ public class User_ResetPassword_Change_Password_RestWebserviceController {
 	public static class WebserviceResult {
 
 		private boolean status = false;
+		private boolean passwordTooLong = false;
 		
 		private String errorMessage;
 
@@ -241,6 +253,14 @@ public class User_ResetPassword_Change_Password_RestWebserviceController {
 
 		public void setErrorMessage(String errorMessage) {
 			this.errorMessage = errorMessage;
+		}
+
+		public boolean isPasswordTooLong() {
+			return passwordTooLong;
+		}
+
+		public void setPasswordTooLong(boolean passwordTooLong) {
+			this.passwordTooLong = passwordTooLong;
 		}
 	}
 

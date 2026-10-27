@@ -18,6 +18,11 @@ import { showErrorMsg, hideAllErrorMessages } from 'page_js/common_all_pages/sho
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 import {
+	passwordTooLong_PageCheck__Get_Message_IfTooLong,
+	passwordTooLong_PageCheck__Get_Message_ServerSaidTooLong,
+	passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage
+} from "page_js/user_account_page_js/sub_parts/passwordTooLong_PageCheck";
+import {
 	CreateUserAccount_Main_Common_Component,
 	CreateUserAccount_Main_Common_Component_Props
 } from "page_js/user_account_page_js/sub_parts/createUserAccount_Main_Common_Component";
@@ -302,6 +307,15 @@ export class UserCreateAccount_With_Invite_Subpart {
 			showErrorMsg( $element );
 			return null;  //  !!!  EARLY EXIT
 		}
+		{
+			const passwordTooLong_Message = passwordTooLong_PageCheck__Get_Message_IfTooLong({
+				password : password as string, maxBytes : passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage()
+			});
+			if ( passwordTooLong_Message ) {
+				this._showPasswordTooLongMessage( passwordTooLong_Message );
+				return null;  //  !!!  EARLY EXIT
+			}
+		}
 
 		const inviteTrackingCode: any = undefined //  Set to undefined as added later
 
@@ -349,7 +363,7 @@ export class UserCreateAccount_With_Invite_Subpart {
 
 		promise_webserviceCallStandardPost.then( ({ responseData }) => {
 			try {
-				objectThis.createAccountComplete( { responseData: responseData } );
+				objectThis.createAccountComplete( { responseData: responseData, password : requestObj.password as string } );
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
@@ -360,11 +374,22 @@ export class UserCreateAccount_With_Invite_Subpart {
 	/**
 	 * 
 	 */
+	private _showPasswordTooLongMessage( passwordTooLong_Message: string ) {
+
+		$("#error_message_password_too_long_text").text( passwordTooLong_Message );
+		const $element = $("#error_message_password_too_long");
+		showErrorMsg( $element );
+	}
+
+	/**
+	 * 
+	 */
 	createAccountComplete(
 		{
-			responseData
+			responseData, password
 		} : {
 			responseData: any
+			password: string
 		} ) {
 
 //		$("#terms_of_service_modal_dialog_overlay_background").hide();
@@ -375,7 +400,14 @@ export class UserCreateAccount_With_Invite_Subpart {
 			$("#terms_of_service_modal_dialog_overlay_background").hide();
 			$("#terms_of_service_overlay_div").hide();
 
-			if ( responseData.duplicateUsername && responseData.duplicateEmail ) {
+			if ( responseData.passwordTooLong ) {
+				const passwordTooLong_Message = passwordTooLong_PageCheck__Get_Message_ServerSaidTooLong({
+					password, maxBytes : passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage()
+				});
+				this._showPasswordTooLongMessage( passwordTooLong_Message );
+				var $passwordInput = $("#password");
+				$passwordInput.focus();
+			} else if ( responseData.duplicateUsername && responseData.duplicateEmail ) {
 				var $element = $("#error_message_username_email_taken");
 				showErrorMsg( $element );
 				var $emailInput = $("#email");

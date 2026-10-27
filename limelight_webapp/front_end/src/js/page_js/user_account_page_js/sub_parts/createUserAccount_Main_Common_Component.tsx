@@ -125,6 +125,12 @@ export class CreateUserAccount_Main_Common_Component extends React.Component< Cr
                                 <span className="error-message-close-x error_message_close_x_jq">X</span></span>
                             </div>
                         </div>
+                        <div className="error-message-container error_message_container_jq" id="error_message_password_too_long">
+                            <div className="error-message-inner-container" >
+                                <span className="error-message-text" ><span id="error_message_password_too_long_text">{ /* Text set in JS */ }</span>
+                                <span className="error-message-close-x error_message_close_x_jq">X</span></span>
+                            </div>
+                        </div>
 
                         <div className="error-message-container error_message_container_jq" id="error_message_username_taken">
                             <div className="error-message-inner-container" >
@@ -236,7 +242,7 @@ export class CreateUserAccount_Main_Common_Component extends React.Component< Cr
                             }
                             { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            <input ref={ this._password_Ref } type="password" id="password" placeholder="Password" className="input-field input_field_jq" maxLength={ 40 } />
+                            <input ref={ this._password_Ref } type="password" id="password" placeholder="Password" className="input-field input_field_jq" />
                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         <br/>
                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -245,7 +251,7 @@ export class CreateUserAccount_Main_Common_Component extends React.Component< Cr
                             }
                             { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            <input ref={ this._passwordConfirm_Ref } type="password" id="passwordConfirm" placeholder="Confirm Password" className="input-field input_field_jq" maxLength={ 40 } />
+                            <input ref={ this._passwordConfirm_Ref } type="password" id="passwordConfirm" placeholder="Confirm Password" className="input-field input_field_jq" />
                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         <br/>
 

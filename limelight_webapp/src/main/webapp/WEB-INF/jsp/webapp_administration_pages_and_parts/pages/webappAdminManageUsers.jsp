@@ -20,6 +20,9 @@
 	
  <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_include_data_pages.jsp" %> 
 
+	<%-- Max password length (UTF-8 bytes) when setting a password.  Read by passwordTooLong_PageCheck.ts --%>
+	<script type="text/text" id="password_max_length_utf8_bytes"><c:out value="${ configSystemValues.passwordMaxLength_UTF8_Bytes }"></c:out></script>
+
 </head>
 <body class=" <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_standard_header_pages.jsp" 
 		  		%><%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_data_pages.jsp" 
@@ -111,6 +114,12 @@
 			  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
 			  	</div>
 		  	</div>
+	  		<div class="error-message-container error_message_container_jq" id="error_message_password_too_long">
+	  			<div class="error-message-inner-container" >
+		  			<span class="error-message-text" ><span id="error_message_password_too_long_text"></span> <%-- Text set in JS --%>
+			  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
+			  	</div>
+		  	</div>
 	
 	  		<div class="error-message-container error_message_container_jq" id="error_message_username_taken">
 	  			<div class="error-message-inner-container" >
@@ -178,8 +187,8 @@
 	
 			<input type="text" id="username" placeholder="Username" title="Username" class="input-field input_field_jq" maxlength="40" /><br>
 	
-			<input type="password" id="password" placeholder="Password" title="Password" class="input-field input_field_jq" maxlength="40" /><br>
-			<input type="password" id="passwordConfirm" placeholder="Confirm Password" title="Confirm Password" class="input-field input_field_jq" maxlength="40" /><br>
+			<input type="password" id="password" placeholder="Password" title="Password" class="input-field input_field_jq" /><br>
+			<input type="password" id="passwordConfirm" placeholder="Confirm Password" title="Confirm Password" class="input-field input_field_jq" /><br>
 			
 <%-- 			
 			<c:if test="${ configSystemValues.googleRecaptchaConfigured }">

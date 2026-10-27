@@ -21,6 +21,11 @@ import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorT
 import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/common_all_pages/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
+import {
+	passwordTooLong_PageCheck__Get_Message_IfTooLong,
+	passwordTooLong_PageCheck__Get_Message_ServerSaidTooLong,
+	passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage
+} from "page_js/user_account_page_js/sub_parts/passwordTooLong_PageCheck";
 
 
 /**
@@ -115,6 +120,16 @@ class UserResetPasswordPage {
 			return;  //  !!!  EARLY EXIT
 		}
 
+		{
+			const passwordTooLong_Message = passwordTooLong_PageCheck__Get_Message_IfTooLong({
+				password : password_change_field as string, maxBytes : passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage()
+			});
+			if ( passwordTooLong_Message ) {
+				this._showPasswordTooLongMessage( passwordTooLong_Message );
+				return;  //  !!!  EARLY EXIT
+			}
+		}
+
 		var requestObj = {
 				password : password_change_field,
 				resetPasswordTrackingCode : resetPasswordTrackingCode
@@ -134,7 +149,7 @@ class UserResetPasswordPage {
 
 		promise_webserviceCallStandardPost.then( ({ responseData }) => {
 			try {
-				objectThis._resetPasswordComplete(responseData);
+				objectThis._resetPasswordComplete( responseData, password_change_field as string );
 			} catch( e ) {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 				throw e;
@@ -146,9 +161,17 @@ class UserResetPasswordPage {
 	/**
 	 * 
 	 */
-	_resetPasswordComplete(responseData: any) {
+	_resetPasswordComplete( responseData: any, password: string ) {
 
 		if ( ! responseData.status ) {
+
+			if ( responseData.passwordTooLong ) {
+				const passwordTooLong_Message = passwordTooLong_PageCheck__Get_Message_ServerSaidTooLong({
+					password, maxBytes : passwordTooLong_PageCheck__Get_PasswordMaxLength_UTF8_Bytes_FromPage()
+				});
+				this._showPasswordTooLongMessage( passwordTooLong_Message );
+				return;  //  !!!  EARLY EXIT
+			}
 
 //			private boolean invalidUserOrPassword = false;
 //			private boolean disabledUser = false;
@@ -169,6 +192,16 @@ class UserResetPasswordPage {
 		var $element = $("#success_message_system_success");
 		showErrorMsg( $element );
 	};
+
+	/**
+	 * 
+	 */
+	private _showPasswordTooLongMessage( passwordTooLong_Message: string ) {
+
+		$("#error_message_password_too_long_text").text( passwordTooLong_Message );
+		const $element = $("#error_message_password_too_long");
+		showErrorMsg( $element );
+	}
 
 };
 
