@@ -191,8 +191,9 @@ public class UserForgotPasswordTrackingDAO extends Limelight_JDBC_Base implement
 	}
 	
 	/**
-	 * Update code_replaced_by_newer = ?
+	 * Update code_replaced_by_newer = ? for the earlier codes of the SAME user only
 	 * @param id - ID to use in id < ? comparison
+	 * @param userId - only update records for this user_id (a reset request must not affect other users' codes)
 	 * @param codeReplacedByNewer
 	 * @throws Exception
 	 */
@@ -200,9 +201,9 @@ public class UserForgotPasswordTrackingDAO extends Limelight_JDBC_Base implement
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
 
-	public void updateCodeReplacedByNewer( int id, boolean codeReplacedByNewer ) throws Exception {
+	public void updateCodeReplacedByNewer( int id, int userId, boolean codeReplacedByNewer ) throws Exception {
 
-		final String sql = "UPDATE user_forgot_password_tracking_tbl SET code_replaced_by_newer = ? WHERE id < ?";
+		final String sql = "UPDATE user_forgot_password_tracking_tbl SET code_replaced_by_newer = ? WHERE id < ? AND user_id = ?";
 
 		// Use Spring JdbcTemplate so Transactions work properly
 		
@@ -222,12 +223,14 @@ public class UserForgotPasswordTrackingDAO extends Limelight_JDBC_Base implement
 							}
 							counter++;
 							pstmt.setInt( counter, id );
+							counter++;
+							pstmt.setInt( counter, userId );
 							return pstmt;
 						}
 					});
 
 		} catch ( RuntimeException e ) {
-			String msg = "updateCodeReplacedByNewer(...): id: " + id + ", SQL: " + sql;
+			String msg = "updateCodeReplacedByNewer(...): id: " + id + ", userId: " + userId + ", SQL: " + sql;
 			log.error( msg, e );
 			throw e;
 		}

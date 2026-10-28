@@ -49,11 +49,12 @@ public interface UserForgotPasswordTrackingDAO_IF {
 	void updateUsedDateUseIP(int id, String useIP) throws Exception;
 
 	/**
-		 * Update code_replaced_by_newer = ?
+		 * Update code_replaced_by_newer = ? for the earlier codes of the SAME user only
 		 * @param id - ID to use in id < ? comparison
+		 * @param userId - only update records for this user_id (a reset request must not affect other users' codes)
 		 * @param codeReplacedByNewer
 		 * @throws Exception
 		 */
-	void updateCodeReplacedByNewer(int id, boolean codeReplacedByNewer) throws Exception;
+	void updateCodeReplacedByNewer(int id, int userId, boolean codeReplacedByNewer) throws Exception;
 
 }

@@ -301,7 +301,7 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 
 			userForgotPasswordTrackingDAO.save( item );
 			
-			userForgotPasswordTrackingDAO.updateCodeReplacedByNewer( item.getId(), true /* codeReplacedByNewer */ );
+			userForgotPasswordTrackingDAO.updateCodeReplacedByNewer( item.getId(), authUserId, true /* codeReplacedByNewer */ );
 
 			return forgotPasswordTrackingCode;
 			
