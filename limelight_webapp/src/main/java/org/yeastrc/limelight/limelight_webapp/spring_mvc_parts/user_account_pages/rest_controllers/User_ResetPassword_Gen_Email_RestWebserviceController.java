@@ -215,10 +215,16 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 					throw new LimelightInternalErrorException(msg);
 				}
 			}
+			//  Do NOT reveal whether an account exists:  when the username or email is not found (or is not a user of
+			//  this Limelight), return exactly what a successful request returns (status true) and send no email.
+			//  Known limit, accepted for now:  a found account takes longer (it sends an email), so the response time
+			//  can still hint at whether an account exists.
+
 			List<Integer> userMgmtUserIdListFromSearch = userMgmtSearchUserDataResponse.getUserIdList();
 			if ( userMgmtUserIdListFromSearch == null || userMgmtUserIdListFromSearch.isEmpty() ) {
 				//  username or email not found
-				webserviceResult.setInvalidUsernameOrEmail(true);
+				log.info( "Reset Password: No account found so NO email sent.  From webserviceRequest: username: " + webserviceRequest.getUsername() + ", email: " + webserviceRequest.getEmail() );
+				webserviceResult.setStatus(true);  //  Same response as success
 				return webserviceResult;  //  Early Exit
 			}
 			// User Mgmt user Id
@@ -228,7 +234,8 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 			Integer userId = userDAO.getIdForUserMgmtUserId( userMgmtUserIdFromSearch );
 			if ( userId == null ) {
 				//  No Limelight Auth User Id for userMgmtUserIdFromSearch for username or email found
-				webserviceResult.setInvalidUsernameOrEmail(true);
+				log.info( "Reset Password: Account found in User Mgmt but is not a user of this Limelight so NO email sent.  From webserviceRequest: username: " + webserviceRequest.getUsername() + ", email: " + webserviceRequest.getEmail() );
+				webserviceResult.setStatus(true);  //  Same response as success
 				return webserviceResult;  //  Early Exit
 			}
 			//  Get full user data
@@ -386,16 +393,6 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 	public static class WebserviceResult {
 
 		private boolean status = false;
-		
-		private boolean invalidUsernameOrEmail = false;
-
-		public boolean isInvalidUsernameOrEmail() {
-			return invalidUsernameOrEmail;
-		}
-
-		public void setInvalidUsernameOrEmail(boolean invalidUsernameOrEmail) {
-			this.invalidUsernameOrEmail = invalidUsernameOrEmail;
-		}
 
 		public boolean isStatus() {
 			return status;

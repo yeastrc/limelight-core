@@ -116,20 +116,10 @@ export class User_reset_password_form_main_display_Component extends React.Compo
 //			private boolean invalidUserOrPassword = false;
 //			private boolean disabledUser = false;
 
-            if ( responseData.invalidUsernameOrEmail ) {
+            //  The server does NOT say whether an account was found.  An unknown username or email returns the
+            //  same response as success, so the visitor sees the same message either way.
 
-                var id = null;
-                if ( requestObj.username !== ""  ) {
-
-                    id = "error_message_username_invalid";
-                } else {
-                    id = "error_message_email_invalid";
-                }
-                var $element = $( "#" + id );
-
-                showErrorMsg( $element );
-
-            } else if ( responseData.disabledUser ) {
+            if ( responseData.disabledUser ) {
 
                 var $element = $("#error_message_user_disabled");
                 showErrorMsg( $element );
@@ -170,20 +160,6 @@ export class User_reset_password_form_main_display_Component extends React.Compo
                             <div className="error-message-text">Cannot populate both Username and Email Address</div>
                         </div>
                     </div>
-                    <div className="error-message-container error_message_container_jq"
-                         id="error_message_username_invalid">
-                        <div className="error-message-inner-container">
-                            <div className="error-message-close-x error_message_close_x_jq">X</div>
-                            <div className="error-message-text">Username provided is invalid</div>
-                        </div>
-                    </div>
-                    <div className="error-message-container error_message_container_jq"
-                         id="error_message_email_invalid">
-                        <div className="error-message-inner-container">
-                            <div className="error-message-close-x error_message_close_x_jq">X</div>
-                            <div className="error-message-text">Email Address provided is invalid</div>
-                        </div>
-                    </div>
                     <div className="error-message-container error_message_container_jq" id="error_message_system_error">
                         <div className="error-message-inner-container">
                             <div className="error-message-close-x error_message_close_x_jq">X</div>
@@ -195,7 +171,7 @@ export class User_reset_password_form_main_display_Component extends React.Compo
                          id="success_message_system_success">
                         <div className="success-message-inner-container">
                             <div className="success-message-close-x error_message_close_x_jq">X</div>
-                            <div className="success-message-text">Email sent</div>
+                            <div className="success-message-text">If an account matches what you entered, we've sent an email with a link to reset the password.</div>
                         </div>
                     </div>
                     Reset your password
