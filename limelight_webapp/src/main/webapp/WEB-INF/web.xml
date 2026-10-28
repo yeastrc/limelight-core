@@ -6,6 +6,14 @@
                              
 	<!-- Changed 'version' to '6.0' so that Eclipse WTP will accept it.  not recognize '6.1' -->
 
+    <!-- Log4j (log4j-jakarta-web): do NOT let Log4j's own listener shut Log4j down.  It ran before
+         WebappServletContextListener, and logging after it started a second, never-stopped LoggerContext.
+         WebappServletContextListener.contextDestroyed() shuts Log4j down last instead. -->
+    <context-param>
+        <param-name>isLog4jAutoShutdownDisabled</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
     <!-- Optional per-deployment HttpSession inactivity-timeout override via the
          env var LIMELIGHT_SESSION_TIMEOUT_MINUTES. Opt-in: when the env var is
          unset/blank/invalid, no override is applied and the Tomcat container's

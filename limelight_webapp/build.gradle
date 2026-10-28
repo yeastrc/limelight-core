@@ -166,7 +166,8 @@ dependencies {
 	implementation 'org.apache.logging.log4j:log4j-api'
 	implementation 'org.apache.logging.log4j:log4j-core'
 	//  Servlet 6 / jakarta; log4j-web is javax-only and Tomcat 11 does not run it; this stops Log4j cleanly when the webapp stops
-	runtimeOnly 'org.apache.logging.log4j:log4j-jakarta-web'
+	//    'implementation' (not runtimeOnly): WebappServletContextListener calls its web lifecycle to shut Log4j down last
+	implementation 'org.apache.logging.log4j:log4j-jakarta-web'
 	
 	//  Route SLF4J 2.x (Spring Boot 3) to Log4j2  (slf4j2 bridge, not the old slf4j1 impl)
 	implementation 'org.apache.logging.log4j:log4j-slf4j2-impl'

@@ -24,6 +24,9 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 
+import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.web.Log4jWebSupport;
+import org.apache.logging.log4j.web.WebLoggerContextUtils;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_shared.file_import_common.Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_Remove_Old_CurrentSubdirs;
@@ -140,17 +143,33 @@ public class WebappServletContextListener implements ServletContextListener {
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 
-		log.warn("INFO:  !!!!!!!!  Web app Undeploying   !!!!!!!!");
-		
 		try {
-			CachedDataInFileMgmt_Remove_Old_CurrentSubdirs.setShutdownRequested(true);
-		} catch ( Throwable t ) {
-			//  Eat Exception
-		}
-		try {
-			SpectralStorageService_Get_Supported_ScanFileSuffixes_At_LimelightStartup__Runnable_InThread.webappShutdownRequested();
-		} catch ( Throwable t ) {
-			//  Eat Exception
+			log.warn("INFO:  !!!!!!!!  Web app Undeploying   !!!!!!!!");
+
+			try {
+				CachedDataInFileMgmt_Remove_Old_CurrentSubdirs.setShutdownRequested(true);
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+			try {
+				SpectralStorageService_Get_Supported_ScanFileSuffixes_At_LimelightStartup__Runnable_InThread.webappShutdownRequested();
+			} catch ( Throwable t ) {
+				//  Eat Exception
+			}
+		} finally {
+			//  Shut down Log4j last.  Its own listener's auto-shutdown is disabled in web.xml (isLog4jAutoShutdownDisabled)
+			//  because it ran before this listener, and logging after it started a second, never-stopped LoggerContext.
+			//  Same steps as Log4j's Log4jShutdownOnContextDestroyedListener: clear the thread's context anchor, then stop.
+			//  (Its return type Log4jWebLifeCycle is package-private; it extends the public Log4jWebSupport and LifeCycle.)
+			final Log4jWebSupport log4jWebLifeCycle = WebLoggerContextUtils.getWebLifeCycle( sce.getServletContext() );
+			if ( log4jWebLifeCycle != null ) {
+				log4jWebLifeCycle.clearLoggerContext();
+				if ( log4jWebLifeCycle instanceof LifeCycle ) {
+					( (LifeCycle) log4jWebLifeCycle ).stop();
+				} else {
+					log.warn( "Log4j web lifecycle object is not a LifeCycle so Log4j NOT stopped.  class: " + log4jWebLifeCycle.getClass().getName() );
+				}
+			}
 		}
 	}
 
