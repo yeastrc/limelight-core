@@ -37,6 +37,7 @@ import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstan
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.UserDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.UserForgotPasswordTrackingDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserForgotPasswordTrackingDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightWebappConfigException;
@@ -247,6 +248,24 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 				String msg = "Failed to get Full user data from User Mgmt Webapp for user id: " + userMgmtUserIdFromSearch;
 				log.error( msg );
 				throw new LimelightInternalErrorException(msg);
+			}
+			{
+				//  Disabled user (in User Mgmt or in this Limelight):  no code and no email, same response as success
+
+				boolean userDisabled = false;
+				if ( ! userMgmtGetUserDataResponse.isEnabled() ) {
+					userDisabled = true;
+				} else {
+					UserDTO userDTO = userDAO.getForId( userId );
+					if ( userDTO == null || ( ! userDTO.isEnabledAppSpecific() ) ) {
+						userDisabled = true;
+					}
+				}
+				if ( userDisabled ) {
+					log.info( "Reset Password: account disabled, no code and no email.  Limelight user id: " + userId );
+					webserviceResult.setStatus(true);  //  Same response as success
+					return webserviceResult;  //  Early Exit
+				}
 			}
 			String authCode = generateSaveForgotPasswordCode( userId, submitIP );
 			// Generate and send the email to the user.

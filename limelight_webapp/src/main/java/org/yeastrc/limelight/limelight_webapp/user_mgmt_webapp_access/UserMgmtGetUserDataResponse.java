@@ -7,8 +7,6 @@ package org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access;
 public class UserMgmtGetUserDataResponse {
 
 	private boolean success;
-	
-	private boolean sessionKeyNotValid;
 	private boolean userIdNotFound;
 	
 	private String username;
@@ -26,7 +24,7 @@ public class UserMgmtGetUserDataResponse {
 
 	@Override
 	public String toString() {
-		return "UserMgmtGetUserDataResponse [success=" + success + ", sessionKeyNotValid=" + sessionKeyNotValid
+		return "UserMgmtGetUserDataResponse [success=" + success
 				+ ", userIdNotFound=" + userIdNotFound + ", username=" + username + ", email=" + email + ", firstName="
 				+ firstName + ", lastName=" + lastName + ", organization=" + organization + ", enabled=" + enabled
 				+ ", globalAdminUser=" + globalAdminUser + ", errorMessage=" + errorMessage + "]";
@@ -38,14 +36,6 @@ public class UserMgmtGetUserDataResponse {
 
 	public void setSuccess(boolean success) {
 		this.success = success;
-	}
-
-	public boolean isSessionKeyNotValid() {
-		return sessionKeyNotValid;
-	}
-
-	public void setSessionKeyNotValid(boolean sessionKeyNotValid) {
-		this.sessionKeyNotValid = sessionKeyNotValid;
 	}
 
 	public boolean isUserIdNotFound() {

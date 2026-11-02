@@ -108,7 +108,6 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 		//  Get full user data
 		
 		UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
-//		userMgmtGetUserDataRequest.setSessionKey( userMgmtLoginResponse.getSessionKey() );
 		userMgmtGetUserDataRequest.setUserId( userMgmtUserId );
 		
 		UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = 

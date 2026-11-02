@@ -112,6 +112,8 @@ interface UserAccountManagementPage_Change_Email_Component_State {
     email_InvalidValue?: boolean
 
     duplicateEmailEncountered?: boolean
+    currentPasswordRequired_Encountered?: boolean
+    currentPasswordInvalid_Encountered?: boolean
 
     show_LoadingMessage?: boolean
     showError_ReadingData?: boolean
@@ -127,6 +129,7 @@ class UserAccountManagementPage_Change_Email_Component extends React.Component< 
     private _formSubmit_BindThis = this._formSubmit.bind(this);
 
     private _email_Input_Ref : React.RefObject<HTMLInputElement>; //  React.createRef()
+    private _currentPassword_Input_Ref : React.RefObject<HTMLInputElement>; //  React.createRef()
 
     private _email_FromServer : string;
 
@@ -139,6 +142,7 @@ class UserAccountManagementPage_Change_Email_Component extends React.Component< 
         super(props)
 
         this._email_Input_Ref = React.createRef<HTMLInputElement>();
+        this._currentPassword_Input_Ref = React.createRef<HTMLInputElement>();
 
         this.state = {
             show_LoadingMessage: true
@@ -220,10 +224,17 @@ class UserAccountManagementPage_Change_Email_Component extends React.Component< 
                 return;  // EARLY EXIT
             }
 
-            this.setState({ show_SavingMessage: true });
+            //  Not trimmed: a password is used as entered
+            const currentPassword_Value = this._currentPassword_Input_Ref.current.value;
+
+            //  Clear the current password field after each attempt
+            this._currentPassword_Input_Ref.current.value = "";
+
+            this.setState({ show_SavingMessage: true, duplicateEmailEncountered: false, currentPasswordRequired_Encountered: false, currentPasswordInvalid_Encountered: false });
 
             var requestData = {
-                email : emailValue
+                email : emailValue,
+                currentPassword : currentPassword_Value
             };
 
             const url = "user/rws/for-page/user-change-account-info";
@@ -238,6 +249,20 @@ class UserAccountManagementPage_Change_Email_Component extends React.Component< 
                 try {
                     if ( responseData.status ) {
                         this.props.change_Callback({newEmail: emailValue});
+
+                        return;  // EARLY RETURN
+                    }
+
+                    if ( responseData.currentPasswordRequired ) {
+
+                        this.setState({ currentPasswordRequired_Encountered: true, show_SavingMessage: false });
+
+                        return;  // EARLY RETURN
+                    }
+
+                    if ( responseData.currentPasswordInvalid ) {
+
+                        this.setState({ currentPasswordInvalid_Encountered: true, show_SavingMessage: false });
 
                         return;  // EARLY RETURN
                     }
@@ -320,6 +345,28 @@ class UserAccountManagementPage_Change_Email_Component extends React.Component< 
                                     ) : (this.state.duplicateEmailEncountered ) ? (
                                         <span style={ { marginLeft: 20, color: "red", whiteSpace: "nowrap" } }>
                                             Email is already in use.
+                                        </span>
+                                    ) : null }
+                                </div>
+
+                                <div style={ { marginTop: 5 } }>
+                                    <span>
+                                        Current password:&nbsp;
+                                    </span>
+                                    <span>
+                                        <input type="password"
+                                               style={ { width: 200 } }
+                                               autoComplete="current-password"
+                                               ref={ this._currentPassword_Input_Ref }
+                                        />
+                                    </span>
+                                    { ( this.state.currentPasswordRequired_Encountered ) ? (
+                                        <span style={ { marginLeft: 20, color: "red", whiteSpace: "nowrap" } }>
+                                            Enter your current password
+                                        </span>
+                                    ) : ( this.state.currentPasswordInvalid_Encountered ) ? (
+                                        <span style={ { marginLeft: 20, color: "red", whiteSpace: "nowrap" } }>
+                                            Current password is incorrect
                                         </span>
                                     ) : null }
                                 </div>

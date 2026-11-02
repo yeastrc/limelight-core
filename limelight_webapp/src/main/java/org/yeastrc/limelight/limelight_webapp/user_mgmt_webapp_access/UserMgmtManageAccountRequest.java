@@ -6,7 +6,12 @@ package org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access;
  */
 public class UserMgmtManageAccountRequest {
 
-	private String sessionKey;
+	private int userMgmtUserId;
+
+	/**
+	 * Required when the email or username changes
+	 */
+	private String currentPassword;
 	
 	private String username;
 	private String email;
@@ -19,18 +24,26 @@ public class UserMgmtManageAccountRequest {
 
 	@Override
 	public String toString() {
-		return "UserMgmtManageAccountRequest [sessionKey=" + sessionKey + ", username=" + username + ", email=" + email
+		return "UserMgmtManageAccountRequest [userMgmtUserId=" + userMgmtUserId + ", currentPassword=NOT SHOWN, username=" + username + ", email=" + email
 				+ ", firstName=" + firstName + ", lastName=" + lastName + ", organization=" + organization
 				+ ", assignOrganizationNull=" + assignOrganizationNull + "]";
 	}
 
 
-	public String getSessionKey() {
-		return sessionKey;
+	public int getUserMgmtUserId() {
+		return userMgmtUserId;
 	}
 
-	public void setSessionKey(String sessionKey) {
-		this.sessionKey = sessionKey;
+	public void setUserMgmtUserId(int userMgmtUserId) {
+		this.userMgmtUserId = userMgmtUserId;
+	}
+
+	public String getCurrentPassword() {
+		return currentPassword;
+	}
+
+	public void setCurrentPassword(String currentPassword) {
+		this.currentPassword = currentPassword;
 	}
 
 	public String getUsername() {

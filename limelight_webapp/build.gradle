@@ -188,7 +188,7 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-crypto'
 
 		
-	// Used by included yeastrc jars
+	// Used by Limelight code (com.google.common imports)
 	// https://mvnrepository.com/artifact/com.google.guava/guava
 	//  compile group: 'com.google.guava', name: 'guava', version: '24.0-jre'
 	

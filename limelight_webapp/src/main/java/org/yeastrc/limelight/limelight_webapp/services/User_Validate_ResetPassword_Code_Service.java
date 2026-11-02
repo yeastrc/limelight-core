@@ -40,7 +40,10 @@ public class User_Validate_ResetPassword_Code_Service implements User_Validate_R
 	private static final String ERROR_RESETPASSWORD_PROCESS_CODE_ALREADY_USED = "The Reset Password code has already been used.";
 	private static final String ERROR_RESETPASSWORD_PROCESS_CODE_REPLACED_BY_NEWER = "A newer Reset Password code has been created so this one is invalid.";
 	private static final String ERROR_RESETPASSWORD_PROCESS_CODE_TOO_OLD = "The Reset Password code has expired.";
-	private static final String ERROR_RESETPASSWORD_PROCESS_CODE_GENERAL = "There was an error processing the request.";
+	/**
+	 * Also used by User_ResetPassword_Change_Password_RestWebserviceController
+	 */
+	public static final String ERROR_RESETPASSWORD_PROCESS_CODE_GENERAL = "There was an error processing the request.";
 
 	@Autowired
 	private UserForgotPasswordTrackingDAO_IF userForgotPasswordTrackingDAO;

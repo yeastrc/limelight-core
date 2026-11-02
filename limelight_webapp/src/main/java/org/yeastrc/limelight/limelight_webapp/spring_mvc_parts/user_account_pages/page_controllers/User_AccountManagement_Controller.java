@@ -32,11 +32,7 @@ import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.searchers.User_IsAny_ProjectOwner_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
-import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
-import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtSessionKeyAliveResponse;
-import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtSessionKeyAliveWebserviceRequest;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
-import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
 import org.yeastrc.limelight.limelight_webapp.web_utils.PopulatePageHeaderDataIF;
 
 @Controller
@@ -51,12 +47,6 @@ public class User_AccountManagement_Controller {
 	@Autowired
 	private AccessControl_GetUserSession_RefreshAccessEnabled_IF accessControl_GetUserSession_RefreshAccessEnabled;
 
-	@Autowired
-	private UserMgmtCentralWebappWebserviceAccessIF userMgmtCentralWebappWebserviceAccess;
-
-	@Autowired
-	private UserSessionManager userSessionManager;
-	
 	@Autowired
 	private UserDAO_IF userDAO;
 	
@@ -101,24 +91,6 @@ public class User_AccountManagement_Controller {
 				return AA_UserAccount_PageControllerPaths_Constants.FORWARD_TO_LOGIN_PAGE_CONTROLLER; //  EARLY RETURN
 			}
 			
-			//  Validate User Mgmt Session Key
-			UserMgmtSessionKeyAliveWebserviceRequest userMgmtSessionKeyAliveRequest = new UserMgmtSessionKeyAliveWebserviceRequest();
-			userMgmtSessionKeyAliveRequest.setSessionKey( userSession.getUserMgmtSessionKey() );
-			UserMgmtSessionKeyAliveResponse userMgmtSessionKeyAliveResponse =
-					userMgmtCentralWebappWebserviceAccess.sessionKeyAlive( userMgmtSessionKeyAliveRequest );
-			if ( ! userMgmtSessionKeyAliveResponse.isSuccess() ) {
-				if ( userMgmtSessionKeyAliveResponse.isSessionKeyNotValid() ) {
-
-					//  No User session In User Mgmt
-					
-					//  Invalidate session
-					userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
-					
-					// Forward to Login Page
-					return AA_UserAccount_PageControllerPaths_Constants.FORWARD_TO_LOGIN_PAGE_CONTROLLER; //  EARLY RETURN
-				}
-			}
-
 			populatePageHeaderData.populatePageHeaderData( null /* projectIds */, userSession, httpServletRequest );
 			
 

@@ -5,9 +5,8 @@ package org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access;
  *
  */
 public class UserMgmtChangePasswordRequest {
-
-	private String sessionKey;
 	
+	private int userMgmtUserId;
 	private String oldPassword;
 	private String newPassword;
 	private String userRemoteIP;
@@ -15,7 +14,7 @@ public class UserMgmtChangePasswordRequest {
 
 	@Override
 	public String toString() {
-		return "UserMgmtChangePasswordRequest [sessionKey=" + sessionKey 
+		return "UserMgmtChangePasswordRequest [userMgmtUserId=" + userMgmtUserId
 				+ ", userRemoteIP=" + userRemoteIP
 				+ ", oldPassword=NOT SHOWN"
 				+ ", newPassword=NOT SHOWN]";
@@ -26,11 +25,11 @@ public class UserMgmtChangePasswordRequest {
 	public void setUserRemoteIP(String userRemoteIP) {
 		this.userRemoteIP = userRemoteIP;
 	}
-	public String getSessionKey() {
-		return sessionKey;
+	public int getUserMgmtUserId() {
+		return userMgmtUserId;
 	}
-	public void setSessionKey(String sessionKey) {
-		this.sessionKey = sessionKey;
+	public void setUserMgmtUserId(int userMgmtUserId) {
+		this.userMgmtUserId = userMgmtUserId;
 	}
 	public String getOldPassword() {
 		return oldPassword;

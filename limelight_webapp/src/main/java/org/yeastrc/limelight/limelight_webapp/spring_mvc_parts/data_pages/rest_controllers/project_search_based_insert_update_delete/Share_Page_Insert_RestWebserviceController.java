@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.yeastrc.limelight.limelight_webapp.access_control.common.AccessControl_GetUserSession_RefreshAccessEnabled_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.UrlShortenerDAO.LogDuplicateSQLException;
 import org.yeastrc.limelight.limelight_webapp.dao.UrlShortenerDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.UrlShortener_Insert_UsingDBTransactionServiceIF;
@@ -50,7 +51,6 @@ import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_c
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
-import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
@@ -88,7 +88,7 @@ public class Share_Page_Insert_RestWebserviceController {
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
 	@Autowired
-	private UserSessionManager userSessionManager;
+	private AccessControl_GetUserSession_RefreshAccessEnabled_IF accessControl_GetUserSession_RefreshAccessEnabled;
 	
 	@Autowired
 	private UrlShortenerDAO_IF urlShortenerDAO;
@@ -315,7 +315,8 @@ public class Share_Page_Insert_RestWebserviceController {
 			String pageControllerPathInURL, 
 			String shortenedUrlKey) {
 		
-		UserSession userSession = userSessionManager.getUserSession( httpServletRequest );
+		//  Refresh: a disabled user gets no session (null)
+		UserSession userSession = accessControl_GetUserSession_RefreshAccessEnabled.getUserSession_RefreshAccessEnabled( httpServletRequest );
 
 		Integer userId = null;
 		

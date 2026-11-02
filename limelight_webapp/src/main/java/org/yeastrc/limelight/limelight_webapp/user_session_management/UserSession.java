@@ -42,8 +42,6 @@ public class UserSession {
 
 	//  From User Mgmt
 
-	String userMgmtSessionKey;
-
 	String username;
 	String email;
 	String firstName;
@@ -68,8 +66,6 @@ public class UserSession {
 		newUserSession.userMgmtUserId = this.userMgmtUserId;
 		newUserSession.userAccessLevel = this.userAccessLevel;
 		newUserSession.enabledAppSpecific = this.enabledAppSpecific;
-		
-		newUserSession.userMgmtSessionKey = this.userMgmtSessionKey;
 		
 		newUserSession.username = this.username;
 		newUserSession.email = this.email;
@@ -120,9 +116,6 @@ public class UserSession {
 	}
 	public boolean isEnabledAppSpecific() {
 		return enabledAppSpecific;
-	}
-	public String getUserMgmtSessionKey() {
-		return userMgmtSessionKey;
 	}
 	public String getUsername() {
 		return username;

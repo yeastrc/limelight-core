@@ -7,18 +7,23 @@ package org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access;
 public class UserMgmtManageAccountResponse {
 
 	private boolean success;
-	
-	private boolean sessionKeyNotValid;
 
 	private boolean duplicateUsername = false;
 	private boolean duplicateEmail = false;
+	private boolean userIdNotFound;
+	private boolean userDisabled;
+	private boolean currentPasswordRequired;
+	private boolean currentPasswordInvalid;
 	
 	private String errorMessage;
 
 	@Override
 	public String toString() {
-		return "UserMgmtManageAccountResponse [success=" + success + ", sessionKeyNotValid=" + sessionKeyNotValid
-				+ ", duplicateUsername=" + duplicateUsername + ", duplicateEmail=" + duplicateEmail + ", errorMessage="
+		return "UserMgmtManageAccountResponse [success=" + success
+				+ ", duplicateUsername=" + duplicateUsername + ", duplicateEmail=" + duplicateEmail
+				+ ", userIdNotFound=" + userIdNotFound + ", userDisabled=" + userDisabled
+				+ ", currentPasswordRequired=" + currentPasswordRequired + ", currentPasswordInvalid=" + currentPasswordInvalid
+				+ ", errorMessage="
 				+ errorMessage + "]";
 	}
 	
@@ -28,14 +33,6 @@ public class UserMgmtManageAccountResponse {
 
 	public void setSuccess(boolean success) {
 		this.success = success;
-	}
-
-	public boolean isSessionKeyNotValid() {
-		return sessionKeyNotValid;
-	}
-
-	public void setSessionKeyNotValid(boolean sessionKeyNotValid) {
-		this.sessionKeyNotValid = sessionKeyNotValid;
 	}
 
 	public String getErrorMessage() {
@@ -63,4 +60,32 @@ public class UserMgmtManageAccountResponse {
 	}
 
 
+
+	public boolean isUserIdNotFound() {
+		return userIdNotFound;
+	}
+	public void setUserIdNotFound(boolean userIdNotFound) {
+		this.userIdNotFound = userIdNotFound;
+	}
+
+	public boolean isUserDisabled() {
+		return userDisabled;
+	}
+	public void setUserDisabled(boolean userDisabled) {
+		this.userDisabled = userDisabled;
+	}
+
+	public boolean isCurrentPasswordRequired() {
+		return currentPasswordRequired;
+	}
+	public void setCurrentPasswordRequired(boolean currentPasswordRequired) {
+		this.currentPasswordRequired = currentPasswordRequired;
+	}
+
+	public boolean isCurrentPasswordInvalid() {
+		return currentPasswordInvalid;
+	}
+	public void setCurrentPasswordInvalid(boolean currentPasswordInvalid) {
+		this.currentPasswordInvalid = currentPasswordInvalid;
+	}
 }

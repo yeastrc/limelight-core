@@ -67,8 +67,6 @@ public class Project_ListUsersNotInProject_Service implements Project_ListUsersN
 		for ( Project_UsersNotInTheProjectList_ForProjectIdSearcherItem project_UsersNotInTheProjectList_ForProjectIdSearcherItem : project_UsersNotInTheProjectList_ForProjectIdSearcherItemList ) {
 			
 			UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
-			// TODO Session Key check currently Disabled in web service 
-//			userMgmtGetUserDataRequest.setSessionKey( userMgmtLoginResponse.getSessionKey() );
 			userMgmtGetUserDataRequest.setUserId( project_UsersNotInTheProjectList_ForProjectIdSearcherItem.getUserMgmtUserId() );
 			
 			UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = 

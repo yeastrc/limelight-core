@@ -276,7 +276,6 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 			} else {
 				//  Process the email
 				UserMgmtSearchUserDataRequest userMgmtSearchUserDataRequest = new UserMgmtSearchUserDataRequest();
-//				userMgmtSearchUserDataRequest.setSessionKey( sessionKey );
 				userMgmtSearchUserDataRequest.setSearchString( invitedPersonEmail );
 				userMgmtSearchUserDataRequest.setSearchStringExactMatch(true);
 				
@@ -284,11 +283,6 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 						userMgmtCentralWebappWebserviceAccess.searchUserDataByEmail( userMgmtSearchUserDataRequest );
 				
 				if ( ! userMgmtSearchUserDataResponse.isSuccess() ) {
-					if ( userMgmtSearchUserDataResponse.isSessionKeyNotValid() ) {
-						String msg = "Session Key invalid for call to UserMgmtCentralWebappWebserviceAccess.getInstance().searchUserDataByEmail(...)";
-						log.error( msg );
-						throw new LimelightInternalErrorException( msg );
-					}
 					String msg = "call to UserMgmtCentralWebappWebserviceAccess.getInstance().searchUserDataByEmail(...) not successful, invitedPersonEmail: " + invitedPersonEmail;
 					log.error( msg );
 					throw new LimelightInternalErrorException( msg );
@@ -356,7 +350,6 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 		//  Get full user data from User Mgmt
 		
 		UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
-//		userMgmtGetUserDataRequest.setSessionKey(  );
 		userMgmtGetUserDataRequest.setUserId( invitedPerson_UserMgmtUserId_FromEmail );
 		
 		UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = 
@@ -466,7 +459,6 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 		//  Get full user data
 		
 		UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
-//		userMgmtGetUserDataRequest.setSessionKey(  );
 		userMgmtGetUserDataRequest.setUserId( userMgmtUserId );
 		
 		UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = 

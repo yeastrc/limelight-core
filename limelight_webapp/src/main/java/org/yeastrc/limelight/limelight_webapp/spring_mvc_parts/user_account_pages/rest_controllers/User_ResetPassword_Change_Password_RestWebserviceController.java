@@ -38,6 +38,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
+import org.yeastrc.limelight.limelight_webapp.services.User_Validate_ResetPassword_Code_Service;
 import org.yeastrc.limelight.limelight_webapp.services.User_Validate_ResetPassword_Code_ServiceIF;
 import org.yeastrc.limelight.limelight_webapp.services.User_Validate_ResetPassword_Code_Service.User_Validate_ResetPassword_Code_Service_Result;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -192,6 +193,13 @@ public class User_ResetPassword_Change_Password_RestWebserviceController {
 			if ( userMgmtResetPasswordResponse.isPasswordTooLong() ) {
 				//  Reset code is NOT marked used so the user can try again
 				webserviceResult.setPasswordTooLong(true);
+				return webserviceResult;  //  EARLY EXIT
+			}
+			if ( userMgmtResetPasswordResponse.isUserDisabled() ) {
+				//  User is disabled in User Mgmt.  Same general message as an invalid code.
+				//  Reset code is NOT marked used.
+				log.info( "Reset Password: User is disabled in User Mgmt so password NOT changed.  User Mgmt user id: " + userMgmtUserId );
+				webserviceResult.errorMessage = User_Validate_ResetPassword_Code_Service.ERROR_RESETPASSWORD_PROCESS_CODE_GENERAL;
 				return webserviceResult;  //  EARLY EXIT
 			}
 			if ( userMgmtResetPasswordResponse.isUserIdNotValid() ) {

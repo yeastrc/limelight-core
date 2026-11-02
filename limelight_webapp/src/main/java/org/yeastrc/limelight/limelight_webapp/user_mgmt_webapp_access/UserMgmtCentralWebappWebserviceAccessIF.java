@@ -45,14 +45,6 @@ public interface UserMgmtCentralWebappWebserviceAccessIF {
 	boolean isPasswordTooLong_UTF8_Bytes( String password );
 
 	/**
-	 * @param userMgmtSessionKeyAliveRequest
-	 * @return
-	 * @throws Exception
-	 */
-	UserMgmtSessionKeyAliveResponse sessionKeyAlive(
-			UserMgmtSessionKeyAliveWebserviceRequest userMgmtSessionKeyAliveRequest) throws Exception;
-
-	/**
 	 * @param userMgmtCreateAccountRequest
 	 * @return
 	 * @throws Exception
@@ -97,6 +89,17 @@ public interface UserMgmtCentralWebappWebserviceAccessIF {
 	 */
 	UserMgmtGetAccountEnabledResponse getAccountEnabled(
 			UserMgmtGetAccountEnabledRequest userMgmtGetAccountEnabledRequest) throws Exception;
+
+	/**
+	 * For the re-check of the account enabled flag (UserMgmt_UserEnabled_RecheckCache) only.
+	 * 
+	 * @param userMgmtGetAccountEnabledRequest
+	 * @param totalTimeoutMillis - total time allowed for the call when User Mgmt is a separate webapp
+	 * @return
+	 * @throws Exception
+	 */
+	UserMgmtGetAccountEnabledResponse getAccountEnabled_ForRecheck(
+			UserMgmtGetAccountEnabledRequest userMgmtGetAccountEnabledRequest, int totalTimeoutMillis) throws Exception;
 
 	/**
 	 * @param userMgmtManageAccountRequest

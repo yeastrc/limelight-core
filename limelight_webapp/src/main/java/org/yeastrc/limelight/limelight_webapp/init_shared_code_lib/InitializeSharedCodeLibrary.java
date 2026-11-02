@@ -28,7 +28,6 @@ import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.
 import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO;
 import org.yeastrc.limelight.limelight_webapp.init_shared_code_lib.pass_to_shared_code_lib.SharedCode_DBConnectionProvider;
-import org.yeastrc.session_mgmt.main.YRCSessionMgmtMain;
 
 /**
  * Initialize code in Limelight Shared Code jar included in the web app
@@ -52,14 +51,6 @@ public class InitializeSharedCodeLibrary {
     public void handleContextRefreshedEvent(ContextRefreshedEvent event) {
         
     	log.info( "handleContextRefreshedEvent(...) called: " + event.getApplicationContext().getApplicationName() );
-
-		try {
-			YRCSessionMgmtMain.getInstance().init();
-		} catch (Exception e) {
-			//  
-			log.error( "Exception in YRCSessionMgmtMain.init():", e  );
-			throw new RuntimeException( e );
-		} 
 
 		SharedCodeOnly_DBConnectionProvider.setSharedCodeOnly_DBConnectionProvider_Provider_IF( sharedCode_DBConnectionProvider );
 		

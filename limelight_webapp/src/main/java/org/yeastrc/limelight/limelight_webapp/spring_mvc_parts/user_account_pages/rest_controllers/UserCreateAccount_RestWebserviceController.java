@@ -60,8 +60,7 @@ import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrac
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCreateAccountRequest;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCreateAccountResponse;
-import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtLoginRequest;
-import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtLoginResponse;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_UserEnabled_RecheckCache_IF;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionBuilder;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
@@ -94,6 +93,9 @@ public class UserCreateAccount_RestWebserviceController {
 
 	@Autowired
 	private UserMgmtCentralWebappWebserviceAccessIF userMgmtCentralWebappWebserviceAccess;
+
+	@Autowired
+	private UserMgmt_UserEnabled_RecheckCache_IF userMgmt_UserEnabled_RecheckCache;
 
 	@Autowired
 	private ValidateUserInviteTrackingCodeIF validateUserInviteTrackingCode;
@@ -633,26 +635,6 @@ public class UserCreateAccount_RestWebserviceController {
 					termsOfServiceUserAcceptedVersionHistoryDAO.save( tosUserAccepted );
 				}
 
-				UserMgmtLoginRequest userMgmtLoginRequest = new UserMgmtLoginRequest();
-				userMgmtLoginRequest.setUsername( createAccountRequest.username );
-				userMgmtLoginRequest.setPassword( createAccountRequest.password );
-				userMgmtLoginRequest.setRemoteIP(  httpServletRequest.getRemoteAddr() );
-
-				UserMgmtLoginResponse userMgmtLoginResponse = 
-						userMgmtCentralWebappWebserviceAccess.userLogin( userMgmtLoginRequest );
-
-				if ( ! userMgmtLoginResponse.isSuccess() ) {
-					String msg = null;
-					if ( userMgmtLoginResponse.isUsernameNotFound() || userMgmtLoginResponse.isPasswordInvalid() ) {
-						msg = "Fail to log into account just created for username not found or password is invalid.  username: " + createAccountRequest.username;
-					} else if ( userMgmtLoginResponse.isUserDisabled() ) {
-						msg = "Fail to log into account just created for user is disabled.  username: " + createAccountRequest.username;
-					}
-					msg = "Fail to log into account just created.  username: " + createAccountRequest.username;
-					log.error( msg );
-					throw new LimelightInternalErrorException( msg );
-				}
-
 				//  Create current session so the browser is logged in as soon as this webservice returns
 
 				UserSessionBuilder userSessionBuilder =
@@ -665,6 +647,9 @@ public class UserCreateAccount_RestWebserviceController {
 				UserSession userSession = userSessionBuilder.build();
 
 				userSessionManager.setUserSession( userSession, httpServletRequest );
+
+				//  The account was just created in User Mgmt, so it is enabled there
+				userMgmt_UserEnabled_RecheckCache.setUserMgmtAccount_Enabled_CheckedNow( createdUserMgmtUserId );
 			}
 
 			log.info( "Creating User Account SUCCESSFUL!!! username: " + createAccountRequest.username );

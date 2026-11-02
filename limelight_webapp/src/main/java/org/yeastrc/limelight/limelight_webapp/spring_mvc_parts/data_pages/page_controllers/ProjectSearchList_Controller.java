@@ -220,8 +220,6 @@ public class ProjectSearchList_Controller {
 		for ( UserListForProjectIdSearcherItem userListForProjectIdSearcherItem : userListForProjectIdSearcherItemList ) {
 			
 			UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
-			// TODO Session Key check currently Disabled in web service 
-//			userMgmtGetUserDataRequest.setSessionKey( userMgmtLoginResponse.getSessionKey() );
 			userMgmtGetUserDataRequest.setUserId( userListForProjectIdSearcherItem.getUserMgmtUserId() );
 			
 			UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = 

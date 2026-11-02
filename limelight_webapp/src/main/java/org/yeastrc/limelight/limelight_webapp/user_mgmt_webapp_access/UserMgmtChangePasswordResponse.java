@@ -7,9 +7,9 @@ package org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access;
 public class UserMgmtChangePasswordResponse {
 	
 	private boolean success;
-	
-	private boolean sessionKeyNotValid;
 	private boolean oldPasswordNotValid;
+	private boolean userIdNotFound;
+	private boolean userDisabled;
 
 	private String errorMessage;
 	
@@ -18,8 +18,8 @@ public class UserMgmtChangePasswordResponse {
 
 	@Override
 	public String toString() {
-		return "UserMgmtChangePasswordResponse [success=" + success + ", sessionKeyNotValid=" + sessionKeyNotValid
-				+ ", oldPasswordNotValid=" + oldPasswordNotValid + ", errorMessage=" + errorMessage + ", passwordTooLong=" + passwordTooLong + "]";
+		return "UserMgmtChangePasswordResponse [success=" + success
+				+ ", oldPasswordNotValid=" + oldPasswordNotValid + ", userIdNotFound=" + userIdNotFound + ", userDisabled=" + userDisabled + ", errorMessage=" + errorMessage + ", passwordTooLong=" + passwordTooLong + "]";
 	}
 
 	public boolean isSuccess() {
@@ -28,14 +28,6 @@ public class UserMgmtChangePasswordResponse {
 
 	public void setSuccess(boolean success) {
 		this.success = success;
-	}
-
-	public boolean isSessionKeyNotValid() {
-		return sessionKeyNotValid;
-	}
-
-	public void setSessionKeyNotValid(boolean sessionKeyNotValid) {
-		this.sessionKeyNotValid = sessionKeyNotValid;
 	}
 
 	public boolean isOldPasswordNotValid() {
@@ -58,5 +50,19 @@ public class UserMgmtChangePasswordResponse {
 	}
 	public void setPasswordTooLong(boolean passwordTooLong) {
 		this.passwordTooLong = passwordTooLong;
+	}
+
+	public boolean isUserIdNotFound() {
+		return userIdNotFound;
+	}
+	public void setUserIdNotFound(boolean userIdNotFound) {
+		this.userIdNotFound = userIdNotFound;
+	}
+
+	public boolean isUserDisabled() {
+		return userDisabled;
+	}
+	public void setUserDisabled(boolean userDisabled) {
+		this.userDisabled = userDisabled;
 	}
 }

@@ -26,7 +26,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.init_included_libs.pass_to_included_libs.UserMgmtCentralMainDBConnectionFactory_For_Limelight;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
-import org.yeastrc.session_mgmt.main.YRCSessionMgmtMain;
 
 /**
  * Initialize code in jars included in the web app
@@ -54,14 +53,6 @@ public class InitializeIncludedLibraries {
     public void handleContextRefreshedEvent(ContextRefreshedEvent event) {
         
     	log.info( "handleContextRefreshedEvent(...) called: " + event.getApplicationContext().getApplicationName() );
-
-		try {
-			YRCSessionMgmtMain.getInstance().init();
-		} catch (Exception e) {
-			//  
-			log.error( "Exception in YRCSessionMgmtMain.init():", e  );
-			throw new RuntimeException( e );
-		} 
 
 		//  Provide DB connection for UserMgmtCentral_Embedded_Facade
 		

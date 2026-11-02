@@ -180,7 +180,7 @@ public class UserChangeAccountInfo_RestWebserviceController {
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
 
-		//  No length check on oldPassword.  It is only verified against the existing password, like login.
+		//  No length check on oldPassword or currentPassword.  They are only verified against the existing password, like login.
 
 		if ( webserviceRequest.password != null
 				&& userMgmtCentralWebappWebserviceAccess.isPasswordTooLong_UTF8_Bytes( webserviceRequest.password ) ) {
@@ -203,7 +203,9 @@ public class UserChangeAccountInfo_RestWebserviceController {
 			
 			UserMgmtManageAccountRequest userMgmtManageAccountRequest = new UserMgmtManageAccountRequest();
 
-			userMgmtManageAccountRequest.setSessionKey( userSession.getUserMgmtSessionKey() );
+			userMgmtManageAccountRequest.setUserMgmtUserId( userSession.getUserMgmtUserId() );
+			//  Required by User Mgmt when the email changes
+			userMgmtManageAccountRequest.setCurrentPassword( webserviceRequest.currentPassword );
 			
 			UserSessionBuilder userSessionBuilderNewSession =
 					UserSessionBuilder.getBuilder()
@@ -236,19 +238,20 @@ public class UserChangeAccountInfo_RestWebserviceController {
 				
 				if ( ! userMgmtManageAccountResponse.isSuccess() ) {
 					
-					if ( userMgmtManageAccountResponse.isSessionKeyNotValid() ) {
-						
-						//  No User session In User Mgmt
-						
-						//  Invalidate session
-						userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
-						
-						//  Return HTTP status so JS reloads page and user logs back in, creating new session in User Mgmt
-						throw new Limelight_WS_AuthError_Unauthorized_Exception();
+					if ( userMgmtManageAccountResponse.isUserDisabled() ) {
+						userDisabled_InvalidateSession_Throw401( userSession, httpServletRequest, httpServletResponse );
+					}
+					if ( userMgmtManageAccountResponse.isUserIdNotFound() ) {
+						userIdNotFound_InvalidateSession_Throw401( userSession, httpServletRequest, httpServletResponse );
 					}
 					
 					webserviceResult.setStatus(false);
-					
+					if ( userMgmtManageAccountResponse.isCurrentPasswordRequired() ) {
+						webserviceResult.setCurrentPasswordRequired(true);
+					}
+					if ( userMgmtManageAccountResponse.isCurrentPasswordInvalid() ) {
+						webserviceResult.setCurrentPasswordInvalid(true);
+					}
 					if ( userMgmtManageAccountResponse.isDuplicateEmail() ) {
 						webserviceResult.setEmailValueAlreadyExists(true);
 					}
@@ -284,7 +287,9 @@ public class UserChangeAccountInfo_RestWebserviceController {
 
 				UserMgmtManageAccountRequest userMgmtManageAccountRequest = new UserMgmtManageAccountRequest();
 
-				userMgmtManageAccountRequest.setSessionKey( userSession.getUserMgmtSessionKey() );
+				userMgmtManageAccountRequest.setUserMgmtUserId( userSession.getUserMgmtUserId() );
+				//  Required by User Mgmt when the username changes
+				userMgmtManageAccountRequest.setCurrentPassword( webserviceRequest.currentPassword );
 
 				userMgmtManageAccountRequest.setUsername( webserviceRequest.username );
 				
@@ -294,18 +299,20 @@ public class UserChangeAccountInfo_RestWebserviceController {
 				
 				if ( ! userMgmtManageAccountResponse.isSuccess() ) {
 
-					if ( userMgmtManageAccountResponse.isSessionKeyNotValid() ) {
-						
-						//  No User session In User Mgmt
-						
-						//  Invalidate session
-						userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
-						
-						//  Return HTTP status so JS reloads page and user logs back in, creating new session in User Mgmt
-						throw new Limelight_WS_AuthError_Unauthorized_Exception();
+					if ( userMgmtManageAccountResponse.isUserDisabled() ) {
+						userDisabled_InvalidateSession_Throw401( userSession, httpServletRequest, httpServletResponse );
+					}
+					if ( userMgmtManageAccountResponse.isUserIdNotFound() ) {
+						userIdNotFound_InvalidateSession_Throw401( userSession, httpServletRequest, httpServletResponse );
 					}
 					
 					webserviceResult.setStatus(false);
+					if ( userMgmtManageAccountResponse.isCurrentPasswordRequired() ) {
+						webserviceResult.setCurrentPasswordRequired(true);
+					}
+					if ( userMgmtManageAccountResponse.isCurrentPasswordInvalid() ) {
+						webserviceResult.setCurrentPasswordInvalid(true);
+					}
 					if ( userMgmtManageAccountResponse.isDuplicateUsername() ) {
 						webserviceResult.setUsernameValueAlreadyExists(true);
 					}
@@ -335,7 +342,7 @@ public class UserChangeAccountInfo_RestWebserviceController {
 				//  Update password value if in request
 				UserMgmtChangePasswordRequest userMgmtChangePasswordRequest = new UserMgmtChangePasswordRequest();
 
-				userMgmtChangePasswordRequest.setSessionKey( userSession.getUserMgmtSessionKey() );
+				userMgmtChangePasswordRequest.setUserMgmtUserId( userSession.getUserMgmtUserId() );
 
 				userMgmtChangePasswordRequest.setOldPassword( webserviceRequest.oldPassword );
 				userMgmtChangePasswordRequest.setNewPassword( webserviceRequest.password );
@@ -346,15 +353,11 @@ public class UserChangeAccountInfo_RestWebserviceController {
 
 				if ( ! userMgmtChangePasswordResponse.isSuccess() ) {
 
-					if ( userMgmtChangePasswordResponse.isSessionKeyNotValid() ) {
-						
-						//  No User session In User Mgmt
-						
-						//  Invalidate session
-						userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
-						
-						//  Return HTTP status so JS reloads page and user logs back in, creating new session in User Mgmt
-						throw new Limelight_WS_AuthError_Unauthorized_Exception();
+					if ( userMgmtChangePasswordResponse.isUserDisabled() ) {
+						userDisabled_InvalidateSession_Throw401( userSession, httpServletRequest, httpServletResponse );
+					}
+					if ( userMgmtChangePasswordResponse.isUserIdNotFound() ) {
+						userIdNotFound_InvalidateSession_Throw401( userSession, httpServletRequest, httpServletResponse );
 					}
 					
 					webserviceResult.setStatus(false);
@@ -381,12 +384,40 @@ public class UserChangeAccountInfo_RestWebserviceController {
 		//    				log.info( "webserviceResponse.isPasswordInvalid(): " + webserviceResponse.isPasswordInvalid() );
 		//    				log.info( "webserviceResponse.isUserDisabled(): " + webserviceResponse.isUserDisabled() );
 		//    				log.info( "webserviceResponse.isUsernameNotFound(): " + webserviceResponse.isUsernameNotFound() );
-		//    				log.info( "webserviceResponse.getSessionKey(): " + webserviceResponse.getSessionKey() );
 		//    				log.info( "webserviceResponse.getUserId(): " + webserviceResponse.getUserId() );
 		//    				log.info( "webserviceResponse.getErrorMessage(): " + webserviceResponse.getErrorMessage() );
 
 
 		return webserviceResult;
+	}
+
+	
+	/**
+	 * User Mgmt refused the change because the user is disabled: end the session and return 401,
+	 * so the page reloads and goes to the sign in page
+	 */
+	private void userDisabled_InvalidateSession_Throw401( UserSession userSession, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse ) {
+
+		log.info( "User Account Update: User is disabled in User Mgmt.  Ending the session.  Limelight user id: " + userSession.getUserId() );
+
+		userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
+
+		throw new Limelight_WS_AuthError_Unauthorized_Exception();
+	}
+
+	
+	/**
+	 * User Mgmt did not find the user id in the session: end the session and return 401,
+	 * so the page reloads and goes to the sign in page
+	 */
+	private void userIdNotFound_InvalidateSession_Throw401( UserSession userSession, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse ) {
+
+		log.error( "User Account Update: User Mgmt user id not found in User Mgmt.  Ending the session.  Limelight user id: " + userSession.getUserId()
+				+ ", User Mgmt user id: " + userSession.getUserMgmtUserId() );
+
+		userSessionManager.invalidateUserSession( httpServletRequest, httpServletResponse );
+
+		throw new Limelight_WS_AuthError_Unauthorized_Exception();
 	}
 
 
@@ -399,6 +430,10 @@ public class UserChangeAccountInfo_RestWebserviceController {
 		private String username;
 		private String password;
 		private String oldPassword;
+		/**
+		 * Required to change email or username
+		 */
+		private String currentPassword;
 		
 		public String getFirstName() {
 			return firstName;
@@ -436,6 +471,12 @@ public class UserChangeAccountInfo_RestWebserviceController {
 		public void setOldPassword(String oldPassword) {
 			this.oldPassword = oldPassword;
 		}
+		public String getCurrentPassword() {
+			return currentPassword;
+		}
+		public void setCurrentPassword(String currentPassword) {
+			this.currentPassword = currentPassword;
+		}
 		public String getOrganization() {
 			return organization;
 		}
@@ -452,6 +493,8 @@ public class UserChangeAccountInfo_RestWebserviceController {
 		private boolean usernameValueAlreadyExists;
 		private boolean oldPasswordInvalid;
 		private boolean passwordTooLong;
+		private boolean currentPasswordRequired;
+		private boolean currentPasswordInvalid;
 		
 		public boolean isStatus() {
 			return status;
@@ -482,6 +525,18 @@ public class UserChangeAccountInfo_RestWebserviceController {
 		}
 		public void setPasswordTooLong(boolean passwordTooLong) {
 			this.passwordTooLong = passwordTooLong;
+		}
+		public boolean isCurrentPasswordRequired() {
+			return currentPasswordRequired;
+		}
+		public void setCurrentPasswordRequired(boolean currentPasswordRequired) {
+			this.currentPasswordRequired = currentPasswordRequired;
+		}
+		public boolean isCurrentPasswordInvalid() {
+			return currentPasswordInvalid;
+		}
+		public void setCurrentPasswordInvalid(boolean currentPasswordInvalid) {
+			this.currentPasswordInvalid = currentPasswordInvalid;
 		}
 
 	}

@@ -21,11 +21,14 @@ import java.sql.SQLException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.dao.UserDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightDatabaseException;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_UserEnabled_RecheckCache_IF;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionAlterSessionIF;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
@@ -36,10 +39,15 @@ import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessio
  * Get the User Session
  * 
  * Refresh the Access Level and Enabled flag
+ * 
+ * Ends the session (and returns null) when the user is disabled in Limelight, has no Limelight user record,
+ * or (re-checked at most once per interval, see UserMgmt_UserEnabled_RecheckCache) is disabled in User Mgmt.
  *
  */
 @Component
 public class AccessControl_GetUserSession_RefreshAccessEnabled implements AccessControl_GetUserSession_RefreshAccessEnabled_IF {
+
+	private static final Logger log = LoggerFactory.getLogger( AccessControl_GetUserSession_RefreshAccessEnabled.class );
 
 	@Autowired
 	private UserSessionManager userSessionManager;
@@ -48,6 +56,9 @@ public class AccessControl_GetUserSession_RefreshAccessEnabled implements Access
 	private UserDAO_IF userDAO;
 	
 	@Autowired UserSessionAlterSessionIF userSessionAlterSession;
+	
+	@Autowired
+	private UserMgmt_UserEnabled_RecheckCache_IF userMgmt_UserEnabled_RecheckCache;
 
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.access_control.common.AccessControl_GetUserSession_RefreshAccessEnabled_IF#getUserSession_RefreshAccessEnabled(jakarta.servlet.http.HttpServletRequest)
@@ -76,6 +87,20 @@ public class AccessControl_GetUserSession_RefreshAccessEnabled implements Access
 		
 		if ( userDTO == null ) {
 			//  No record for user session user id
+			log.info( "No user record for the signed in user.  Ending the session.  Limelight user id: " + userSession.getUserId() );
+			userSessionManager.invalidateUserSession( httpServletRequest, null /* httpServletResponse: not used */ );
+			return null;
+		}
+		
+		if ( ! userDTO.isEnabledAppSpecific() ) {
+			log.info( "User is disabled in Limelight.  Ending the session.  Limelight user id: " + userSession.getUserId() );
+			userSessionManager.invalidateUserSession( httpServletRequest, null /* httpServletResponse: not used */ );
+			return null;
+		}
+		
+		if ( userMgmt_UserEnabled_RecheckCache.isUserMgmtAccountDisabled_RecheckIfDue( userDTO.getUserMgmtUserId() ) ) {
+			log.info( "User is disabled or not found in User Mgmt.  Ending the session.  Limelight user id: " + userSession.getUserId() );
+			userSessionManager.invalidateUserSession( httpServletRequest, null /* httpServletResponse: not used */ );
 			return null;
 		}
 		

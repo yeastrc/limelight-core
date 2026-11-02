@@ -48,6 +48,7 @@ import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_u
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCodeIF;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCode.ValidateUserInviteTrackingCodeResult;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_UserEnabled_RecheckCache_IF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGetUserDataRequest;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGetUserDataResponse;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtLoginRequest;
@@ -87,6 +88,9 @@ public class UserLogin_RestWebserviceController {
 
 	@Autowired
 	private UserMgmtCentralWebappWebserviceAccessIF userMgmtCentralWebappWebserviceAccess;
+
+	@Autowired
+	private UserMgmt_UserEnabled_RecheckCache_IF userMgmt_UserEnabled_RecheckCache;
 
 	@Autowired
 	private ValidateUserInviteTrackingCodeIF validateUserInviteTrackingCode;
@@ -209,7 +213,6 @@ public class UserLogin_RestWebserviceController {
 		int userMgmtUserId = userMgmtLoginResponse.getUserId();
 		//  Get full user data
 		UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
-		userMgmtGetUserDataRequest.setSessionKey( userMgmtLoginResponse.getSessionKey() );
 		userMgmtGetUserDataRequest.setUserId( userMgmtUserId );
 		UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = 
 				userMgmtCentralWebappWebserviceAccess.getUserData( userMgmtGetUserDataRequest );
@@ -357,7 +360,6 @@ public class UserLogin_RestWebserviceController {
 
 			//						UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
 			//						userMgmtGetUserDataRequest.setUserId( userMgmtLoginResponse.getUserId() );
-			//						userMgmtGetUserDataRequest.setSessionKey( userMgmtLoginResponse.getSessionKey() );
 			//
 			//						UserMgmtGetUserDataResponse userMgmtGetUserDataResponse =
 			//								userMgmtCentralWebappWebserviceAccess.getUserData( userMgmtGetUserDataRequest );
@@ -368,10 +370,12 @@ public class UserLogin_RestWebserviceController {
 				UserSessionBuilder.getBuilder()
 				.fromUserDTO( userDTO )
 				.fromGetUserDataForIdAccountWebserviceResponse( userMgmtGetUserDataResponse )
-				.setUserMgmtSessionKey( userMgmtLoginResponse.getSessionKey() )
 				.build();
 		
 		userSessionManager.setUserSession( userSession, httpServletRequest );
+
+		//  Signed in through User Mgmt just now, so the account is enabled there
+		userMgmt_UserEnabled_RecheckCache.setUserMgmtAccount_Enabled_CheckedNow( userMgmtUserId );
 
 		userDAO.updateLastLogin( thisAppUserId, remoteIP );
 		userLoginResult.setSuccess( true );
@@ -386,7 +390,6 @@ public class UserLogin_RestWebserviceController {
 		//    				log.info( "webserviceResponse.isPasswordInvalid(): " + webserviceResponse.isPasswordInvalid() );
 		//    				log.info( "webserviceResponse.isUserDisabled(): " + webserviceResponse.isUserDisabled() );
 		//    				log.info( "webserviceResponse.isUsernameNotFound(): " + webserviceResponse.isUsernameNotFound() );
-		//    				log.info( "webserviceResponse.getSessionKey(): " + webserviceResponse.getSessionKey() );
 		//    				log.info( "webserviceResponse.getUserId(): " + webserviceResponse.getUserId() );
 		//    				log.info( "webserviceResponse.getErrorMessage(): " + webserviceResponse.getErrorMessage() );
 
