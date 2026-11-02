@@ -372,7 +372,7 @@ public class UserLogin_RestWebserviceController {
 				.fromGetUserDataForIdAccountWebserviceResponse( userMgmtGetUserDataResponse )
 				.build();
 		
-		userSessionManager.setUserSession( userSession, httpServletRequest );
+		userSessionManager.setUserSession_ChangeSessionId( userSession, httpServletRequest );
 
 		//  Signed in through User Mgmt just now, so the account is enabled there
 		userMgmt_UserEnabled_RecheckCache.setUserMgmtAccount_Enabled_CheckedNow( userMgmtUserId );

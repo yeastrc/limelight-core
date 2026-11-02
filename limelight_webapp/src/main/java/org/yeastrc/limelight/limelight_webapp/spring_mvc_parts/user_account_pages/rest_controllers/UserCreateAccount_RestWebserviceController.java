@@ -646,7 +646,7 @@ public class UserCreateAccount_RestWebserviceController {
 						
 				UserSession userSession = userSessionBuilder.build();
 
-				userSessionManager.setUserSession( userSession, httpServletRequest );
+				userSessionManager.setUserSession_ChangeSessionId( userSession, httpServletRequest );
 
 				//  The account was just created in User Mgmt, so it is enabled there
 				userMgmt_UserEnabled_RecheckCache.setUserMgmtAccount_Enabled_CheckedNow( createdUserMgmtUserId );

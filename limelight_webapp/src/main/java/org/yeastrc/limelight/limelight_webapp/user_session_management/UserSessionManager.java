@@ -37,23 +37,6 @@ public class UserSessionManager {
 	private static final String USER_SESSION__SESSION_ATTRIBUTE = "limelightUserSession";
 
 	/**
-	 * @param userSession
-	 * @param httpServletRequest
-	 */
-	public void createNewUserSession( UserSession userSession, HttpServletRequest httpServletRequest ) {
-		
-		//  first invalidate existing session
-		HttpSession httpSessionOLD = httpServletRequest.getSession( false /* do not create if not exist */ );
-		if ( httpSessionOLD != null ) {
-			httpSessionOLD.invalidate();
-		}
-		
-		HttpSession httpSession = httpServletRequest.getSession( true /* create if not exist */ );
-		httpSession.setAttribute( USER_SESSION__SESSION_ATTRIBUTE, userSession );
-	}
-	
-	
-	/**
 	 * @param httpServletRequest
 	 * @return
 	 */
@@ -84,6 +67,21 @@ public class UserSessionManager {
 	public void setUserSession( UserSession userSession, HttpServletRequest httpServletRequest ) {
 		HttpSession httpSession = httpServletRequest.getSession( true /* create if not exist */ );
 		httpSession.setAttribute( USER_SESSION__SESSION_ATTRIBUTE, userSession );
+	}
+
+	/**
+	 * Sign in (or public access code):  store the user session and give the browser a new session id.
+	 * 
+	 * A new session id at sign in prevents session fixation:  a session id from before sign in is not signed in.
+	 * changeSessionId() keeps the session attributes.
+	 * 
+	 * @param userSession
+	 * @param httpServletRequest
+	 */
+	public void setUserSession_ChangeSessionId( UserSession userSession, HttpServletRequest httpServletRequest ) {
+		HttpSession httpSession = httpServletRequest.getSession( true /* create if not exist */ );
+		httpSession.setAttribute( USER_SESSION__SESSION_ATTRIBUTE, userSession );
+		httpServletRequest.changeSessionId();
 	}
 	
 

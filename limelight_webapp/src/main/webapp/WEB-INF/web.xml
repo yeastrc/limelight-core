@@ -22,6 +22,11 @@
         <listener-class>org.yeastrc.limelight.limelight_webapp.servlet_context_listener.HttpSession_InactivityTimeout_EnvVarOverride_Listener</listener-class>
     </listener>
 
+    <!-- Session id only in the session cookie, never in the URL (";jsessionid=...") -->
+    <session-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+
 
     <error-page>
 	    <!-- Page Not Found -->

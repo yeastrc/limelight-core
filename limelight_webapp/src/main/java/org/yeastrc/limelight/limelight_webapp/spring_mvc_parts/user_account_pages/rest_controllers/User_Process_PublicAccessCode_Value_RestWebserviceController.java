@@ -188,7 +188,7 @@ public class User_Process_PublicAccessCode_Value_RestWebserviceController {
 				.setProjectId_ForPublicAccessCode( projectId )
 				.build();
 		
-		userSessionManager.setUserSession( userSession, httpServletRequest );
+		userSessionManager.setUserSession_ChangeSessionId( userSession, httpServletRequest );
 
 		webserviceResponse.success = true;
 		
