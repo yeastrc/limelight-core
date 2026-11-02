@@ -176,6 +176,9 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
 		
+		//  For log messages: which kind was submitted, not the value
+		final String submittedKind_ForLog = StringUtils.isNotEmpty( username ) ? "username" : "email";
+		
 		try {
 			UserMgmtSearchUserDataResponse userMgmtSearchUserDataResponse = null;
 			// Make sure this username exists!		
@@ -186,14 +189,14 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 				userMgmtSearchUserDataResponse = 
 						userMgmtCentralWebappWebserviceAccess.searchUserDataByUsernameExactMatchNoUserSession( userMgmtSearchUserDataRequest );
 				if ( ! userMgmtSearchUserDataResponse.isSuccess() ) {
-					String msg = "Failed to look up username: " + username;
+					String msg = "Failed to look up the submitted username";
 					log.error( msg );
 					throw new LimelightInternalErrorException(msg);
 				}
 				if ( userMgmtSearchUserDataResponse.getUserIdList() != null
 						&& userMgmtSearchUserDataResponse.getUserIdList().size() > 1 ) {
 					//  More than 1 user id returned.  Should not happen
-					String msg = "More than one user mgmt user id returned for searching for exact match for username: " + username;
+					String msg = "More than one user mgmt user id returned for searching for exact match for the submitted username";
 					log.error( msg );
 					throw new LimelightInternalErrorException(msg);
 				}
@@ -204,14 +207,14 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 				userMgmtSearchUserDataResponse = 
 						userMgmtCentralWebappWebserviceAccess.searchUserDataByEmailExactMatchNoUserSession( userMgmtSearchUserDataRequest );
 				if ( ! userMgmtSearchUserDataResponse.isSuccess() ) {
-					String msg = "Failed to look up email: " + email;
+					String msg = "Failed to look up the submitted email";
 					log.error( msg );
 					throw new LimelightInternalErrorException(msg);
 				}
 				if ( userMgmtSearchUserDataResponse.getUserIdList() != null
 						&& userMgmtSearchUserDataResponse.getUserIdList().size() > 1 ) {
 					//  More than 1 user id returned.  Should not happen
-					String msg = "More than one user mgmt user id returned for searching for exact match for email: " + email;
+					String msg = "More than one user mgmt user id returned for searching for exact match for the submitted email";
 					log.error( msg );
 					throw new LimelightInternalErrorException(msg);
 				}
@@ -224,7 +227,7 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 			List<Integer> userMgmtUserIdListFromSearch = userMgmtSearchUserDataResponse.getUserIdList();
 			if ( userMgmtUserIdListFromSearch == null || userMgmtUserIdListFromSearch.isEmpty() ) {
 				//  username or email not found
-				log.info( "Reset Password: No account found so NO email sent.  From webserviceRequest: username: " + webserviceRequest.getUsername() + ", email: " + webserviceRequest.getEmail() );
+				log.info( "Reset Password: No account found so NO email sent.  From webserviceRequest: submitted " + submittedKind_ForLog );
 				webserviceResult.setStatus(true);  //  Same response as success
 				return webserviceResult;  //  Early Exit
 			}
@@ -235,7 +238,7 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 			Integer userId = userDAO.getIdForUserMgmtUserId( userMgmtUserIdFromSearch );
 			if ( userId == null ) {
 				//  No Limelight Auth User Id for userMgmtUserIdFromSearch for username or email found
-				log.info( "Reset Password: Account found in User Mgmt but is not a user of this Limelight so NO email sent.  From webserviceRequest: username: " + webserviceRequest.getUsername() + ", email: " + webserviceRequest.getEmail() );
+				log.info( "Reset Password: Account found in User Mgmt but is not a user of this Limelight so NO email sent.  From webserviceRequest: submitted " + submittedKind_ForLog + ".  User Mgmt user id: " + userMgmtUserIdFromSearch );
 				webserviceResult.setStatus(true);  //  Same response as success
 				return webserviceResult;  //  Early Exit
 			}
@@ -283,12 +286,12 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 				}
 	        
 	        } catch (Exception e) {
-	        	log.error( "resetPasswordGetEmailService: Exception: user email: " + userMgmtGetUserDataResponse.getEmail(), e );
+	        	log.error( "resetPasswordGetEmailService: Exception sending the reset email.  Limelight user id: " + userId, e );
 	        	return webserviceResult;  //  Early Exit
 	        }
 	        webserviceResult.setStatus(true);
 
-	        log.info( "Reset Password Send Email SUCCESSFUL!!!  From webserviceRequest: username: " + webserviceRequest.getUsername() + ", email: " + webserviceRequest.getEmail() );
+	        log.info( "Reset Password Send Email SUCCESSFUL!!!  From webserviceRequest: submitted " + submittedKind_ForLog + ".  Limelight user id: " + userId );
 
 			return webserviceResult;
 		} catch ( Limelight_WS_ErrorResponse_Base_Exception e ) {
@@ -297,7 +300,6 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 			throw e;
 		}
 //		webserviceResult.setStatus( true );
-//		log.info( "Reset Password Send Email SUCCESSFUL!!! username: " + webserviceRequest.getUsername() + ", email: " + webserviceRequest.getEmail() );
 //
 //		return webserviceResult;
 	}
