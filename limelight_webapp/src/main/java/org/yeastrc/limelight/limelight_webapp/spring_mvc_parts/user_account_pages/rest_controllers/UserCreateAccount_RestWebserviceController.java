@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.GetUserSessionActualUserLoggedIn_ForRestControllerIF;
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
 import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
+import org.yeastrc.limelight.limelight_webapp.constants.UserSignupConstants;
 import org.yeastrc.limelight.limelight_webapp.constants.FieldLengthConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.TermsOfServiceTextVersionsDAO_IF;
@@ -192,6 +193,17 @@ public class UserCreateAccount_RestWebserviceController {
 	private CreateAccountResult createAccount_NO_Invite_Internal( 
 			CreateAccountRequest createAccountRequest, String remoteIP, HttpServletRequest httpServletRequest ) throws Exception {
 
+		{
+			//  Create account without invite only when the configuration allows it (the page controller CreateAccount_Controller checks this too)
+			String userSignupAllowWithoutInviteConfigValue =
+					configSystemDAO.getConfigValueForConfigKey(
+							ConfigSystemsKeysConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY );
+
+			if ( ! UserSignupConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY__TRUE.equals( userSignupAllowWithoutInviteConfigValue ) ) {
+				log.warn( "Create Account without invite: refused, the configuration does not allow sign up without an invite." );
+				throw new Limelight_WS_AuthError_Forbidden_Exception();
+			}
+		}
 
 		String google_RecaptchaSiteKey =
 				configSystemDAO.getConfigValueForConfigKey(
