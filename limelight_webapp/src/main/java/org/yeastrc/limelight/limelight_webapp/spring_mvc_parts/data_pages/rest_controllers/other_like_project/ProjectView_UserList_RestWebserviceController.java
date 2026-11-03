@@ -41,6 +41,8 @@ import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebS
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_UserMgmtUnavailable_Exception;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_ConnectorCallFailure_UserMessages;
 import org.yeastrc.limelight.limelight_webapp.objects.UserDisplay_ProjectPage;
 import org.yeastrc.limelight.limelight_webapp.services.UserListForProject_ServiceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
@@ -169,6 +171,11 @@ public class ProjectView_UserList_RestWebserviceController {
     		throw e;
     		
     	} catch ( Exception e ) {
+    		if ( UserMgmt_ConnectorCallFailure_UserMessages.getConnectorCallFailure_LogIfFound( e, "project page, researchers list" ) != null ) {
+    			//  A call to User Mgmt failed: 503, the page shows a fixed message
+    			throw new Limelight_WS_UserMgmtUnavailable_Exception();
+    		}
+
     		String msg = "Failed in controller: ";
 			log.error( msg, e );
 			throw new Limelight_WS_InternalServerError_Exception();

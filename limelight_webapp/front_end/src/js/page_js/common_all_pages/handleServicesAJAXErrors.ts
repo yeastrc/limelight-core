@@ -33,6 +33,10 @@ const AJAX_RESPONSE_INVALID_SEARCH_LIST_ACROSS_PROJECTS_STATUS_CODE = 403;
 const INVALID_SEARCH_LIST_NOT_IN_DB_TEXT = "invalid_search_list_not_in_db_text";
 const INVALID_SEARCH_LIST_NOT_IN_DB_STATUS_CODE = 400;
 
+//  A call from the server to the account service (User Mgmt) failed.  Server: WebServiceErrorMessageConstants.USER_MGMT_UNAVAILABLE_TEXT
+const AJAX_RESPONSE_USER_MGMT_UNAVAILABLE_TEXT = "user_mgmt_unavailable";
+const AJAX_RESPONSE_USER_MGMT_UNAVAILABLE_STATUS_CODE = 503;
+
 const AJAX_RESPONSE_INVALID_PARAMETER_TEXT = "invalid_parameter";
 const AJAX_RESPONSE_INVALID_PARAMETER_STATUS_CODE = 400;
 
@@ -239,6 +243,11 @@ function handleAJAXError(
 
 		
 		//  jqXHR_responseText is '' or '' to provide a cause
+
+	} else if ( ajaxResponse_StatusCode === AJAX_RESPONSE_USER_MGMT_UNAVAILABLE_STATUS_CODE &&
+			ajaxResponse_ResponseText__From_ResponseBody_JSON === AJAX_RESPONSE_USER_MGMT_UNAVAILABLE_TEXT ) {
+
+		showAjaxErrorMsg( { errorMsg : "The account service is temporarily unavailable.  Please try again in a moment." } );
 
 	} else if ( ajaxResponse_StatusCode === 401 ) {
 		

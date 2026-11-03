@@ -66,6 +66,8 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_UserMgmtUnavailable_Exception;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_ConnectorCallFailure_UserMessages;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.dao.FileImportTrackingSingleFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.dao.FileImportTrackingStatusValuesLookupDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.searchers.FileImportTrackingRun_LatestForParent_SearcherIF;
@@ -257,6 +259,11 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 			throw e;
 
 		} catch ( Exception e ) {
+			if ( UserMgmt_ConnectorCallFailure_UserMessages.getConnectorCallFailure_LogIfFound( e, "project page, upload list" ) != null ) {
+				//  A call to User Mgmt failed: 503, the page shows a fixed message
+				throw new Limelight_WS_UserMgmtUnavailable_Exception();
+			}
+
 			String msg = "Failed in controller: ";
 			log.error( msg, e );
 			throw new Limelight_WS_InternalServerError_Exception();

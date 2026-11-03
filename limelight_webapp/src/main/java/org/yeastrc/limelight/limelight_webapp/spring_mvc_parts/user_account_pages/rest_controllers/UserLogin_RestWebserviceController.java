@@ -49,6 +49,7 @@ import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_u
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCodeIF;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCode.ValidateUserInviteTrackingCodeResult;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_ConnectorCallFailure_UserMessages;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_UserEnabled_RecheckCache_IF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGetUserDataRequest;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGetUserDataResponse;
@@ -247,6 +248,13 @@ public class UserLogin_RestWebserviceController {
 		try {
 			userMgmtLoginResponse =
 					userMgmtCentralWebappWebserviceAccess.userLogin( userMgmtLoginRequest );
+
+		} catch ( Exception e ) {
+			if ( UserMgmt_ConnectorCallFailure_UserMessages.getConnectorCallFailure_LogIfFound( e, "sign-in" ) != null ) {
+				//  The call to User Mgmt failed: try again later.  Not counted by the sign-in limits.
+				return signInTemporarilyUnavailable_Result( signIn_Limits.getRetrySeconds() );  //  Early Exit
+			}
+			throw e;
 		} finally {
 			signIn_Limits.concurrentSignIn_Release();
 		}
@@ -291,8 +299,18 @@ public class UserLogin_RestWebserviceController {
 		//  Get full user data
 		UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
 		userMgmtGetUserDataRequest.setUserId( userMgmtUserId );
-		UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = 
-				userMgmtCentralWebappWebserviceAccess.getUserData( userMgmtGetUserDataRequest );
+		UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = null;
+		try {
+			userMgmtGetUserDataResponse =
+					userMgmtCentralWebappWebserviceAccess.getUserData( userMgmtGetUserDataRequest );
+
+		} catch ( Exception e ) {
+			if ( UserMgmt_ConnectorCallFailure_UserMessages.getConnectorCallFailure_LogIfFound( e, "sign-in, get user data" ) != null ) {
+				//  The call to User Mgmt failed: same response as when sign-in itself failed
+				return signInTemporarilyUnavailable_Result( signIn_Limits.getRetrySeconds() );  //  Early Exit
+			}
+			throw e;
+		}
 
 		if ( ! userMgmtGetUserDataResponse.isSuccess() ) {
 			String msg = "Failed to get Full user data from User Mgmt Webapp for user id: " + userMgmtUserId;

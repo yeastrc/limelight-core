@@ -54,6 +54,7 @@ import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGe
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGetUserDataResponse;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtSearchUserDataRequest;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtSearchUserDataResponse;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_ConnectorCallFailure_UserMessages;
 import org.yeastrc.limelight.limelight_webapp.web_utils.GenerateRandomStringForCodeIF;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 
@@ -131,7 +132,19 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 
 			WebserviceRequest webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class ); 
 
-			WebserviceResult webserviceResult = userLogin( webserviceRequest, remoteIP, httpServletRequest );
+			WebserviceResult webserviceResult = null;
+			try {
+				webserviceResult = userLogin( webserviceRequest, remoteIP, httpServletRequest );
+
+			} catch ( Exception e ) {
+				if ( UserMgmt_ConnectorCallFailure_UserMessages.getConnectorCallFailure_LogIfFound( e, "forgot password" ) == null ) {
+					throw e;
+				}
+				//  A call to User Mgmt (all read only here) failed: message for the user
+				webserviceResult = new WebserviceResult();
+				webserviceResult.setStatus(false);
+				webserviceResult.userMgmtFailure_UserMessage = UserMgmt_ConnectorCallFailure_UserMessages.getMessage_ReadOnly();
+			}
 			
 			byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
@@ -414,9 +427,17 @@ public class User_ResetPassword_Gen_Email_RestWebserviceController {
 	public static class WebserviceResult {
 
 		private boolean status = false;
+		/**
+		 * A call to User Mgmt failed: the message for the user
+		 */
+		private String userMgmtFailure_UserMessage;
 
 		public boolean isStatus() {
 			return status;
+		}
+
+		public String getUserMgmtFailure_UserMessage() {
+			return userMgmtFailure_UserMessage;
 		}
 
 		public void setStatus(boolean status) {

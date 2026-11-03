@@ -69,6 +69,7 @@ import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGe
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGetUserDataResponse;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtSearchUserDataRequest;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtSearchUserDataResponse;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_ConnectorCallFailure_UserMessages;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.GenerateRandomStringForCodeIF;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
@@ -323,6 +324,17 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
     		throw e;
     		
     	} catch ( Exception e ) {
+
+    		if ( UserMgmt_ConnectorCallFailure_UserMessages.getConnectorCallFailure_LogIfFound( e, "invite user to project" ) != null ) {
+    			//  A call to User Mgmt (all read only, before any change here) failed: message for the user
+    			WebserviceResult webserviceResult_UserMgmtFailure = new WebserviceResult();
+    			webserviceResult_UserMgmtFailure.setStatus(false);
+    			webserviceResult_UserMgmtFailure.userMgmtFailure_UserMessage = UserMgmt_ConnectorCallFailure_UserMessages.getMessage_ReadOnly();
+
+    			byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult_UserMgmtFailure );
+    			return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );  //  EARLY RETURN
+    		}
+
     		String msg = "Failed in controller: ";
 			log.error( msg, e );
 			throw new Limelight_WS_InternalServerError_Exception();
@@ -1137,6 +1149,15 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
     public static class WebserviceResult {
 
     	private boolean status;
+
+    	/**
+    	 * A call to User Mgmt failed: the message for the user
+    	 */
+    	private String userMgmtFailure_UserMessage;
+
+    	public String getUserMgmtFailure_UserMessage() {
+    		return userMgmtFailure_UserMessage;
+    	}
     	
     	private boolean addedExistingUser;
     	private boolean lastNameNotFoundError;

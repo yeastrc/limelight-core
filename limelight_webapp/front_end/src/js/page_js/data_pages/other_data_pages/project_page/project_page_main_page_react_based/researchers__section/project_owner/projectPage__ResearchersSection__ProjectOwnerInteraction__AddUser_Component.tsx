@@ -287,7 +287,12 @@ export class ProjectPage__ResearchersSection__ProjectOwnerInteraction__AddUser_C
 //			lastNameDuplicateError: false
 //			lastNameNotFoundError: true
 //			unableToSendEmailError: false
-            if (responseData.duplicateInsertError) {
+            if ( responseData.userMgmtFailure_UserMessage ) {
+                //  The call to the account service failed: show its message
+                $("#error_message_invite_account_service_failure_text").text( responseData.userMgmtFailure_UserMessage );
+                var $element = $("#error_message_invite_account_service_failure");
+                showErrorMsg( $element );
+            } else if (responseData.duplicateInsertError) {
 //				alert("User already has access to this project");
                 var $element = $("#error_message_invite_already_has_access");
                 showErrorMsg( $element );
@@ -627,6 +632,15 @@ export class ProjectPage__ResearchersSection__ProjectOwnerInteraction__AddUser_C
                     <div className="error-message-inner-container" style={ { width: 380 } }>
                         <div className="error-message-close-x error_message_close_x_jq">X</div>
                         <div className="error-message-text" >Error adding user to project</div>
+                    </div>
+                </div>
+
+                <div className="error-message-container error_message_container_jq" id="error_message_invite_account_service_failure">
+
+                    <div className="error-message-inner-container" style={ { width: 400 } }>
+                        <div className="error-message-close-x error_message_close_x_jq">X</div>
+                        {/* Text set from the server's message */}
+                        <div className="error-message-text" id="error_message_invite_account_service_failure_text"></div>
                     </div>
                 </div>
 

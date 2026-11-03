@@ -27,5 +27,12 @@ public class WebServiceErrorMessageConstants {
 	public static final String INTERNAL_SERVER_ERROR_TEXT = "INTERNAL_SERVER_ERROR";
 	public static final org.springframework.http.HttpStatus INTERNAL_SERVER_ERROR_STATUS_CODE = 
 			org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
+	/**
+	 * A call to User Mgmt (the account service) failed.  The front end shows a fixed message for it.
+	 */
+	public static final String USER_MGMT_UNAVAILABLE_TEXT = "user_mgmt_unavailable";
+	public static final org.springframework.http.HttpStatus USER_MGMT_UNAVAILABLE_STATUS_CODE = 
+			org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 	
 }

@@ -116,6 +116,7 @@ interface UserAccountManagementPage_Change_LastName_Component_State {
     show_LoadingMessage?: boolean
     showError_ReadingData?: boolean
     show_SavingMessage?: boolean
+    userMgmtFailure_UserMessage?: string
 }
 
 /**
@@ -220,7 +221,7 @@ class UserAccountManagementPage_Change_LastName_Component extends React.Componen
                 return;  // EARLY EXIT
             }
 
-            this.setState({ show_SavingMessage: true });
+            this.setState({ show_SavingMessage: true, userMgmtFailure_UserMessage: undefined });
 
             var requestData = {
                 lastName : lastNameValue
@@ -232,13 +233,25 @@ class UserAccountManagementPage_Change_LastName_Component extends React.Componen
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            promise_webserviceCallStandardPost.catch( () => { }  );
+            promise_webserviceCallStandardPost.catch( () => {
+                //  The error is already shown.  Remove the 'Saving Data' cover so the form can be used again.
+                this.setState({ show_SavingMessage: false });
+            }  );
 
             promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
                     if ( responseData.status ) {
 
                         this.props.change_Callback({newLastName: lastNameValue});
+
+                        return;  // EARLY RETURN
+                    }
+
+                    if ( responseData.userMgmtFailure_UserMessage ) {
+
+                        //  The call to the account service failed: show its message
+
+                        this.setState({ userMgmtFailure_UserMessage: responseData.userMgmtFailure_UserMessage, show_SavingMessage: false });
 
                         return;  // EARLY RETURN
                     }
@@ -353,6 +366,12 @@ class UserAccountManagementPage_Change_LastName_Component extends React.Componen
                                         Cancel
                                     </button>
                                 </div>
+
+                                { ( this.state.userMgmtFailure_UserMessage ) ? (
+                                    <div style={ { marginTop: 5, color: "red" } }>
+                                        { this.state.userMgmtFailure_UserMessage }
+                                    </div>
+                                ) : null }
 
                                 {/* Cover Div while updating server */}
 

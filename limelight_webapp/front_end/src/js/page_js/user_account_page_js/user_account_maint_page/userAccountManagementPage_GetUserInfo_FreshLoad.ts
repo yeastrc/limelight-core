@@ -39,6 +39,12 @@ export const userAccountManagementPage_GetUserInfo_FreshLoad = function () : Pro
 
             promise_webserviceCallStandardPost.then(({responseData}:{responseData: any}) => {
                 try {
+                    if ( responseData.userMgmtFailure_UserMessage ) {
+                        //  The call to the account service failed.  The callers show their "Error Loading Data" message.
+                        reject();
+                        return;  // EARLY RETURN
+                    }
+
                     const result = _processResponse(responseData);
 
                     resolve(result);

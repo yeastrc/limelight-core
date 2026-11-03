@@ -119,7 +119,15 @@ export class User_reset_password_form_main_display_Component extends React.Compo
             //  The server does NOT say whether an account was found.  An unknown username or email returns the
             //  same response as success, so the visitor sees the same message either way.
 
-            if ( responseData.disabledUser ) {
+            if ( responseData.userMgmtFailure_UserMessage ) {
+
+                //  The call to the account service failed: show its message
+
+                $("#error_message_account_service_failure_text").text( responseData.userMgmtFailure_UserMessage );
+                var $element = $("#error_message_account_service_failure");
+                showErrorMsg( $element );
+
+            } else if ( responseData.disabledUser ) {
 
                 var $element = $("#error_message_user_disabled");
                 showErrorMsg( $element );
@@ -164,6 +172,13 @@ export class User_reset_password_form_main_display_Component extends React.Compo
                         <div className="error-message-inner-container">
                             <div className="error-message-close-x error_message_close_x_jq">X</div>
                             <div className="error-message-text">System Error</div>
+                        </div>
+                    </div>
+                    <div className="error-message-container error_message_container_jq" id="error_message_account_service_failure">
+                        <div className="error-message-inner-container">
+                            <div className="error-message-close-x error_message_close_x_jq">X</div>
+                            {/* Text set by _resetPasswordComplete (the message comes from the server) */}
+                            <div className="error-message-text" id="error_message_account_service_failure_text"></div>
                         </div>
                     </div>
 

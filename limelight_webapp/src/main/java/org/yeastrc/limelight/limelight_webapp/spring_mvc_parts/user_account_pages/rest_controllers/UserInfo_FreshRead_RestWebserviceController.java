@@ -35,6 +35,7 @@ import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.S
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGetUserDataRequest;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGetUserDataResponse;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_ConnectorCallFailure_UserMessages;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.web_utils.UnmarshalJSON_ToObject;
@@ -109,8 +110,21 @@ public class UserInfo_FreshRead_RestWebserviceController {
 				UserMgmtGetUserDataRequest userMgmtGetUserDataRequest = new UserMgmtGetUserDataRequest();
 				userMgmtGetUserDataRequest.setUserId( userSession.getUserMgmtUserId() );
 				
-				UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = 
-						userMgmtCentralWebappWebserviceAccess.getUserData( userMgmtGetUserDataRequest );
+				UserMgmtGetUserDataResponse userMgmtGetUserDataResponse = null;
+				try {
+					userMgmtGetUserDataResponse =
+							userMgmtCentralWebappWebserviceAccess.getUserData( userMgmtGetUserDataRequest );
+
+				} catch ( Exception e ) {
+					if ( UserMgmt_ConnectorCallFailure_UserMessages.getConnectorCallFailure_LogIfFound( e, "account page, read user data" ) == null ) {
+						throw e;
+					}
+					//  The call to User Mgmt failed: message for the user (success stays false)
+					userInfoResult.userMgmtFailure_UserMessage = UserMgmt_ConnectorCallFailure_UserMessages.getMessage_ReadOnly();
+
+					byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( userInfoResult );
+					return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );  //  EARLY RETURN
+				}
 
 				if ( userMgmtGetUserDataResponse.isSuccess() ) {
 
@@ -162,6 +176,14 @@ public class UserInfo_FreshRead_RestWebserviceController {
 		private String firstName;
 		private String lastName;
 		private String organization;
+		/**
+		 * The call to User Mgmt failed: the message for the user
+		 */
+		private String userMgmtFailure_UserMessage;
+
+		public String getUserMgmtFailure_UserMessage() {
+			return userMgmtFailure_UserMessage;
+		}
 
 		public boolean isSuccess() {
 			return success;

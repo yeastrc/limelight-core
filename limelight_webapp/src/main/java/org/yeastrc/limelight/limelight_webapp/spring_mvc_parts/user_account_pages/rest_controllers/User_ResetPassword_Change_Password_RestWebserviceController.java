@@ -43,6 +43,8 @@ import org.yeastrc.limelight.limelight_webapp.services.User_Validate_ResetPasswo
 import org.yeastrc.limelight.limelight_webapp.services.User_Validate_ResetPassword_Code_Service.User_Validate_ResetPassword_Code_Service_Result;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_ConnectorCallFailure_UserMessages;
+import org.yeastrc.user_mgmt_central.user_mgmt_central__embed_code.UserMgmtConnectorCallFailure_IF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtResetPasswordRequest;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtResetPasswordResponse;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
@@ -187,8 +189,21 @@ public class User_ResetPassword_Change_Password_RestWebserviceController {
 		userMgmtResetPasswordRequest.setUserMgmtUserId( userMgmtUserId );
 		userMgmtResetPasswordRequest.setNewPassword( password );
 		userMgmtResetPasswordRequest.setUserRemoteIP( submitIP );
-		UserMgmtResetPasswordResponse userMgmtResetPasswordResponse = 
-				userMgmtCentralWebappWebserviceAccess.resetPassword( userMgmtResetPasswordRequest );
+		UserMgmtResetPasswordResponse userMgmtResetPasswordResponse = null;
+		try {
+			userMgmtResetPasswordResponse =
+					userMgmtCentralWebappWebserviceAccess.resetPassword( userMgmtResetPasswordRequest );
+
+		} catch ( Exception e ) {
+			UserMgmtConnectorCallFailure_IF connectorCallFailure =
+					UserMgmt_ConnectorCallFailure_UserMessages.getConnectorCallFailure_LogIfFound( e, "reset password" );
+			if ( connectorCallFailure == null ) {
+				throw e;
+			}
+			//  The call to User Mgmt failed: message for the user.  Reset code is NOT marked used so the user can try again.
+			webserviceResult.errorMessage = UserMgmt_ConnectorCallFailure_UserMessages.getMessage_Change( connectorCallFailure );
+			return webserviceResult;  //  EARLY EXIT
+		}
 		if ( ! userMgmtResetPasswordResponse.isSuccess() ) {
 			if ( userMgmtResetPasswordResponse.isPasswordTooLong() ) {
 				//  Reset code is NOT marked used so the user can try again

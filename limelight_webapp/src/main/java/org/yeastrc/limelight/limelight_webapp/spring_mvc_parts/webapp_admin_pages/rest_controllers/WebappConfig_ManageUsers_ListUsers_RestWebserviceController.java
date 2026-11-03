@@ -41,6 +41,8 @@ import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Forbidden_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_UserMgmtUnavailable_Exception;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_ConnectorCallFailure_UserMessages;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGetUserDataRequest;
@@ -120,6 +122,11 @@ public class WebappConfig_ManageUsers_ListUsers_RestWebserviceController {
 			throw e;
 			
 		} catch ( Exception e ) {
+			if ( UserMgmt_ConnectorCallFailure_UserMessages.getConnectorCallFailure_LogIfFound( e, "admin, manage users list" ) != null ) {
+				//  A call to User Mgmt failed: 503, the page shows a fixed message
+				throw new Limelight_WS_UserMgmtUnavailable_Exception();
+			}
+
 			String msg = "Failed in controller: ";
 			log.error( msg, e );
 			throw new Limelight_WS_InternalServerError_Exception();

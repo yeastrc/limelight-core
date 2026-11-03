@@ -48,6 +48,8 @@ import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessio
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSessionManager;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_ConnectorCallFailure_UserMessages;
+import org.yeastrc.user_mgmt_central.user_mgmt_central__embed_code.UserMgmtConnectorCallFailure_IF;
 
 /**
  * 
@@ -232,9 +234,17 @@ public class UserChangeAccountInfo_RestWebserviceController {
 				updateMainAcctData = true;
 			}
 			if ( updateMainAcctData ) {
-				UserMgmtManageAccountResponse userMgmtManageAccountResponse =
-						userMgmtCentralWebappWebserviceAccess.
-						manageUserData( userMgmtManageAccountRequest );
+				UserMgmtManageAccountResponse userMgmtManageAccountResponse = null;
+				try {
+					userMgmtManageAccountResponse =
+							userMgmtCentralWebappWebserviceAccess.
+							manageUserData( userMgmtManageAccountRequest );
+				} catch ( Exception e ) {
+					if ( userMgmtCallFailed_SetMessage( e, webserviceResult ) ) {
+						return webserviceResult; // EARLY RETURN
+					}
+					throw e;
+				}
 				
 				if ( ! userMgmtManageAccountResponse.isSuccess() ) {
 					
@@ -293,9 +303,17 @@ public class UserChangeAccountInfo_RestWebserviceController {
 
 				userMgmtManageAccountRequest.setUsername( webserviceRequest.username );
 				
-				UserMgmtManageAccountResponse userMgmtManageAccountResponse =
-						userMgmtCentralWebappWebserviceAccess.
-						manageUserData( userMgmtManageAccountRequest );
+				UserMgmtManageAccountResponse userMgmtManageAccountResponse = null;
+				try {
+					userMgmtManageAccountResponse =
+							userMgmtCentralWebappWebserviceAccess.
+							manageUserData( userMgmtManageAccountRequest );
+				} catch ( Exception e ) {
+					if ( userMgmtCallFailed_SetMessage( e, webserviceResult ) ) {
+						return webserviceResult; // EARLY RETURN
+					}
+					throw e;
+				}
 				
 				if ( ! userMgmtManageAccountResponse.isSuccess() ) {
 
@@ -348,8 +366,16 @@ public class UserChangeAccountInfo_RestWebserviceController {
 				userMgmtChangePasswordRequest.setNewPassword( webserviceRequest.password );
 				userMgmtChangePasswordRequest.setUserRemoteIP( httpServletRequest.getRemoteAddr() );
 
-				UserMgmtChangePasswordResponse userMgmtChangePasswordResponse = 
-						userMgmtCentralWebappWebserviceAccess.changePassword( userMgmtChangePasswordRequest );
+				UserMgmtChangePasswordResponse userMgmtChangePasswordResponse = null;
+				try {
+					userMgmtChangePasswordResponse =
+							userMgmtCentralWebappWebserviceAccess.changePassword( userMgmtChangePasswordRequest );
+				} catch ( Exception e ) {
+					if ( userMgmtCallFailed_SetMessage( e, webserviceResult ) ) {
+						return webserviceResult; // EARLY RETURN
+					}
+					throw e;
+				}
 
 				if ( ! userMgmtChangePasswordResponse.isSuccess() ) {
 
@@ -392,6 +418,23 @@ public class UserChangeAccountInfo_RestWebserviceController {
 	}
 
 	
+	/**
+	 * The call to User Mgmt threw.  If the connector call failed: set status false and the message for the user.
+	 * 
+	 * @return true if the message was set: return webserviceResult.  false: rethrow (embedded mode or another error)
+	 */
+	private boolean userMgmtCallFailed_SetMessage( Exception e, WebserviceResult webserviceResult ) {
+
+		UserMgmtConnectorCallFailure_IF connectorCallFailure =
+				UserMgmt_ConnectorCallFailure_UserMessages.getConnectorCallFailure_LogIfFound( e, "change account info" );
+		if ( connectorCallFailure == null ) {
+			return false;
+		}
+		webserviceResult.setStatus(false);
+		webserviceResult.setUserMgmtFailure_UserMessage( UserMgmt_ConnectorCallFailure_UserMessages.getMessage_Change( connectorCallFailure ) );
+		return true;
+	}
+
 	/**
 	 * User Mgmt refused the change because the user is disabled: end the session and return 401,
 	 * so the page reloads and goes to the sign in page
@@ -495,7 +538,17 @@ public class UserChangeAccountInfo_RestWebserviceController {
 		private boolean passwordTooLong;
 		private boolean currentPasswordRequired;
 		private boolean currentPasswordInvalid;
+		/**
+		 * The call to User Mgmt failed: the message for the user
+		 */
+		private String userMgmtFailure_UserMessage;
 		
+		public String getUserMgmtFailure_UserMessage() {
+			return userMgmtFailure_UserMessage;
+		}
+		public void setUserMgmtFailure_UserMessage(String userMgmtFailure_UserMessage) {
+			this.userMgmtFailure_UserMessage = userMgmtFailure_UserMessage;
+		}
 		public boolean isStatus() {
 			return status;
 		}

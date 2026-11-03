@@ -59,6 +59,8 @@ import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrac
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCode.ValidateUserInviteTrackingCodeResult;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCode.ValidateUserInviteTrackingCodeResult_NotValidReason;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
+import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_ConnectorCallFailure_UserMessages;
+import org.yeastrc.user_mgmt_central.user_mgmt_central__embed_code.UserMgmtConnectorCallFailure_IF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCreateAccountRequest;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCreateAccountResponse;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmt_UserEnabled_RecheckCache_IF;
@@ -552,8 +554,26 @@ public class UserCreateAccount_RestWebserviceController {
 			userMgmtCreateAccountRequest.setOrganization( createAccountRequest.organization );
 			userMgmtCreateAccountRequest.setUserRemoteIP( httpServletRequest.getRemoteAddr() );
 			
-			UserMgmtCreateAccountResponse userMgmtCreateAccountResponse =
-					userMgmtCentralWebappWebserviceAccess.createUser( userMgmtCreateAccountRequest );
+			UserMgmtCreateAccountResponse userMgmtCreateAccountResponse = null;
+			try {
+				userMgmtCreateAccountResponse =
+						userMgmtCentralWebappWebserviceAccess.createUser( userMgmtCreateAccountRequest );
+
+			} catch ( Exception e ) {
+				UserMgmtConnectorCallFailure_IF connectorCallFailure =
+						UserMgmt_ConnectorCallFailure_UserMessages.getConnectorCallFailure_LogIfFound( e, "create account" );
+				if ( connectorCallFailure == null ) {
+					throw e;
+				}
+				//  The call to User Mgmt failed: message for the user
+				if ( createAccountUsingAdminUserAccount == CreateAccountUsingAdminUserAccount.YES ) {
+					createAccountResult.setErrorMessage( UserMgmt_ConnectorCallFailure_UserMessages.getMessage_CreateAccount_ByAdmin( connectorCallFailure ) );
+				} else {
+					createAccountResult.setErrorMessage( UserMgmt_ConnectorCallFailure_UserMessages.getMessage_CreateAccount_SignUpOrInvite( connectorCallFailure ) );
+				}
+				createAccountResult.setStatus(false);
+				return createAccountResult;   //  EARLY EXIT
+			}
 			
 			if ( ! userMgmtCreateAccountResponse.isSuccess() ) {
 				

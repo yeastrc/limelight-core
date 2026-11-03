@@ -118,6 +118,7 @@ interface UserAccountManagementPage_Change_Email_Component_State {
     show_LoadingMessage?: boolean
     showError_ReadingData?: boolean
     show_SavingMessage?: boolean
+    userMgmtFailure_UserMessage?: string
 }
 
 /**
@@ -230,7 +231,7 @@ class UserAccountManagementPage_Change_Email_Component extends React.Component< 
             //  Clear the current password field after each attempt
             this._currentPassword_Input_Ref.current.value = "";
 
-            this.setState({ show_SavingMessage: true, duplicateEmailEncountered: false, currentPasswordRequired_Encountered: false, currentPasswordInvalid_Encountered: false });
+            this.setState({ show_SavingMessage: true, userMgmtFailure_UserMessage: undefined, duplicateEmailEncountered: false, currentPasswordRequired_Encountered: false, currentPasswordInvalid_Encountered: false });
 
             var requestData = {
                 email : emailValue,
@@ -243,12 +244,24 @@ class UserAccountManagementPage_Change_Email_Component extends React.Component< 
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-            promise_webserviceCallStandardPost.catch( () => { }  );
+            promise_webserviceCallStandardPost.catch( () => {
+                //  The error is already shown.  Remove the 'Saving Data' cover so the form can be used again.
+                this.setState({ show_SavingMessage: false });
+            }  );
 
             promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
                     if ( responseData.status ) {
                         this.props.change_Callback({newEmail: emailValue});
+
+                        return;  // EARLY RETURN
+                    }
+
+                    if ( responseData.userMgmtFailure_UserMessage ) {
+
+                        //  The call to the account service failed: show its message
+
+                        this.setState({ userMgmtFailure_UserMessage: responseData.userMgmtFailure_UserMessage, show_SavingMessage: false });
 
                         return;  // EARLY RETURN
                     }
@@ -401,6 +414,12 @@ class UserAccountManagementPage_Change_Email_Component extends React.Component< 
                                         Cancel
                                     </button>
                                 </div>
+
+                                { ( this.state.userMgmtFailure_UserMessage ) ? (
+                                    <div style={ { marginTop: 5, color: "red" } }>
+                                        { this.state.userMgmtFailure_UserMessage }
+                                    </div>
+                                ) : null }
 
                                 {/* Cover Div while updating server */}
 
