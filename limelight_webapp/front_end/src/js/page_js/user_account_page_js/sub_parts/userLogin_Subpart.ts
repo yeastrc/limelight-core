@@ -23,6 +23,7 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 import { createSpinner, destroySpinner } from 'page_js/common_all_pages/spinner';
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import { limelight__variable_is_type_number_Check } from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {
 	User_login_form_main_display_Component
 } from "page_js/user_account_page_js/sub_parts/user_login_form_main_display_Component";
@@ -39,6 +40,11 @@ export class UserLogin_Subpart {
 
 	private inviteTrackingCode: string
 	private _termsOfServiceKey: string
+
+	/**
+	 * true while a sign-in request is waiting for its response: no second submit
+	 */
+	private _signInRequestInProgress = false
 
 	private _reactRoot_InDOMElement: Root_ReactDOM_Client
 
@@ -204,6 +210,11 @@ export class UserLogin_Subpart {
 	loginPerson() {
 		
 		var objectThis = this;
+
+		if ( this._signInRequestInProgress ) {
+			//  A sign-in request is waiting for its response: no second submit
+			return; // EARLY RETURN
+		}
 		
 		hideAllErrorMessages();
 
@@ -215,6 +226,9 @@ export class UserLogin_Subpart {
 
 		const username = usernamePassword_FromPageDOM_Response.username;
 		const password = usernamePassword_FromPageDOM_Response.password;
+
+		this._signInRequestInProgress = true;
+		this._signInButtons_SetDisabled( true );
 
 		createSpinner(); // external function
 
@@ -233,6 +247,8 @@ export class UserLogin_Subpart {
 		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
 		promise_webserviceCallStandardPost.catch( () => { 
+
+			objectThis._signInRequest_Done();
 
 			destroySpinner(); // external function
 		 }  );
@@ -268,11 +284,38 @@ export class UserLogin_Subpart {
 			}
 		}
 		
-		destroySpinner(); // external function
-
 		//  Not successful
 
-		if ( responseData.termsOfServiceAcceptanceRequired ) {
+		this._signInRequest_Done();
+
+		destroySpinner(); // external function
+
+		if ( responseData.signInTemporarilyUnavailable ) {
+
+			//  Refused by the sign-in limits: try again later
+
+			const seconds = responseData.signInTemporarilyUnavailable_Seconds;
+			if ( ! limelight__variable_is_type_number_Check( seconds ) ) {
+				const msg = "responseData.signInTemporarilyUnavailable is true but responseData.signInTemporarilyUnavailable_Seconds is not a number";
+				console.warn( msg + ". responseData.signInTemporarilyUnavailable_Seconds: ", seconds );
+				throw Error( msg );
+			}
+
+			let tryAgainIn: string;
+			if ( seconds < 60 ) {
+				tryAgainIn = seconds + ( ( seconds === 1 ) ? " second" : " seconds" );
+			} else {
+				const minutes = Math.ceil( seconds / 60 );
+				tryAgainIn = minutes + ( ( minutes === 1 ) ? " minute" : " minutes" );
+			}
+
+			$("#error_message_signin_temporarily_unavailable_text").text(
+				"Sign-in is temporarily unavailable.  Please try again in " + tryAgainIn + "." );
+
+			var $element = $("#error_message_signin_temporarily_unavailable");
+			showErrorMsg( $element );
+
+		} else if ( responseData.termsOfServiceAcceptanceRequired ) {
 
 			$("#terms_of_service_modal_dialog_overlay_background").show();
 			$("#terms_of_service_overlay_div").show();
@@ -309,6 +352,24 @@ export class UserLogin_Subpart {
 			showErrorMsg( $element );
 		}
 	};
+
+	/**
+	 * The sign-in request got its response (not a successful sign-in): allow a submit again
+	 */
+	private _signInRequest_Done() {
+
+		this._signInRequestInProgress = false;
+		this._signInButtons_SetDisabled( false );
+	}
+
+	/**
+	 * Disabled while a sign-in request is in progress.  A disabled submit button also blocks submit by Enter.
+	 */
+	private _signInButtons_SetDisabled( disabled: boolean ) {
+
+		$("#login_person_button").prop( "disabled", disabled );
+		$("#terms_of_service_acceptance_yes_button").prop( "disabled", disabled );
+	}
 
 	/**
 	 * @returns null if invalid input

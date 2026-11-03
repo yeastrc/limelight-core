@@ -102,6 +102,13 @@ export class User_login_form_main_display_Component extends React.Component< Use
                             <div className="error-message-text">No account on Limelight</div>
                         </div>
                     </div>
+                    <div className="error-message-container error_message_container_jq" id="error_message_signin_temporarily_unavailable">
+                        <div className="error-message-inner-container">
+                            <div className="error-message-close-x error_message_close_x_jq">X</div>
+                            {/* Text set by userLogin_Subpart.ts (the seconds come from the server) */}
+                            <div className="error-message-text" id="error_message_signin_temporarily_unavailable_text"></div>
+                        </div>
+                    </div>
                     <div className="error-message-container error_message_container_jq" id="error_message_system_error">
                         <div className="error-message-inner-container">
                             <div className="error-message-close-x error_message_close_x_jq">X</div>

@@ -44,6 +44,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.services.TermsOfServiceText_ConvertForDisplay_Service;
+import org.yeastrc.limelight.limelight_webapp.signin_limits.SignIn_Limits_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCodeIF;
 import org.yeastrc.limelight.limelight_webapp.user_invite.ValidateUserInviteTrackingCode.ValidateUserInviteTrackingCodeResult;
@@ -94,6 +95,9 @@ public class UserLogin_RestWebserviceController {
 
 	@Autowired
 	private ValidateUserInviteTrackingCodeIF validateUserInviteTrackingCode;
+
+	@Autowired
+	private SignIn_Limits_IF signIn_Limits;
 
 	@Autowired
 	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
@@ -179,7 +183,52 @@ public class UserLogin_RestWebserviceController {
 			log.warn( "No Password" );
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
+
+		//  Sign-in limits (SignIn_Limits).  The key is the normalized username.
+
+		String signInLimits_UsernameKey = SignIn_Limits_IF.normalizeUsername( userLoginRequest.getUsername() );
+
+		//  One sign-in at a time per username
+
+		if ( ! signIn_Limits.signInInProgress_TryAdd( signInLimits_UsernameKey ) ) {
+
+			return signInTemporarilyUnavailable_Result( signIn_Limits.getRetrySeconds() );  //  Early Exit
+		}
+
+		try {
+			return userLogin_AfterChecks( userLoginRequest, signInLimits_UsernameKey, remoteIP, httpServletRequest );
+
+		} finally {
+			signIn_Limits.signInInProgress_Remove( signInLimits_UsernameKey );
+		}
+	}
+
+	/**
+	 * @param seconds
+	 * @return a refused sign-in: same response for any username
+	 */
+	private UserLoginResult signInTemporarilyUnavailable_Result( int seconds ) {
+
+		UserLoginResult userLoginResult = new UserLoginResult();
+		userLoginResult.signInTemporarilyUnavailable = true;
+		userLoginResult.signInTemporarilyUnavailable_Seconds = seconds;
+		return userLoginResult;
+	}
+
+	/**
+	 * Called with this username in the "sign-in in progress" set
+	 */
+	private UserLoginResult userLogin_AfterChecks( UserLoginRequest userLoginRequest, String signInLimits_UsernameKey, String remoteIP, HttpServletRequest httpServletRequest ) throws Exception {
 		
+		{
+			//  Too many wrong passwords recently for this username: refuse before calling User Mgmt
+
+			Integer blocked_RemainingSeconds = signIn_Limits.userBlocked_RemainingSeconds_RoundedUpToMinutes( signInLimits_UsernameKey );
+			if ( blocked_RemainingSeconds != null ) {
+				return signInTemporarilyUnavailable_Result( blocked_RemainingSeconds );  //  Early Exit
+			}
+		}
+
 		UserLoginResult userLoginResult = new UserLoginResult();
 
 		UserMgmtLoginRequest userMgmtLoginRequest = new UserMgmtLoginRequest();
@@ -187,16 +236,44 @@ public class UserLogin_RestWebserviceController {
 		userMgmtLoginRequest.setPassword( userLoginRequest.getPassword() );
 		userMgmtLoginRequest.setRemoteIP( remoteIP );
 
-		UserMgmtLoginResponse userMgmtLoginResponse =
-				userMgmtCentralWebappWebserviceAccess.userLogin( userMgmtLoginRequest );
+		//  Cap on concurrent sign-in calls to User Mgmt
+
+		if ( ! signIn_Limits.concurrentSignIn_TryAcquire() ) {
+
+			return signInTemporarilyUnavailable_Result( signIn_Limits.getRetrySeconds() );  //  Early Exit
+		}
+
+		UserMgmtLoginResponse userMgmtLoginResponse = null;
+		try {
+			userMgmtLoginResponse =
+					userMgmtCentralWebappWebserviceAccess.userLogin( userMgmtLoginRequest );
+		} finally {
+			signIn_Limits.concurrentSignIn_Release();
+		}
+
+		if ( userMgmtLoginResponse.isSuccess() ) {
+
+			//  The password is right
+			signIn_Limits.recordSuccess_PasswordValid( signInLimits_UsernameKey );
+		}
 
 		if ( ! userMgmtLoginResponse.isSuccess() ) {
 			log.info( "Logging into web app FAILED!!!" );
 			
 
-			if ( userMgmtLoginResponse.isUsernameNotFound() || userMgmtLoginResponse.isPasswordInvalid() ) {
+			if ( userMgmtLoginResponse.isPasswordInvalid() ) {
 				
 				userLoginResult.invalidUserOrPassword = true;
+
+				signIn_Limits.recordFailure_PasswordInvalid( signInLimits_UsernameKey );
+				
+				return userLoginResult;  //  Early Exit
+				
+			} else if ( userMgmtLoginResponse.isUsernameNotFound() ) {
+				
+				userLoginResult.invalidUserOrPassword = true;
+
+				signIn_Limits.recordFailure_UsernameNotFound();
 				
 				return userLoginResult;  //  Early Exit
 				
@@ -465,6 +542,15 @@ public class UserLogin_RestWebserviceController {
 		 */
 		private boolean noLocalAccount = false;
 		private boolean invalidInviteTrackingCode;
+
+		/**
+		 * Refused by the sign-in limits: try again later
+		 */
+		private boolean signInTemporarilyUnavailable;
+		/**
+		 * Set when signInTemporarilyUnavailable is true: the seconds until the user should try again
+		 */
+		private Integer signInTemporarilyUnavailable_Seconds;
 		
 		private boolean termsOfServiceAcceptanceRequired;
 		private String termsOfServiceKey;
@@ -508,6 +594,14 @@ public class UserLogin_RestWebserviceController {
 
 		public void setInvalidInviteTrackingCode(boolean invalidInviteTrackingCode) {
 			this.invalidInviteTrackingCode = invalidInviteTrackingCode;
+		}
+
+		public boolean isSignInTemporarilyUnavailable() {
+			return signInTemporarilyUnavailable;
+		}
+
+		public Integer getSignInTemporarilyUnavailable_Seconds() {
+			return signInTemporarilyUnavailable_Seconds;
 		}
 
 		public boolean isTermsOfServiceAcceptanceRequired() {

@@ -56,6 +56,29 @@ SMTP_PASSWORD=smtp_password
 # override. Larger values keep users logged in longer but increase server memory use.
 # LIMELIGHT_SESSION_TIMEOUT_MINUTES=2880
 
+# Sign-in limits.  Leave these unset/commented to use the defaults shown.
+# LIMELIGHT_SIGNIN_LIMITS_ENABLED=false turns all of them off.
+# Users already signed in are not affected.
+#
+# Turn all sign-in limits on (true, the default) or off (false):
+# LIMELIGHT_SIGNIN_LIMITS_ENABLED=true
+# Per username: number of wrong passwords that blocks that username:
+# LIMELIGHT_SIGNIN_USER_MAX_FAILURES=7
+# Per username: the window, in minutes, in which those wrong passwords are counted:
+# LIMELIGHT_SIGNIN_USER_WINDOW_MINUTES=15
+# Per username: how many minutes the username stays blocked:
+# LIMELIGHT_SIGNIN_USER_BLOCK_MINUTES=8
+# Seconds the user is asked to wait when a sign-in for the same username is in progress or too many are running:
+# LIMELIGHT_SIGNIN_RETRY_SECONDS=30
+# Maximum number of sign-ins processed at the same time:
+# LIMELIGHT_SIGNIN_MAX_CONCURRENT=10
+# Milliseconds a sign-in waits for a free slot before it is refused:
+# LIMELIGHT_SIGNIN_CONCURRENT_WAIT_MILLIS=2000
+# Alert only (an ERROR in the log, nothing is refused): number of failed sign-ins, all users together...
+# LIMELIGHT_SIGNIN_ALERT_FAILURES=50
+# ...within this many minutes:
+# LIMELIGHT_SIGNIN_ALERT_WINDOW_MINUTES=5
+
 #
 # End Optional config options
 #
