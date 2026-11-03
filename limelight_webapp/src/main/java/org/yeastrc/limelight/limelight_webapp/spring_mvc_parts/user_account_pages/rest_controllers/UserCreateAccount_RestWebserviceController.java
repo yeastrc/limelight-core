@@ -568,8 +568,10 @@ public class UserCreateAccount_RestWebserviceController {
 				//  The call to User Mgmt failed: message for the user
 				if ( createAccountUsingAdminUserAccount == CreateAccountUsingAdminUserAccount.YES ) {
 					createAccountResult.setErrorMessage( UserMgmt_ConnectorCallFailure_UserMessages.getMessage_CreateAccount_ByAdmin( connectorCallFailure ) );
+				} else if ( userInviteTrackingDTO != null ) {
+					createAccountResult.setErrorMessage( UserMgmt_ConnectorCallFailure_UserMessages.getMessage_CreateAccount_FromInvite( connectorCallFailure ) );
 				} else {
-					createAccountResult.setErrorMessage( UserMgmt_ConnectorCallFailure_UserMessages.getMessage_CreateAccount_SignUpOrInvite( connectorCallFailure ) );
+					createAccountResult.setErrorMessage( UserMgmt_ConnectorCallFailure_UserMessages.getMessage_CreateAccount_SignUp( connectorCallFailure ) );
 				}
 				createAccountResult.setStatus(false);
 				return createAccountResult;   //  EARLY EXIT

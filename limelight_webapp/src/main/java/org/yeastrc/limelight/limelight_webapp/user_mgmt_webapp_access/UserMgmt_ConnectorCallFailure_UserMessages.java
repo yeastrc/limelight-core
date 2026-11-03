@@ -30,16 +30,27 @@ public class UserMgmt_ConnectorCallFailure_UserMessages {
 			"We couldn't confirm whether your change was saved.  Please check before trying again.";
 
 	/**
-	 * Added to MESSAGE__CHANGE_OUTCOME_UNKNOWN for create account (self sign-up and from invite)
+	 * Added to MESSAGE__CHANGE_OUTCOME_UNKNOWN for create account by self sign-up (no invite).
+	 * 
+	 * If the account was saved in User Mgmt, signing in without an invite does not create the account in Limelight
+	 * and creating it again is refused (duplicate e-mail).  An invite to a project with the same e-mail address adds it.
 	 */
-	private static final String MESSAGE__CREATE_ACCOUNT_OUTCOME_UNKNOWN__ADDITION_SIGN_IN =
-			"  If you can't sign in with the new account, please try again.";
+	private static final String MESSAGE__CREATE_ACCOUNT_OUTCOME_UNKNOWN__ADDITION_SIGN_UP =
+			"  If you can't sign in with the new account, please ask a project owner to invite you with the same e-mail address.";
+
+	/**
+	 * Added to MESSAGE__CHANGE_OUTCOME_UNKNOWN for create account from an invite.
+	 * 
+	 * The invite is marked used only after the account is created, so signing in from the invite link creates the account in Limelight.
+	 */
+	private static final String MESSAGE__CREATE_ACCOUNT_OUTCOME_UNKNOWN__ADDITION_INVITE =
+			"  If you can't sign in with the new account, please sign in from your invite link with the new username and password.";
 
 	/**
 	 * Added to MESSAGE__CHANGE_OUTCOME_UNKNOWN for create account by an admin
 	 */
 	private static final String MESSAGE__CREATE_ACCOUNT_OUTCOME_UNKNOWN__ADDITION_ADMIN =
-			"  If the new account doesn't appear in the list, please try again.";
+			"  If the new account doesn't appear in the list, please don't create it again; contact the account owner or invite them to a project with the same e-mail address.";
 
 	/**
 	 * Reading user data failed
@@ -104,12 +115,23 @@ public class UserMgmt_ConnectorCallFailure_UserMessages {
 	}
 
 	/**
-	 * Create account: self sign-up or from invite
+	 * Create account: self sign-up (no invite)
 	 */
-	public static String getMessage_CreateAccount_SignUpOrInvite( UserMgmtConnectorCallFailure_IF connectorCallFailure ) {
+	public static String getMessage_CreateAccount_SignUp( UserMgmtConnectorCallFailure_IF connectorCallFailure ) {
 
 		if ( connectorCallFailure.isOutcomeUnknown() ) {
-			return MESSAGE__CHANGE_OUTCOME_UNKNOWN + MESSAGE__CREATE_ACCOUNT_OUTCOME_UNKNOWN__ADDITION_SIGN_IN;
+			return MESSAGE__CHANGE_OUTCOME_UNKNOWN + MESSAGE__CREATE_ACCOUNT_OUTCOME_UNKNOWN__ADDITION_SIGN_UP;
+		}
+		return MESSAGE__CHANGE_NOT_SAVED;
+	}
+
+	/**
+	 * Create account: from an invite
+	 */
+	public static String getMessage_CreateAccount_FromInvite( UserMgmtConnectorCallFailure_IF connectorCallFailure ) {
+
+		if ( connectorCallFailure.isOutcomeUnknown() ) {
+			return MESSAGE__CHANGE_OUTCOME_UNKNOWN + MESSAGE__CREATE_ACCOUNT_OUTCOME_UNKNOWN__ADDITION_INVITE;
 		}
 		return MESSAGE__CHANGE_NOT_SAVED;
 	}
