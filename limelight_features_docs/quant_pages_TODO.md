@@ -97,6 +97,36 @@ rewriting the whole `quant_PrototypeData` / `flashlfq_proteinQuant_PrototypeData
 
 ---
 
+### D. Legacy FlashLFQ result-retrieval endpoints — COMMENTED OUT 2026-10-19 (unused legacy endpoints; maintainer decision)
+
+- **2026-10-19 (W5):** all EIGHT legacy FlashLFQ result-retrieval webservices are now **commented out** (unused legacy
+  endpoints): the four protein ones below AND the four peptide ones (`flashlfq-run--result-retrieval-joined`,
+  `…-peptides-normalized-linear`, `…-peptides-batch-corrected-log2`, `…-peptides-batch-corrected-delog2`). In each
+  `single_project_search_id/FlashLFQ_Run__Result_Retrieval_*_RestWebserviceController.java` the imports, annotations and
+  class body are commented out (the file, package line and class comment stay), and their eight URI constants in
+  `AA_RestWSControllerPaths_Constants.java` are commented out; the URLs now answer 404 (unmapped). Their only callers,
+  `quant/quant_PrototypeData.ts` / `quant/flashlfq_proteinQuant_PrototypeData.ts`, are reachable only from the
+  commented-out Quant Common peptide / protein views. The shared peptide join (`FlashLFQ_Quant_PeptideResult_Join_Service`)
+  and the two prototype loaders stay as (unreachable) code. Kept rather than deleted so those views can be revived;
+  reviving the endpoints needs a review of them first (and the protein parse fix below).
+
+The 2026-10-01 note (protein endpoints disabled; still applies to their code):
+
+- **What is disabled:** the four `FlashLFQ_Run__Result_Retrieval_Proteins*_RestWebserviceController` webservices
+  (`flashlfq-run--result-retrieval-proteins`, `…-normalized-linear`, `…-batch-corrected-log2`,
+  `…-batch-corrected-delog2`). Each handler now starts with
+  `if ( true ) { throw new Exception( "Require updating to be able to use" ); }`; the rest of the code is kept.
+- **Why:** submits from 2026-10-01 on send FlashLFQ bare `psvid_<n>` protein ids (names travel separately —
+  `quant_protein_names_mapping_file_and_request_contract_2026-10-01.md`). These controllers take the id up to the
+  next `_`, so a bare multi-member protein group (`psvid_1;psvid_2`) no longer parses (the row would be skipped).
+  Older runs (`psvid_<n>_<name>` strings) happened to parse the first id.
+- **Who called them:** only `quant/flashlfq_proteinQuant_PrototypeData.ts`, used by the quant common protein view
+  and by the old per-view Quant Charts panel's side-file loader — both reachable only from code that is commented
+  out in `quantCommonSPAView_MainContent_Component.tsx`. The Charts view does not use them.
+- **To re-enable:** fix the `Protein Groups` parse (split on `;`; per member, the id = the digits after `psvid_` up
+  to the next `_` or the end; decide how a multi-member group is attributed), then delete the `if ( true )` block in
+  each of the four handlers.
+
 ## 1. Quant single-protein overlay — tab-view widgets — RE-ENABLED / resolved (OBSERVED)
 
 **Resolved 2026-08-28.** The three protein-sequence/structure tab-view widgets on the quant single-protein
@@ -168,6 +198,12 @@ page** for the same peptide (multi-search rows also expand through the `#6` leve
   as the **overlay** launched from the Quant peptide page (Option X, just landed). A dedicated standalone quant
   single-protein *page* is deferred.
 - **Charts / statistics on the quant pages** — quant-specific charts/plots and summary statistics are deferred.
+- **Quant Common page's Charts view — several covariates / a continuous covariate in Differential abundance: DONE
+  2026-10-22 (Phase 6, front end only, uncommitted).** Decisions, what was built and how it was checked: decision log
+  §23 ("Built 2026-10-22") in
+  [`quant_common_page__charts_view__decision_log_and_rationale_2026-10-04.md`](quant_common_page__charts_view__decision_log_and_rationale_2026-10-04.md);
+  design doc §4b. Still open: the maintainer's decision Q-E on 6 reference-parity lines of the real test run (two-slope
+  designs, effect off by ≈ 1.03e-12 × SE vs the 1e-12 limit). Remaining Charts-view deferred items: design doc §7.
 - **DB persistence (Track B)** — the quant data is currently a throwaway in-memory/prototype path; durable
   database ingestion & retrieval is future work. See
   [`quant_things_to_deal_with_when_start_store_in_db.md`](quant_things_to_deal_with_when_start_store_in_db.md)
@@ -194,6 +230,63 @@ will never appear.
 |---|---|---|---|---|
 | 1 | Main **quant peptide DataTable**, the per-file `Quant (<searchId>)` column | Empty cells for a file whose search had no PSMs, unexplained | A **message block** (leaning away from the already-large column-header tooltip) stating: no PSMs for that search → no quant, **even in a single JOINT run with MBR** | Must fit the table's existing non-value semantics (blank vs `overlapping signal` vs measured-zero; `-1` sort sentinel — see `front_end` CLAUDE.md). Decide: which columns, block vs header-tooltip vs per-cell, exact wording. |
 | 2 | Run-info panel disclosure (JOINT) | Empty files ARE shown, but the panel is collapsed-by-default → skipped files are "buried" | **Prominently point out** which scan files are fully skipped in a single JOINT/MBR run, so there is no expectation of any quant for them | E.g. a header badge/count, auto-expand when an empty file exists, or a main-area line. Purely presentational; builds on the 2026-09-23 panel work. |
+
+---
+
+## 5. Gzip the quant run files (added 2026-10-19, maintainer — DECIDED 2026-10-19, see below)
+
+Prompted by the peptide identity map (`quant_peptide_identity_map_contract_2026-10-14.md`): one 8-scan-file run's
+`peptide_identity_map.json` is about 20 MB and about 1.2 MB with gzip at the default level (measured 2026-10-14, about
+16x smaller, about 0.1 s). Question to look at: which OTHER run files would benefit from being stored and/or served
+gzip-compressed (written once when generated, served with `Content-Encoding: gzip` so the browser decompresses), for
+example:
+- the result files the Charts view fetches (`CombinedPeptides*.tsv` / `CombinedProteins*.tsv`, several MB each for an
+  8-file run) — transfer to the browser;
+- large files kept only on the service's disk (`request_body.json`, the largest file of a run; `flashlfq_identifications.tsv`;
+  `QuantifiedPeaks.tsv`) — disk use;
+- the download set (would change what the user downloads — a separate decision).
+Measure sizes and compression ratios on a real run first; consider whether general HTTP response compression in the
+deployment would cover the served files without per-file changes.
+
+**DECIDED 2026-10-19 (maintainer) — gzip EVERY run file; being built in three phases (S1 service, W1 webapp readers,
+W2 download links).**
+- Measured on one 8-scan-file run (gzip level 6): `request_body.json` 208 MB → 11.2 MB (18.6x); `QuantifiedPeaks.tsv`
+  58.6 MB → 19.1 MB (3.1x); `flashlfq_identifications.tsv` 50.3 MB → 7.8 MB (6.4x); `CombinedPeptides*.tsv` 2.4–3.0x;
+  `CombinedProteins*.tsv` 3.1–3.6x. Whole run directory about 340 MB uncompressed.
+- **Why everything:** so all service and webapp code expects gzip when run files are stored long term (planned: Limelight's
+  File Object Storage Service — later work).
+- **Strict:** a reader that finds a non-gzip file where gzip is expected fails loudly; runs written before this change are
+  unreadable and must be re-run. The service's outputs version goes 4 → 5.
+- **Service:** working files stay plain while a run is processing (FlashLFQ needs them); one final pass gzips every kept
+  file (level 6, header mtime 0) and the run-status marker is written last. `request_body.json` is written gzip at submit.
+  Files are served as gzip bytes (`application/gzip`, no `Content-Encoding`).
+- **Webapp (W1):** every reader handles gzip; data sent on to the browser uses `Content-Encoding: gzip` when the browser
+  accepts it, else the server unzips (the existing helper used for the peptide identity map). **BUILT 2026-10-19 (not yet
+  committed):** one shared strict fetch (`FlashLFQ_Quant_RunResultFile_Fetch_Service`: gzip magic + full decompress, else a
+  logged 500) used by every reader — relays via `FlashLFQ_Quant_RunResultFile_RelayToBrowser_Service`, server-side parses and
+  the download controller unzip (the download stays the plain file until W2). The request-belongs-to-project check now
+  throws (500) for an unreadable / unparseable manifest instead of answering 404. The front end expects outputs version 5;
+  the run info panel shows `FlashLFQ version: <reported> (release <release>)`; the run info loaders treat a non-404 error
+  as fatal instead of "absent".
+- **Download (W2):** each downloadable file offers BOTH a plain and a gzip download (two links per file — design at W2);
+  the plain download is unzipped by the server while it writes the response. **BUILT 2026-10-19 (not yet committed):**
+  overlay rows = label + `[TSV]` `[gzip]` (tooltips); the download request's REQUIRED `encoding` field ("plain" / "gzip");
+  gzip = the stored bytes, `<name>.gz`, `application/gzip`, no `Content-Encoding`; plain streamed. Also in W2: a malformed
+  run-info file (quant metadata, manifest, normalize / batch-correct status) and a network failure are now fatal on the
+  quant pages (a 404 stayed "absent" where absence is legitimate -- superseded by W4 below); an unused legacy endpoint was removed.
+- **W3 + W4 (BUILT 2026-10-19, not yet committed): no "404 = absent" anywhere.** W3 made the remaining lenient loaders fatal
+  on network / contract failures. W4 replaces every remaining "404 = absent" with ONE early availability call per run per
+  page: the webservice `quant--flashlfq-run-available-files` returns the run's status and a FULL true / false map of every
+  known file (top-level, and per scan file for a PER_FILE run). Every quant file loader takes the map as a required input: a
+  file it says is absent is not fetched (no metadata uploaded, normalization / batch correction not run or not requested,
+  a derived file not produced, the raw TSV pages' "unavailable"); a file it says is present is fetched and a 404 is fatal.
+  "No such run" comes from the map call itself (its 404, or status `NOT_FOUND`) and is shown as "no longer available". The
+  Charts view also checks the map against the manifest's `requested_outputs`: a requested file the map lacks is fatal. The
+  project-page download overlay builds its list from the same map (it was broken by the service's new `per_file_files`
+  field until W4). Contract: `quant_result_file_download_contract_2026-10-05.md` (last section).
+- **Also in S1 — FlashLFQ version per run:** the raw output of a FlashLFQ version query is stored, and the manifest records
+  the release version and the reported version line; if the query fails the run does not fail and the manifest stores
+  `unable to get version at quant run time`. The run info panel shows it (built in W1).
 
 ---
 

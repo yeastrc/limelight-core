@@ -1,5 +1,8 @@
 # Adding FlashLFQ quant charts to the Quant Common Peptide / Protein pages — investigation & implementation plan
 
+> **UPDATE 2026-10-01 — partly superseded.** The Quant Common page now has a **Charts view** that reads the flashlfq-service result files directly (one FlashLFQ row = one peptide / protein; no reported-peptide mapping), replacing this plan's data source (§4: the page-loaded, reported-peptide-joined matrix), placement (§7: charts inside the peptide / protein views) and the Raw / Normalized / Batch-corrected toggle (§9a; removed — the reference shows states together where it compares them). The chart inventory, transform catalog and reference pointers below remain useful. Current design and status: `quant_common_page__charts_view__design_and_status_2026-10-01.md`.
+
+
 **Status:** investigation + design (no code written yet). **Date:** 2026-09-23.
 **Owner:** the maintainer (review/oversight session produced this; a separate build session would implement).
 

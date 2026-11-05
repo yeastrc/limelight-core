@@ -113,6 +113,38 @@ filter-agnostic w.r.t. the page, exactly like the protein path, and enforcing th
 quantified" invariant by construction rather than by convention. (The maintainer's standing decision: leave the
 prototype as-is; fix this here, when quant runs are stored in the DB.)
 
+## 6. Compress stored quant files and large responses (gzip) — general direction
+
+Maintainer direction (2026-09-30): as the quant feature matures, expect to **gzip most if not all quant result
+files and webservice responses**, for more compact storage and smaller transfer to the browser.
+
+- Storage: FlashLFQ outputs and the service's derived files (combined, normalized, batch-corrected) are large text
+  tables (the 8-file reference run's peptide files are tens of MB each) and compress well.
+- Transfer: a gzip-encoded response cuts bytes on the wire, but the browser still **decodes to the full text before
+  parsing**, so gzip does NOT raise the ceiling set by the browser's maximum string length. Response *shape* must stay
+  compact on its own (e.g. parallel arrays instead of repeated per-value objects; send run-level lookup maps once, not
+  per endpoint). See `quant_multi_search_mbr_review_2026-09-30__summary_and_plan.md` for the current sizes.
+- Decide at DB-design time: compress at rest vs on the fly; which responses; and keep content-type / encoding
+  handling explicit so the front end never has to guess.
+
+## 7. Keep each run's `protein_names.tsv` and return it to users with the result downloads
+
+- From 2026-10-01 the flashlfq-service writes `protein_names.tsv` for every new quant run: the mapping
+  protein sequence version id (psvid) → protein name(s), collected from ALL searches of the run (long format, one
+  row per psvid + name). The result files themselves carry only `psvid_<n>` ids. Contract and format:
+  `quant_protein_names_mapping_file_and_request_contract_2026-10-01.md`.
+- When quant results are stored (DB and/or stored raw FlashLFQ output files), store this file WITH the run. It is
+  the only place the names of that run's proteins, as they were at submit time, are recorded with the results.
+- Whenever result files are offered for download, offer `protein_names.tsv` with them (users join on the psvid id).
+- Runs submitted before this change have no `protein_names.tsv`; their accession strings embed at most one name
+  per protein.
+- **Maintainer, 2026-10-05:** once runs are in the database, the contents of `protein_names.tsv` may instead be
+  generated on the fly from the Limelight database (the annotation names of the run's searches), rather than kept as
+  a stored file.
+
+(Section 5's decision is now partly implemented in the prototype: retrieval refuses when the page's cutoffs differ
+from the run's stored `params_manifest.json` cutoffs — see the multi-search MBR review summary, decision 2.)
+
 ---
 
 *Cross-reference:* the current prototype's non-finite handling (the first real case of §2) lives in the

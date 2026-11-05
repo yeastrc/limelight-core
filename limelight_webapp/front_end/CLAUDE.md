@@ -119,6 +119,22 @@ use the **nearest existing constant** rather than inventing a new hex (that file
 sync with the SCSS — don't add colors that aren't in the SCSS). Neutral one-off shades that aren't brand
 colors (e.g. a `#bbbbbb` divider) can stay inline.
 
+### HTML text colors live in the SCSS + its paired TS file — prefer the CSS class (maintainer rule)
+
+**Every text color for HTML text is defined in the SCSS** (`styles/a-common-scss-variables.scss` /
+`styles/global.scss`, with a class where one is useful) **and mirrored in its paired TS file** above
+(`limelight__Limelight_Colors_Etc__SyncWith_global.scss__Constants.ts`) — nowhere else.
+
+- **Prefer the CSS class** where one exists: e.g. error / "action needed" text → `className="error-text"`
+  (`.error-text { color: $error-text-color }` in `styles/all-pages.scss`).
+- Only when a class cannot be used, reference the paired TS constant (e.g. `error_text_color`) — never a copied
+  hex, never an inline literal.
+- A new HTML text color = a new SCSS variable (+ class if useful) AND the same value added to the paired TS file,
+  kept in sync.
+
+Quant Charts view: `quantCharts_Colors.ts` (the single-source rule, decision log §4 COL-2) is for **chart**
+colors whose meaning the on-page color notes explain. It must NOT hold HTML text colors.
+
 ---
 
 ## Layout / CSS — no negative margins without asking first
@@ -137,6 +153,29 @@ hide the real DOM-nesting problem and drift when the surrounding structure chang
 Why: an earlier "just nudge it left with `marginLeft: -20`" masked that a block ("Mod Mass Colors") was
 nested one indent too deep; the correct fix was to restructure the containers so its heading sat at its
 proper level as a peer section.
+
+---
+
+## JavaScript built-ins (`Math.*` etc.) — use them; REPORT numeric differences, never replace them
+
+**Use the browser's built-in math (`Math.log2`, `Math.log`, `Math.exp`, `Math.pow`, …) as is.** When a result
+differs from a reference implementation (numpy, scipy, R, …) only because a built-in is not correctly rounded
+(e.g. `Math.log2` differs from numpy's `np.log2` in the last binary digit on a small fraction of values), do
+**NOT** write a replacement (a custom / "correctly rounded" implementation) to make the numbers match.
+
+- **Report it instead:** which built-in, how often it differs, by how much (ulps / relative size), and whether any
+  visible or reported result changes. Then let the maintainer decide.
+- Parity checks against a reference should allow for this (state the tolerance and the cause), not force
+  bit-identity by replacing the built-in.
+- Do **not** keep per-round measured counts of such differences, on the page or in the check runs (maintainer,
+  2026-10-08): a 1-unit-in-the-last-digit difference changes no visible result, and re-measuring every round is not
+  worth the run time.
+
+Why: built-ins like `Math.log2` are used throughout Limelight. A replacement in one place creates two
+implementations of the same function, is much slower (a correctly rounded `log2` was measured at ~150× the cost
+of `Math.log2`), adds code to maintain, and fixes a ~1e-16 effect that changes no visible result. (Quant Charts,
+2026-10-04: a correctly rounded `log2` was added for one block and then removed in favor of `Math.log2` plus an
+on-page note of the difference.)
 
 ---
 
@@ -430,9 +469,9 @@ own**, so a hash survives the rewrite (its post-`replaceState` self-validation s
   but **read it lazily** (e.g. in `componentDidMount` / on demand) — don't assume the address bar is
   untouched at any given instant during load.
 - `location.hash` is referenced nowhere else in the FE, so the hash namespace is otherwise free.
-- Example consumer: the throwaway FlashLFQ-quant per-search test selection
-  `#<projectSearchId>_<requestId>-<projectSearchId>_<requestId>…`, parsed in `quant_PrototypeData.ts` to fetch
-  one served `QuantifiedPeaks.tsv` per search and tag its peaks with that projectSearchId.
+- Example consumer: the quant pages' run selection `#qr;<projectSearchId>_<searchScanFileId>_<requestId>-…` (one entry per
+  (search, scan file) of a quant run), parsed by `quant/quant_RunHash_Parse.ts` (used by the Quant Common page, the raw quant
+  data-file pages, and `quant_PrototypeData.ts`).
 
 ## Data-page filters/options are COLLAPSED behind "Click to Show Filters and Options" — the controls aren't in the DOM until expanded
 

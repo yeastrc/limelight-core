@@ -245,6 +245,17 @@ is a **backend-only** change with no FE impact.
 ## Validation + mapping pipeline (all errors in the overlay; stop at the first failing gate)
 
 1. **Parse → preview/confirm** (Phase 1).
+   - *Whole-file gates added later, run before step 2 (as built, in this order):* **no data records**
+     (defensive); **no empty cell** anywhere, header row included (maintainer decision, 2026-10-01: "Every
+     column must have a value for every row."); **unique column headers** (maintainer decision, 2026-10-21,
+     decision log COV-HDR): two headers are the same when equal after trimming surrounding spaces and ignoring
+     letter case — the same normalization as the scan-filename uniqueness below — with column 0's header
+     included; a clash fails the upload ("Every column header must be unique.") naming every clashing set by
+     column number and header text as typed. It runs after the empty-cell gate (a blank header is reported
+     there, so two blank headers never read as a duplicate) and before the scan-filename gates (the header row
+     is a whole-file property). ONE shared function decides header uniqueness
+     (`data_pages/quant/quant_SampleSheet_HeaderUniqueness.ts`, which also holds the shared normalization); the
+     Quant Common page's Charts view calls it on a stored run's headers and treats a clash as fatal.
 2. **Non-empty key + uniqueness.**
    - **Non-empty scan filename (col 0).** Phase 1's column-count guard does **not** reject an empty first cell:
      a row like `\t\tvalue` (or `,,value`) parses to the right column count with `cells[0] === ""` and becomes a

@@ -380,3 +380,18 @@ if ( userSession.isGlobalAdminUser()
 - **Runtime config** is read from properties files / env vars / `-D` JVM params on
   startup; templates are in `Sample_Configuration_Files/`.
 - There is no JUnit suite in `src/test` — verify changes by building and running.
+- **FlashLFQ quant service files are gzip — read them ONLY through the one strict fetch.** The quant service stores and serves every
+  run file gzip-compressed (raw gzip bytes, no `Content-Encoding`; outputs version 5). Every webapp read of a service file body goes
+  through `services/FlashLFQ_Quant_RunResultFile_Fetch_Service` (`fetchRunResultFile_GzipBytes` / `_Unzipped`: gzip magic + full
+  decompress, else a logged 500 — never "not found"); relays to the browser use `FlashLFQ_Quant_RunResultFile_RelayToBrowser_Service`
+  (`Content-Encoding: gzip` when accepted, else unzipped). Do not add a private HTTP GET to the service. The quant result-file download
+  takes a REQUIRED `encoding` field (`"plain"` = unzipped while streaming; `"gzip"` = the stored bytes, `.gz` name, `application/gzip`,
+  no `Content-Encoding`). Quant front-end loaders are strict too: a network failure, ANY non-ok status (a 404 included), or a
+  malformed body is fatal. **There is no "404 = absent" (W4):** every quant page first loads the run's FULL file-availability map ONCE
+  (`d/rws/for-page/quant--flashlfq-run-available-files` -> `Quant_FlashLFQ_RunAvailableFiles_RestWebserviceController` /
+  `services/FlashLFQ_Quant_RunAvailableFiles_Map_Service`; front end `data_pages/quant/quantRunAvailableFiles_LoadFromServer.ts`,
+  module-cached `{ data, promise }`), and every run-file loader takes that map as a REQUIRED param: `false` -> absent, no fetch; `true`
+  -> fetch, a 404 is fatal. "No such run" (unknown / swept / another project's) is the endpoint's own 404 or status `NOT_FOUND`. The
+  webapp's known tokens are `services/FlashLFQ_Quant_RunResultFile_KnownTokens_Constants` (+ the same list in the FE module) and MUST
+  track the service's allowlists -- a token the service lists that the webapp does not know is a contract break (500). Details: `limelight_features_docs/quant_pages_TODO.md` §5 and
+  `limelight_features_docs/quant_result_file_download_contract_2026-10-05.md`.
