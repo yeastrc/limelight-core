@@ -22,7 +22,6 @@ import java.sql.Connection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Importer_RunImporter_DAO;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.import_and_pipeline_run.dao.FileImportAndPipelineRunTrackingRun_Importer_RunImporter_DAO;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.import_and_pipeline_run.dao.FileImportAndPipelineRunTracking_Importer_RunImporter_DAO;
 import org.yeastrc.limelight.limelight_run_importer.dao.FileImportAndPipelineRunTracking_For_ImporterRunner_DAO;
@@ -73,11 +72,6 @@ public class GetNext_ImportAndPipelineRunTracking_ToProcessDBTransaction {
 
 				FileImportAndPipelineRunTracking_Importer_RunImporter_DAO.getInstance()
 				.updateStatusStarted( fileImportAndPipelineRunTrackingDTO.getId(), dbConnection );
-				
-				//  Clear "current_run" on previous runs for tracking id
-				
-				FileImportTrackingRun_Importer_RunImporter_DAO.getInstance()
-				.updateClearCurrentRunForTrackingId( fileImportAndPipelineRunTrackingDTO.getId(), dbConnection );
 
 				//  Create a "run" db record
 
