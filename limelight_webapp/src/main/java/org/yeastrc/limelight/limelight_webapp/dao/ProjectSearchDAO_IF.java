@@ -47,12 +47,6 @@ public interface ProjectSearchDAO_IF {
 	
 	/**
 	 * @param projectSearchId
-	 * @param newProjectId
-	 */
-	public void updateProjectIdForProjectSearch( int projectSearchId, int newProjectId );
-	
-	/**
-	 * @param projectSearchId
 	 * @param newDisplayOrder
 	 */
 	public void updateDisplayOrderForProjectSearch( int projectSearchId, int newDisplayOrder );

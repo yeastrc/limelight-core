@@ -43,7 +43,6 @@ import org.yeastrc.limelight.limelight_webapp.dao.ExperimentDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.CopyProjectSearchIdToNewProjectUsingDBTransactionService;
 import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.CopyProjectSearchIdToNewProjectUsingDBTransactionServiceIF;
-import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.MoveProjectSearchIdToNewProjectUsingDBTransactionServiceIF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
@@ -84,9 +83,6 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 	@Autowired
 	private CopyProjectSearchIdToNewProjectUsingDBTransactionServiceIF copyProjectSearchIdToNewProjectUsingDBTransactionService;
 	
-	@Autowired
-	private MoveProjectSearchIdToNewProjectUsingDBTransactionServiceIF moveProjectSearchIdToNewProjectUsingDBTransactionService;
-
 	@Autowired
 	private Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_IF experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher;
 
@@ -428,57 +424,6 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 					counter++;
 				}
 				
-//			} else if ( doCopyOrDoMove == DoCopyOrDoMove.MOVE ) {
-//				
-//				
-//				throw new IllegalArgumentException( "NOT SUPPORTED:  ( doCopyOrDoMove == DoCopyOrDoMove.MOVE )");
-				
-				//  Move Project Search and associated records to new Project
-				
-				//  "MOVE" is NO LONGER supported.  Leaving code here as template for bulk delete
-				
-//				moveProjectSearchIdToNewProjectUsingDBTransactionService
-//				.moveProjectSearchIdsToNewProjectId( projectSearchIdsSelected, copyOrMoveToProjectId, experimentIds_Containing_ProjectSearchIds );
-//				
-//				if ( experimentIds_Containing_ProjectSearchIds != null && ( ! experimentIds_Containing_ProjectSearchIds.isEmpty() ) ) {
-//					experimentsWhereDeleted = true;
-//				}
-//
-//				if ( projectSearchIdsSelected != null && ( ! projectSearchIdsSelected.isEmpty() ) ) {
-//					
-//					// Next Delete all Experiment IDs containing Project Search Ids That were NOT deleted in call to .moveProjectSearchIdsToNewProjectId(...)
-//					
-//					Set<Integer> projectSearchIdsSelected_Set = new HashSet<>( projectSearchIdsSelected );
-//
-//					List<Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result> dbResultList = 
-//							experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.getExperiments_ProjectSearchIds_List_ForProjectSearchIds(projectSearchIdsSelected_Set);
-//
-//					if ( dbResultList != null && ( ! dbResultList.isEmpty() ) ) {
-//						experimentsWhereDeleted = true;
-//					}
-//
-//					if ( ! dbResultList.isEmpty() ) {
-//
-//						try {
-//
-//		    				for ( Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result dbResult : dbResultList ) {
-//
-//		    					experimentDAO.delete( dbResult.getExperimentId() );
-//		    				}
-//						} catch( Exception e ) {
-//							log.error( "Failed to delete Experiment Ids for ProjectSearchId that remained after main deletion", e );
-//							
-//							//  Eat/Swallow Exception
-//						}
-//					}
-//				}
-				
-//			} else {
-//				//  Only way to get here is a coding error above
-//				String msg = "Unknown Value for doCopyOrDoMove: " + doCopyOrDoMove;
-//				log.error( msg );
-//				throw new LimelightInternalErrorException(msg);
-//			}
 				
 				
 			webserviceResult.setStatus(true);
