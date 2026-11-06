@@ -123,7 +123,7 @@ public class FileImportTracking_Importer_RunImporter_DAO {
 			}
 		}
 		
-		FileImportTrackingHistoryDAO.getInstance().save( FileImportStatus.STARTED, id /* FileImportTrackingId */, dbConnection );		
+		FileImportTrackingHistoryDAO.getInstance().save( status, id /* FileImportTrackingId */, dbConnection );		
 	}
 	
 	

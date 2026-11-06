@@ -133,7 +133,7 @@ public class FileImportAndPipelineRunTracking_Importer_RunImporter_DAO {
 			}
 		}
 		
-		FileImportAndPipelineRunTrackingHistoryDAO.getInstance().save( FileImportStatus.STARTED, id /* FileImportTrackingId */, dbConnection );		
+		FileImportAndPipelineRunTrackingHistoryDAO.getInstance().save( status, id /* FileImportTrackingId */, dbConnection );		
 	}
 	
 	
