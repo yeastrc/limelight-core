@@ -1,7 +1,7 @@
 /**
  * projectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component.tsx
  *
- * Project Page - Copy/Move Searches Overlay
+ * Project Page - Copy Searches Overlay
  *
  *   called from projectPage_SearchesAdmin_CopyMove_Searches.ts
  */
@@ -9,10 +9,6 @@
 
 import React, {FC} from "react";
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
-import {
-    projectPage_ListExperimentsContainingProjectSearchIds,
-    ProjectPage_ListExperimentsContainingProjectSearchIds_Result_ExperimentEntry
-} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_ListExperimentsContainingProjectSearchIds";
 import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
@@ -31,7 +27,6 @@ import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelig
 import { ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component__SingleSearchEntry } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesAdmin_DeleteSearch_Overlay_Component";
 
 
-const _Overlay_Title_Move_Searches = "Move Searches"
 const _Overlay_Title_Copy_Searches = "Copy Searches"
 
 
@@ -45,14 +40,10 @@ const _Overlay_Height_Max = 1000;
  */
 export const openOverlay_ForCopyMoveSearches = function (
     {
-        doCopy,
-        doMove,
         projectSearchIdsSelected,
         projectIdentifier,
         copyMoveSearchesReturnToProject_Callback
     } : {
-        doCopy: boolean
-        doMove: boolean
         projectSearchIdsSelected: Set<number>
         projectIdentifier : string
         copyMoveSearchesReturnToProject_Callback: () => void
@@ -68,8 +59,6 @@ export const openOverlay_ForCopyMoveSearches = function (
 
     const overlayComponent =  (
         <ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component
-            doCopy={ doCopy }
-            doMove={ doMove }
             projectSearchIdsSelected={ projectSearchIdsSelected }
             projectIdentifier={ projectIdentifier }
             copyMoveSearchesReturnToProject_Callback={ copyMoveSearchesReturnToProject_Callback }
@@ -85,8 +74,6 @@ export const openOverlay_ForCopyMoveSearches = function (
  */
 interface ProjectPage_CopyMove_Searches_Overlay_Component_Props {
 
-    doCopy: boolean
-    doMove: boolean
     projectSearchIdsSelected: Set<number>
     projectIdentifier : string
     copyMoveSearchesReturnToProject_Callback: () => void
@@ -103,18 +90,15 @@ interface ProjectPage_CopyMove_Searches_Overlay_Component_State {
 
     otherProjects?: Array<ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__GetOtherProjectsCanCopyMoveProjectSearchIdsTo_ResultEntry>
     projectSearchDataEntriesInProject?: Array<ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__GetProjectSearchIdsWhereAssocSearchIdsAlreadyInProject_ResultEntry>
-    experiments?: Array<ProjectPage_ListExperimentsContainingProjectSearchIds_Result_ExperimentEntry>
 
     show_LoadingMessage?: boolean
     show_Copying_Moving_Message?: boolean
     show_OtherProjects_List?: boolean
-    show_Experiments_List?: boolean
     show_Overall_Confirm_CopyMove?: boolean
 
     copyMove_Result?: ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__ExecuteCopyOrMoveSearches_Results
     show_CopyMove_Result?: boolean
 
-    show_ExperimentListChanged_Message?: boolean
     show_GeneralErrorUpdatingServer_Message?: boolean
 }
 
@@ -132,8 +116,6 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
 
     private _projectSearchIds_To_CopyMove: Set<number>
 
-    private _experimentIds_To_Delete: Set<number>
-
     private _selected_ProjectId_To_CopyOrMove_To: number
 
     private _copyAnyAssociatedTags = true
@@ -148,10 +130,7 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
 
         this._projectSearchIds_To_CopyMove = new Set( props.projectSearchIdsSelected );
 
-        this._experimentIds_To_Delete = null;
-
         this.state = {
-            experiments: null,
             show_LoadingMessage: true
         };
     }
@@ -167,8 +146,6 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
     }
 
     private _getProjectsTo_CopyOrMove_To() {
-
-        this._experimentIds_To_Delete = null;
 
         const promise = projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__GetOtherProjectsCanCopyMoveProjectSearchIdsTo({
             projectSearchIdsSelected: this._projectSearchIds_To_CopyMove,
@@ -250,68 +227,13 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
 
             } else {
 
-                if ( this.props.doMove ) {
-
-                    this._getExperimentsList();
-
-                } else {
-
-                    this.setState({show_Overall_Confirm_CopyMove: true, show_LoadingMessage: false});
-                }
+                this.setState({show_Overall_Confirm_CopyMove: true, show_LoadingMessage: false});
             }
         });
 
     }
 
     private _yesClicked_AcceptSearchesAlreadyInDestination() {
-
-        if ( this.props.doMove ) {
-
-            this._getExperimentsList();
-
-        } else {
-
-            this._executeCopyOrMove();
-        }
-    }
-
-    private _getExperimentsList() {
-
-        const promise = projectPage_ListExperimentsContainingProjectSearchIds({
-            projectIdentifier: this.props.projectIdentifier, projectSearchIds: this._projectSearchIds_To_CopyMove });
-
-        this.setState({ show_LoadingMessage: true });
-
-        promise.catch( (reason) => {
-
-        });
-        promise.then( (result) => {
-
-            if ( this._unmountCalled ) {
-                //  unmounted so exit
-                return;  // EARLY RETURN
-            }
-
-            if ( result.experiments.length > 0 ) {
-
-                this._experimentIds_To_Delete = new Set();
-
-                for ( const experiment of result.experiments ) {
-                    this._experimentIds_To_Delete.add( experiment.experimentId );
-                }
-
-                this.setState({show_Overall_Confirm_CopyMove: true, projectSearchDataEntriesInProject: null, show_LoadingMessage: false});
-
-                this.setState({ show_Experiments_List: true, experiments: result.experiments });
-            } else {
-
-                this._executeCopyOrMove();
-            }
-        })
-    }
-
-
-    private _yesClicked_AcceptExperimentsWillBeDeleted() {
 
         this._executeCopyOrMove();
     }
@@ -328,11 +250,8 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
         const promise = projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__ExecuteCopyOrMoveSearches({
             projectIdentifier : this.props.projectIdentifier,
             projectSearchIdsSelected: this._projectSearchIds_To_CopyMove,
-            experimentIds_To_Delete: this._experimentIds_To_Delete,
             chosenProjectId: this._selected_ProjectId_To_CopyOrMove_To,
-            copyAnyAssociatedTags: this._copyAnyAssociatedTags,
-            doCopy: this.props.doCopy,
-            doMove: this.props.doMove
+            copyAnyAssociatedTags: this._copyAnyAssociatedTags
         });
 
         promise.catch( reason => {
@@ -352,15 +271,7 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
 
         let _Overlay_Title: string = null;
 
-        if ( this.props.doMove  ) {
-            _Overlay_Title = _Overlay_Title_Move_Searches;
-        } else if ( this.props.doCopy  ) {
-            _Overlay_Title = _Overlay_Title_Copy_Searches;
-        } else {
-            const msg="Invalid props. neither of doMove or doCopy is true";
-            console.warn(msg);
-            throw Error(msg);
-        }
+        _Overlay_Title = _Overlay_Title_Copy_Searches;
 
 
         return (
@@ -394,10 +305,8 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                         >
                             { ( this.state.show_LoadingMessage ) ? (
                                 <span>LOADING DATA</span>
-                            ) : ( this.props.doCopy ) ? (
-                                <span>Copying Searches</span>
                             ) : (
-                                <span>Moving Searches</span>
+                                <span>Copying Searches</span>
                             ) }
                         </div>
 
@@ -418,15 +327,9 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                 <span>
                                     No other projects to
                                 </span>
-                                {( this.props.doCopy ) ? (
-                                    <span>
-                                            copy
-                                        </span>
-                                ) : (
-                                    <span>
-                                            move
-                                        </span>
-                                )}
+                                <span>
+                                        copy
+                                    </span>
                                 <span>
                                     to for selected searches.
                                     All searches are in all other projects.
@@ -447,15 +350,9 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                         Click the title of the project to which you would like to
                                     </span>
                                     <span> </span>
-                                    {( this.props.doCopy ) ? (
-                                        <span>
-                                            copy
-                                        </span>
-                                    ) : (
-                                        <span>
-                                            move
-                                        </span>
-                                    )}
+                                    <span>
+                                        copy
+                                    </span>
                                     <span> </span>
                                     <span>
                                         the selected searches to.
@@ -494,15 +391,9 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                  style={ { marginBottom: 10 } }
                             >
                                 <div>
-                                    {( this.props.doCopy ) ? (
-                                        <span>
-                                        Copy
-                                    </span>
-                                    ) : (
-                                        <span>
-                                        Move
-                                    </span>
-                                    )}
+                                    <span>
+                                    Copy
+                                </span>
                                     <span> </span>
                                     <span>
                                         selected searches to &quot;{ this.state.selectedProjectTitle }&quot;?
@@ -548,15 +439,9 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                         The following searches are already in the destination project and will not be
                                     </span>
                                     <span> </span>
-                                    {( this.props.doCopy ) ? (
-                                        <span>
-                                            copied
-                                        </span>
-                                            ) : (
-                                                <span>
-                                            moved
-                                        </span>
-                                    )}
+                                    <span>
+                                        copied
+                                    </span>
                                     <span>:</span>
                                 </div>
                                 <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
@@ -579,47 +464,6 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                     </div>
                                 </div>
 
-                            </React.Fragment>
-
-                        ) :  ( this.state.show_Experiments_List && this.state.experiments && this.state.experiments.length > 0 ) ? (
-
-                            <React.Fragment>
-                                <div className=" top-level fixed-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                                     style={ { marginBottom: 10 } }
-                                >
-                                    <button
-                                        onClick={ event => {
-                                            event.stopPropagation();
-                                            this._yesClicked_AcceptExperimentsWillBeDeleted();
-                                        }}
-                                    >
-                                        Yes
-                                    </button>
-                                </div>
-
-                                <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
-                                     style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
-                                    // style={ { padding : 6 } }
-                                >
-                                    <div style={ { fontWeight: "bold" } }>
-                                        Experiments that contain the search and will be deleted when the search is deleted:
-                                    </div>
-                                    <div >
-                                        <ul>
-                                            {
-                                                this.state.experiments.map( (experiment, index) => {
-
-                                                    return (
-                                                        <li key={ experiment.experimentId }>
-                                                            { experiment.experimentName }
-                                                        </li>
-                                                    )
-                                                })
-                                            }
-                                        </ul>
-                                    </div>
-
-                                </div>
                             </React.Fragment>
 
                         ) : (
@@ -656,15 +500,9 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                             Searches
                                         </span>
                                         <span> </span>
-                                        {( this.props.doCopy ) ? (
-                                            <span>
-                                        copied
-                                        </span>
-                                        ) : (
-                                            <span>
-                                        moved
-                                        </span>
-                                        )}
+                                        <span>
+                                    copied
+                                    </span>
                                         <span> </span>
                                         <span>
                                             successfully to &quot;{ this.state.selectedProjectTitle }&quot;?
@@ -690,15 +528,9 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                                 Go to project the searches were
                                             </span>
                                             <span> </span>
-                                            {( this.props.doCopy ) ? (
-                                            <span>
-                                                copied
-                                            </span>
-                                            ) : (
-                                            <span>
-                                                moved
-                                            </span>
-                                            )}
+                                        <span>
+                                            copied
+                                        </span>
                                             <span> </span>
                                             <span>
                                                 to
@@ -792,48 +624,6 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                 </div>
 
                             ) : null }
-                            {/*
-                            { ( this.state.show_ExperimentListChanged_Message ) ? (
-
-                                <div className=" top-level fixed-height  modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                                     style={ { marginBottom: 20 } }
-                                >
-                                    <div style={ { fontWeight: "bold", color: "red" } }>
-                                        The Experiment List has changed. Please validate and click the button to delete the search.
-                                    </div>
-                                </div>
-
-                            ) : null }
-
-                            { ( this.state.experiments && this.state.experiments.length > 0 ) ? (
-
-                                <div className=" change-searches-overlay-outer-block top-level single-entry-variable-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
-                                     style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
-                                    // style={ { padding : 6 } }
-                                >
-                                    <div style={ { fontWeight: "bold" } }>
-                                        Experiments that contain the search and will be deleted when the search is deleted:
-                                    </div>
-                                    <div >
-                                        <ul>
-                                        {
-                                            this.state.experiments.map( (experiment, index) => {
-
-                                                return (
-                                                    <li key={ experiment.experimentId }>
-                                                        { experiment.experimentName }
-                                                    </li>
-                                                )
-                                            })
-                                        }
-                                        </ul>
-                                    </div>
-
-                                </div>
-
-                            ) : null }
-
-                            */}
 
                         </div>
 

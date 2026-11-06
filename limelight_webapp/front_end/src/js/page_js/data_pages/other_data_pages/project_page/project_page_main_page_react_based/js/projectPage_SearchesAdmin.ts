@@ -230,12 +230,10 @@ export class ProjectPage_SearchesAdmin {
 		});
 	}
 
-	//  Copy/Move Searches to a different Project
+	//  Copy Searches to a different Project
 
 	/**
 	 *
-	 * @param doCopy
-	 * @param doMove
 	 * @param projectSearchIdsSelected
 	 */
 	openOverlay_ForCopySearches(
@@ -259,7 +257,7 @@ export class ProjectPage_SearchesAdmin {
 			//  Do Nothing since only copy.  No longer move
 		}
 
-		openOverlay_ForCopyMoveSearches({ doCopy: true, doMove: false, projectSearchIdsSelected, projectIdentifier, copyMoveSearchesReturnToProject_Callback });
+		openOverlay_ForCopyMoveSearches({ projectSearchIdsSelected, projectIdentifier, copyMoveSearchesReturnToProject_Callback });
 	}
 
 

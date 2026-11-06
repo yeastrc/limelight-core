@@ -137,7 +137,6 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     private _deleteSearches_Clicked_BindThis = this._deleteSearches_Clicked.bind(this);
     private _bulk_set_update_TagsOnSearches_BindThis = this._bulk_set_update_TagsOnSearches.bind(this)
     private _manageTagsInProject_BindThis = this._manageTagsInProject.bind(this);
-    // private _moveSearches_Clicked_BindThis = this._moveSearches_Clicked.bind(this);
     private _organizeSearchesButton_Clicked_BindThis = this._organizeSearchesButton_Clicked.bind(this);
     private _openFilterOverridesOverlay_Clicked_BindThis = this._openFilterOverridesOverlay_Clicked.bind(this);
     private _expand_All_Button_Clicked_BindThis = this._expand_All_Button_Clicked.bind(this);
@@ -1018,21 +1017,6 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     }
 
 
-    //  MOVE currently not supported so commented out
-
-    /**
-     *
-     */
-    // private _moveSearches_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
-    //
-    //     this.props.projectPage_SearchesAdmin.openOverlay_ForCopyMoveSearches({
-    //         projectSearchIdsSelected: this.state.projectSearchIds_Selected_InProgress,
-    //         projectIdentifier: this.props.projectIdentifier,
-    //         doCopy: false,
-    //         doMove: true
-    //     })
-    // }
-
     /**
      *
      */
@@ -1469,30 +1453,6 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                     </div>
 
                                                     <span> </span>
-
-                                                    {/*  Move Searches */ }
-                                                    {/*
-
-                                                        NO Longer support "Move Searches
-
-
-                                                    <div style={ { position: "relative", display: "inline-block" } }>
-                                                        <input type="button" value="Move Searches"
-                                                               disabled={ this.state.copy_move_ButtonsDisabled }
-                                                               onClick={ this._moveSearches_Clicked_BindThis }
-                                                        />
-                                                        { ( this.state.copy_move_ButtonsDisabled ) ? (
-                                                            // overlay when button is disabled to show tooltip
-                                                            <div
-                                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                                                title = "Click here to copy the selected searches to another project."
-                                                            ></div>
-                                                        ): null }
-                                                    </div>
-
-                                                    <span> </span>
-
-                                                    */ }
 
                                                     {/*  Organize Searches */ }
                                                     <div style={ { position: "relative", display: "inline-block" } }>

@@ -3,7 +3,7 @@
  * 
  * Javascript for projectView.jsp page  
  * 
- * Searches Admin - Copy Move Searches to another Project
+ * Searches Admin - Copy Searches to another Project
  *
  * Supports Overlay Component in projectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component.tsx
  * 
@@ -147,7 +147,7 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ge
 
 
 /**
- * Get the Project Search Ids trying to Copy/Move that have associated Search Ids already in the target Project Id
+ * Get the Project Search Ids trying to Copy that have associated Search Ids already in the target Project Id
  */
 export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__GetProjectSearchIdsWhereAssocSearchIdsAlreadyInProject = function(
     {
@@ -250,7 +250,6 @@ export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ge
 export class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__ExecuteCopyOrMoveSearches_Results {
 
     status: boolean
-    experimentsWhereDeleted: boolean
     copyToProjectMarkedForDeletion: boolean
     copyToProjectDisabled: boolean
     projectSearchIds_NotFoundInDatabase: Array<number>
@@ -261,34 +260,23 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ex
  */
 export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__ExecuteCopyOrMoveSearches = function(
     {
-        projectIdentifier, projectSearchIdsSelected, experimentIds_To_Delete, chosenProjectId, copyAnyAssociatedTags, doCopy, doMove
+        projectIdentifier, projectSearchIdsSelected, chosenProjectId, copyAnyAssociatedTags
     } : {
         projectIdentifier : string
         projectSearchIdsSelected: Set<number>
-        experimentIds_To_Delete: Set<number>
         chosenProjectId: number
         copyAnyAssociatedTags: boolean
-        doCopy: boolean
-        doMove: boolean
 
     } ) : Promise<ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__ExecuteCopyOrMoveSearches_Results> {
 
     const projectSearchIdsSelected_Array = Array.from( projectSearchIdsSelected );
 
-    let experimentIds_To_Delete_Array : Array<number> = null;
-
-    if ( experimentIds_To_Delete && experimentIds_To_Delete.size > 0 ) {
-        experimentIds_To_Delete_Array = Array.from( experimentIds_To_Delete );
-    }
-
     let requestObj = {
         projectIdentifier: projectIdentifier,  // current project
-        projectSearchIdsSelected: projectSearchIdsSelected_Array, // to copy or move
-        experimentIds_Containing_ProjectSearchIds: experimentIds_To_Delete_Array,
-        copyOrMoveToProjectId: chosenProjectId, // Project Id to copy or move to
+        projectSearchIdsSelected: projectSearchIdsSelected_Array, // to copy
+        copyOrMoveToProjectId: chosenProjectId, // Project Id to copy to
         copyAnyAssociatedTags,
-        copyToOtherProject: doCopy,  // true if copy
-        moveToOtherProject: doMove  // true if move
+        copyToOtherProject: true  // Copy is the only supported operation
     };
 
     const url = "d/rws/for-page/copy-or-move-project-search-ids-to-new-project";
@@ -310,11 +298,6 @@ export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ex
                         console.warn( msg );
                         throw Error( msg );
                     }
-                    if ( result.experimentsWhereDeleted === undefined || result.experimentsWhereDeleted === null ) {
-                        const msg = "( result.experimentsWhereDeleted === undefined || result.experimentsWhereDeleted === null ): URL: " + url;
-                        console.warn( msg );
-                        throw Error( msg );
-                    }
                     if ( result.copyToProjectMarkedForDeletion === undefined || result.copyToProjectMarkedForDeletion === null ) {
                         const msg = "( result.copyToProjectMarkedForDeletion === undefined || result.copyToProjectMarkedForDeletion === null ): URL: " + url;
                         console.warn( msg );
@@ -325,8 +308,8 @@ export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ex
                         console.warn( msg );
                         throw Error( msg );
                     }
-                    if ( ! result.status && ( ! ( result.experimentsWhereDeleted || result.copyToProjectMarkedForDeletion || result.copyToProjectDisabled || result.projectSearchIds_NotFoundInDatabase ) ) ) {
-                        const msg = "( ! result.status && ( ! ( result.experimentsWhereDeleted || result.copyToProjectMarkedForDeletion || result.copyToProjectDisabled || result.projectSearchIds_NotFoundInDatabase ) ) ): URL: " + url;
+                    if ( ! result.status && ( ! ( result.copyToProjectMarkedForDeletion || result.copyToProjectDisabled || result.projectSearchIds_NotFoundInDatabase ) ) ) {
+                        const msg = "( ! result.status && ( ! ( result.copyToProjectMarkedForDeletion || result.copyToProjectDisabled || result.projectSearchIds_NotFoundInDatabase ) ) ): URL: " + url;
                         console.warn( msg );
                         throw Error( msg );
                     }
