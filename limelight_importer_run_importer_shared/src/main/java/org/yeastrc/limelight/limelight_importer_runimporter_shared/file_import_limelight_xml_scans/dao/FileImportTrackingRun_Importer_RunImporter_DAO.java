@@ -28,7 +28,6 @@ import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunI
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingRunDTO;
-import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 
 /**
  * Do NOT use in Web App
@@ -107,57 +106,6 @@ public class FileImportTrackingRun_Importer_RunImporter_DAO {
 		}
 	}
 
-	/**
-	 * @param status
-	 * @param id
-	 * @throws Exception
-	 */
-	public void updateStatus( FileImportStatus status, int id ) throws Exception {
-		Connection dbConnection = null;
-		try {
-			dbConnection = SharedCodeOnly_DBConnectionProvider.getInstance().getConnection();
-			updateStatus( status, id, dbConnection );
-		} finally {
-			if( dbConnection != null ) {
-				try { dbConnection.close(); } catch( Throwable t ) { ; }
-				dbConnection = null;
-			}
-		}
-	}
-	/**
-	 * @param status
-	 * @param id
-	 * @throws Exception
-	 */
-	public void updateStatus( FileImportStatus status, int id, Connection dbConnection ) throws Exception {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		final String sql = "UPDATE file_import_tracking_run_tbl SET status = ?, last_updated_date_time = NOW() WHERE id = ?";
-		try {
-			pstmt = dbConnection.prepareStatement( sql );
-			int counter = 0;
-			counter++;
-			pstmt.setInt( counter, status.value() );
-			counter++;
-			pstmt.setInt( counter, id );
-			pstmt.executeUpdate();
-		} catch ( Exception e ) {
-			String msg = "Failed to update status, sql: " + sql;
-			log.error( msg, e );
-			throw e;
-		} finally {
-			// be sure database handles are closed
-			if( rs != null ) {
-				try { rs.close(); } catch( Throwable t ) { ; }
-				rs = null;
-			}
-			if( pstmt != null ) {
-				try { pstmt.close(); } catch( Throwable t ) { ; }
-				pstmt = null;
-			}
-		}
-	}
-	
 	private static final String updateClearCurrentRunForTrackingId_SQL =
 			 "UPDATE file_import_tracking_run_tbl "
 						+ "SET current_run = " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE

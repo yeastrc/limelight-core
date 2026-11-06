@@ -79,7 +79,7 @@ public class FileImportAndPipelineRunTracking_Importer_RunImporter_DAO {
 				pstmt = null;
 			}
 		}
-		FileImportAndPipelineRunTrackingHistoryDAO.getInstance().save( FileImportStatus.STARTED, id /* FileImportTrackingId */, dbConnection );		
+		FileImportAndPipelineRunTrackingHistoryDAO.getInstance().save( FileImportStatus.STARTED, id /* ImportAndPipelineRunTrackingId */, dbConnection );		
 	}
 	
 	private static final String updateStatusAtImportEnd_SQL =
@@ -133,7 +133,7 @@ public class FileImportAndPipelineRunTracking_Importer_RunImporter_DAO {
 			}
 		}
 		
-		FileImportAndPipelineRunTrackingHistoryDAO.getInstance().save( status, id /* FileImportTrackingId */, dbConnection );		
+		FileImportAndPipelineRunTrackingHistoryDAO.getInstance().save( status, id /* ImportAndPipelineRunTrackingId */, dbConnection );		
 	}
 	
 	

@@ -25,7 +25,6 @@ import java.sql.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
-import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingRunDTO;
 
 /**
@@ -105,58 +104,6 @@ public class FileImportAndPipelineRunTrackingRun_Importer_RunImporter_DAO {
 		}
 	}
 
-	/**
-	 * @param status
-	 * @param id
-	 * @throws Exception
-	 */
-	public void updateStatus( FileImportStatus status, int id ) throws Exception {
-		Connection dbConnection = null;
-		try {
-			dbConnection = SharedCodeOnly_DBConnectionProvider.getInstance().getConnection();
-			updateStatus( status, id, dbConnection );
-		} finally {
-			if( dbConnection != null ) {
-				try { dbConnection.close(); } catch( Throwable t ) { ; }
-				dbConnection = null;
-			}
-		}
-	}
-	
-	/**
-	 * @param status
-	 * @param id
-	 * @throws Exception
-	 */
-	public void updateStatus( FileImportStatus status, int id, Connection dbConnection ) throws Exception {
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		final String sql = "UPDATE import_and_pipeline_run_tracking_run_tbl SET status = ?, last_updated_date_time = NOW() WHERE id = ?";
-		try {
-			pstmt = dbConnection.prepareStatement( sql );
-			int counter = 0;
-			counter++;
-			pstmt.setInt( counter, status.value() );
-			counter++;
-			pstmt.setInt( counter, id );
-			pstmt.executeUpdate();
-		} catch ( Exception e ) {
-			String msg = "Failed to update status, sql: " + sql;
-			log.error( msg, e );
-			throw e;
-		} finally {
-			// be sure database handles are closed
-			if( rs != null ) {
-				try { rs.close(); } catch( Throwable t ) { ; }
-				rs = null;
-			}
-			if( pstmt != null ) {
-				try { pstmt.close(); } catch( Throwable t ) { ; }
-				pstmt = null;
-			}
-		}
-	}
-	
 	/**
 	 * @param item
 	 * @throws Exception
