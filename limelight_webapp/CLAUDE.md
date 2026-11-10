@@ -64,6 +64,21 @@ Spring app must be under this package (see `ZZ_README.txt`). ~1200 Java files.
   `init_populate_new_db_fields_shared_code_lib/` wire in the
   `limelight_shared_code` and `db_populate_new_fields` modules on startup.
 
+## Before building anything new — check the reusable building blocks inventory
+
+`../limelight_features_docs/reusable_building_blocks/README.md` catalogs existing mechanisms. **Search its
+`keyword_index.md` and the "Quick picks" in the area files first** — server side, mostly `data_access.md`,
+`webservices_and_front_end_data_loading.md`, `security_access_control_sessions.md` and
+`storage_files_external_services.md`. Common re-invention traps: DAO `_IF` + impl pair, Searcher, and
+`*_UsingDBTransactionService` (multi-DAO transaction); the REST controller template; the access validators
+(`ValidateWebSessionAccess_ToWebservice_*`); the in-memory cache registry and the versioned cached
+webservice response; projectSearchId → search id / project id lookups; and the search-data lookup codes
+(cutoffs).
+
+- **Name the candidates you checked** (plan / PR / reply) before writing a new mechanism.
+- **Where duplicates exist, use the inventory's preferred one** — don't add another.
+- **Update the inventory in the same commit** as any new or changed reusable mechanism.
+
 ## Authorization (per-project access control)
 
 **There is no blanket "must be logged in" layer.** Public projects (and

@@ -11,6 +11,20 @@ This directory is the entire TypeScript/React front end (all `.ts`/`.tsx` in the
 
 ---
 
+## Before building anything new — check the reusable building blocks inventory
+
+`../../limelight_features_docs/reusable_building_blocks/README.md` catalogs existing mechanisms. **Search its
+`keyword_index.md` and the "Quick picks" in the area files first** — for the front end, mostly
+`webservices_and_front_end_data_loading.md`, `front_end_ui_components_page_framework.md` and
+`charts_visualization.md`. Common re-invention traps: `{ data, promise }` loaders in the
+`CommonData_LoadedFromServer` tree; `webserviceCallStandardPost` (not raw `fetch`/XHR); `DataTable`;
+modal overlays and tooltips; the page `*_CentralStateManagerObjectClass` / `*_UserSelections_StateObject`
+state managers; the QC Plotly config/layout/render-queue helpers; and the search / sub-search color manager.
+
+- **Name the candidates you checked** (plan / PR / reply) before writing a new mechanism.
+- **Where duplicates exist, use the inventory's preferred one** — don't add another.
+- **Update the inventory in the same commit** as any new or changed reusable mechanism.
+
 ## Naming: underscore = private / file-scoped
 
 - **File-scoped variables and functions, and class properties (instance _and_ static), start with a leading `_`** to mark them as private to that file or class.
@@ -77,6 +91,11 @@ duplicate report. A raw `Error` in the same spot **would** be logged as a phanto
   expected 401/403 (e.g. a project made non-public mid-view) is **not** logged to the server as a JS error.
   `webserviceCallStandardPost.ts` does exactly this; a hand-rolled `window.fetch` on a data webservice must
   follow the same pattern (see the structure-file-contents load fetch).
+- **Write a hand-rolled call only when the caller must handle a specific non-200 status itself**
+  (`webserviceCallStandardPost` shows the standard error on any non-200, and even with `doNotHandleErrorResponse`
+  the caller gets no status code), or for chunked file uploads; then use `fetch`. **Do not add new `XMLHttpRequest` code, and do not use
+  jQuery (`$.ajax`) for any new webservice call.** (XHR upload progress events were unreliable on slow
+  connections, so new code doesn't use them.)
 
 ### Page reload goes through ONE function; blocking `beforeunload` guards must use the registry
 
@@ -218,7 +237,9 @@ The data pages fetch and cache everything they read per search — reported pept
 modifications, annotations, scan data, feature-detection data — through one client-side pull-model tree rooted at
 `page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.ts`
 (plus sibling ROOT trees for scan data and feature-detection data). Serves the Peptide/Protein main pages, the
-Single Protein Overlay, and the QC page; **excludes the Mod Main Page**.
+Single Protein Overlay, and the QC page. **The "Except_ModMainPage" name is historical:** the Mod Main Page
+also uses this Root (`modViewPage_Display_MainContent_Component.tsx` creates an instance; Mod page sub-tables,
+downloads and the z-score report use it). Don't infer scope from the name.
 
 Before adding a loader, changing an endpoint, or tracing where a page gets a piece of data, read
 `limelight_features_docs/front_end_data_loading__common_data_loaded_from_server_per_search.md`. It has: the
@@ -228,6 +249,23 @@ chain, a full catalog of all ~55 leaf loaders with their `d/rws/…` endpoints a
 (two bare non-`d/rws` paths, derived/no-call loaders, delegating scan loaders, columnar/delta/base-36 wire
 encodings, the `ZZ_UNUSED_Untested_` files). The per-search flags below (via `DataPageStateManager`) are an input
 to that tree's Root.
+
+**Filtered vs unfiltered:** use the filtered `..._For_MainFilters` loaders, which respect the user's PSM / peptide /
+protein cutoffs. The unfiltered `..._NO_PSM_Peptide_Protein_Filtering` loaders (via
+`get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId`) have a real use:
+views that must deliberately show data outside the cutoffs, such as the QC score-distribution and target/decoy plots.
+Use them only when that is what you want; they also load the whole search (memory). **Ask the maintainer before
+adding a new use** of an unfiltered loader.
+
+**Before adding a webservice call on a data page or the project page, check the
+`page_js/data_pages/common_data_loaded_from_server__*` directories** (this per-search tree, which also holds the
+peptide and protein data driven by the current filters; the scan-data and feature-detection ROOTs; project-level
+structure-file data; searches / tags / folders; project-page "which sections have data"). Use an existing loader, or
+add a leaf to the matching tree, rather than calling `webserviceCallStandardPost` from page code. The cached trees are
+intended for data that does not change, or rarely changes, while a page is open (intent, not a guarantee). Loaders in
+these directories were written over many years and older ones follow earlier patterns: copy the reference leaf named
+in `limelight_features_docs/reusable_building_blocks/webservices_and_front_end_data_loading.md` ("Front-end data loader
+directories" and "Lazy load-once leaf loader pattern"), not just any nearby loader.
 
 ### Reuse the page's already-loaded data — NEVER re-instantiate a loader / re-fetch (webservice calls are expensive)
 
@@ -248,6 +286,71 @@ duplicating a fetch the page already paid for.
 Why: caching across the page only works if everyone shares one instance. Each duplicate webservice call costs real
 server work (and latency); re-instantiating a loader silently throws away the page's cache and re-fetches. When in
 doubt, plumb the existing object through props — never mint a second loader to make a component self-contained.
+
+---
+
+## Avoid Promises where the data is already loaded — `{ data, promise }` and the synchronous fast path
+
+Much of the front end avoids Promises wherever possible, so the page stays responsive once data has loaded (an
+`async` function always creates a Promise, and every `await` resumes through the microtask queue even when the value
+is already there). Continue this approach in new code.
+
+- **Functions called per item, in loops, or on every re-render return `{ data, promise }`, with exactly one set.**
+  The caller uses `data` synchronously when it is set, else uses `promise`, else throws an `Error`. Reference
+  implementation: the leaf loader named in
+  `limelight_features_docs/reusable_building_blocks/webservices_and_front_end_data_loading.md` ("Lazy load-once leaf
+  loader pattern").
+- **Collecting several `{ data, promise }` results** (this keeps the TypeScript types simple with a variable number
+  of calls):
+  1. Declare a local variable (or a map) for each result before the calls.
+  2. For each call: if `data` is set, store it in the variable. If `promise` is set, create a new
+     `Promise<void>` that stores the value when the returned promise resolves (and rejects when it rejects), and
+     push it onto a local `Array<Promise<void>>`.
+  3. If the array is empty, everything was already loaded: call the continuation **synchronously** and return.
+  4. Otherwise `Promise.all` the array, attach `.catch` and `.then`, and in `.then` call the same continuation,
+     reading the local variables. Don't try to extract values from the `Promise.all` result.
+
+  Example: `page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded.ts`.
+
+  **Optional helper for step 2 (the coder decides).** The hand-written `new Promise<void>` wrapper is easy to get
+  wrong: a forgotten `resolve()` or `reject()` leaves the page waiting forever. Next time you write this pattern,
+  consider adding a small generic helper (none exists in the code yet) and using it instead:
+
+  ```ts
+  // In its own file; name the export per the "exported symbols are prefixed with their source file" rule above.
+  function storeWhenResolved<T>( promise: Promise<T>, store: ( value: T ) => void ): Promise<void> {
+      return new Promise<void>( ( resolve, reject ) => {
+          promise.catch( reason => reject( reason ) )
+          promise.then( value => { try {
+              store( value )
+              resolve()
+          } catch ( e ) {
+              reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+              reject( e )
+          }} )
+      } )
+  }
+
+  // Use (myValue must have a declared type, e.g. `let myValue: SomeHolder`):
+  promises.push( storeWhenResolved( result.promise, value => { myValue = value } ) )
+  ```
+
+  TypeScript infers `T` from the promise, so the assignment in the `store` callback is type-checked against the
+  variable's declared type (a mismatched type is a compile error). It is compile-time checking only: off-the-wire data
+  is still validated by the loader.
+- **The continuation is called from two places on purpose** (the synchronous path and the `.then`). Don't merge them
+  into one always-async call: that sends every already-loaded case through a Promise and loses the benefit. Give the
+  continuation REQUIRED parameters so a parameter added to one call site but missed at the other is a compile error.
+- **No `async` / `await` in tight loops or per-item code.** `await` is acceptable in high-level code that runs once
+  per user action.
+
+### TypeScript: keep it simple
+
+Prefer plain, explicit TypeScript (local variables, small holder classes, explicit types) that gets types through
+closures, over elaborate type-level solutions. Use advanced type features only where they add real value. Example of
+one that does: the "exactly one of these properties" (exclusive-or) constructor parameters in
+`page_js/data_pages/data_table_react/dataTable_React_DataObjects.ts`, built from interfaces that set the other
+alternatives to `?: never`.
 
 ---
 

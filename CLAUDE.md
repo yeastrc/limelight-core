@@ -61,6 +61,29 @@ rest are libraries consumed by them.
 - `docs` — Sphinx source for the readthedocs site.
 - `deploy` — build output (jars + WAR).
 
+## Before building anything new — check the reusable building blocks inventory
+
+`limelight_features_docs/reusable_building_blocks/README.md` catalogs the existing mechanisms across all
+modules. **Before writing a new mechanism, search its `keyword_index.md` and the "Quick picks" table of the
+relevant area file.** Cross-module things that are easy to re-invent: the background-job queue (add a
+request type, don't add a queue), populate-new-fields backfill, DB cleanup / delete-search blocks,
+File Object Storage, spectr (spectral storage) clients, config keys (`ConfigSystemsKeys*Constants`), and
+the DB schema-version check + `version_upgrades/` scripts.
+
+- **Name the candidates you checked** (in the plan, PR description, or reply) before adding a new mechanism,
+  and say why none fit.
+- **When the inventory lists duplicates, use the one it marks as preferred.** Don't add another copy.
+- **Keep it current:** a commit that adds or changes a reusable mechanism also updates the inventory entry
+  (and `keyword_index.md`) in the same commit.
+
+## AWS S3 code is untested — test it before relying on it
+
+Treat every S3 code path in Limelight as untested. It was tested at one point, but there is currently no S3
+environment to test against, and the AWS SDK dependencies have since been updated for security fixes without being
+re-tested against S3. The same applies to the S3 support in the separate File Object Storage and spectr services.
+Anyone who uses or changes S3 code must test it thoroughly against real S3 first. Details:
+`limelight_features_docs/reusable_building_blocks/storage_files_external_services.md` ("AWS S3").
+
 ## Things to do sooner than later
 
 - **Quant pages — remaining work / TODO:** `limelight_features_docs/quant_pages_TODO.md` — the living to-do

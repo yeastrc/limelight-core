@@ -10,8 +10,10 @@ feature-detection data. It is **not** a generic API client — every leaf class 
 its own webservice endpoint, loads lazily on first request, and holds the result for the instance's lifetime.
 
 **Pages served** (per `ZZ_README.txt`): Peptide main page, Protein main page, Single Protein Overlay, and the
-QC page — each in both Project-Search-Id and Experiment variants. It **EXCLUDES the Mod Main Page** (except the
-Single Protein Overlay reachable from it); every file header repeats this.
+QC page — each in both Project-Search-Id and Experiment variants. The `ZZ_README.txt` and the file headers say it
+excludes the Mod Main Page, but **that is out of date (the "Except_ModMainPage" name is historical):** the Mod
+Main Page also uses this Root (`modViewPage_Display_MainContent_Component.tsx` creates an instance; Mod page
+sub-tables, downloads and the z-score report use it). Don't infer scope from the name.
 
 > Scope note: this documents the *loading/caching* tree only. The `searchDataLookupParameters` (the
 > PSM/peptide/protein filter cutoffs that key the "filtered" loaders) and `DataPageStateManager` (source of the
