@@ -31,13 +31,16 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # Java 21 (LTS) is only used to RUN Gradle for dependency resolution; it does not
-      # need to match the per-module toolchains (Java 8 / 25), which are only required to
-      # compile, not to resolve dependencies.
+      # Java 21 (LTS, listed last so it is the default) is used to RUN Gradle for dependency
+      # resolution.  Java 8 is installed too: resolving 'limelight_submit_import_client_connector'
+      # (included by limelight_webapp and limelight_submit_import) needs its Java 8 toolchain, and
+      # the ubuntu-26.04 runner image (ubuntu-latest since late 2026) no longer ships Java 8.
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: |
+            8
+            21
 
       - name: Generate and submit dependency graph (${{ matrix.module }})
         uses: gradle/actions/dependency-submission@v6
