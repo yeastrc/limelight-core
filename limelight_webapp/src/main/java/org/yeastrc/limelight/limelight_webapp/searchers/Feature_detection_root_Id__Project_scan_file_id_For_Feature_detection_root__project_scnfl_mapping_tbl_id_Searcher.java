@@ -28,6 +28,11 @@ import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 
 /**
  * feature_detection_root_Id And project_scan_file_id For feature_detection_root__project_scnfl_mapping_tbl__id 
+ * 
+ * Do NOT make the class name or the nested class name longer.
+ * The compiled nested class file name 'Outer$Inner.class' is 240 bytes.  Gradle's incremental compile stashes class files
+ * as '<name>.uniqueIdN' and ext4 limits names to 255 bytes, so making the outer or nested class name 3+ characters longer
+ * will break incremental builds with "File name too long".  See root CLAUDE.md.
  *
  */
 @Component

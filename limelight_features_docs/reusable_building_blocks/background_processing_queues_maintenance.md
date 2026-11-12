@@ -473,7 +473,7 @@ DB purge = `limelight__database_cleanup__common_code__remove_data_from_database`
 ### G2. On-demand (lazy) backfill from a webservice before reading
 - What it solves: when a user hits data not yet backfilled by the nightly job, fill just those searches/rows synchronously, then read.
 - Search keywords: lazy populate, fill on read, on-demand backfill, ensure populated, populate before read
-- Location: `Limelight_DatabasePopulateNewFields__Table_search_level_annotation_min_max_tbl__PopulateFor_SearchIds_MAIN` (by search id set; same tracking rows); `Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects` (by explicit `protein_coverage_tbl` rows with null columns).
+- Location: `Limelight_DatabasePopulateNewFields__Table_search_level_annotation_min_max_tbl__PopulateFor_SearchIds_MAIN` (by search id set; same tracking rows); `Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects` (by explicit `protein_coverage_tbl` rows with null columns).
 - Used by: webapp `SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceController` (min/max), `ProteinCoverage_PerReportedPeptide_For_ReportedPeptideIds_Single_ProjSearchID_RestWebserviceController` (pre/post residue; re-queries and validates afterward).
 - How to use / extend: reference pattern for "check for nulls -> populate -> re-query -> validate".
 - Do not use when: the populate is expensive (runs in the request thread).

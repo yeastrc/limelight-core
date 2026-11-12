@@ -36,8 +36,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.yeastrc.limelight.db_populate_new_fields__common_code.populate_table_protein_converage_tbl_new_fields_protein_pre_post_residue.main.Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects;
-import org.yeastrc.limelight.db_populate_new_fields__common_code.populate_table_protein_converage_tbl_new_fields_protein_pre_post_residue.main.Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects.Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem;
+import org.yeastrc.limelight.db_populate_new_fields__common_code.populate_table_protein_converage_tbl_new_fields_protein_pre_post_residue.main.Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects;
+import org.yeastrc.limelight.db_populate_new_fields__common_code.populate_table_protein_converage_tbl_new_fields_protein_pre_post_residue.main.Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects.Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
@@ -273,13 +273,13 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     				dbItemList = searcherResult.getResults();
     			}
     			
-    			List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem> populateDB_RequestItemList = new ArrayList<>( dbItemList.size() );
+    			List<Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem> populateDB_RequestItemList = new ArrayList<>( dbItemList.size() );
     			
     			for ( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item dbItem : dbItemList ) {
     				if ( dbItem.getProtein_PreResidue() == null || dbItem.getProtein_PostResidue() == null
     						|| dbItem.getPeptideAtProteinStart_Flag() == null || dbItem.getPeptideAtProteinEnd_Flag() == null ) {
     					
-    					Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem populateDB_RequestItem = new Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem();
+    					Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem populateDB_RequestItem = new Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem();
     					populateDB_RequestItem.setProtein_coverage_tbl__id( dbItem.getProtein_coverage_tbl__id() );
     					populateDB_RequestItem.setProteinSequenceVersionId( dbItem.getProteinSequenceVersionId() );
     					populateDB_RequestItem.setProteinStartPosition( dbItem.getProteinStartPosition() );
@@ -294,9 +294,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     				
     				dbItemList = null;  // Clear prev values since will populate next
     				
-    				Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects
+    				Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects
     				.getSingletonInstance()
-    				.limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_MAIN(
+    				.limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_MAIN(
     						populateDB_RequestItemList
     						);
     				

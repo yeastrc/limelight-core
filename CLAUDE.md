@@ -284,15 +284,25 @@ Note: root-level Gradle does NOT work (see `Z_Not_Works_build.gradle` /
 `Z_Not_Works_settings.gradle`). Use the root Ant build for a full build and the
 per-module Ant scripts above for a single module.
 
-### Build fails with "File name too long" (Gradle stash-dir)
+### Build fails with "File name too long" (Gradle stash-dir) — keep class file names short enough
 
-If a compile fails with `java.nio.file.FileSystemException ... File name too long` for a file under
-`build/tmp/compileJava/compileTransaction/stash-dir/`, delete that module's `build/` directory (generated output) and
-rebuild. Cause: on an incremental recompile Gradle stashes the old `.class` files with a `.uniqueIdN` suffix, and the
-nested class `..._ProteinPrePostResidue_FROM_PerRecordObjects$..._FROM_PerRecordObjects_RequestItem.class` in
-`limelight__db_populate_new_fields__common_code` is already 249 bytes, so the stashed name goes over the 255-byte
-file-name limit of ext4 and similar file systems. A fresh `build/` directory does not stash. It typically happens
-after a change in `limelight_shared_code` forces that module to recompile.
+**Cause:** on an incremental compile, Gradle moves the old `.class` file of every class it recompiles into
+`build/tmp/compileJava/compileTransaction/stash-dir/`, renamed `<name>.class.uniqueIdN` (N counts up per compile, so it
+can have as many digits as the module's class count). ext4 (and similar file systems) limit a file name to 255 bytes,
+so a class file name that is too long fails with `java.nio.file.FileSystemException ... File name too long`.
+
+**Limit:** safe `Outer$Inner.class` length = 255 − 9 (`.uniqueId`) − counter digits: 244 bytes for a module under
+100 classes, 243 under 1000, 242 under 10000 (`limelight_webapp` has over 2000 classes).
+
+- **Keep `Outer$Inner.class` names at most about 240 bytes.** A long nested class name usually repeats the outer
+  class name, so check the COMBINED length (`Outer` + `$` + `Inner` + `.class`), not each name alone.
+- Classes near the limit carry a "do not make longer" Javadoc note (e.g. the webapp
+  `Feature_detection_root_Id__Project_scan_file_id_For_..._Searcher`, 240 bytes).
+- **Immediate workaround** if it happens: delete that module's `build/` directory (generated output) and rebuild. A
+  fresh `build/` does not stash.
+- History: the populate class `..._ProteinPrePostResidue_FROM_PerRecordObjects` (nested `..._RequestItem`) was 249
+  bytes and caused this; it was renamed to the `Limelight_DB_PopNewFlds__Tbl_...` prefix (now 221 bytes) and is no
+  longer the cause.
 
 ## Gradle dependencies: centralize common libs in `limelight_shared_code` — don't re-declare in leaf modules
 

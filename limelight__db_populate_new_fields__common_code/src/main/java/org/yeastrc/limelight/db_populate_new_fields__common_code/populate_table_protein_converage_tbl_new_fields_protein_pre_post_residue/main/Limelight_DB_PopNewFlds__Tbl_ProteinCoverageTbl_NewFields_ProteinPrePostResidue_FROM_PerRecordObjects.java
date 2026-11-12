@@ -21,29 +21,34 @@ import org.yeastrc.limelight.limelight_shared.protein_coverage_common.Compute_Pe
  * Just have to get the protein sequence
  * 
  * Called from Webapp for most efficient update of DB.
+ * 
+ * Do NOT make the class name or the nested class name longer.
+ * Renamed from 'Limelight_DatabasePopulateNewFields__Table_...' since the compiled nested class file name 'Outer$Inner.class' was 249 bytes
+ * and broke incremental builds with "File name too long" (Gradle stashes class files as '<name>.uniqueIdN' and ext4 limits names to 255 bytes).
+ * See root CLAUDE.md.
  *
  */
-public class Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects {
+public class Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects {
 	
-	private static final Logger log = LoggerFactory.getLogger(Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects.class);
+	private static final Logger log = LoggerFactory.getLogger(Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects.class);
 	
 	/**
 	 * private constructor
 	 */
-	private Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects() { }
+	private Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects() { }
 	/**
 	 * Static singleton instance
 	 */
-	private static final Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects _instance = new Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects();
+	private static final Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects _instance = new Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects();
 	/**
 	 * Static get singleton instance
 	 * @return
 	 */
-	public static Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects getSingletonInstance() {
+	public static Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects getSingletonInstance() {
 		return _instance; 
 	}
 	
-	public static class Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem {
+	public static class Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem {
 		
 		private int protein_coverage_tbl__id; // protein_coverage_tbl.id
 		private int proteinSequenceVersionId;
@@ -73,16 +78,16 @@ public class Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFi
 	 * @param requestItemList
 	 * @throws Exception
 	 */
-	public void limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_MAIN(
-			List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem> requestItemList 
+	public void limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_MAIN(
+			List<Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem> requestItemList 
 			) throws Exception {
 
 		//  Transfer to Map key proteinSequenceVersionId
-		Map<Integer, List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>> requestItemList_Map_Key_ProteinSequenceVersionId = new HashMap<>();
+		Map<Integer, List<Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>> requestItemList_Map_Key_ProteinSequenceVersionId = new HashMap<>();
 
-		for ( Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem item : requestItemList ) {
+		for ( Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem item : requestItemList ) {
 			
-			List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem> requestItemList_InMap =
+			List<Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem> requestItemList_InMap =
 					requestItemList_Map_Key_ProteinSequenceVersionId.get( item.proteinSequenceVersionId );
 			if ( requestItemList_InMap == null ) {
 				requestItemList_InMap = new ArrayList<>();
@@ -91,13 +96,13 @@ public class Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFi
 			requestItemList_InMap.add(item);
 		}
 		
-		List<Map.Entry<Integer, List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>>> requestItemList_Map_Key_ProteinSequenceVersionId__EntryList =
+		List<Map.Entry<Integer, List<Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>>> requestItemList_Map_Key_ProteinSequenceVersionId__EntryList =
 				new ArrayList<>( requestItemList_Map_Key_ProteinSequenceVersionId.entrySet() );
 		
-		Collections.sort( requestItemList_Map_Key_ProteinSequenceVersionId__EntryList, new Comparator<Map.Entry<Integer, List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>>>() {
+		Collections.sort( requestItemList_Map_Key_ProteinSequenceVersionId__EntryList, new Comparator<Map.Entry<Integer, List<Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>>>() {
 
 			@Override
-			public int compare(Map.Entry<Integer, List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>> o1, Map.Entry<Integer, List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>> o2) {
+			public int compare(Map.Entry<Integer, List<Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>> o1, Map.Entry<Integer, List<Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>> o2) {
 
 				return o1.getKey().compareTo( o2.getKey() );
 			}
@@ -106,10 +111,10 @@ public class Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFi
 		//  List to batch DB updates.  Set size to DEFAULT_BULK_UPDATE_SIZE
 		List<Limelight_DatabasePopulateNewFields__ProteinCoverageTbl_Update_DAO_UpdateEntry> updateEntryList = new ArrayList<>();
 		
-		for ( Map.Entry<Integer, List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>> requestItemList_Map_Key_ProteinSequenceVersionId__MapEntry : requestItemList_Map_Key_ProteinSequenceVersionId__EntryList ) {
+		for ( Map.Entry<Integer, List<Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem>> requestItemList_Map_Key_ProteinSequenceVersionId__MapEntry : requestItemList_Map_Key_ProteinSequenceVersionId__EntryList ) {
 		
 			Integer proteinSequenceVersionId = requestItemList_Map_Key_ProteinSequenceVersionId__MapEntry.getKey();
-			List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem> requestItemList_For_ProteinSequenceVersionId = requestItemList_Map_Key_ProteinSequenceVersionId__MapEntry.getValue();
+			List<Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem> requestItemList_For_ProteinSequenceVersionId = requestItemList_Map_Key_ProteinSequenceVersionId__MapEntry.getValue();
 			
 
 			String proteinSequence =
@@ -122,7 +127,7 @@ public class Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFi
 				continue; // EARLY CONTINUE
 			}
 
-			for ( Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem requestItem : requestItemList_For_ProteinSequenceVersionId ) {
+			for ( Limelight_DB_PopNewFlds__Tbl_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem requestItem : requestItemList_For_ProteinSequenceVersionId ) {
 
 				Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util__Result result__Peptide_Pre_Post_Residues =
 						Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util
