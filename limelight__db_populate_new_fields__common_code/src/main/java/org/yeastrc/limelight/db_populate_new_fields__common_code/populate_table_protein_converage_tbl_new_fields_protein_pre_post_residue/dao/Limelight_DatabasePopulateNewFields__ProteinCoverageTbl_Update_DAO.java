@@ -119,7 +119,9 @@ public class Limelight_DatabasePopulateNewFields__ProteinCoverageTbl_Update_DAO 
 					
 					try {
 						dbConnection.rollback();
-						
+
+						break;  //  Rollback succeeded so exit loop
+
 					} catch ( Throwable t2 ) {
 						
 						if ( rollbackRetryCounter > 6 ) {

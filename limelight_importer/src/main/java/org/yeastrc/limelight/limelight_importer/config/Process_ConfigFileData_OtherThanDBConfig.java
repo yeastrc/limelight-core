@@ -191,7 +191,7 @@ public class Process_ConfigFileData_OtherThanDBConfig {
 
 				{
 
-					String valueFoundInLabel_String = System.getenv( PROPERTY_NAME__FILE_OBJECT_STORAGE_SEND_FILE_LOCATION );
+					String valueFoundInLabel_String = System.getenv( ENVIRONMENT_VARIABLE__FILE_OBJECT_STORAGE_SEND_FILE_LOCATION );
 
 					if ( valueFoundInLabel_String != null ) {
 						valueFoundInLabel_String = valueFoundInLabel_String.trim();
@@ -199,7 +199,7 @@ public class Process_ConfigFileData_OtherThanDBConfig {
 
 					if ( StringUtils.isNotEmpty( valueFoundInLabel_String ) ) {
 
-						log.warn( "INFO:  Environment Variable found : '" + PROPERTY_NAME__FILE_OBJECT_STORAGE_SEND_FILE_LOCATION + "' with value: " + valueFoundInLabel_String );
+						log.warn( "INFO:  Environment Variable found : '" + ENVIRONMENT_VARIABLE__FILE_OBJECT_STORAGE_SEND_FILE_LOCATION + "' with value: " + valueFoundInLabel_String );
 
 						if ( FILE_OBJECT_STORAGE_SEND_SCAN_FILE_LOCATION__TRUE.equals( valueFoundInLabel_String ) ) {
 							ImporterConfigFileData_OtherThanDBConfig.setFileObjectStorageService_sendFileLocation(true);

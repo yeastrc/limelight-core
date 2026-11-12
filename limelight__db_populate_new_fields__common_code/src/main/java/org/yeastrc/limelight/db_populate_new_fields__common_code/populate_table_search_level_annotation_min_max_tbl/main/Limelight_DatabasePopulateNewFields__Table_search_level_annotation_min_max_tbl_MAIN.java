@@ -334,9 +334,9 @@ public class Limelight_DatabasePopulateNewFields__Table_search_level_annotation_
 		double worstValue = minValue;
 		
 		if ( annotationType.getFilterDirectionType() == FilterDirectionTypeJavaCodeEnum.BELOW ) {
-			
-			bestValue = maxValue;
-			worstValue = minValue;
+
+			bestValue = minValue;
+			worstValue = maxValue;
 		}
 		
 		SearchLevel_Annotation_MinMax_DTO searchLevel_Annotation_MinMax_DTO = new SearchLevel_Annotation_MinMax_DTO();

@@ -74,9 +74,9 @@ Abbreviations: `J` = `limelight_webapp/src/main/java/org/yeastrc/limelight/limel
 - Limits and gotchas: If the base URL is not configured, send returns `notConfigured=true` and the orchestrator returns
   immediately, skipping all remaining files (FOS is optional per install). Main-entry insert is "select, try insert (swallow
   exception), select again" because another importer may insert the same key concurrently (`SkipLogInsertException.YES` on
-  the second attempt). Possible defect seen in code, not runtime-tested: the "send file location" env-var override reads an
-  env var named by the dotted property name instead of `LIMELIGHT_IMPORTER_FILE_OBJECT_STORAGE_SEND_FILE_LOCATION`, so that env
-  override does not work (properties file does) — see importer config entry.
+  the second attempt). FIXED defect: the "send file location" env-var override used to read an env var named by the dotted
+  property name instead of `LIMELIGHT_IMPORTER_FILE_OBJECT_STORAGE_SEND_FILE_LOCATION`, so that env override did not work; it
+  now reads `LIMELIGHT_IMPORTER_FILE_OBJECT_STORAGE_SEND_FILE_LOCATION` — see importer config entry.
 - Related / duplicates: webapp FOS read/upload entries below (separate client code, separate main-entry DAO); FOS tables entry.
 - Status: verified (orchestrator first about 110 lines read; S3 variant skimmed) (re-checked)
 

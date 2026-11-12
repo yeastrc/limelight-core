@@ -284,6 +284,16 @@ Note: root-level Gradle does NOT work (see `Z_Not_Works_build.gradle` /
 `Z_Not_Works_settings.gradle`). Use the root Ant build for a full build and the
 per-module Ant scripts above for a single module.
 
+### Build fails with "File name too long" (Gradle stash-dir)
+
+If a compile fails with `java.nio.file.FileSystemException ... File name too long` for a file under
+`build/tmp/compileJava/compileTransaction/stash-dir/`, delete that module's `build/` directory (generated output) and
+rebuild. Cause: on an incremental recompile Gradle stashes the old `.class` files with a `.uniqueIdN` suffix, and the
+nested class `..._ProteinPrePostResidue_FROM_PerRecordObjects$..._FROM_PerRecordObjects_RequestItem.class` in
+`limelight__db_populate_new_fields__common_code` is already 249 bytes, so the stashed name goes over the 255-byte
+file-name limit of ext4 and similar file systems. A fresh `build/` directory does not stash. It typically happens
+after a change in `limelight_shared_code` forces that module to recompile.
+
 ## Gradle dependencies: centralize common libs in `limelight_shared_code` — don't re-declare in leaf modules
 
 There is **no root Gradle build** (Ant drives per-module Gradle; each deployable module's

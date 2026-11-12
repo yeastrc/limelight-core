@@ -484,11 +484,11 @@ DB purge = `limelight__database_cleanup__common_code__remove_data_from_database`
 ### G3. Concrete backfills: `search_level_annotation_min_max_tbl` and `protein_coverage_tbl` pre/post residue
 - What it solves: per-search min/max/best/worst per filterable annotation type (PSM, PSM peptide position, modification position, reported peptide, protein); protein pre/post residue and at-start/end flags.
 - Search keywords: annotation min max, best worst value, protein pre residue, post residue, peptide at protein start, backfill example
-- Location: `limelight__db_populate_new_fields__common_code` `populate_table_search_level_annotation_min_max_tbl/**`, `populate_table_protein_converage_tbl_new_fields_protein_pre_post_residue/**`; residue math reused from `limelight_shared_code` `protein_coverage_common/Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util` (also used by the importer; [domain_utilities.md](domain_utilities.md)).
+- Location: `limelight__db_populate_new_fields__common_code` `populate_table_search_level_annotation_min_max_tbl/**`, `populate_table_protein_converage_tbl_new_fields_protein_pre_post_residue/**`; one-time repair of the min/max table `populate_table_search_level_annotation_min_max_tbl__fix_below_best_worst/**` (see gotchas); residue math reused from `limelight_shared_code` `protein_coverage_common/Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util` (also used by the importer; [domain_utilities.md](domain_utilities.md)).
 - Used by: G1, G2.
 - How to use / extend: copy as templates; reuse the shared residue util rather than re-deriving.
 - Do not use when: n/a.
-- Limits and gotchas: possible defect (observed in source, UI impact unverified): `save_MinMax_ToDB` sets best=max, worst=min for BOTH filter directions (the `BELOW` branch equals the default), while the importer (`AnnotationData_MinMax_AccumulationComputation_SingletonInstance`) uses best=min for `BELOW` — so backfilled rows for BELOW-direction annotations (e.g. q-values) likely have best/worst swapped vs imported rows; best/worst are returned to the front end by the min/max webservice.
+- Limits and gotchas: FIXED defect: `save_MinMax_ToDB` used to set best=max, worst=min for BOTH filter directions (the `BELOW` branch equalled the default), so backfilled rows for BELOW-direction annotations (e.g. q-values) had best/worst swapped vs the importer (`AnnotationData_MinMax_AccumulationComputation_SingletonInstance`, best=min for `BELOW`). It now matches the importer. Rows already written wrong are repaired once by `..._Table_search_level_annotation_min_max_tbl__Fix_Below_BestWorst_MAIN` (own root row, short key `srch_lvl_ann_min_max_tbl__Fix_Below_Best_Worst`): runs only after the min/max backfill's root row is complete, does ONE UPDATE (filter direction `below` AND best > worst -> best = min, worst = max), then marks itself complete. It is an example of a one-time whole-table fix (not per search) using the G1 root row only.
 - Related / duplicates: importer min/max accumulator (parallel computation).
 - Status: verified (code read; UI impact unverified)
 
@@ -499,7 +499,7 @@ DB purge = `limelight__database_cleanup__common_code__remove_data_from_database`
 - Used by: both protein-coverage populate classes.
 - How to use / extend: do NOT use as a template (see gotcha).
 - Do not use when: in the webapp (use its transaction services, [data_access.md](data_access.md)).
-- Limits and gotchas: possible defect (code reading): on exception the rollback retry loop `while(true){ counter++; try { rollback(); } catch { if (counter>6) break; } }` has no `break` after a SUCCESSFUL rollback, so a successful rollback spins forever (only exits after 7 failed rollbacks). Only this file contains `rollbackRetryCounter`.
+- Limits and gotchas: FIXED defect: the rollback retry loop on exception `while(true){ counter++; try { rollback(); } catch { if (counter>6) break; } }` had no `break` after a SUCCESSFUL rollback, so a successful rollback spun forever and the original exception was never thrown. It now breaks after a successful rollback (still gives up after 7 failed rollbacks). Only this file contains `rollbackRetryCounter`.
 - Related / duplicates: webapp DB transaction services; importer insert DAOs.
 - Status: verified
 
@@ -561,7 +561,6 @@ DB purge = `limelight__database_cleanup__common_code__remove_data_from_database`
 - F5: does the single shared "importer running" flag actually let cleanup run during an import when the pipeline worker finishes or restarts? Code reading confirms the mechanism (one `volatile boolean`; `ProcessSubmittedImportOrPipelineRun` calls `importerIsRunning_End` when a pipeline job ends; both worker `run()`s call it at start); not exercised at runtime.
 - E1: do the cleanup "Main" singletons stay stopped after a thread replacement (never-reset `keepRunning`)? (RESOLVED: the pipeline cleanup mains do not reference the `IMPORT_DELETE_UPLOADED_FILES*` keys.)
 - G2: RESOLVED — no duplicate rows: both tables have composite PKs and inserts use `ON DUPLICATE KEY UPDATE`.
-- G3: UI impact of the best/worst swap for backfilled BELOW-direction annotations.
 - F7: gold-standard / feature-detection child-delete ordering and `Cleanup_ProjectTbl` body only skimmed.
 - F9: RESOLVED — no purge of marked-for-deletion `import_and_pipeline_run_tracking_tbl` rows exists (grep).
 - B6 / A6: intended consumers of the import heartbeat and run importer alive tables (no Java readers).

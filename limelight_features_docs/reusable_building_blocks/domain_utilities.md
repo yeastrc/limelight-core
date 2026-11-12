@@ -452,7 +452,7 @@ Path abbreviations (all repo-relative):
 - Used by: importer `dao/AnnotationTypeDAO` (registers types), the five `DB_Insert_*FilterableAnnotation*DAO`s (add values as a side effect), `ProcessReportedPeptidesAndPSMs` (`storeInDB`); backfill via the populate-new-fields framework.
 - How to use / extend: any new filterable-annotation insert DAO must call `add_AnnotationDataBaseDTO` for each value.
 - Do not use when: outside one importer process (static singleton, one search, no reset).
-- Limits and gotchas: throws for an unregistered type or a direction other than ABOVE/BELOW. Possible defect (observed in source, UI impact not checked): the backfill sets best=max, worst=min for BOTH directions, while the importer uses best=min for BELOW — so backfilled rows for BELOW annotations (e.g. q-values) likely have best/worst swapped vs imported rows.
+- Limits and gotchas: throws for an unregistered type or a direction other than ABOVE/BELOW. FIXED defect: the backfill used to set best=max, worst=min for BOTH directions (the importer uses best=min for BELOW), so backfilled rows for BELOW annotations (e.g. q-values) had best/worst swapped; the backfill now matches the importer and a one-time populate section repairs existing rows (see the populate-new-fields concrete backfills entry in background_processing_queues_maintenance.md).
 - Related / duplicates: importer and backfill compute the same values separately.
 - Status: verified
 
@@ -744,7 +744,7 @@ Path abbreviations (all repo-relative):
 - **Trypsin rules**: `trypsinCutPointsForSequence.ts` vs `[KR][^P]` regex copied in QC digestion and the filtering engine (3 places, 2 rules).
 - **Default cutoffs computed twice**: server `SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds` vs client `create_experiment_SearchFilterValuesFromDefaultCutoffs` (equivalence unchecked). Project-wide overrides applied in both.
 - **Per-search cutoff storage**: `SearchDataLookupParameters_Root` vs experiment `Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData`.
-- **Annotation min/max/best/worst** computed by the importer and by the populate backfill (backfill BELOW direction looks swapped). ABOVE/BELOW comparison written separately in 4 importer classes.
+- **Annotation min/max/best/worst** computed by the importer and by the populate backfill (same rules; the backfill's former BELOW swap is fixed). ABOVE/BELOW comparison written separately in 4 importer classes.
 - **Protein-cutoff SQL block** copied into 4 searchers (no shared builder).
 - **Lookup-code resolve**: `SearchDataLookupParams_GetRecordForCode` (use) vs unused identical `SearchDataLookupParams_GetProjectSearchIdsForCode`.
 - **Lookup-code webservice URL** hard-coded in 5 front-end files (prefer `updatePageState_URL_With_New_SearchDataLookupParameters_Root.ts`).

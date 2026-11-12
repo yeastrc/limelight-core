@@ -32,7 +32,20 @@ public class Aa_LimelightDb_UpdatesIn_RunImporterOrPgm_Root__Constants {
 	 * Matching full Label description
 	 * Table 'search_level_annotation_min_max_tbl'.   Populate Table
 	 */
-	public static final String LABEL_VALUE___SEARCH_LEVEL_ANNOTATION_MIN_MAX_TBL = 
+	public static final String LABEL_VALUE___SEARCH_LEVEL_ANNOTATION_MIN_MAX_TBL =
 			"Table 'search_level_annotation_min_max_tbl'.   Populate for searches";
+
+
+	/**
+	 * Table 'search_level_annotation_min_max_tbl'.   Fix best/worst values for filter direction 'below' written swapped by the Populate.
+	 */
+	public static final String LABEL_SHORT_KEY_VALUE___SEARCH_LEVEL_ANNOTATION_MIN_MAX_TBL__FIX_BELOW_BEST_WORST = "srch_lvl_ann_min_max_tbl__Fix_Below_Best_Worst";
+
+	/**
+	 * Matching full Label description
+	 * Table 'search_level_annotation_min_max_tbl'.   Fix best/worst values for filter direction 'below' written swapped by the Populate.
+	 */
+	public static final String LABEL_VALUE___SEARCH_LEVEL_ANNOTATION_MIN_MAX_TBL__FIX_BELOW_BEST_WORST =
+			"Table 'search_level_annotation_min_max_tbl'.   Fix best/worst values for filter direction 'below' written swapped by the Populate";
 
 }
