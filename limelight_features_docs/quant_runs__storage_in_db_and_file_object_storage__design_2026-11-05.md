@@ -620,6 +620,27 @@ Notes:
 
 ---
 
+### 5c. Implementation note: adding the tables to the MySQL Workbench model
+
+The maintainer keeps the database design in a MySQL Workbench model (Workbench 8.0.43 Community), with several EER
+diagrams showing subsets of the tables plus text blocks, and generates the install SQL from it. Changes have been
+entered by hand in the Workbench GUI (an older Workbench did not parse a create-SQL script correctly). The model
+cannot be merged, so database changes are made in one place at a time. For the roughly a dozen new quant tables:
+
+1. **Preferred (to try first on a COPY of the `.mwb`):** write the CREATE TABLE SQL for the new tables and test it
+   in a throwaway MySQL container (same major version as the real server; check with `SELECT @@version`). Then
+   in Workbench use Database → Synchronize Model / Synchronize with Any Source against that test database, so the
+   new tables (columns, keys, indexes, foreign keys) are read from the live database rather than parsed from a
+   script, and merged into the existing model without touching the diagrams. Then add the new tables to the
+   relevant EER diagrams and generate the install SQL as usual. (That these Workbench features behave well with
+   this model is unverified until the trial on the copy.)
+2. **Fallback:** a field-by-field checklist in the order of Workbench's table editor (columns with types and flags,
+   indexes, foreign keys with their ON DELETE rules) for hand entry.
+3. **Either way, verify afterwards:** load the regenerated install SQL into a throwaway container and compare every
+   new table with this design (columns, types, keys, indexes, cascades); check that the upgrade SQL produces the
+   same tables.
+4. **Avoid** editing the `.mwb` file directly (a zip of XML with internal object ids and diagram layout).
+
 ## 6. Provenance
 
 - **Verified:** read in source by the review, with `file:line`.
