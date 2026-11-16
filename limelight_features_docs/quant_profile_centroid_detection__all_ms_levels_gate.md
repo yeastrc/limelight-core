@@ -29,7 +29,7 @@ must be **correctly scoped to all levels** to actually predict which files Flash
 ## Why all levels, not just MS1 (grounded in mzLib source)
 
 The reference source lives off-repo (external, downloaded for research; not part of this repo):
-`/spinning-disk-02/code_downloads_for_research/from Github/mzLib`, checked out at **mzLib v1.0.566**
+a local clone of mzLib, checked out at **mzLib v1.0.566**
 (git `703edec`) — the exact version FlashLFQ references
 (`FlashLFQ/CMD/CMD.csproj` → `<PackageReference Include="mzLib" Version="1.0.566" />`). FlashLFQ's quant
 engine (`PeakIndexingEngine`) and the mzML reader are part of the mzLib package.

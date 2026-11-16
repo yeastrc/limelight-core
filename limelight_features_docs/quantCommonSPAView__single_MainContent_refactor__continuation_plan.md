@@ -1,5 +1,7 @@
 # QuantCommonSPAView — single-MainContent refactor: continuation plan
 
+> **Renamed 2026-11-12:** the Quant Common page was renamed the Quant QC page (code `quantQC…`, route `d/pg/psb/quant-qc/`); this doc keeps the old name as written.
+
 **Date:** 2026-09-14 (updated 2026-09-15). **Status:** FEATURE ESSENTIALLY COMPLETE. Stages 1–2 + the
 protein-disable toggle item are DONE & review-verified (all feature code still uncommitted). The deeper
 filter-integration steps (unify compute / merge FilterSections / nav-skip) are **PERMANENTLY PARKED** (not

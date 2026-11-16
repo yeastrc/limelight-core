@@ -1,8 +1,8 @@
 # Add-New-Quant — Submit ONE joint FlashLFQ run + view on new data page(s) — PLAN (2026-08-17)
 
-**Status: decisions RESOLVED; executable plan. NOT yet implemented — do not write code until Dan gives the
+**Status: decisions RESOLVED; executable plan. NOT yet implemented — do not write code until the maintainer gives the
 go-ahead for a phase.** This doc is the single source of truth (it supersedes the earlier "open Q1–Q7"
-framing and the ephemeral plan-mode file `~/.claude/plans/wait-i-thought-we-temporal-badger.md`). Skeptical
+framing and an ephemeral plan-mode file outside the repo). Skeptical
 bar: reuse claims cited to source `file:line`; a couple of items marked *(unverified)*.
 
 This is a **new, independent quant *run model*** (a joint run over the uploaded set). It has **two deliberate,
@@ -86,10 +86,10 @@ normalize checkbox + "MBR is on" message go in **that overlay's terminal state**
 | D-NRM | **normalize = user choice, default ON** (`--nor` is a controllable switch — `flashlfq_command.py:49, 112-116`); submit UI = a checkbox defaulting on. |
 | D-Q7 | **Unify BOTH features on a static-inclusive grouping identity** (bracket mass = variable + residue-static). One change to the shared `FlashLFQ_GroupingIdentity_Common`; the existing peptide page and this subsystem share it. Existing runs were **already deleted** — no forced-deletion cost. See §7. |
 | D-VAL | **Submit backstops mods only** (open-mod / dynamic-mod). It does NOT re-enforce the scan-file-count / sub-group eligibility conditions at submit — those are enforced at the upload front door (D-ELIG). |
-| D-ELIG | **Do NOT relax the Add-New eligibility gate.** A >1-scan-file, no-sub-groups search (condition (d), `Eligibility...:282-288`) stays **INELIGIBLE**. The joint run removes per-search *summing* but not the underlying ambiguity: with no sub-groups, multiple scan files may be separate samples (→ separate columns, fine) OR fractions of one sample (→ should be combined; separate columns mislead and FlashLFQ+MBR mis-match across them). Sub-groups are the disambiguator; the uploaded metadata structure is not honored this slice. Stays gated unless a user / Dan's boss explicitly requests relaxing it. |
+| D-ELIG | **Do NOT relax the Add-New eligibility gate.** A >1-scan-file, no-sub-groups search (condition (d), `Eligibility...:282-288`) stays **INELIGIBLE**. The joint run removes per-search *summing* but not the underlying ambiguity: with no sub-groups, multiple scan files may be separate samples (→ separate columns, fine) OR fractions of one sample (→ should be combined; separate columns mislead and FlashLFQ+MBR mis-match across them). Sub-groups are the disambiguator; the uploaded metadata structure is not honored this slice. Stays gated unless a user / the maintainer's boss explicitly requests relaxing it. |
 | D-AUTH | Submit = project **OWNER**; viewer page + retrieval/status webservices = project **READ**. |
 | D-SCOPE | Viewer does **not** verify the run's scan files belong to the project this slice (temporary + isolated/alt server context) — code comment only; real check deferred to the DB phase. |
-| D-PROV | The **cross-search joint run is Dan-owned** (this session): the task prompt said "submit ONE FlashLFQ run over ALL of those scan files," and when the Model-B-reversal concern was raised Dan replied it is "completely disconnected from what was done before… nothing is a reversal." The user asserts comparability by uploading the set; Limelight does not validate it. |
+| D-PROV | The **cross-search joint run is maintainer-owned** (this session): the task prompt said "submit ONE FlashLFQ run over ALL of those scan files," and when the Model-B-reversal concern was raised the maintainer replied it is "completely disconnected from what was done before… nothing is a reversal." The user asserts comparability by uploading the set; Limelight does not validate it. |
 
 ---
 
@@ -292,10 +292,10 @@ with a real `spectr_file_id` so **MBR** would infer an `Intensity_scanfile_id_<s
 
 ## 6. Full Quant peptide page — a NEW page (in progress; DECISIONS DOC governs)
 
-**Decisions resolved 2026-08-19** in `quant_add_new__full_quant_peptide_page_decisions_2026-08-19.md` (Dan
+**Decisions resolved 2026-08-19** in `quant_add_new__full_quant_peptide_page_decisions_2026-08-19.md` (the maintainer
 confirmed against source). Read that doc for the settled choices, source cites, and the gated build. Key points:
 
-**Staged FE delivery (recorded per Dan):** the FE is delivered FIRST as a **dummy `<table>` debug dump** at the
+**Staged FE delivery (recorded per the maintainer):** the FE is delivered FIRST as a **dummy `<table>` debug dump** at the
 **permanent `d/pg/qt/` route** for the full page (e.g. `flashlfq-peptide-quant`) — it calls the new backend
 retrieval webservice and dumps the returned per-cell records into a plain `<table>` (one HTML row per wire
 record, all DTO fields as columns) so real data can be seen on the real page. It is **upgraded to the real
@@ -344,7 +344,7 @@ per cell. Driven by the composite hash → ONE TSV fetch → re-derive identity�
   mismatch **already exists** in the shipped peptide/protein quant pages
   (`quant_PrototypeData.ts:54-55`, `flashlfq_proteinQuant_PrototypeData.ts:50-51`), so this plan does not
   introduce it. Proper fix = gate READY on the file(s) actually read (or require all three) in the service —
-  out of Phase-A/B scope, awaiting Dan's call.
+  out of Phase-A/B scope, awaiting the maintainer's call.
 
 ---
 
@@ -435,4 +435,4 @@ preserve and no forced-deletion step; both features regenerate consistent identi
 ## 9. Standing rules honored
 - Skeptical bar: load-bearing claims cited to `file:line`; unverified items marked.
 - No new mass calculator (Q7 reuses existing masses). No DB mutation by the assistant. Commits/pushes need
-  Dan's explicit, per-command go-ahead. Nothing implemented until Dan authorizes a phase.
+  the maintainer's explicit, per-command go-ahead. Nothing implemented until the maintainer authorizes a phase.

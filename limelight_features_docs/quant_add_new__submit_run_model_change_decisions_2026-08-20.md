@@ -8,7 +8,7 @@
 > doc (the MBR/normalize/per-pair-response decisions) still holds.
 
 **Status: DECISIONS-FIRST. Nothing is built.** This doc surfaces every load-bearing choice as a question
-with a recommendation and `file:line` grounding, for Dan + the reviewing claude to settle **before** any
+with a recommendation and `file:line` grounding, for the maintainer + the reviewing claude to settle **before** any
 code. Stop at this doc.
 
 **Scope (held):** SUBMIT-SIDE ONLY. Does not touch the view/retrieval/render path. No new page or route —
@@ -23,7 +23,7 @@ this session) or `inferred` / `unverified`. "OBSERVED" = seen in real source/out
 
 ---
 
-## 0. The change (product decisions LOCKED by Dan — recorded, not re-litigated)
+## 0. The change (product decisions LOCKED by the maintainer — recorded, not re-litigated)
 
 The just-completed A/B mapping categorization now ALSO drives the submit model:
 
@@ -179,7 +179,7 @@ one row per submission; hold N entries inside it.
 **B-open (needs a call):** for PER_FILE, if one file's send fails (connect error / non-200) but others
 succeed, do we (i) still create the row with mixed per-entry statuses, or (ii) treat the whole submission as
 failed? Recommend (i) — per-entry failure is visible and the successful runs remain viewable — but flag it as
-a Dan decision. (For JOINT the existing single failedToConnect/httpStatus fields still describe the one send.)
+a maintainer decision. (For JOINT the existing single failedToConnect/httpStatus fields still describe the one send.)
 
 ---
 
@@ -212,9 +212,9 @@ ON**. If we simply delete normalize and never call `setNormalize`, `FlashLFQ_Par
   explicitly so behavior is deterministic regardless of the external default:
   - Normalization is only meaningful for the **multi-file joint (opt1)** run; for single-file (opt2 / Route B)
     it is a no-op.
-  - **Question for Dan:** should the opt1 joint run normalize? Two clean answers: **(a)** preserve today's
+  - **Question for the maintainer:** should the opt1 joint run normalize? Two clean answers: **(a)** preserve today's
     behavior — `setNormalize(TRUE)` for opt1 (un-set/irrelevant for per-file); or **(b)** drop normalization
-    entirely — `setNormalize(FALSE)` everywhere. Recommend **(a)** unless Dan wants (b), because it preserves
+    entirely — `setNormalize(FALSE)` everywhere. Recommend **(a)** unless the maintainer wants (b), because it preserves
     the current default the feature has been running with. Either way, set it **explicitly** — never rely on
     the absent-field default.
 
@@ -276,30 +276,30 @@ with explicit values; fatal-error handling via `reportErrorObjectToServer` + ret
 
 ---
 
-## 4. Resolutions — ALL SETTLED (Dan, 2026-08-20)
+## 4. Resolutions — ALL SETTLED (the maintainer, 2026-08-20)
 
-All six open questions are resolved and authoritative for the build. Decided by **Dan** (2026-08-20),
+All six open questions are resolved and authoritative for the build. Decided by **the maintainer** (2026-08-20),
 reviewed with the reviewing claude.
 
-1. **Q-A2 MBR placement — RESOLVED (Dan):** set MBR **explicitly per mode in Java** — `setMbr(TRUE)` for opt1
+1. **Q-A2 MBR placement — RESOLVED (the maintainer):** set MBR **explicitly per mode in Java** — `setMbr(TRUE)` for opt1
    (JOINT); `setMbr(FALSE)` for opt2 + Route B (PER_FILE). No reliance on the external service's single-file
    auto-force.
-2. **Q-B response unification — RESOLVED (Dan):** return a **per-pair list from BOTH modes** on success (JOINT =
+2. **Q-B response unification — RESOLVED (the maintainer):** return a **per-pair list from BOTH modes** on success (JOINT =
    N entries sharing 1 `requestId`; PER_FILE = N entries each own `requestId`). Reuse the existing per-pair
    shape `WebserviceResult_PerSearch` (`FlashLFQ_Run__Request_Creation_...:772`) or a shared copy.
-3. **Q-B model shape — RESOLVED (Dan):** **one `ProjPg_Quant_SubmittedRun` row per submission** holding N
+3. **Q-B model shape — RESOLVED (the maintainer):** **one `ProjPg_Quant_SubmittedRun` row per submission** holding N
    per-pair entries `{ projectSearchId, searchScanFileId, requestId, status }` + composite `hashFragment`; row
    status = **aggregate** of the poll (READY only when all READY, else in-progress). No per-entry send-failure
    state (see #4). (FE — Phase 2/3.)
-4. **Q-B-open partial per-file failure — RESOLVED (Dan): fail-fast the WHOLE submission.** On the first failed
+4. **Q-B-open partial per-file failure — RESOLVED (the maintainer): fail-fast the WHOLE submission.** On the first failed
    `sendOneRequest` (connect error / non-200), stop and return a whole-submission failure; the FE shows an error
    and creates **no** runs-list row. Earlier successful sends in that submission become **orphaned** in the
    service — accepted (revisit when runs are DB-stored). A success response only ever carries all-N-succeeded.
-5. **Q-C normalize — RESOLVED (Dan): remove entirely; `setNormalize(FALSE)` for all modes.** FlashLFQ performs
+5. **Q-C normalize — RESOLVED (the maintainer): remove entirely; `setNormalize(FALSE)` for all modes.** FlashLFQ performs
    **no** normalization (Limelight will implement its own later — out of scope). Remove every normalize site
    (FE field/checkbox/copy/POST/runs-list column; controller field/setter/apply; path-doc comment). The
    "absent-default = OFF" uncertainty is now **moot** — normalize is set explicitly (see scrutiny §4a).
-6. **Q-D placement — RESOLVED (Dan):** opt1/opt2 ask lives in the **SubmitRun child** with route threaded down
+6. **Q-D placement — RESOLVED (the maintainer):** opt1/opt2 ask lives in the **SubmitRun child** with route threaded down
    as **required props**; Route A shows an opt1/opt2 radio (no auto-pick, Submit disabled until chosen); Route B
    hard-selects PER_FILE (no radio). Add a **required** `runMode: "JOINT" | "PER_FILE"` to the submit request
    (replaces `normalize`). (FE — Phase 3.)

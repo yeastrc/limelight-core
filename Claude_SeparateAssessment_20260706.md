@@ -898,7 +898,7 @@ Two conclusions:
   charge-subset the stored peaks; a correct charge-specific value requires **re-running FlashLFQ on
   charge-specific PSMs**.
 
-**Design implication (Dan, 2026-07-08):** to guarantee correct quant under arbitrary filtering, run
+**Design implication (the maintainer, 2026-07-08):** to guarantee correct quant under arbitrary filtering, run
 FlashLFQ on the **final filtered PSMs** and bind the result to a frozen, URL-encoded filter state — the
 **"locked-filter run"** (any filter change removes the quant). The features doc now frames this as a
 three-option spectrum (Option 1 = honest-labeled total, no re-run [recommended default]; Option 2 =
@@ -1055,7 +1055,7 @@ positional isomers** (same base sequence + same mass, different mod site — e.g
 distinction justifies flagging quant while **leaving PSM Count unflagged**: PSM Count is identification
 evidence (shared credit is benign), whereas quant is an **abundance** and showing the *same* intensity under
 two localization-variant rows distorts the quantitative comparison quant exists for. So Decision A's "no
-flag" is **revised for the quant column only** (Dan, 2026-07-10): mark shared-quant rows with a small glyph
+flag" is **revised for the quant column only** (the maintainer, 2026-07-10): mark shared-quant rows with a small glyph
 + tooltip. **PSM Count keeps no flag** (Decision A stands for it).
 
 Implementation caveat (important): base the row flag on the peak mapping to **>1 reported peptide**
@@ -1092,7 +1092,7 @@ current view" and the locked-filter run). It matches the already-shipped Option-
 re-architecture. The §16-addendum over-count numbers (charge ~54% etc.) are therefore **by-design behavior,
 not a defect** — quant is the peptidoform total, deliberately not secondary-filter-scoped.
 
-**Enforcement (Dan's plan):** store the top PSM/Peptide filters **with** the quant result, and **show the
+**Enforcement (the maintainer's plan):** store the top PSM/Peptide filters **with** the quant result, and **show the
 quant only when the current top filters match the stored ones**; on mismatch, hide the value (no stale
 numbers). This binds quant to its defining filter state with no re-run machinery — the clean way to honor
 "only reflective of the current top filters." (Secondary filters correctly never affect quant; only a

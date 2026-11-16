@@ -22,6 +22,9 @@ Path abbreviations: `DP/` = `limelight_webapp/front_end/src/js/page_js/data_page
 | Standard Plotly look, PNG/SVG download buttons | `qcPage_StandardChartConfig` + `qcPage_StandardChartLayout` | QC standard Plotly chart config and layout |
 | Many Plotly charts on one page without slowness | `QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot` (PNG queue + live overlay) | QC Plotly render queue |
 | Drop stale async results when the user changes inputs fast | `QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput` + registry | Stale-async guard ("track latest updates") |
+| One chart large and fitting the window; re-size once after window resizing stops | `QuantCharts_SingleChartSize__ResizeWatcher` + `quantCharts_SingleChartSize_Settings.ts` (quant prototype) | Chart sized to the window, re-sized after window resize |
+| Remove (unmount) a Plotly chart that may still be drawing, without an uncaught Plotly error | `quantCharts_PlotlyPendingCalls__Then` + `..._Purge_NowOrWhenSettled` (quant prototype) | Purge a Plotly chart only after its running Plotly calls settled |
+| Per-sample PSM counts for the quant run's FlashLFQ peptides (no PSM-table load) | `quantCharts_PeptideIdentityMap_Load__Get_Or_Load` + `quantCharts_PeptidePsmCount_Build__Build` (quant prototype) | Peptide PSM-count matrix from the quant run's peptide identity map |
 | Set a Plotly property missing from TS typings (violinmode, bingroup, nbinsx, transforms) | `Plotly_PlottingLibrary__SetProperties_NOT_in_TypescriptTypingsDefinition` | Plotly common helpers |
 | Colors per search / sub-search / N categories | `DP/color_manager/*` (`Limelight_Colors_For_MultipleSearches`, `..._For_SingleSearch__SubSearches`, `..._and_OtherUses`) | Search / category color palettes |
 | Two-color gradient (heat shading) | `Limelight__scaleColor_BasedOn_Fraction` | Color interpolation |
@@ -147,6 +150,85 @@ Path abbreviations: `DP/` = `limelight_webapp/front_end/src/js/page_js/data_page
 - Limits and gotchas: optional `?`; omitted means standard width.
 - Related / duplicates: QC standard layout.
 - Status: verified
+
+### Chart sized to the window, re-sized after window resize (`QuantCharts_SingleChartSize__ResizeWatcher`)
+- What it solves: draws one Plotly chart to a target box computed from the width available on the page and the window
+  height (clamped to a min / max; below the min the page scrolls), and re-sizes it ONCE a set delay after the LAST window
+  `resize` event of a burst, only when the box changed, via `Plotly.relayout` / `Plotly.update` (the plot is not re-created,
+  so legend toggles survive). Listener + pending timer removed in `stop()`. Since round C1 (2026-11-12) the CV histogram,
+  completeness, MNAR, dynamic range and ID depth charts do NOT fill the box: `quantCharts_SingleChartSize__KeepAspect` scales
+  the chart's original size uniformly to fit the box (raised to meet the min), keeping its aspect ratio.
+- Search keywords: resize, window resize, debounce, resize listener, fit chart to window, chart size, large chart, viewport
+  size, relayout on resize, chart size settings, keep aspect ratio, aspect ratio, uniform scale
+- Location: `DP/quant/quantCharts/quantCharts_SingleChartSize.ts` (`quantCharts_SingleChartSize__TargetBox({ plotDiv })`,
+  class `QuantCharts_SingleChartSize__ResizeWatcher({ get_PlotDiv, onTargetChanged })` with `targetBox_ForDraw(plotDiv)`,
+  `start()`, `stop()`; `quantCharts_SingleChartSize__KeepAspect({ target, originalWidth, originalHeight })` = the figure size
+  that keeps the original ratio: scale = max(min(tW/oW, tH/oH), max(minW/oW, minH/oH)), binding side exact, other side rounded);
+  every tunable number in `DP/quant/quantCharts/quantCharts_SingleChartSize_Settings.ts` (max 1100 x 850,
+  min 600 x 400, reserved height 200, delay 3000 ms, per-chart limits, the charts' original sizes `..._ORIGINAL_*_WIDTH_PX` /
+  `_HEIGHT_PX`). For PCA / correlation-style charts that must keep
+  their plot area: `quantCharts_PlotLayout__Update_KeepPlotAreaSize` (same folder, `quantCharts_PlotLayout.ts`).
+- Used by: the 7 quant QC page chart components in `DP/quant/quantCharts/` (CV histogram, ID depth, completeness, MNAR,
+  dynamic range, PCA, sample correlation); not the abundance boxplot (grep `ResizeWatcher`).
+- How to use / extend: a typed instance field `new QuantCharts_SingleChartSize__ResizeWatcher({ get_PlotDiv, onTargetChanged })`;
+  `start()` in `componentDidMount`, `stop()` FIRST in `componentWillUnmount`; in the draw call `targetBox_ForDraw(plotDiv)` and
+  set the layout width / height from it (or, to keep an aspect ratio, from one private `_figureSize( target )` that calls
+  `KeepAspect`); in `onTargetChanged({ plotDiv, target })` relayout / update the size (same `_figureSize`, so draw and re-size
+  agree).
+- Do not use when: the chart is outside the quant QC page without first moving / generalizing it (it finds its width
+  reference by the `data-quant-charts-size-reference` attribute on an ancestor and throws if none). For a chart in a modal
+  overlay see the QC triplet's overlay resize handler.
+- Limits and gotchas: quant prototype code (file header: delete with the quant prototype modules when the DB-backed ingest
+  lands). One reserved height for every chart (charts with more above the plot may not fit below the select). A page
+  vertical scrollbar appearing after a draw changes the width without a `resize` event (not handled; only matters below about
+  1250 px). Height uses `window.innerHeight` (includes a horizontal scrollbar).
+- Related / duplicates: QC triplet overlay window-resize handler (re-draws the chart on every event, no delay); `qcPage_StandardChartLayout`
+  (fixed 750x450; not edited, its width / height are overridden).
+- Status: verified (round B checks 2026-11-12: sizes at 5 window sizes, resize timing / burst / legend toggle, no errors; round C1 keep-aspect sizes at 3 window sizes + resize, 2026-11-12)
+
+### Purge a Plotly chart only after its running Plotly calls settled (`quantCharts_PlotlyPendingCalls`)
+- What it solves: `Plotly.newPlot` / `relayout` / `update` finish in a promise tail that reads the div's Plotly internals
+  (`gd._fullLayout`); `Plotly.purge` deletes them. A React chart that purges in `componentWillUnmount` while its draw is still
+  running gets an uncaught `TypeError ... '_redrawFromAutoMarginCount'` (an unhandled promise rejection; Plotly 3.7.0). Plotly
+  cannot cancel a call, so this counts the Plotly calls running per plot div and makes the unmount purge wait for them
+  (synchronous when nothing is running).
+- Search keywords: plotly purge, purge plot, unmount mid-draw, plotly in flight, pending plotly call,
+  _redrawfromautomargincount, uncaught plotly error, unhandled rejection plotly, chart switch error
+- Location: `DP/quant/quantCharts/quantCharts_PlotlyPendingCalls.ts`: `quantCharts_PlotlyPendingCalls__Then({ plotDiv,
+  plotlyPromise, onFulfilled })` (`onFulfilled` REQUIRED, `undefined` = none) and
+  `quantCharts_PlotlyPendingCalls__Purge_NowOrWhenSettled( plotDiv )`.
+- Used by: the 8 quant QC page chart components in `DP/quant/quantCharts/` (CV histogram, ID depth, completeness, MNAR, dynamic
+  range, PCA, sample correlation, abundance boxplot) and the keep-plot-area chain in `quantCharts_PlotLayout.ts` (grep
+  `PlotlyPendingCalls`).
+- How to use / extend: route EVERY promise-returning Plotly call on the chart's div through `__Then` (put the old `.then` body in
+  `onFulfilled`); in `componentWillUnmount` call `__Purge_NowOrWhenSettled` instead of `Plotly.purge`. A redraw in place
+  (`Plotly.purge` then `Plotly.newPlot` in the same synchronous call) needs neither: `newPlot` re-creates `_fullLayout` at once.
+- Do not use when: the legacy QC page's charts (its render queue already purges only after its promises settle).
+- Limits and gotchas: a call made directly with `Plotly.*` (not through `__Then`) is not counted, so the purge cannot wait for it.
+  Not a catch: rejections still surface. Quant prototype code.
+- Related / duplicates: `QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot` (same order inside a queue);
+  `stillCurrent` in `quantCharts_PlotLayout__NewPlot_KeepPlotAreaSize` (stops OUR later passes; complementary).
+- Status: verified (round C1c, 2026-11-13: headless rapid-switch tests, see the decision log §30)
+
+### Peptide PSM-count matrix from the quant run's peptide identity map (`quantCharts_PeptidePsmCount_Build`)
+- What it solves: a per (FlashLFQ peptide, scan file) PSM-count matrix aligned row-for-row and column-for-column with the quant run's
+  FlashLFQ peptide matrix, WITHOUT loading the PSM table: the run's peptide identity map already holds, per peptide identity and scan file,
+  the number of PSMs sent to FlashLFQ (contract `quant_peptide_identity_map_contract_2026-10-14.md`).
+- Search keywords: peptide psm count, psm count per sample, identity map, peptide identity map, spectral count peptides, psm count matrix,
+  quant peptide psm counts
+- Location: `DP/quant/quantCharts/quantCharts_PeptideIdentityMap_Load.ts` (`quantCharts_PeptideIdentityMap_Load__Get_Or_Load` -> `{ data,
+  promise }`, cached per run; `quantCharts_PeptideIdentityMap_Load__IsAvailable( availableFiles )`; index class
+  `QuantCharts_PeptideIdentityMap__Index` with `psmCounts_For_Identity( identity )`) and `DP/quant/quantCharts/quantCharts_PeptidePsmCount_Build.ts`
+  (`quantCharts_PeptidePsmCount_Build__Build({ peptideRawDense, identityPsmCounts })` -> `{ psmCountDense, perSampleRowSums }`; pure).
+- Used by: the Quant QC page Charts view (`quantQCSPAView_ChartsView_Component.tsx`), Peptides tab, "PSM count (Limelight)" measure.
+- How to use / extend: load the map with the `{ data, promise }` loader (synchronous when cached), then build from the run's peptide raw
+  dense matrix. Absent count = no value (null), as for the protein PSM-count measure. A FlashLFQ row that is not an identity of the map, a
+  count under an unknown scan file, a count that is not an integer >= 1, or a duplicate sample throws (fail loudly).
+- Do not use when: protein PSM counts (those come from the page's filtered PSM loaders, `quantCharts_SpectralCounts_Compute.ts`).
+- Limits and gotchas: the map is large for big runs (about 20 MB of JSON for an 8-sample, 33k-peptide run). The counts are the PSMs the run
+  SENT to FlashLFQ at submit time, not the page's current filtered PSMs. Quant prototype code.
+- Related / duplicates: none.
+- Status: verified (round D1, 2026-11-13: every cell vs an independent computation from the map file, 6 test runs; decision log §33)
 
 ## QC chart template and frame
 
@@ -1137,6 +1219,9 @@ Path abbreviations: `DP/` = `limelight_webapp/front_end/src/js/page_js/data_page
 14. **Click-on-SVG helper** copied three times, all dead.
 15. **Mass arithmetic outside `PeptideMassCalculator`** in visual code: isotope offsets (chromatogram common, scan browser),
     Lorikeet library and `_add_2_modMasses_And_Round`, hard-coded proton mass in the QC MS1 plot. Prefer the canonical calculator; do not add new mass math.
+16. **Window-resize handling for Plotly charts**: QC triplet overlay handler (re-draws the chart via `_populateChart` on every event, no delay) vs the
+    quant `QuantCharts_SingleChartSize__ResizeWatcher` (one re-size after the last event, relayout / update in place). No preferred one
+    decided; the watcher keeps the user's Plotly state and re-sizes once per burst.
 
 ## Open questions / unverified
 

@@ -37,9 +37,9 @@ projectSearchIds+cutoffs and stamps them on the page → the quant page reads th
 `getSearchDataLookupParametersFromPage` → the page DISPLAYS peptides/proteins at exactly the cutoffs FlashLFQ
 quantified. **The build MUST test-calc this round-trip** (see §8).
 
-**Seeded-defaults guard (Dan):** Dan will visually validate that the widget's seeded default filter values
+**Seeded-defaults guard (the maintainer):** The maintainer will visually validate that the widget's seeded default filter values
 match today's server defaults. Byte-equivalence need not be proven programmatically, but **the build MUST
-surface the seeded values** (dump them in the CDP test) so Dan can eyeball them.
+surface the seeded values** (dump them in the CDP test) so the maintainer can eyeball them.
 
 ---
 
@@ -107,7 +107,7 @@ In `projPg_Quant_SubmitRun_Component.tsx`:
   Cancel/X — same semantics as the experiment flow (OBSERVED widget keeps edits in a local state copy until
   Save, `:91`, `:549-674`).
 
-**Instance fields to add** (per Dan's typed-instance-property preference; trigger re-render with
+**Instance fields to add** (per the maintainer's typed-instance-property preference; trigger re-render with
 `setState({force_Rerender:{}})`):
 - `private _searchesData: GetSearchesDataForProject_ExperimentProcessing_Result | undefined` (loaded, §3)
 - `private _conditionGroupsDataContainer: Experiment_ConditionGroupsDataContainer | undefined` (§3)
@@ -130,7 +130,7 @@ In `projPg_Quant_SubmitRun_Component.tsx`:
   Filters" button/overlay only once loaded (Loading gate until then). `inferred`: componentDidMount is the
   right hook; alternatively the parent could load and pass down, but self-loading keeps the surface minimal.
 - **Build the default-seeded container** (once, after the load resolves — build once, hold on the instance
-  field, per Dan's no-memoization / explicit-instance-cache preference):
+  field, per the maintainer's no-memoization / explicit-instance-cache preference):
   1. distinct mapped psids: from `this.props.inMemoryStore.mappedRecords` (OBSERVED used at `:217`, `:307`).
   2. empty container:
      `new Experiment_ConditionGroupsDataContainer({ experimentConditionData_Serialized: undefined, searchDataLookupParamsRoot: undefined })`
@@ -308,7 +308,7 @@ All read from `searcherCutoffValuesRootLevel`; none depend on how the root was b
 1. **Default filters, unchanged:** submit from Add-New-Quant WITHOUT opening the filter overlay (defaults).
    Assert the quant peptide page + quant protein page URLs carry a real minted standard code as path element
    `[1]` (NOT an `A…A` block); both pages return 200 and render quant columns. **Surface the seeded default
-   filter values** (dump container per-type annTypeId→value after seeding) for Dan to eyeball vs today's server
+   filter values** (dump container per-type annTypeId→value after seeding) for the maintainer to eyeball vs today's server
    defaults (the §9(4)/decision guard). **Test-calc:** page-displayed cutoffs == seeded defaults.
 2. **Changed filters:** open "Set Search Filters", raise a PSM (or Peptide) cutoff, Save; submit. Assert both
    quant pages load at the CHANGED cutoffs AND the gathered/displayed set shrinks accordingly (**test-calc:** a

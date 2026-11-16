@@ -17,8 +17,8 @@ stored file changes — the service's own bump rule) and the Charts view expects
 
 ## Why
 
-The Quant Common page's Charts view will compare, per peptide, FlashLFQ MS1 intensity with PSM counts (the reference
-analysis's finding 0007). A FlashLFQ peptide row is keyed by Limelight's grouping identity (`Sequence`, built only in
+The Quant Common page's Charts view will compare, per peptide, FlashLFQ MS1 intensity with PSM counts. A FlashLFQ
+peptide row is keyed by Limelight's grouping identity (`Sequence`, built only in
 `FlashLFQ_GroupingIdentity_Common`: base sequence + summed variable and static mod masses in one bracket, no positions).
 Nothing records which reported peptides and how many PSMs were sent under each identity. Re-deriving that from the database
 when a run is viewed can drift from what was submitted, so the webapp records it **at submit time**, from the exact PSMs it

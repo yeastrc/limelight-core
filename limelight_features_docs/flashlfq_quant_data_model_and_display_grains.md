@@ -34,7 +34,7 @@ record is:
 
 where `peptidoform-identity = reportedPeptideId` (the receive-side key used by the prototype).
 
-Each stored FlashLFQ **run** carries the provenance needed to reproduce/trust it. Per Dan, a run in the DB
+Each stored FlashLFQ **run** carries the provenance needed to reproduce/trust it. Per the maintainer, a run in the DB
 must be associated with:
 
 - **projectSearchId** (equivalently searchId / projectId),

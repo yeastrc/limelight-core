@@ -95,7 +95,7 @@ per-filter numbers.
 **First, what NOT to do — do not classify filters as "safe" vs "unsafe."** The harness shows de-seeding is
 a property of the *specific peptides/PSMs*, not of the filter type: even the RT-window filter de-seeded 310
 forms. Whether a filter thins a form or removes it whole is **data-dependent**, so any static "these filters
-are OK to display live" whitelist would be right on one dataset and wrong on the next. (Dan, 2026-07-08:
+are OK to display live" whitelist would be right on one dataset and wrong on the next. (The maintainer, 2026-07-08:
 trying to assess which filters yield an OK result is unreasonable.) The one structural exception is **charge**:
 it is *always* off for a multi-charge peptidoform, because the form key sums charges and the peak intensity
 is not charge-decomposable — that is a fact about one filter, not a fragile heuristic.

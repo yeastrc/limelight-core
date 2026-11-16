@@ -38,7 +38,7 @@ contract in **one place** and generating both the **Java DTO classes** (server s
   controller**, and **many share the same simple name** across controllers (e.g.
   `WebserviceRequest` / `WebserviceResult`); only the enclosing controller disambiguates them.
   This nesting is **incidental** — "what I have now" (the project predates the TypeScript front
-  end, and this approach was never reconsidered), **not** a hard architectural constraint. Dan
+  end, and this approach was never reconsidered), **not** a hard architectural constraint. The maintainer
   is willing to move DTOs to external top-level classes if doing this seriously.
 - The webapp DTOs carry **almost no Jackson annotations** (only ~2 `@JsonProperty` in the whole
   webapp), so the wire contract is just *field name → JSON key* by default.
@@ -96,7 +96,7 @@ as today.
 A neutral schema/IDL is the single source of truth; both the Java DTO classes and the TS types
 (and optionally a typed client) are generated from it.
 
-This is the direction Dan leans toward "if doing it seriously," explicitly accepting that the
+This is the direction the maintainer leans toward "if doing it seriously," explicitly accepting that the
 **Java DTOs move out of the controllers into external generated classes**. That is fine: moving
 to external top-level classes also makes the **duplicate-simple-name problem vanish** (each
 becomes a uniquely named class in a package), and the **schema file becomes the new "locality"**
@@ -140,7 +140,7 @@ version if you only care that the *shapes* match and are content to keep the end
 
 ## 5. Codegen workflow & build/CI integration
 
-The decided shape of the workflow (Dan's preference):
+The decided shape of the workflow (the maintainer's preference):
 
 - **Generated code IS checked in.** Commit the generated `.java` (and `.ts`) so you can code
   against real files with full IDE support and so regenerated output shows up in PR diffs. Mark

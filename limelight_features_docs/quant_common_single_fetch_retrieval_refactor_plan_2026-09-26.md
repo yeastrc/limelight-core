@@ -1,5 +1,7 @@
 # Quant Common pages — single-fetch retrieval refactor (plan) — 2026-09-26
 
+> **Renamed 2026-11-12:** the Quant Common page was renamed the Quant QC page (code `quantQC…`, route `d/pg/psb/quant-qc/`); this doc keeps the old name as written.
+
 **Status: PLAN, approved by the maintainer 2026-09-26 (decisions below locked). Not yet implemented.**
 High-level, multi-phase. Per-phase file-level scope is refined by a grounding pass at the start of each phase
 (line numbers drift — re-locate by content).

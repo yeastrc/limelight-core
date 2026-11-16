@@ -166,7 +166,7 @@ hide the real DOM-nesting problem and drift when the surrounding structure chang
   nesting level, **restructure the JSX** — close/reopen the indent container, or move the element to its
   correct parent — so its natural position is right. Don't pull it back with a negative margin.
 - If you truly believe a negative margin is the only reasonable option for one specific spot, **STOP and
-  ask Dan first for that specific usage.** Approval is per-usage — a prior OK does not carry to the next
+  ask the maintainer first for that specific usage.** Approval is per-usage — a prior OK does not carry to the next
   case. Never add one silently.
 
 Why: an earlier "just nudge it left with `marginLeft: -20`" masked that a block ("Mod Mass Colors") was
@@ -420,7 +420,7 @@ The `DataTable` has a built-in way to order **no-data** cells in a sortable colu
 **`DataPageStateManager` (`page_js/data_pages/data_pages_common/dataPageStateManager.ts`) is instantiated
 TWICE on a data page and the two instances are populated with DIFFERENT data.** So a given accessor may
 return a real value on one instance and `undefined` on the other — an accessor being defined does NOT mean
-it's populated on the instance you happen to hold. This is a known, unfixed rough edge (Dan: "I just never
+it's populated on the instance you happen to hold. This is a known, unfixed rough edge (the maintainer: "I just never
 got around to fixing this; step carefully when using it").
 
 **The two instances and what each holds** (names from the page-root classes, e.g.
@@ -573,7 +573,7 @@ own**, so a hash survives the rewrite (its post-`replaceState` self-validation s
   untouched at any given instant during load.
 - `location.hash` is referenced nowhere else in the FE, so the hash namespace is otherwise free.
 - Example consumer: the quant pages' run selection `#qr;<projectSearchId>_<searchScanFileId>_<requestId>-…` (one entry per
-  (search, scan file) of a quant run), parsed by `quant/quant_RunHash_Parse.ts` (used by the Quant Common page, the raw quant
+  (search, scan file) of a quant run), parsed by `quant/quant_RunHash_Parse.ts` (used by the Quant QC page, the raw quant
   data-file pages, and `quant_PrototypeData.ts`).
 
 ## Data-page filters/options are COLLAPSED behind "Click to Show Filters and Options" — the controls aren't in the DOM until expanded
@@ -715,7 +715,7 @@ Overlays are mounted onto a fresh `<div>` appended to `<body>` and torn down aga
   `callbackOn_Cancel_Close_Clicked`).
 
 **Where the "open overlay" function lives:** most existing code puts the `openOverlay(...)` function in
-the **calling** file. Dan leans toward **colocating it in the overlay component's own file** (next to
+the **calling** file. The maintainer leans toward **colocating it in the overlay component's own file** (next to
 the `get_<X>_Container` factory); prefer that for new overlays unless matching nearby existing code.
 
 ### Body layout — flexbox entries (this is the important part)

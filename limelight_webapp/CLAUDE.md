@@ -290,7 +290,7 @@ lookup/decode step and no separate opaque code.
 - The name was chosen up front to allow **decoupling** an external project *identifier* (e.g. an opaque
   shareable code) from the internal numeric id. **That decoupling was never implemented and will not be** —
   do not build anything that assumes `projectIdentifier` is (or will become) anything other than the numeric
-  project id as a string. (Confirmed by Dan, 2026-08-14.)
+  project id as a string. (Confirmed by the maintainer, 2026-08-14.)
 
 ### User authentication & account management (`user_account_pages/`)
 

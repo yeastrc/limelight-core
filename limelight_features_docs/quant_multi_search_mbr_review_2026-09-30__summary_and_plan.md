@@ -26,8 +26,8 @@ reviewed end to end for multi-search runs.
 
 It surfaced as a chart discrepancy: on a 4-search × 1-file run (project 90) the quant common peptide page's charts
 showed **1,212** complete peptides where FlashLFQ's own file has **2,186**, and the median-normalized boxplot did not
-flatten (median range 0.07 instead of 0.00). On a single-search run (the reference dataset used to check parity with
-the reference Python analysis, 8 files in one search) the page matches the reference exactly.
+flatten (median range 0.07 instead of 0.00). On a single-search run (the 8-file single-search dataset, 8 files in one search) the page's charts were verified by an independent
+calculation on the same run.
 
 ## 2. Background facts (verified)
 
@@ -52,7 +52,7 @@ the reference Python analysis, 8 files in one search) the page matches the refer
 | F5 | Protein retrieval | **No per-search filter at all**: every protein row goes to every sample, stored empty as 0. Search B's "Quant (FlashLFQ)" cell can show a value — or "0.00e+0" — for a protein B never reported; the "Quant (Limelight)" column next to it is blank. Peptide and protein behavior are inconsistent. | MEDIUM | verified `FlashLFQ_Run__Result_Retrieval_Proteins_RestWebserviceController.java:383-388, 403` (doc A D9, doc B §4) |
 | F6 | Protein retrieval | Rows whose Protein Groups contain `;` (multi-member groups) and non-`psvid_` rows are skipped. In the runs checked FlashLFQ wrote 0 multi-member protein rows. | LOW | verified `PROT:358-380` (doc A D6/D7); computed 0 rows (doc C) |
 | F7 | Identity string across searches | Exact full-precision string. Two searches storing the same mod at different precision would split one peptidoform into two FlashLFQ rows (possibly zeroed as ambiguous); protein names come from each search's annotations, so one protein could become two rows. Not observed in these runs. | MEDIUM (data-dependent) | verified doc A D4/D8; computed: no psvid had two names (doc C) |
-| F8 | FlashLFQ | **Not deterministic with MBR**: identical inputs → MBR cells differ between runs (2,979 cells on the reference dataset's two server reruns; 1 cell on project 90's two runs). NOT caused by `RandomSeed` — that seed only drives the Bayesian protein fold-change analysis (`--rns`, mzLib `ProteinQuantificationEngine.cs:72-79`), which is OFF (`BayesianProteinQuant = false`). The MBR PEP model is already fixed-seeded (`_randomSeed = 42`, single-threaded FastTree — mzLib `MBR/PEP/PepAnalysisEngine.cs:23-40,82`), but its training rows are appended from a `Parallel.ForEach` in thread-completion order (`PepAnalysisEngine.cs:433-458`), so row order — and hence the model, PEP/q-values and which MBR peaks pass the 0.05 cutoff — can vary. Likely cause: multithreading (`MaxThreads = -1` → cores − 1). Inferred from source; not yet confirmed by a `--thr 1` rerun. | MEDIUM (reproducibility) | verified mzLib 1.0.566 + FlashLFQ `Util/FlashLfqSettings.cs:56,88`; computed (doc C) |
+| F8 | FlashLFQ | **Not deterministic with MBR**: identical inputs → MBR cells differ between runs (2,979 cells on the 8-file single-search dataset's two server reruns; 1 cell on project 90's two runs). NOT caused by `RandomSeed` — that seed only drives the Bayesian protein fold-change analysis (`--rns`, mzLib `ProteinQuantificationEngine.cs:72-79`), which is OFF (`BayesianProteinQuant = false`). The MBR PEP model is already fixed-seeded (`_randomSeed = 42`, single-threaded FastTree — mzLib `MBR/PEP/PepAnalysisEngine.cs:23-40,82`), but its training rows are appended from a `Parallel.ForEach` in thread-completion order (`PepAnalysisEngine.cs:433-458`), so row order — and hence the model, PEP/q-values and which MBR peaks pass the 0.05 cutoff — can vary. Likely cause: multithreading (`MaxThreads = -1` → cores − 1). Inferred from source; not yet confirmed by a `--thr 1` rerun. | MEDIUM (reproducibility) | verified mzLib 1.0.566 + FlashLFQ `Util/FlashLfqSettings.cs:56,88`; computed (doc C) |
 | F9 | Download (quant common peptide page) | Writes each cell's sort value: a blank quant cell → `-1`, "overlapping signal" → `0`. | LOW-MEDIUM | verified in code (doc B §8); NOT checked in a real download |
 | F10 | MBR any/all radio | Shown only if a loaded record is MBR — cross-search MBR values are exactly what's dropped, so it can be hidden although FlashLFQ produced MBR. | LOW | verified `quant_PrototypeData.ts:205-212` (doc B §4); inferred effect |
 | F11 | Blank intensity string | A blank/unparsable peptide intensity becomes 0.0; in log2 files that is a real-looking value. | LOW | verified `JOINED:417-424` (doc A D11) |
@@ -66,7 +66,7 @@ the reference Python analysis, 8 files in one search) the page matches the refer
 |---|---|---|---|---|---|---|
 | project 90, with batch correction | 4 × 1 | 2,186 | **1,212** | 2,616 of 10,811 | 447 | 269* |
 | project 90, without | 4 × 1 | 2,189 | 1,212 | 2,617 | 448 | 270* |
-| reference dataset | 1 × 8 | 10,308 | 10,308 | 0 | 1,807 | 1,807 |
+| 8-file single-search dataset | 1 × 8 | 10,308 | 10,308 | 0 | 1,807 | 1,807 |
 
 \* The protein path does **not** apply the rule today (F5) — the charts show all 447; these columns show what the rule
 *would* do, i.e. how inconsistent the peptide and protein paths are.
@@ -119,7 +119,7 @@ the reference Python analysis, 8 files in one search) the page matches the refer
   per-search reportedPeptideIds (possibly none for that sample's search) — no value dropped.
 - Put the shared join in ONE place used by all four peptide controllers (raw, normalized, batch log2, batch delog2).
 - Acceptance: for project 90, every value > 0 in `CombinedPeptides.tsv` reaches the front end (10,811 peptide cells > 0
-  with batch correction); single-search reference run unchanged.
+  with batch correction); 8-file single-search run unchanged.
 
 **Step 2 — front end: cells by groupId.**
 - A quant common peptide page cell for (row, search, file) resolves the row's groupId(s) — from ANY search's reported
@@ -131,8 +131,8 @@ the reference Python analysis, 8 files in one search) the page matches the refer
 **Step 3 — charts feed.**
 - Build the feature × sample matrix from all records by groupId (no per-search restriction).
 - Acceptance: project 90 peptide charts show **2,186** complete peptides and median-normalized **median range 0.00**;
-  reference dataset still **10,308**, CV medians **0.452 / 0.343 / 0.209**, median range **0.00** (reference numbers
-  from running the reference Python on the same run).
+  8-file single-search dataset still **10,308** (the table above) and median range **0.00**, verified by an independent
+  calculation on the same run.
 
 **Step 4 — protein page (decision 4).** Cross-search marker; blank vs 0 fix.
 
@@ -143,7 +143,7 @@ first), both in the run directory and `params_manifest.json`.
 **Step 6 — cleanup.** Stale comments/docs (F12); blank-intensity handling (F11); F6/F7 guards (log or refuse
 inconsistent mod precision / protein names across searches).
 
-Then resume the chart-parity **round 2** (completeness step curve, MNAR trend + hexbin, ID-depth labels,
+Then resume the charts **round 2** (completeness step curve, MNAR trend + hexbin, ID-depth labels,
 dynamic-range subtitle), whose missing-value charts depend on Step 3.
 
 ## 7. Open questions (from the detailed docs)

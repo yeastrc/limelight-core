@@ -1,9 +1,11 @@
-# Quant Common page — design goals & deferred changes
+# Quant QC page — design goals & deferred changes
 
-Durable notes for the Quant Common peptide/protein SPA page
-(`.../project_search_ids_driven_pages/quant_pages/quant_common_spa_view_page/`): a persistent parent
-`quantCommonSPAView_MainContent_Component.tsx` renders EITHER `QuantCommonSPAView_PeptideView_Component`
-OR `QuantCommonSPAView_ProteinView_Component` as its child, chosen by a client-side view toggle.
+> **Renamed 2026-11-12:** the Quant Common page was renamed the Quant QC page (code `quantQC…`, route `d/pg/psb/quant-qc/`). This doc's text uses the new name; its file name keeps the old one (other docs link to it).
+
+Durable notes for the Quant QC peptide/protein SPA page
+(`.../project_search_ids_driven_pages/quant_pages/quant_qc_spa_view_page/`): a persistent parent
+`quantQCSPAView_MainContent_Component.tsx` renders EITHER `QuantQCSPAView_PeptideView_Component`
+OR `QuantQCSPAView_ProteinView_Component` as its child, chosen by a client-side view toggle.
 
 ---
 
@@ -47,10 +49,10 @@ user who never opens the panel triggers zero run-info fetches.
   keeps the synchronous `..._GetIfLoaded` fast-path (warm cache → panel starts loaded); the load is kicked off in
   `_toggleExpanded` on the first collapsed→expanded transition of a cold panel, guarded to at-most-once by
   `_loadInitiated`. No longer self-loads on mount via the raw loaders.
-- `quantCommonSPAView_MainContent_Component.tsx`: removed the parent panel render; threads
+- `quantQCSPAView_MainContent_Component.tsx`: removed the parent panel render; threads
   `runInfoPanel_ProjectId/RequestId/Ready` down to both children (required props).
 - Both child views render `<QuantRunInfoPanel_Component>` after their control block; base placeholders in
-  `quantCommonSPAViewPage_RootClass_Common.ts`.
+  `quantQCSPAViewPage_RootClass_Common.ts`.
 
 The original scoping notes are retained below for history.
 
@@ -63,12 +65,12 @@ the panel is above it).
 
 **Current layout (grounded):**
 - Panel = `QuantRunInfoPanel_Component` (`quant/quantRunInfoPanel_Component.tsx`, title at `:155`), rendered
-  ONCE in the shared parent `quantCommonSPAView_MainContent_Component.tsx:471-473`, BEFORE the child view. Its
+  ONCE in the shared parent `quantQCSPAView_MainContent_Component.tsx:471-473`, BEFORE the child view. Its
   `projectId`/`requestId` props + a `_runInfoPanel_Ready` gating are computed on the parent.
 - The control block = a `<div style={{paddingBottom:15}}>` holding Set Default View + the "Save to Highlighted
   Results" button (`saveView_React/saveView_Component_React.tsx:91`) + Share Page, rendered PER-VIEW near the
-  top of each child: `quantCommonSPAView_PeptideView_Component.tsx:3163-3171` and
-  `quantCommonSPAView_ProteinView_Component.tsx:3919-3927`.
+  top of each child: `quantQCSPAView_PeptideView_Component.tsx:3163-3171` and
+  `quantQCSPAView_ProteinView_Component.tsx:3919-3927`.
 - Because the control block lives inside each child, placing the panel *after* it means the panel must move
   INTO both child views (two places).
 

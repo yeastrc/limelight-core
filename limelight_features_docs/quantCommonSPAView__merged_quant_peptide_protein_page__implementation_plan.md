@@ -1,5 +1,7 @@
 # QuantCommonSPAView — merged Quant Peptide + Protein single-page app — implementation plan
 
+> **Renamed 2026-11-12:** the Quant Common page was renamed the Quant QC page (code `quantQC…`, route `d/pg/psb/quant-qc/`); this doc keeps the old name as written.
+
 **Status:** design/plan, not yet implemented. **Date:** 2026-09-11.
 
 **Provenance:** *current-architecture* facts carry `file:line` **and copied-in code snippets** — the snippets

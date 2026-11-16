@@ -60,7 +60,7 @@ cross-host and tells the user a truthful per-run status:
 - **§3 (front end)** — writable + type-checkable now, but **functionally blocked on §4**: the FE now targets
   `/d/rws/...`, so it has nothing to talk to until the controllers exist (unlike the old standalone symlink
   fetch). Write it and type-check/FE-build it; full end-to-end test waits for §4.
-- **§4 (controllers)** — **requires the full WAR build, which logs you out. STOP and ask Dan before running it.**
+- **§4 (controllers)** — **requires the full WAR build, which logs you out. STOP and ask the maintainer before running it.**
 - Keep the `flashlfq_test_files` symlink in place until §3+§4 are verified (retiring it early makes quant go dark).
 
 ---
@@ -326,7 +326,7 @@ Two AJAX calls now hit **authenticated `/d/rws/...`** endpoints, so both can ret
 
 ---
 
-## 4. Piece #2 — Limelight webapp: two REST proxy controllers  (ASK DAN BEFORE THE WAR BUILD)
+## 4. Piece #2 — Limelight webapp: two REST proxy controllers  (ASK THE MAINTAINER BEFORE THE WAR BUILD)
 
 Two controllers (both `byte[]` in/out per house style; both authenticate read; both are **pure passthroughs**).
 **NO TSV parsing in Java. NO mass computation.** Both validate the requestId shape server-side (defense in
@@ -364,7 +364,7 @@ depth) with the **lowercase** regex `^[0-9a-f]{32}$` (identical to the service �
   `FLASHLFQ_RUN__RESULT_RETRIEVAL__REST_WEBSERVICE_CONTROLLER`; register each `@PostMapping` with
   `PATH_START_ALL + <constant>`.
 - **Build (Java changed → full WAR):** from `limelight_webapp/`: `ant -f ant_build_War_CopyToTomcat.xml` (~45s;
-  a WAR deploy **logs you out**). **Ask Dan before running it.**
+  a WAR deploy **logs you out**). **Ask the maintainer before running it.**
 
 ---
 
@@ -374,7 +374,7 @@ depth) with the **lowercase** regex `^[0-9a-f]{32}$` (identical to the service �
   (webapp→service reachable on the internal network — **now genuinely cross-host**; same pattern as blib /
   feature-detection). No new *public* port.
 - Retire the Tomcat `flashlfq_test_files` symlink once §3+§4 verify.
-- File-lifetime caveat: `finaldir` is transient (GC-able on `/spinning-disk-02`). Retrieval-on-demand requires
+- File-lifetime caveat: `finaldir` is transient (GC-able on the server's data volume). Retrieval-on-demand requires
   the file to still exist when a user views the page — fine for a live demo, not durable (that's Track B). A
   swept run now reports `NOT_FOUND` (truthful) instead of a stuck "not ready" (§6-C).
 
@@ -436,7 +436,7 @@ Test infra: `headless-browser-cdp-test-harness` (logged-in owner via POST `admin
 
 ## 8. Guardrails / house rules that apply here
 - **All FlashLFQ code stays HELD / uncommitted** with the rest of the feature (commits together at the Track B
-  gate) unless Dan says otherwise. This plan doc is committable with the doc set, but **do not `git commit`
+  gate) unless the maintainer says otherwise. This plan doc is committable with the doc set, but **do not `git commit`
   without a separate explicit go-ahead.**
 - **No mass computation** anywhere in this work (global rule). None is needed — pure passthrough.
 - **No TSV parsing in Java** — keep the demo bridge disposable; parsing stays in `quant_PrototypeData.ts`.

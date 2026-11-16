@@ -19,16 +19,16 @@ sweep landed) — both review-verified, uncommitted. Item **C (future)** added b
 
 ### A. DELETE the two standalone quant LIST pages (retire the clones)
 The standalone **Quant peptide LIST page** and **Quant protein LIST page** (psb routes `d/pg/psb/quant-peptide/`
-and `d/pg/psb/quant-protein/`) are **retired in favor of the Quant Common pages** (`quantCommonSPAView...`). No
-live navigation reaches them (project-page run-list links removed 2026-09-23; URL builders only build quant-common
+and `d/pg/psb/quant-protein/`) are **retired in favor of the Quant QC pages** (`quantQCSPAView...`). No
+live navigation reaches them (project-page run-list links removed 2026-09-23; URL builders only build quant-qc
 URLs; no external importers — GROUNDED 2026-09-26).
 
 **⚠ CORRECTION (grounded 2026-09-26 — supersedes any earlier "delete the overlay/shared" wording):** the
 single-protein **overlay** (`quant_single_protein_page/`) and `quant_peptide_and_single_protein_shared/` are
-**NOT deletable — they are LIVE dependencies of the KEPT Quant Common page** (Quant Common ProteinView/PeptideView
+**NOT deletable — they are LIVE dependencies of the KEPT Quant QC page** (Quant QC ProteinView/PeptideView
 import + instantiate the overlay; PeptideView imports 3 modules from the shared dir). KEEP them. (Optional later
 cleanup, deferred: relocate those two dirs out of the `quant_pages/` "standalone" location to shed the misleading
-naming — pure import-path churn, Quant Common would be the only importer once the list pages are gone.)
+naming — pure import-path churn, Quant QC would be the only importer once the list pages are gone.)
 
 **Deletion footprint (GROUNDED 2026-09-26):**
 - DELETE FE dirs `quant_peptide_page/` (8 files) + `quant_protein_page/` (9 files).
@@ -45,8 +45,8 @@ This is the endgame for sections 1–3 below (which describe the now-shared fork
 ### B. FINISH the single-requestId sweep (light guard landed; full sweep deferred)
 Post-redesign, **one user submit → one FlashLFQ-service request → one requestId**, permanently — so a
 result-*viewer* page can never legitimately have more than one requestId.
-- **Light guard (2026-09-26, being added now):** the Quant Common page's `MainContent` hard-fatals if it
-  resolves **>1** distinct requestId — `quantCommonSPAView_MainContent_Component.tsx` (guard at the
+- **Light guard (2026-09-26, being added now):** the Quant QC page's `MainContent` hard-fatals if it
+  resolves **>1** distinct requestId — `quantQCSPAView_MainContent_Component.tsx` (guard at the
   `distinctRequestIds` derivation, ~L205–L213). The plural plumbing is left intact (it just runs over a
   length-1 set).
 - **Full sweep (DEFERRED — this item):** convert the SHARED `QuantRunInfoPanel_Component`
@@ -56,7 +56,7 @@ result-*viewer* page can never legitimately have more than one requestId.
   requestIds else per-group" at ~L300/L338 all collapse to one run's single manifest + metadata). Then update
   **all three** mount sites — each derives its own `_distinctRequestIds` today — to derive + pass a single
   `requestId` and enforce single (hard-fatal if >1), reusing the light-guard logic:
-  - `quantCommonSPAView_MainContent_Component.tsx:413` (already guarded per above),
+  - `quantQCSPAView_MainContent_Component.tsx:413` (already guarded per above),
   - `FlashlfqPeptideDataFilePage_Root_Component.tsx:371` (raw peptide data-file page — an A2 viewer, NOT a
     retiring page),
   - `FlashlfqProteinDataFilePage_Root_Component.tsx:414` (raw protein data-file page).
@@ -65,7 +65,7 @@ result-*viewer* page can never legitimately have more than one requestId.
   different concept** (a project has *many* quant runs; the runs list enumerates all of them). The
   single-requestId invariant is only about a viewer page showing **one** submit.
 - Why deferred: the sweep spans the shared panel + 3 viewer page types (wider review/drive surface); the light
-  guard already delivers the safety behavior on the Quant Common page now.
+  guard already delivers the safety behavior on the Quant QC page now.
 
 *(All file:line anchors OBSERVED against source 2026-09-26; re-verify before editing — line numbers drift.)*
 
@@ -106,7 +106,7 @@ rewriting the whole `quant_PrototypeData` / `flashlfq_proteinQuant_PrototypeData
   class body are commented out (the file, package line and class comment stay), and their eight URI constants in
   `AA_RestWSControllerPaths_Constants.java` are commented out; the URLs now answer 404 (unmapped). Their only callers,
   `quant/quant_PrototypeData.ts` / `quant/flashlfq_proteinQuant_PrototypeData.ts`, are reachable only from the
-  commented-out Quant Common peptide / protein views. The shared peptide join (`FlashLFQ_Quant_PeptideResult_Join_Service`)
+  commented-out Quant QC peptide / protein views. The shared peptide join (`FlashLFQ_Quant_PeptideResult_Join_Service`)
   and the two prototype loaders stay as (unreachable) code. Kept rather than deleted so those views can be revived;
   reviving the endpoints needs a review of them first (and the protein parse fix below).
 
@@ -120,9 +120,9 @@ The 2026-10-01 note (protein endpoints disabled; still applies to their code):
   `quant_protein_names_mapping_file_and_request_contract_2026-10-01.md`). These controllers take the id up to the
   next `_`, so a bare multi-member protein group (`psvid_1;psvid_2`) no longer parses (the row would be skipped).
   Older runs (`psvid_<n>_<name>` strings) happened to parse the first id.
-- **Who called them:** only `quant/flashlfq_proteinQuant_PrototypeData.ts`, used by the quant common protein view
+- **Who called them:** only `quant/flashlfq_proteinQuant_PrototypeData.ts`, used by the quant QC protein view
   and by the old per-view Quant Charts panel's side-file loader — both reachable only from code that is commented
-  out in `quantCommonSPAView_MainContent_Component.tsx`. The Charts view does not use them.
+  out in `quantQCSPAView_MainContent_Component.tsx`. The Charts view does not use them.
 - **To re-enable:** fix the `Protein Groups` parse (split on `;`; per member, the id = the digits after `psvid_` up
   to the next `_` or the end; decide how a multi-member group is attributed), then delete the `if ( true )` block in
   each of the four handlers.
@@ -198,12 +198,12 @@ page** for the same peptide (multi-search rows also expand through the `#6` leve
   as the **overlay** launched from the Quant peptide page (Option X, just landed). A dedicated standalone quant
   single-protein *page* is deferred.
 - **Charts / statistics on the quant pages** — quant-specific charts/plots and summary statistics are deferred.
-- **Quant Common page's Charts view — several covariates / a continuous covariate in Differential abundance: DONE
+- **Quant QC page's Charts view — several covariates / a continuous covariate in Differential abundance: DONE
   2026-10-22 (Phase 6, front end only, uncommitted).** Decisions, what was built and how it was checked: decision log
   §23 ("Built 2026-10-22") in
-  [`quant_common_page__charts_view__decision_log_and_rationale_2026-10-04.md`](quant_common_page__charts_view__decision_log_and_rationale_2026-10-04.md);
-  design doc §4b. Still open: the maintainer's decision Q-E on 6 reference-parity lines of the real test run (two-slope
-  designs, effect off by ≈ 1.03e-12 × SE vs the 1e-12 limit). Remaining Charts-view deferred items: design doc §7.
+  [`quant_common_page__charts_view__decision_log_and_rationale_2026-10-04.md`](quant_common_page__charts_view__decision_log_and_rationale_2026-10-04.md).
+  The maintainer's decision Q-E on 6 check lines of the real test run (two-slope designs, effect off by
+  ≈ 1.03e-12 × SE vs the 1e-12 limit): ACCEPTED (decision log COV-QE). Remaining Charts-view deferred items: decision log §17.
 - **DB persistence (Track B)** — the quant data is currently a throwaway in-memory/prototype path; durable
   database ingestion & retrieval is future work. See
   [`quant_things_to_deal_with_when_start_store_in_db.md`](quant_things_to_deal_with_when_start_store_in_db.md)

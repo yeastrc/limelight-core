@@ -1,13 +1,13 @@
 # Add-New-Quant — revised eligible-search → uploaded-scan-filename matching (Category A / Category B) — DECISIONS DOC
 
 **Status: DECISIONS RESOLVED. No code written or changed.** This doc restated the requested change, flagged the
-ambiguities, and — after Dan + reviewer worked through them — now records each as a **DECISION** with its
+ambiguities, and — after the maintainer + reviewer worked through them — now records each as a **DECISION** with its
 resolution and source cite. A wrong locked decision here silently corrupts the `(projectSearchId,
 searchScanFileId)` pairs that feed submit and the run hash, so every load-bearing claim is grounded against
 source with `file:line` + an OBSERVED / INFERRED tag. **Implementation has not started** — this doc is the spec
 the build session executes.
 
-Date: 2026-08-19 (decisions resolved 2026-08-20). Author: assistant (for Dan). Sibling docs (source of truth
+Date: 2026-08-19 (decisions resolved 2026-08-20). Author: assistant (for the maintainer). Sibling docs (source of truth
 for the surrounding feature):
 - `quant_add_new_quant__file_upload_parse_plan_v2_2026-08-14.md` (upload/parse/map v2 plan)
 - `quant_add_new__submit_joint_flashlfq_run_and_results_page_plan_2026-08-17.md` (submit + viewer)
@@ -299,7 +299,7 @@ Recorded as a follow-on; **out of scope for this change** and not to be designed
 - **Interim shape (until DB storage), specifics deferred:** the submit webservice flags "no PSMs" in its
   response → the JS sets a distinct marker in the URL hash → the view pages show a "no quant / no PSMs passed"
   state. The hash-marker specifics are deferred to that round.
-- **Pre-existing gap, separate track:** the existing quant pages (peptide page, etc.) have the same gap; Dan
+- **Pre-existing gap, separate track:** the existing quant pages (peptide page, etc.) have the same gap; the maintainer
   will raise that separately. Not addressed here.
 
 ---

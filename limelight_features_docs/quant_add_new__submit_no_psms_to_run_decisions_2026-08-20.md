@@ -1,6 +1,6 @@
 # Add-New-Quant — PROJECT-PAGE submit "no PSMs to a run" handling — DECISIONS (2026-08-20)
 
-**Status: RESOLVED (Dan, 2026-08-20) — building phased + STOP-gated.** All load-bearing questions are
+**Status: RESOLVED (the maintainer, 2026-08-20) — building phased + STOP-gated.** All load-bearing questions are
 settled (resolutions inline below). Phase 1 (backend) is the first build step.
 
 > **⚠ UPDATE 2026-09-23 — the §3 / Q-JOINT resolution is CORRECTED: Option (a) is CLOSED, not deferred.**
@@ -17,7 +17,7 @@ settled (resolutions inline below). Phase 1 (backend) is the first build step.
 > pure-**display** choice (whether to surface a mapped-but-unquantifiable no-PSMs file in the metadata
 > panel), decoupled from quant. The `noPsmsPairs` = PER_FILE-only decision is UNAFFECTED and stands. (The
 > "needs external-C# verification" instinct was right — the verification is now done, against mzLib 1.0.566
-> at `/spinning-disk-02/code_downloads_for_research/from Github/mzLib`.)
+> (a local research clone, not part of this repo).)
 
 > **UPDATE 2026-09-23 (display follow-up) — JOINT empty mapped files are now DISPLAYED, not just correctly
 > dropped.** Building on the correction above (FlashLFQ can't quantify a zero-PSM file), a **display-only**
@@ -33,7 +33,7 @@ settled (resolutions inline below). Phase 1 (backend) is the first build step.
 > `Quant (<searchId>)` column; making skipped files more prominent than a collapsed panel) are tracked in
 > [`quant_pages_TODO.md`](quant_pages_TODO.md) §4.
 
-**Resolutions (authoritative, Dan 2026-08-20):**
+**Resolutions (authoritative, the maintainer 2026-08-20):**
 - **§3 / Q-JOINT → (b).** JOINT empty-file behavior stays as-is: an empty mapped file is silently absent
   from the joint run (no marker, no column). Option (a) (send empty-psms files so MBR infers a column) was
   **deferred to the view-matrix round** (needs external-C# verification; only renders there) — **⚠ now
@@ -49,7 +49,7 @@ settled (resolutions inline below). Phase 1 (backend) is the first build step.
 - **Q-D.** Whole-zero (both modes) → keep today's `noPsmsToQuantify` message, no row. Partial PER_FILE → one
   row: ran pairs polled + no-PSMs pairs shown; count cell shows total with breakdown, e.g. `3 (1 no PSMs)`.
 
-**Scope (LOCKED by Dan):** PROJECT-PAGE submit only —
+**Scope (LOCKED by the maintainer):** PROJECT-PAGE submit only —
 `…/rest_controllers/other_like_project/Quant_AddNew_Submit_JointFlashLFQ_Run_RestWebserviceController.java`
 and its FE overlay/runs-list/hash. Builds on the freshly-built, **UNCOMMITTED** run-model change (remove
 Normalize; Route-A opt1 JOINT / opt2 PER_FILE; Route-B PER_FILE; per-pair response; per-pair hash). The
@@ -59,11 +59,11 @@ backward-compatible so it keeps working unchanged.
 
 **Provenance convention:** each load-bearing claim is tagged **OBSERVED** (`verified: file:line`, read from
 current source this session) or **inferred / unverified** (my analysis, or external-service behavior I could
-not read here). Per Dan's global rule, structural claims (which id/column/return) are ground-truthed.
+not read here). Per the maintainer's global rule, structural claims (which id/column/return) are ground-truthed.
 
 ---
 
-## 0. LOCKED by Dan (recorded, do not re-litigate)
+## 0. LOCKED by the maintainer (recorded, do not re-litigate)
 
 1. **Trigger = NO PSMs to a SINGLE FlashLFQ RUN** (the *run* is the unit).
    - **JOINT** run (opt1, MBR on) → triggers **only when the WHOLE joint run has zero PSMs**. One empty file
@@ -128,7 +128,7 @@ not read here). Per Dan's global rule, structural claims (which id/column/return
 
 ## 3. ⚠ Discovered gap — JOINT + empty mapped file: MBR cannot infer for a file that is never sent — **RESOLVED → (b)**
 
-**RESOLVED (Dan, 2026-08-20): option (b).** JOINT empty-file behavior stays exactly as-is (empty file
+**RESOLVED (the maintainer, 2026-08-20): option (b).** JOINT empty-file behavior stays exactly as-is (empty file
 silently absent from the joint run — no marker, no column). Option (a) is deferred to the view-matrix round
 (needs external-C# verification). `noPsmsPairs` is PER_FILE-only; JOINT never emits it.
 
@@ -166,7 +166,7 @@ cross-file inference to preserve — an empty PER_FILE file is genuinely a no-PS
 
 ## 4. Q-A — What does the gather/send layer return, and where? (the "signal", per LOCK #2) — **RESOLVED → A-opt1**
 
-Dan locked: detect at the gather point, **service returns a signal** rather than silently dropping. The
+The maintainer locked: detect at the gather point, **service returns a signal** rather than silently dropping. The
 structural tension to reconcile: **the `perFile_Holder` already implicitly carries which files are non-empty**
 (each `perFile` has a public `searchScanFileId`, and the controller already loops `getPerFileList()` at
 `…Controller.java:389`, **OBSERVED**). So the controller *could* compute `empty = mapped − holderPresent` with
@@ -244,7 +244,7 @@ must tolerate no-PSMs pairs.
   Keeps the 3-field format intact; minimal change (just a reserved constant + a consumer check). *(The token
   must not be valid hex — `noPsms` is safe.)*
 - **C-opt2 — omit no-PSMs pairs from the hash** (today's behavior). **Rejected:** the view then can't show
-  them (Dan wants "no quant / no PSMs passed" shown), and a future reload-restore loses them.
+  them (the maintainer wants "no quant / no PSMs passed" shown), and a future reload-restore loses them.
 - **C-opt3 — a second hash marker segment** for no-PSMs pairs. **Rejected:** more format churn than a reserved
   requestId token buys.
 
@@ -373,9 +373,9 @@ Q-D. The reviewing claude pressure-tests every choice and anchor against source 
 - **Non-empty `noPsmsPairs` path (a mapped file with zero PSMs at default cutoffs): NOT runtime-observed —
   code-verified only.** A DB check confirmed **no genuine zero-PSM scan file exists** (every
   `search_scan_file_tbl` row has ≥1 `psm_tbl` row), and forcing a zero-at-default-cutoffs condition requires a
-  DB mutation, which is **not self-applied** (Dan's hard rule). The branch is a trivial set-difference over an
+  DB mutation, which is **not self-applied** (the maintainer's hard rule). The branch is a trivial set-difference over an
   input set (`searchScanFileIds_WithPsms`) that was proven correct at runtime above, so confidence is high.
-  **To runtime-observe it, a temporary zero-PSM fixture (change + revert SQL, Dan runs it, assistant runs only
+  **To runtime-observe it, a temporary zero-PSM fixture (change + revert SQL, the maintainer runs it, assistant runs only
   the read-only drive) can be prepared on request** — deferred as an optional follow-up, not self-applied.
 - **Peptide-page caller (out of scope, must-not-break): code-verified unchanged.** Its controller is untouched;
   its `gatherPsms_ForSingleSearch` call is statement-form (`FlashLFQ_Run__Request_Creation_RestWebserviceController.java:589-594`)
@@ -383,7 +383,7 @@ Q-D. The reviewing claude pressure-tests every choice and anchor against source 
   contents are byte-identical (only an end-of-method read + return were added). Not separately UI-driven (it
   calls the same gather method already runtime-exercised via the project-page drive).
 
-**Phase 1 STOP cleared — Phase 2 greenlit by Dan.**
+**Phase 1 STOP cleared — Phase 2 greenlit by the maintainer.**
 
 ---
 
@@ -429,7 +429,7 @@ Q-D. The reviewing claude pressure-tests every choice and anchor against source 
 - **Non-empty `noPsmsPairs` FE render (the core new case): NOT yet observed — a zero-PSM fixture is required
   (see §13). The validated drive script (`drive_fe_render.mjs`) is ready to re-run against the fixture.**
 
-## 13. Zero-PSM fixture (for Dan to run) — the non-empty-`noPsmsPairs` runtime drive
+## 13. Zero-PSM fixture (for the maintainer to run) — the non-empty-`noPsmsPairs` runtime drive
 
 **⚠ RESTORABILITY: FULLY, CLEANLY REVERSIBLE.** The change is a **single-row, single-column** UPDATE
 (`annotation_type_filterable_tbl` PK `annotation_type_id = 6816`, column `default_filter_value`, original value
@@ -453,7 +453,7 @@ SELECT annotation_type_id, default_filter_value FROM annotation_type_filterable_
 
 -- (2) CHANGE: make search 419's PSM q-value cutoff impossible (zero PSMs pass for scan file 276)
 UPDATE annotation_type_filterable_tbl SET default_filter_value = -1 WHERE annotation_type_id = 6816;
---   >>> Dan runs (1)+(2); assistant then runs ONLY the read-only drive (drive_fe_render.mjs) <<<
+--   >>> The maintainer runs (1)+(2); assistant then runs ONLY the read-only drive (drive_fe_render.mjs) <<<
 
 -- (3) REVERT (restore baseline)
 UPDATE annotation_type_filterable_tbl SET default_filter_value = 0.05 WHERE annotation_type_id = 6816;
@@ -466,5 +466,5 @@ SELECT annotation_type_id, default_filter_value FROM annotation_type_filterable_
 qr;582_275_<rid>-583_276_noPsms` (**hasSentinel: true**, ran:1, noPsms:1); the poll requests only the one real
 rid (no `"noPsms"`); the row still reaches READY off the single ran entry (aggregate unaffected).
 
-**STOP — Phase 2 FE built + happy-path-verified. Awaiting Dan to apply the §13 fixture for the non-empty
+**STOP — Phase 2 FE built + happy-path-verified. Awaiting the maintainer to apply the §13 fixture for the non-empty
 runtime drive (then revert). Nothing committed.**

@@ -1,6 +1,6 @@
 # FlashLFQ quant — SUM across variable-mod forms when "Collate: Variable Modifications" is unchecked (implementation plan)
 
-**Date: 2026-08-12.** Status: **APPROVED direction (Dan, 2026-08-12), not yet implemented.** This is a
+**Date: 2026-08-12.** Status: **APPROVED direction (the maintainer, 2026-08-12), not yet implemented.** This is a
 fully-detailed handoff for a new engineer/Claude to execute. All FlashLFQ-quant feature code is currently
 **HELD / uncommitted** in the working tree (the `QuantifiedPeptides.tsv` switch, Phases 1–3, is already in
 the tree — this plan builds directly on it).
@@ -8,7 +8,7 @@ the tree — this plan builds directly on it).
 > **One-paragraph summary.** Today (decision **D6** of the QuantifiedPeptides switch) the Quant column is
 > **hidden** and running quant is **blocked** whenever "Collate Peptides Using: **Variable Modifications**"
 > is **unchecked** — because unchecking merges a peptide's variable-mod forms into one display row and we had
-> no rule to combine their quant. Dan now directs: **instead of hiding, SUM the quant values that roll up
+> no rule to combine their quant. The maintainer now directs: **instead of hiding, SUM the quant values that roll up
 > into that collapsed peptide row.** The sum is over **distinct FlashLFQ peptidoforms (`groupId`)** — each
 > physical measurement counted once (positional isomers share one `groupId`/value and must not be
 > double-counted). If **any** contributing form is FlashLFQ-"overlapping signal" (`ambiguousZeroed`), the
@@ -24,7 +24,7 @@ the tree — this plan builds directly on it).
 - File:line citations were gathered by read-only exploration of the working tree on 2026-08-12 and are
   **OBSERVED** unless marked otherwise. Line numbers drift as the uncommitted code is edited — treat them as
   anchors; `grep` the named symbol to re-locate.
-- Items marked **DECISION** are settled (Dan, 2026-08-12); do not re-litigate without asking.
+- Items marked **DECISION** are settled (the maintainer, 2026-08-12); do not re-litigate without asking.
 - Companion docs to read first:
   - `flashlfq_quant_switch_to_QuantifiedPeptides_file__implementation_plan_2026-08-10.md` — the design this
     modifies; **decision D6** there is what this plan reverses.
@@ -85,7 +85,7 @@ The reverse-me machinery:
 
 ---
 
-## 2. Decisions (DECISION — Dan, 2026-08-12)
+## 2. Decisions (DECISION — the maintainer, 2026-08-12)
 
 **DEC-1. Sum over DISTINCT `groupId` (dedupe positional isomers).** For a collapsed row, gather the distinct
 `groupId`s among the row's reportedPeptideIds (within the resolved scan file) and sum each `groupId`'s
@@ -95,7 +95,7 @@ same measurement and would be double-counted. Worked example (base `PEPSTIDE`): 
 
 **DEC-2. Any overlapping form → the WHOLE peptide row is `overlapping signal` (+ a banner).** If **any**
 distinct contributing `groupId` is `ambiguousZeroed`, show the fixed `overlapping signal` marker for the
-**entire row** (no number, no partial sum, no glyph). Rationale (Dan): users won't hunt for a subtle glyph
+**entire row** (no number, no partial sum, no glyph). Rationale (the maintainer): users won't hunt for a subtle glyph
 and would read a partial sum as a true total — better to be blunt and in-their-face. Also show a **banner
 above the table** (only when summing is active and at least one displayed row is so marked) explaining that
 with Variable Modifications collate off, a peptide that combines forms is marked overlapping when **any**
@@ -118,7 +118,7 @@ collapsed). (d) **Remove** the old D6 standing button message.
 
 **DEC-5 (accepted approximation, no action beyond a note).** Each `groupId` value is a MAX (apex height by
 default, integrated area with `--int`); summing apex heights across different peptidoforms is approximate.
-Dan is explicitly told to sum — record it as a known, accepted approximation; do not add guards or gating.
+The maintainer is explicitly told to sum — record it as a known, accepted approximation; do not add guards or gating.
 
 ### Why this is allowed (does NOT violate the do-not-sum rule)
 `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md` forbids summing across **scan

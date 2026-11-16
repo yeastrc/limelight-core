@@ -146,7 +146,7 @@ normalize post-process is not gated by any request flag and runs unconditionally
 (`verified:` `projPg_Quant_SubmitRun_Component.tsx:210-215,1207-1210`); `metadataHeaders` are available in
 the submit component (`inMemoryStore.metadataHeaders`, used at `:779,918`).
 
-**(2) flashlfq-service ComBat compute** — new top-level `batch_correction_entry.py` mirroring
+**(2) flashlfq-service ComBat compute** — new top-level `batch_correct_entry.py` mirroring
 `normalize_entry.py`: read the **log2 normalized** matrix + `quant_metadata.json`, build the batch vector
 from `batch_column_index` aligned by `search_scan_file_id`, treat `""`/whitespace as missing (fail-loud),
 run `loaders.batch_correct.combat_correct` (already installed in `/venv-quant`, `pycombat==0.20`), write
@@ -308,6 +308,6 @@ Independent math verification (reviewer, on the real output): per-feature batch 
 peptides mean|A−B| 0.4749 → 0.0349, proteins 0.3757 → 0.0230; every sampled cell changed (not a
 pass-through). ComBat removed the technical batch difference while preserving WT/Mutant (crossed design).
 
-A larger mriffle multi-scanfile dataset (with real subgroups) remains available on the server for a
+A larger multi-scan-file dataset from a collaborator (with real subgroups) remains available for a
 richer future run; its batch column should be the real technical grouping (prep day / instrument / run),
 determined from that dataset's actual design.

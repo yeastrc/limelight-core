@@ -81,7 +81,7 @@ service change must be deployed TOGETHER (local and production).
 
 The Quant Common page Charts view already looks up names AND descriptions per search of the run with the
 filtered per-search protein-info loader (see `quant_common_page__charts_view__design_and_status_2026-10-01.md`
-§4c); it keys on the psvid id and is unaffected by this change.
+and decision log §9); it keys on the psvid id and is unaffected by this change.
 
 ## Superseded
 

@@ -265,7 +265,7 @@ and anti-clickjacking **`frame-ancestors`** — the latter delivered as a **resp
 missing fallbacks, all of which are the larger lift:
 
 - **Larger lift (needs a source inventory + browser testing first).** Per-directive notes, incorporating
-  what Dan confirmed about this app (2026-07-16):
+  what the maintainer confirmed about this app (2026-07-16):
   - **`style-src` — effectively off the table.** The repo uses **inline `style=` attributes pervasively**
     (React `style={{…}}` and JSP `style="…"`), and **that will not change**. So if `style-src` is ever
     added it **must** include `'unsafe-inline'` — a strict style-src would break the whole UI, and the

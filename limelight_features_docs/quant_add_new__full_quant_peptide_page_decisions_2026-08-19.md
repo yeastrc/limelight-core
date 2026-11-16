@@ -93,7 +93,7 @@ round-trip). Cost to keep = one extra bundle. Changing decision 1 to "replace" o
 constant in `projPg_Quant_BuildRunHash.ts:37` plus the link label; nothing else couples to it.
 
 **Confidence:** High on the mechanics (what the link is, how to add a sibling page). Medium on the
-keep-vs-delete preference — that's a product call for Dan (Open Question Q-A).
+keep-vs-delete preference — that's a product call for the maintainer (Open Question Q-A).
 
 ---
 
@@ -158,7 +158,7 @@ reused unchanged.
   identical across time; guaranteed identical for a fixed default-cutoff definition.**
 
 **Confidence:** High that using the same wrapper is the correct design and matches submit. Medium on the
-practical drift risk being acceptable — that's Dan's call (Open Question Q-B).
+practical drift risk being acceptable — that's the maintainer's call (Open Question Q-B).
 
 ---
 
@@ -295,9 +295,9 @@ Done first, against a real multi-file output (§0b). **Actionable corrections to
 
 ---
 
-## Dan's review outcome (2026-08-19) + STAGING decision
+## The maintainer's review outcome (2026-08-19) + STAGING decision
 
-Dan reviewed this doc against source and **confirmed it**. Resolutions:
+The maintainer reviewed this doc against source and **confirmed it**. Resolutions:
 - **Q-A → two links per READY run:** the new full-page route **and** the raw viewer, both linked.
 - **Q-B → accept** the interim submit↔view default-cutoff drift risk (session-scoped, DB phase fixes it).
 - **Q-C → DEFERRED:** no matrix / no row-grouping / no display-representations (⚭, "overlapping signal") this
@@ -312,7 +312,7 @@ Dan reviewed this doc against source and **confirmed it**. Resolutions:
 
 **STAGING decision (this round = BACKEND + a DUMMY-FE debug page, gated):** the FE delivered this round is a
 **dummy `<table>` debug dump**, NOT the real matrix. It calls the new backend webservice and renders the
-returned records into a plain `<table>` (one HTML row per wire record, columns = every DTO field) so Dan can
+returned records into a plain `<table>` (one HTML row per wire record, columns = every DTO field) so the maintainer can
 see real data on the **real, permanent `d/pg/qt/` route** before the matrix is designed. **This dummy page IS
 the verification surface — no separate test-harness is written to call the backend.** A later phase upgrades
 this same component into the real matrix **in place** (behind the deferred Q-C). Build proceeds in three gated
@@ -377,7 +377,7 @@ row-identity model can key on reportedPeptideId to merge the same peptide across
 rows — but it must account for a single reportedPeptideId legitimately spanning searches. (Note: the identity's
 mod form is in the grouping-identity bracket string, NOT in reportedPeptideId.)
 
-## Open questions for Dan (all resolved above; retained for provenance)
+## Open questions for the maintainer (all resolved above; retained for provenance)
 
 - **Q-A (Decision 1):** Full page **replaces** the raw-viewer link, or full page is the link and the raw viewer
   stays as a secondary "raw TSV" affordance? (I recommend keep-as-fallback.)
@@ -395,4 +395,4 @@ mod form is in the grouping-identity bracket string, NOT in reportedPeptideId.)
 ## Standing rules honored
 Skeptical bar: every load-bearing claim cited to `file:line`, tagged OBSERVED vs INFERRED with confidence;
 unproven items filed as Open Questions, not asserted. No code written/edited. No DB mutation. No mass math.
-Nothing committed — awaiting Dan's review of these decisions before any implementation.
+Nothing committed — awaiting the maintainer's review of these decisions before any implementation.

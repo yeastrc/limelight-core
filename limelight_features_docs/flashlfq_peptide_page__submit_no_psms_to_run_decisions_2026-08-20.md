@@ -1,6 +1,6 @@
 # Peptide-page (per-search) FlashLFQ submit — "no PSMs to a run" handling — DECISIONS (2026-08-20)
 
-**Status: RESOLVED (Dan, 2026-08-24) — build not yet started.** All questions settled; Q-C resolved to a
+**Status: RESOLVED (the maintainer, 2026-08-24) — build not yet started.** All questions settled; Q-C resolved to a
 variant of C-opt3 (hash sentinel + view excludes it), with **NO** alert/banner (see §5). Q-A/Q-B/Q-D follow
 their recommendations. Surfaces every load-bearing choice as a question with `file:line` grounding.
 
@@ -109,7 +109,7 @@ requestId). **This step is only performed if Q-C chooses to put sentinels in the
 
 ---
 
-## 5. Q-C — View (the biggest peptide-page-specific question) — **RESOLVED (Dan, 2026-08-24)**
+## 5. Q-C — View (the biggest peptide-page-specific question) — **RESOLVED (the maintainer, 2026-08-24)**
 
 **RESOLVED → a variant of C-opt3, with NO alert and NO banner.** The no-PSMs cell simply stays **BLANK** (the
 shared **peptide + protein** view path, `quant_PrototypeData.ts:215,:249,:269-280`); there is **no** banner, no
@@ -151,7 +151,7 @@ scan file's table cell is already **blank** (`:215`,`:269-280`), indistinguishab
   `requestId === "noPsms"`). Trade-off: a sentinel in the URL that currently renders nothing.
 
 **Recommendation:** **C-opt2** — alert-only, no hash sentinel, `quant_PrototypeData` untouched — as the
-proportionate choice for a throwaway view; fall back to **C-opt3** if Dan wants hash parity with the project-page
+proportionate choice for a throwaway view; fall back to **C-opt3** if the maintainer wants hash parity with the project-page
 (then the view must at least skip the sentinel to avoid the `NOT_FOUND` misrender). **C-opt1 only if** we want the
 live prototype to actively show "no PSMs" before Track B.
 

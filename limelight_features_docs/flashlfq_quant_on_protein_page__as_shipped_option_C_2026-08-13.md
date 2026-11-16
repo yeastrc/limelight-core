@@ -9,7 +9,7 @@ semantics, the join, the fixes, and how it was verified.
 uncommitted** in the working tree (every file cited below is a working-tree change, not yet committed). It is
 gated entirely on a URL hash and deletes cleanly once the real DB-backed ingest (Track B) lands. **Provenance:**
 every `file:line` below was read directly from the working-tree source this session. Runtime behavior marked
-"**user-verified**" was verified by Dan in the live app and reported in the gitignored session handoff
+"**user-verified**" was verified by the maintainer in the live app and reported in the gitignored session handoff
 (`.claude/session_handoffs/flashlfq_quant_protein_page_SESSION_2026-08-13.md`) — it was **not** re-observed at
 runtime while writing this doc. Local-only test data (DB creds, project/search ids, run hashes, working URLs)
 is deliberately **not** in this public-repo doc; it lives in that handoff.
@@ -167,7 +167,7 @@ as its `notice`. Behavior preserved; this de-duplicates the banner code between 
 ## 3. Semantics (as coded)
 
 - **Per protein, not per group.** `onlyShow_ValueDisplay_FirstRowOfGroup: false` on every quant column. A group
-  header borrows the first member's cell (same as NSAF). No group rollup exists — and per Dan's 2026-08-13
+  header borrows the first member's cell (same as NSAF). No group rollup exists — and per the maintainer's 2026-08-13
   decision, none will be built or proposed unless he explicitly asks.
 - **Scan-file scoping — quant is never summed across scan files.** Single-file search → one column, the search's
   run. Mode 3 → one column per sub-group, each restricted to that sub-group's single scan file via the
@@ -239,7 +239,7 @@ constructions and their `onlyShow_ValueDisplay_FirstRowOfGroup: false` flags, an
 - Header and cell tooltips render with the `Search:` / `Sub Search:` identity (multi-search + mode-3).
 - The owner "View/Add Quant" button appears and **created runs natively** on the protein page.
 
-**Not independently re-verified here:** anything runtime. This doc is a static read of held code plus Dan's
+**Not independently re-verified here:** anything runtime. This doc is a static read of held code plus the maintainer's
 reported runtime results.
 
 ---

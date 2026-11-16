@@ -98,9 +98,9 @@ DB-backed design should eliminate by giving each run its own stored submit-time 
   `FlashLFQ_Quant_ReDerive_GroupingIdentity_To_ReportedPeptideIds_Service` ~lines 74–91 — the single coupling to
   the params object; identity construction and TSV parsing do NOT depend on it).
 
-**Why it's acceptable in the prototype (not a live bug today):** on the quant common pages the filters are not
+**Why it's acceptable in the prototype (not a live bug today):** on the Quant QC page the filters are not
 free page state — they are fixed by the `searchDataLookupParamsCode` carried in the project URL hash (and
-sessionStorage) from the run's launch context, and **the user has no control to change them on the quant common
+sessionStorage) from the run's launch context, and **the user has no control to change them on the Quant QC
 page**. So the "current" filters the peptide FE sends are effectively the submit-time filters, and the peptide
 and protein sets stay consistent in normal use. The invariant is a **convention**, not enforced — it would only
 break if a run's page filters could diverge from what was used at submit.
@@ -119,7 +119,7 @@ Maintainer direction (2026-09-30): as the quant feature matures, expect to **gzi
 files and webservice responses**, for more compact storage and smaller transfer to the browser.
 
 - Storage: FlashLFQ outputs and the service's derived files (combined, normalized, batch-corrected) are large text
-  tables (the 8-file reference run's peptide files are tens of MB each) and compress well.
+  tables (the 8-file single-search run's peptide files are tens of MB each) and compress well.
 - Transfer: a gzip-encoded response cuts bytes on the wire, but the browser still **decodes to the full text before
   parsing**, so gzip does NOT raise the ceiling set by the browser's maximum string length. Response *shape* must stay
   compact on its own (e.g. parallel arrays instead of repeated per-value objects; send run-level lookup maps once, not

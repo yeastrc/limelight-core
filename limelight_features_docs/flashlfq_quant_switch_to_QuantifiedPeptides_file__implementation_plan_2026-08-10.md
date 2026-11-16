@@ -27,7 +27,7 @@ needed (path recorded off-repo, not here — repo is public).
   anchors, `grep` the named symbol to re-locate.
 - Items marked **VERIFY** are assumptions the implementer must confirm against code (or the separate FlashLFQ
   service repo) **before** relying on them — they are load-bearing.
-- Items marked **DECISION** are settled (Dan + boss); do not re-litigate without asking Dan.
+- Items marked **DECISION** are settled (the maintainer + boss); do not re-litigate without asking the maintainer.
 - Companion docs (read these): `flashlfq_output_file__QuantifiedPeptides.md` (what the peptide file contains
   and how FlashLFQ computes it — MAX + zero-shared), `flashlfq_quant_peak_summing_vs_flashlfq_peptide_output_2026-08-05.md`
   (why SUM over-counts; the empirical head-to-head), `flashlfq_quant_http_results_retrieval_webservice_plan.md`
@@ -178,7 +178,7 @@ Static/Open toggles — no new gating.**
   variable mods: **disable running quant** AND **hide any displayed quant**, with the reason message.
 - "Static Modifications" unchecked never merges distinct forms (static mass is constant) → no gating. Open mods
   already make a search fully ineligible → their toggle is moot.
-- **DECIDED (Dan, 2026-08-10): hide/block only when variable mods are actually present AND the toggle is
+- **DECIDED (the maintainer, 2026-08-10): hide/block only when variable mods are actually present AND the toggle is
   unchecked — reuse the existing signal, no new flag.** Condition =
   `_searchesContains_VariableModifications === true` **AND**
   `generatedPeptideContents_UserSelections_StateObject.getVariableModifications_Selected() === false`. Then
@@ -191,14 +191,14 @@ Static/Open toggles — no new gating.**
   search flag). It is the same value that gates the checkbox's visibility (the checkbox only renders when
   `searchContains_VariableModifications` is true — `generatedPeptideContents_UserSelections_Root_Component.tsx:166`),
   and it is computed on the same component that renders the Quant container, so just thread it into the quant
-  gate. **Why the presence condition is required (Dan, 2026-08-10):** when no search has variable mods the
+  gate. **Why the presence condition is required (the maintainer, 2026-08-10):** when no search has variable mods the
   checkbox isn't shown and the toggle's value is meaningless — an unconditional hide-when-unchecked would wrongly
   hide quant for perfectly-quantifiable no-variable-mod searches. Do **not** add a new server flag; do **not**
   hide per-search-column (it's a global column hide).
 
 **D7. Remove ALL existing front-end peak-summing.** Delete the `QuantifiedPeaks.tsv` fetch/parse and the
 `peakIndexUnion`/`summedIntensity` logic in `quant_PrototypeData.ts` and its call sites. Nothing in the new
-path sums peaks. (See §7 "Places that still combine" — surface each to Dan rather than silently re-implement.)
+path sums peaks. (See §7 "Places that still combine" — surface each to the maintainer rather than silently re-implement.)
 
 ---
 
@@ -407,21 +407,21 @@ authoritative). Consequences for this plan:
    `quant_subGroupId_To_SearchScanFileId_Map`) maps to **exactly one scan file** → exactly one
    `Intensity_<file>` value from `QuantifiedPeptides.tsv`. No summing across files. Implementation task is only
    to resolve sub-group → its scan file → the correct `Intensity_<file>` column (or, under per-(search,scanFile)
-   run keying, that sub-group's own run). **No decision needed from Dan.**
+   run keying, that sub-group's own run). **No decision needed from the maintainer.**
 2. **A multi-file search can never be shown as one combined per-search number** — the gate *requires* sub-groups
    1:1, so there is no allowed path that sums a search's files into a single value. Single-file "mode 1/2" cells
    (~`:1488-1503`) are one file = one value. **No combine.**
 
-**Still genuinely open — SURFACE TO DAN, do not silently implement:**
+**Still genuinely open — SURFACE TO THE MAINTAINER, do not silently implement:**
 
-- **Protein-level rollup** (peptide → protein quant) — **planned as a near-future feature (Dan, 2026-08-10),
+- **Protein-level rollup** (peptide → protein quant) — **planned as a near-future feature (the maintainer, 2026-08-10),
   NOT in this plan.** For now do not implement it; the removed peaks-path rollups
   (`rollup_ByBaseSequence` / `rollup_ByReportedPeptideId` / `get_QuantForReportedPeptideIds` / the standalone
   panel `quant_PrototypeDisplay_QuantifiedPeaks_Component.tsx`) can be deleted/parked. **But do not bake in
   assumptions that block a protein rollup later** — keep the per-`reportedPeptideId` quant (and its `groupId`)
   cleanly available so a protein view can consume it. When it is built, summing peptide intensities into a
   protein value is a real combine decision (respect
-  `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md`) — surface it to Dan then.
+  `flashlfq_quant__do_not_silently_sum_across_scan_files_searches_conditions.md`) — surface it to the maintainer then.
 - **Download string + tooltip detail** — presentation of the per-row value, not a combine; redefine for the
   peptide-file value (no aggregation).
 
