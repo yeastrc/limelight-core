@@ -5,6 +5,6 @@
 
 #  Input to Ant script: ant_buildFrontEnd_CopyToTomcat.xml
 
-tomcat.webapps.root=/data/web_tools/Tomcat_8.0_Port_8080/webapps
+tomcat.webapps.root=/path/to/tomcat/webapps
 
 limelight.context=limelight

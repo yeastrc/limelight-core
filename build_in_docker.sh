@@ -21,7 +21,7 @@ REAL_HOME="$(getent passwd "$REAL_USER" | cut -d: -f6)"
 
 # Reuse your EXISTING host Gradle + npm caches so dependencies aren't
 # re-downloaded. We resolve where they REALLY live on the host (readlink -f
-# follows symlinks like ~/.gradle -> /data/...; for a plain ~/.gradle it just
+# follows symlinks like ~/.gradle -> /other/disk/...; for a plain ~/.gradle it just
 # returns that path), then mount them to a fixed in-container HOME below.
 # So this works whether or not the user has those dirs symlinked elsewhere.
 HOST_GRADLE_CACHE="$(readlink -f "${GRADLE_USER_HOME:-$REAL_HOME/.gradle}")"
