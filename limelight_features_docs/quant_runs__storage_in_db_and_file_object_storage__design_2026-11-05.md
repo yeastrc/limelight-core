@@ -252,6 +252,105 @@ the *contents*: program identity, sentinels, submit-time filters, gzip, `protein
     a whole number.
   - Which values to extract is decided per search feature, later; adding one needs a new `value_type` constant and
     a lookups-version bump, not a table change.
+- **D18. The quant run is project-independent, like a search; a separate per-project row links it to a project.**
+  (The maintainer, 2026-11-16.) **Changes D6, D7, D8, D9 and D16 and the §5a tables, as listed below.**
+  - **Why:** so one quant run can be referenced from several projects, the way a search can (a search is shared,
+    its `project_search_tbl` row is per project). If copying a quant run to another project is ever requested, the
+    copy is just the per-project data.
+  - **Today's pattern being followed** (verified, `database_scripts/install/001_create_empty_database.sql`):
+    - `search_tbl` (`:144`) has no project.
+    - `project_search_tbl` (`:182`) holds `id` (the project search id), `project_id`, `search_id` and the
+      per-project values (`search_name`, `search_short_name`, `search_display_order`, status, deletion marks,
+      created / updated by).
+    - Scan files belong to the search: `search_scan_file_tbl` (`:1334`) is keyed by `search_id`, so a quant run's
+      `search_scan_file_id` references are already project-independent.
+  - **Quant root (no project):**
+    - What it holds: status (D9), dates, the queue (tracking) id it came from, and its searches by `search_id`
+      (a new `quant_run_search_tbl`: quant_run_id, search_id).
+    - What hangs off it unchanged: the FlashLFQ run rows, the scan-file mapping, the small-file and File Object
+      Storage file tables, and the D17 lookup tables.
+  - **Per-project row** (placeholder `project_quant_run_tbl`; its id is the "project quant run id", the quant
+    equivalent of the project search id):
+    - Columns: `project_id`, `quant_run_id`, a **user-editable label**, display order, status / deletion marks, and
+      created / updated by and dates (as `project_search_tbl`).
+    - **Page URLs carry this id**, not the root id and not the FlashLFQ request id.
+    - **Copy to another project** = a new row here. Nothing under the root is copied.
+  - **Filters (cutoffs) are fixed on the root, keyed by search id:**
+    - The cutoffs decided which PSMs were sent to FlashLFQ, so the quant values depend on them. They must be the
+      same in every project that shows the run, and never change.
+    - The page's filter block today is per project search: `SearchDataLookupParams_For_Single_ProjectSearchId`
+      (webapp, `…/search_data_lookup_parameters_code/lookup_params_main_objects/`, fields at `:28-41`) holds:
+      - `projectSearchId`;
+      - 4 filter lists (psm, reported peptide, matched protein, modification position), each a cutoff per
+        annotation type id;
+      - 5 "annotation types to display" lists.
+
+      Annotation types belong to the search (`annotation_type_tbl.search_id`, create script `:679-681`), so
+      `projectSearchId` is the only project-specific value in the block.
+    - **On submit,** each per-project-search block is translated into a NEW block shape whose root field is
+      explicitly named **`searchId`**. It does not reuse the `projectSearchId` field, so a search id is never
+      mistaken for a project search id later. The filter and display lists are copied as they are. It is stored
+      fixed with the run (inside the versioned JSON of D14).
+    - **On page load,** each stored block is translated back: `search_id` → the current project's project search
+      id, building the object graph the existing page and filtering code expect. That code stays unchanged.
+      - Every search of the run must be in the current project (see "shown in a project" below).
+      - A search id with no project search in the current project is a fatal error, not something handled
+        quietly.
+  - **"Annotations shown" (the display lists):** the stored lists are the defaults.
+    - If they ever become user-changeable, no database change is needed. The URL can carry an existing search
+      data lookup code (`search_data_lookup_parameters` table, create script `:1747`, the block as JSON) whose
+      block holds only the display lists. The quant page uses its display lists and **ignores any filters in it**:
+      the filters always come from the run's fixed block.
+    - Nothing is built for this now.
+  - **Shown in a project:** a quant run is shown in project P only through a `project_quant_run_tbl` row in P, and
+    only while every one of the run's searches is in P (as a project search).
+  - **Changes to earlier decisions:**
+    - **D6:** the "table with a row for each project search" becomes `quant_run_search_tbl` (by search id) on the
+      root, plus the per-project row above.
+    - **D7 (delete):** removing a quant run from a project = deleting its `project_quant_run_tbl` row. That is
+      light, with no blob rows, and it replaces `quant_run_shown_tbl`. The root and everything under it are deleted
+      later by DB cleanup once **no** `project_quant_run_tbl` row references it, like a search with no project
+      searches.
+    - **D9 cleanup rule:** "complete with no `quant_run_shown_tbl` row" becomes "complete with no
+      `project_quant_run_tbl` row".
+    - **D8 (final import transaction)** inserts the `quant_run_search_tbl` rows and the first
+      `project_quant_run_tbl` row, and sets status complete.
+    - **D16 (a project loses one of the run's project searches):** in the same transaction, that project's
+      `project_quant_run_tbl` rows for runs that use that search are deleted (after the page has shown them to the
+      user, as in D7).
+  - **Decided (the maintainer, 2026-11-16): a per-project link table keeps D8's lock-based safety and D16's
+    foreign-key backstop.**
+    - **Why it is needed:** before D18 these came from `quant_run_project_search_tbl.project_search_id` →
+      `project_search_tbl` (no cascade). The per-project row alone has no column joined to `project_search_tbl`.
+    - **Rejected alternative:** no link table. Code would lock the project search rows (`SELECT … FOR SHARE`) and
+      find affected runs by joins. That leaves no database-level backstop: a missed code path silently leaves bad
+      data.
+    - **The table:** `project_quant_run_project_search_tbl` (project_quant_run_id, project_search_id). Two foreign
+      keys:
+      - project_quant_run_id → `project_quant_run_tbl` **ON DELETE CASCADE**: deleting the per-project row
+        removes its links;
+      - project_search_id → `project_search_tbl` with **no cascade**: a project search cannot be deleted while a
+        link to it exists.
+    - **Flows:**
+      1. **Import finishes (D8's final transaction):** insert the `quant_run_search_tbl` rows, the first
+         `project_quant_run_tbl` row and its link rows, and set the root complete. The foreign-key inserts take
+         shared locks on the `project_search_tbl` rows, so a concurrent search delete is serialized with the
+         import:
+         - either the import commits first, and the run appears in the delete's list;
+         - or the delete commits first, and the import fails cleanly.
+      2. **User removes a quant run from a project:** delete its `project_quant_run_tbl` row; its link rows go by
+         cascade. It is light, with no blob rows. The root is untouched.
+      3. **User deletes project searches (D7 / D16):** the page lists the quant runs that use them (found through
+         the link table), and the user approves. One transaction deletes those `project_quant_run_tbl` rows (the
+         links cascade), then the `project_search_tbl` rows. Any code path that skips the first step gets a
+         foreign-key error: the loud backstop.
+      4. **Copy to another project (if ever requested):** every search of the run must already be in the target
+         project. Insert a new `project_quant_run_tbl` row there plus link rows to the target project's project
+         searches. Nothing under the root is copied.
+      5. **Whole project deleted (DB cleanup):** the quant step runs FIRST and deletes that project's
+         `project_quant_run_tbl` rows (the links cascade); then the project-search cleanup is not blocked.
+      6. **Root cleanup (DB cleanup, later, small batches):** a complete root with no `project_quant_run_tbl` row
+         left is deleted (blobs in batches). Failed or stale roots are handled by D9.
 - **Things to do first, before quant uses the queue** (all DONE 2026-11-06):
   1. **DONE.** The existing Run Importer defects (§3): the wrong `current_run` clear (commit `4f4e55074`), and the
      end-of-run history row written as STARTED, pipeline queue and its search-import twin (commit `370dd524b`).
@@ -528,6 +627,14 @@ Proposals are the review's suggestions for the maintainer to accept or change. N
 ### 5a. The tables (D6)
 
 Names are placeholders. Every child table cascade-deletes from its parent.
+
+> **Changed by D18 (2026-11-16):** the quant run is project-independent.
+> - `quant_run_root_tbl` loses `project_id`.
+> - `quant_run_project_search_tbl` is replaced by `quant_run_search_tbl` (quant_run_id, search_id) plus the
+>   per-project `project_quant_run_tbl` and its project-search link table `project_quant_run_project_search_tbl`.
+> - `quant_run_shown_tbl` is dropped: a `project_quant_run_tbl` row is what shows a run in a project.
+>
+> The tables below are the pre-D18 proposal; D18 is authoritative where they differ.
 
 | Table | Columns | Rows |
 |---|---|---|
