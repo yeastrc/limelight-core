@@ -97,6 +97,12 @@ duplicate report. A raw `Error` in the same spot **would** be logged as a phanto
   jQuery (`$.ajax`) for any new webservice call.** (XHR upload progress events were unreliable on slow
   connections, so new code doesn't use them.)
 
+**Known gap — unwrapped promise paths are silent.** The global handler
+(`page_js/common_all_pages/limelight__catchAndReportGlobalOnError.ts`) listens only for the window `'error'` event,
+not `'unhandledrejection'`. An exception in a `.then` / `async` body **without** the try/catch above (or a library's
+rejection) is neither reported nor shown, so **always wrap those bodies**. Analysis and a deferred fix:
+`../../limelight_features_docs/front_end_global_error_handler__unhandled_rejections.md`.
+
 ### Page reload goes through ONE function; blocking `beforeunload` guards must use the registry
 
 - **Single reload chokepoint:** `limelight__ReloadPage_Function`
