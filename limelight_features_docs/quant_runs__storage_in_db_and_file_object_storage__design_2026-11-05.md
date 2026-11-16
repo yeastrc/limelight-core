@@ -351,6 +351,32 @@ the *contents*: program identity, sentinels, submit-time filters, gzip, `protein
          `project_quant_run_tbl` rows (the links cascade); then the project-search cleanup is not blocked.
       6. **Root cleanup (DB cleanup, later, small batches):** a complete root with no `project_quant_run_tbl` row
          left is deleted (blobs in batches). Failed or stale roots are handled by D9.
+- **D19. Revisit what is stored where, by audience: never one JSON blob mixing public, logged-in-only and
+  internal data.** (The maintainer, 2026-11-16. Direction only; the detailed review is part of the DB work.)
+  - **Why:** a quant run can be shared with the public, the same as other project data. Some data must not go even
+    to logged-in users (for example server paths).
+  - **Today:**
+    - The flashlfq-service writes ONE `params_manifest.json` per run (`app/request_processor.py`,
+      `_write_manifest`). It mixes data for different audiences: user-facing settings and the run's search, scan
+      file and PSM-count details sit next to internal service details.
+    - The webapp's run info panel reads that one file.
+  - **When storage moves to the database:**
+    - **Review every stored item and classify it by audience:**
+      - (1) safe for **public** viewers;
+      - (2) **logged-in project users** only;
+      - (3) **never sent to a browser** (internal: e.g. paths, the full command line, service / host details);
+      - (4) possibly **admin-only**, for debugging failures.
+    - **Store the audiences separately** (separate small-file rows / `type_id`s, or separate tables), so a
+      webservice serves a whole stored item, never a filtered part of a mixed blob. The import program writes the
+      per-audience items. Internal data that no page needs is not stored at all, or stored only in the internal
+      category.
+    - **Webservices must be very careful about which JSON they serve to whom:**
+      - each quant webservice serves only items whose audience matches its access check (public-read vs
+        logged-in-user-only);
+      - a public-read webservice must never return a logged-in-only or internal item;
+      - nothing in category (3) is served at all.
+  - **Possibly later (out of scope for now):** a page under the ADMIN section where an admin can see a failed or
+    finished quant run's internal details (category 3 / 4) to debug failures.
 - **Things to do first, before quant uses the queue** (all DONE 2026-11-06):
   1. **DONE.** The existing Run Importer defects (§3): the wrong `current_run` clear (commit `4f4e55074`), and the
      end-of-run history row written as STARTED, pipeline queue and its search-import twin (commit `370dd524b`).
