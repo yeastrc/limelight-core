@@ -6,7 +6,7 @@
  * 
  * Exported Javascript variable
  * 
- * export { handleAJAXFailure, handleRawAJAXError, handleAJAXError }
+ * export { handleAJAXFailure, handleRawAJAXError, handleAJAXError, handleAJAXError_Reading_ResponseBody_Failed }
  * 
  */
 
@@ -305,6 +305,53 @@ function handleAJAXError(
 }
 
 
+/////////////////////
+
+//  Handle when the server responded successfully (response.ok is true) but reading the response body failed (response.text() rejected).
+//  Usually the network connection was interrupted while downloading the response.
+//  Caller must only call this for that case.  This is NOT an unexpected HTTP status code from the server.
+
+function handleAJAXError_Reading_ResponseBody_Failed(
+	{
+		fetch_Results_statusCode, rejectReason, url
+	} : {
+		fetch_Results_statusCode: number
+		rejectReason: any
+		url: string
+	}) {
+
+	if ( beforeUnloadEvent_Triggered ) {
+
+		//  Before Unload Event Triggered so skip
+
+		return;  // EARLY RETURN
+	}
+
+	try {
+		const msg = (
+			"Failed to read the response body from the server after the server responded successfully (likely the network connection was interrupted while downloading the response)."
+			+ "  HTTP Status Code: " + fetch_Results_statusCode
+			+ ", Reject Reason from reading the response body: " + rejectReason
+		);
+
+		console.log( msg );
+
+		//  Create error to send to server
+		throw Error( msg );
+
+	} catch( e ) {
+		try {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e, webserviceURL: url } );
+		} catch( e2 ) {
+			console.log("reportWebErrorToServer.reportErrorObjectToServer threw exception:")
+			console.log( e2 );
+		}
+	}
+
+	showAjaxErrorMsg( { errorMsg : "Failed to receive the complete response from the server.  The network connection may have been interrupted.  Please reload the page to try again." } );
+}
+
+
 function showAjaxErrorMsg( params: {
 							   errorPageElementId?: string
 							   errorMsg: string
@@ -401,4 +448,4 @@ function showAjaxErrorMsgFromMsg( params: any ) {
 	}
 }
 	
-export { handleAJAXFailure, handleRawAJAXError, handleAJAXError }
+export { handleAJAXFailure, handleRawAJAXError, handleAJAXError, handleAJAXError_Reading_ResponseBody_Failed }
