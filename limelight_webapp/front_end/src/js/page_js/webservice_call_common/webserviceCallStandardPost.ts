@@ -37,7 +37,7 @@ import {
 import {
     WebserviceCallStandardPost_RejectObject_Class
 } from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
-import { handleAJAXError } from "page_js/common_all_pages/handleServicesAJAXErrors";
+import { handleAJAXError, handleAJAXError_Reading_ResponseBody_Failed } from "page_js/common_all_pages/handleServicesAJAXErrors";
 
 
 const MAX_CONCURRENT_REQUESTS = 10;
@@ -383,15 +383,13 @@ const __for_Next_WebserviceCallStandardPost = function(
 
                 console.warn("response.text() reject: ", reason)
 
-                handleAJAXError({
-                    fetch_Results: {
-                        fetch_Results_statusCode: response.status,
-                        fetch_Results_statusText: "Failed to get response from server. Reject Reason: " + reason,
-                        fetch_Results_ResponseText: ""
-                    },
-                    url,
-                    requestData: dataToSend
-                });  //  Sometimes throws exception so rest of processing won't always happen
+                //  response.ok is true so the server responded successfully but reading the response body failed
+
+                handleAJAXError_Reading_ResponseBody_Failed({
+                    fetch_Results_statusCode: response.status,
+                    rejectReason: reason,
+                    url
+                });
 
                 // reportWebErrorToServer.reportErrorObjectToServer( { errorException : e, webserviceURL: url } );
 
