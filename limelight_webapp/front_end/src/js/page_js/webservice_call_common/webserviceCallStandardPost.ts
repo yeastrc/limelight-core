@@ -38,9 +38,40 @@ import {
     WebserviceCallStandardPost_RejectObject_Class
 } from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
 import { handleAJAXError, handleAJAXError_Reading_ResponseBody_Failed } from "page_js/common_all_pages/handleServicesAJAXErrors";
+import {
+    webserviceCallStandardPost_LimitToOne_ConcurrentRequest_SessionStorage__get_LimitToOne_ConcurrentRequest,
+    webserviceCallStandardPost_LimitToOne_ConcurrentRequest_SessionStorage__set_LimitToOne_ConcurrentRequest
+} from "page_js/webservice_call_common/webserviceCallStandardPost_LimitToOne_ConcurrentRequest_SessionStorage";
 
 
-const MAX_CONCURRENT_REQUESTS = 10;
+const MAX_CONCURRENT_REQUESTS__DEFAULT = 10;
+
+const MAX_CONCURRENT_REQUESTS__LIMIT_TO_ONE = 1;
+
+/**
+ *  Changed to MAX_CONCURRENT_REQUESTS__LIMIT_TO_ONE on specific errors.  See _limitToOne_ConcurrentRequest(...)
+ */
+let _maxConcurrentRequests =
+    webserviceCallStandardPost_LimitToOne_ConcurrentRequest_SessionStorage__get_LimitToOne_ConcurrentRequest()
+        ? MAX_CONCURRENT_REQUESTS__LIMIT_TO_ONE
+        : MAX_CONCURRENT_REQUESTS__DEFAULT;
+
+/**
+ *  Save flag to Session Storage so all Limelight pages later loaded in this browser tab limit to ONE concurrent request.
+ *  Also limit this page.  In progress requests continue.  Queued requests are then started one at a time.
+ */
+const _limitToOne_ConcurrentRequest = function ( { reason_ForLog } : { reason_ForLog: string } ) {
+
+    if ( _maxConcurrentRequests === MAX_CONCURRENT_REQUESTS__LIMIT_TO_ONE ) {
+        //  Already limited
+        return; // EARLY RETURN
+    }
+
+    const flagSet = webserviceCallStandardPost_LimitToOne_ConcurrentRequest_SessionStorage__set_LimitToOne_ConcurrentRequest({ reason_ForLog });
+    if ( flagSet ) {
+        _maxConcurrentRequests = MAX_CONCURRENT_REQUESTS__LIMIT_TO_ONE;
+    }
+}
 
 
 ///   !!!!!!!!!!!!     Function to do  Actual SINGLE Webservice call is at bottom of this file.  Named '__for_Next_WebserviceCallStandardPost'
@@ -66,7 +97,7 @@ export const webserviceCallStandardPost = function ( requestParams: WebserviceCa
 
     const request_Holder = new INTERNAL__Request_Holder(requestParams, api );
 
-    if ( _INTERNAL__inProgressEntries.size < MAX_CONCURRENT_REQUESTS ) {
+    if ( _INTERNAL__inProgressEntries.size < _maxConcurrentRequests ) {
 
         _INTERNAL__inProgressEntries.set(request_Holder, request_Holder);
 
@@ -115,12 +146,10 @@ const _run_NextRequest_IfAnyExist = function () {
     //  Submit next queued request
 
 
-    if ( _INTERNAL__inProgressEntries.size >= MAX_CONCURRENT_REQUESTS ) {
-        //  Already max running
-        // SHOULD NOT OCCUR
-        const msg = "_run_NextRequest_IfAnyExist() called and ( _INTERNAL__inProgressEntries.size >= MAX_CONCURRENT_REQUESTS )";
-        console.warn(msg);
-        throw Error(msg);
+    if ( _INTERNAL__inProgressEntries.size >= _maxConcurrentRequests ) {
+        //  Already max running.
+        //  Occurs after _maxConcurrentRequests is reduced while more than the new max are in progress.  Next request started when enough of those complete.
+        return; // EARLY RETURN
     }
 
     while ( _INTERNAL__requestQueue.length !== 0 ) {
@@ -298,6 +327,9 @@ const __for_Next_WebserviceCallStandardPost = function(
 
             console.warn("fetch reject. reason: ", reason)
 
+            //  Network error.  Same as HTTP Status Code 0 in jQuery/XMLHttpRequest
+            _limitToOne_ConcurrentRequest({ reason_ForLog: "fetch() rejected (Network error, same as HTTP Status Code 0). url: " + url });
+
             try {
                 requestComplete_Callback()
             } catch (e) {
@@ -333,6 +365,10 @@ const __for_Next_WebserviceCallStandardPost = function(
             }
 
             if ( ! response.ok ) {
+
+                if ( response.status === 0 ) {
+                    _limitToOne_ConcurrentRequest({ reason_ForLog: "HTTP Status Code 0. url: " + url });
+                }
 
                 const response_text_Promise = response.text()
                 response_text_Promise.catch(reason => {
@@ -384,6 +420,8 @@ const __for_Next_WebserviceCallStandardPost = function(
                 console.warn("response.text() reject: ", reason)
 
                 //  response.ok is true so the server responded successfully but reading the response body failed
+
+                _limitToOne_ConcurrentRequest({ reason_ForLog: "HTTP Status Code " + response.status + " and reading the response body failed. url: " + url });
 
                 handleAJAXError_Reading_ResponseBody_Failed({
                     fetch_Results_statusCode: response.status,
