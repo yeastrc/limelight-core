@@ -74,6 +74,11 @@ public class PreprocessValidate_ScanFiles_ScanFilenames {
 //		Set<String> scanFilenames_From_scanFileFileContainer_No_FilenameSuffix = new HashSet<>();
 		
 
+		//  No scan files imported: PSMs must all have a scan_file_name or all have none.
+		//  First example of each kind, for the error message.
+		String example_PSM_With_ScanFilename = null;
+		String example_PSM_Without_ScanFilename = null;
+
 		//  Process PSMs
 				
 		ReportedPeptides reportedPeptides = limelightInput.getReportedPeptides();
@@ -90,7 +95,12 @@ public class PreprocessValidate_ScanFiles_ScanFilenames {
 								String scanFileName_On_PSM_In_LimelightXMLInput = psm.getScanFileName();
 								if ( StringUtils.isEmpty( scanFileName_On_PSM_In_LimelightXMLInput ) ) {
 									if ( ! scanFileFileContainer_AllEntries.hasAnyEntries() ) {
-										//   Valid condition, 
+										//   Valid condition, unless other PSMs have a scan_file_name (checked after the loop)
+										if ( example_PSM_Without_ScanFilename == null ) {
+											example_PSM_Without_ScanFilename =
+													"reported peptide '" + reportedPeptide.getReportedPeptideString()
+													+ "', scan number " + psm.getScanNumber();
+										}
 									} else {
 										if ( scanFileFileContainer_AllEntries.getSize() != 1 ) {
 											String msg = "Scan Filename on PSM is empty when there is more than one scan file to be imported.";
@@ -148,6 +158,13 @@ public class PreprocessValidate_ScanFiles_ScanFilenames {
 										//  No Scan Files being Imported so use scan filename from PSM
 										
 										scanFilenamesLimelightXMLInputSet.add( scanFileName_On_PSM_In_LimelightXMLInput );
+
+										if ( example_PSM_With_ScanFilename == null ) {
+											example_PSM_With_ScanFilename =
+													"reported peptide '" + reportedPeptide.getReportedPeptideString()
+													+ "', scan number " + psm.getScanNumber()
+													+ ", scan_file_name '" + scanFileName_On_PSM_In_LimelightXMLInput + "'";
+										}
 									}
 								}
 							}
@@ -157,6 +174,17 @@ public class PreprocessValidate_ScanFiles_ScanFilenames {
 			}
 		}
 		
+		//  No scan files imported: refuse PSMs that mix having and not having a scan_file_name
+
+		if ( example_PSM_With_ScanFilename != null && example_PSM_Without_ScanFilename != null ) {
+			String msg = "Some PSMs have a scan_file_name and some do not."
+					+ "  Either every PSM must have a scan_file_name, or none."
+					+ "  Example PSM with a scan_file_name: " + example_PSM_With_ScanFilename + "."
+					+ "  Example PSM without a scan_file_name: " + example_PSM_Without_ScanFilename + ".";
+			log.error( msg );
+			throw new LimelightImporterDataException( msg );
+		}
+
 		// scanFileFileContainer_AllEntries altered to remove any entries where filenames not in psm.getScanFileName()
 		
 		if ( ! scanFilenamesLimelightXMLInputSet.isEmpty() ) {
